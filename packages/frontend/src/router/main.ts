@@ -80,6 +80,10 @@ class MainRouterProxy implements IRouter {
 		return this.supplier().resolve(path);
 	}
 
+	init(): void {
+		this.supplier().init();
+	}
+
 	eventNames(): Array<EventEmitter.EventNames<RouterEvent>> {
 		return this.supplier().eventNames();
 	}

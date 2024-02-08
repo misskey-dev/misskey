@@ -4,10 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModalWindow
-	ref="dialog"
-	:width="400"
-	@close="dialog.close()"
+<MkWindow
+	ref="windowEl"
+	:initialWidth="400"
+	:initialHeight="500"
+	:canResize="false"
+	@close="windowEl.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
@@ -73,13 +75,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>
 	</div>
-</MkModalWindow>
+</MkWindow>
 </template>
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkWindow from '@/components/MkWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -96,7 +98,7 @@ const props = defineProps<{
 	emoji?: any,
 }>();
 
-const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
+const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji ? props.emoji.category : '');
 const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
@@ -170,7 +172,7 @@ async function done() {
 			},
 		});
 
-		dialog.value.close();
+		windowEl.value.close();
 	} else {
 		const created = await os.apiWithDialog('admin/emoji/add', params);
 
@@ -178,14 +180,14 @@ async function done() {
 			created: created,
 		});
 
-		dialog.value.close();
+		windowEl.value.close();
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: name.value }),
+		text: i18n.tsx.removeAreYouSure({ x: name.value }),
 	});
 	if (canceled) return;
 
@@ -195,7 +197,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.value.close();
+		windowEl.value.close();
 	});
 }
 </script>

@@ -1,0 +1,20 @@
+extends ./base
+
+block vars
+	- const user1 = game.user1;
+	- const user2 = game.user2;
+	- const title = `${user1.username} vs ${user2.username}`;
+	- const url = `${config.url}/reversi/g/${game.id}`;
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content='⚫⚪Misskey Reversi⚪⚫')
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content='⚫⚪Misskey Reversi⚪⚫')
+	meta(property='og:url'         content= url)
+	meta(property='twitter:card'   content='summary')

@@ -23,10 +23,9 @@ import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
-const rootEl = shallowRef<HTMLDivElement>(null);
-const chartEl = shallowRef<HTMLCanvasElement>(null);
-const now = new Date();
-let chartInstance: Chart = null;
+const rootEl = shallowRef<HTMLDivElement | null>(null);
+const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+let chartInstance: Chart | null = null;
 const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
@@ -34,6 +33,7 @@ const { handler: externalTooltipHandler } = useChartTooltip({
 });
 
 async function renderChart() {
+	if (rootEl.value == null) return;
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
@@ -47,7 +47,12 @@ async function renderChart() {
 
 	raw = raw.slice(0, maxDays + 1);
 
-	const data = [];
+	const data: {
+		x: number;
+		y: string;
+		v: number;
+	}[] = [];
+
 	for (const record of raw) {
 		data.push({
 			x: 0,
@@ -83,19 +88,20 @@ async function renderChart() {
 
 	const marginEachCell = 12;
 
+	if (chartEl.value == null) return;
+
 	chartInstance = new Chart(chartEl.value, {
 		type: 'matrix',
 		data: {
 			datasets: [{
 				label: 'Active',
-				data: data,
-				pointRadius: 0,
+				data: data as any,
 				borderWidth: 0,
-				borderJoinStyle: 'round',
 				borderRadius: 3,
 				backgroundColor(c) {
-					const value = c.dataset.data[c.dataIndex].v;
-					const m = max(c.dataset.data[c.dataIndex].y);
+					const v = c.dataset.data[c.dataIndex] as unknown as typeof data[0];
+					const value = v.v;
+					const m = max(v.y);
 					if (m === 0) {
 						return alpha(color, 0);
 					} else {
@@ -103,7 +109,6 @@ async function renderChart() {
 						return alpha(color, a);
 					}
 				},
-				fill: true,
 				width(c) {
 					const a = c.chart.chartArea ?? {};
 					return (a.right - a.left) / maxDays - marginEachCell;
@@ -146,7 +151,6 @@ async function renderChart() {
 				},
 				y: {
 					type: 'time',
-					min: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - maxDays),
 					offset: true,
 					reverse: true,
 					position: 'left',
@@ -179,7 +183,7 @@ async function renderChart() {
 							return getYYYYMMDD(new Date(new Date(v.y).getTime() + (v.x * 86400000)));
 						},
 						label(context) {
-							const v = context.dataset.data[context.dataIndex];
+							const v = context.dataset.data[context.dataIndex] as unknown as typeof data[0];
 							const m = max(v.y);
 							if (m === 0) {
 								return [`Active: ${v.v} (-%)`];

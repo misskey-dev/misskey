@@ -45,7 +45,7 @@ async function init() {
 }
 
 function chooseProxyAccount() {
-	os.selectUser().then(user => {
+	os.selectUser({ localOnly: true }).then(user => {
 		proxyAccount.value = user;
 		proxyAccountId.value = user.id;
 		save();

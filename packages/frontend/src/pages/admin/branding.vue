@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
 						<template #caption>
-							<div>{{ i18n.t('_serverSettings.appIconDescription', { host: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
 							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
-							<div><strong>{{ i18n.t('_serverSettings.appIconResolutionMustBe', { resolution: '192x192px' }) }}</strong></div>
+							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '192x192px' }) }}</strong></div>
 						</template>
 					</MkInput>
 
@@ -30,10 +30,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
 						<template #caption>
-							<div>{{ i18n.t('_serverSettings.appIconDescription', { host: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
 							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
-							<div><strong>{{ i18n.t('_serverSettings.appIconResolutionMustBe', { resolution: '512x512px' }) }}</strong></div>
+							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '512x512px' }) }}</strong></div>
 						</template>
 					</MkInput>
 
@@ -148,9 +148,9 @@ function save() {
 		themeColor: themeColor.value === '' ? null : themeColor.value,
 		defaultLightTheme: defaultLightTheme.value === '' ? null : defaultLightTheme.value,
 		defaultDarkTheme: defaultDarkTheme.value === '' ? null : defaultDarkTheme.value,
-		infoImageUrl: infoImageUrl.value,
-		notFoundImageUrl: notFoundImageUrl.value,
-		serverErrorImageUrl: serverErrorImageUrl.value,
+		infoImageUrl: infoImageUrl.value === '' ? null : infoImageUrl.value,
+		notFoundImageUrl: notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
+		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
 		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
 	}).then(() => {
 		fetchInstance();

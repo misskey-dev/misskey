@@ -13,6 +13,7 @@ import { get, set } from '@/scripts/idb-proxy.js';
 import { defaultStore } from '@/store.js';
 import { useStream } from '@/stream.js';
 import { deepClone } from '@/scripts/clone.js';
+import { deepMerge } from '@/scripts/merge.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -80,6 +81,21 @@ export class Storage<T extends StateDef> {
 		this.loaded = this.ready.then(() => this.load());
 	}
 
+	private isPureObject(value: unknown): value is Record<string | number | symbol, unknown> {
+		return typeof value === 'object' && value !== null && !Array.isArray(value);
+	}
+
+	private mergeState<X>(value: X, def: X): X {
+		if (this.isPureObject(value) && this.isPureObject(def)) {
+			const merged = deepMerge(value, def);
+
+			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
+
+			return merged as X;
+		}
+		return value;
+	}
+
 	private async init(): Promise<void> {
 		await this.migrate();
 
@@ -89,11 +105,11 @@ export class Storage<T extends StateDef> {
 
 		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
-				this.reactiveState[k].value = this.state[k] = deviceState[k];
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], v.default);
 			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-				this.reactiveState[k].value = this.state[k] = registryCache[k];
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], v.default);
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-				this.reactiveState[k].value = this.state[k] = deviceAccountState[k];
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
 				this.reactiveState[k].value = this.state[k] = v.default;
 				if (_DEV_) console.log('Use default value', k, v.default);
@@ -223,7 +239,7 @@ export class Storage<T extends StateDef> {
 
 	/**
 	 * 特定のキーの、簡易的なgetter/setterを作ります
-	 * 主にvue場で設定コントロールのmodelとして使う用
+	 * 主にvue上で設定コントロールのmodelとして使う用
 	 */
 	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]): {
 		get: () => T[K]['default'];

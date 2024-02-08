@@ -75,7 +75,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { infoImageUrl } from '@/instance.js';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -104,7 +104,7 @@ function edit() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: role.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: role.name }),
 	});
 	if (canceled) return;
 
@@ -116,9 +116,7 @@ async function del() {
 }
 
 async function assign() {
-	const user = await os.selectUser({
-		includeSelf: true,
-	});
+	const user = await os.selectUser({ includeSelf: true });
 
 	const { canceled: canceled2, result: period } = await os.select({
 		title: i18n.ts.period,

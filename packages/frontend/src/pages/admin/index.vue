@@ -37,7 +37,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 

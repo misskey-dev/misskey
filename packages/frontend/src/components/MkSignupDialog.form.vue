@@ -80,6 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { toUnicode } from 'punycode/';
+import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
@@ -97,7 +98,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'signup', user: Record<string, any>): void;
+	(ev: 'signup', user: Misskey.entities.SigninResponse): void;
 	(ev: 'signupEmailPending'): void;
 }>();
 
@@ -263,7 +264,7 @@ async function onSubmit(): Promise<void> {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
-				text: i18n.t('_signup.emailSent', { email: email.value }),
+				text: i18n.tsx._signup.emailSent({ email: email.value }),
 			});
 			emit('signupEmailPending');
 		} else {
