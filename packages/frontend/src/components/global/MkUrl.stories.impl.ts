@@ -7,7 +7,7 @@
 import { expect } from '@storybook/jest';
 import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { commonHandlers } from '../../../.storybook/mocks.js';
 import MkUrl from './MkUrl.vue';
 export const Default = {
@@ -59,8 +59,8 @@ export const Default = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.get('/url', (req, res, ctx) => {
-					return res(ctx.json({
+				http.get('/url', () => {
+					return HttpResponse.json({
 						title: 'Misskey Hub',
 						icon: 'https://misskey-hub.net/favicon.ico',
 						description: 'Misskeyはオープンソースの分散型ソーシャルネットワーキングプラットフォームです。',
@@ -74,7 +74,7 @@ export const Default = {
 						sitename: 'misskey-hub.net',
 						sensitive: false,
 						url: 'https://misskey-hub.net/',
-					}));
+					});
 				}),
 			],
 		},

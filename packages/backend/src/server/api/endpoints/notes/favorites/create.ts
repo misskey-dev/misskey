@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// if already favorited
-			const exist = await this.noteFavoritesRepository.exist({
+			const exist = await this.noteFavoritesRepository.exists({
 				where: {
 					noteId: note.id,
 					userId: me.id,
