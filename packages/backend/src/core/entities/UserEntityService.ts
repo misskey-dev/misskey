@@ -152,43 +152,43 @@ export class UserEntityService implements OnModuleInit {
 				followerId: me,
 				followeeId: target,
 			}),
-			this.followingsRepository.exist({
+			this.followingsRepository.exists({
 				where: {
 					followerId: target,
 					followeeId: me,
 				},
 			}),
-			this.followRequestsRepository.exist({
+			this.followRequestsRepository.exists({
 				where: {
 					followerId: me,
 					followeeId: target,
 				},
 			}),
-			this.followRequestsRepository.exist({
+			this.followRequestsRepository.exists({
 				where: {
 					followerId: target,
 					followeeId: me,
 				},
 			}),
-			this.blockingsRepository.exist({
+			this.blockingsRepository.exists({
 				where: {
 					blockerId: me,
 					blockeeId: target,
 				},
 			}),
-			this.blockingsRepository.exist({
+			this.blockingsRepository.exists({
 				where: {
 					blockerId: target,
 					blockeeId: me,
 				},
 			}),
-			this.mutingsRepository.exist({
+			this.mutingsRepository.exists({
 				where: {
 					muterId: me,
 					muteeId: target,
 				},
 			}),
-			this.renoteMutingsRepository.exist({
+			this.renoteMutingsRepository.exists({
 				where: {
 					muterId: me,
 					muteeId: target,
@@ -215,7 +215,7 @@ export class UserEntityService implements OnModuleInit {
 		/*
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
-		const isUnread = (myAntennas.length > 0 ? await this.antennaNotesRepository.exist({
+		const isUnread = (myAntennas.length > 0 ? await this.antennaNotesRepository.exists({
 			where: {
 				antennaId: In(myAntennas.map(x => x.id)),
 				read: false,
