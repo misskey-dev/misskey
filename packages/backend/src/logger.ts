@@ -31,6 +31,9 @@ export default class Logger {
 			timestamp: envOption.withLogTime || envOption.logJson ? pino.stdTimeFunctions.isoTime : false,
 			messageKey: 'message',
 			errorKey: 'error',
+			formatters: {
+				level: (label, number) => ({ severity: label, level: number }),
+			},
 			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}` }),
 			transport: !envOption.logJson ? {
 				target: 'pino-pretty',
