@@ -540,7 +540,7 @@ export class FileServerService {
 					fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 					file,
 					filename: file.name,
-				}
+				};
 			} else {
 				return '204';
 			}
