@@ -657,8 +657,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		if (mj.riichis[house]) {
 			// リーチ時はアガリ牌でない限りツモ切り
-			const horaSets = Mmj.getHoraSets(mj.handTileTypes[house]);
-			if (horaSets.length === 0) {
+			if (!Mmj.canHora(mj.handTileTypes[house])) {
 				setTimeout(() => {
 					this.dahai(room, mj, house, mj.handTiles[house].at(-1));
 				}, 500);

@@ -218,7 +218,7 @@ export class PlayerGameEngine {
 
 		if (house === this.myHouse) {
 		} else {
-			const canRon = Common.getHoraSets(this.myHandTiles.concat(tid).map(id => $type(id))).length > 0;
+			const canRon = Common.canHora(this.myHandTiles.concat(tid).map(id => $type(id)));
 			const canPon = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tid)).length === 2;
 			const canKan = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tid)).length === 3;
 			const canCii = !this.isMeRiichi && house === Common.prevHouse(this.myHouse) &&

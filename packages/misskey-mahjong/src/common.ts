@@ -237,6 +237,8 @@ export const PREV_TILE_FOR_SHUNTSU: Record<TileType, TileType | null> = {
 	chun: null,
 };
 
+const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
+
 type EnvForCalcYaku = {
 	house: House;
 
@@ -471,7 +473,7 @@ export const YAKU_DEFINITIONS = [{
 
 		// TODO: 両面待ちかどうか
 
-		const horaSets = getHoraSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+		const horaSets = analyze1head3mentsuSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
 		return horaSets.some(horaSet => {
 			// 風牌判定(役牌でなければOK)
 			if (horaSet.head === state.seatWind) return false;
@@ -489,7 +491,7 @@ export const YAKU_DEFINITIONS = [{
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
 
-		const horaSets = getHoraSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+		const horaSets = analyze1head3mentsuSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
 		return horaSets.some(horaSet => {
 			// 同じ順子が2つあるか？
 			return horaSet.mentsus.some((mentsu) =>
@@ -505,11 +507,25 @@ export const YAKU_DEFINITIONS = [{
 		if (state.huros.length > 0) {
 			if (state.huros.some(huro => huro.type === 'cii')) return false;
 		}
-		const horaSets = getHoraSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+		const horaSets = analyze1head3mentsuSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
 		return horaSets.some(horaSet => {
 			// 全て刻子か？
 			if (!horaSet.mentsus.every((mentsu) => mentsu[0] === mentsu[1])) return false;
 		});
+	},
+}, {
+	name: 'chitoitsu',
+	fan: 2,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku) => {
+		return isChitoitsu(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+	},
+}, {
+	name: 'kokushi',
+	fan: 13,
+	isYakuman: true,
+	calc: (state: EnvForCalcYaku) => {
+		return isKokushi(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
 	},
 }];
 
@@ -709,7 +725,7 @@ function extractShuntsus(tiles: TileType[]): [TileType, TileType, TileType][] {
  * @param handTiles ポン、チー、カンした牌を含まない手牌
  * @returns
  */
-export function getHoraSets(handTiles: TileType[]): HoraSet[] {
+function analyze1head3mentsuSets(handTiles: TileType[]): HoraSet[] {
 	const horaSets: HoraSet[] = [];
 
 	const headSet: TileType[] = [];
@@ -808,6 +824,14 @@ export function getHoraSets(handTiles: TileType[]): HoraSet[] {
 	return horaSets;
 }
 
+export function canHora(handTiles: TileType[]): boolean {
+	if (isKokushi(handTiles)) return true;
+	if (isChitoitsu(handTiles)) return true;
+
+	const horaSets = analyze1head3mentsuSets(handTiles);
+	return horaSets.length > 0;
+}
+
 /**
  * アガリ牌リストを取得
  * @param handTiles ポン、チー、カンした牌を含まない手牌
@@ -815,14 +839,23 @@ export function getHoraSets(handTiles: TileType[]): HoraSet[] {
 export function getHoraTiles(handTiles: TileType[]): TileType[] {
 	return TILE_TYPES.filter(tile => {
 		const tempHandTiles = [...handTiles, tile];
-		const horaSets = getHoraSets(tempHandTiles);
+		const horaSets = analyze1head3mentsuSets(tempHandTiles);
 		return horaSets.length > 0;
 	});
 }
 
-// TODO: 国士無双判定関数
+function isKokushi(handTiles: TileType[]): boolean {
+	return KOKUSHI_TILES.every(t => handTiles.includes(t));
+}
 
-// TODO: 七対子判定関数
+function isChitoitsu(handTiles: TileType[]): boolean {
+	const countMap = new Map<TileType, number>();
+	for (const tile of handTiles) {
+		const count = (countMap.get(tile) ?? 0) + 1;
+		countMap.set(tile, count);
+	}
+	return Array.from(countMap.values()).every(c => c === 2);
+}
 
 export function getTilesForRiichi(handTiles: TileType[]): TileType[] {
 	return handTiles.filter(tile => {

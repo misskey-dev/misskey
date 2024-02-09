@@ -292,7 +292,7 @@ const isMyTurn = computed(() => {
 });
 
 const canHora = computed(() => {
-	return Mmj.getHoraSets(mj.value.myHandTileTypes).length > 0;
+	return Mmj.canHora(mj.value.myHandTileTypes).length;
 });
 
 const selectableTiles = ref<Mmj.TileType[] | null>(null);

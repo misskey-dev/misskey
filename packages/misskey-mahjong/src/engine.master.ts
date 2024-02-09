@@ -108,8 +108,7 @@ class StateManager {
 		// TODO: ポンされるなどして自分の河にない場合の考慮
 		if (this.hoTileTypes[house].includes($type(tid))) return false;
 
-		const horaSets = Common.getHoraSets(this.handTileTypes[house].concat($type(tid)));
-		if (horaSets.length === 0) return false; // 完成形じゃない
+		if (!Common.canHora(this.handTileTypes[house].concat($type(tid)))) return false; // 完成形じゃない
 
 		// TODO
 		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
