@@ -16,12 +16,14 @@ describe('Note', () => {
 
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
+	let tom: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(MiNote);
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
+		tom = await signup({ username: 'tom', host: 'example.com' });
 	}, 1000 * 60 * 2);
 
 	test('投稿できる', async () => {
@@ -659,6 +661,24 @@ describe('Note', () => {
 
 			assert.strictEqual(note2.status, 400);
 			assert.strictEqual(note2.body.error.code, 'CONTAINS_PROHIBITED_WORDS');
+		});
+
+		test('禁止ワードを含んでいてもリモートノートはエラーにならない', async () => {
+			const prohibited = await api('admin/update-meta', {
+				prohibitedWords: [
+					'test',
+				],
+			}, alice);
+
+			assert.strictEqual(prohibited.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note1 = await api('/notes/create', {
+				text: 'hogetesthuge',
+			}, tom);
+
+			assert.strictEqual(note1.status, 200);
 		});
 	});
 

@@ -151,6 +151,8 @@ type Option = {
 export class NoteCreateService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
 
+	public static ContainsProhibitedWordsError = class extends Error {};
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -258,6 +260,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
+			}
+		}
+
+		if (!user.host) {
+			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+				throw new NoteCreateService.ContainsProhibitedWordsError();
 			}
 		}
 
