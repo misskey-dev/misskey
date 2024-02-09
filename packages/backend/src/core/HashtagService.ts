@@ -163,7 +163,7 @@ export class HashtagService {
 		const instance = await this.metaService.fetch();
 		const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
 		if (hiddenTags.includes(hashtag)) return;
-		if (this.utilityService.isSensitiveWordIncluded(hashtag, instance.sensitiveWords)) return;
+		if (this.utilityService.isKeyWordIncluded(hashtag, instance.sensitiveWords)) return;
 
 		// YYYYMMDDHHmm (10分間隔)
 		const now = new Date();
