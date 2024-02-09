@@ -1785,6 +1785,14 @@ _channel:
   nameAndDescription: "Nom i descripció "
   nameOnly: "Nom només "
   allowRenoteToExternal: "Permet la citació i l'impuls fora del canal"
+_menuDisplay:
+  sideFull: "Horitzontal "
+  sideIcon: "Horitzontal (icones)"
+  top: "A dalt"
+  hide: "Amagar"
+_wordMute:
+  muteWords: "Paraules silenciades"
+  muteWordsDescription: "Separar amb espais per la condició AND o amb salts de línia per la condició OR."
 _instanceMute:
   instanceMuteDescription: "Silencia tots els impulsos dels servidors seleccionats, també els usuaris que responen a altres d'un servidor silenciat."
 _theme:
