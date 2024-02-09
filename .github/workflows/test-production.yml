@@ -23,7 +23,7 @@ jobs:
       with:
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v3
       with:
         version: 8
         run_install: false
