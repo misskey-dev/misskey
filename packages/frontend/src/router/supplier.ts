@@ -5,7 +5,7 @@
 
 import { inject } from 'vue';
 import { IRouter, Router } from '@/nirax.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 /**
  * メインの{@link Router}を取得する。

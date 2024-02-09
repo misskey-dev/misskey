@@ -163,12 +163,12 @@ export class SignupApiService {
 		}
 
 		if (instance.emailRequiredForSignup) {
-			if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
+			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
-			if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
+			if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
@@ -213,7 +213,7 @@ export class SignupApiService {
 				});
 
 				const res = await this.userEntityService.pack(account, account, {
-					detail: true,
+					schema: 'MeDetailed',
 					includeSecrets: true,
 				});
 

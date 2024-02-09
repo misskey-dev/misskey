@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			const exist = await this.clipFavoritesRepository.exist({
+			const exist = await this.clipFavoritesRepository.exists({
 				where: {
 					clipId: clip.id,
 					userId: me.id,

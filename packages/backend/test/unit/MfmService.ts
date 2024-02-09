@@ -33,6 +33,12 @@ describe('MfmService', () => {
 			const output = '<p><span>foo<br>bar<br>baz</span></p>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
+
+		test('Do not generate unnecessary span', () => {
+			const input = 'foo $[tada bar]';
+			const output = '<p>foo <i>bar</i></p>';
+			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
+		});
 	});
 
 	describe('fromHtml', () => {

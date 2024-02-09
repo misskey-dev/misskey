@@ -1,8 +1,3 @@
-/*
- * version: 2024.2.0-beta.7
- * generatedAt: 2024-02-06T12:17:59.655Z
- */
-
 import { operations } from './types.js';
 
 export type EmptyRequest = Record<string, unknown> | undefined;
@@ -56,8 +51,6 @@ export type AdminEmojiSetAliasesBulkRequest = operations['admin/emoji/set-aliase
 export type AdminEmojiSetCategoryBulkRequest = operations['admin/emoji/set-category-bulk']['requestBody']['content']['application/json'];
 export type AdminEmojiSetLicenseBulkRequest = operations['admin/emoji/set-license-bulk']['requestBody']['content']['application/json'];
 export type AdminEmojiUpdateRequest = operations['admin/emoji/update']['requestBody']['content']['application/json'];
-export type AdminEmojiV2ListRequest = operations['admin/emoji/v2/list']['requestBody']['content']['application/json'];
-export type AdminEmojiV2ListResponse = operations['admin/emoji/v2/list']['responses']['200']['content']['application/json'];
 export type AdminFederationDeleteAllFilesRequest = operations['admin/federation/delete-all-files']['requestBody']['content']['application/json'];
 export type AdminFederationRefreshRemoteInstanceMetadataRequest = operations['admin/federation/refresh-remote-instance-metadata']['requestBody']['content']['application/json'];
 export type AdminFederationRemoveAllFollowingRequest = operations['admin/federation/remove-all-following']['requestBody']['content']['application/json'];

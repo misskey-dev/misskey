@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :preferType="preferedModalType" :anchor="anchor" :transparentBg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :preferType="preferedModalType" :anchor="anchor" :transparentBg="true" :src="src" @click="modal?.close()" @closed="emit('closed')">
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items" :key="item.text">
@@ -63,7 +63,7 @@ const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k =>
 }));
 
 function close() {
-	modal.value.close();
+	modal.value?.close();
 }
 </script>
 
@@ -119,6 +119,7 @@ function close() {
 				margin-top: 12px;
 				font-size: 0.8em;
 				line-height: 1.5em;
+				text-align: center;
 			}
 
 			> .indicatorWithValue {

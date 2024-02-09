@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 import type { MiLocalUser } from '@/models/User.js';
 import type { UsersRepository } from '@/models/_.js';
 import { MemorySingleCache } from '@/misc/cache.js';
@@ -25,6 +25,14 @@ export class InstanceActorService {
 		private createSystemUserService: CreateSystemUserService,
 	) {
 		this.cache = new MemorySingleCache<MiLocalUser>(Infinity);
+	}
+
+	@bindThis
+	public async realLocalUsersPresent(): Promise<boolean> {
+		return await this.usersRepository.existsBy({
+			host: IsNull(),
+			username: Not(ACTOR_USERNAME),
+		});
 	}
 
 	@bindThis

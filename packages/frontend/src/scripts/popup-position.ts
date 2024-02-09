@@ -4,7 +4,7 @@
  */
 
 export function calcPopupPosition(el: HTMLElement, props: {
-	anchorElement: HTMLElement | null;
+	anchorElement?: HTMLElement | null;
 	innerMargin: number;
 	direction: 'top' | 'bottom' | 'left' | 'right';
 	align: 'top' | 'bottom' | 'left' | 'right' | 'center';

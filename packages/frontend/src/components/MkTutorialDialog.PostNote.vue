@@ -58,7 +58,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 		isBot: false,
 		isCat: true,
 		emojis: {},
-		onlineStatus: null,
+		onlineStatus: 'unknown',
 		badgeRoles: [],
 	},
 	text: i18n.ts._initialTutorial._postNote._cw._exampleNote.note,

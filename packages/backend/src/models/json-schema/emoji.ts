@@ -27,6 +27,10 @@ export const packedEmojiSimpleSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		localOnly: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 		isSensitive: {
 			type: 'boolean',
 			optional: true, nullable: false,

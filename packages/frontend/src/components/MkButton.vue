@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkA
 	v-else class="_button"
 	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
-	:to="to"
+	:to="to ?? '#'"
 	@mousedown="onMousedown"
 >
 	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
