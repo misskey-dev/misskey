@@ -4719,6 +4719,7 @@ export type operations = {
             hiddenTags: string[];
             blockedHosts: string[];
             sensitiveWords: string[];
+            prohibitedWords: string[];
             bannedEmailDomains?: string[];
             preservedUsernames: string[];
             hcaptchaSecretKey: string | null;
@@ -8473,6 +8474,7 @@ export type operations = {
           hiddenTags?: string[] | null;
           blockedHosts?: string[] | null;
           sensitiveWords?: string[] | null;
+          prohibitedWords?: string[] | null;
           themeColor?: string | null;
           mascotImageUrl?: string | null;
           bannerUrl?: string | null;
