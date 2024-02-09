@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					userListId: ps.listId,
 				});
 				if (me !== null) {
-					additionalProperties.isLiked = await this.userListFavoritesRepository.exist({
+					additionalProperties.isLiked = await this.userListFavoritesRepository.exists({
 						where: {
 							userId: me.id,
 							userListId: ps.listId,

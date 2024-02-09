@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/nadesuki/nadesskey.git"
 	},
-	"packageManager": "pnpm@8.12.1",
+	"packageManager": "pnpm@8.15.1",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
