@@ -48,31 +48,29 @@ export class UtilityService {
 		return sensitiveMediaHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
+	private static readonly isFilterRegExpPattern = /^\/(.+)\/(.*)$/;
+
 	@bindThis
-	public isSensitiveWordIncluded(text: string, sensitiveWords: string[]): boolean {
-		if (sensitiveWords.length === 0) return false;
+	public isKeyWordIncluded(text: string, keyWords: string[]): boolean {
+		if (keyWords.length === 0) return false;
 		if (text === '') return false;
 
-		const regexpregexp = /^\/(.+)\/(.*)$/;
+		return keyWords.some(filter => {
+			const regexp = UtilityService.isFilterRegExpPattern.exec(filter);
 
-		const matched = sensitiveWords.some(filter => {
-			// represents RegExp
-			const regexp = filter.match(regexpregexp);
-			// This should never happen due to input sanitisation.
 			if (!regexp) {
 				const words = filter.split(' ');
 				return words.every(keyword => text.includes(keyword));
 			}
+
 			try {
 				// TODO: RE2インスタンスをキャッシュ
 				return new RE2(regexp[1], regexp[2]).test(text);
 			} catch (err) {
-				// This should never happen due to input sanitisation.
+				// This should never happen due to input sanitization.
 				return false;
 			}
 		});
-
-		return matched;
 	}
 
 	@bindThis

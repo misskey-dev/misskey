@@ -61,6 +61,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -260,10 +261,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = meta.sensitiveWords;
-			if (this.utilityService.isSensitiveWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
+			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
+			}
+		}
+
+		if (!user.host) {
+			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+				throw new IdentifiableError('057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30');
 			}
 		}
 
