@@ -11,7 +11,7 @@ import * as parse5 from 'parse5';
 import * as mfm from 'mfm-js';
 import ms from 'ms';
 import Ajv from 'ajv';
-import { In } from 'typeorm';
+import { In, Not, IsNull } from 'typeorm';
 import { Injectable, Inject, type OnApplicationShutdown } from '@nestjs/common';
 import formbody from '@fastify/formbody';
 import multipart from '@fastify/multipart';
@@ -248,7 +248,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 		const files = driveFiles.map(file => ({
 			mime: file.type,
 			alt: file.comment,
-			url: file.downloadedFrom ?? new URL('/files/' + file.accessKey, this.config.url).toString(),
+			url: file.downloadedFrom ?? new URL('/files/' + file.accessKey ? encodeURIComponent(file.accessKey!) : '', this.config.url).toString(),
 		}));
 
 		return {
@@ -424,6 +424,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 		const files = await this.driveFilesRepository.findBy({
 			id: In(note.fileIds),
 			userId: user.id,
+			downloadedFrom: Not(IsNull()),
 			createdByMicropub: true,
 		});
 
@@ -681,7 +682,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 				this.#temporaryFileCleaners.set(request.id, [...(this.#temporaryFileCleaners.get(request.id) ?? []), cleanup]);
 				await stream.pipeline(multipartData.file, fs.createWriteStream(destPath));
 				if (multipartData.fieldname !== 'file') throw new MicropubError(errorSymbols.BAD_REQUEST);
-				const driveFile = await this.driveService.addFile({ user, path: destPath, name: path.parse(multipartData.filename).name, force: true });
+				const driveFile = await this.driveService.addFile({ user, path: destPath, name: path.parse(multipartData.filename).name, micropub: true, force: true });
 				if (driveFile.accessKey === null) throw new MicropubError(errorSymbols.BAD_REQUEST, 'Internal server error: Accesskey is null');
 				reply.code(201 /* Created */);
 				reply.header('Location', new URL('/files/' + encodeURIComponent(driveFile.accessKey), this.config.url));
