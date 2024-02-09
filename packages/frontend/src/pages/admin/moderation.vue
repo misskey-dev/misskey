@@ -40,6 +40,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
 					</MkTextarea>
 
+					<MkTextarea v-model="prohibitedWords">
+						<template #label>{{ i18n.ts.prohibitedWords }}</template>
+						<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+					</MkTextarea>
+
 					<MkTextarea v-model="urlPreviewDenyList">
 						<template #label>{{ i18n.ts.urlPreviewDenyList }}</template>
 						<template #caption>{{ i18n.ts.urlPreviewDenyListDescription }}</template>
@@ -81,6 +86,7 @@ import FormLink from '@/components/form/link.vue';
 const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
 const sensitiveWords = ref<string>('');
+const prohibitedWords = ref<string>('');
 const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
 const tosUrl = ref<string | null>(null);
@@ -92,6 +98,7 @@ async function init() {
 	enableRegistration.value = !meta.disableRegistration;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
+	prohibitedWords.value = meta.prohibitedWords.join('\n');
 	hiddenTags.value = meta.hiddenTags.join('\n');
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
 	tosUrl.value = meta.tosUrl;
@@ -106,6 +113,7 @@ function save() {
 		tosUrl: tosUrl.value,
 		privacyPolicyUrl: privacyPolicyUrl.value,
 		sensitiveWords: sensitiveWords.value.split('\n'),
+		prohibitedWords: prohibitedWords.value.split('\n'),
 		hiddenTags: hiddenTags.value.split('\n'),
 		preservedUsernames: preservedUsernames.value.split('\n'),
 		urlPreviewDenyList: urlPreviewDenyList.value?.split('\n'),
