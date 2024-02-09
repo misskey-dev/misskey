@@ -7,6 +7,7 @@ import { URLSearchParams } from 'node:url';
 import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
+import Redis from 'ioredis';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
@@ -16,14 +17,23 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { RedisKVCache } from '@/misc/cache.js';
 
 @Injectable()
 export class EmailService {
 	private logger: Logger;
 
+	private verifymailResponseCache: RedisKVCache<{
+		valid: boolean,
+		reason?: string | null,
+	}>;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -34,6 +44,16 @@ export class EmailService {
 		private httpRequestService: HttpRequestService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
+		this.verifymailResponseCache = new RedisKVCache<{
+			valid: boolean,
+			reason?: string | null,
+		}>(this.redisClient, 'verifymailResponse', {
+			lifetime: 1000 * 60 * 60 * 24 * 7, // 7d
+			memoryCacheLifetime: 1000 * 60 * 60 * 24 * 7, // 7d
+			fetcher: (key) => this.verifyMail(key),
+			toRedisConverter: (value) => JSON.stringify(value),
+			fromRedisConverter: (value) => JSON.parse(value),
+		});
 	}
 
 	@bindThis
@@ -190,7 +210,8 @@ export class EmailService {
 			});
 
 			if (validated.valid && meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
-				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
+				const domain = emailAddress.split('@')[1];
+				validated = await this.verifymailResponseCache.fetch(domain);
 			}
 
 			if (validated.valid && meta.enableTruemailApi && meta.truemailInstance && meta.truemailAuthKey != null) {
@@ -230,11 +251,14 @@ export class EmailService {
 		};
 	}
 
-	private async verifyMail(emailAddress: string, verifymailAuthKey: string): Promise<{
+	private async verifyMail(domain: string): Promise<{
 		valid: boolean;
 		reason: 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | null;
 	}> {
-		const endpoint = 'https://verifymail.io/api/' + emailAddress + '?key=' + verifymailAuthKey;
+		const meta = await this.metaService.fetch();
+		if (meta.verifymailAuthKey == null) throw new Error('verifymailAuthKey is not set');
+
+		const endpoint = 'https://verifymail.io/api/' + domain + '?key=' + meta.verifymailAuthKey;
 		const res = await this.httpRequestService.send(endpoint, {
 			method: 'GET',
 			headers: {
