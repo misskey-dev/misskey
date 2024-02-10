@@ -662,7 +662,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.post<{ Headers: { authorization?: string} }>('/media', async (request, reply) => {
+		fastify.post<{ Headers: { authorization?: string } }>('/media', async (request, reply) => {
 			try {
 				const multipartData = await request.file();
 				const fields = {} as Record<string, unknown>;
