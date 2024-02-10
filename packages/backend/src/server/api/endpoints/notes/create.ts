@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { createHash } from 'crypto';
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as Redis from 'ioredis';
 import type { MiUser } from '@/models/User.js';
 import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
@@ -48,6 +50,13 @@ export const meta = {
 	},
 
 	errors: {
+		processing: {
+			message: 'We are processing your request. Please wait a moment.',
+			code: 'PROCESSING',
+			id: '3247052c-005d-440e-b3d8-2a64274483b0',
+			httpStatusCode: 202,
+		},
+
 		noSuchRenoteTarget: {
 			message: 'No such renote target.',
 			code: 'NO_SUCH_RENOTE_TARGET',
@@ -212,6 +221,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -231,6 +243,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteCreateService: NoteCreateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const hash = createHash('sha256').update(JSON.stringify(ps)).digest('base64');
+			const idempotent = process.env.FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING !== 'true' ? await this.redisForTimelines.get(`note:idempotent:${me.id}:${hash}`) : null;
+			if (idempotent === '_') throw new ApiError(meta.errors.processing); // 他のサーバーで処理中
+
+			// すでに同じリクエストが処理されている場合、そのノートを返す
+			// ただし、記録されているノート見つからない場合は、新規として処理を続行
+			if (idempotent) {
+				const note = await this.notesRepository.findOneBy({ id: idempotent });
+				if (note) return { createdNote: await this.noteEntityService.pack(note, me) };
+			}
+
+			// 30秒の間、リクエストを処理中として記録
+			await this.redisForTimelines.set(`note:idempotent:${me.id}:${hash}`, '_', 'EX', 30);
+
 			let visibleUsers: MiUser[] = [];
 			if (ps.visibleUserIds) {
 				visibleUsers = await this.usersRepository.findBy({
@@ -371,10 +397,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					apEmojis: ps.noExtractEmojis ? [] : undefined,
 				});
 
+				// 1分間、リクエストの処理結果を記録
+				await this.redisForTimelines.set(`note:idempotent:${me.id}:${hash}`, note.id, 'EX', 60);
+
 				return {
 					createdNote: await this.noteEntityService.pack(note, me),
 				};
 			} catch (err) {
+				// エラーが発生した場合、リクエストの処理結果を削除
+				await this.redisForTimelines.unlink(`note:idempotent:${me.id}:${hash}`);
+
 				if (err instanceof IdentifiableError) {
 					if (err.id === '057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30') throw new ApiError(meta.errors.containsProhibitedWords);
 				}

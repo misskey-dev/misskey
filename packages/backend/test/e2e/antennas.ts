@@ -13,6 +13,7 @@ import {
 	failedApiCall,
 	post,
 	role,
+	sendEnvUpdateRequest,
 	signup,
 	successfulApiCall,
 	testPaginationConsistency,
@@ -74,6 +75,8 @@ describe('アンテナ', () => {
 	let userMutedByAlice: User;
 
 	beforeAll(async () => {
+		await sendEnvUpdateRequest({ key: 'FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING', value: 'true' });
+
 		root = await signup({ username: 'root' });
 		alice = await signup({ username: 'alice' });
 		alicePost = await post(alice, { text: 'test' });

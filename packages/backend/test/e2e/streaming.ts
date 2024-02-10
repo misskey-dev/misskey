@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
-import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
+import { api, createAppToken, initTestDb, port, post, sendEnvUpdateRequest, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Streaming', () => {
@@ -46,6 +46,8 @@ describe('Streaming', () => {
 		let list: any;
 
 		beforeAll(async () => {
+			await sendEnvUpdateRequest({ key: 'FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING', value: 'true' });
+
 			const connection = await initTestDb(true);
 			Followings = connection.getRepository(MiFollowing);
 

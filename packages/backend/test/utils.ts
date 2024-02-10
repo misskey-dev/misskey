@@ -12,11 +12,12 @@ import WebSocket, { ClientOptions } from 'ws';
 import fetch, { File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
 import { JSDOM } from 'jsdom';
+import * as Redis from 'ioredis';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { entities } from '../src/postgres.js';
-import { loadConfig } from '../src/config.js';
-import type * as misskey from 'misskey-js';
 import { Packed } from '@/misc/json-schema.js';
+import { entities } from '@/postgres.js';
+import { loadConfig } from '@/config.js';
+import type * as misskey from 'misskey-js';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -583,6 +584,9 @@ export async function testPaginationConsistency<Entity extends { id: string, cre
 
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
+
+	const redis = new Redis.Redis(config.redis);
+	await redis.flushdb();
 
 	const db = new DataSource({
 		type: 'postgres',

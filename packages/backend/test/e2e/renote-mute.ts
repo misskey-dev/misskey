@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { api, post, signup, sleep, waitFire } from '../utils.js';
+import { api, post, sendEnvUpdateRequest, signup, sleep, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Renote Mute', () => {
@@ -16,6 +16,8 @@ describe('Renote Mute', () => {
 	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
+		await sendEnvUpdateRequest({ key: 'FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING', value: 'true' });
+
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
