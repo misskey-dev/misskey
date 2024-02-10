@@ -292,18 +292,6 @@ export class EmailService {
 				reason: null,
 			};
 		}
-		if (json.email_address === undefined) {
-			return {
-				valid: false,
-				reason: 'format',
-			};
-		}
-		if (json.deliverable_email !== undefined && !json.deliverable_email) {
-			return {
-				valid: false,
-				reason: 'smtp',
-			};
-		}
 		if (json.disposable) {
 			return {
 				valid: false,
