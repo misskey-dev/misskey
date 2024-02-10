@@ -114,6 +114,7 @@ jobs:
       run: pnpm exec cypress install
     - name: Cypress run
       uses: cypress-io/github-action@v6
+      timeout-minutes: 15
       with:
         install: false
         start: pnpm start:test
