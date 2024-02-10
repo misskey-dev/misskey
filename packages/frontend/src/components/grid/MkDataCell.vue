@@ -5,7 +5,7 @@
 	:style="{ maxWidth: cellWidth, minWidth: cellWidth }"
 	:tabindex="-1"
 	@keydown="onCellKeyDown"
-	@dblclick="onCellDoubleClick"
+	@dblclick.prevent="onCellDoubleClick"
 >
 	<div
 		:class="[
@@ -69,11 +69,11 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
 	cell: GridCell,
-	gridSetting: GridRowSetting,
+	rowSetting: GridRowSetting,
 	bus: GridEventEmitter,
 }>();
 
-const { cell, gridSetting, bus } = toRefs(props);
+const { cell, rowSetting, bus } = toRefs(props);
 
 const rootEl = shallowRef<InstanceType<typeof HTMLTableCellElement>>();
 const contentAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
@@ -115,7 +115,7 @@ function onCellDoubleClick(ev: MouseEvent) {
 
 function onOutsideMouseDown(ev: MouseEvent) {
 	const isOutside = ev.target instanceof Node && !rootEl.value?.contains(ev.target);
-	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement, gridSetting.value))) {
+	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement, rowSetting.value))) {
 		endEditing(true);
 	}
 }
@@ -207,7 +207,7 @@ function endEditing(applyValue: boolean) {
 	emit('operation:endEdit', cell.value);
 	unregisterOutsideMouseDown();
 
-	if (applyValue) {
+	if (applyValue && editingValue.value !== cell.value.value) {
 		emitValueChange(editingValue.value);
 	}
 

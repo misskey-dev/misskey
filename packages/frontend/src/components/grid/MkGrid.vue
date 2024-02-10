@@ -9,7 +9,7 @@
 	<thead>
 		<MkHeaderRow
 			:columns="columns"
-			:gridSetting="gridSetting"
+			:gridSetting="rowSetting"
 			:bus="bus"
 			@operation:beginWidthChange="onHeaderCellWidthBeginChange"
 			@operation:endWidthChange="onHeaderCellWidthEndChange"
@@ -25,7 +25,7 @@
 			:key="row.index"
 			:row="row"
 			:cells="cells[row.index].cells"
-			:gridSetting="gridSetting"
+			:setting="rowSetting"
 			:bus="bus"
 			:using="row.using"
 			:class="[ lastLine === row.index ? $style.lastLine : {} ]"
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import { DataSource, GridEventEmitter, GridState, Size } from '@/components/grid/grid.js';
+import { DataSource, GridEventEmitter, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import { cellValidation } from '@/components/grid/cell-validators.js';
@@ -49,8 +49,8 @@ import { equalCellAddress, getCellAddress, getCellElement } from '@/components/g
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
-import { createColumn, GridColumn, GridColumnSetting } from '@/components/grid/column.js';
-import { createRow, defaultGridSetting, GridRow, GridRowSetting, resetRow } from '@/components/grid/row.js';
+import { createColumn, GridColumn } from '@/components/grid/column.js';
+import { createRow, defaultGridRowSetting, GridRow, GridRowSetting, resetRow } from '@/components/grid/row.js';
 
 type RowHolder = {
 	row: GridRow,
@@ -63,19 +63,18 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-	gridSetting?: GridRowSetting,
-	columnSettings: GridColumnSetting[],
+	settings: GridSetting,
 	data: DataSource[]
 }>();
 
 // non-reactive
-const gridSetting: Required<GridRowSetting> = {
-	...props.gridSetting,
-	...defaultGridSetting,
+const rowSetting: Required<GridRowSetting> = {
+	...defaultGridRowSetting,
+	...props.settings.row,
 };
 
 // non-reactive
-const columnSettings = props.columnSettings;
+const columnSettings = props.settings.cols;
 
 const { data } = toRefs(props);
 
@@ -434,7 +433,7 @@ function onMouseDown(ev: MouseEvent) {
 }
 
 function onLeftMouseDown(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement, gridSetting);
+	const cellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
 	if (_DEV_) {
 		console.log(`[grid][mouse-left] state:${state.value}, button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -568,7 +567,7 @@ function onLeftMouseDown(ev: MouseEvent) {
 }
 
 function onRightMouseDown(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement, gridSetting);
+	const cellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
 	if (_DEV_) {
 		console.log(`[grid][mouse-right] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -593,7 +592,7 @@ function onRightMouseDown(ev: MouseEvent) {
 function onMouseMove(ev: MouseEvent) {
 	ev.preventDefault();
 
-	const targetCellAddress = getCellAddress(ev.target as HTMLElement, gridSetting);
+	const targetCellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
 	if (equalCellAddress(previousCellAddress.value, targetCellAddress)) {
 		return;
 	}
@@ -696,7 +695,7 @@ function onMouseUp(ev: MouseEvent) {
 }
 
 function onContextMenu(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement, gridSetting);
+	const cellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
 	if (_DEV_) {
 		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -734,6 +733,7 @@ function onCellEditEnd() {
 }
 
 function onChangeCellValue(sender: GridCell, newValue: CellValue) {
+	applyRowRules([sender]);
 	emitCellValue(sender, newValue);
 }
 
@@ -972,13 +972,38 @@ function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
  * {@link top}から{@link bottom}までの行を範囲選択状態にする。
  */
 function expandRowRange(top: number, bottom: number) {
-	if (!gridSetting.selectable) {
+	if (!rowSetting.selectable) {
 		return;
 	}
 
 	const targetRows = rows.value.slice(top, bottom + 1);
 	for (const row of targetRows) {
 		row.ranged = true;
+	}
+}
+
+function applyRowRules(targetCells: GridCell[]) {
+	const _rows = rows.value;
+	const targetRowIdxes = [...new Set(targetCells.map(it => it.address.row))];
+	const rowGroups = Array.of<{ row: GridRow, cells: GridCell[] }>();
+	for (const rowIdx of targetRowIdxes) {
+		const rowGroup = targetCells.filter(it => it.address.row === rowIdx);
+		rowGroups.push({ row: _rows[rowIdx], cells: rowGroup });
+	}
+
+	const _cells = cells.value;
+	for (const group of rowGroups.filter(it => it.row.using)) {
+		const row = group.row;
+		const targetCols = group.cells.map(it => it.column);
+		const cells = _cells[group.row.index].cells;
+
+		const newStyles = rowSetting.styleRules
+			.filter(it => it.condition({ row, targetCols, cells }))
+			.map(it => it.applyStyle);
+
+		if (JSON.stringify(newStyles) !== JSON.stringify(row.additionalStyles)) {
+			row.additionalStyles = newStyles;
+		}
 	}
 }
 
@@ -1018,9 +1043,9 @@ function refreshData() {
 	}
 
 	const _data: DataSource[] = data.value;
-	const _rows: GridRow[] = (_data.length > gridSetting.minimumDefinitionCount)
+	const _rows: GridRow[] = (_data.length > rowSetting.minimumDefinitionCount)
 		? _data.map((_, index) => createRow(index, true))
-		: Array.from({ length: gridSetting.minimumDefinitionCount }, (_, index) => createRow(index, index < _data.length));
+		: Array.from({ length: rowSetting.minimumDefinitionCount }, (_, index) => createRow(index, index < _data.length));
 	const _cols: GridColumn[] = columns.value;
 
 	// 行・列の定義から、元データの配列より値を取得してセルを作成する。
@@ -1028,17 +1053,19 @@ function refreshData() {
 	const _cells: RowHolder[] = _rows.map(row => {
 		const cells = row.using
 			? _cols.map(col => {
-				const cell = createCell(col, row, _data[row.index][col.setting.bindTo], col.setting.cellSetting ?? {});
+				const cell = createCell(col, row, _data[row.index][col.setting.bindTo]);
 				cell.violation = cellValidation(cell, cell.value);
 				return cell;
 			})
-			: _cols.map(col => createCell(col, row, undefined, col.setting.cellSetting ?? {}));
+			: _cols.map(col => createCell(col, row, undefined));
 
 		return { row, cells, origin: _data[row.index] };
 	});
 
 	rows.value = _rows;
 	cells.value = _cells;
+
+	applyRowRules(_cells.filter(it => it.row.using).flatMap(it => it.cells));
 
 	if (_DEV_) {
 		console.log('[grid][refresh-data][end]');
@@ -1057,7 +1084,7 @@ function refreshData() {
  */
 function patchData(newItems: DataSource[]) {
 	if (_DEV_) {
-		console.log(`[grid][patch-data][begin] new:${newItems.length} old:${cells.value.length}`);
+		console.log('[grid][patch-data][begin]');
 	}
 
 	const _cols = columns.value;
@@ -1079,13 +1106,16 @@ function patchData(newItems: DataSource[]) {
 
 		rows.value.push(...newRows);
 		cells.value.push(...newCells);
+
+		applyRowRules(newCells.flatMap(it => it.cells));
 	}
 
 	// 行数の上限が欲しい場合はここに設けてもいいかもしれない
 
-	if (rows.value.length > newItems.length) {
+	const usingRows = rows.value.filter(it => it.using);
+	if (usingRows.length > newItems.length) {
 		// 行数が減っているので古い行をクリアする（再マウント・再レンダリングが重いので要素そのものは消さない）
-		for (let rowIdx = newItems.length; rowIdx < rows.value.length; rowIdx++) {
+		for (let rowIdx = newItems.length; rowIdx < usingRows.length; rowIdx++) {
 			resetRow(rows.value[rowIdx]);
 			for (let colIdx = 0; colIdx < _cols.length; colIdx++) {
 				const holder = cells.value[rowIdx];
@@ -1095,6 +1125,7 @@ function patchData(newItems: DataSource[]) {
 		}
 	}
 
+	const changedCells = Array.of<GridCell>();
 	for (let rowIdx = 0; rowIdx < newItems.length; rowIdx++) {
 		const holder = cells.value[rowIdx];
 		holder.row.using = true;
@@ -1109,19 +1140,24 @@ function patchData(newItems: DataSource[]) {
 			if (oldCell.value !== newValue) {
 				oldCell.violation = cellValidation(oldCell, newValue);
 				oldCell.value = newValue;
+				changedCells.push(oldCell);
 			}
 		}
 	}
 
-	// セル値が書き換わっており、バリデーションの結果も変わっているので外部に通知する必要がある
-	emitGridEvent({
-		type: 'cell-validation',
-		all: cells.value
-			.filter(it => it.row.using)
-			.flatMap(it => it.cells)
-			.map(it => it.violation)
-			.filter(it => !it.valid),
-	});
+	if (changedCells.length > 0) {
+		applyRowRules(changedCells);
+
+		// セル値が書き換わっており、バリデーションの結果も変わっているので外部に通知する必要がある
+		emitGridEvent({
+			type: 'cell-validation',
+			all: cells.value
+				.filter(it => it.row.using)
+				.flatMap(it => it.cells)
+				.map(it => it.violation)
+				.filter(it => !it.valid),
+		});
+	}
 
 	if (_DEV_) {
 		console.log('[grid][patch-data][end]');

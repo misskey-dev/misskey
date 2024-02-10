@@ -26,7 +26,7 @@
 
 	<div v-if="gridItems.length > 0">
 		<div :class="$style.gridArea">
-			<MkGrid :data="gridItems" :columnSettings="columnSettings" @event="onGridEvent"/>
+			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 		</div>
 
 		<div class="_gaps">
@@ -65,6 +65,7 @@ import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 import * as os from '@/os.js';
+import { GridSetting } from '@/components/grid/grid.js';
 
 type GridItem = {
 	checked: boolean;
@@ -74,12 +75,16 @@ type GridItem = {
 	host: string;
 }
 
-const columnSettings: GridColumnSetting[] = [
-	{ bindTo: 'checked', icon: 'ti-download', type: 'boolean', editable: true, width: 34 },
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 'auto' },
-	{ bindTo: 'host', title: 'host', type: 'text', editable: false, width: 'auto' },
-];
+function setupGrid(): GridSetting {
+	return {
+		cols: [
+			{ bindTo: 'checked', icon: 'ti-download', type: 'boolean', editable: true, width: 34 },
+			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
+			{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 'auto' },
+			{ bindTo: 'host', title: 'host', type: 'text', editable: false, width: 'auto' },
+		],
+	};
+}
 
 const requestLogs = ref<RequestLogItem[]>([]);
 

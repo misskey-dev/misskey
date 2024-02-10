@@ -7,9 +7,8 @@
 		<div>
 			<div v-if="filteredLogs.length > 0">
 				<MkGrid
-					:gridSetting="{ rowNumberVisible: false, rowSelectable: false }"
 					:data="filteredLogs"
-					:columnSettings="columnSettings"
+					:settings="setupGrid()"
 					@event="onGridEvent"
 				/>
 			</div>
@@ -39,13 +38,22 @@ import {
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import { GridSetting } from '@/components/grid/grid.js';
 
-const columnSettings: GridColumnSetting[] = [
-	{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },
-	{ bindTo: 'error', title: 'log', type: 'text', editable: false, width: 'auto' },
-];
+function setupGrid(): GridSetting {
+	return {
+		row: {
+			showNumber: false,
+			selectable: false,
+		},
+		cols: [
+			{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
+			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
+			{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },
+			{ bindTo: 'error', title: 'log', type: 'text', editable: false, width: 'auto' },
+		],
+	};
+}
 
 const props = defineProps<{
 	logs: RequestLogItem[];

@@ -79,7 +79,7 @@
 		</MkFolder>
 
 		<div :class="$style.gridArea">
-			<MkGrid :data="gridItems" :gridSetting="gridSetting" :columnSettings="columnSettings" @event="onGridEvent"/>
+			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 		</div>
 
 		<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
@@ -113,7 +113,6 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { GridColumnSetting } from '@/components/grid/column.js';
 import { validators } from '@/components/grid/cell-validators.js';
 import {
 	GridCellContextMenuEvent,
@@ -131,7 +130,7 @@ import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { GridRowSetting } from '@/components/grid/row.js';
+import { GridSetting } from '@/components/grid/grid.js';
 
 type GridItem = {
 	checked: boolean;
@@ -146,26 +145,42 @@ type GridItem = {
 	localOnly: boolean;
 	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
 	fileId?: string;
+	updatedAt: string | null;
 }
 
-const gridSetting: GridRowSetting = {
-	showNumber: true,
-	selectable: false,
-};
-
-const required = validators.required();
-const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
-const columnSettings: GridColumnSetting[] = [
-	{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
-	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
-	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
-	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140 },
-];
+function setupGrid(): GridSetting {
+	const required = validators.required();
+	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
+	return {
+		row: {
+			showNumber: true,
+			selectable: true,
+			minimumDefinitionCount: 100,
+			styleRules: [
+				{
+					condition: ({ row }) => JSON.stringify(gridItems.value[row.index]) !== JSON.stringify(originGridItems.value[row.index]),
+					applyStyle: { className: 'changedRow' },
+				},
+				{
+					condition: ({ cells }) => cells.some(it => !it.violation.valid),
+					applyStyle: { className: 'violationRow' },
+				},
+			],
+		},
+		cols: [
+			{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
+			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required] },
+			{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
+			{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
+			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
+			{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'updatedAt', type: 'hidden', editable: false, width: 'auto' },
+		],
+	};
+}
 
 const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const allPages = ref<number>(0);
@@ -229,7 +244,7 @@ async function onUpdateButtonClicked() {
 					isSensitive: item.isSensitive,
 					localOnly: item.localOnly,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
-					fileId:	item.fileId,
+					fileId: item.fileId,
 				})
 				.then(() => ({ item, success: true, err: undefined }))
 				.catch(err => ({ item, success: false, err })),
@@ -399,15 +414,6 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 		} else {
 			gridItems.value[row.index][column.setting.bindTo] = newValue;
 		}
-
-		const originItem = originGridItems.value[row.index][column.setting.bindTo];
-		if (originItem !== newValue) {
-			row.additionalStyle = {
-				className: 'editedRow',
-			};
-		} else {
-			row.additionalStyle = undefined;
-		}
 	}
 }
 
@@ -446,14 +452,6 @@ async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentS
 						for (const cell of ranges) {
 							if (cell.column.setting.editable) {
 								gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
-								const originItem = originGridItems.value[cell.row.index][cell.column.setting.bindTo];
-								if (originItem !== undefined) {
-									cell.row.additionalStyle = {
-										className: 'editedRow',
-									};
-								} else {
-									cell.row.additionalStyle = undefined;
-								}
 							}
 						}
 					}
@@ -519,6 +517,7 @@ function refreshGridItems() {
 		isSensitive: it.isSensitive,
 		localOnly: it.localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
+		updatedAt: it.updatedAt,
 	}));
 	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
 }
@@ -528,6 +527,16 @@ onMounted(async () => {
 });
 
 </script>
+
+<style lang="scss">
+.violationRow {
+	background-color: var(--infoWarnBg);
+}
+
+.changedRow {
+	background-color: var(--infoBg);
+}
+</style>
 
 <style lang="scss">
 .editedRow {

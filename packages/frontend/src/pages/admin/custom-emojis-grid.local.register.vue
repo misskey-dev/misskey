@@ -54,7 +54,7 @@
 	<div v-if="gridItems.length > 0" :class="$style.gridArea">
 		<MkGrid
 			:data="gridItems"
-			:columnSettings="columnSettings"
+			:settings="setupGrid()"
 			@event="onGridEvent"
 		/>
 	</div>
@@ -75,11 +75,7 @@
 import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import {
-	emptyStrToEmptyArray,
-	emptyStrToNull,
-	RequestLogItem,
-} from '@/pages/admin/custom-emojis-grid.impl.js';
+import { emptyStrToEmptyArray, emptyStrToNull, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -100,10 +96,10 @@ import {
 	GridKeyDownEvent,
 	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
-import { GridColumnSetting } from '@/components/grid/column.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
+import { GridSetting } from '@/components/grid/grid.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
@@ -125,18 +121,34 @@ type GridItem = {
 	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
 }
 
-const required = validators.required();
-const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
-const columnSettings: GridColumnSetting[] = [
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
-	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
-	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
-	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
-];
+function setupGrid(): GridSetting {
+	const required = validators.required();
+	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
+
+	return {
+		row: {
+			showNumber: true,
+			selectable: true,
+			minimumDefinitionCount: 100,
+			styleRules: [
+				{
+					condition: ({ cells }) => cells.some(it => !it.violation.valid),
+					applyStyle: { className: 'violationRow' },
+				},
+			],
+		},
+		cols: [
+			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
+			{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
+			{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
+			{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
+			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
+			{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
+		],
+	};
+}
 
 const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
@@ -284,7 +296,7 @@ async function onFileSelectClicked() {
 }
 
 async function onDriveSelectClicked() {
-	const driveFiles = await os.promiseDialog(chooseFileFromDrive(true));
+	const driveFiles = await chooseFileFromDrive(true);
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
@@ -381,6 +393,12 @@ onMounted(async () => {
 	await refreshUploadFolders();
 });
 </script>
+
+<style lang="scss">
+.violationRow {
+	background-color: var(--infoWarnBg);
+}
+</style>
 
 <style module lang="scss">
 .uploadBox {

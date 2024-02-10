@@ -1,8 +1,7 @@
 import { ValidateViolation } from '@/components/grid/cell-validators.js';
-import { AdditionalStyle, EventOptions, Size } from '@/components/grid/grid.js';
+import { Size } from '@/components/grid/grid.js';
 import { GridColumn } from '@/components/grid/column.js';
 import { GridRow } from '@/components/grid/row.js';
-import { MenuItem } from '@/types/menu.js';
 
 export type CellValue = string | boolean | number | undefined | null
 

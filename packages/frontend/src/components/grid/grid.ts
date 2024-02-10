@@ -4,7 +4,7 @@ import { GridColumnSetting } from '@/components/grid/column.js';
 import { GridRowSetting } from '@/components/grid/row.js';
 
 export type GridSetting = {
-	row: GridRowSetting;
+	row?: GridRowSetting;
 	cols: GridColumnSetting[];
 };
 
@@ -26,11 +26,6 @@ export type Size = {
 }
 
 export type SizeStyle = number | 'auto' | undefined;
-
-export type EventOptions = {
-	preventDefault?: boolean;
-	stopPropagation?: boolean;
-}
 
 export type AdditionalStyle = {
 	className?: string;

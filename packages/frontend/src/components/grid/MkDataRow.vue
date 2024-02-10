@@ -3,22 +3,23 @@
 	:class="[
 		$style.row,
 		row.ranged ? $style.ranged : {},
-		row.additionalStyle?.className ? row.additionalStyle.className : {},
+		...(row.additionalStyles ?? []).map(it => it.className ?? {}),
 	]"
 	:style="[
-		row.additionalStyle?.style ? row.additionalStyle.style : {},
+		...(row.additionalStyles ?? []).map(it => it.style ?? {}),
 	]"
 >
 	<MkNumberCell
-		v-if="gridSetting.showNumber"
+		v-if="setting.showNumber"
 		:content="(row.index + 1).toString()"
 		:row="row"
 	/>
 	<MkDataCell
 		v-for="cell in cells"
 		:key="cell.address.col"
+		:vIf="cell.column.setting.type !== 'hidden'"
 		:cell="cell"
-		:gridSetting="gridSetting"
+		:rowSetting="setting"
 		:bus="bus"
 		@operation:beginEdit="(sender) => emit('operation:beginEdit', sender)"
 		@operation:endEdit="(sender) => emit('operation:endEdit', sender)"
@@ -44,7 +45,7 @@ const emit = defineEmits<{
 defineProps<{
 	row: GridRow,
 	cells: GridCell[],
-	gridSetting: GridRowSetting,
+	setting: GridRowSetting,
 	bus: GridEventEmitter,
 }>();
 

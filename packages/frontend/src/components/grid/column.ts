@@ -1,10 +1,8 @@
 import { CellValidator } from '@/components/grid/cell-validators.js';
-import { AdditionalStyle, EventOptions, Size, SizeStyle } from '@/components/grid/grid.js';
+import { Size, SizeStyle } from '@/components/grid/grid.js';
 import { calcCellWidth } from '@/components/grid/grid-utils.js';
-import { CellValue, GridCell, GridCellSetting } from '@/components/grid/cell.js';
-import { GridRow } from '@/components/grid/row.js';
 
-export type ColumnType = 'text' | 'number' | 'date' | 'boolean' | 'image';
+export type ColumnType = 'text' | 'number' | 'date' | 'boolean' | 'image' | 'hidden';
 
 export type GridColumnSetting = {
 	bindTo: string;
@@ -14,8 +12,6 @@ export type GridColumnSetting = {
 	width: SizeStyle;
 	editable?: boolean;
 	validators?: CellValidator[];
-	valueConverter?: GridColumnValueConverter;
-	cellSetting?: GridCellSetting;
 };
 
 export type GridColumn = {
@@ -24,13 +20,6 @@ export type GridColumn = {
 	width: string;
 	contentSize: Size;
 }
-
-export type GridColumnValueConverter = (row: GridRow, col: GridColumn, value: CellValue) => CellValue;
-
-export type GridColumnEventArgs = {
-	col: GridColumn;
-	cells: GridCell[];
-} & EventOptions;
 
 export function createColumn(setting: GridColumnSetting, index: number): GridColumn {
 	return {
