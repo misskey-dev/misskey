@@ -279,6 +279,21 @@ export function actions<T extends {
 	});
 }
 
+// default が指定されていたら result は null になり得ないことを保証する overload function
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default: string;
+	minLength?: number;
+	maxLength?: number;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: string;
+}>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string;
@@ -291,7 +306,21 @@ export function inputText(props: {
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
-	canceled: false; result: string;
+	canceled: false; result: string | null;
+}>;
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default?: string | null;
+	minLength?: number;
+	maxLength?: number;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: string | null;
 }> {
 	return new Promise(resolve => {
 		popup(MkDialog, {
@@ -313,6 +342,18 @@ export function inputText(props: {
 	});
 }
 
+// default が指定されていたら result は null になり得ないことを保証する overload function
+export function inputNumber(props: {
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default: number;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: number;
+}>;
 export function inputNumber(props: {
 	title?: string;
 	text?: string;
@@ -322,7 +363,18 @@ export function inputNumber(props: {
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
-	canceled: false; result: number;
+	canceled: false; result: number | null;
+}>;
+export function inputNumber(props: {
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default?: number | null;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: number | null;
 }> {
 	return new Promise(resolve => {
 		popup(MkDialog, {
@@ -383,6 +435,20 @@ export function authenticateDialog(): Promise<{
 	});
 }
 
+// default が指定されていたら result は null になり得ないことを保証する overload function
+export function select<C = any>(props: {
+	title?: string;
+	text?: string;
+	default: string;
+	items: {
+		value: C;
+		text: string;
+	}[];
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: C;
+}>;
 export function select<C = any>(props: {
 	title?: string;
 	text?: string;
@@ -394,7 +460,20 @@ export function select<C = any>(props: {
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
-	canceled: false; result: C;
+	canceled: false; result: C | null;
+}>;
+export function select<C = any>(props: {
+	title?: string;
+	text?: string;
+	default?: string | null;
+	items: {
+		value: C;
+		text: string;
+	}[];
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: C | null;
 }> {
 	return new Promise(resolve => {
 		popup(MkDialog, {

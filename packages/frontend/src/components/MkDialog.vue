@@ -75,6 +75,8 @@ type Select = {
 	default: string | null;
 };
 
+type Result = string | number | true | null;
+
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
 	title?: string;
@@ -101,7 +103,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: { canceled: boolean; result: any }): void;
+	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -127,8 +129,11 @@ const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'character
 	return null;
 });
 
-function done(canceled: boolean, result?) {
-	emit('done', { canceled, result });
+// overload function を使いたいので lint エラーを無視する
+function done(canceled: true): void;
+function done(canceled: false, result: Result): void; // eslint-disable-line no-redeclare
+function done(canceled: boolean, result?: Result): void { // eslint-disable-line no-redeclare
+	emit('done', { canceled, result } as { canceled: true } | { canceled: false, result: Result });
 	modal.value?.close();
 }
 
