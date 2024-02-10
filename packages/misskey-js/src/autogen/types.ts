@@ -346,6 +346,15 @@ export type paths = {
      */
     post: operations['admin/emoji/update'];
   };
+  '/admin/emoji/v2/list': {
+    /**
+     * admin/emoji/v2/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
+     */
+    post: operations['admin/emoji/v2/list'];
+  };
   '/admin/federation/delete-all-files': {
     /**
      * admin/federation/delete-all-files
@@ -4436,6 +4445,24 @@ export type components = {
       localOnly: boolean;
       roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
     };
+    EmojiDetailedAdmin: {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      updatedAt: string | null;
+      name: string;
+      /** @description The local host is represented with `null`. */
+      host: string | null;
+      publicUrl: string;
+      uri: string | null;
+      type: string | null;
+      aliases: string[];
+      category: string | null;
+      license: string | null;
+      localOnly: boolean;
+      isSensitive: boolean;
+      roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+    };
     Flash: {
       /**
        * Format: id
@@ -6539,16 +6566,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': ({
-              /** Format: id */
-              id: string;
-              aliases: string[];
-              name: string;
-              category: string | null;
-              /** @description The local host is represented with `null`. */
-              host: string | null;
-              url: string;
-            })[];
+          'application/json': components['schemas']['EmojiDetailed'][];
         };
       };
       /** @description Client error */
@@ -6608,16 +6626,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': ({
-              /** Format: id */
-              id: string;
-              aliases: string[];
-              name: string;
-              category: string | null;
-              /** @description The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files. */
-              host: string | null;
-              url: string;
-            })[];
+          'application/json': components['schemas']['EmojiDetailed'][];
         };
       };
       /** @description Client error */
@@ -6891,6 +6900,101 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/emoji/v2/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
+   */
+  'admin/emoji/v2/list': {
+    requestBody: {
+      content: {
+        'application/json': {
+          query?: ({
+            updatedAtFrom?: string;
+            updatedAtTo?: string;
+            name?: string;
+            host?: string;
+            uri?: string;
+            publicUrl?: string;
+            type?: string;
+            aliases?: string;
+            category?: string;
+            license?: string;
+            isSensitive?: boolean;
+            localOnly?: boolean;
+            /**
+             * @default all
+             * @enum {string}
+             */
+            hostType?: 'local' | 'remote' | 'all';
+          }) | null;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** @default 10 */
+          limit?: number;
+          page?: number;
+          sort?: ({
+              /**
+               * @default id
+               * @enum {string}
+               */
+              key: 'id' | 'updatedAt' | 'name' | 'host' | 'uri' | 'publicUrl' | 'type' | 'aliases' | 'category' | 'license' | 'isSensitive' | 'localOnly';
+              /**
+               * @default DESC
+               * @enum {string}
+               */
+              order: 'ASC' | 'DESC';
+            })[];
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            emojis: components['schemas']['EmojiDetailedAdmin'][];
+            count: number;
+            allCount: number;
+            allPages: number;
+          };
+        };
       };
       /** @description Client error */
       400: {
