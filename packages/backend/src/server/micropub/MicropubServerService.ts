@@ -89,12 +89,12 @@ const misskeyGeneralSchema = {
 	videos: { type: 'array', items: { type: 'string', format: 'url' } },
 	category: { type: 'array', items: { type: 'string' } },
 	'misskey-visible-users': { type: 'array', items: { type: 'string' } },
-	'misskey-cw': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string' } },
+	'misskey-cw': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string', minLength: 1, maxLength: 100 } },
 	'misskey-reaction-acceptance': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string', enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'] } },
 	'misskey-channel-id': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string' } },
 	'misskey-renote-id': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string' } },
 	'misskey-local-only': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'boolean' } },
-	'misskey-visibility': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string' } },
+	'misskey-visibility': { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string', enum: ['public', 'home', 'followers', 'specified'] } },
 } as const;
 
 const IS_X_WWW_FORM_URLENCODED = Symbol('IS_X_WWW_FORM_URLENCODED');
@@ -233,7 +233,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 			'misskey-cw': note.cw ? [note.cw] : undefined,
 			'misskey-renote-id': note.renote?.id ? [note.renote.id] : undefined,
 			'misskey-channel-id': note.channel?.id ? [note.channel.id] : undefined,
-			'misskey-visibility': note.visibility ? [note.visibility] : undefined,
+			'misskey-visibility': note.visibility ? [<any>note.visibility] : undefined,
 			'misskey-local-only': note.localOnly ? [note.localOnly] : undefined,
 			'misskey-reaction-acceptance': note.reactionAcceptance ? [note.reactionAcceptance] : undefined,
 			'misskey-visible-users': note.visibleUsers,
