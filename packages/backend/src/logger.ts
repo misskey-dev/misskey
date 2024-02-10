@@ -43,7 +43,7 @@ export default class Logger {
 					timestampKey: 'time',
 					messageKey: 'message',
 					errorLikeObjectKeys: ['e', 'err', 'error'],
-					ignore: 'pid,hostname,cluster,important',
+					ignore: 'severity,pid,hostname,cluster,important',
 					messageFormat: '@{cluster} | {message}',
 				},
 			} : undefined,
