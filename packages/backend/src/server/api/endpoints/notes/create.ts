@@ -17,6 +17,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -110,6 +112,12 @@ export const meta = {
 			message: 'Cannot renote outside of channel.',
 			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
 			id: '33510210-8452-094c-6227-4a6c05d99f00',
+		},
+
+		containsProhibitedWords: {
+			message: 'Cannot post because it contains prohibited words.',
+			code: 'CONTAINS_PROHIBITED_WORDS',
+			id: 'aa6e01d3-a85c-669d-758a-76aab43af334',
 		},
 	},
 } as const;
@@ -260,7 +268,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				// Check blocking
 				if (renote.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exist({
+					const blockExist = await this.blockingsRepository.exists({
 						where: {
 							blockerId: renote.userId,
 							blockeeId: me.id,
@@ -308,7 +316,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				// Check blocking
 				if (reply.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exist({
+					const blockExist = await this.blockingsRepository.exists({
 						where: {
 							blockerId: reply.userId,
 							blockeeId: me.id,
@@ -340,31 +348,40 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// 投稿を作成
-			const note = await this.noteCreateService.create(me, {
-				createdAt: new Date(),
-				files: files,
-				poll: ps.poll ? {
-					choices: ps.poll.choices,
-					multiple: ps.poll.multiple ?? false,
-					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-				} : undefined,
-				text: ps.text ?? undefined,
-				reply,
-				renote,
-				cw: ps.cw,
-				localOnly: ps.localOnly,
-				reactionAcceptance: ps.reactionAcceptance,
-				visibility: ps.visibility,
-				visibleUsers,
-				channel,
-				apMentions: ps.noExtractMentions ? [] : undefined,
-				apHashtags: ps.noExtractHashtags ? [] : undefined,
-				apEmojis: ps.noExtractEmojis ? [] : undefined,
-			});
+			try {
+				const note = await this.noteCreateService.create(me, {
+					createdAt: new Date(),
+					files: files,
+					poll: ps.poll ? {
+						choices: ps.poll.choices,
+						multiple: ps.poll.multiple ?? false,
+						expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+					} : undefined,
+					text: ps.text ?? undefined,
+					reply,
+					renote,
+					cw: ps.cw,
+					localOnly: ps.localOnly,
+					reactionAcceptance: ps.reactionAcceptance,
+					visibility: ps.visibility,
+					visibleUsers,
+					channel,
+					apMentions: ps.noExtractMentions ? [] : undefined,
+					apHashtags: ps.noExtractHashtags ? [] : undefined,
+					apEmojis: ps.noExtractEmojis ? [] : undefined,
+				});
 
-			return {
-				createdNote: await this.noteEntityService.pack(note, me),
-			};
+				return {
+					createdNote: await this.noteEntityService.pack(note, me),
+				};
+			} catch (e) {
+				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
+				if (e instanceof NoteCreateService.ContainsProhibitedWordsError) {
+					throw new ApiError(meta.errors.containsProhibitedWords);
+				}
+
+				throw e;
+			}
 		});
 	}
 }

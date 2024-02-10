@@ -20,7 +20,7 @@ export async function getTheme(mode: 'light' | 'dark', getName = false): Promise
 		const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
 		if (base && base.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
 	}
-	
+
 	if (theme.codeHighlighter) {
 		let _res: ThemeRegistration = {};
 		if (theme.codeHighlighter.base === '_none_') {
@@ -55,7 +55,7 @@ export async function getHighlighter(): Promise<Highlighter> {
 
 export async function initHighlighter() {
 	const aiScriptGrammar = await import('aiscript-vscode/aiscript/syntaxes/aiscript.tmLanguage.json');
-	
+
 	await loadWasm(import('shiki/onig.wasm?init'));
 
 	// テーマの重複を消す
@@ -68,10 +68,7 @@ export async function initHighlighter() {
 		themes,
 		langs: [
 			import('shiki/langs/javascript.mjs'),
-			{
-				aliases: ['is', 'ais'],
-				...aiScriptGrammar.default,
-			} as unknown as LanguageRegistration,
+			aiScriptGrammar.default as unknown as LanguageRegistration,
 		],
 	});
 
