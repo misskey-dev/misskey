@@ -23,11 +23,23 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/preview')
     outputs:
+      is-allowed-user: ${{ steps.check-allowed-users.outputs.is-allowed-user }}
       pr-ref: ${{ steps.get-ref.outputs.pr-ref }}
       wait_time: ${{ steps.get-wait-time.outputs.wait_time }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Check allowed users
+        id: check-allowed-users
+        run: |
+          ALLOWED_USERS="20679825,22656849,7106976,67428053,63075513,56515516,46447427,3396686,4439005,40626578,7973572" # 実行を許可するユーザーIDをカンマ区切りで入力, ユーザーIDは https://api.github.com/users/hogehoge で確認できます
+          COMMENT_AUTHOR="${{ github.event.comment.user.id }}"
+          if [[ ",$ALLOWED_USERS," == *",$COMMENT_AUTHOR,"* ]]; then
+            echo "is-allowed-user=true" > $GITHUB_OUTPUT
+          else
+            echo "is-allowed-user=false" > $GITHUB_OUTPUT
+          fi
 
       - name: Get PR ref
         id: get-ref
@@ -47,6 +59,7 @@ jobs:
 
   deploy-test-environment-pr-comment:
     needs: get-pr-ref
+    if: needs.get-pr-ref.outputs.is-allowed-user == 'true'
     uses: joinmisskey/misskey-tga/.github/workflows/deploy-test-environment.yml@main
     with:
       repository: ${{ github.repository }}
