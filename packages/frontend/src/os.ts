@@ -8,7 +8,7 @@
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import type { ComponentProps } from 'vue-component-type-helpers';
+import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/scripts/form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -158,6 +158,9 @@ type ComponentEmit<T> = T extends new () => { $props: infer Props }
 				: EmitsExtractor<Props>
 			: never
 		: never;
+
+// props に ref を許可するようにする
+type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
 
 type EmitsExtractor<T> = {
 	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
@@ -416,7 +419,7 @@ export function success(): Promise<void> {
 			showing.value = false;
 		}, 1000);
 		popup(MkWaitingDialog, {
-			success: ref(true),
+			success: true,
 			showing: showing,
 		}, {
 			done: () => resolve(),
@@ -428,7 +431,7 @@ export function waiting(): Promise<void> {
 	return new Promise(resolve => {
 		const showing = ref(true);
 		popup(MkWaitingDialog, {
-			success: ref(false),
+			success: false,
 			showing: showing,
 		}, {
 			done: () => resolve(),

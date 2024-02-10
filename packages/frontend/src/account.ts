@@ -185,7 +185,7 @@ export async function refreshAccount() {
 export async function login(token: Account['token'], redirect?: string) {
 	const showing = ref(true);
 	popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
-		success: ref(false),
+		success: false,
 		showing: showing,
 	}, {}, 'closed');
 	if (_DEV_) console.log('logging as token ', token);
