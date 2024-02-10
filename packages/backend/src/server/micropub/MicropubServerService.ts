@@ -564,16 +564,14 @@ export class MicropubServerService implements OnApplicationShutdown {
 								media[fieldname] = [...media[fieldname], { path: destPath, filename: part.filename }];
 							}
 						} else {
-							for (const [key, value] of Object.entries(part.fields)) {
-								if (typeof value !== 'undefined' && 'value' in value && typeof value.value === 'string') {
-									if (key.endsWith('[]')) {
-										const strippedKey = key.slice(0, -2);
-										const previous = Array.isArray(params[strippedKey]) ? params[strippedKey] :
-											typeof params[strippedKey] !== 'undefined' ? [params[strippedKey]] : [];
-										params[strippedKey] = [...previous, value.value];
-									} else {
-										params[key] = value.value;
-									}
+							if (typeof part.value === 'string') {
+								if (part.fieldname.endsWith('[]')) {
+									const strippedKey = part.fieldname.slice(0, -2);
+									const previous = Array.isArray(params[strippedKey]) ? params[strippedKey] :
+										typeof params[strippedKey] !== 'undefined' ? [params[strippedKey]] : [];
+									params[strippedKey] = [...previous, part.value];
+								} else {
+									params[part.fieldname] = part.value;
 								}
 							}
 						}
