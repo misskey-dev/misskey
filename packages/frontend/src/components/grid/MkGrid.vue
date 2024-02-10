@@ -40,14 +40,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import {
-	DataSource,
-	defaultGridSetting,
-	GridEventEmitter,
-	GridSetting,
-	GridState,
-	Size,
-} from '@/components/grid/grid.js';
+import { DataSource, GridEventEmitter, GridState, Size } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import { cellValidation } from '@/components/grid/cell-validators.js';
@@ -56,8 +49,8 @@ import { equalCellAddress, getCellAddress, getCellElement } from '@/components/g
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
-import { ColumnSetting, createColumn, GridColumn } from '@/components/grid/column.js';
-import { createRow, GridRow, resetRow } from '@/components/grid/row.js';
+import { createColumn, GridColumn, GridColumnSetting } from '@/components/grid/column.js';
+import { createRow, defaultGridSetting, GridRow, GridRowSetting, resetRow } from '@/components/grid/row.js';
 
 type RowHolder = {
 	row: GridRow,
@@ -70,13 +63,13 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-	gridSetting?: GridSetting,
-	columnSettings: ColumnSetting[],
+	gridSetting?: GridRowSetting,
+	columnSettings: GridColumnSetting[],
 	data: DataSource[]
 }>();
 
 // non-reactive
-const gridSetting: Required<GridSetting> = {
+const gridSetting: Required<GridRowSetting> = {
 	...props.gridSetting,
 	...defaultGridSetting,
 };
@@ -856,8 +849,7 @@ function emitGridEvent(ev: GridEvent) {
 	emit(
 		'event',
 		ev,
-		// 直接書き換えられると状態が狂う可能性があるのでコピーを渡す
-		JSON.parse(JSON.stringify(currentState)),
+		currentState,
 	);
 }
 
@@ -980,7 +972,7 @@ function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
  * {@link top}から{@link bottom}までの行を範囲選択状態にする。
  */
 function expandRowRange(top: number, bottom: number) {
-	if (!gridSetting.rowSelectable) {
+	if (!gridSetting.selectable) {
 		return;
 	}
 
@@ -1026,9 +1018,9 @@ function refreshData() {
 	}
 
 	const _data: DataSource[] = data.value;
-	const _rows: GridRow[] = (_data.length > gridSetting.rowMinimumDefinitionCount)
+	const _rows: GridRow[] = (_data.length > gridSetting.minimumDefinitionCount)
 		? _data.map((_, index) => createRow(index, true))
-		: Array.from({ length: gridSetting.rowMinimumDefinitionCount }, (_, index) => createRow(index, index < _data.length));
+		: Array.from({ length: gridSetting.minimumDefinitionCount }, (_, index) => createRow(index, index < _data.length));
 	const _cols: GridColumn[] = columns.value;
 
 	// 行・列の定義から、元データの配列より値を取得してセルを作成する。
@@ -1036,11 +1028,11 @@ function refreshData() {
 	const _cells: RowHolder[] = _rows.map(row => {
 		const cells = row.using
 			? _cols.map(col => {
-				const cell = createCell(col, row, _data[row.index][col.setting.bindTo]);
+				const cell = createCell(col, row, _data[row.index][col.setting.bindTo], col.setting.cellSetting ?? {});
 				cell.violation = cellValidation(cell, cell.value);
 				return cell;
 			})
-			: _cols.map(col => createCell(col, row, undefined));
+			: _cols.map(col => createCell(col, row, undefined, col.setting.cellSetting ?? {}));
 
 		return { row, cells, origin: _data[row.index] };
 	});
@@ -1080,7 +1072,7 @@ function patchData(newItems: DataSource[]) {
 			newRows.push(newRow);
 			newCells.push({
 				row: newRow,
-				cells: _cols.map(col => createCell(col, newRow, newItems[rowIdx][col.setting.bindTo])),
+				cells: _cols.map(col => createCell(col, newRow, newItems[rowIdx][col.setting.bindTo], col.setting.cellSetting ?? {})),
 				origin: newItems[rowIdx],
 			});
 		}

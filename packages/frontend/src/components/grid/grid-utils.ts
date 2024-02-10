@@ -1,5 +1,6 @@
-import { GridSetting, SizeStyle } from '@/components/grid/grid.js';
+import { SizeStyle } from '@/components/grid/grid.js';
 import { CELL_ADDRESS_NONE, CellAddress } from '@/components/grid/cell.js';
+import { GridRowSetting } from '@/components/grid/row.js';
 
 export function isCellElement(elem: any): elem is HTMLTableCellElement {
 	return elem instanceof HTMLTableCellElement;
@@ -21,7 +22,7 @@ export function calcCellWidth(widthSetting: SizeStyle): string {
 	}
 }
 
-export function getCellAddress(elem: HTMLElement, gridSetting: GridSetting, parentNodeCount = 10): CellAddress {
+export function getCellAddress(elem: HTMLElement, gridSetting: GridRowSetting, parentNodeCount = 10): CellAddress {
 	let node = elem;
 	for (let i = 0; i < parentNodeCount; i++) {
 		if (isCellElement(node) && isRowElement(node.parentElement)) {
@@ -29,7 +30,7 @@ export function getCellAddress(elem: HTMLElement, gridSetting: GridSetting, pare
 				// ヘッダ行ぶんを除く
 				row: node.parentElement.rowIndex - 1,
 				// 数値列ぶんを除く
-				col: gridSetting.rowNumberVisible ? node.cellIndex - 1 : node.cellIndex,
+				col: gridSetting.showNumber ? node.cellIndex - 1 : node.cellIndex,
 			};
 		}
 

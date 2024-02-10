@@ -1,7 +1,7 @@
 import { Ref } from 'vue';
 import { GridCurrentState, GridKeyDownEvent } from '@/components/grid/grid-event.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { ColumnSetting } from '@/components/grid/column.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
 import { CellValue } from '@/components/grid/cell.js';
 import { DataSource } from '@/components/grid/grid.js';
 
@@ -67,7 +67,7 @@ class OptInGridUtils {
 		gridItems: Ref<DataSource[]>,
 		currentState: GridCurrentState,
 	) {
-		function parseValue(value: string, type: ColumnSetting['type']): CellValue {
+		function parseValue(value: string, type: GridColumnSetting['type']): CellValue {
 			switch (type) {
 				case 'number': {
 					return Number(value);

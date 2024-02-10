@@ -100,7 +100,7 @@ import {
 	GridKeyDownEvent,
 	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
-import { ColumnSetting } from '@/components/grid/column.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
@@ -127,7 +127,7 @@ type GridItem = {
 
 const required = validators.required();
 const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
-const columnSettings: ColumnSetting[] = [
+const columnSettings: GridColumnSetting[] = [
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },

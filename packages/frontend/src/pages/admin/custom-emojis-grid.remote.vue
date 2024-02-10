@@ -51,7 +51,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { ColumnSetting } from '@/components/grid/column.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
 import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
 	GridCellContextMenuEvent,
@@ -74,7 +74,7 @@ type GridItem = {
 	host: string;
 }
 
-const columnSettings: ColumnSetting[] = [
+const columnSettings: GridColumnSetting[] = [
 	{ bindTo: 'checked', icon: 'ti-download', type: 'boolean', editable: true, width: 34 },
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 'auto' },

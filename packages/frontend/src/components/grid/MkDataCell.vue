@@ -4,8 +4,8 @@
 	:class="$style.cell"
 	:style="{ maxWidth: cellWidth, minWidth: cellWidth }"
 	:tabindex="-1"
-	@dblclick="onCellDoubleClick"
 	@keydown="onCellKeyDown"
+	@dblclick="onCellDoubleClick"
 >
 	<div
 		:class="[
@@ -53,11 +53,13 @@
 
 <script setup lang="ts">
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
-import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
+import { GridEventEmitter, Size } from '@/components/grid/grid.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
+import { GridRowSetting } from '@/components/grid/row.js';
+import { selectFile } from '@/scripts/select-file.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -67,7 +69,7 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
 	cell: GridCell,
-	gridSetting: GridSetting,
+	gridSetting: GridRowSetting,
 	bus: GridEventEmitter,
 }>();
 
@@ -162,7 +164,7 @@ function unregisterOutsideMouseDown() {
 	removeEventListener('mousedown', onOutsideMouseDown);
 }
 
-function beginEditing() {
+async function beginEditing() {
 	if (editing.value || !cell.value.column.setting.editable) {
 		return;
 	}
@@ -174,7 +176,7 @@ function beginEditing() {
 			registerOutsideMouseDown();
 			emit('operation:beginEdit', cell.value);
 
-			nextTick(() => {
+			await nextTick(() => {
 				// inputの展開後にフォーカスを当てたい
 				if (inputAreaEl.value) {
 					(inputAreaEl.value.querySelector('*') as HTMLElement).focus();
@@ -185,6 +187,13 @@ function beginEditing() {
 		case 'boolean': {
 			// とくに特殊なUIは設けず、トグルするだけ
 			emitValueChange(!cell.value.value);
+			break;
+		}
+		case 'image': {
+			const file = await selectFile(rootEl.value);
+			if (file) {
+				emitValueChange(JSON.stringify(file));
+			}
 			break;
 		}
 	}
@@ -229,7 +238,7 @@ useTooltip(rootEl, (showing) => {
 	os.popup(defineAsyncComponent(() => import('@/components/grid/MkCellTooltip.vue')), {
 		showing,
 		content,
-		targetElement: rootEl.value,
+		targetElement: rootEl.value!,
 	}, {}, 'closed');
 });
 

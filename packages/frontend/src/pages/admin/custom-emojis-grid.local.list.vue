@@ -113,7 +113,7 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { ColumnSetting } from '@/components/grid/column.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
 import { validators } from '@/components/grid/cell-validators.js';
 import {
 	GridCellContextMenuEvent,
@@ -125,13 +125,13 @@ import {
 	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
-import { GridSetting } from '@/components/grid/grid.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
+import { GridRowSetting } from '@/components/grid/row.js';
 
 type GridItem = {
 	checked: boolean;
@@ -145,16 +145,17 @@ type GridItem = {
 	isSensitive: boolean;
 	localOnly: boolean;
 	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
+	fileId?: string;
 }
 
-const gridSetting: GridSetting = {
-	rowNumberVisible: true,
-	rowSelectable: false,
+const gridSetting: GridRowSetting = {
+	showNumber: true,
+	selectable: false,
 };
 
 const required = validators.required();
 const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
-const columnSettings: ColumnSetting[] = [
+const columnSettings: GridColumnSetting[] = [
 	{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
@@ -228,6 +229,7 @@ async function onUpdateButtonClicked() {
 					isSensitive: item.isSensitive,
 					localOnly: item.localOnly,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
+					fileId:	item.fileId,
 				})
 				.then(() => ({ item, success: true, err: undefined }))
 				.catch(err => ({ item, success: false, err })),
@@ -390,14 +392,32 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
-		gridItems.value[row.index][column.setting.bindTo] = newValue;
+		if (column.setting.bindTo === 'url') {
+			const file = JSON.parse(newValue as string) as Misskey.entities.DriveFile;
+			gridItems.value[row.index].url = file.url;
+			gridItems.value[row.index].fileId = file.id;
+		} else {
+			gridItems.value[row.index][column.setting.bindTo] = newValue;
+		}
+
+		const originItem = originGridItems.value[row.index][column.setting.bindTo];
+		if (originItem !== newValue) {
+			row.additionalStyle = {
+				className: 'editedRow',
+			};
+		} else {
+			row.additionalStyle = undefined;
+		}
 	}
 }
 
 async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
-	const { ctrlKey, code } = event.event;
+	const { ctrlKey, shiftKey, code } = event.event;
 
 	switch (true) {
+		case ctrlKey && shiftKey: {
+			break;
+		}
 		case ctrlKey: {
 			switch (code) {
 				case 'KeyC': {
@@ -406,6 +426,37 @@ async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentS
 				}
 				case 'KeyV': {
 					await optInGridUtils.pasteFromClipboard(gridItems, currentState);
+					break;
+				}
+			}
+			break;
+		}
+		case shiftKey: {
+			break;
+		}
+		default: {
+			switch (code) {
+				case 'Delete': {
+					if (currentState.rangedRows.length > 0) {
+						for (const row of currentState.rangedRows) {
+							gridItems.value[row.index].checked = true;
+						}
+					} else {
+						const ranges = currentState.rangedCells;
+						for (const cell of ranges) {
+							if (cell.column.setting.editable) {
+								gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+								const originItem = originGridItems.value[cell.row.index][cell.column.setting.bindTo];
+								if (originItem !== undefined) {
+									cell.row.additionalStyle = {
+										className: 'editedRow',
+									};
+								} else {
+									cell.row.additionalStyle = undefined;
+								}
+							}
+						}
+					}
 					break;
 				}
 			}
@@ -429,8 +480,6 @@ async function refreshCustomEmojis() {
 		updatedAtTo: emptyStrToUndefined(queryUpdatedAtTo.value),
 		hostType: 'local',
 	};
-
-	console.log(queryUpdatedAtTo.value);
 
 	if (JSON.stringify(query) !== previousQuery.value) {
 		currentPage.value = 1;
@@ -481,6 +530,10 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
+.editedRow {
+	background-color: var(--infoBg);
+}
+
 .row1 {
 	grid-row: 1 / 2;
 }

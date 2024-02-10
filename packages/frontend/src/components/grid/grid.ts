@@ -1,16 +1,11 @@
 import { EventEmitter } from 'eventemitter3';
 import { CellValue } from '@/components/grid/cell.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
+import { GridRowSetting } from '@/components/grid/row.js';
 
 export type GridSetting = {
-	rowNumberVisible?: boolean;
-	rowSelectable?: boolean;
-	rowMinimumDefinitionCount?: number;
-}
-
-export const defaultGridSetting: Required<GridSetting> = {
-	rowNumberVisible: true,
-	rowSelectable: true,
-	rowMinimumDefinitionCount: 100,
+	row: GridRowSetting;
+	cols: GridColumnSetting[];
 };
 
 export type DataSource = Record<string, CellValue>;
@@ -31,6 +26,16 @@ export type Size = {
 }
 
 export type SizeStyle = number | 'auto' | undefined;
+
+export type EventOptions = {
+	preventDefault?: boolean;
+	stopPropagation?: boolean;
+}
+
+export type AdditionalStyle = {
+	className?: string;
+	style?: Record<string, string | number>;
+}
 
 export class GridEventEmitter extends EventEmitter<{
 	'forceRefreshContentSize': void;

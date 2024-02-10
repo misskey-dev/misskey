@@ -27,7 +27,7 @@
 <script setup lang="ts">
 
 import { computed, ref, toRefs } from 'vue';
-import { ColumnSetting } from '@/components/grid/column.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
 import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
 	GridCellContextMenuEvent,
@@ -40,7 +40,7 @@ import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 
-const columnSettings: ColumnSetting[] = [
+const columnSettings: GridColumnSetting[] = [
 	{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },

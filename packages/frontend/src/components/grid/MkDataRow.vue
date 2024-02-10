@@ -1,7 +1,16 @@
 <template>
-<tr :class="[$style.row, [row.ranged ? $style.ranged : {}]]">
+<tr
+	:class="[
+		$style.row,
+		row.ranged ? $style.ranged : {},
+		row.additionalStyle?.className ? row.additionalStyle.className : {},
+	]"
+	:style="[
+		row.additionalStyle?.style ? row.additionalStyle.style : {},
+	]"
+>
 	<MkNumberCell
-		v-if="gridSetting.rowNumberVisible"
+		v-if="gridSetting.showNumber"
 		:content="(row.index + 1).toString()"
 		:row="row"
 	/>
@@ -20,11 +29,11 @@
 </template>
 
 <script setup lang="ts">
-import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
+import { GridEventEmitter, Size } from '@/components/grid/grid.js';
 import MkDataCell from '@/components/grid/MkDataCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
-import { GridRow } from '@/components/grid/row.js';
+import { GridRow, GridRowSetting } from '@/components/grid/row.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -35,7 +44,7 @@ const emit = defineEmits<{
 defineProps<{
 	row: GridRow,
 	cells: GridCell[],
-	gridSetting: GridSetting,
+	gridSetting: GridRowSetting,
 	bus: GridEventEmitter,
 }>();
 
