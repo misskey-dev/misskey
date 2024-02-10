@@ -115,9 +115,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
 
 const myGamesPagination = {
@@ -193,7 +194,9 @@ async function matchHeatbeat() {
 }
 
 async function matchUser() {
-	const user = await os.selectUser({ local: true });
+	pleaseLogin();
+
+	const user = await os.selectUser({ includeSelf: false, localOnly: true });
 	if (user == null) return;
 
 	matchingUser.value = user;
@@ -202,6 +205,8 @@ async function matchUser() {
 }
 
 function matchAny(ev: MouseEvent) {
+	pleaseLogin();
+
 	os.popupMenu([{
 		text: i18n.ts._reversi.allowIrregularRules,
 		action: () => {

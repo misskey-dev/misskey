@@ -1,0 +1,23 @@
+name: deploy-test-environment
+
+on:
+  #push:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository to deploy (optional)'
+        type: string
+        required: false
+      branch_or_hash:
+        description: 'Branch or Commit hash to deploy (optional)'
+        type: string
+        required: false
+
+jobs:
+  deploy-test-environment:
+    uses: joinmisskey/misskey-tga/.github/workflows/deploy-test-environment.yml@main
+    with:
+      repository: ${{ github.event.inputs.repository }}
+      branch_or_hash: ${{ github.event.inputs.branch_or_hash }}
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

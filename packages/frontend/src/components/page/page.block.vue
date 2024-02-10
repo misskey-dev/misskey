@@ -14,7 +14,6 @@ import XText from './page.text.vue';
 import XSection from './page.section.vue';
 import XImage from './page.image.vue';
 import XNote from './page.note.vue';
-import { Block } from './block.type.js';
 
 function getComponent(type: string) {
 	switch (type) {
@@ -27,7 +26,7 @@ function getComponent(type: string) {
 }
 
 defineProps<{
-	block: Block,
+	block: Misskey.entities.PageBlock,
 	h: number,
 	page: Misskey.entities.Page,
 }>();

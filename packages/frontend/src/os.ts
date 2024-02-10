@@ -9,6 +9,7 @@ import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
+import type { ComponentProps } from 'vue-component-type-helpers';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
@@ -127,9 +128,10 @@ export function promiseDialog<T extends Promise<any>>(
 
 let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
-	id: any;
-	component: any;
+	id: number;
+	component: Component;
 	props: Record<string, any>;
+	events: Record<string, any>;
 }[]>;
 
 const zIndexes = {
@@ -143,7 +145,18 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 	return zIndexes[priority];
 }
 
-export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
+// InstanceType<typeof Component>['$emit'] だとインターセクション型が返ってきて
+// 使い物にならないので、代わりに ['$props'] から色々省くことで emit の型を生成する
+// FIXME: 何故か *.ts ファイルからだと型がうまく取れない？ことがあるのをなんとかしたい
+type ComponentEmit<T> = T extends new () => { $props: infer Props }
+	? EmitsExtractor<Props>
+	: never;
+
+type EmitsExtractor<T> = {
+	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
+};
+
+export async function popup<T extends Component>(component: T, props: ComponentProps<T>, events: ComponentEmit<T> = {} as ComponentEmit<T>, disposeEvent?: keyof ComponentEmit<T>) {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -419,10 +432,11 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser(opts: { includeSelf?: boolean } = {}): Promise<Misskey.entities.UserLite> {
+export async function selectUser(opts: { includeSelf?: boolean; localOnly?: boolean; } = {}): Promise<Misskey.entities.UserDetailed> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
+			localOnly: opts.localOnly,
 		}, {
 			ok: user => {
 				resolve(user);
