@@ -6,8 +6,6 @@ import glob from 'fast-glob';
 import Pack from 'tar/lib/pack.js';
 import meta from '../package.json' assert { type: "json" };
 
-const cwd = fileURLToPath(new URL('..', import.meta.url));
-const mkdirPromise = mkdir(resolve(cwd, 'built', 'tarball'), { recursive: true });
 const patterns = [
 	'{assets,fluent-emojis,locales,misskey-assets}/**/*',
 	'packages/.config/example.yml',
@@ -29,14 +27,19 @@ const patterns = [
 	'pnpm-lock.yaml',
 	'pnpm-workspace.yaml',
 ];
-const pack = new Pack({ cwd, gzip: true });
 
-for await (const entry of glob.stream(patterns)) {
-	pack.add(entry);
+export default async function build() {
+	const cwd = fileURLToPath(new URL('..', import.meta.url));
+	const mkdirPromise = mkdir(resolve(cwd, 'built', 'tarball'), { recursive: true });
+	const pack = new Pack({ cwd, gzip: true });
+
+	for await (const entry of glob.stream(patterns)) {
+		pack.add(entry);
+	}
+
+	pack.end();
+
+	await mkdirPromise;
+
+	pack.pipe(createWriteStream(resolve(cwd, 'built', 'tarball', `misskey-${meta.version}.tar.gz`)));
 }
-
-pack.end();
-
-await mkdirPromise;
-
-pack.pipe(createWriteStream(resolve(cwd, 'built', 'tarball', `misskey-${meta.version}.tar.gz`)));
