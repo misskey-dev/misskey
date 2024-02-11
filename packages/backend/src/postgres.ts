@@ -7,7 +7,9 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
-import { DataSource, Logger } from 'typeorm';
+import { DataSource, Logger, QueryRunner } from 'typeorm';
+import { QueryResultCache } from 'typeorm/cache/QueryResultCache.js';
+import { QueryResultCacheOptions } from 'typeorm/cache/QueryResultCacheOptions.js';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
@@ -82,8 +84,8 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 
 import { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { envOption } from './env.js';
 import MisskeyLogger from '@/logger.js';
+import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -203,6 +205,99 @@ export const entities = [
 ];
 
 const log = process.env.NODE_ENV !== 'production';
+const timeoutFinalizationRegistry = new FinalizationRegistry((reference: { name: string; timeout: NodeJS.Timeout }) => {
+	dbLogger.info(`Finalizing timeout: ${reference.name}`);
+	clearInterval(reference.timeout);
+});
+
+class InMemoryQueryResultCache implements QueryResultCache {
+	private cache: Map<string, QueryResultCacheOptions>;
+
+	constructor(
+		private dataSource: DataSource,
+	) {
+		this.cache = new Map();
+
+		const gcIntervalHandle = setInterval(() => {
+			this.gc();
+		}, 1000 * 60 * 3);
+
+		timeoutFinalizationRegistry.register(this, { name: typeof this, timeout: gcIntervalHandle });
+	}
+
+	connect(): Promise<void> {
+		return Promise.resolve(undefined);
+	}
+
+	disconnect(): Promise<void> {
+		return Promise.resolve(undefined);
+	}
+
+	synchronize(queryRunner: QueryRunner): Promise<void> {
+		return Promise.resolve(undefined);
+	}
+
+	async clear(queryRunner?: QueryRunner): Promise<void> {
+		return new Promise<void>((ok) => {
+			this.cache.clear();
+			ok();
+		});
+	}
+
+	storeInCache(
+		options: QueryResultCacheOptions,
+		savedCache: QueryResultCacheOptions | undefined,
+		queryRunner?: QueryRunner,
+	): Promise<void> {
+		return new Promise<void>((ok, fail) => {
+			if (options.identifier) {
+				this.cache.set(options.identifier, options);
+				ok();
+			} else if (options.query) {
+				this.cache.set(options.query, options);
+				ok();
+			}
+			fail(new Error('No identifier or query'));
+		});
+	}
+
+	getFromCache(
+		options: QueryResultCacheOptions,
+		queryRunner?: QueryRunner,
+	): Promise<QueryResultCacheOptions | undefined> {
+		return new Promise<QueryResultCacheOptions | undefined>((ok) => {
+			if (options.identifier) {
+				ok(this.cache.get(options.identifier));
+			} else if (options.query) {
+				ok(this.cache.get(options.query));
+			} else {
+				ok(undefined);
+			}
+		});
+	}
+
+	isExpired(savedCache: QueryResultCacheOptions): boolean {
+		return (savedCache.time ?? 0) + savedCache.duration < Date.now();
+	}
+
+	remove(identifiers: string[], queryRunner?: QueryRunner): Promise<void> {
+		return new Promise<void>((ok) => {
+			for (const identifier of identifiers) {
+				this.cache.delete(identifier);
+			}
+			ok();
+		});
+	}
+
+	gc(): void {
+		const now = Date.now();
+		for (const [key, { time, duration }] of this.cache.entries()) {
+			if ((time ?? 0) + duration < now) {
+				this.cache.delete(key);
+			}
+		}
+	}
+}
 
 export function createPostgresDataSource(config: Config) {
 	return new DataSource({
@@ -236,7 +331,11 @@ export function createPostgresDataSource(config: Config) {
 		} : {}),
 		synchronize: process.env.NODE_ENV === 'test',
 		dropSchema: process.env.NODE_ENV === 'test',
-		cache: !config.db.disableCache && process.env.NODE_ENV !== 'test',
+		cache: !config.db.disableCache && process.env.NODE_ENV !== 'test' ? {
+			provider(dataSource) {
+				return new InMemoryQueryResultCache(dataSource);
+			},
+		} : false,
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
 		maxQueryExecutionTime: 10000, // 10s
