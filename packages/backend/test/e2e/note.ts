@@ -665,7 +665,7 @@ describe('Note', () => {
 			assert.strictEqual(note2.body.error.code, 'CONTAINS_PROHIBITED_WORDS');
 		});
 
-		test('禁止ワードを含んでいてもリモートノートはエラーにならない', async () => {
+		test('禁止ワードを含む投稿はエラーになる (リモート)', async () => {
 			const prohibited = await api('admin/update-meta', {
 				prohibitedWords: [
 					'test',
@@ -676,11 +676,12 @@ describe('Note', () => {
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note1 = await api('/notes/create', {
+			const note3 = await api('/notes/create', {
 				text: 'hogetesthuge',
 			}, tom);
 
-			assert.strictEqual(note1.status, 200);
+			assert.strictEqual(note3.status, 400);
+			assert.strictEqual(note3.body.error.code, 'CONTAINS_PROHIBITED_WORDS');
 		});
 	});
 
