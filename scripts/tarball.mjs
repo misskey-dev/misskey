@@ -21,7 +21,6 @@ export default async function build() {
 	const patterns = await walk({ path: cwd, ignoreFiles: ['.gitignore'] });
 
 	for await (const entry of glob.stream(patterns, { cwd, ignore, dot: true })) {
-		console.log(entry);
 		pack.add(entry);
 	}
 
