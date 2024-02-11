@@ -62,6 +62,7 @@
 		"cypress": "13.6.3",
 		"eslint": "8.56.0",
 		"fast-glob": "3.3.2",
+		"ignore-walk": "6.0.4",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.3",
 		"tar": "6.2.0"

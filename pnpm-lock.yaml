@@ -53,6 +53,9 @@ importers:
       fast-glob:
         specifier: 3.3.2
         version: 3.3.2
+      ignore-walk:
+        specifier: 6.0.4
+        version: 6.0.4
       ncp:
         specifier: 2.0.0
         version: 2.0.0
@@ -13492,6 +13495,13 @@ packages:
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
+    dev: true
+
+  /ignore-walk@6.0.4:
+    resolution: {integrity: sha512-t7sv42WkwFkyKbivUCglsQW5YWMskWtbEf4MNKX5u/CCWHKSPzN4FtBQGsQZgCLbxOzpVlcbWVK5KB3auIOjSw==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+    dependencies:
+      minimatch: 9.0.3
     dev: true
 
   /ignore@5.2.4:
