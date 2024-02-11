@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.2.0-beta.10",
+	"version": "2024.2.0-beta.11",
 	"description": "Misskey SDK for JavaScript",
 	"types": "./built/dts/index.d.ts",
 	"exports": {
@@ -39,7 +39,7 @@
 		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@swc/jest": "0.2.31",
 		"@types/jest": "29.5.11",
-		"@types/node": "20.11.10",
+		"@types/node": "20.11.17",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
 		"eslint": "8.56.0",
