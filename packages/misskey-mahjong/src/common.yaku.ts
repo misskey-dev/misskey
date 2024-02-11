@@ -15,8 +15,14 @@ export const NORMAL_YAKU_NAMES = [
 	'tanyao',
 	'pinfu',
 	'iipeko',
-	'field-wind',
-	'seat-wind',
+	'field-wind-e',
+	'field-wind-s',
+	'field-wind-w',
+	'field-wind-n',
+	'seat-wind-e',
+	'seat-wind-s',
+	'seat-wind-w',
+	'seat-wind-n',
 	'white',
 	'green',
 	'red',
@@ -71,8 +77,6 @@ export type EnvForCalcYaku = {
 	 */
 	handTiles: TileType[];
 
-	tenpaiTiles: TileType[];
-
 	/**
 	 * 河
 	 */
@@ -121,8 +125,10 @@ export type EnvForCalcYaku = {
 
 type YakuDefiniyion = {
 	name: YakuName;
-	fan: number;
+	upper?: YakuName;
+	fan?: number;
 	isYakuman?: boolean;
+	isDoubleYakuman?: boolean;
 	kuisagari?: boolean;
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => boolean;
 };
@@ -131,7 +137,7 @@ function countTiles(tiles: TileType[], target: TileType): number {
 	return tiles.filter(t => t === target).length;
 }
 
-export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
+export const NORAML_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	name: 'tsumo',
 	fan: 1,
 	isYakuman: false,
@@ -141,7 +147,7 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
 
-		return state.isTsumo;
+		return state.tsumoTile != null;
 	},
 }, {
 	name: 'riichi',
@@ -579,9 +585,10 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 
 		return false;
 	},
-}, {
+}];
+
+export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
 	name: 'daisangen',
-	fan: 13,
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
@@ -602,7 +609,6 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	},
 }, {
 	name: 'shosushi',
-	fan: 13,
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
@@ -629,7 +635,6 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	},
 }, {
 	name: 'daisushi',
-	fan: 13,
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
@@ -650,7 +655,6 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	},
 }, {
 	name: 'tsuiso',
-	fan: 13,
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
@@ -673,7 +677,6 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	},
 }, {
 	name: 'ryuiso',
-	fan: 13,
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
@@ -688,8 +691,75 @@ export const YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		return true;
 	},
 }, {
+	name: 'churen-9',
+	isYakuman: true,
+	isDoubleYakuman: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		if (fourMentsuOneJyantou == null) return false;
+
+		// 面前じゃないとダメ
+		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+
+		const agariTile = state.tsumoTile ?? state.ronTile;
+		const tempaiTiles = [...state.handTiles];
+		tempaiTiles.splice(state.handTiles.indexOf(agariTile), 1);
+
+		if (isManzu(agariTile)) {
+			if ((countTiles(tempaiTiles, 'm1') === 3) && (countTiles(tempaiTiles, 'm9') === 3)) {
+				if (tempaiTiles.includes('m2') && tempaiTiles.includes('m3') && tempaiTiles.includes('m4') && tempaiTiles.includes('m5') && tempaiTiles.includes('m6') && tempaiTiles.includes('m7') && tempaiTiles.includes('m8')) {
+					return true;
+				}
+			}
+		} else if (isPinzu(agariTile)) {
+			if ((countTiles(tempaiTiles, 'p1') === 3) && (countTiles(tempaiTiles, 'p9') === 3)) {
+				if (tempaiTiles.includes('p2') && tempaiTiles.includes('p3') && tempaiTiles.includes('p4') && tempaiTiles.includes('p5') && tempaiTiles.includes('p6') && tempaiTiles.includes('p7') && tempaiTiles.includes('p8')) {
+					return true;
+				}
+			}
+		} else if (isSouzu(agariTile)) {
+			if ((countTiles(tempaiTiles, 's1') === 3) && (countTiles(tempaiTiles, 's9') === 3)) {
+				if (tempaiTiles.includes('s2') && tempaiTiles.includes('s3') && tempaiTiles.includes('s4') && tempaiTiles.includes('s5') && tempaiTiles.includes('s6') && tempaiTiles.includes('s7') && tempaiTiles.includes('s8')) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	},
+}, {
+	name: 'churen',
+	upper: 'churen-9',
+	isYakuman: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		if (fourMentsuOneJyantou == null) return false;
+
+		// 面前じゃないとダメ
+		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+
+		if (isManzu(state.handTiles[0])) {
+			if ((countTiles(state.handTiles, 'm1') === 3) && (countTiles(state.handTiles, 'm9') === 3)) {
+				if (state.handTiles.includes('m2') && state.handTiles.includes('m3') && state.handTiles.includes('m4') && state.handTiles.includes('m5') && state.handTiles.includes('m6') && state.handTiles.includes('m7') && state.handTiles.includes('m8')) {
+					return true;
+				}
+			}
+		} else if (isPinzu(state.handTiles[0])) {
+			if ((countTiles(state.handTiles, 'p1') === 3) && (countTiles(state.handTiles, 'p9') === 3)) {
+				if (state.handTiles.includes('p2') && state.handTiles.includes('p3') && state.handTiles.includes('p4') && state.handTiles.includes('p5') && state.handTiles.includes('p6') && state.handTiles.includes('p7') && state.handTiles.includes('p8')) {
+					return true;
+				}
+			}
+		} else if (isSouzu(state.handTiles[0])) {
+			if ((countTiles(state.handTiles, 's1') === 3) && (countTiles(state.handTiles, 's9') === 3)) {
+				if (state.handTiles.includes('s2') && state.handTiles.includes('s3') && state.handTiles.includes('s4') && state.handTiles.includes('s5') && state.handTiles.includes('s6') && state.handTiles.includes('s7') && state.handTiles.includes('s8')) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	},
+}, {
 	name: 'kokushi',
-	fan: 13,
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		return KOKUSHI_TILES.every(t => state.handTiles.includes(t));
@@ -700,8 +770,24 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	const oneHeadFourMentsuPatterns: (FourMentsuOneJyantou | null)[] = analyzeFourMentsuOneJyantou(state.handTiles);
 	if (oneHeadFourMentsuPatterns.length === 0) oneHeadFourMentsuPatterns.push(null);
 
+	const yakumanPatterns = oneHeadFourMentsuPatterns.map(fourMentsuOneJyantou => {
+		const matchedYakus: YakuDefiniyion[] = [];
+		for (const yakuDef of YAKUMAN_DEFINITIONS) {
+			if (yakuDef.upper && matchedYakus.some(yaku => yaku.name === yakuDef.upper)) continue;
+			const matched = yakuDef.calc(state, fourMentsuOneJyantou);
+			if (matched) {
+				matchedYakus.push(yakuDef);
+			}
+		}
+		return matchedYakus;
+	}).filter(yakus => yakus.length > 0);
+
+	if (yakumanPatterns.length > 0) {
+		return yakumanPatterns[0].map(yaku => yaku.name);
+	}
+
 	const yakuPatterns = oneHeadFourMentsuPatterns.map(fourMentsuOneJyantou => {
-		return YAKU_DEFINITIONS.map(yakuDef => {
+		return NORAML_YAKU_DEFINITIONS.map(yakuDef => {
 			const result = yakuDef.calc(state, fourMentsuOneJyantou);
 			return result ? yakuDef : null;
 		}).filter(yaku => yaku != null) as YakuDefiniyion[];
@@ -715,9 +801,9 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 		let fan = 0;
 		for (const yaku of yakus) {
 			if (yaku.kuisagari && !isMenzen) {
-				fan += yaku.fan - 1;
+				fan += yaku.fan! - 1;
 			} else {
-				fan += yaku.fan;
+				fan += yaku.fan!;
 			}
 		}
 		if (fan > maxFan) {
