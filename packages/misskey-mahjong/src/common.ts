@@ -237,297 +237,68 @@ export const PREV_TILE_FOR_SHUNTSU: Record<TileType, TileType | null> = {
 	chun: null,
 };
 
-const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
-
-type EnvForCalcYaku = {
-	house: House;
-
-	/**
-	 * 和了る人の手牌(副露牌および和了る際のツモ牌・ロン牌は含まない)
-	 */
-	handTiles: TileType[];
-
-	/**
-	 * 河
-	 */
-	hoTiles: TileType[];
-
-	/**
-	 * 副露
-	 */
-	huros: Huro[];
-
-	/**
-	 * ツモ牌
-	 */
-	tsumoTile: TileType | null;
-
-	/**
-	 * ロン牌
-	 */
-	ronTile: TileType | null;
-
-	/**
-	 * ドラ表示牌
-	 */
-	doraTiles: TileType[];
-
-	/**
-	 * 赤ドラ表示牌
-	 */
-	redDoraTiles: TileType[];
-
-	/**
-	 * 場風
-	 */
-	fieldWind: House;
-
-	/**
-	 * 自風
-	 */
-	seatWind: House;
-
-	/**
-	 * リーチしたかどうか
-	 */
-	riichi: boolean;
-
-	/**
-	 * 一巡目以内かどうか
-	 */
-	ippatsu: boolean;
+export const TILE_NUMBER_MAP: Record<TileType, number | null> = {
+	m1: 1,
+	m2: 2,
+	m3: 3,
+	m4: 4,
+	m5: 5,
+	m6: 6,
+	m7: 7,
+	m8: 8,
+	m9: 9,
+	p1: 1,
+	p2: 2,
+	p3: 3,
+	p4: 4,
+	p5: 5,
+	p6: 6,
+	p7: 7,
+	p8: 8,
+	p9: 9,
+	s1: 1,
+	s2: 2,
+	s3: 3,
+	s4: 4,
+	s5: 5,
+	s6: 6,
+	s7: 7,
+	s8: 8,
+	s9: 9,
+	e: null,
+	s: null,
+	w: null,
+	n: null,
+	haku: null,
+	hatsu: null,
+	chun: null,
 };
 
-export const YAKU_DEFINITIONS = [{
-	name: 'riichi',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.riichi;
-	},
-}, {
-	name: 'tsumo',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.tsumoTile != null;
-	},
-}, {
-	name: 'ippatsu',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.ippatsu;
-	},
-}, {
-	name: 'red',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return (
-			(state.handTiles.filter(t => t === 'chun').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'chun' :
-				huro.type === 'ankan' ? huro.tile === 'chun' :
-				huro.type === 'minkan' ? huro.tile === 'chun' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'white',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return (
-			(state.handTiles.filter(t => t === 'haku').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'haku' :
-				huro.type === 'ankan' ? huro.tile === 'haku' :
-				huro.type === 'minkan' ? huro.tile === 'haku' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'green',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return (
-			(state.handTiles.filter(t => t === 'hatsu').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'hatsu' :
-				huro.type === 'ankan' ? huro.tile === 'hatsu' :
-				huro.type === 'minkan' ? huro.tile === 'hatsu' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'field-wind-e',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.fieldWind === 'e' && (
-			(state.handTiles.filter(t => t === 'e').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'e' :
-				huro.type === 'ankan' ? huro.tile === 'e' :
-				huro.type === 'minkan' ? huro.tile === 'e' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'field-wind-s',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.fieldWind === 's' && (
-			(state.handTiles.filter(t => t === 's').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 's' :
-				huro.type === 'ankan' ? huro.tile === 's' :
-				huro.type === 'minkan' ? huro.tile === 's' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-e',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.house === 'e' && (
-			(state.handTiles.filter(t => t === 'e').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'e' :
-				huro.type === 'ankan' ? huro.tile === 'e' :
-				huro.type === 'minkan' ? huro.tile === 'e' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-s',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.house === 's' && (
-			(state.handTiles.filter(t => t === 's').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 's' :
-				huro.type === 'ankan' ? huro.tile === 's' :
-				huro.type === 'minkan' ? huro.tile === 's' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-w',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.house === 'w' && (
-			(state.handTiles.filter(t => t === 'w').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'w' :
-				huro.type === 'ankan' ? huro.tile === 'w' :
-				huro.type === 'minkan' ? huro.tile === 'w' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-n',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return state.house === 'n' && (
-			(state.handTiles.filter(t => t === 'n').length >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'n' :
-				huro.type === 'ankan' ? huro.tile === 'n' :
-				huro.type === 'minkan' ? huro.tile === 'n' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'tanyao',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		const yaochuTiles: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
-		return (
-			(!state.handTiles.some(t => yaochuTiles.includes(t))) &&
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? yaochuTiles.includes(huro.tile) :
-				huro.type === 'ankan' ? yaochuTiles.includes(huro.tile) :
-				huro.type === 'minkan' ? yaochuTiles.includes(huro.tile) :
-				huro.type === 'cii' ? huro.tiles.some(t2 => yaochuTiles.includes(t2)) :
-				false).length === 0)
-		);
-	},
-}, {
-	name: 'pinfu',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
-		// 三元牌はダメ
-		if (state.handTiles.some(t => ['haku', 'hatsu', 'chun'].includes(t))) return false;
+export const MANZU_TILES = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9'] as const satisfies TileType[];
+export const PINZU_TILES = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'] as const satisfies TileType[];
+export const SOUZU_TILES = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9'] as const satisfies TileType[];
+export const CHAR_TILES = ['e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
+export const YAOCHU_TILES = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
+const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 
-		// TODO: 両面待ちかどうか
+export function isManzu<T extends TileType>(tile: T): tile is typeof MANZU_TILES[number] {
+	return MANZU_TILES.includes(tile);
+}
 
-		const horaSets = analyze1head3mentsuSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
-		return horaSets.some(horaSet => {
-			// 風牌判定(役牌でなければOK)
-			if (horaSet.head === state.seatWind) return false;
-			if (horaSet.head === state.fieldWind) return false;
+export function isPinzu<T extends TileType>(tile: T): tile is typeof PINZU_TILES[number] {
+	return PINZU_TILES.includes(tile);
+}
 
-			// 全て順子か？
-			if (horaSet.mentsus.some((mentsu) => mentsu[0] === mentsu[1])) return false;
-		});
-	},
-}, {
-	name: 'iipeko',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+export function isSouzu<T extends TileType>(tile: T): tile is typeof SOUZU_TILES[number] {
+	return SOUZU_TILES.includes(tile);
+}
 
-		const horaSets = analyze1head3mentsuSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
-		return horaSets.some(horaSet => {
-			// 同じ順子が2つあるか？
-			return horaSet.mentsus.some((mentsu) =>
-				horaSet.mentsus.filter((mentsu2) =>
-					mentsu2[0] === mentsu[0] && mentsu2[1] === mentsu[1] && mentsu2[2] === mentsu[2]).length >= 2);
-		});
-	},
-}, {
-	name: 'toitoi',
-	fan: 2,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		if (state.huros.length > 0) {
-			if (state.huros.some(huro => huro.type === 'cii')) return false;
-		}
-		const horaSets = analyze1head3mentsuSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
-		return horaSets.some(horaSet => {
-			// 全て刻子か？
-			if (!horaSet.mentsus.every((mentsu) => mentsu[0] === mentsu[1])) return false;
-		});
-	},
-}, {
-	name: 'chitoitsu',
-	fan: 2,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku) => {
-		return isChitoitsu(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
-	},
-}, {
-	name: 'kokushi',
-	fan: 13,
-	isYakuman: true,
-	calc: (state: EnvForCalcYaku) => {
-		return isKokushi(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
-	},
-}];
+export function isSameNumberTile(a: TileType, b: TileType): boolean {
+	const aNumber = TILE_NUMBER_MAP[a];
+	const bNumber = TILE_NUMBER_MAP[b];
+	if (aNumber == null || bNumber == null) return false;
+	return aNumber === bNumber;
+}
 
 export function fanToPoint(fan: number, isParent: boolean): number {
 	let point;
@@ -658,10 +429,18 @@ export function prevHouse(house: House): House {
 	}
 }
 
-type HoraSet = {
+export type FourMentsuOneJyantou = {
 	head: TileType;
 	mentsus: [TileType, TileType, TileType][];
 };
+
+export function isShuntu(tiles: [TileType, TileType, TileType]): boolean {
+	return tiles[0] !== tiles[1];
+}
+
+export function isKotsu(tiles: [TileType, TileType, TileType]): boolean {
+	return tiles[0] === tiles[1];
+}
 
 export const SHUNTU_PATTERNS: [TileType, TileType, TileType][] = [
 	['m1', 'm2', 'm3'],
@@ -720,13 +499,8 @@ function extractShuntsus(tiles: TileType[]): [TileType, TileType, TileType][] {
 	return shuntsus;
 }
 
-/**
- * アガリ形パターン一覧を取得
- * @param handTiles ポン、チー、カンした牌を含まない手牌
- * @returns
- */
-function analyze1head3mentsuSets(handTiles: TileType[]): HoraSet[] {
-	const horaSets: HoraSet[] = [];
+export function analyzeFourMentsuOneJyantou(handTiles: TileType[], all = true): FourMentsuOneJyantou[] {
+	const horaSets: FourMentsuOneJyantou[] = [];
 
 	const headSet: TileType[] = [];
 	const countMap = new Map<TileType, number>();
@@ -817,53 +591,13 @@ function analyze1head3mentsuSets(handTiles: TileType[]): HoraSet[] {
 					head,
 					mentsus: [...kotsuPattern.map(t => [t, t, t] as [TileType, TileType, TileType]), ...shuntsus],
 				});
+
+				if (!all) return horaSets;
 			}
 		}
 	}
 
 	return horaSets;
-}
-
-export function canHora(handTiles: TileType[]): boolean {
-	if (isKokushi(handTiles)) return true;
-	if (isChitoitsu(handTiles)) return true;
-
-	const horaSets = analyze1head3mentsuSets(handTiles);
-	return horaSets.length > 0;
-}
-
-/**
- * アガリ牌リストを取得
- * @param handTiles ポン、チー、カンした牌を含まない手牌
- */
-export function getHoraTiles(handTiles: TileType[]): TileType[] {
-	return TILE_TYPES.filter(tile => {
-		const tempHandTiles = [...handTiles, tile];
-		const horaSets = analyze1head3mentsuSets(tempHandTiles);
-		return horaSets.length > 0;
-	});
-}
-
-function isKokushi(handTiles: TileType[]): boolean {
-	return KOKUSHI_TILES.every(t => handTiles.includes(t));
-}
-
-function isChitoitsu(handTiles: TileType[]): boolean {
-	const countMap = new Map<TileType, number>();
-	for (const tile of handTiles) {
-		const count = (countMap.get(tile) ?? 0) + 1;
-		countMap.set(tile, count);
-	}
-	return Array.from(countMap.values()).every(c => c === 2);
-}
-
-export function getTilesForRiichi(handTiles: TileType[]): TileType[] {
-	return handTiles.filter(tile => {
-		const tempHandTiles = [...handTiles];
-		tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
-		const horaTiles = getHoraTiles(tempHandTiles);
-		return horaTiles.length > 0;
-	});
 }
 
 export function nextTileForDora(tile: TileType): TileType {
@@ -892,4 +626,41 @@ export function getAvailableCiiPatterns(handTiles: TileType[], targetTile: TileT
 		}
 	}
 	return patterns;
+}
+
+function isKokushiPattern(handTiles: TileType[]): boolean {
+	return KOKUSHI_TILES.every(t => handTiles.includes(t));
+}
+
+function isChitoitsuPattern(handTiles: TileType[]): boolean {
+	if (handTiles.length !== 14) return false;
+	const countMap = new Map<TileType, number>();
+	for (const tile of handTiles) {
+		const count = (countMap.get(tile) ?? 0) + 1;
+		countMap.set(tile, count);
+	}
+	return Array.from(countMap.values()).every(c => c === 2);
+}
+
+export function isAgarikei(handTiles: TileType[]): boolean {
+	if (isKokushiPattern(handTiles)) return true;
+	if (isChitoitsuPattern(handTiles)) return true;
+
+	const agarikeis = analyzeFourMentsuOneJyantou(handTiles, false);
+	return agarikeis.length > 0;
+}
+
+export function isTenpai(handTiles: TileType[]): boolean {
+	return TILE_TYPES.some(tile => {
+		const tempHandTiles = [...handTiles, tile];
+		return isAgarikei(tempHandTiles);
+	});
+}
+
+export function getTilesForRiichi(handTiles: TileType[]): TileType[] {
+	return handTiles.filter(tile => {
+		const tempHandTiles = [...handTiles];
+		tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
+		return isTenpai(tempHandTiles);
+	});
 }

@@ -123,6 +123,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
+		<div :class="$style.playersContainer">
+			<div :class="[$style.playerOfToimen, $style.player]">
+				<template v-if="users[Mmj.prevHouse(Mmj.prevHouse(mj.myHouse))] != null">
+					<MkAvatar :user="users[Mmj.prevHouse(Mmj.prevHouse(mj.myHouse))]" style="width: 30px; height: 30px;"/>
+				</template>
+				<template v-else>
+					CPU
+				</template>
+			</div>
+			<div :class="[$style.playerOfKamitya, $style.player]">
+				<template v-if="users[Mmj.prevHouse(mj.myHouse)] != null">
+					<MkAvatar :user="users[Mmj.prevHouse(mj.myHouse)]" style="width: 30px; height: 30px;"/>
+				</template>
+				<template v-else>
+					CPU
+				</template>
+			</div>
+			<div :class="[$style.playerOfSimotya, $style.player]">
+				<template v-if="users[Mmj.nextHouse(mj.myHouse)] != null">
+					<MkAvatar :user="users[Mmj.nextHouse(mj.myHouse)]" style="width: 30px; height: 30px;"/>
+				</template>
+				<template v-else>
+					CPU
+				</template>
+			</div>
+		</div>
+
 		<XHandTiles :class="$style.handTilesOfMe" :tiles="mj.myHandTiles" :doras="mj.doras" :selectableTiles="selectableTiles" :separateLast="isMyTurn && iTsumoed" @choose="chooseTile"/>
 
 		<div :class="$style.serifContainer">
@@ -292,8 +319,15 @@ const isMyTurn = computed(() => {
 });
 
 const canHora = computed(() => {
-	return Mmj.canHora(mj.value.myHandTileTypes).length;
+	return Mmj.isAgarikei(mj.value.myHandTileTypes);
 });
+
+const users = computed(() => ({
+	e: houseToUser('e'),
+	s: houseToUser('s'),
+	w: houseToUser('w'),
+	n: houseToUser('n'),
+}));
 
 const selectableTiles = ref<Mmj.TileType[] | null>(null);
 const ronSerifHouses = reactive<Record<Mmj.House, boolean>>({ e: false, s: false, w: false, n: false });
@@ -801,7 +835,7 @@ onUnmounted(() => {
 	position: relative;
 	width: 100%;
 	height: 100%;
-	max-width: 800px;
+	max-width: 600px;
 	min-height: 600px;
 	margin: auto;
 	box-sizing: border-box;
@@ -947,7 +981,7 @@ onUnmounted(() => {
 .handTilesOfToimen {
 	position: absolute;
 	top: 0;
-	left: 80px;
+	right: 40px;
 }
 .handTileImgOfToimen {
 	display: inline-block;
@@ -963,14 +997,14 @@ onUnmounted(() => {
 
 .handTilesOfSimotya {
 	position: absolute;
-	top: 80px;
+	bottom: 80px;
 	right: 0;
 }
 
 .handTilesOfMe {
 	position: absolute;
 	bottom: 0;
-	left: 80px;
+	left: 0px;
 }
 
 .huroTilesOfMe {
@@ -1064,6 +1098,43 @@ onUnmounted(() => {
 .hoTilesOfMe {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.playersContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	pointer-events: none;
+}
+.player {
+	position: absolute;
+	margin: auto;
+	width: 180px;
+	height: min-content;
+	padding: 10px;
+	box-sizing: border-box;
+	background: #0009;
+	color: #fff;
+	border-radius: 5px;
+	font-size: 90%;
+}
+.playerOfToimen {
+	top: 0;
+	left: 0;
+	right: 0;
+}
+.playerOfKamitya {
+	top: 0;
+	left: 0;
+	bottom: 0;
+}
+.playerOfSimotya {
+	top: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .serifContainer {

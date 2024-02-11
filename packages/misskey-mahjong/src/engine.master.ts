@@ -108,7 +108,7 @@ class StateManager {
 		// TODO: ポンされるなどして自分の河にない場合の考慮
 		if (this.hoTileTypes[house].includes($type(tid))) return false;
 
-		if (!Common.canHora(this.handTileTypes[house].concat($type(tid)))) return false; // 完成形じゃない
+		if (!Common.isAgarikei(this.handTileTypes[house].concat($type(tid)))) return false; // 完成形じゃない
 
 		// TODO
 		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
@@ -416,7 +416,7 @@ export class MasterGameEngine {
 			if (tx.$state.riichis[house]) throw new Error('Already riichi');
 			const tempHandTiles = [...tx.handTileTypes[house]];
 			tempHandTiles.splice(tempHandTiles.indexOf($type(tid)), 1);
-			if (Common.getHoraTiles(tempHandTiles).length === 0) throw new Error('Not tenpai');
+			if (!Common.isTenpai(tempHandTiles)) throw new Error('Not tenpai');
 			if (tx.$state.points[house] < 1000) throw new Error('Not enough points');
 		}
 
