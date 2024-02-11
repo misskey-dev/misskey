@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 						</div>
 						<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
+						ソースコード含め問い合わせは下記のメールアドレスへよろしくお願いします。
 					</div>
 				</FormSection>
 
@@ -102,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
@@ -121,7 +122,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { instance } from '@/instance.js';
-import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store";
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -140,22 +141,22 @@ watch(tab, () => {
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value){
-  bannerUrl.value = bannerDark;
-  iconUrl.value = iconDark;
-}else{
-  bannerUrl.value = bannerLight;
-  iconUrl.value = iconLight;
+if (darkMode.value) {
+	bannerUrl.value = bannerDark;
+	iconUrl.value = iconDark;
+} else {
+	bannerUrl.value = bannerLight;
+	iconUrl.value = iconLight;
 }
 watch(darkMode, () => {
-  if (darkMode.value){
-    bannerUrl.value = bannerDark;
-    iconUrl.value = iconDark;
-  }else{
-    bannerUrl.value = bannerLight;
-    iconUrl.value = iconLight;
-  }
-})
+	if (darkMode.value) {
+		bannerUrl.value = bannerDark;
+		iconUrl.value = iconDark;
+	} else {
+		bannerUrl.value = bannerLight;
+		iconUrl.value = iconLight;
+	}
+});
 const initStats = () => misskeyApi('stats', {
 }).then((res) => {
 	stats.value = res;
