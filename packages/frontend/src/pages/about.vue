@@ -32,6 +32,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 						</div>
 						<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
+						<FormLink :to="instance.repositoryUrl" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts.sourcecode }}
+							<template #suffix>GitHub</template>
+						</FormLink>
+						<FormLink :to="instance.feedbackUrl" external>
+							<template #icon><i class="ti ti-message"></i></template>
+							{{ i18n.ts.feedback }}
+							<template #suffix>Helpdesk</template>
+						</FormLink>
+						<FormLink to="https://misskeyhq.fanbox.cc" external>
+							<template #icon><i class="ti ti-pig-money"></i></template>
+							{{ i18n.tsx.supportThisInstance({ name: instance.name ?? host }) }}
+							<template #suffix>pixivFANBOX</template>
+						</FormLink>
 					</div>
 				</FormSection>
 
