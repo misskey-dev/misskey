@@ -50,8 +50,11 @@
 	"dependencies": {
 		"cssnano": "6.0.3",
 		"execa": "8.0.1",
+		"fast-glob": "3.3.2",
+		"ignore-walk": "6.0.4",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.33",
+		"tar": "6.2.0",
 		"terser": "5.27.0",
 		"typescript": "5.3.3"
 	},
@@ -61,11 +64,8 @@
 		"cross-env": "7.0.3",
 		"cypress": "13.6.3",
 		"eslint": "8.56.0",
-		"fast-glob": "3.3.2",
-		"ignore-walk": "6.0.4",
 		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.3",
-		"tar": "6.2.0"
+		"start-server-and-test": "2.0.3"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"

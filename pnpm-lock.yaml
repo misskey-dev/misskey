@@ -18,12 +18,21 @@ importers:
       execa:
         specifier: 8.0.1
         version: 8.0.1
+      fast-glob:
+        specifier: 3.3.2
+        version: 3.3.2
+      ignore-walk:
+        specifier: 6.0.4
+        version: 6.0.4
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
       postcss:
         specifier: 8.4.33
         version: 8.4.33
+      tar:
+        specifier: 6.2.0
+        version: 6.2.0
       terser:
         specifier: 5.27.0
         version: 5.27.0
@@ -50,21 +59,12 @@ importers:
       eslint:
         specifier: 8.56.0
         version: 8.56.0
-      fast-glob:
-        specifier: 3.3.2
-        version: 3.3.2
-      ignore-walk:
-        specifier: 6.0.4
-        version: 6.0.4
       ncp:
         specifier: 2.0.0
         version: 2.0.0
       start-server-and-test:
         specifier: 2.0.3
         version: 2.0.3
-      tar:
-        specifier: 6.2.0
-        version: 6.2.0
 
   packages/backend:
     dependencies:
@@ -13502,7 +13502,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       minimatch: 9.0.3
-    dev: true
+    dev: false
 
   /ignore@5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
@@ -15472,6 +15472,7 @@ packages:
   /minipass@5.0.0:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
     engines: {node: '>=8'}
+    dev: false
 
   /minipass@7.0.4:
     resolution: {integrity: sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==}
@@ -19120,7 +19121,7 @@ packages:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
-    dev: true
+    dev: false
 
   /taskkill@5.0.0:
     resolution: {integrity: sha512-+HRtZ40Vc+6YfCDWCeAsixwxJgMbPY4HHuTgzPYH3JXvqHWUlsCfy+ylXlAKhFNcuLp4xVeWeFBUhDk+7KYUvQ==}
