@@ -22,14 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		-->
 		</div>
 
-		<MkFoldableSection v-if="searchEmojis">
+		<MkFoldableSection v-if="searchEmojis" :expanded="false">
 			<template #header>{{ i18n.ts.searchResult }}</template>
 			<div :class="$style.emojis">
 				<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :request="emoji.request"/>
 			</div>
 		</MkFoldableSection>
 
-		<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
+		<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category" :expanded="false">
 			<template #header>{{ category || i18n.ts.other }}</template>
 			<div :class="$style.emojis">
 				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji"/>
