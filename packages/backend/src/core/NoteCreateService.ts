@@ -268,10 +268,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (!user.host) {
-			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
-				throw new IdentifiableError('057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30');
-			}
+		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+			throw new IdentifiableError('057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30');
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
