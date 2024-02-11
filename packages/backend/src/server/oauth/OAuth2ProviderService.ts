@@ -26,12 +26,13 @@ import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { mf2 } from 'microformats-parser';
 import { permissions as kinds } from 'misskey-js';
+import * as Redis from 'ioredis';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
+import type { AccessTokensRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -40,7 +41,6 @@ import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
-import * as Redis from 'ioredis';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
@@ -248,6 +248,8 @@ export class OAuth2ProviderService {
 		private accessTokensRepository: AccessTokensRepository,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
 		private idService: IdService,
 		private cacheService: CacheService,
@@ -359,6 +361,8 @@ export class OAuth2ProviderService {
 			issuer: this.config.url,
 			authorization_endpoint: new URL('/oauth/authorize', this.config.url),
 			token_endpoint: new URL('/oauth/token', this.config.url),
+			introspection_endpoint: new URL('/oauth/token/introspect', this.config.url),
+			userinfo_endpoint: new URL('/oauth/api/userinfo', this.config.url),
 			scopes_supported: kinds,
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code'],
@@ -482,9 +486,67 @@ export class OAuth2ProviderService {
 	}
 
 	@bindThis
+	public async createApiServer(fastify: FastifyInstance): Promise<void> {
+		fastify.register(fastifyCors);
+
+		fastify.get('/userinfo', async (request, reply) => {
+			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+			const token = request.headers.authorization?.startsWith('Bearer ')
+				? request.headers.authorization.slice(7)
+				: null;
+			if (!token) {
+				reply.code(401);
+				return;
+			}
+
+			const accessToken = await this.accessTokensRepository.findOneBy({ token });
+			if (!accessToken) {
+				reply.code(401);
+				return;
+			}
+
+			const user = await this.userProfilesRepository.findOneBy({ userId: accessToken.userId });
+
+			reply.code(200);
+			return {
+				sub: accessToken.userId,
+				name: accessToken.user?.name,
+				preferred_username: accessToken.user?.username,
+				profile: accessToken.user ? `${this.config.url}/@${accessToken.user.username}` : undefined,
+				picture: accessToken.user?.avatarUrl,
+				email: user?.email,
+				email_verified: user?.emailVerified,
+				updated_at: accessToken.lastUsedAt?.getTime() ?? 0 / 1000,
+			};
+		});
+	}
+
+	@bindThis
 	public async createTokenServer(fastify: FastifyInstance): Promise<void> {
 		fastify.register(fastifyCors);
+
 		fastify.post('', async () => { });
+
+		fastify.post<{ Body: Record<string, unknown> | undefined }>('/introspect', async (request, reply) => {
+			const token = request.body?.['token'];
+			if (!token || typeof token !== 'string') {
+				reply.code(400);
+				return;
+			}
+
+			const accessToken = await this.accessTokensRepository.findOneBy({ token });
+			reply.code(200);
+
+			if (!accessToken) return { active: false };
+			return {
+				active: true,
+				me: accessToken.user ? `${this.config.url}/@${accessToken.user.username}` : undefined,
+				scope: accessToken.permission.join(' '),
+				client_id: accessToken.name,
+				user_id: accessToken.userId,
+				token_type: 'Bearer',
+			};
+		});
 
 		await fastify.register(fastifyExpress);
 		// Clients may use JSON or urlencoded
