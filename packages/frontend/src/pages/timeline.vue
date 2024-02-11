@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
-			<div :key="src + withRenotes + withReplies + onlyFiles" ref="rootEl" v-hotkey.global="keymap">
+			<div :key="src" ref="rootEl" v-hotkey.global="keymap">
 				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
@@ -50,6 +50,7 @@ import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
+import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 
@@ -74,10 +75,14 @@ const withRenotes = computed({
 	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
 	set: (x: boolean) => saveTlFilter('withRenotes', x),
 });
-const withReplies = computed({
+
+// computed内での無限ループを防ぐためのフラグ
+const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>('withReplies');
+
+const withReplies = computed<boolean>({
 	get: () => {
 		if (!$i) return false;
-		if (['local', 'social'].includes(src.value) && onlyFiles.value) {
+		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.withReplies;
@@ -85,9 +90,9 @@ const withReplies = computed({
 	},
 	set: (x: boolean) => saveTlFilter('withReplies', x),
 });
-const onlyFiles = computed({
+const onlyFiles = computed<boolean>({
 	get: () => {
-		if (['local', 'social'].includes(src.value) && withReplies.value) {
+		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
@@ -95,18 +100,29 @@ const onlyFiles = computed({
 	},
 	set: (x: boolean) => saveTlFilter('onlyFiles', x),
 });
+
+watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
+	if (withRepliesTo) {
+		localSocialTLFilterSwitchStore.value = 'withReplies';
+	} else if (onlyFilesTo) {
+		localSocialTLFilterSwitchStore.value = 'onlyFiles';
+	} else {
+		localSocialTLFilterSwitchStore.value = false;
+	}
+});
+
 const withSensitive = computed({
 	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
-	set: (x: boolean) => {
-		saveTlFilter('withSensitive', x);
-
-		// これだけはクライアント側で完結する処理なので手動でリロード
-		tlComponent.value?.reloadTimeline();
-	},
+	set: (x: boolean) => saveTlFilter('withSensitive', x),
 });
 
 watch(src, () => {
 	queue.value = 0;
+});
+
+watch(withSensitive, () => {
+	// これだけはクライアント側で完結する処理なので手動でリロード
+	tlComponent.value?.reloadTimeline();
 });
 
 function queueUpdated(q: number): void {
@@ -184,10 +200,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 }
 
 function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
-	const out = {
-		...defaultStore.state.tl,
-		src: newSrc,
-	};
+	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
 
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
@@ -200,20 +213,9 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string
 
 function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
 	if (key !== 'withReplies' || $i) {
-		const out = { ...defaultStore.state.tl };
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (!out.filter) {
-			out.filter = {
-				withRenotes: true,
-				withReplies: true,
-				withSensitive: true,
-				onlyFiles: false,
-			};
-		}
-		out.filter[key] = newValue;
+		const out = deepMerge({ filter: { [key]: newValue } }, defaultStore.state.tl);
 		defaultStore.set('tl', out);
 	}
-	return newValue;
 }
 
 async function timetravel(): Promise<void> {
