@@ -66,14 +66,14 @@ const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
-const srcWhenNotSignin = ref(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed({
+const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
+const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
-const withRenotes = computed({
+const withRenotes = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
-	set: (x: boolean) => saveTlFilter('withRenotes', x),
+	set: (x) => saveTlFilter('withRenotes', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
@@ -88,7 +88,7 @@ const withReplies = computed<boolean>({
 			return defaultStore.reactiveState.tl.value.filter.withReplies;
 		}
 	},
-	set: (x: boolean) => saveTlFilter('withReplies', x),
+	set: (x) => saveTlFilter('withReplies', x),
 });
 const onlyFiles = computed<boolean>({
 	get: () => {
@@ -98,7 +98,7 @@ const onlyFiles = computed<boolean>({
 			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
 		}
 	},
-	set: (x: boolean) => saveTlFilter('onlyFiles', x),
+	set: (x) => saveTlFilter('onlyFiles', x),
 });
 
 watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
@@ -111,9 +111,9 @@ watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
 	}
 });
 
-const withSensitive = computed({
+const withSensitive = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
-	set: (x: boolean) => saveTlFilter('withSensitive', x),
+	set: (x) => saveTlFilter('withSensitive', x),
 });
 
 watch(src, () => {
@@ -208,7 +208,9 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string
 	}
 
 	defaultStore.set('tl', out);
-	srcWhenNotSignin.value = newSrc;
+	if (['local', 'global'].includes(newSrc)) {
+		srcWhenNotSignin.value = newSrc as 'local' | 'global';
+	}
 }
 
 function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
