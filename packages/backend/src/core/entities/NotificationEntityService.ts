@@ -64,21 +64,38 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
-	): Promise<Packed<'Notification'>> {
+	): Promise<Packed<'Notification'> | null> {
 		const notification = src;
-		const noteIfNeed = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
+		const needsNote = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification;
+		const noteIfNeed = needsNote ? (
 			hint?.packedNotes != null
 				? hint.packedNotes.get(notification.noteId)
 				: this.noteEntityService.pack(notification.noteId, { id: meId }, {
 					detail: true,
 				})
 		) : undefined;
-		const userIfNeed = 'notifierId' in notification ? (
+		// if the note has been deleted, don't show this notification
+		if (needsNote && !noteIfNeed) {
+			return null;
+		}
+
+		const needsUser = 'notifierId' in notification;
+		const userIfNeed = needsUser ? (
 			hint?.packedUsers != null
 				? hint.packedUsers.get(notification.notifierId)
 				: this.userEntityService.pack(notification.notifierId, { id: meId })
 		) : undefined;
-		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		// if the user has been deleted, don't show this notification
+		if (needsUser && !userIfNeed) {
+			return null;
+		}
+
+		const needsRole = notification.type === 'roleAssigned';
+		const role = needsRole ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		// if the role has been deleted, don't show this notification
+		if (needsRole && !role) {
+			return null;
+		}
 
 		return await awaitAll({
 			id: notification.id,
@@ -141,10 +158,10 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
+		return (await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
 			packedNotes,
 			packedUsers,
-		})));
+		})))).filter(n => n);
 	}
 
 	@bindThis
@@ -159,23 +176,34 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
-	): Promise<Packed<'Notification'>> {
+	): Promise<Packed<'Notification'> | null> {
 		const notification = src;
-		const noteIfNeed = NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
+		const needsNote = NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification;
+		const noteIfNeed = needsNote ? (
 			hint?.packedNotes != null
 				? hint.packedNotes.get(notification.noteId)
 				: this.noteEntityService.pack(notification.noteId, { id: meId }, {
 					detail: true,
 				})
 		) : undefined;
-		const userIfNeed = 'notifierId' in notification ? (
+		// if the note has been deleted, don't show this notification
+		if (needsNote && !noteIfNeed) {
+			return null;
+		}
+
+		const needsUser = 'notifierId' in notification;
+		const userIfNeed = needsUser ? (
 			hint?.packedUsers != null
 				? hint.packedUsers.get(notification.notifierId)
 				: this.userEntityService.pack(notification.notifierId, { id: meId })
 		) : undefined;
+		// if the user has been deleted, don't show this notification
+		if (needsUser && !userIfNeed) {
+			return null;
+		}
 
 		if (notification.type === 'reaction:grouped') {
-			const reactions = await Promise.all(notification.reactions.map(async reaction => {
+			const reactions = (await Promise.all(notification.reactions.map(async reaction => {
 				const user = hint?.packedUsers != null
 					? hint.packedUsers.get(reaction.userId)!
 					: await this.userEntityService.pack(reaction.userId, { id: meId });
@@ -183,7 +211,12 @@ export class NotificationEntityService implements OnModuleInit {
 					user,
 					reaction: reaction.reaction,
 				};
-			}));
+			}))).filter(r => r.user);
+			// if all users have been deleted, don't show this notification
+			if (!reactions.length) {
+				return null;
+			}
+
 			return await awaitAll({
 				id: notification.id,
 				createdAt: new Date(notification.createdAt).toISOString(),
@@ -192,14 +225,19 @@ export class NotificationEntityService implements OnModuleInit {
 				reactions,
 			});
 		} else if (notification.type === 'renote:grouped') {
-			const users = await Promise.all(notification.userIds.map(userId => {
+			const users = (await Promise.all(notification.userIds.map(userId => {
 				const packedUser = hint?.packedUsers != null ? hint.packedUsers.get(userId) : null;
 				if (packedUser) {
 					return packedUser;
 				}
 
 				return this.userEntityService.pack(userId, { id: meId });
-			}));
+			}))).filter(u => u);
+			// if all users have been deleted, don't show this notification
+			if (!users.length) {
+				return null;
+			}
+
 			return await awaitAll({
 				id: notification.id,
 				createdAt: new Date(notification.createdAt).toISOString(),
@@ -209,7 +247,12 @@ export class NotificationEntityService implements OnModuleInit {
 			});
 		}
 
-		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		const needsRole = notification.type === 'roleAssigned';
+		const role = needsRole ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		// if the role has been deleted, don't show this notification
+		if (needsRole && !role) {
+			return null;
+		}
 
 		return await awaitAll({
 			id: notification.id,
@@ -277,9 +320,9 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, {}, {
+		return (await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, {}, {
 			packedNotes,
 			packedUsers,
-		})));
+		})))).filter(n => n);
 	}
 }
