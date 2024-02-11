@@ -280,7 +280,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: [] as Misskey.entities.UserList[],
 	},
-
+	pinnedChannels: {
+		where: 'deviceAccount',
+		default: [] as Misskey.entities.Channel[],
+	},
 	overridedDeviceKind: {
 		where: 'device',
 		default: null as null | 'smartphone' | 'tablet' | 'desktop',

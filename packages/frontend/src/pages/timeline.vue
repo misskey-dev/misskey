@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
-				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostForm.value" :channel="channelInfo" :autofocus="deviceKind === 'desktop'" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 				<div :class="$style.tl">
 					<MkTimeline
@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:key="src + withRenotes + withReplies + onlyFiles"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
+						:channel="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
@@ -112,8 +113,19 @@ const remoteLocalTimelineEnable4 = ref(defaultStore.state.remoteLocalTimelineEna
 const remoteLocalTimelineEnable5 = ref(defaultStore.state.remoteLocalTimelineEnable5);
 const showHomeTimeline = ref(defaultStore.state.showHomeTimeline);
 const showSocialTimeline = ref(defaultStore.state.showSocialTimeline);
-watch(src, () => {
+const channelInfo = ref();
+if (src.value.split(':')[0] === 'channel') {
+	const channelId = src.value.split(':')[1];
+	channelInfo.value = misskeyApi('channels/show', { channelId });
+}
+watch(src, async () => {
 	queue.value = 0;
+	if (src.value.split(':')[0] === 'channel') {
+		const channelId = src.value.split(':')[1];
+		channelInfo.value = misskeyApi('channels/show', { channelId });
+	} else {
+		channelInfo.value = null;
+	}
 });
 
 function queueUpdated(q: number): void {
@@ -282,6 +294,11 @@ const headerActions = computed(() => {
 
 const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
 	key: 'list:' + l.id,
+	title: l.name,
+	icon: 'ti ti-star',
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
+}))), ...(defaultStore.reactiveState.pinnedChannels.value.map(l => ({
+	key: 'channel:' + l.id,
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: defaultStore.state.topBarNameShown ?? false,

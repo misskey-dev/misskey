@@ -177,7 +177,6 @@ onUnmounted(() => {
 			margin-left: 0;
 		}
 		> .titleContainer {
-			margin: 0 auto;
 			max-width: 100%;
 		}
 	}

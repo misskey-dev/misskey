@@ -45,9 +45,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedUserLists.value.length " @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
 			</MkFolder>
+			<MkFolder>
+				<template #label>{{ i18n.ts.pinnedChannel }}</template>
+				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedChannels.value" class="_margin">
+					{{ pinnedLists.name }}
+					<MkButton danger @click="removePinnedChannel(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				</div>
+				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedChannels.value.length " @click="setPinnedChannel()">{{ i18n.ts.add }}</MkButton>
+				<MkButton v-if="defaultStore.reactiveState.pinnedChannels.value.length " danger @click="removePinnedChannel('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
+			</MkFolder>
 			<MkFoldableSection :expanded="false" class="item">
 				<template #header>{{ i18n.ts.topbarCustom }}</template>
-
 
 				{{ i18n.ts._timelines.home }}
 				<MkSwitch v-model="showHomeTimeline">{{ i18n.ts.enable }}</MkSwitch>
@@ -379,7 +387,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
-import { userFavoriteListsCache, userListsCache } from '@/cache.js';
+import { userChannelFollowingsCache, userChannelsCache, userFavoriteListsCache, userListsCache } from '@/cache.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -638,7 +646,7 @@ async function setPinnedList() {
 	}
 }
 
-async function removePinnedList(id, name) {
+async function removePinnedList(id, name?:string) {
 	if (!id) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
@@ -656,6 +664,46 @@ async function removePinnedList(id, name) {
 	const pinnedLists = defaultStore.state.pinnedUserLists;
 	const newPinnedLists = pinnedLists.filter(pinnedList => pinnedList.id !== id);
 	defaultStore.set('pinnedUserLists', newPinnedLists);
+}
+
+async function setPinnedChannel() {
+	const myChannels = await userChannelsCache.fetch();
+	const favoriteChannels = await userChannelFollowingsCache.fetch();
+	let channels = [...new Set([...myChannels, ...favoriteChannels])];
+	const { canceled, result: channel } = await os.select({
+		title: i18n.ts.selectList,
+		items: channels.map(x => ({
+			value: x, text: x.name,
+		})),
+	});
+	if (canceled) return;
+	let pinnedChannels = defaultStore.state.pinnedChannels;
+
+	// Check if the id is already present in pinnedLists
+	if (!pinnedChannels.some(pinnedChannel => pinnedChannel.id === channel.id)) {
+		pinnedChannels.push(channel);
+		defaultStore.set('pinnedChannels', pinnedChannels);
+	}
+}
+
+async function removePinnedChannel(id, name?:string) {
+	if (!id) return;
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.removeAreYouSure({ x: name ?? id }),
+	});
+	if (canceled) return;
+
+	if (id === 'all') {
+		if (canceled) return;
+
+		defaultStore.set('pinnedChannels', []);
+		return;
+	}
+
+	const pinnedChannels = defaultStore.state.pinnedChannels;
+	const newPinnedChannels = pinnedChannels.filter(pinnedchannel => pinnedchannel.id !== id);
+	defaultStore.set('pinnedChannels', newPinnedChannels);
 }
 
 let smashCount = 0;

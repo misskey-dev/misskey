@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
@@ -74,7 +74,7 @@ const headerActions = computed(() => [{
 	highlighted: includeTypes.value != null,
 	handler: setFilter,
 }].filter(x => x !== undefined));
-misskeyApi('notifications/mark-all-as-read');
+
 const headerTabs = computed(() => [{
 	key: 'all',
 	title: i18n.ts.all,
@@ -93,6 +93,9 @@ definePageMetadata(computed(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
 })));
+onMounted(() => {
+	misskeyApi('notifications/mark-all-as-read');
+});
 </script>
 
 <style module lang="scss">

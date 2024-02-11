@@ -38,6 +38,7 @@ const props = withDefaults(defineProps<{
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
+
 }>(), {
 	withRenotes: true,
 	withReplies: false,

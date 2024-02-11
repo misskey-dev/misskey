@@ -4,103 +4,103 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-  <div
-      :class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
-      @dragover.stop="onDragover"
-      @dragenter="onDragenter"
-      @dragleave="onDragleave"
-      @drop.stop="onDrop"
-  >
-    <header :class="$style.header">
-      <div :class="$style.headerLeft">
-        <button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-        <button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-          <MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
-        </button>
-      </div>
-      <div :class="$style.headerRight">
-        <template v-if="!(channel != null && fixed)">
-          <button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
-            <span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-            <span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-            <span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-            <span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-            <span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
-          </button>
-          <button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
-            <span><i class="ti ti-device-tv"></i></span>
-            <span :class="$style.headerRightButtonText">{{ channel.name }}</span>
-          </button>
-        </template>
-        <button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
-          <span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
-          <span v-else><i class="ti ti-rocket-off"></i></span>
-        </button>
-        <button v-tooltip="i18n.ts.otherSettings" class="_button" :class="[$style.headerRightItem]" @click="openOtherSettingsMenu"><i class="ti ti-dots"></i></button>
-        <button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
-          <div :class="[$style.submitInner ,{  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
-            <template v-if="posted"></template>
-            <template v-else-if="posting"><MkEllipsis/></template>
-            <template v-else>{{ submitText }}</template>
-            <i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : schedule ? 'ti ti-clock-hour-4' : 'ti ti-send'"></i>
-          </div>
-        </button>
-      </div>
-    </header>
-    <MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
-    <MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
-    <div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
-    <div v-if="visibility === 'specified'" :class="$style.toSpecified">
-      <span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
-      <div :class="$style.visibleUsers">
+<div
+	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
+	@dragover.stop="onDragover"
+	@dragenter="onDragenter"
+	@dragleave="onDragleave"
+	@drop.stop="onDrop"
+>
+	<header :class="$style.header">
+		<div :class="$style.headerLeft">
+			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
+			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
+				<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
+			</button>
+		</div>
+		<div :class="$style.headerRight">
+			<template v-if="!(channel != null && fixed)">
+				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+				</button>
+				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
+					<span><i class="ti ti-device-tv"></i></span>
+					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+				</button>
+			</template>
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+				<span v-else><i class="ti ti-rocket-off"></i></span>
+			</button>
+			<button v-tooltip="i18n.ts.otherSettings" class="_button" :class="[$style.headerRightItem]" @click="openOtherSettingsMenu"><i class="ti ti-dots"></i></button>
+			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+				<div :class="[$style.submitInner ,{ [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
+					<template v-if="posted"></template>
+					<template v-else-if="posting"><MkEllipsis/></template>
+					<template v-else>{{ submitText }}</template>
+					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : schedule ? 'ti ti-clock-hour-4' : 'ti ti-send'"></i>
+				</div>
+			</button>
+		</div>
+	</header>
+	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
+	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
+	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
+		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
+		<div :class="$style.visibleUsers">
 			<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
 				<MkAcct :user="u"/>
 				<button class="_button" style="padding: 4px 8px;" @click="removeVisibleUser(u)"><i class="ti ti-x"></i></button>
 			</span>
-        <button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
-      </div>
-    </div>
-    <MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
-    <input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-    <div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
-      <div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
+			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
+		</div>
+	</div>
+	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
+	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
+		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
-      <div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
-    </div>
-    <input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-    <XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
-    <div :class="$style.postOptionsRoot">
+		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
+	</div>
+	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
+	<div :class="$style.postOptionsRoot">
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<MkScheduleEditor v-if="schedule" v-model="schedule" @destroyed="schedule = null"/>
 	</div>
-    <MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
-    <div v-if="showingOptions" style="padding: 8px 16px;">
-    </div>
-    <footer :class="$style.footer">
-      <div :class="$style.footerLeft">
-        <button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
-        <button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-        <button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
-        <button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-        <button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-        <button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
-        <button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
-				<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
-				<button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
+	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
+	<div v-if="showingOptions" style="padding: 8px 16px;">
+	</div>
+	<footer :class="$style.footer">
+		<div :class="$style.footerLeft">
+			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
+			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
+			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
+			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
+			<button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
 		</div>
-      <div :class="$style.footerRight">
-        <button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-        <!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
-      </div>
-    </footer>
-    <datalist id="hashtags">
-      <option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
-    </datalist>
-  </div>
+		<div :class="$style.footerRight">
+			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
+			<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
+		</div>
+	</footer>
+	<datalist id="hashtags">
+		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
+	</datalist>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent , provide, shallowRef, ref, computed } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -119,13 +119,13 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFiles } from '@/scripts/select-file.js';
 import { dateTimeFormat } from '@/scripts/intl-const.js';
 import {
-  bannerDark,
-  bannerLight,
-  defaultStore,
-  iconDark,
-  iconLight,
-  notePostInterruptors,
-  postFormActions
+	bannerDark,
+	bannerLight,
+	defaultStore,
+	iconDark,
+	iconLight,
+	notePostInterruptors,
+	postFormActions,
 } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
@@ -145,7 +145,6 @@ const $i = signinRequired();
 
 const modal = inject('modal');
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
-
 
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
@@ -167,8 +166,8 @@ const props = withDefaults(defineProps<{
 	mock?: boolean;
 	updateMode?: boolean;
 }>(), {
-  initialVisibleUsers: () => [],
-  autofocus: true,
+	initialVisibleUsers: () => [],
+	autofocus: true,
 	mock: false,
 });
 
@@ -207,7 +206,7 @@ const localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.reme
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
-  props.initialVisibleUsers.forEach(pushVisibleUser);
+	props.initialVisibleUsers.forEach(pushVisibleUser);
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
 const autocomplete = ref(null);
@@ -220,59 +219,59 @@ const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 
 const draftKey = computed((): string => {
-  let key = props.channel ? `channel:${props.channel.id}` : '';
+	let key = props.channel ? `channel:${props.channel.id}` : '';
 
-  if (props.renote) {
-    key += `renote:${props.renote.id}`;
-  } else if (props.reply) {
-    key += `reply:${props.reply.id}`;
-  } else {
-    key += `note:${$i.id}`;
-  }
+	if (props.renote) {
+		key += `renote:${props.renote.id}`;
+	} else if (props.reply) {
+		key += `reply:${props.reply.id}`;
+	} else {
+		key += `note:${$i.id}`;
+	}
 
-  return key;
+	return key;
 });
 
 const placeholder = computed((): string => {
-  if (props.renote) {
-    return i18n.ts._postForm.quotePlaceholder;
-  } else if (props.reply) {
-    return i18n.ts._postForm.replyPlaceholder;
-  } else if (props.channel) {
-    return i18n.ts._postForm.channelPlaceholder;
-  } else {
-    const xs = [
-      i18n.ts._postForm._placeholders.a,
-      i18n.ts._postForm._placeholders.b,
-      i18n.ts._postForm._placeholders.c,
-      i18n.ts._postForm._placeholders.d,
-      i18n.ts._postForm._placeholders.e,
-      i18n.ts._postForm._placeholders.f,
-    ];
-    return xs[Math.floor(Math.random() * xs.length)];
-  }
+	if (props.renote) {
+		return i18n.ts._postForm.quotePlaceholder;
+	} else if (props.reply) {
+		return i18n.ts._postForm.replyPlaceholder;
+	} else if (props.channel) {
+		return i18n.ts._postForm.channelPlaceholder;
+	} else {
+		const xs = [
+			i18n.ts._postForm._placeholders.a,
+			i18n.ts._postForm._placeholders.b,
+			i18n.ts._postForm._placeholders.c,
+			i18n.ts._postForm._placeholders.d,
+			i18n.ts._postForm._placeholders.e,
+			i18n.ts._postForm._placeholders.f,
+		];
+		return xs[Math.floor(Math.random() * xs.length)];
+	}
 });
 
 const submitText = computed((): string => {
-  return props.renote
-      ? i18n.ts.quote
-      : props.reply
-          ? i18n.ts.reply
-          : schedule.value
+	return props.renote
+		? i18n.ts.quote
+		: props.reply
+			? i18n.ts.reply
+			: schedule.value
 				? i18n.ts._schedulePost.addSchedule
 				: i18n.ts.note;
 });
 
 const textLength = computed((): number => {
-  return (text.value + imeText.value).trim().length;
+	return (text.value + imeText.value).trim().length;
 });
 
 const maxTextLength = computed((): number => {
-  return instance ? instance.maxNoteTextLength : 1000;
+	return instance ? instance.maxNoteTextLength : 1000;
 });
 
 const canPost = computed((): boolean => {
-  return !props.mock && !posting.value && !posted.value &&
+	return !props.mock && !posting.value && !posted.value &&
       (1 <= textLength.value || 1 <= files.value.length || !!poll.value || !!props.renote) &&
       (textLength.value <= maxTextLength.value) &&
       (!poll.value || poll.value.choices.length >= 2);
@@ -282,60 +281,59 @@ const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtag
 const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
 watch(text, () => {
-  checkMissingMention();
+	checkMissingMention();
 }, { immediate: true });
 
 watch(visibility, () => {
+	switch (visibility.value) {
+		case 'public':
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+			break;
+		case 'home':
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultHomeNoteLocalOnly;
+			break;
+		case 'followers':
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultFollowersNoteLocalOnly;
+			break;
+	}
 
-    switch (visibility.value) {
-        case 'public':
-            localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-            break;
-        case 'home':
-            localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultHomeNoteLocalOnly;
-            break;
-        case 'followers':
-            localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultFollowersNoteLocalOnly;
-            break;
-    }
-
-  checkMissingMention();
+	checkMissingMention();
 }, { immediate: true });
 
 watch(visibleUsers, () => {
-  checkMissingMention();
+	checkMissingMention();
 }, {
-  deep: true,
+	deep: true,
 });
 
 if (props.mention) {
-  text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
-  text.value += ' ';
+	text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
+	text.value += ' ';
 }
 
 if (props.reply && (props.reply.user.username !== $i.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
-  text.value = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
+	text.value = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
 }
 
 if (props.reply && props.reply.text != null) {
-  const ast = mfm.parse(props.reply.text);
-  const otherHost = props.reply.user.host;
+	const ast = mfm.parse(props.reply.text);
+	const otherHost = props.reply.user.host;
 
-  for (const x of extractMentions(ast)) {
-    const mention = x.host ?
-        `@${x.username}@${toASCII(x.host)}` :
-        (otherHost == null || otherHost === host) ?
-            `@${x.username}` :
-            `@${x.username}@${toASCII(otherHost)}`;
+	for (const x of extractMentions(ast)) {
+		const mention = x.host ?
+			`@${x.username}@${toASCII(x.host)}` :
+			(otherHost == null || otherHost === host) ?
+				`@${x.username}` :
+				`@${x.username}@${toASCII(otherHost)}`;
 
-    // 自分は除外
-    if ($i.username === x.username && (x.host == null || x.host === host)) continue;
+		// 自分は除外
+		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
 
-    // 重複は除外
-    if (text.value.includes(`${mention} `)) continue;
+		// 重複は除外
+		if (text.value.includes(`${mention} `)) continue;
 
-    text.value += `${mention} `;
-  }
+		text.value += `${mention} `;
+	}
 }
 
 if ($i.isSilenced && visibility.value === 'public') {
@@ -343,97 +341,99 @@ if ($i.isSilenced && visibility.value === 'public') {
 }
 
 if (props.channel) {
-  visibility.value = 'public';
-  localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
+	visibility.value = 'public';
+	localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 }
 
 // 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
-  if (props.reply.visibility === 'home' && visibility.value === 'followers') {
-    visibility.value = 'followers';
-  } else if (['home', 'followers'].includes(props.reply.visibility) && visibility.value === 'specified') {
-    visibility.value = 'specified';
-  } else {
-    visibility.value = props.reply.visibility;
-  }
+	if (props.reply.visibility === 'home' && visibility.value === 'followers') {
+		visibility.value = 'followers';
+	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility.value === 'specified') {
+		visibility.value = 'specified';
+	} else {
+		visibility.value = props.reply.visibility;
+	}
 
-  if (visibility.value === 'specified') {
-    if (props.reply.visibleUserIds) {
-      misskeyApi('users/show', {
-        userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
-      }).then(users => {
-        users.forEach(pushVisibleUser);
-      });
-    }
+	if (visibility.value === 'specified') {
+		if (props.reply.visibleUserIds) {
+			misskeyApi('users/show', {
+				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
+			}).then(users => {
+				users.forEach(pushVisibleUser);
+			});
+		}
 
-    if (props.reply.userId !== $i.id) {
-      misskeyApi('users/show', { userId: props.reply.userId }).then(user => {
-        pushVisibleUser(user);
-      });
-    }
-  }
+		if (props.reply.userId !== $i.id) {
+			misskeyApi('users/show', { userId: props.reply.userId }).then(user => {
+				pushVisibleUser(user);
+			});
+		}
+	}
 }
 
 if (props.specified) {
-  visibility.value = 'specified';
-  pushVisibleUser(props.specified);
+	visibility.value = 'specified';
+	pushVisibleUser(props.specified);
 }
 
 // keep cw when reply
 if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
-  useCw.value = true;
-  cw.value = props.reply.cw;
+	useCw.value = true;
+	cw.value = props.reply.cw;
 }
 
 function watchForDraft() {
-  watch(text, () => saveDraft());
-  watch(useCw, () => saveDraft());
-  watch(cw, () => saveDraft());
-  watch(poll, () => saveDraft());
-  watch(files, () => saveDraft(), { deep: true });
-  watch(visibility, () => saveDraft());
-  watch(localOnly, () => saveDraft());
+	watch(text, () => saveDraft());
+	watch(useCw, () => saveDraft());
+	watch(cw, () => saveDraft());
+	watch(poll, () => saveDraft());
+	watch(files, () => saveDraft(), { deep: true });
+	watch(visibility, () => saveDraft());
+	watch(localOnly, () => saveDraft());
 }
 
 function checkMissingMention() {
-  if (visibility.value === 'specified') {
-    const ast = mfm.parse(text.value);
+	if (visibility.value === 'specified') {
+		const ast = mfm.parse(text.value);
 
-    for (const x of extractMentions(ast)) {
-      if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
-        hasNotSpecifiedMentions.value = true;
-        return;}
-      }
-    }
-    hasNotSpecifiedMentions.value = false;
-
+		for (const x of extractMentions(ast)) {
+			if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
+				hasNotSpecifiedMentions.value = true;
+				return;
+			}
+		}
+	}
+	hasNotSpecifiedMentions.value = false;
 }
 
 function addMissingMention() {
-  const ast = mfm.parse(text.value);
+	const ast = mfm.parse(text.value);
 
-  for (const x of extractMentions(ast)) {
-    if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
-      misskeyApi('users/show', { username: x.username, host: x.host }).then(user => {
-        visibleUsers.value.push(user);
-      });
-    }
-  }
+	for (const x of extractMentions(ast)) {
+		if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
+			misskeyApi('users/show', { username: x.username, host: x.host }).then(user => {
+				visibleUsers.value.push(user);
+			});
+		}
+	}
 }
+
 function insertRuby() {
 	insertTextAtCursor(textareaEl.value, '$[ruby 本文 上につくやつ]');
 }
+
 function togglePoll() {
-  if (poll.value) {
-    poll.value = null;
-  } else {
-    poll.value = {
-      choices: ['', ''],
-      multiple: false,
-      expiresAt: null,
-      expiredAfter: null,
-    };
-  }
+	if (poll.value) {
+		poll.value = null;
+	} else {
+		poll.value = {
+			choices: ['', ''],
+			multiple: false,
+			expiresAt: null,
+			expiredAfter: null,
+		};
+	}
 }
 
 function toggleSchedule() {
@@ -447,346 +447,347 @@ function toggleSchedule() {
 }
 
 function addTag(tag: string) {
-  insertTextAtCursor(textareaEl.value, ` #${tag} `);
+	insertTextAtCursor(textareaEl.value, ` #${tag} `);
 }
 
 function focus() {
-  if (textareaEl.value) {
-    textareaEl.value.focus();
-    textareaEl.value.setSelectionRange(textareaEl.value.value.length, textareaEl.value.value.length);
-  }
+	if (textareaEl.value) {
+		textareaEl.value.focus();
+		textareaEl.value.setSelectionRange(textareaEl.value.value.length, textareaEl.value.value.length);
+	}
 }
 
 function chooseFileFrom(ev) {
-  if (props.mock) return;selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
-    for (const file of files_) {
-      files.value.push(file);
-    }
-  });
+	if (props.mock) return; selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
+		for (const file of files_) {
+			files.value.push(file);
+		}
+	});
 }
 
 function detachFile(id) {
-  files.value = files.value.filter(x => x.id !== id);
+	files.value = files.value.filter(x => x.id !== id);
 }
 
 function updateFileSensitive(file, sensitive) {
-  if (props.mock) {
+	if (props.mock) {
 		emit('fileChangeSensitive', file.id, sensitive);
 	}
 	files.value[files.value.findIndex(x => x.id === file.id)].isSensitive = sensitive;
 }
 
 function updateFileName(file, name) {
-  files.value[files.value.findIndex(x => x.id === file.id)].name = name;
+	files.value[files.value.findIndex(x => x.id === file.id)].name = name;
 }
 
 function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void {
-  files.value[files.value.findIndex(x => x.id === file.id)] = newFile;
+	files.value[files.value.findIndex(x => x.id === file.id)] = newFile;
 }
 
 function upload(file: File, name?: string): void {
-  if (props.mock) return;uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
-    files.value.push(res);
-  });
+	if (props.mock) return; uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
+		files.value.push(res);
+	});
 }
 
 function setVisibility() {
-  if (props.channel) {
-    visibility.value = 'public';
-    localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-    return;
-  }
+	if (props.channel) {
+		visibility.value = 'public';
+		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
+		return;
+	}
 
-  os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
-    currentVisibility: visibility.value,
-    isSilenced: $i.isSilenced,localOnly: localOnly.value,
-    src: visibilityButton.value,
-  }, {
-    changeVisibility: v => {
-      visibility.value = v;
-      if (defaultStore.state.rememberNoteVisibility) {
-        defaultStore.set('visibility', visibility.value);
-      }
-    },
-  }, 'closed');
+	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
+		currentVisibility: visibility.value,
+		isSilenced: $i.isSilenced, localOnly: localOnly.value,
+		src: visibilityButton.value,
+	}, {
+		changeVisibility: v => {
+			visibility.value = v;
+			if (defaultStore.state.rememberNoteVisibility) {
+				defaultStore.set('visibility', visibility.value);
+			}
+		},
+	}, 'closed');
 }
 
 async function toggleLocalOnly() {
-  if (props.channel) {
-    visibility.value = 'public';
-    localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-    return;
-  }
+	if (props.channel) {
+		visibility.value = 'public';
+		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
+		return;
+	}
 
-  const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
+	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
 
-  if (!localOnly.value && neverShowInfo !== 'true') {
-    const confirm = await os.actions({
-      type: 'question',
-      title: i18n.ts.disableFederationConfirm,
-      text: i18n.ts.disableFederationConfirmWarn,
-      actions: [
-        {
-          value: 'yes' as const,
-          text: i18n.ts.disableFederationOk,
-          primary: true,
-        },
-        {
-          value: 'neverShow' as const,
-          text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
-          danger: true,
-        },
-        {
-          value: 'no' as const,
-          text: i18n.ts.cancel,
-        },
-      ],
-    });
-    if (confirm.canceled) return;
-    if (confirm.result === 'no') return;
+	if (!localOnly.value && neverShowInfo !== 'true') {
+		const confirm = await os.actions({
+			type: 'question',
+			title: i18n.ts.disableFederationConfirm,
+			text: i18n.ts.disableFederationConfirmWarn,
+			actions: [
+				{
+					value: 'yes' as const,
+					text: i18n.ts.disableFederationOk,
+					primary: true,
+				},
+				{
+					value: 'neverShow' as const,
+					text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
+					danger: true,
+				},
+				{
+					value: 'no' as const,
+					text: i18n.ts.cancel,
+				},
+			],
+		});
+		if (confirm.canceled) return;
+		if (confirm.result === 'no') return;
 
-    if (confirm.result === 'neverShow') {
-      miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
-    }
-  }
+		if (confirm.result === 'neverShow') {
+			miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
+		}
+	}
 
-  localOnly.value = !localOnly.value;
+	localOnly.value = !localOnly.value;
 }
 
 async function toggleReactionAcceptance() {
-  const select = await os.select({
-    title: i18n.ts.reactionAcceptance,
-    items: [
-      { value: null, text: i18n.ts.all },
-      { value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
-      { value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
-      { value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
-      { value: 'likeOnly' as const, text: i18n.ts.likeOnly },
-    ],
-    default: reactionAcceptance.value,
-  });
-  if (select.canceled) return;
-  reactionAcceptance.value = select.result;
+	const select = await os.select({
+		title: i18n.ts.reactionAcceptance,
+		items: [
+			{ value: null, text: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+		],
+		default: reactionAcceptance.value,
+	});
+	if (select.canceled) return;
+	reactionAcceptance.value = select.result;
 }
 
 function pushVisibleUser(user: Misskey.entities.UserDetailed) {
-  if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
-    visibleUsers.value.push(user);
-  }
+	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
+		visibleUsers.value.push(user);
+	}
 }
 
 function addVisibleUser() {
-  os.selectUser().then(user => {
-    pushVisibleUser(user);
+	os.selectUser().then(user => {
+		pushVisibleUser(user);
 
-    if (!text.value.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
-      text.value = `@${Misskey.acct.toString(user)} ${text.value}`;
-    }
-  });
+		if (!text.value.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
+			text.value = `@${Misskey.acct.toString(user)} ${text.value}`;
+		}
+	});
 }
 
 function removeVisibleUser(user) {
-  visibleUsers.value = erase(user, visibleUsers.value);
+	visibleUsers.value = erase(user, visibleUsers.value);
 }
 
 function clear() {
-  text.value = '';
-  schedule.value = null;files.value = [];
-  poll.value = null;
-  quoteId.value = null;
+	text.value = '';
+	schedule.value = null; files.value = [];
+	poll.value = null;
+	quoteId.value = null;
 }
 
 function onKeydown(ev: KeyboardEvent) {
-  if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost.value) post();
-  if (ev.key === 'Escape') emit('esc');
+	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost.value) post();
+	if (ev.key === 'Escape') emit('esc');
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
-  imeText.value = ev.data;
+	imeText.value = ev.data;
 }
 
 function onCompositionEnd(ev: CompositionEvent) {
-  imeText.value = '';
+	imeText.value = '';
 }
 
 async function onPaste(ev: ClipboardEvent) {
-  if (props.mock) return;if (!ev.clipboardData) return;
+	if (props.mock) return; if (!ev.clipboardData) return;
 
 	for (const { item, i } of Array.from(ev.clipboardData.items, (data, x) => ({ item: data, i: x }))) {
-    if (item.kind === 'file') {
-      const file = item.getAsFile();if (!file) continue;
-      const lio = file.name.lastIndexOf('.');
-      const ext = lio >= 0 ? file.name.slice(lio) : '';
-      const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
-      upload(file, formatted);
-    }
-  }
+		if (item.kind === 'file') {
+			const file = item.getAsFile(); if (!file) continue;
+			const lio = file.name.lastIndexOf('.');
+			const ext = lio >= 0 ? file.name.slice(lio) : '';
+			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+			upload(file, formatted);
+		}
+	}
 
-  const paste = ev.clipboardData.getData('text');
+	const paste = ev.clipboardData.getData('text');
 
-  if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
-    ev.preventDefault();
+	if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
+		ev.preventDefault();
 
-    os.confirm({
-      type: 'info',
-      text: i18n.ts.quoteQuestion,
-    }).then(({ canceled }) => {
-      if (canceled) {
-        insertTextAtCursor(textareaEl.value, paste);
-        return;
-      }
+		os.confirm({
+			type: 'info',
+			text: i18n.ts.quoteQuestion,
+		}).then(({ canceled }) => {
+			if (canceled) {
+				insertTextAtCursor(textareaEl.value, paste);
+				return;
+			}
 
-      quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
-    });
-  }
+			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
+		});
+	}
 }
 
 function onDragover(ev) {
-  if (!ev.dataTransfer.items[0]) return;
-  const isFile = ev.dataTransfer.items[0].kind === 'file';
-  const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-  if (isFile || isDriveFile) {
-    ev.preventDefault();
-    draghover.value = true;
-    switch (ev.dataTransfer.effectAllowed) {
-      case 'all':
-      case 'uninitialized':
-      case 'copy':
-      case 'copyLink':
-      case 'copyMove':
-        ev.dataTransfer.dropEffect = 'copy';
-        break;
-      case 'linkMove':
-      case 'move':
-        ev.dataTransfer.dropEffect = 'move';
-        break;
-      default:
-        ev.dataTransfer.dropEffect = 'none';
-        break;
-    }
-  }
+	if (!ev.dataTransfer.items[0]) return;
+	const isFile = ev.dataTransfer.items[0].kind === 'file';
+	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
+	if (isFile || isDriveFile) {
+		ev.preventDefault();
+		draghover.value = true;
+		switch (ev.dataTransfer.effectAllowed) {
+			case 'all':
+			case 'uninitialized':
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
+				ev.dataTransfer.dropEffect = 'copy';
+				break;
+			case 'linkMove':
+			case 'move':
+				ev.dataTransfer.dropEffect = 'move';
+				break;
+			default:
+				ev.dataTransfer.dropEffect = 'none';
+				break;
+		}
+	}
 }
 
 function onDragenter() {
-  draghover.value = true;
+	draghover.value = true;
 }
 
 function onDragleave() {
-  draghover.value = false;
+	draghover.value = false;
 }
 
 function onDrop(ev: DragEvent): void {
-  draghover.value = false;
+	draghover.value = false;
 
-  // ファイルだったら
-  if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
-    ev.preventDefault();
-    for (const x of Array.from(ev.dataTransfer.files)) upload(x);
-    return;
-  }
+	// ファイルだったら
+	if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
+		ev.preventDefault();
+		for (const x of Array.from(ev.dataTransfer.files)) upload(x);
+		return;
+	}
 
-  //#region ドライブのファイル
-  const driveFile = ev.dataTransfer?.getData(_DATA_TRANSFER_DRIVE_FILE_);
-  if (driveFile != null && driveFile !== '') {
-    const file = JSON.parse(driveFile);
-    files.value.push(file);
-    ev.preventDefault();
-  }
-  //#endregion
+	//#region ドライブのファイル
+	const driveFile = ev.dataTransfer?.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	if (driveFile != null && driveFile !== '') {
+		const file = JSON.parse(driveFile);
+		files.value.push(file);
+		ev.preventDefault();
+	}
+	//#endregion
 }
 
 function saveDraft() {
-  if (props.instant || props.mock) return;
+	if (props.instant || props.mock) return;
 
-  const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
-  draftData[draftKey.value] = {
-    updatedAt: new Date(),
-    data: {
-      text: text.value,
-      useCw: useCw.value,
-      cw: cw.value,
-      visibility: visibility.value,
-      localOnly: localOnly.value,
-      files: files.value,
-      poll: poll.value,
-    },
-  };
+	draftData[draftKey.value] = {
+		updatedAt: new Date(),
+		data: {
+			text: text.value,
+			useCw: useCw.value,
+			cw: cw.value,
+			visibility: visibility.value,
+			localOnly: localOnly.value,
+			files: files.value,
+			poll: poll.value,
+		},
+	};
 
-  miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
 function deleteDraft() {
-  const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
-  delete draftData[draftKey.value];
+	delete draftData[draftKey.value];
 
-  miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
 async function post(ev?: MouseEvent) {
-  if (useCw.value && (cw.value == null || cw.value.trim() === '')) {
+	if (useCw.value && (cw.value == null || cw.value.trim() === '')) {
 		os.alert({
 			type: 'error',
 			text: i18n.ts.cwNotationRequired,
 		});
 		return;
-	}if (ev) {
-    const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
+	} if (ev) {
+		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
 		if (el) {
-    const rect = el.getBoundingClientRect();
-    const x = rect.left + (el.offsetWidth / 2);
-    const y = rect.top + (el.offsetHeight / 2);
-    os.popup(MkRippleEffect, { x, y }, {}, 'end');
-  }}
+			const rect = el.getBoundingClientRect();
+			const x = rect.left + (el.offsetWidth / 2);
+			const y = rect.top + (el.offsetHeight / 2);
+			os.popup(MkRippleEffect, { x, y }, {}, 'end');
+		}
+	}
 
-  if (props.mock) return;const annoying =
+	if (props.mock) return; const annoying =
       text.value.includes('$[x2') ||
       text.value.includes('$[x3') ||
       text.value.includes('$[x4') ||
       text.value.includes('$[scale') ||
       text.value.includes('$[position');
 
-  if (annoying && visibility.value === 'public') {
-    const { canceled, result } = await os.actions({
-      type: 'warning',
-      text: i18n.ts.thisPostMayBeAnnoying,
-      actions: [{
-        value: 'home',
-        text: i18n.ts.thisPostMayBeAnnoyingHome,
-        primary: true,
-      }, {
-        value: 'cancel',
-        text: i18n.ts.thisPostMayBeAnnoyingCancel,
-      }, {
-        value: 'ignore',
-        text: i18n.ts.thisPostMayBeAnnoyingIgnore,
-      }],
-    });
+	if (annoying && visibility.value === 'public') {
+		const { canceled, result } = await os.actions({
+			type: 'warning',
+			text: i18n.ts.thisPostMayBeAnnoying,
+			actions: [{
+				value: 'home',
+				text: i18n.ts.thisPostMayBeAnnoyingHome,
+				primary: true,
+			}, {
+				value: 'cancel',
+				text: i18n.ts.thisPostMayBeAnnoyingCancel,
+			}, {
+				value: 'ignore',
+				text: i18n.ts.thisPostMayBeAnnoyingIgnore,
+			}],
+		});
 
-    if (canceled) return;
-    if (result === 'cancel') return;
-    if (result === 'home') {
-      visibility.value = 'home';
-    }
-  }
+		if (canceled) return;
+		if (result === 'cancel') return;
+		if (result === 'home') {
+			visibility.value = 'home';
+		}
+	}
 
-  let postData = {
-    text: text.value === '' ? null : text.value,
-    fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
-    replyId: props.reply ? props.reply.id : undefined,
-    renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
-    channelId: props.channel ? props.channel.id : undefined,
-    schedule: schedule.value,
-      poll: poll.value,
-    cw: useCw.value ? cw.value ?? '' : null,
-    localOnly: localOnly.value,
-    visibility: visibility.value,
-    visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
-    reactionAcceptance: reactionAcceptance.value,
+	let postData = {
+		text: text.value === '' ? null : text.value,
+		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
+		replyId: props.reply ? props.reply.id : undefined,
+		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
+		channelId: props.channel ? props.channel.id : undefined,
+		schedule: schedule.value,
+		poll: poll.value,
+		cw: useCw.value ? cw.value ?? '' : null,
+		localOnly: localOnly.value,
+		visibility: visibility.value,
+		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
+		reactionAcceptance: reactionAcceptance.value,
 
-  noteId: props.updateMode ? props.initialNote?.id : undefined,
+		noteId: props.updateMode ? props.initialNote?.id : undefined,
 	};
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
@@ -804,46 +805,46 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
-  // plugin
-  if (notePostInterruptors.length > 0) {
-    for (const interruptor of notePostInterruptors) {
-      try {
+	// plugin
+	if (notePostInterruptors.length > 0) {
+		for (const interruptor of notePostInterruptors) {
+			try {
 				postData = await interruptor.handler(deepClone(postData)) as typeof postData;
 			} catch (err) {
 				console.error(err);
 			}
-    }
-  }
+		}
+	}
 
-  let token: string | undefined = undefined;
+	let token: string | undefined = undefined;
 
-  if (postAccount.value) {
-    const storedAccounts = await getAccounts();
-    token = storedAccounts.find(x => x.id === postAccount?.value?.id)?.token;
-  }
+	if (postAccount.value) {
+		const storedAccounts = await getAccounts();
+		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
+	}
 
-  posting.value = true;
-  misskeyApi(props.updateMode ? 'notes/update' : 'notes/create', postData, token).then(() => {
-    if (props.freezeAfterPosted) {
-      posted.value = true;
-    } else {
-      clear();
-    }
-    nextTick(() => {
-      deleteDraft();
-      emit('posted');
-      if (postData.text && postData.text !== '') {
-        const hashtags_ = mfm.parse(postData.text).map(x => x.type === 'hashtag' && x.props.hashtag).filter(x => x) as string[];
-        const history = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]') as string[];
-        miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
-      }
-      posting.value = false;
-      postAccount.value = null;
+	posting.value = true;
+	misskeyApi(props.updateMode ? 'notes/update' : 'notes/create', postData, token).then(() => {
+		if (props.freezeAfterPosted) {
+			posted.value = true;
+		} else {
+			clear();
+		}
+		nextTick(() => {
+			deleteDraft();
+			emit('posted');
+			if (postData.text && postData.text !== '') {
+				const hashtags_ = mfm.parse(postData.text).map(x => x.type === 'hashtag' && x.props.hashtag).filter(x => x) as string[];
+				const history = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]') as string[];
+				miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
+			}
+			posting.value = false;
+			postAccount.value = null;
 
-      incNotesCount();
-      if (notesCount === 1) {
-        claimAchievement('notes1');
-      }
+			incNotesCount();
+			if (notesCount === 1) {
+				claimAchievement('notes1');
+			}
 			poll.value = null;
 
 			if (postData.schedule?.scheduledAt) {
@@ -852,64 +853,64 @@ async function post(ev?: MouseEvent) {
 				os.toast(i18n.t('_schedulePost.willBePostedAtX', { date: str }));
 			}
 
-      const text = postData.text ?? '';
-      const lowerCase = text.toLowerCase();
-      if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('misskey')) {
-        claimAchievement('iLoveMisskey');
-      }
-      if ([
-        'https://youtu.be/Efrlqw8ytg4',
-        'https://www.youtube.com/watch?v=Efrlqw8ytg4',
-        'https://m.youtube.com/watch?v=Efrlqw8ytg4',
+			const text = postData.text ?? '';
+			const lowerCase = text.toLowerCase();
+			if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('misskey')) {
+				claimAchievement('iLoveMisskey');
+			}
+			if ([
+				'https://youtu.be/Efrlqw8ytg4',
+				'https://www.youtube.com/watch?v=Efrlqw8ytg4',
+				'https://m.youtube.com/watch?v=Efrlqw8ytg4',
 
-        'https://youtu.be/XVCwzwxdHuA',
-        'https://www.youtube.com/watch?v=XVCwzwxdHuA',
-        'https://m.youtube.com/watch?v=XVCwzwxdHuA',
+				'https://youtu.be/XVCwzwxdHuA',
+				'https://www.youtube.com/watch?v=XVCwzwxdHuA',
+				'https://m.youtube.com/watch?v=XVCwzwxdHuA',
 
-        'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB',
-        'https://open.spotify.com/track/7anfcaNPQWlWCwyCHmZqNy',
-        'https://open.spotify.com/track/5Odr16TvEN4my22K9nbH7l',
-        'https://open.spotify.com/album/5bOlxyl4igOrp2DwVQxBco',
-      ].some(url => text.includes(url))) {
-        claimAchievement('brainDiver');
-      }
+				'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB',
+				'https://open.spotify.com/track/7anfcaNPQWlWCwyCHmZqNy',
+				'https://open.spotify.com/track/5Odr16TvEN4my22K9nbH7l',
+				'https://open.spotify.com/album/5bOlxyl4igOrp2DwVQxBco',
+			].some(url => text.includes(url))) {
+				claimAchievement('brainDiver');
+			}
 
-      if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
-        claimAchievement('selfQuote');
-      }
+			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+				claimAchievement('selfQuote');
+			}
 
-      const date = new Date();
-      const h = date.getHours();
-      const m = date.getMinutes();
-      const s = date.getSeconds();
-      if (h >= 0 && h <= 3) {
-        claimAchievement('postedAtLateNight');
-      }
-      if (m === 0 && s === 0) {
-        claimAchievement('postedAt0min0sec');
-      }
-    });
-  }).catch(err => {
-    posting.value = false;
-    os.alert({
-      type: 'error',
-      text: err.message + '\n' + (err as any).id,
-    });
-  });
+			const date = new Date();
+			const h = date.getHours();
+			const m = date.getMinutes();
+			const s = date.getSeconds();
+			if (h >= 0 && h <= 3) {
+				claimAchievement('postedAtLateNight');
+			}
+			if (m === 0 && s === 0) {
+				claimAchievement('postedAt0min0sec');
+			}
+		});
+	}).catch(err => {
+		posting.value = false;
+		os.alert({
+			type: 'error',
+			text: err.message + '\n' + (err as any).id,
+		});
+	});
 }
 
 function cancel() {
-  emit('cancel');
+	emit('cancel');
 }
 
 function insertMention() {
-  os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
-    insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
-  });
+	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
+		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
+	});
 }
 
 async function insertEmoji(ev: MouseEvent) {
-  textAreaReadOnly.value = true;
+	textAreaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
 	emojiPicker.show(
@@ -934,41 +935,41 @@ async function insertMfmFunction(ev: MouseEvent) {
 }
 
 function showActions(ev: MouseEvent) {
-  os.popupMenu(postFormActions.map(action => ({
-    text: action.title,
-    action: () => {
-      action.handler({
-        text: text.value,
-        cw: cw.value,
-      }, (key, value: any) => {
+	os.popupMenu(postFormActions.map(action => ({
+		text: action.title,
+		action: () => {
+			action.handler({
+				text: text.value,
+				cw: cw.value,
+			}, (key, value: any) => {
 				if (typeof key !== 'string') return;
-        if (key === 'text') { text.value = value; }
-        if (key === 'cw') { useCw.value = value !== null; cw.value = value; }
-      });
-    },
-  })), ev.currentTarget ?? ev.target);
+				if (key === 'text') { text.value = value; }
+				if (key === 'cw') { useCw.value = value !== null; cw.value = value; }
+			});
+		},
+	})), ev.currentTarget ?? ev.target);
 }
 
 const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
 function openAccountMenu(ev: MouseEvent) {
-  if (props.mock) return;openAccountMenu_({
-    withExtraOperation: false,
-    includeCurrentAccount: true,
-    active: postAccount.value != null ? postAccount.value.id : $i.id,
-    onChoose: (account) => {
-      if (account.id === $i.id) {
-        postAccount.value = null;
-      } else {
-        postAccount.value = account;
-      }
-    },
-  }, ev);
+	if (props.mock) return; openAccountMenu_({
+		withExtraOperation: false,
+		includeCurrentAccount: true,
+		active: postAccount.value != null ? postAccount.value.id : $i.id,
+		onChoose: (account) => {
+			if (account.id === $i.id) {
+				postAccount.value = null;
+			} else {
+				postAccount.value = account;
+			}
+		},
+	}, ev);
 }
 
 function openOtherSettingsMenu(ev: MouseEvent) {
 	let reactionAcceptanceIcon: string;
-	switch (reactionAcceptance) {
+	switch (reactionAcceptance.value) {
 		case 'likeOnly':
 			reactionAcceptanceIcon = 'ti ti-heart';
 			break;
@@ -985,13 +986,13 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 		text: i18n.ts.reactionAcceptance,
 		icon: reactionAcceptanceIcon,
 		action: toggleReactionAcceptance,
-	}, ($i.policies?.canScheduleNote) ? {
+	}, ($i.policies.canScheduleNote) ? {
 		type: 'button',
 		text: i18n.ts.schedulePost,
 		icon: 'ti ti-calendar-time',
-		indicate: (schedule != null),
+		indicate: (schedule.value != null),
 		action: toggleSchedule,
-	} : undefined, ...(($i.policies?.canScheduleNote) ? [{ type: 'divider' }, {
+	} : undefined, ...(($i.policies.canScheduleNote) ? [{ type: 'divider' }, {
 		type: 'button',
 		text: i18n.ts._schedulePost.list,
 		icon: 'ti ti-calendar-event',
@@ -1006,67 +1007,67 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 }
 
 onMounted(() => {
-  if (props.autofocus) {
-    focus();
+	if (props.autofocus) {
+		focus();
 
-    nextTick(() => {
-      focus();
-    });
-  }
+		nextTick(() => {
+			focus();
+		});
+	}
 
-  // TODO: detach when unmount
-  if (textareaEl.value)new Autocomplete(textareaEl.value, text);
-  if (cwInputEl.value)new Autocomplete(cwInputEl.value, cw);
-  if (hashtagsInputEl.value) new Autocomplete(hashtagsInputEl.value, hashtags);
+	// TODO: detach when unmount
+	if (textareaEl.value) new Autocomplete(textareaEl.value, text);
+	if (cwInputEl.value) new Autocomplete(cwInputEl.value, cw);
+	if (hashtagsInputEl.value) new Autocomplete(hashtagsInputEl.value, hashtags);
 
-  nextTick(() => {
-    // 書きかけの投稿を復元
-    if (!props.instant && !props.mention && !props.specified && !props.mock) {
-      const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value];
-      if (draft) {
-        text.value = draft.data.text;
-        useCw.value = draft.data.useCw;
-        cw.value = draft.data.cw;
-        visibility.value = draft.data.visibility;
-        localOnly.value = draft.data.localOnly;
-        files.value = (draft.data.files || []).filter(draftFile => draftFile);
-        if (draft.data.poll) {
-          poll.value = draft.data.poll;
-        }
-      }
-    }
+	nextTick(() => {
+		// 書きかけの投稿を復元
+		if (!props.instant && !props.mention && !props.specified && !props.mock) {
+			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value];
+			if (draft) {
+				text.value = draft.data.text;
+				useCw.value = draft.data.useCw;
+				cw.value = draft.data.cw;
+				visibility.value = draft.data.visibility;
+				localOnly.value = draft.data.localOnly;
+				files.value = (draft.data.files || []).filter(draftFile => draftFile);
+				if (draft.data.poll) {
+					poll.value = draft.data.poll;
+				}
+			}
+		}
 
-    // 削除して編集
-    if (props.initialNote) {
-      const init = props.initialNote;
-      text.value = init.text ? init.text : '';
-      files.value = init.files ?? [];
-      cw.value = init.cw ?? null;
-      useCw.value = init.cw != null;
-      if (init.isSchedule) {
+		// 削除して編集
+		if (props.initialNote) {
+			const init = props.initialNote;
+			text.value = init.text ? init.text : '';
+			files.value = init.files ?? [];
+			cw.value = init.cw ?? null;
+			useCw.value = init.cw != null;
+			if (init.isSchedule) {
 				schedule.value = {
 					scheduledAt: init.createdAt,
 				};
 			}
 			if (init.poll) {
-        poll.value = {
-          choices: init.poll.choices.map(x => x.text),
-          multiple: init.poll.multiple,
-          expiresAt: init.poll.expiresAt? (new Date(init.poll.expiresAt)).getTime() : null,
+				poll.value = {
+					choices: init.poll.choices.map(x => x.text),
+					multiple: init.poll.multiple,
+					expiresAt: init.poll.expiresAt ? (new Date(init.poll.expiresAt)).getTime() : null,
 					expiredAfter: null,
-        };
-      }
-      visibility.value = init.visibility;
-      localOnly.value = init.localOnly?? false;
-      quoteId.value = init.renote ? init.renote.id : null;
-    }
+				};
+			}
+			visibility.value = init.visibility;
+			localOnly.value = init.localOnly ?? false;
+			quoteId.value = init.renote ? init.renote.id : null;
+		}
 
-    nextTick(() => watchForDraft());
-  });
+		nextTick(() => watchForDraft());
+	});
 });
 
 defineExpose({
-  clear,
+	clear,
 });
 </script>
 

@@ -85,6 +85,10 @@ export interface Locale extends ILocale {
      */
     "ruby": string;
     /**
+     * ピン留めされたチャンネル
+     */
+    "pinnedChannel": string;
+    /**
      * わかった
      */
     "gotIt": string;
