@@ -32,25 +32,16 @@ jobs:
 
       - name: Check allowed users
         id: check-allowed-users
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 実行を許可するユーザーIDをカンマ区切りで入力, ユーザーIDは https://api.github.com/users/hogehoge で確認できます
-          ALLOWED_USERS=""
-
-          ALLOWED_USERS="$ALLOWED_USERS,20679825" # acid-chicken
-          ALLOWED_USERS="$ALLOWED_USERS,22656849" # anatawa12
-          ALLOWED_USERS="$ALLOWED_USERS,7106976" # EbiseLutica
-          ALLOWED_USERS="$ALLOWED_USERS,67428053" # kakkokari-gtyih
-          ALLOWED_USERS="$ALLOWED_USERS,63075513" # lunaisnotaboy
-          ALLOWED_USERS="$ALLOWED_USERS,56515516" # mattyatea
-          ALLOWED_USERS="$ALLOWED_USERS,46447427" # samunohito
-          ALLOWED_USERS="$ALLOWED_USERS,3396686" # saschanaz
-          ALLOWED_USERS="$ALLOWED_USERS,4439005" # syuilo
-          ALLOWED_USERS="$ALLOWED_USERS,40626578" # tai-cha
-          ALLOWED_USERS="$ALLOWED_USERS,7973572" # tamaina
-          
-          ALLOWED_USERS="$ALLOWED_USERS," # trailing comma
-          COMMENT_AUTHOR="${{ github.event.comment.user.id }}"
-          if [[ "$ALLOWED_USERS" == *",$COMMENT_AUTHOR,"* ]]; then
+          ORG_NAME="${{ github.repository_owner }}"
+          COMMENT_AUTHOR="${{ github.event.comment.user.login }}"
+          MEMBERSHIP_STATUS=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/orgs/$ORG_NAME/members/$COMMENT_AUTHOR" \
+          -o /dev/null -w '%{http_code}\n' -s)
+          if [ "$MEMBERSHIP_STATUS" -eq 204 ]; then
             echo "is-allowed-user=true" > $GITHUB_OUTPUT
           else
             echo "is-allowed-user=false" > $GITHUB_OUTPUT
