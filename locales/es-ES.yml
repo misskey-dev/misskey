@@ -2444,5 +2444,6 @@ _hemisphere:
   S: "Hemisferio sur"
 _reversi:
   reversi: "Reversi"
+  won: "{name} ha ganado"
   total: "Total"
 
