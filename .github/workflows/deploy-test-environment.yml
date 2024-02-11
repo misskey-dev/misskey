@@ -33,9 +33,24 @@ jobs:
       - name: Check allowed users
         id: check-allowed-users
         run: |
-          ALLOWED_USERS="20679825,22656849,7106976,67428053,63075513,56515516,46447427,3396686,4439005,40626578,7973572" # 実行を許可するユーザーIDをカンマ区切りで入力, ユーザーIDは https://api.github.com/users/hogehoge で確認できます
+          # 実行を許可するユーザーIDをカンマ区切りで入力, ユーザーIDは https://api.github.com/users/hogehoge で確認できます
+          ALLOWED_USERS=""
+
+          ALLOWED_USERS="$ALLOWED_USERS,20679825" # acid-chicken
+          ALLOWED_USERS="$ALLOWED_USERS,22656849" # anatawa12
+          ALLOWED_USERS="$ALLOWED_USERS,7106976" # EbiseLutica
+          ALLOWED_USERS="$ALLOWED_USERS,67428053" # kakkokari-gtyih
+          ALLOWED_USERS="$ALLOWED_USERS,63075513" # lunaisnotaboy
+          ALLOWED_USERS="$ALLOWED_USERS,56515516" # mattyatea
+          ALLOWED_USERS="$ALLOWED_USERS,46447427" # samunohito
+          ALLOWED_USERS="$ALLOWED_USERS,3396686" # saschanaz
+          ALLOWED_USERS="$ALLOWED_USERS,4439005" # syuilo
+          ALLOWED_USERS="$ALLOWED_USERS,40626578" # tai-cha
+          ALLOWED_USERS="$ALLOWED_USERS,7973572" # tamaina
+          
+          ALLOWED_USERS="$ALLOWED_USERS," # trailing comma
           COMMENT_AUTHOR="${{ github.event.comment.user.id }}"
-          if [[ ",$ALLOWED_USERS," == *",$COMMENT_AUTHOR,"* ]]; then
+          if [[ "$ALLOWED_USERS" == *",$COMMENT_AUTHOR,"* ]]; then
             echo "is-allowed-user=true" > $GITHUB_OUTPUT
           else
             echo "is-allowed-user=false" > $GITHUB_OUTPUT
