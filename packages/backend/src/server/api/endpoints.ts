@@ -51,6 +51,10 @@ import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federat
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
 import * as ep___admin_federation_updateInstance from './endpoints/admin/federation/update-instance.js';
+import * as ep___admin_indieAuth_create from './endpoints/admin/indie-auth/create.js';
+import * as ep___admin_indieAuth_delete from './endpoints/admin/indie-auth/delete.js';
+import * as ep___admin_indieAuth_list from './endpoints/admin/indie-auth/list.js';
+import * as ep___admin_indieAuth_update from './endpoints/admin/indie-auth/update.js';
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
@@ -426,6 +430,10 @@ const eps = [
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
 	['admin/federation/remove-all-following', ep___admin_federation_removeAllFollowing],
 	['admin/federation/update-instance', ep___admin_federation_updateInstance],
+	['admin/indie-auth/create', ep___admin_indieAuth_create],
+	['admin/indie-auth/delete', ep___admin_indieAuth_delete],
+	['admin/indie-auth/list', ep___admin_indieAuth_list],
+	['admin/indie-auth/update', ep___admin_indieAuth_update],
 	['admin/get-index-stats', ep___admin_getIndexStats],
 	['admin/get-table-stats', ep___admin_getTableStats],
 	['admin/get-user-ips', ep___admin_getUserIps],

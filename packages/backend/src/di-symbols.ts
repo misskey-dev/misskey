@@ -49,6 +49,7 @@ export const DI = {
 	blockingsRepository: Symbol('blockingsRepository'),
 	swSubscriptionsRepository: Symbol('swSubscriptionsRepository'),
 	hashtagsRepository: Symbol('hashtagsRepository'),
+	indieAuthClientsRepository: Symbol('indieAuthClientsRepository'),
 	abuseUserReportsRepository: Symbol('abuseUserReportsRepository'),
 	registrationTicketsRepository: Symbol('registrationTicketsRepository'),
 	authSessionsRepository: Symbol('authSessionsRepository'),

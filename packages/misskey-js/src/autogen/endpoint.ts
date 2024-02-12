@@ -59,6 +59,12 @@ import type {
 	AdminFederationRefreshRemoteInstanceMetadataRequest,
 	AdminFederationRemoveAllFollowingRequest,
 	AdminFederationUpdateInstanceRequest,
+	AdminIndieAuthCreateRequest,
+	AdminIndieAuthCreateResponse,
+	AdminIndieAuthDeleteRequest,
+	AdminIndieAuthListRequest,
+	AdminIndieAuthListResponse,
+	AdminIndieAuthUpdateRequest,
 	AdminGetIndexStatsResponse,
 	AdminGetTableStatsResponse,
 	AdminGetUserIpsRequest,
@@ -608,6 +614,10 @@ export type Endpoints = {
 	'admin/federation/refresh-remote-instance-metadata': { req: AdminFederationRefreshRemoteInstanceMetadataRequest; res: EmptyResponse };
 	'admin/federation/remove-all-following': { req: AdminFederationRemoveAllFollowingRequest; res: EmptyResponse };
 	'admin/federation/update-instance': { req: AdminFederationUpdateInstanceRequest; res: EmptyResponse };
+	'admin/indie-auth/create': { req: AdminIndieAuthCreateRequest; res: AdminIndieAuthCreateResponse };
+	'admin/indie-auth/delete': { req: AdminIndieAuthDeleteRequest; res: EmptyResponse };
+	'admin/indie-auth/list': { req: AdminIndieAuthListRequest; res: AdminIndieAuthListResponse };
+	'admin/indie-auth/update': { req: AdminIndieAuthUpdateRequest; res: EmptyResponse };
 	'admin/get-index-stats': { req: EmptyRequest; res: AdminGetIndexStatsResponse };
 	'admin/get-table-stats': { req: EmptyRequest; res: AdminGetTableStatsResponse };
 	'admin/get-user-ips': { req: AdminGetUserIpsRequest; res: AdminGetUserIpsResponse };

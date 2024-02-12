@@ -418,6 +418,42 @@ export type paths = {
      */
     post: operations['admin/federation/update-instance'];
   };
+  '/admin/indie-auth/create': {
+    /**
+     * admin/indie-auth/create
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:indie-auth*
+     */
+    post: operations['admin/indie-auth/create'];
+  };
+  '/admin/indie-auth/delete': {
+    /**
+     * admin/indie-auth/delete
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:indie-auth*
+     */
+    post: operations['admin/indie-auth/delete'];
+  };
+  '/admin/indie-auth/list': {
+    /**
+     * admin/indie-auth/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:indie-auth*
+     */
+    post: operations['admin/indie-auth/list'];
+  };
+  '/admin/indie-auth/update': {
+    /**
+     * admin/indie-auth/update
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:indie-auth*
+     */
+    post: operations['admin/indie-auth/update'];
+  };
   '/admin/get-index-stats': {
     /**
      * admin/get-index-stats
@@ -7526,6 +7562,233 @@ export type operations = {
         'application/json': {
           host: string;
           isSuspended: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/indie-auth/create
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:indie-auth*
+   */
+  'admin/indie-auth/create': {
+    requestBody: {
+      content: {
+        'application/json': {
+          id: string;
+          name?: string | null;
+          redirectUris?: string[];
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            name: string | null;
+            redirectUris: string[];
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/indie-auth/delete
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:indie-auth*
+   */
+  'admin/indie-auth/delete': {
+    requestBody: {
+      content: {
+        'application/json': {
+          id: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/indie-auth/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:indie-auth*
+   */
+  'admin/indie-auth/list': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** @default 0 */
+          offset?: number;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': ({
+              id: string;
+              /** Format: date-time */
+              createdAt: string;
+              name: string | null;
+              redirectUris: string[];
+            })[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/indie-auth/update
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:indie-auth*
+   */
+  'admin/indie-auth/update': {
+    requestBody: {
+      content: {
+        'application/json': {
+          id: string;
+          name?: string | null;
+          redirectUris?: string[];
         };
       };
     };

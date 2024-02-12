@@ -32,7 +32,12 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { AccessTokensRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type {
+	AccessTokensRepository,
+	IndieAuthClientsRepository,
+	UserProfilesRepository,
+	UsersRepository
+} from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -100,8 +105,8 @@ function validateClientId(raw: string): URL {
 
 interface ClientInformation {
 	id: string;
-	redirectUris: string[];
 	name: string;
+	redirectUris: string[];
 }
 
 // https://indieauth.spec.indieweb.org/#client-information-discovery
@@ -246,6 +251,8 @@ export class OAuth2ProviderService {
 		private redisClient: Redis.Redis,
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
+		@Inject(DI.indieAuthClientsRepository)
+		private indieAuthClientsRepository: IndieAuthClientsRepository,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 		@Inject(DI.userProfilesRepository)
@@ -423,8 +430,10 @@ export class OAuth2ProviderService {
 					}
 				}
 
+				// Find client information from the database.
+				const registeredClientInfo = await this.indieAuthClientsRepository.findOneBy({ id: clientUrl.href }) as ClientInformation | null;
 				// Find client information from the remote.
-				const clientInfo = await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
+				const clientInfo = registeredClientInfo ?? await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
 
 				// Require the redirect URI to be included in an explicit list, per
 				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3

@@ -131,6 +131,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
+
+				<MkFolder>
+					<template #label>IndieAuth Clients</template>
+
+					<div class="_gaps">
+						<MkButton primary full @click="indieAuthAddNew"><i class="ti ti-plus"></i> New</MkButton>
+						<MkFolder v-for="(client, index) in indieAuthClients" :key="`${index}-${client.createdAt}`" :defaultOpen="!client.createdAt">
+							<template #label>{{ client.name || client.id }}</template>
+							<template #icon>
+								<i v-if="client.id" class="ti ti-key"></i>
+								<i v-else class="ti ti-plus"></i>
+							</template>
+							<template v-if="client.name && client.id" #caption>{{ client.id }}</template>
+
+							<div class="_gaps_m">
+								<MkInput v-model="client.id" :disabled="!!client.createdAt">
+									<template #label>Client ID</template>
+								</MkInput>
+								<MkInput v-model="client.name">
+									<template #label>Name</template>
+								</MkInput>
+								<MkTextarea v-model="client.redirectUris">
+									<template #label>Redirect URIs</template>
+								</MkTextarea>
+								<div class="buttons _buttons">
+									<MkButton primary @click="indieAuthSave(client)"><i class="ti ti-device-floppy"></i> Save</MkButton>
+									<MkButton v-if="client.createdAt" warn @click="indieAuthDelete(client)"><i class="ti ti-trash"></i> Delete</MkButton>
+								</div>
+							</div>
+						</MkFolder>
+						<MkButton v-if="indieAuthHasMore" :class="$style.more" :disabled="!indieAuthHasMore" primary rounded @click="indieAuthFetch()">
+							<i class="ti ti-reload"></i>{{ i18n.ts.more }}
+						</MkButton>
+					</div>
+				</MkFolder>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -155,7 +190,7 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const summalyProxy = ref<string>('');
+const summalyProxy = ref<string | null>('');
 const enableHcaptcha = ref<boolean>(false);
 const enableMcaptcha = ref<boolean>(false);
 const enableRecaptcha = ref<boolean>(false);
@@ -172,6 +207,9 @@ const enableTruemailApi = ref<boolean>(false);
 const truemailInstance = ref<string | null>(null);
 const truemailAuthKey = ref<string | null>(null);
 const bannedEmailDomains = ref<string>('');
+const indieAuthClients = ref<any[]>([]);
+const indieAuthOffset = ref(0);
+const indieAuthHasMore = ref(false);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -201,15 +239,15 @@ async function init() {
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		summalyProxy: summalyProxy.value,
-		sensitiveMediaDetection: sensitiveMediaDetection.value,
+		summalyProxy: summalyProxy.value === '' ? null : summalyProxy.value,
+		sensitiveMediaDetection: sensitiveMediaDetection.value as 'none' | 'all' | 'local' | 'remote',
 		sensitiveMediaDetectionSensitivity:
 			sensitiveMediaDetectionSensitivity.value === 0 ? 'veryLow' :
 			sensitiveMediaDetectionSensitivity.value === 1 ? 'low' :
 			sensitiveMediaDetectionSensitivity.value === 2 ? 'medium' :
 			sensitiveMediaDetectionSensitivity.value === 3 ? 'high' :
 			sensitiveMediaDetectionSensitivity.value === 4 ? 'veryHigh' :
-			0,
+			'veryLow',
 		setSensitiveFlagAutomatically: setSensitiveFlagAutomatically.value,
 		enableSensitiveMediaDetectionForVideos: enableSensitiveMediaDetectionForVideos.value,
 		enableIpLogging: enableIpLogging.value,
@@ -225,6 +263,64 @@ function save() {
 	});
 }
 
+function indieAuthFetch(resetOffset = false) {
+	if (resetOffset) {
+		indieAuthClients.value = [];
+		indieAuthOffset.value = 0;
+	}
+
+	misskeyApi('admin/indie-auth/list', {
+		offsetMode: true,
+		offset: indieAuthOffset.value,
+		limit: 10,
+	}).then(clients => {
+		indieAuthClients.value = indieAuthClients.value.concat(clients.map((client: any) => ({
+			id: client.id,
+			name: client.name,
+			redirectUris: client.redirectUris.join('\n'),
+			createdAt: client.createdAt,
+		})));
+		indieAuthHasMore.value = clients.length === 10;
+		indieAuthOffset.value += clients.length;
+	});
+}
+
+indieAuthFetch(true);
+
+function indieAuthAddNew() {
+	indieAuthClients.value.unshift({
+		id: '',
+		name: '',
+		redirectUris: '',
+	});
+}
+
+function indieAuthDelete(client) {
+	os.confirm({
+		type: 'warning',
+		text: i18n.tsx.deleteAreYouSure({ x: client.id }),
+	}).then(({ canceled }) => {
+		if (canceled) return;
+		indieAuthClients.value = indieAuthClients.value.filter(x => x !== client);
+		misskeyApi('admin/indie-auth/delete', client);
+	});
+}
+
+async function indieAuthSave(client) {
+	const params = {
+		id: client.id,
+		name: client.name,
+		redirectUris: client.redirectUris.split('\n'),
+	};
+
+	if (client.createdAt !== undefined) {
+		await misskeyApi('admin/indie-auth/update', params);
+	} else {
+		await misskeyApi('admin/indie-auth/create', params);
+	}
+	indieAuthFetch(true);
+}
+
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
@@ -234,3 +330,10 @@ definePageMetadata({
 	icon: 'ti ti-lock',
 });
 </script>
+
+<style lang="scss" module>
+.more {
+	margin-left: auto;
+	margin-right: auto;
+}
+</style>

@@ -51,6 +51,10 @@ import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federat
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
 import * as ep___admin_federation_updateInstance from './endpoints/admin/federation/update-instance.js';
+import * as ep___admin_indieAuth_create from './endpoints/admin/indie-auth/create.js';
+import * as ep___admin_indieAuth_delete from './endpoints/admin/indie-auth/delete.js';
+import * as ep___admin_indieAuth_list from './endpoints/admin/indie-auth/list.js';
+import * as ep___admin_indieAuth_update from './endpoints/admin/indie-auth/update.js';
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
@@ -428,6 +432,10 @@ const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federati
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
 const $admin_federation_removeAllFollowing: Provider = { provide: 'ep:admin/federation/remove-all-following', useClass: ep___admin_federation_removeAllFollowing.default };
 const $admin_federation_updateInstance: Provider = { provide: 'ep:admin/federation/update-instance', useClass: ep___admin_federation_updateInstance.default };
+const $admin_indieAuth_create: Provider = { provide: 'ep:admin/indie-auth/create', useClass: ep___admin_indieAuth_create.default };
+const $admin_indieAuth_delete: Provider = { provide: 'ep:admin/indie-auth/delete', useClass: ep___admin_indieAuth_delete.default };
+const $admin_indieAuth_list: Provider = { provide: 'ep:admin/indie-auth/list', useClass: ep___admin_indieAuth_list.default };
+const $admin_indieAuth_update: Provider = { provide: 'ep:admin/indie-auth/update', useClass: ep___admin_indieAuth_update.default };
 const $admin_getIndexStats: Provider = { provide: 'ep:admin/get-index-stats', useClass: ep___admin_getIndexStats.default };
 const $admin_getTableStats: Provider = { provide: 'ep:admin/get-table-stats', useClass: ep___admin_getTableStats.default };
 const $admin_getUserIps: Provider = { provide: 'ep:admin/get-user-ips', useClass: ep___admin_getUserIps.default };
@@ -809,6 +817,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
 		$admin_federation_updateInstance,
+		$admin_indieAuth_create,
+		$admin_indieAuth_delete,
+		$admin_indieAuth_list,
+		$admin_indieAuth_update,
 		$admin_getIndexStats,
 		$admin_getTableStats,
 		$admin_getUserIps,
@@ -1184,6 +1196,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
 		$admin_federation_updateInstance,
+		$admin_indieAuth_create,
+		$admin_indieAuth_delete,
+		$admin_indieAuth_list,
+		$admin_indieAuth_update,
 		$admin_getIndexStats,
 		$admin_getTableStats,
 		$admin_getUserIps,
