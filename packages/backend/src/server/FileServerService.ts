@@ -82,8 +82,7 @@ export class FileServerService {
 					.catch(err => this.errorHandler(request, reply, err));
 			});
 			fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
-				return await this.sendDriveFile(request, reply)
-					.catch(err => this.errorHandler(request, reply, err));
+				return await reply.redirect(301, `${this.config.url}/files/${request.params.key}`);
 			});
 			done();
 		});
