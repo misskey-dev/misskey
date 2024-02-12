@@ -7830,6 +7830,14 @@ export interface Locale extends ILocale {
          */
         "read:admin:ad": string;
         /**
+         * IndieAuthのクライアント情報を操作する
+         */
+        "write:admin:indie-auth": string;
+        /**
+         * IndieAuthのクライアント情報を見る
+         */
+        "read:admin:indie-auth": string;
+        /**
          * 招待コードを作成する
          */
         "write:invite-codes": string;
