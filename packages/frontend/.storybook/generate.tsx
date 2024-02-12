@@ -409,6 +409,7 @@ function toStories(component: string): Promise<string> {
 		glob('src/components/MkUserSetupDialog.vue'),
 		glob('src/components/MkUserSetupDialog.*.vue'),
 		glob('src/components/MkInviteCode.vue'),
+		glob('src/components/MkTagItem.vue'),
 		glob('src/pages/user/home.vue'),
 	]);
 	const components = globs.flat();

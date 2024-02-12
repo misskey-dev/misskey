@@ -1,0 +1,61 @@
+<template>
+<div :class="$style.root" @click="(ev) => emit('click', ev)">
+	<span v-if="iconClass" :class="[$style.icon, iconClass]"/>
+	<span :class="$style.content">{{ content }}</span>
+	<MkButton v-if="exButtonIconClass" :class="$style.exButton" @click="(ev) => emit('exButtonClick', ev)">
+		<span :class="exButtonIconClass"/>
+	</MkButton>
+</div>
+</template>
+
+<script setup lang="ts">
+import MkButton from '@/components/MkButton.vue';
+
+const emit = defineEmits<{
+	(ev: 'click', payload: MouseEvent): void;
+	(ev: 'exButtonClick', payload: MouseEvent): void;
+}>();
+
+defineProps<{
+	iconClass?: string;
+	content: string;
+	exButtonIconClass?: string
+}>();
+</script>
+
+<style module lang="scss">
+$buttonSize : 2em;
+
+.root {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 9999px;
+	padding: 4px 4px;
+	gap: 4px;
+
+	background-color: var(--buttonBg);
+
+	&:hover {
+		background-color: var(--buttonBgHover);
+	}
+}
+
+.icon {
+	font-size: 0.80em;
+}
+
+.exButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 9999px;
+	max-height: $buttonSize;
+	max-width: $buttonSize;
+	min-height: $buttonSize;
+	min-width: $buttonSize;
+	padding: 0;
+	box-sizing: border-box;
+	font-size: 0.65em;
+}
+</style>

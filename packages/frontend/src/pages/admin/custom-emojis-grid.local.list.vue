@@ -58,7 +58,24 @@
 					</MkInput>
 				</div>
 
-				<div role="separator" :class="$style.divider"></div>
+				<MkFolder :spacerMax="8" :spacerMin="8">
+					<template #icon><i class="ti ti-arrows-sort"></i></template>
+					<template #label>ソート順</template>
+					<div :class="$style.sortOrderArea">
+						<div :class="$style.sortOrderAreaTags">
+							<MkTagItem
+								v-for="order in sortOrders"
+								:key="order.column"
+								:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
+								:exButtonIconClass="'ti ti-x'"
+								:content="order.column"
+							/>
+						</div>
+						<MkButton :class="$style.sortOrderAddButton">
+							<span class="ti ti-plus"/>
+						</MkButton>
+					</div>
+				</MkFolder>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 					<MkButton primary @click="onSearchButtonClicked">
@@ -134,6 +151,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
+import MkTagItem from '@/components/MkTagItem.vue';
 
 type GridItem = {
 	checked: boolean;
@@ -151,6 +169,21 @@ type GridItem = {
 	updatedAt: string | null;
 	publicUrl?: string | null;
 	originalUrl?: string | null;
+}
+
+type GridSortOrderKey =
+	'name' |
+	'category' |
+	'aliases' |
+	'type' |
+	'license' |
+	'isSensitive' |
+	'localOnly' |
+	'updatedAt';
+
+type GridSortOrder = {
+	column: GridSortOrderKey;
+	direction: 'ASC' | 'DESC';
 }
 
 function setupGrid(): GridSetting {
@@ -203,7 +236,8 @@ const queryUpdatedAtTo = ref<string | null>(null);
 const querySensitive = ref<string | null>(null);
 const queryLocalOnly = ref<string | null>(null);
 const previousQuery = ref<string | undefined>(undefined);
-
+const sortOrders = ref<GridSortOrder[]>([]);
+sortOrders.value.push({ column: 'updatedAt', direction: 'DESC' }, { column: 'name', direction: 'ASC' });
 const requestLogs = ref<RequestLogItem[]>([]);
 
 const gridItems = ref<GridItem[]>([]);
@@ -606,6 +640,36 @@ onMounted(async () => {
 	justify-content: center;
 	align-items: center;
 	gap: 8px;
+}
+
+.sortOrderArea {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.sortOrderAreaTags {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+	gap: 8px;
+}
+
+.sortOrderAddButton {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	min-width: 2.0em;
+	min-height: 2.0em;
+	max-width: 2.0em;
+	max-height: 2.0em;
+	padding: 8px;
+	margin-left: auto;
+	border-radius: 9999px;
+	background-color: var(--buttonBg);
 }
 
 .gridArea {
