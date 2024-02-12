@@ -38,6 +38,46 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('suanko', () => {
+		it('valid',() => {
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m1', 'm1', 'm1', 'm2', 'm2', 'm2', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'e', 'e'],
+			 	huros: [],
+				tsumoTile: 'chun',
+			}), ['suanko']);
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m2', 'm2', 'm2', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'e', 'e'],
+			 	huros: [{type: 'ankan', :tile: 'm1'}],
+				tsumoTile: 'chun',
+			}), ['suanko']);
+		});
+
+		it('invalid',() => {
+		      	assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'm2', 'm2', 'e', 'e', 'e'],
+				huros: [{type: 'pom', tile: 'm1'],
+				ronTile: 'e',
+			}).includes('suanko'), false);
+
+		      	assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m1', 'm1', 'm1', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'm2', 'm2', 'e', 'e', 'e'],
+				huros: [],
+				ronTile: 'e',
+			}).includes('suanko'), false);
+
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m1', 'm1', 'm1', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'm2', 'm2', 'e', 'e', 'e'],
+				huros: [],
+				ronTile: 'e',
+			}).includes('suanko'), false);
+		});
+	});
+
 	describe('daisangen', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
