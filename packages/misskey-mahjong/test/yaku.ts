@@ -78,6 +78,32 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('suanko-tanki', () => {
+		it('valid', () =>{
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m1', 'm1', 'm1', 'm2', 'm2', 'm2', 'm3', 'm3', 'm3', 'haku', 'haku', 'haku', 'e', 'e'],
+				huros: [],
+				tsumoTile: 'e',
+			}), ['suanko-tanki']);
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m2', 'm2', 'm2', 'm3', 'm3', 'm3', 'haku', 'haku', 'haku', 'e', 'e'],
+				huros: [{type: 'ankan', tile: 'm1'],
+				tsumoTile: 'e',
+			}), ['suanko-tanki']);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m1', 'm1', 'm1', 'm2', 'm2', 'm2', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'e', 'e'],
+			 	huros: [],
+				tsumoTile: 'chun',
+			}).includes('suanko-tanki'), false);
+		});
+	})
+
 	describe('daisangen', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
