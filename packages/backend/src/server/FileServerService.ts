@@ -60,7 +60,6 @@ export class FileServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			if (process.env.NODE_ENV === 'development') {
@@ -69,20 +68,24 @@ export class FileServerService {
 			done();
 		});
 
-		fastify.get('/files/app-default.jpg', (request, reply) => {
-			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
-			reply.header('Content-Type', 'image/jpeg');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			return reply.send(file);
-		});
+		fastify.register((fastify, options, done) => {
+			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+			fastify.get('/files/app-default.jpg', (request, reply) => {
+				const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
+				reply.header('Content-Type', 'image/jpeg');
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
+				return reply.send(file);
+			});
 
-		fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
-			return await this.sendDriveFile(request, reply)
-				.catch(err => this.errorHandler(request, reply, err));
-		});
-		fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
-			return await this.sendDriveFile(request, reply)
-				.catch(err => this.errorHandler(request, reply, err));
+			fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
+				return await this.sendDriveFile(request, reply)
+					.catch(err => this.errorHandler(request, reply, err));
+			});
+			fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
+				return await this.sendDriveFile(request, reply)
+					.catch(err => this.errorHandler(request, reply, err));
+			});
+			done();
 		});
 
 		fastify.get<{
