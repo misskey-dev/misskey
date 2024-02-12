@@ -64,7 +64,7 @@ execa('pnpm', ['--filter', 'backend', 'dev'], {
 	stderr: process.stderr,
 });
 
-execa('pnpm', ['--filter', 'frontend', 'dev'], {
+execa('pnpm', ['--filter', 'frontend', process.env.MK_DEV_PREFER === 'backend' ? 'dev' : 'watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
