@@ -262,6 +262,32 @@ describe('Yaku', () => {
 		});
 	})
 
+	describe('chinroto', () => {
+		it('valid', () =>{
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+			        handTiles: ['m1','m1','m1''m9', 'm9', 'm9', 's1', 's1', 's1', 's9', 's9', 's9', 'p1', 'p1'],
+				huros: [],
+				tsumoTile: 'p1',
+			}), ['chinroto']);
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['m9', 'm9', 'm9', 's1', 's1', 's1', 's9', 's9', 's9', 'p1', 'p1'],
+				huros: [{type: 'pon', tile: 'm1'}],
+				tsumoTile: 'p1',
+			}), ['chinroto']);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+			        handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8','haku','haku','haku'],
+			        huros: [],
+				tsumoTile: 's',
+			}).includes('chinroto'), false);
+		});
+	})
+
 	describe('churen', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
