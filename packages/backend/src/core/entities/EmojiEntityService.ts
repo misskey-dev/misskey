@@ -88,6 +88,7 @@ export class EmojiEntityService {
 			aliases: emoji.aliases,
 			category: emoji.category,
 			publicUrl: emoji.publicUrl,
+			originalUrl: emoji.originalUrl,
 			license: emoji.license,
 			localOnly: emoji.localOnly,
 			isSensitive: emoji.isSensitive,

@@ -57,6 +57,9 @@
 						<template #label>updatedAt(to)</template>
 					</MkInput>
 				</div>
+
+				<div role="separator" :class="$style.divider"></div>
+
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 					<MkButton primary @click="onSearchButtonClicked">
 						{{ i18n.ts.search }}
@@ -146,6 +149,8 @@ type GridItem = {
 	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
 	fileId?: string;
 	updatedAt: string | null;
+	publicUrl?: string | null;
+	originalUrl?: string | null;
 }
 
 function setupGrid(): GridSetting {
@@ -177,7 +182,9 @@ function setupGrid(): GridSetting {
 			{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
 			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 			{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140 },
-			{ bindTo: 'updatedAt', type: 'hidden', editable: false, width: 'auto' },
+			{ bindTo: 'updatedAt', type: 'text', editable: false, width: 'auto' },
+			{ bindTo: 'publicUrl', type: 'text', editable: false, width: 180 },
+			{ bindTo: 'originalUrl', type: 'text', editable: false, width: 180 },
 		],
 	};
 }
@@ -512,12 +519,14 @@ function refreshGridItems() {
 		name: it.name,
 		host: it.host ?? '',
 		category: it.category ?? '',
-		aliases: it.aliases.join(', '),
+		aliases: it.aliases.join(','),
 		license: it.license ?? '',
 		isSensitive: it.isSensitive,
 		localOnly: it.localOnly,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
+		roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(','),
 		updatedAt: it.updatedAt,
+		publicUrl: it.publicUrl,
+		originalUrl: it.originalUrl,
 	}));
 	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
 }
@@ -614,4 +623,8 @@ onMounted(async () => {
 	flex-wrap: wrap;
 }
 
+.divider {
+	margin: 8px 0;
+	border-top: solid 0.5px var(--divider);
+}
 </style>

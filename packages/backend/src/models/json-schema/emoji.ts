@@ -131,6 +131,10 @@ export const packedEmojiDetailedAdminSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		originalUrl: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
 		uri: {
 			type: 'string',
 			optional: false, nullable: true,

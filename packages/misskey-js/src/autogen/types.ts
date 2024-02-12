@@ -4454,6 +4454,7 @@ export type components = {
       /** @description The local host is represented with `null`. */
       host: string | null;
       publicUrl: string;
+      originalUrl: string;
       uri: string | null;
       type: string | null;
       aliases: string[];
@@ -6950,6 +6951,7 @@ export type operations = {
             host?: string;
             uri?: string;
             publicUrl?: string;
+            originalUrl?: string;
             type?: string;
             aliases?: string;
             category?: string;

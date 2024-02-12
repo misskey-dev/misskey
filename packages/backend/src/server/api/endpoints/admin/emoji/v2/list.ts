@@ -45,6 +45,7 @@ export const paramDef = {
 				host: { type: 'string' },
 				uri: { type: 'string' },
 				publicUrl: { type: 'string' },
+				originalUrl: { type: 'string' },
 				type: { type: 'string' },
 				aliases: { type: 'string' },
 				category: { type: 'string' },
