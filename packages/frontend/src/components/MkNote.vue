@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
+				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]"><div ref="collapsibleInner">
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
 						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
 					</button>
-				</div>
+				</div></div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<MkReactionsViewer :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
@@ -254,8 +254,9 @@ const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
-const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
-const collapsed = ref(appearNote.value.cw == null && isLong);
+const collapsibleInner = ref(null);
+const isLong = computed(() => (!!collapsibleInner.value) && (collapsibleInner.value.clientHeight > 9 * parseFloat(getComputedStyle(collapsibleInner.value).fontSize)));
+const collapsed = ref(appearNote.value.cw == null);
 const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
