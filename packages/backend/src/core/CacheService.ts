@@ -85,6 +85,7 @@ export class CacheService implements OnApplicationShutdown {
 		this.uriPersonCache = new MemoryKVCache<MiUser | null, string | null>(Infinity, {
 			toMapConverter: user => {
 				if (user === null) return null;
+				if (user.isDeleted) return null;
 
 				userByIdCache.set(user.id, user);
 				return user.id;
