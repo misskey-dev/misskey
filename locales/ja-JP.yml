@@ -2056,6 +2056,8 @@ _permissions:
   "read:admin:stream": "管理者用のWebsocket APIを使う"
   "write:admin:ad": "広告を操作する"
   "read:admin:ad": "広告を見る"
+  "write:admin:indie-auth": "IndieAuthのクライアント情報を操作する"
+  "read:admin:indie-auth": "IndieAuthのクライアント情報を見る"
   "write:invite-codes": "招待コードを作成する"
   "read:invite-codes": "招待コードを取得する"
   "write:clip-favorite": "クリップのいいねを操作する"
