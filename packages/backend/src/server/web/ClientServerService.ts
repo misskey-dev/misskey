@@ -34,6 +34,7 @@ import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -41,7 +42,7 @@ import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityServi
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
-import type { FastifyInstance, FastifyPluginOptions, FastifyReply, onRequestHookHandler } from 'fastify';
+import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -52,14 +53,6 @@ const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
 const tarball = `${_dirname}/../../../../../built/tarball/`;
-
-const handleRedirectToOmitSearch: onRequestHookHandler = (request, reply, done) => {
-	const index = request.url.indexOf('?');
-	if (~index) {
-		reply.redirect(301, request.url.slice(0, index));
-	}
-	done();
-};
 
 @Injectable()
 export class ClientServerService {
@@ -269,7 +262,7 @@ export class ClientServerService {
 					immutable: true,
 					decorateReply: false,
 				});
-				fastify.addHook('onRequest', handleRedirectToOmitSearch);
+				fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
 				done();
 			});
 		} else {
@@ -313,7 +306,7 @@ export class ClientServerService {
 				immutable: true,
 				decorateReply: false,
 			});
-			fastify.addHook('onRequest', handleRedirectToOmitSearch);
+			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
 			done();
 		});
 
