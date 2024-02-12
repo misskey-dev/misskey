@@ -58,7 +58,7 @@ describe('Yaku', () => {
 		      	assert.deepStrictEqual(calcYakus({
 				house: '',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'm2', 'm2', 'e', 'e', 'e'],
-				huros: [{type: 'pom', tile: 'm1'],
+				huros: [{type: 'pom', tile: 'm1'}],
 				ronTile: 'e',
 			}).includes('suanko'), false);
 
@@ -89,7 +89,7 @@ describe('Yaku', () => {
 			assert.deepStrictEqual(calcYakus({
 				house: '',
 				handTiles: ['m2', 'm2', 'm2', 'm3', 'm3', 'm3', 'haku', 'haku', 'haku', 'e', 'e'],
-				huros: [{type: 'ankan', tile: 'm1'],
+				huros: [{type: 'ankan', tile: 'm1'}],
 				tsumoTile: 'e',
 			}), ['suanko-tanki']);
 		});
@@ -142,7 +142,7 @@ describe('Yaku', () => {
 			assert.deepStrictEqual(calcYakus({
 				house: '',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
-				huros: [{type: 'pon', tile: 'haku'],
+				huros: [{type: 'pon', tile: 'haku'}],
 				tsumoTile: 'e',
 			}), ['tsuiso']);
 		});
@@ -158,7 +158,7 @@ describe('Yaku', () => {
 			assert.deepStrictEqual(calcYakus({
 				house: '',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
-				huros: [{type: 'pon', tile: 'm1'],
+				huros: [{type: 'pon', tile: 'm1'}],
 				tsumoTile: 'e',
 			}).includes('tuiso'), false);
 		});
