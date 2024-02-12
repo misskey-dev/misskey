@@ -27,6 +27,7 @@ describe('Yaku', () => {
 			        tumoTiles: 'm1',
 			}), ['kokushi']);
 		});
+
 		it('invalid', () => {
 			assert.deepStrictEqual(calcYakus({
 				house: 'e',
@@ -34,6 +35,33 @@ describe('Yaku', () => {
 				huros: [],
 			        tumoTiles: 'm3',
 			}).includes('kokushi'), false);
+		});
+	});
+
+	describe('daisangen', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['haku', 'haku', 'haku', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'p2', 'p2', 'p2', 's2', 's2'],
+				huros: [],
+				tsumoTile: 's2',
+			}), ['daisangen']);
+
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'p2', 'p2', 'p2', 's2', 's2'],
+				huros: [{type: 'pon', tile: 'haku'}],
+				tsumoTile: 's2',
+git 			}), ['daisangen']);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+			      	house: 'e',
+				handTiles: ['haku', 'haku', 'haku', 'chun', 'chun', 'hatsu', 'hatsu', 'hatsu', 'm1', 'm1', 'm1', 'm2', 'm2', 'm2'] ,
+				huros: [],
+				tumoTiles: 'm2',
+			}).includes('daisangen'), false);
 		});
 	});
 
