@@ -51,6 +51,7 @@ const clientAssets = `${_dirname}/../../../../frontend/assets/`;
 const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
+const tarball = `${_dirname}/../../../../../built/tarball/`;
 
 @Injectable()
 export class ClientServerService {
@@ -288,6 +289,13 @@ export class ClientServerService {
 			root: assets,
 			prefix: '/assets/',
 			maxAge: ms('7 days'),
+			decorateReply: false,
+		});
+
+		fastify.register(fastifyStatic, {
+			root: tarball,
+			prefix: '/tarball/',
+			immutable: true,
 			decorateReply: false,
 		});
 
