@@ -18,6 +18,26 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('kokushi', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m1', 'm9', 's1', 's9', 'p1', 'p9', 'haku', 'hatsu', 'chun', 'n', 'w', 's', 'e'] ,
+				huros: [],
+			        tumoTiles: 'm1',
+			}), ['kokushi']);
+		});
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+			        handTiles: ['m1', 'm9', 's1', 's9', 'p1', 'p9', 'haku', 'hatsu', 'chun', 'n', 'w', 's', 'e', 'm3'] ,
+				huros: [],
+			        tumoTiles: 'm3',
+			}).includes('kokushi'), false);
+		});
+	});
+
+
 	describe('churen', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
