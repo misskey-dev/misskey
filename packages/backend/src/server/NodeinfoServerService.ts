@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,12 +37,12 @@ export class NodeinfoServerService {
 	@bindThis
 	public getLinks() {
 		return [{
-				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
-				href: this.config.url + nodeinfo2_1path
-			}, {
-				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-				href: this.config.url + nodeinfo2_0path,
-			}];
+			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
+			href: this.config.url + nodeinfo2_1path,
+		}, {
+			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
+			href: this.config.url + nodeinfo2_0path,
+		}];
 	}
 
 	@bindThis

@@ -2165,7 +2165,7 @@ type IResponse = operations['i']['responses']['200']['content']['application/jso
 type IRevokeTokenRequest = operations['i/revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function isAPIError(reason: any): reason is APIError;
+function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError;
 
 // @public (undocumented)
 type ISigninHistoryRequest = operations['i/signin-history']['requestBody']['content']['application/json'];
