@@ -216,6 +216,11 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 
 const note = ref(deepClone(props.note));
 
+onMounted(() => {
+	isLong.value = collapsibleInner.value.clientHeight > 9 * parseFloat(getComputedStyle(collapsibleInner.value).fontSize);
+	collapsed.value &&= isLong.value;
+});
+
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
@@ -255,7 +260,7 @@ const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
 const collapsibleInner = ref(null);
-const isLong = computed(() => (!!collapsibleInner.value) && (collapsibleInner.value.clientHeight > 9 * parseFloat(getComputedStyle(collapsibleInner.value).fontSize)));
+const isLong = ref(false);
 const collapsed = ref(appearNote.value.cw == null);
 const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
