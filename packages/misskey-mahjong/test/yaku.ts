@@ -143,7 +143,7 @@ describe('Yaku', () => {
 				house: '',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
 				huros: [{type: 'pon', tile: 'haku'}],
-				tsumoTile: 'e',
+				tsumoTile: 's',
 			}), ['tsuiso']);
 		});
 
@@ -159,7 +159,7 @@ describe('Yaku', () => {
 				house: '',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
 				huros: [{type: 'pon', tile: 'm1'}],
-				tsumoTile: 'e',
+				tsumoTile: 's',
 			}).includes('tuiso'), false);
 		});
 	})
@@ -176,7 +176,7 @@ describe('Yaku', () => {
 				house: '',
 				handTiles: ['m1', 'm1', 'm1', 'n', 'n', 'n', 'w', 'w', 'w', 's', 's'],
 				huros: [{type: 'pon', tile: 'e'}],
-				tsumoTile: 'e',
+				tsumoTile: 's',
 			}), ['shosushi']);
 		});
 
@@ -192,7 +192,7 @@ describe('Yaku', () => {
 				house: '',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
 				huros: [{type: 'pon', tile: 'm1'}],
-				tsumoTile: 'e',
+				tsumoTile: 's',
 			}).includes('shosushi'), false);
 		});
 	})
@@ -227,6 +227,38 @@ describe('Yaku', () => {
 				huros: [{type: 'pon', tile: 'm1'}],
 				tsumoTile: 'e',
 			}).includes('daisushi'), false);
+		});
+	})
+
+	describe('ryuiso', () => {
+		it('valid', () =>{
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['s2', 's2', 's2', 's2', 's3', 's4', 's6', 's6', 's6', 's8', 's8', 's8', 'hatsu', 'hatsu'],
+				huros: [],
+				tsumoTile: 'hatsu',
+			}), ['ryuiso']);
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8'],
+				huros: [{type: 'pon', tile: 'hatsu'}],
+				tsumoTile: 's8',
+			}), ['ryuiso']);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+			        handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8','haku','haku','haku'],
+			        huros: [],
+				tsumoTile: 's',
+			}).includes('ryuiso'), false);
+			assert.deepStrictEqual(calcYakus({
+				house: '',
+				handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8'],
+				huros: [{type: 'pon', tile: 'haku'}],
+				tsumoTile: 's',
+			}).includes('ryuiso'), false);
 		});
 	})
 
