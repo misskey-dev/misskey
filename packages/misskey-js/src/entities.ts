@@ -114,6 +114,15 @@ export type ModerationLog = {
 	type: 'deleteAd';
 	info: ModerationLogPayloads['deleteAd'];
 } | {
+	type: 'createIndieAuthClient';
+	info: ModerationLogPayloads['createIndieAuthClient'];
+} | {
+	type: 'updateIndieAuthClient';
+	info: ModerationLogPayloads['updateIndieAuthClient'];
+} | {
+	type: 'deleteIndieAuthClient';
+	info: ModerationLogPayloads['deleteIndieAuthClient'];
+} | {
 	type: 'createAvatarDecoration';
 	info: ModerationLogPayloads['createAvatarDecoration'];
 } | {
