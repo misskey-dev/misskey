@@ -41,7 +41,7 @@ import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityServi
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
-import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import type { FastifyInstance, FastifyPluginOptions, FastifyReply, onRequestHookHandler } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -52,6 +52,14 @@ const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
 const tarball = `${_dirname}/../../../../../built/tarball/`;
+
+const handleRedirectToOmitSearch: onRequestHookHandler = (request, reply, done) => {
+	const index = request.url.indexOf('?');
+	if (~index) {
+		reply.redirect(301, request.url.slice(0, index));
+	}
+	done();
+};
 
 @Injectable()
 export class ClientServerService {
@@ -253,11 +261,16 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.clientManifestExists) {
-			fastify.register(fastifyStatic, {
-				root: viteOut,
-				prefix: '/vite/',
-				maxAge: ms('30 days'),
-				decorateReply: false,
+			fastify.register((fastify, options, done) => {
+				fastify.register(fastifyStatic, {
+					root: viteOut,
+					prefix: '/vite/',
+					maxAge: ms('30 days'),
+					immutable: true,
+					decorateReply: false,
+				});
+				fastify.addHook('onRequest', handleRedirectToOmitSearch);
+				done();
 			});
 		} else {
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -292,11 +305,16 @@ export class ClientServerService {
 			decorateReply: false,
 		});
 
-		fastify.register(fastifyStatic, {
-			root: tarball,
-			prefix: '/tarball/',
-			immutable: true,
-			decorateReply: false,
+		fastify.register((fastify, options, done) => {
+			fastify.register(fastifyStatic, {
+				root: tarball,
+				prefix: '/tarball/',
+				maxAge: ms('30 days'),
+				immutable: true,
+				decorateReply: false,
+			});
+			fastify.addHook('onRequest', handleRedirectToOmitSearch);
+			done();
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {
