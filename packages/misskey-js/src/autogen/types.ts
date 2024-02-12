@@ -8472,8 +8472,8 @@ export type operations = {
           swPublicKey?: string | null;
           swPrivateKey?: string | null;
           tosUrl?: string | null;
-          repositoryUrl?: string;
-          feedbackUrl?: string;
+          repositoryUrl?: string | null;
+          feedbackUrl?: string | null;
           impressumUrl?: string | null;
           privacyPolicyUrl?: string | null;
           useObjectStorage?: boolean;
