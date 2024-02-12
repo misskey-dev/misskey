@@ -92,6 +92,7 @@
 - Fix: ジョブに関する設定の名前を修正 relashionshipJobPerSec -> relationshipJobPerSec
 - Fix: コントロールパネル->モデレーション->「誰でも新規登録できるようにする」の初期値をONからOFFに変更 #13122
 - Enhance: 連合向けのノート配信を軽量化 #13192
+- Fix: リモートユーザーが復活してもキャッシュにより該当ユーザーのActivityが受け入れられないのを修正 #13273
 
 ### Service Worker
 - Enhance: オフライン表示のデザインを改善・多言語対応
