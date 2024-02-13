@@ -135,7 +135,7 @@ import { version } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkLink from '@/components/MkLink.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { physics } from '@/scripts/physics.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
