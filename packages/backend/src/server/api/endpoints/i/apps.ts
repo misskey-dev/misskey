@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -38,9 +38,9 @@ export const meta = {
 					type: 'array',
 					uniqueItems: true,
 					items: {
-						type: 'string',
+						type: 'string'
 					},
-				},
+				}
 			},
 		},
 	},
