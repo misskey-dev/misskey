@@ -4701,10 +4701,6 @@ export interface Locale extends ILocale {
      */
     "feedbackUrl": string;
     /**
-     * {name}を支援
-     */
-    "supportThisInstance": ParameterizedString<"name">;
-    /**
      * 運営者情報
      */
     "impressum": string;
