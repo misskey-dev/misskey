@@ -24,12 +24,11 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
-import type { IObject, IPost } from '../type.js';
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 import { getApId, getApType, getOneApHrefNullable, getOneApId, isEmoji, validPost } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
 import { ApDbResolverService } from '../ApDbResolverService.js';
-import type { Resolver } from '../ApResolverService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApAudienceService } from '../ApAudienceService.js';
 import { ApPersonService } from './ApPersonService.js';
@@ -37,7 +36,8 @@ import { extractApHashtags } from './tag.js';
 import { ApMentionService } from './ApMentionService.js';
 import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
-import { NoteUpdateService } from '@/core/NoteUpdateService.js';
+import type { Resolver } from '../ApResolverService.js';
+import type { IObject, IPost } from '../type.js';
 
 @Injectable()
 export class ApNoteService {
@@ -52,9 +52,6 @@ export class ApNoteService {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
-		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -348,7 +345,7 @@ export class ApNoteService {
 		}
 
 		const b_note = await this.notesRepository.findOneBy({
-			uri: entryUri
+			uri: entryUri,
 		}).then(x => {
 			if (x == null) throw new Error('note not found');
 			return x;

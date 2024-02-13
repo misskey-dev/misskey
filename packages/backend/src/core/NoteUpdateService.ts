@@ -4,8 +4,10 @@
  */
 
 import { setImmediate } from 'node:timers/promises';
+import util from 'util';
 import { In, DataSource } from 'typeorm';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import * as mfm from 'mfm-js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
 import type { NotesRepository, UsersRepository } from '@/models/_.js';
@@ -20,14 +22,12 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { SearchService } from '@/core/SearchService.js';
-import { normalizeForSearch } from "@/misc/normalize-for-search.js";
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MiDriveFile } from '@/models/_.js';
 import { MiPoll, IPoll } from '@/models/Poll.js';
-import * as mfm from "cherrypick-mfm-js";
-import { concat } from "@/misc/prelude/array.js";
-import { extractHashtags } from "@/misc/extract-hashtags.js";
-import { extractCustomEmojisFromMfm } from "@/misc/extract-custom-emojis-from-mfm.js";
-import util from 'util';
+import { concat } from '@/misc/prelude/array.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 
 type MinimumUser = {
 	id: MiUser['id'];
@@ -187,10 +187,10 @@ export class NoteUpdateService implements OnApplicationShutdown {
 			} else if (note.hasPoll && !values.hasPoll) {
 				// Start transaction
 				await this.db.transaction(async transactionalEntityManager => {
-					await transactionalEntityManager.update(MiNote, {id: note.id}, values);
+					await transactionalEntityManager.update(MiNote, { id: note.id }, values);
 
 					if (!values.hasPoll) {
-						await transactionalEntityManager.delete(MiPoll, {noteId: note.id});
+						await transactionalEntityManager.delete(MiPoll, { noteId: note.id });
 					}
 				});
 			} else {
