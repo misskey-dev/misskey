@@ -6,11 +6,11 @@
 export class MakeRepositoryUrlNullable1707808106310 {
     name = 'MakeRepositoryUrlNullable1707808106310'
 
-    public async up(queryRunner) {
+    async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" DROP NOT NULL`);
     }
 
-    public async down(queryRunner) {
+    async down(queryRunner) {
         await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" SET NOT NULL`);
     }
 }
