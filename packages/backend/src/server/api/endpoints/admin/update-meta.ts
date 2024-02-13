@@ -402,7 +402,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.repositoryUrl !== undefined) {
-				set.repositoryUrl = ps.repositoryUrl ?? 'https://github.com/misskey-dev/misskey';
+				set.repositoryUrl = URL.canParse(ps.repositoryUrl!) ? ps.repositoryUrl : null;
 			}
 
 			if (ps.feedbackUrl !== undefined) {

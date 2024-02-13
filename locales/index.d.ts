@@ -4687,11 +4687,23 @@ export interface Locale extends ILocale {
     /**
      * ソースコード
      */
-    "sourcecode": string;
+    "sourceCode": string;
+    /**
+     * ソースコードはまだ提供されていません。この問題の修正について管理者に問い合わせてください。
+     */
+    "sourceCodeIsNotYetProvided": string;
     /**
      * リポジトリURL
      */
     "repositoryUrl": string;
+    /**
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     */
+    "repositoryUrlDescription": string;
+    /**
+     * リポジトリを公開していない場合、代わりにtarballを提供する必要があります。詳細は.config/example.ymlを参照してください。
+     */
+    "repositoryUrlOrTarballRequired": string;
     /**
      * フィードバック
      */
@@ -4700,10 +4712,6 @@ export interface Locale extends ILocale {
      * フィードバックURL
      */
     "feedbackUrl": string;
-    /**
-     * {name}を支援
-     */
-    "supportThisInstance": ParameterizedString<"name">;
     /**
      * 運営者情報
      */
@@ -6833,6 +6841,14 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         "source": string;
+        /**
+         * オリジナル
+         */
+        "original": string;
+        /**
+         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         */
+        "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
          * Misskeyを翻訳
          */
