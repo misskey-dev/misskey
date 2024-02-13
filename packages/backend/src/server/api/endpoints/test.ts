@@ -18,7 +18,7 @@ export const meta = {
 		properties: {
 			id: {
 				type: 'string',
-				format: 'misskey:id',
+				format: 'misskey:id'
 			},
 			required: {
 				type: 'boolean',
@@ -34,8 +34,8 @@ export const meta = {
 				default: 'hello',
 				nullable: true,
 			},
-		},
-	},
+		}
+	}
 } as const;
 
 export const paramDef = {
