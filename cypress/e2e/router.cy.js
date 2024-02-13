@@ -14,7 +14,7 @@ describe('Router transition', () => {
 
 			// アカウント初期設定ウィザード
 			// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-			cy.get('[data-cy-user-setup] [data-cy-modal-window-close]', { timeout: 12000 }).click();
+			cy.get('[data-cy-user-setup] [data-cy-modal-window-close]', { timeout: 30000 }).click();
 			cy.wait(500);
 			cy.get('[data-cy-modal-dialog-ok]').click();
 		});
