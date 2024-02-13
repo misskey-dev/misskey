@@ -12,4 +12,14 @@
 # 当フォークについて
 
 当フォークは PrisMisskey.space で使用しているフォークになります。
-このコードを一部でも使用する場合はクレジット表示をお願いします。
+このコードを一部でも使用する場合はAbout内にクレジット表示をお願いします。
+
+# Special Thanks
+
+[mkkey source](https://github.com/emtkmkk/mkkey) 
+
+[mkkey Server](https://mkkey.net) 
+
+[MisskeyIO source](https://github.com/MisskeyIO/misskey)
+
+[MisskeyIO Server](https://Misskey.io) 
