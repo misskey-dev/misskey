@@ -34,12 +34,6 @@ export const meta = {
 			code: 'CANNOT_REPORT_YOURSELF',
 			id: '1e13149e-b1e8-43cf-902e-c01dbfcb202f',
 		},
-
-		cannotReportAdmin: {
-			message: 'Cannot report the admin.',
-			code: 'CANNOT_REPORT_THE_ADMIN',
-			id: '35e166f5-05fb-4f87-a2d5-adb42676d48f',
-		},
 	},
 } as const;
 
@@ -89,10 +83,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (user.id === me.id) {
 				throw new ApiError(meta.errors.cannotReportYourself);
-			}
-
-			if (await this.roleService.isAdministrator(user)) {
-				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
 			const report = await this.abuseUserReportsRepository.insert({
