@@ -16,7 +16,7 @@ import meta from '../package.json' assert { type: "json" };
 import buildTarball from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
-const path = process.env.MISSKEY_CONFIG_YML
+const configPath = process.env.MISSKEY_CONFIG_YML
 	? path.resolve(configDir, process.env.MISSKEY_CONFIG_YML)
 	: process.env.NODE_ENV === 'test'
 		? path.resolve(configDir, 'test.yml')
@@ -25,7 +25,7 @@ const path = process.env.MISSKEY_CONFIG_YML
 let locales = buildLocales();
 
 async function loadConfig() {
-	return fs.readFile(path, 'utf-8').then(data => yaml.load(data)).catch(() => null);
+	return fs.readFile(configPath, 'utf-8').then(data => yaml.load(data)).catch(() => null);
 }
 
 async function copyFrontendFonts() {
