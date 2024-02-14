@@ -100,6 +100,7 @@ describe('ActivityPub', () => {
 		perRemoteUserUserTimelineCacheMax: 100,
 		blockedHosts: [] as string[],
 		sensitiveWords: [] as string[],
+		prohibitedWords: [] as string[],
 	} as MiMeta;
 	let meta = metaInitial;
 

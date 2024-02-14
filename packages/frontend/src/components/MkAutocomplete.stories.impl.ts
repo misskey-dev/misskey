@@ -5,8 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from '@storybook/addon-actions';
-import { expect } from '@storybook/jest';
-import { userEvent, waitFor, within } from '@storybook/testing-library';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { userDetailed } from '../../.storybook/fakes.js';
