@@ -8,12 +8,12 @@ export const packedRoleCondFormulaLogicsSchema = {
 	properties: {
 		type: {
 			type: 'string',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 			enum: ['and', 'or', 'not'],
 		},
 		values: {
 			type: 'array',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 			items: {
 				ref: 'RoleCondFormulaValue',
 			},
@@ -26,7 +26,7 @@ export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 	properties: {
 		type: {
 			type: 'string',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 			enum: ['isLocal', 'isRemote'],
 		},
 	},
@@ -37,7 +37,7 @@ export const packedRoleCondFormulaValueCreatedSchema = {
 	properties: {
 		type: {
 			type: 'string',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 			enum: [
 				'createdLessThan',
 				'createdMoreThan',
@@ -45,7 +45,7 @@ export const packedRoleCondFormulaValueCreatedSchema = {
 		},
 		sec: {
 			type: 'number',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 		},
 	},
 } as const;
@@ -55,7 +55,7 @@ export const packedRoleCondFormulaFollowersOrFollowingOrNotesSchema = {
 	properties: {
 		type: {
 			type: 'string',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 			enum: [
 				'followersLessThanOrEq',
 				'followersMoreThanOrEq',
@@ -67,7 +67,7 @@ export const packedRoleCondFormulaFollowersOrFollowingOrNotesSchema = {
 		},
 		value: {
 			type: 'number',
-			nullale: false, optional: false,
+			nullable: false, optional: false,
 		},
 	},
 } as const;
