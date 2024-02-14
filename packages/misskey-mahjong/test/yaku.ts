@@ -85,6 +85,7 @@ describe('Yaku', () => {
 				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
 				huros: [],
 				riichi: true,
+				tsumoTile: 'm3',
 				ippatsu: true,
 			}), ['riichi', 'ippatsu']);
 		});
@@ -93,8 +94,77 @@ describe('Yaku', () => {
 				house: 'e',
 				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
 				huros: [],
+				tsumoTile: 'm3',
 				riichi: true,
 			}).includes('ippatsu'), false);
+		});
+	});
+
+	describe('tanyao', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm2', 'm2', 'p6', 'p7', 'p8', 's3', 's3', 's3', 's4', 's5', 's6', 'm3', 'm3'],
+				huros: [],
+				tsumoTile: 'm3',
+			}).includes('tanyao'), true);
+
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['p6', 'p7', 'p8', 's3', 's3', 's3', 's4', 's5', 's6', 'm3', 'm3'],
+				huros: [{type: 'pon', tile: 'm2'}],
+				tsumoTile: 'm3',
+			}).includes('tanyao'), true);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p7', 'p8', 's3', 's3', 's3', 's4', 's5', 's6', 'm3', 'm3'],
+				ippatsu: true,
+				huros: [],
+			}).includes('tanyao'), false);
+		});
+	});
+
+	describe('pinfu', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'p6', 'p7', 'p8', 'p5', 'p6', 'p7', 's9', 's9', 's5', 's6', 's7'],
+				huros: [],
+				tsumoTile: 's7',
+			}).includes('pinfu'), true);
+
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'p6', 'p6', 'p6', 'p5', 'p6', 'p7', 's9', 's9', 's7', 's8', 's9'],
+				huros: [],
+				tsumoTile: 's9',
+			}).includes('pinfu'), false);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'p6', 'p6', 'p6', 'p5', 'p6', 'p7', 's9', 's9', 's5', 's6', 's7'],
+				huros: [],
+				tsumoTile: 's7',
+			}).includes('pinfu'), false);
+
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'p6', 'p6', 'p6', 'p5', 'p6', 'p7', 's9', 's9', 's7', 's8', 's9'],
+				huros: [],
+				tsumoTile: 's7',
+			}).includes('pinfu'), false);
+
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'p6', 'p7', 'p8', 'p5', 'p6', 'p7', 's9', 's9', 's5', 's6', 's7'],
+				huros: [],
+				ronTile: 's7',
+			}).includes('pinfu'), true);
 		});
 	});
 
