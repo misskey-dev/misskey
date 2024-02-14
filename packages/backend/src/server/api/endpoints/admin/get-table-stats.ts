@@ -23,11 +23,9 @@ export const meta = {
 			properties: {
 				count: {
 					type: 'number',
-					nullable: false,
 				},
 				size: {
 					type: 'number',
-					nullable: false,
 				},
 			},
 			required: ['count', 'size'],
