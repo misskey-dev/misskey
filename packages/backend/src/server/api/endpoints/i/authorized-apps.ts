@@ -35,7 +35,7 @@ export const meta = {
 					type: 'array',
 					uniqueItems: true,
 					items: {
-						type: 'string',
+						type: 'string'
 					},
 				},
 				isAuthorized: {
