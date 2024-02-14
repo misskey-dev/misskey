@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
-import { safeForSql } from '@/misc/safe-for-sql.js';
+import { safeForSql } from "@/misc/safe-for-sql.js";
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';

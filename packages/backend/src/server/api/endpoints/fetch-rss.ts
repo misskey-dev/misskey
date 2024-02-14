@@ -25,8 +25,8 @@ export const meta = {
 				items: {
 					type: 'object',
 				},
-			},
-		},
+			}
+		}
 	},
 } as const;
 
