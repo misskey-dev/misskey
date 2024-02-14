@@ -36,6 +36,7 @@ export type EmojiDetailed = components['schemas']['EmojiDetailed'];
 export type Flash = components['schemas']['Flash'];
 export type Signin = components['schemas']['Signin'];
 export type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
+export type RoleCondFormulaValueNot = components['schemas']['RoleCondFormulaValueNot'];
 export type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCondFormulaValueIsLocalOrRemote'];
 export type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
 export type RoleCondFormulaFollowersOrFollowingOrNotes = components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];

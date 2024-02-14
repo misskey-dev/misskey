@@ -4556,8 +4556,14 @@ export type components = {
     RoleCondFormulaLogics: {
       id: string;
       /** @enum {string} */
-      type: 'and' | 'or' | 'not';
+      type: 'and' | 'or';
       values: components['schemas']['RoleCondFormulaValue'][];
+    };
+    RoleCondFormulaValueNot: {
+      id: string;
+      /** @enum {string} */
+      type: 'not';
+      value: components['schemas']['RoleCondFormulaValue'];
     };
     RoleCondFormulaValueIsLocalOrRemote: {
       id: string;
@@ -4576,7 +4582,7 @@ export type components = {
       type: 'followersLessThanOrEq' | 'followersMoreThanOrEq' | 'followingLessThanOrEq' | 'followingMoreThanOrEq' | 'notesLessThanOrEq' | 'notesMoreThanOrEq';
       value: number;
     };
-    RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
+    RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueNot'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
     RoleLite: {
       /**
        * Format: id

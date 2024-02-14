@@ -12,7 +12,7 @@ export const packedRoleCondFormulaLogicsSchema = {
 		type: {
 			type: 'string',
 			nullable: false, optional: false,
-			enum: ['and', 'or', 'not'],
+			enum: ['and', 'or'],
 		},
 		values: {
 			type: 'array',
@@ -20,6 +20,25 @@ export const packedRoleCondFormulaLogicsSchema = {
 			items: {
 				ref: 'RoleCondFormulaValue',
 			},
+		},
+	},
+} as const;
+
+export const packedRoleCondFormulaValueNot = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['not'],
+		},
+		value: {
+			type: 'object',
+			optional: false,
+			ref: 'RoleCondFormulaValue',
 		},
 	},
 } as const;
@@ -89,6 +108,9 @@ export const packedRoleCondFormulaValueSchema = {
 	oneOf: [
 		{
 			ref: 'RoleCondFormulaLogics',
+		},
+		{
+			ref: 'RoleCondFormulaValueNot',
 		},
 		{
 			ref: 'RoleCondFormulaValueIsLocalOrRemote',

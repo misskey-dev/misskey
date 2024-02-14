@@ -1706,6 +1706,7 @@ declare namespace entities {
         Flash,
         Signin,
         RoleCondFormulaLogics,
+        RoleCondFormulaValueNot,
         RoleCondFormulaValueIsLocalOrRemote,
         RoleCondFormulaValueCreated,
         RoleCondFormulaFollowersOrFollowingOrNotes,
@@ -2716,6 +2717,9 @@ type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCr
 
 // @public (undocumented)
 type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCondFormulaValueIsLocalOrRemote'];
+
+// @public (undocumented)
+type RoleCondFormulaValueNot = components['schemas']['RoleCondFormulaValueNot'];
 
 // @public (undocumented)
 type RoleLite = components['schemas']['RoleLite'];
