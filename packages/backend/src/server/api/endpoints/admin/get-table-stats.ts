@@ -23,13 +23,14 @@ export const meta = {
 			properties: {
 				count: {
 					type: 'number',
-					optional: false, nullable: false,
+					nullable: false,
 				},
 				size: {
 					type: 'number',
-					optional: false, nullable: false,
+					nullable: false,
 				},
 			},
+			required: ['count', 'size'],
 		},
 		example: {
 			migrations: {
