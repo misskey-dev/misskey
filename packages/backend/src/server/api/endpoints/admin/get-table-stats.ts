@@ -18,6 +18,19 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
+		additionalProperties: {
+			type: 'object',
+			properties: {
+				count: {
+					type: 'number',
+					optional: false, nullable: false,
+				},
+				size: {
+					type: 'number',
+					optional: false, nullable: false,
+				},
+			},
+		},
 		example: {
 			migrations: {
 				count: 66,
