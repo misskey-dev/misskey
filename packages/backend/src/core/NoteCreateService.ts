@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -263,10 +263,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (!user.host) {
-			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
-				throw new NoteCreateService.ContainsProhibitedWordsError();
-			}
+		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+			throw new NoteCreateService.ContainsProhibitedWordsError();
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
