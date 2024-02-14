@@ -6981,7 +6981,7 @@ export type operations = {
                * @default DESC
                * @enum {string}
                */
-              order: 'ASC' | 'DESC';
+              direction: 'ASC' | 'DESC';
             })[];
         };
       };

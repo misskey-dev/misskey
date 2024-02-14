@@ -64,7 +64,7 @@ export type FetchEmojisParams = {
 	page?: number;
 	sort?: {
 		key : FetchEmojisSortKeys;
-		order : 'ASC' | 'DESC';
+		direction : 'ASC' | 'DESC';
 	}[]
 }
 
@@ -508,7 +508,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		if (params?.sort) {
 			for (const sort of params.sort) {
-				builder.addOrderBy(`emoji.${sort.key}`, sort.order);
+				builder.addOrderBy(`emoji.${sort.key}`, sort.direction);
 			}
 		} else {
 			builder.addOrderBy('emoji.id', 'DESC');

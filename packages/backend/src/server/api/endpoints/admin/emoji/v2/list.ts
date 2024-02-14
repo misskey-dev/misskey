@@ -82,13 +82,13 @@ export const paramDef = {
 						],
 						default: 'id',
 					},
-					order: {
+					direction: {
 						type: 'string',
 						enum: ['ASC', 'DESC'],
 						default: 'DESC',
 					},
 				},
-				required: ['key', 'order'],
+				required: ['key', 'direction'],
 			},
 		},
 	},
@@ -128,7 +128,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			params.page = ps.page;
 			params.sort = ps.sort?.map(it => ({
 				key: it.key,
-				order: it.order,
+				direction: it.direction,
 			}));
 
 			const result = await this.customEmojiService.fetchEmojis(params);

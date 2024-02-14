@@ -3,7 +3,7 @@
 	<span v-if="iconClass" :class="[$style.icon, iconClass]"/>
 	<span :class="$style.content">{{ content }}</span>
 	<MkButton v-if="exButtonIconClass" :class="$style.exButton" @click="(ev) => emit('exButtonClick', ev)">
-		<span :class="exButtonIconClass"/>
+		<span :class="[$style.exButtonIcon, exButtonIconClass]"/>
 	</MkButton>
 </div>
 </template>
@@ -24,15 +24,15 @@ defineProps<{
 </script>
 
 <style module lang="scss">
-$buttonSize : 2em;
+$buttonSize : 1.8em;
 
 .root {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 9999px;
-	padding: 4px 4px;
-	gap: 4px;
+	padding: 4px 6px;
+	gap: 3px;
 
 	background-color: var(--buttonBg);
 
@@ -42,7 +42,10 @@ $buttonSize : 2em;
 }
 
 .icon {
-	font-size: 0.80em;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.70em;
 }
 
 .exButton {
@@ -57,5 +60,12 @@ $buttonSize : 2em;
 	padding: 0;
 	box-sizing: border-box;
 	font-size: 0.65em;
+}
+
+.exButtonIcon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.80em;
 }
 </style>

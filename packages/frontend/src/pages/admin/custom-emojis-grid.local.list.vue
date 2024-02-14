@@ -65,13 +65,15 @@
 						<div :class="$style.sortOrderAreaTags">
 							<MkTagItem
 								v-for="order in sortOrders"
-								:key="order.column"
+								:key="order.key"
 								:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
 								:exButtonIconClass="'ti ti-x'"
-								:content="order.column"
+								:content="order.key"
+								@click="onToggleSortOrderButtonClicked(order)"
+								@exButtonClick="onRemoveSortOrderButtonClicked(order.key)"
 							/>
 						</div>
-						<MkButton :class="$style.sortOrderAddButton">
+						<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
 							<span class="ti ti-plus"/>
 						</MkButton>
 					</div>
@@ -152,6 +154,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import MkTagItem from '@/components/MkTagItem.vue';
+import { MenuItem } from '@/types/menu.js';
 
 type GridItem = {
 	checked: boolean;
@@ -171,18 +174,20 @@ type GridItem = {
 	originalUrl?: string | null;
 }
 
-type GridSortOrderKey =
-	'name' |
-	'category' |
-	'aliases' |
-	'type' |
-	'license' |
-	'isSensitive' |
-	'localOnly' |
-	'updatedAt';
+const gridSortOrderKeys = [
+	'name',
+	'category',
+	'aliases',
+	'type',
+	'license',
+	'isSensitive',
+	'localOnly',
+	'updatedAt',
+];
+type GridSortOrderKey = typeof gridSortOrderKeys[number];
 
 type GridSortOrder = {
-	column: GridSortOrderKey;
+	key: GridSortOrderKey;
 	direction: 'ASC' | 'DESC';
 }
 
@@ -237,7 +242,6 @@ const querySensitive = ref<string | null>(null);
 const queryLocalOnly = ref<string | null>(null);
 const previousQuery = ref<string | undefined>(undefined);
 const sortOrders = ref<GridSortOrder[]>([]);
-sortOrders.value.push({ column: 'updatedAt', direction: 'DESC' }, { column: 'name', direction: 'ASC' });
 const requestLogs = ref<RequestLogItem[]>([]);
 
 const gridItems = ref<GridItem[]>([]);
@@ -350,6 +354,36 @@ async function onDeleteButtonClicked() {
 
 function onGridResetButtonClicked() {
 	refreshGridItems();
+}
+
+function onToggleSortOrderButtonClicked(order: GridSortOrder) {
+	console.log(order);
+	switch (order.direction) {
+		case 'ASC':
+			order.direction = 'DESC';
+			break;
+		case 'DESC':
+			order.direction = 'ASC';
+			break;
+	}
+}
+
+function onRemoveSortOrderButtonClicked(key: GridSortOrderKey) {
+	sortOrders.value = sortOrders.value.filter(it => it.key !== key);
+}
+
+function onAddSortOrderButtonClicked(ev: MouseEvent) {
+	const menuItems: MenuItem[] = gridSortOrderKeys
+		.filter(key => !sortOrders.value.map(it => it.key).includes(key))
+		.map(it => {
+			return {
+				text: it,
+				action: () => {
+					sortOrders.value.push({ key: it, direction: 'ASC' });
+				},
+			};
+		});
+	os.contextMenu(menuItems, ev);
 }
 
 async function onSearchButtonClicked() {
@@ -529,6 +563,7 @@ async function refreshCustomEmojis() {
 			query: query,
 			limit: limit,
 			page: currentPage.value,
+			sort: sortOrders.value.map(({ key, direction }) => ({ key: key as any, direction })),
 		}),
 		() => {
 		},
@@ -654,6 +689,7 @@ onMounted(async () => {
 	flex-direction: row;
 	align-items: flex-start;
 	justify-content: flex-start;
+	flex-wrap: wrap;
 	gap: 8px;
 }
 
