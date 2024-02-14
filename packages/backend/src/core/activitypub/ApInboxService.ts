@@ -36,6 +36,7 @@ import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
 import { CacheService } from '@/core/CacheService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
 
@@ -84,6 +85,7 @@ export class ApInboxService {
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
 		private cacheService: CacheService,
+		private globalEventService: GlobalEventService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -481,8 +483,7 @@ export class ApInboxService {
 			isDeleted: true,
 		});
 
-		this.cacheService.uriPersonCache.delete(actor.uri);
-		this.cacheService.userByIdCache.delete(actor.id);
+		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
 
 		return `ok: queued ${job.name} ${job.id}`;
 	}
