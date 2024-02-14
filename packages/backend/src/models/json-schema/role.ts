@@ -6,6 +6,9 @@
 export const packedRoleCondFormulaLogicsSchema = {
 	type: 'object',
 	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
 		type: {
 			type: 'string',
 			nullable: false, optional: false,
@@ -24,6 +27,9 @@ export const packedRoleCondFormulaLogicsSchema = {
 export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 	type: 'object',
 	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
 		type: {
 			type: 'string',
 			nullable: false, optional: false,
@@ -35,6 +41,9 @@ export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 export const packedRoleCondFormulaValueCreatedSchema = {
 	type: 'object',
 	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
 		type: {
 			type: 'string',
 			nullable: false, optional: false,
@@ -53,6 +62,9 @@ export const packedRoleCondFormulaValueCreatedSchema = {
 export const packedRoleCondFormulaFollowersOrFollowingOrNotesSchema = {
 	type: 'object',
 	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
 		type: {
 			type: 'string',
 			nullable: false, optional: false,

@@ -4554,20 +4554,24 @@ export type components = {
       success: boolean;
     };
     RoleCondFormulaLogics: {
+      id: string;
       /** @enum {string} */
       type: 'and' | 'or' | 'not';
       values: components['schemas']['RoleCondFormulaValue'][];
     };
     RoleCondFormulaValueIsLocalOrRemote: {
+      id: string;
       /** @enum {string} */
       type: 'isLocal' | 'isRemote';
     };
     RoleCondFormulaValueCreated: {
+      id: string;
       /** @enum {string} */
       type: 'createdLessThan' | 'createdMoreThan';
       sec: number;
     };
     RoleCondFormulaFollowersOrFollowingOrNotes: {
+      id: string;
       /** @enum {string} */
       type: 'followersLessThanOrEq' | 'followersMoreThanOrEq' | 'followingLessThanOrEq' | 'followingMoreThanOrEq' | 'notesLessThanOrEq' | 'notesMoreThanOrEq';
       value: number;
