@@ -30,7 +30,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 
-const FALLBACK = '❤';
+const FALLBACK = "\u2764";
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
