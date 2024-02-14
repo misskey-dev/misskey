@@ -7306,8 +7306,8 @@ export type operations = {
         content: {
           'application/json': {
             [key: string]: {
-              count?: number;
-              size?: number;
+              count: number;
+              size: number;
             };
           };
         };
