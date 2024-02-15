@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: anataw12
+ * SPDX-FileCopyrightText: anatawa12
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
