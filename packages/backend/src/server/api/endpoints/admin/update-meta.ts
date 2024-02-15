@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,6 +37,11 @@ export const paramDef = {
 			},
 		},
 		sensitiveWords: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		prohibitedWords: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
 			},
@@ -176,6 +181,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
+			}
+			if (Array.isArray(ps.prohibitedWords)) {
+				set.prohibitedWords = ps.prohibitedWords.filter(Boolean);
 			}
 			if (Array.isArray(ps.silencedHosts)) {
 				let lastValue = '';

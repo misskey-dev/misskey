@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -78,6 +78,7 @@ watch(() => props.lang, (to) => {
 	overflow: auto;
 	border-radius: 8px;
 	border: 1px solid var(--divider);
+	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 
 	color: var(--shiki-fallback);
 	background-color: var(--shiki-fallback-bg);
