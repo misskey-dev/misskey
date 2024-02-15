@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.1
- * generatedAt: 2023-12-27T13:38:13.458Z
+ * version: 2023.12.2-kinel.1
+ * generatedAt: 2024-02-15T16:11:40.190Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -8,6 +8,17 @@ import type { Endpoints } from './endpoint.js';
 
 declare module '../api.js' {
   export interface APIClient {
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:admin:nirila-delete-user-log-access*
+     */
+    request<E extends 'admin/nirila-delete-user-log-access', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
     /**
      * No description provided.
      * 

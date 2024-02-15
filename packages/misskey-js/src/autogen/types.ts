@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.1
- * generatedAt: 2023-12-27T13:38:13.340Z
+ * version: 2023.12.2-kinel.1
+ * generatedAt: 2024-02-15T16:11:40.091Z
  */
 
 /**
@@ -17,6 +17,15 @@ type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> &
 type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
 
 export type paths = {
+  '/admin/nirila-delete-user-log-access': {
+    /**
+     * admin/nirila-delete-user-log-access
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:nirila-delete-user-log-access*
+     */
+    post: operations['admin/nirila-delete-user-log-access'];
+  };
   '/admin/meta': {
     /**
      * admin/meta
@@ -4391,6 +4400,68 @@ export type external = Record<string, never>;
 
 export type operations = {
 
+  /**
+   * admin/nirila-delete-user-log-access
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:nirila-delete-user-log-access*
+   */
+  'admin/nirila-delete-user-log-access': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          email?: string;
+          username?: string;
+          /** Format: misskey:id */
+          userId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': Record<string, never> | Record<string, never>[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
   /**
    * admin/meta
    * @description No description provided.

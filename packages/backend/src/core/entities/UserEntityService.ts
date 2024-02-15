@@ -310,18 +310,20 @@ export class UserEntityService implements OnModuleInit {
 			detail?: D,
 			includeSecrets?: boolean,
 			userProfile?: MiUserProfile,
+			asModerator?: boolean,
 		},
 	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false,
+			asModerator: undefined as boolean | undefined,
 		}, options);
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
 
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
-		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
+		const iAmModerator = opts.asModerator ?? (me ? await this.roleService.isModerator(me as MiUser) : false);
 
 		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await this.userNotePiningsRepository.createQueryBuilder('pin')

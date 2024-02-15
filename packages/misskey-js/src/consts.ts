@@ -9,6 +9,7 @@ export const followingVisibilities = ['public', 'followers', 'private'] as const
 export const followersVisibilities = ['public', 'followers', 'private'] as const;
 
 export const permissions = [
+	'read:admin:nirila-delete-user-log-access',
 	'read:account',
 	'write:account',
 	'read:blocks',

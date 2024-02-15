@@ -7,6 +7,7 @@ import type { Schema } from '@/misc/json-schema.js';
 import { permissions } from 'misskey-js';
 import { RolePolicies } from '@/core/RoleService.js';
 
+import * as ep___admin_nirilaDeleteUserLogAccess from './endpoints/admin/nirila-delete-user-log-access.js';
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
@@ -367,6 +368,7 @@ import * as ep___fetchExternalResources from './endpoints/fetch-external-resourc
 import * as ep___retention from './endpoints/retention.js';
 
 const eps = [
+	['admin/nirila-delete-user-log-access', ep___admin_nirilaDeleteUserLogAccess],
 	['admin/meta', ep___admin_meta],
 	['admin/abuse-user-reports', ep___admin_abuseUserReports],
 	['admin/accounts/create', ep___admin_accounts_create],
