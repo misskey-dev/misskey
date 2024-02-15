@@ -9,6 +9,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { QueryService } from '@/core/QueryService.js';
+import {IEndpointMeta} from "@/server/api/endpoints.js";
 
 export const meta = {
 	tags: ['admin'],
@@ -25,8 +26,16 @@ export const meta = {
 		},
 	},
 
-	res: { type: 'any' }, // no type data
-} as const;
+	res: {
+		oneOf: [
+			{ type: "object" },
+			{
+				type: 'array',
+				items: { type: 'object' },
+			},
+		]
+	},
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
