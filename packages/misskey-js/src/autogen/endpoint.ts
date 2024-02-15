@@ -1,11 +1,13 @@
 /*
- * version: 2023.12.1
- * generatedAt: 2023-12-27T13:38:13.451Z
+ * version: 2023.12.2-kinel.1
+ * generatedAt: 2024-02-15T16:11:40.187Z
  */
 
 import type {
 	EmptyRequest,
 	EmptyResponse,
+	AdminNirilaDeleteUserLogAccessRequest,
+	AdminNirilaDeleteUserLogAccessResponse,
 	AdminMetaResponse,
 	AdminAbuseUserReportsRequest,
 	AdminAbuseUserReportsResponse,
@@ -544,6 +546,7 @@ import type {
 } from './entities.js';
 
 export type Endpoints = {
+	'admin/nirila-delete-user-log-access': { req: AdminNirilaDeleteUserLogAccessRequest; res: AdminNirilaDeleteUserLogAccessResponse };
 	'admin/meta': { req: EmptyRequest; res: AdminMetaResponse };
 	'admin/abuse-user-reports': { req: AdminAbuseUserReportsRequest; res: AdminAbuseUserReportsResponse };
 	'admin/accounts/create': { req: AdminAccountsCreateRequest; res: AdminAccountsCreateResponse };

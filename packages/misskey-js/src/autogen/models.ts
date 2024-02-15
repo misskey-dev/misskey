@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.1
- * generatedAt: 2023-12-27T13:38:13.444Z
+ * version: 2023.12.2-kinel.1
+ * generatedAt: 2024-02-15T16:11:40.183Z
  */
 
 import { components } from './types.js';

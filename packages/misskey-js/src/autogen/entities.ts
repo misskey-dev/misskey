@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.1
- * generatedAt: 2023-12-27T13:38:13.447Z
+ * version: 2023.12.2-kinel.1
+ * generatedAt: 2024-02-15T16:11:40.185Z
  */
 
 import { operations } from './types.js';
@@ -8,6 +8,8 @@ import { operations } from './types.js';
 export type EmptyRequest = Record<string, unknown> | undefined;
 export type EmptyResponse = Record<string, unknown> | undefined;
 
+export type AdminNirilaDeleteUserLogAccessRequest = operations['admin/nirila-delete-user-log-access']['requestBody']['content']['application/json'];
+export type AdminNirilaDeleteUserLogAccessResponse = operations['admin/nirila-delete-user-log-access']['responses']['200']['content']['application/json'];
 export type AdminMetaResponse = operations['admin/meta']['responses']['200']['content']['application/json'];
 export type AdminAbuseUserReportsRequest = operations['admin/abuse-user-reports']['requestBody']['content']['application/json'];
 export type AdminAbuseUserReportsResponse = operations['admin/abuse-user-reports']['responses']['200']['content']['application/json'];
