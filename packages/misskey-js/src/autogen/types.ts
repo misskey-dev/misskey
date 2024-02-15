@@ -4462,7 +4462,11 @@ export type components = {
       license: string | null;
       localOnly: boolean;
       isSensitive: boolean;
-      roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+      roleIdsThatCanBeUsedThisEmojiAsReaction: {
+          /** Format: misskey:id */
+          id: string;
+          name: string;
+        }[];
     };
     Flash: {
       /**
@@ -6963,6 +6967,7 @@ export type operations = {
              * @enum {string}
              */
             hostType?: 'local' | 'remote' | 'all';
+            roleIds?: string[];
           }) | null;
           /** Format: misskey:id */
           sinceId?: string;
@@ -6976,7 +6981,7 @@ export type operations = {
                * @default id
                * @enum {string}
                */
-              key: 'id' | 'updatedAt' | 'name' | 'host' | 'uri' | 'publicUrl' | 'type' | 'aliases' | 'category' | 'license' | 'isSensitive' | 'localOnly';
+              key: 'id' | 'updatedAt' | 'name' | 'host' | 'uri' | 'publicUrl' | 'type' | 'aliases' | 'category' | 'license' | 'isSensitive' | 'localOnly' | 'roleIdsThatCanBeUsedThisEmojiAsReaction';
               /**
                * @default DESC
                * @enum {string}

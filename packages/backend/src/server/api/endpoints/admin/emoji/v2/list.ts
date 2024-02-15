@@ -53,6 +53,10 @@ export const paramDef = {
 				isSensitive: { type: 'boolean' },
 				localOnly: { type: 'boolean' },
 				hostType: { type: 'string', enum: ['local', 'remote', 'all'], default: 'all' },
+				roleIds: {
+					type: 'array',
+					items: { type: 'string', format: 'misskey:id' },
+				},
 			},
 		},
 		sinceId: { type: 'string', format: 'misskey:id' },
@@ -79,6 +83,7 @@ export const paramDef = {
 							'license',
 							'isSensitive',
 							'localOnly',
+							'roleIdsThatCanBeUsedThisEmojiAsReaction',
 						],
 						default: 'id',
 					},
@@ -119,6 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					isSensitive: ps.query.isSensitive,
 					localOnly: ps.query.localOnly,
 					hostType: ps.query.hostType,
+					roleIds: ps.query.roleIds,
 				};
 			}
 

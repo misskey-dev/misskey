@@ -170,11 +170,19 @@ export const packedEmojiDetailedAdminSchema = {
 		},
 		roleIdsThatCanBeUsedThisEmojiAsReaction: {
 			type: 'array',
-			optional: false, nullable: false,
 			items: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+						format: 'misskey:id',
+						optional: false, nullable: false,
+					},
+					name: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+				},
 			},
 		},
 	},

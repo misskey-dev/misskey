@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { Brackets, In, IsNull, SelectQueryBuilder, WhereExpressionBuilder } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
@@ -40,6 +40,7 @@ export const fetchEmojisSortKeys = [
 	'license',
 	'isSensitive',
 	'localOnly',
+	'roleIdsThatCanBeUsedThisEmojiAsReaction',
 ] as const;
 export type FetchEmojisSortKeys = typeof fetchEmojisSortKeys[number];
 export type FetchEmojisParams = {
@@ -57,14 +58,15 @@ export type FetchEmojisParams = {
 		isSensitive?: boolean;
 		localOnly?: boolean;
 		hostType?: FetchEmojisHostTypes;
+		roleIds?: string[];
 	},
 	sinceId?: string;
 	untilId?: string;
 	limit?: number;
 	page?: number;
 	sort?: {
-		key : FetchEmojisSortKeys;
-		direction : 'ASC' | 'DESC';
+		key: FetchEmojisSortKeys;
+		direction: 'ASC' | 'DESC';
 	}[]
 }
 
@@ -76,10 +78,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
@@ -441,6 +441,19 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async fetchEmojis(params?: FetchEmojisParams) {
+		function multipleWordsToQuery(
+			query: string,
+			builder: SelectQueryBuilder<MiEmoji>,
+			action: (qb: WhereExpressionBuilder, word: string) => void,
+		) {
+			const words = query.split(/\s/);
+			builder.andWhere(new Brackets((qb => {
+				for (const word of words) {
+					action(qb, word);
+				}
+			})));
+		}
+
 		const builder = this.emojisRepository.createQueryBuilder('emoji');
 		if (params?.query) {
 			const q = params.query;
@@ -453,41 +466,64 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				builder.andWhere('emoji.updatedAt <= :updateAtTo', { updateAtTo: q.updatedAtTo });
 			}
 			if (q.name) {
-				builder.andWhere('emoji.name LIKE :name', { name: `%${q.name}%` });
+				multipleWordsToQuery(q.name, builder, (qb, word) => {
+					qb.orWhere('emoji.name LIKE :name', { name: `%${word}%` });
+				});
 			}
-			if (q.hostType === 'local') {
-				builder.andWhere('emoji.host IS NULL');
-			} else {
-				if (q.host) {
-					// noIndexScan
-					builder.andWhere('emoji.host LIKE :host', { host: `%${q.host}%` });
-				} else {
-					builder.andWhere('emoji.host IS NOT NULL');
+
+			switch (true) {
+				case q.hostType === 'local': {
+					builder.andWhere('emoji.host IS NULL');
+					break;
+				}
+				case q.hostType === 'remote': {
+					if (q.host) {
+						// noIndexScan
+						multipleWordsToQuery(q.host, builder, (qb, word) => {
+							qb.orWhere('emoji.host LIKE :host', { host: `%${word}%` });
+						});
+					} else {
+						builder.andWhere('emoji.host IS NOT NULL');
+					}
+					break;
 				}
 			}
+
 			if (q.uri) {
 				// noIndexScan
-				builder.andWhere('emoji.uri LIKE :uri', { url: `%${q.uri}%` });
+				multipleWordsToQuery(q.uri, builder, (qb, word) => {
+					qb.orWhere('emoji.uri LIKE :uri', { uri: `%${word}%` });
+				});
 			}
 			if (q.publicUrl) {
 				// noIndexScan
-				builder.andWhere('emoji.publicUrl LIKE :publicUrl', { publicUrl: `%${q.publicUrl}%` });
+				multipleWordsToQuery(q.publicUrl, builder, (qb, word) => {
+					qb.orWhere('emoji.publicUrl LIKE :publicUrl', { publicUrl: `%${word}%` });
+				});
 			}
 			if (q.type) {
 				// noIndexScan
-				builder.andWhere('emoji.type LIKE :type', { type: `%${q.type}%` });
+				multipleWordsToQuery(q.type, builder, (qb, word) => {
+					qb.orWhere('emoji.type LIKE :type', { type: `%${word}%` });
+				});
 			}
 			if (q.aliases) {
 				// noIndexScan
-				builder.andWhere('emoji.aliases ANY(:aliases)', { aliases: q.aliases });
+				multipleWordsToQuery(q.aliases, builder, (qb, word) => {
+					qb.orWhere('emoji.aliases LIKE :aliases', { aliases: `%${word}%` });
+				});
 			}
 			if (q.category) {
 				// noIndexScan
-				builder.andWhere('emoji.category LIKE :category', { category: `%${q.category}%` });
+				multipleWordsToQuery(q.category, builder, (qb, word) => {
+					qb.orWhere('emoji.category LIKE :category', { category: `%${word}%` });
+				});
 			}
 			if (q.license) {
 				// noIndexScan
-				builder.andWhere('emoji.license LIKE :license', { license: `%${q.license}%` });
+				multipleWordsToQuery(q.license, builder, (qb, word) => {
+					qb.orWhere('emoji.license LIKE :license', { license: `%${word}%` });
+				});
 			}
 			if (q.isSensitive != null) {
 				// noIndexScan
