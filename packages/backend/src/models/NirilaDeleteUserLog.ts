@@ -21,14 +21,14 @@ export class NirilaDeleteUserLog {
 	@Index()
 	@Column('varchar', {
 		length: 128,
-		comment: 'The username of the User.',
+		comment: 'The username of the deleted User.',
 	})
 	public username: MiUser['username'];
 
 	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: 'The email adddress of the deleted user.',
+		comment: 'The email adddress of the deleted User.',
 	})
 	public email: MiUserProfile['email'];
 
