@@ -15,7 +15,6 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-	secure: true,
 	kind: 'read:admin:nirila-delete-user-log-access',
 
 	errors: {
