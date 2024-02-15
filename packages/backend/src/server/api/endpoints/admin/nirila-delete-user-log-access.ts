@@ -9,7 +9,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { QueryService } from '@/core/QueryService.js';
-import {IEndpointMeta} from "@/server/api/endpoints.js";
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
 
 export const meta = {
 	tags: ['admin'],
