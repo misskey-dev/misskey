@@ -75,6 +75,8 @@ export const permissions = [
 	'read:admin:announcements',
 	'write:admin:avatar-decorations',
 	'read:admin:avatar-decorations',
+	'write:admin:abuse-report-resolver',
+	'read:admin:abuse-report-resolver',
 	'write:admin:federation',
 	'write:admin:account',
 	'read:admin:account',

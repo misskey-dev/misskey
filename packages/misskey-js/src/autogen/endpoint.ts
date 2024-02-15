@@ -21,6 +21,12 @@ import type {
 	AdminAnnouncementsListRequest,
 	AdminAnnouncementsListResponse,
 	AdminAnnouncementsUpdateRequest,
+	AdminAbuseReportResolverCreateRequest,
+	AdminAbuseReportResolverCreateResponse,
+	AdminAbuseReportResolverListRequest,
+	AdminAbuseReportResolverListResponse,
+	AdminAbuseReportResolverDeleteRequest,
+	AdminAbuseReportResolverUpdateRequest,
 	AdminAvatarDecorationsCreateRequest,
 	AdminAvatarDecorationsDeleteRequest,
 	AdminAvatarDecorationsListRequest,
@@ -567,6 +573,10 @@ export type Endpoints = {
 	'admin/announcements/delete': { req: AdminAnnouncementsDeleteRequest; res: EmptyResponse };
 	'admin/announcements/list': { req: AdminAnnouncementsListRequest; res: AdminAnnouncementsListResponse };
 	'admin/announcements/update': { req: AdminAnnouncementsUpdateRequest; res: EmptyResponse };
+	'admin/abuse-report-resolver/create': { req: AdminAbuseReportResolverCreateRequest; res: AdminAbuseReportResolverCreateResponse };
+	'admin/abuse-report-resolver/list': { req: AdminAbuseReportResolverListRequest; res: AdminAbuseReportResolverListResponse };
+	'admin/abuse-report-resolver/delete': { req: AdminAbuseReportResolverDeleteRequest; res: EmptyResponse };
+	'admin/abuse-report-resolver/update': { req: AdminAbuseReportResolverUpdateRequest; res: EmptyResponse };
 	'admin/avatar-decorations/create': { req: AdminAvatarDecorationsCreateRequest; res: EmptyResponse };
 	'admin/avatar-decorations/delete': { req: AdminAvatarDecorationsDeleteRequest; res: EmptyResponse };
 	'admin/avatar-decorations/list': { req: AdminAvatarDecorationsListRequest; res: AdminAvatarDecorationsListResponse };

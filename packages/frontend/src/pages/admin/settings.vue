@@ -133,6 +133,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</FormSection>
+
+					<FormSection>
+						<template #label>{{ i18n.ts.abuseReports }}</template>
+
+						<div class="_gaps_m">
+							<MkInput v-model="emailToReceiveAbuseReport" type="email">
+								<template #prefix><i class="ti ti-mail"></i></template>
+								<template #label>{{ i18n.ts.emailToReceiveAbuseReport }}</template>
+								<template #caption>{{ i18n.ts.emailToReceiveAbuseReportCaption }}</template>
+							</MkInput>
+						</div>
+					</FormSection>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -169,6 +181,7 @@ const shortName = ref<string | null>(null);
 const description = ref<string | null>(null);
 const maintainerName = ref<string | null>(null);
 const maintainerEmail = ref<string | null>(null);
+const emailToReceiveAbuseReport = ref<string | null>(null);
 const impressumUrl = ref<string | null>(null);
 const pinnedUsers = ref<string>('');
 const cacheRemoteFiles = ref<boolean>(false);
@@ -191,6 +204,7 @@ async function init(): Promise<void> {
 	description.value = meta.description;
 	maintainerName.value = meta.maintainerName;
 	maintainerEmail.value = meta.maintainerEmail;
+	emailToReceiveAbuseReport.value = meta.emailToReceiveAbuseReport;
 	impressumUrl.value = meta.impressumUrl;
 	pinnedUsers.value = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles.value = meta.cacheRemoteFiles;
@@ -214,6 +228,8 @@ async function save(): void {
 		description: description.value,
 		maintainerName: maintainerName.value,
 		maintainerEmail: maintainerEmail.value,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		emailToReceiveAbuseReport: emailToReceiveAbuseReport.value || null,
 		impressumUrl: impressumUrl.value,
 		pinnedUsers: pinnedUsers.value.split('\n'),
 		cacheRemoteFiles: cacheRemoteFiles.value,

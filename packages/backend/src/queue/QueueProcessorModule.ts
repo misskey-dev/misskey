@@ -34,6 +34,7 @@ import { ImportMutingProcessorService } from './processors/ImportMutingProcessor
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
 import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
+import { ReportAbuseProcessorService } from './processors/ReportAbuseProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
@@ -71,6 +72,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,
 		RelationshipProcessorService,
+		ReportAbuseProcessorService,
 		WebhookDeliverProcessorService,
 		EndedPollNotificationProcessorService,
 		DeliverProcessorService,

@@ -4785,6 +4785,18 @@ export interface Locale extends ILocale {
      */
     "overwriteContentConfirm": string;
     /**
+     * 通報の通知メールを発送しないようにする
+     */
+    "doNotSendNotificationEmailsForAbuseReport": string;
+    /**
+     * 通報通知を受け取るためのメールアドレス
+     */
+    "emailToReceiveAbuseReport": string;
+    /**
+     * 通報通知を受け取るためのメールアドレスを指定します。ここの入力欄を空にするとメールサーバーのメールアドレスが使用されます。
+     */
+    "emailToReceiveAbuseReportCaption": string;
+    /**
      * 季節に応じた画面の演出
      */
     "seasonalScreenEffect": string;
@@ -9625,6 +9637,70 @@ export interface Locale extends ILocale {
          * サーバーに接続できません
          */
         "header": string;
+    };
+    "_abuse": {
+        "_resolver": {
+            /**
+             * 一時間
+             */
+            "1hour": string;
+            /**
+             * 半日
+             */
+            "12hours": string;
+            /**
+             * 一日
+             */
+            "1day": string;
+            /**
+             * 一週間
+             */
+            "1week": string;
+            /**
+             * 一ヶ月
+             */
+            "1month": string;
+            /**
+             * 三ヶ月
+             */
+            "3months": string;
+            /**
+             * 六ヶ月
+             */
+            "6months": string;
+            /**
+             * 一年
+             */
+            "1year": string;
+            /**
+             * 無期限
+             */
+            "indefinitely": string;
+            /**
+             * この条件の有効期限
+             */
+            "expiresAt": string;
+            /**
+             * 通報先のパターン
+             */
+            "targetUserPattern": string;
+            /**
+             * 通報元のパターン
+             */
+            "reporterPattern": string;
+            /**
+             * 通報内容のパターン
+             */
+            "reportContentPattern": string;
+        };
+        /**
+         * 一覧
+         */
+        "list": string;
+        /**
+         * リソルバー
+         */
+        "resolver": string;
     };
 }
 declare const locales: {

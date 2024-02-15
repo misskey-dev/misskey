@@ -129,6 +129,42 @@ export type paths = {
      */
     post: operations['admin/announcements/update'];
   };
+  '/admin/abuse-report-resolver/create': {
+    /**
+     * admin/abuse-report-resolver/create
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
+     */
+    post: operations['admin/abuse-report-resolver/create'];
+  };
+  '/admin/abuse-report-resolver/list': {
+    /**
+     * admin/abuse-report-resolver/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolver*
+     */
+    post: operations['admin/abuse-report-resolver/list'];
+  };
+  '/admin/abuse-report-resolver/delete': {
+    /**
+     * admin/abuse-report-resolver/delete
+     * @description No description provided.
+     *
+     * **Credential required**: *No* / **Permission**: *write:admin:abuse-report-resolver*
+     */
+    post: operations['admin/abuse-report-resolver/delete'];
+  };
+  '/admin/abuse-report-resolver/update': {
+    /**
+     * admin/abuse-report-resolver/update
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
+     */
+    post: operations['admin/abuse-report-resolver/update'];
+  };
   '/admin/avatar-decorations/create': {
     /**
      * admin/avatar-decorations/create
@@ -4702,6 +4738,8 @@ export type operations = {
             enableChartsForFederatedInstances: boolean;
             enableServerMachineStats: boolean;
             enableIdenticonGeneration: boolean;
+            doNotSendNotificationEmailsForAbuseReport: boolean;
+            emailToReceiveAbuseReport: string | null;
             manifestJsonOverride: string;
             policies: Record<string, never>;
             enableFanoutTimeline: boolean;
@@ -5489,6 +5527,248 @@ export type operations = {
           silence?: boolean;
           needConfirmationToRead?: boolean;
           isActive?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/create
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
+   */
+  'admin/abuse-report-resolver/create': {
+    requestBody: {
+      content: {
+        'application/json': {
+          name: string;
+          targetUserPattern: string | null;
+          reporterPattern: string | null;
+          reportContentPattern: string | null;
+          /** @enum {string} */
+          expiresAt: '1hour' | '12hours' | '1day' | '1week' | '1month' | '3months' | '6months' | '1year' | 'indefinitely';
+          forward: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            name: string;
+            targetUserPattern: string | null;
+            reporterPattern: string | null;
+            reportContentPattern: string | null;
+            expiresAt: string;
+            forward: boolean;
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolver*
+   */
+  'admin/abuse-report-resolver/list': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': ({
+              name: string;
+              targetUserPattern: string | null;
+              reporterPattern: string | null;
+              reportContentPattern: string | null;
+              expiresAt: string;
+              forward: boolean;
+            })[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/delete
+   * @description No description provided.
+   *
+   * **Credential required**: *No* / **Permission**: *write:admin:abuse-report-resolver*
+   */
+  'admin/abuse-report-resolver/delete': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          resolverId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/update
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
+   */
+  'admin/abuse-report-resolver/update': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          resolverId: string;
+          name?: string;
+          targetUserPattern?: string | null;
+          reporterPattern?: string | null;
+          reportContentPattern?: string | null;
+          /** @enum {string} */
+          expiresAt?: '1hour' | '12hours' | '1day' | '1week' | '1month' | '3months' | '6months' | '1year' | 'indefinitely';
+          forward?: boolean;
         };
       };
     };
@@ -8500,6 +8780,8 @@ export type operations = {
           enableChartsForFederatedInstances?: boolean;
           enableServerMachineStats?: boolean;
           enableIdenticonGeneration?: boolean;
+          doNotSendNotificationEmailsForAbuseReport?: boolean;
+          emailToReceiveAbuseReport?: string | null;
           serverRules?: string[];
           bannedEmailDomains?: string[];
           preservedUsernames?: string[];

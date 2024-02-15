@@ -19,6 +19,10 @@ import * as ep___admin_announcements_create from './endpoints/admin/announcement
 import * as ep___admin_announcements_delete from './endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from './endpoints/admin/announcements/update.js';
+import * as ep___admin_abuseReportResolver_create from './endpoints/admin/abuse-report-resolver/create.js';
+import * as ep___admin_abuseReportResolver_update from './endpoints/admin/abuse-report-resolver/update.js';
+import * as ep___admin_abuseReportResolver_delete from './endpoints/admin/abuse-report-resolver/delete.js';
+import * as ep___admin_abuseReportResolver_list from './endpoints/admin/abuse-report-resolver/list.js';
 import * as ep___admin_avatarDecorations_create from './endpoints/admin/avatar-decorations/create.js';
 import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-decorations/delete.js';
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
@@ -388,6 +392,10 @@ const eps = [
 	['admin/announcements/delete', ep___admin_announcements_delete],
 	['admin/announcements/list', ep___admin_announcements_list],
 	['admin/announcements/update', ep___admin_announcements_update],
+	['admin/abuse-report-resolver/create', ep___admin_abuseReportResolver_create],
+	['admin/abuse-report-resolver/list', ep___admin_abuseReportResolver_list],
+	['admin/abuse-report-resolver/delete', ep___admin_abuseReportResolver_delete],
+	['admin/abuse-report-resolver/update', ep___admin_abuseReportResolver_update],
 	['admin/avatar-decorations/create', ep___admin_avatarDecorations_create],
 	['admin/avatar-decorations/delete', ep___admin_avatarDecorations_delete],
 	['admin/avatar-decorations/list', ep___admin_avatarDecorations_list],

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:list="id"
 			:min="min"
 			:max="max"
-			@focus="focused = true"
+			@focus="onFocus"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
 			@input="onInput"
@@ -110,6 +110,12 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	if (ev.code === 'Enter') {
 		emit('enter');
+	}
+};
+
+const onFocus = () => {
+	if (!(props.readonly || props.disabled)) {
+		focused.value = true;
 	}
 };
 

@@ -19,6 +19,10 @@ import * as ep___admin_announcements_create from './endpoints/admin/announcement
 import * as ep___admin_announcements_delete from './endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from './endpoints/admin/announcements/update.js';
+import * as ep___admin_abuseReportResolver_create from './endpoints/admin/abuse-report-resolver/create.js';
+import * as ep___admin_abuseReportResolver_update from './endpoints/admin/abuse-report-resolver/update.js';
+import * as ep___admin_abuseReportResolver_delete from './endpoints/admin/abuse-report-resolver/delete.js';
+import * as ep___admin_abuseReportResolver_list from './endpoints/admin/abuse-report-resolver/list.js';
 import * as ep___admin_avatarDecorations_create from './endpoints/admin/avatar-decorations/create.js';
 import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-decorations/delete.js';
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
@@ -390,6 +394,10 @@ const $admin_announcements_create: Provider = { provide: 'ep:admin/announcements
 const $admin_announcements_delete: Provider = { provide: 'ep:admin/announcements/delete', useClass: ep___admin_announcements_delete.default };
 const $admin_announcements_list: Provider = { provide: 'ep:admin/announcements/list', useClass: ep___admin_announcements_list.default };
 const $admin_announcements_update: Provider = { provide: 'ep:admin/announcements/update', useClass: ep___admin_announcements_update.default };
+const $admin_abuseReportResolver_create: Provider = { provide: 'ep:admin/abuse-report-resolver/create', useClass: ep___admin_abuseReportResolver_create.default };
+const $admin_abuseReportResolver_update: Provider = { provide: 'ep:admin/abuse-report-resolver/update', useClass: ep___admin_abuseReportResolver_update.default };
+const $admin_abuseReportResolver_list: Provider = { provide: 'ep:admin/abuse-report-resolver/list', useClass: ep___admin_abuseReportResolver_list.default };
+const $admin_abuseReportResolver_delete: Provider = { provide: 'ep:admin/abuse-report-resolver/delete', useClass: ep___admin_abuseReportResolver_delete.default };
 const $admin_avatarDecorations_create: Provider = { provide: 'ep:admin/avatar-decorations/create', useClass: ep___admin_avatarDecorations_create.default };
 const $admin_avatarDecorations_delete: Provider = { provide: 'ep:admin/avatar-decorations/delete', useClass: ep___admin_avatarDecorations_delete.default };
 const $admin_avatarDecorations_list: Provider = { provide: 'ep:admin/avatar-decorations/list', useClass: ep___admin_avatarDecorations_list.default };
@@ -765,6 +773,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_announcements_delete,
 		$admin_announcements_list,
 		$admin_announcements_update,
+		$admin_abuseReportResolver_create,
+		$admin_abuseReportResolver_delete,
+		$admin_abuseReportResolver_list,
+		$admin_abuseReportResolver_update,
 		$admin_avatarDecorations_create,
 		$admin_avatarDecorations_delete,
 		$admin_avatarDecorations_list,
@@ -1134,6 +1146,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_announcements_delete,
 		$admin_announcements_list,
 		$admin_announcements_update,
+		$admin_abuseReportResolver_create,
+		$admin_abuseReportResolver_delete,
+		$admin_abuseReportResolver_list,
+		$admin_abuseReportResolver_update,
 		$admin_avatarDecorations_create,
 		$admin_avatarDecorations_delete,
 		$admin_avatarDecorations_list,

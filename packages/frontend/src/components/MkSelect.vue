@@ -15,7 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="$style.inputCore"
 			:disabled="disabled"
 			:required="required"
-			:readonly="readonly"
 			:placeholder="placeholder"
 			@focus="focused = true"
 			@blur="focused = false"
@@ -66,7 +65,7 @@ const opening = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = ref<HTMLObjectElement | null>(null);
+const inputEl = ref<HTMLSelectElement | null>(null);
 const prefixEl = ref<HTMLElement | null>(null);
 const suffixEl = ref<HTMLElement | null>(null);
 const container = ref<HTMLElement | null>(null);
@@ -126,6 +125,9 @@ onMounted(() => {
 });
 
 function show() {
+	if (inputEl.value && inputEl.value.hasAttribute('disabled')) {
+		return;
+	}
 	focused.value = true;
 	opening.value = true;
 

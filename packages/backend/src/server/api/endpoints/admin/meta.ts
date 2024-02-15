@@ -335,6 +335,14 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			doNotSendNotificationEmailsForAbuseReport: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			emailToReceiveAbuseReport: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			manifestJsonOverride: {
 				type: 'string',
 				optional: false, nullable: false,
@@ -568,6 +576,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				bannedEmailDomains: instance.bannedEmailDomains,
+				doNotSendNotificationEmailsForAbuseReport: instance.doNotSendNotificationEmailsForAbuseReport,
+				emailToReceiveAbuseReport: instance.emailToReceiveAbuseReport,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,
