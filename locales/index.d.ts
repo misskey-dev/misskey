@@ -3981,6 +3981,10 @@ export interface Locale extends ILocale {
      */
     "pleaseDonate": ParameterizedString<"host">;
     /**
+     * 対応するソースコードは{anchor}から利用可能です。
+     */
+    "correspondingSourceIsAvailable": ParameterizedString<"anchor">;
+    /**
      * ロール
      */
     "roles": string;
