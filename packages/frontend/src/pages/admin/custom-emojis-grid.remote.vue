@@ -51,16 +51,8 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { GridColumnSetting } from '@/components/grid/column.js';
 import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
-import {
-	GridCellContextMenuEvent,
-	GridCellValueChangeEvent,
-	GridCurrentState,
-	GridEvent,
-	GridKeyDownEvent,
-	GridRowContextMenuEvent,
-} from '@/components/grid/grid-event.js';
+import { GridCellValueChangeEvent, GridContext, GridEvent, GridKeyDownEvent } from '@/components/grid/grid-event.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
@@ -77,12 +69,42 @@ type GridItem = {
 
 function setupGrid(): GridSetting {
 	return {
+		row: {
+			contextMenuFactory: (row, context) => {
+				return [
+					{
+						type: 'button',
+						text: '選択行をインポート',
+						icon: 'ti ti-download',
+						action: async () => {
+							const targets = context.rangedRows.map(it => gridItems.value[it.index]);
+							await importEmojis(targets);
+						},
+					},
+				];
+			},
+		},
 		cols: [
 			{ bindTo: 'checked', icon: 'ti-download', type: 'boolean', editable: true, width: 34 },
 			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
 			{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 'auto' },
 			{ bindTo: 'host', title: 'host', type: 'text', editable: false, width: 'auto' },
 		],
+		cells: {
+			contextMenuFactory: (col, row, value, context) => {
+				return [
+					{
+						type: 'button',
+						text: '選択範囲の行をインポート',
+						icon: 'ti ti-download',
+						action: async () => {
+							const targets = context.rangedCells.map(it => gridItems.value[it.row.index]);
+							await importEmojis(targets);
+						},
+					},
+				];
+			},
+		},
 	};
 }
 
@@ -113,14 +135,8 @@ async function onImportClicked() {
 	await importEmojis(targets);
 }
 
-function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
+function onGridEvent(event: GridEvent, currentState: GridContext) {
 	switch (event.type) {
-		case 'row-context-menu':
-			onGridRowContextMenu(event, currentState);
-			break;
-		case 'cell-context-menu':
-			onGridCellContextMenu(event, currentState);
-			break;
 		case 'cell-value-change':
 			onGridCellValueChange(event);
 			break;
@@ -130,35 +146,6 @@ function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 	}
 }
 
-function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: GridCurrentState) {
-	event.menuItems.push(
-		{
-			type: 'button',
-			text: '選択行をインポート',
-			icon: 'ti ti-download',
-			action: async () => {
-				const targets = currentState.rangedRows.map(it => gridItems.value[it.index]);
-				console.log(targets);
-				await importEmojis(targets);
-			},
-		},
-	);
-}
-
-function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: GridCurrentState) {
-	event.menuItems.push(
-		{
-			type: 'button',
-			text: '選択された絵文字をインポート',
-			icon: 'ti ti-download',
-			action: async () => {
-				const targets = [...new Set(currentState.rangedCells.map(it => it.row)).values()].map(it => gridItems.value[it.index]);
-				await importEmojis(targets);
-			},
-		},
-	);
-}
-
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
@@ -166,7 +153,7 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	}
 }
 
-function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
+function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
 	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
 }
 

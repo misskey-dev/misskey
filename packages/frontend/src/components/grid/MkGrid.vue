@@ -48,7 +48,7 @@ import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell, resetC
 import { equalCellAddress, getCellAddress, getCellElement } from '@/components/grid/grid-utils.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
+import { GridContext, GridEvent } from '@/components/grid/grid-event.js';
 import { createColumn, GridColumn } from '@/components/grid/column.js';
 import { createRow, defaultGridRowSetting, GridRow, GridRowSetting, resetRow } from '@/components/grid/row.js';
 
@@ -59,7 +59,7 @@ type RowHolder = {
 }
 
 const emit = defineEmits<{
-	(ev: 'event', event: GridEvent, current: GridCurrentState): void;
+	(ev: 'event', event: GridEvent, current: GridContext): void;
 }>();
 
 const props = defineProps<{
@@ -75,6 +75,9 @@ const rowSetting: Required<GridRowSetting> = {
 
 // non-reactive
 const columnSettings = props.settings.cols;
+
+// non-reactive
+const cellSettings = props.settings.cells ?? {};
 
 const { data } = toRefs(props);
 
@@ -700,15 +703,30 @@ function onContextMenu(ev: MouseEvent) {
 		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
 
+	const context = createContext();
 	const menuItems = Array.of<MenuItem>();
-
-	// 外でメニュー項目を挿してもらう
-	if (availableCellAddress(cellAddress)) {
-		emitGridEvent({ type: 'cell-context-menu', event: ev, menuItems });
-	} else if (isRowNumberCellAddress(cellAddress)) {
-		emitGridEvent({ type: 'row-context-menu', event: ev, menuItems });
-	} else if (isColumnHeaderCellAddress(cellAddress)) {
-		emitGridEvent({ type: 'column-context-menu', event: ev, menuItems });
+	switch (true) {
+		case availableCellAddress(cellAddress): {
+			const cell = cells.value[cellAddress.row].cells[cellAddress.col];
+			if (cell.setting.contextMenuFactory) {
+				menuItems.push(...cell.setting.contextMenuFactory(cell.column, cell.row, cell.value, context));
+			}
+			break;
+		}
+		case isColumnHeaderCellAddress(cellAddress): {
+			const col = columns.value[cellAddress.col];
+			if (col.setting.contextMenuFactory) {
+				menuItems.push(...col.setting.contextMenuFactory(col, context));
+			}
+			break;
+		}
+		case isRowNumberCellAddress(cellAddress): {
+			const row = rows.value[cellAddress.row];
+			if (row.setting.contextMenuFactory) {
+				menuItems.push(...row.setting.contextMenuFactory(row, context));
+			}
+			break;
+		}
 	}
 
 	if (menuItems.length > 0) {
@@ -835,7 +853,7 @@ function calcLargestCellWidth(column: GridColumn) {
  * {@link emit}を使用してイベントを発行する。
  */
 function emitGridEvent(ev: GridEvent) {
-	const currentState: GridCurrentState = {
+	const currentState: GridContext = {
 		selectedCell: selectedCell.value,
 		rangedCells: rangedCells.value,
 		rangedRows: rangedRows.value,
@@ -1037,6 +1055,19 @@ function unregisterMouseUp() {
 	removeEventListener('mouseup', onMouseUp);
 }
 
+function createContext(): GridContext {
+	return {
+		selectedCell: selectedCell.value,
+		rangedCells: rangedCells.value,
+		rangedRows: rangedRows.value,
+		randedBounds: rangedBounds.value,
+		availableBounds: availableBounds.value,
+		state: state.value,
+		rows: rows.value,
+		columns: columns.value,
+	};
+}
+
 function refreshData() {
 	if (_DEV_) {
 		console.log('[grid][refresh-data][begin]');
@@ -1044,8 +1075,8 @@ function refreshData() {
 
 	const _data: DataSource[] = data.value;
 	const _rows: GridRow[] = (_data.length > rowSetting.minimumDefinitionCount)
-		? _data.map((_, index) => createRow(index, true))
-		: Array.from({ length: rowSetting.minimumDefinitionCount }, (_, index) => createRow(index, index < _data.length));
+		? _data.map((_, index) => createRow(index, true, rowSetting))
+		: Array.from({ length: rowSetting.minimumDefinitionCount }, (_, index) => createRow(index, index < _data.length, rowSetting));
 	const _cols: GridColumn[] = columns.value;
 
 	// 行・列の定義から、元データの配列より値を取得してセルを作成する。
@@ -1053,11 +1084,11 @@ function refreshData() {
 	const _cells: RowHolder[] = _rows.map(row => {
 		const cells = row.using
 			? _cols.map(col => {
-				const cell = createCell(col, row, _data[row.index][col.setting.bindTo]);
+				const cell = createCell(col, row, _data[row.index][col.setting.bindTo], cellSettings);
 				cell.violation = cellValidation(cell, cell.value);
 				return cell;
 			})
-			: _cols.map(col => createCell(col, row, undefined));
+			: _cols.map(col => createCell(col, row, undefined, cellSettings));
 
 		return { row, cells, origin: _data[row.index] };
 	});
@@ -1095,11 +1126,11 @@ function patchData(newItems: DataSource[]) {
 
 		// 行数が増えているので新しい行を追加する
 		for (let rowIdx = rows.value.length; rowIdx < newItems.length; rowIdx++) {
-			const newRow = createRow(rowIdx, true);
+			const newRow = createRow(rowIdx, true, rowSetting);
 			newRows.push(newRow);
 			newCells.push({
 				row: newRow,
-				cells: _cols.map(col => createCell(col, newRow, newItems[rowIdx][col.setting.bindTo], col.setting.cellSetting ?? {})),
+				cells: _cols.map(col => createCell(col, newRow, newItems[rowIdx][col.setting.bindTo], cellSettings)),
 				origin: newItems[rowIdx],
 			});
 		}

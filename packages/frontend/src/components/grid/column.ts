@@ -1,8 +1,15 @@
 import { CellValidator } from '@/components/grid/cell-validators.js';
 import { Size, SizeStyle } from '@/components/grid/grid.js';
 import { calcCellWidth } from '@/components/grid/grid-utils.js';
+import { CellValue } from '@/components/grid/cell.js';
+import { GridRow } from '@/components/grid/row.js';
+import { MenuItem } from '@/types/menu.js';
+import { GridContext } from '@/components/grid/grid-event.js';
 
 export type ColumnType = 'text' | 'number' | 'date' | 'boolean' | 'image' | 'hidden';
+
+export type CellValueConverter = (row: GridRow, col: GridColumn, value: CellValue) => CellValue;
+export type GridColumnContextMenuFactory = (col: GridColumn, context: GridContext) => MenuItem[];
 
 export type GridColumnSetting = {
 	bindTo: string;
@@ -12,6 +19,8 @@ export type GridColumnSetting = {
 	width: SizeStyle;
 	editable?: boolean;
 	validators?: CellValidator[];
+	valueConverter?: CellValueConverter;
+	contextMenuFactory?: GridColumnContextMenuFactory;
 };
 
 export type GridColumn = {

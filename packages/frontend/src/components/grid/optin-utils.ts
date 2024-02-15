@@ -1,12 +1,12 @@
 import { Ref } from 'vue';
-import { GridCurrentState, GridKeyDownEvent } from '@/components/grid/grid-event.js';
+import { GridContext, GridKeyDownEvent } from '@/components/grid/grid-event.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { GridColumnSetting } from '@/components/grid/column.js';
 import { CellValue } from '@/components/grid/cell.js';
 import { DataSource } from '@/components/grid/grid.js';
 
 class OptInGridUtils {
-	async defaultKeyDownHandler(gridItems: Ref<DataSource[]>, event: GridKeyDownEvent, currentState: GridCurrentState) {
+	async defaultKeyDownHandler(gridItems: Ref<DataSource[]>, event: GridKeyDownEvent, context: GridContext) {
 		const { ctrlKey, shiftKey, code } = event.event;
 
 		switch (true) {
@@ -16,11 +16,11 @@ class OptInGridUtils {
 			case ctrlKey: {
 				switch (code) {
 					case 'KeyC': {
-						this.copyToClipboard(gridItems, currentState);
+						this.copyToClipboard(gridItems, context);
 						break;
 					}
 					case 'KeyV': {
-						await this.pasteFromClipboard(gridItems, currentState);
+						await this.pasteFromClipboard(gridItems, context);
 						break;
 					}
 				}
@@ -32,7 +32,7 @@ class OptInGridUtils {
 			default: {
 				switch (code) {
 					case 'Delete': {
-						this.deleteSelectionRange(gridItems, currentState);
+						this.deleteSelectionRange(gridItems, context);
 						break;
 					}
 				}
@@ -41,14 +41,14 @@ class OptInGridUtils {
 		}
 	}
 
-	copyToClipboard(gridItems: Ref<DataSource[]>, currentState: GridCurrentState) {
+	copyToClipboard(gridItems: Ref<DataSource[]>, context: GridContext) {
 		const lines = Array.of<string>();
-		const bounds = currentState.randedBounds;
+		const bounds = context.randedBounds;
 
 		for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
 			const items = Array.of<string>();
 			for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
-				const bindTo = currentState.columns[col].setting.bindTo;
+				const bindTo = context.columns[col].setting.bindTo;
 				const cell = gridItems.value[row][bindTo];
 				items.push(cell?.toString() ?? '');
 			}
@@ -65,7 +65,7 @@ class OptInGridUtils {
 
 	async pasteFromClipboard(
 		gridItems: Ref<DataSource[]>,
-		currentState: GridCurrentState,
+		context: GridContext,
 	) {
 		function parseValue(value: string, type: GridColumnSetting['type']): CellValue {
 			switch (type) {
@@ -86,14 +86,14 @@ class OptInGridUtils {
 			console.log(`Paste from clipboard: ${clipBoardText}`);
 		}
 
-		const bounds = currentState.randedBounds;
+		const bounds = context.randedBounds;
 		const lines = clipBoardText.replace(/\r/g, '')
 			.split('\n')
 			.map(it => it.split('\t'));
 
 		if (lines.length === 1 && lines[0].length === 1) {
 			// 単独文字列の場合は選択範囲全体に同じテキストを貼り付ける
-			const ranges = currentState.rangedCells;
+			const ranges = context.rangedCells;
 			for (const cell of ranges) {
 				gridItems.value[cell.row.index][cell.column.setting.bindTo] = parseValue(lines[0][0], cell.column.setting.type);
 			}
@@ -101,7 +101,7 @@ class OptInGridUtils {
 			// 表形式文字列の場合は表形式にパースし、選択範囲に合うように貼り付ける
 			const offsetRow = bounds.leftTop.row;
 			const offsetCol = bounds.leftTop.col;
-			const columns = currentState.columns;
+			const columns = context.columns;
 			for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
 				const rowIdx = row - offsetRow;
 				if (lines.length <= rowIdx) {
@@ -123,12 +123,12 @@ class OptInGridUtils {
 		}
 	}
 
-	deleteSelectionRange(gridItems: Ref<DataSource[]>, currentState: GridCurrentState) {
-		if (currentState.rangedRows.length > 0) {
-			const deletedIndexes = currentState.rangedRows.map(it => it.index);
+	deleteSelectionRange(gridItems: Ref<DataSource[]>, context: GridContext) {
+		if (context.rangedRows.length > 0) {
+			const deletedIndexes = context.rangedRows.map(it => it.index);
 			gridItems.value = gridItems.value.filter((_, index) => !deletedIndexes.includes(index));
 		} else {
-			const ranges = currentState.rangedCells;
+			const ranges = context.rangedCells;
 			for (const cell of ranges) {
 				if (cell.column.setting.editable) {
 					gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;

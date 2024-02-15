@@ -88,13 +88,11 @@ import { validators } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
 import { uploadFile } from '@/scripts/upload.js';
 import {
-	GridCellContextMenuEvent,
 	GridCellValidationEvent,
 	GridCellValueChangeEvent,
-	GridCurrentState,
+	GridContext,
 	GridEvent,
 	GridKeyDownEvent,
-	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
@@ -136,6 +134,22 @@ function setupGrid(): GridSetting {
 					applyStyle: { className: 'violationRow' },
 				},
 			],
+			contextMenuFactory: (row, context) => {
+				return [
+					{
+						type: 'button',
+						text: '選択行をコピー',
+						icon: 'ti ti-copy',
+						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+					},
+					{
+						type: 'button',
+						text: '選択行を削除',
+						icon: 'ti ti-trash',
+						action: () => optInGridUtils.deleteSelectionRange(gridItems, context),
+					},
+				];
+			},
 		},
 		cols: [
 			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
@@ -147,6 +161,24 @@ function setupGrid(): GridSetting {
 			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 			{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
 		],
+		cells: {
+			contextMenuFactory: (col, row, value, context) => {
+				return [
+					{
+						type: 'button',
+						text: '選択範囲をコピー',
+						icon: 'ti ti-copy',
+						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+					},
+					{
+						type: 'button',
+						text: '選択行を削除',
+						icon: 'ti ti-trash',
+						action: () => optInGridUtils.deleteSelectionRange(gridItems, context),
+					},
+				];
+			},
+		},
 	};
 }
 
@@ -300,16 +332,10 @@ async function onDriveSelectClicked() {
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
-function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
+function onGridEvent(event: GridEvent, currentState: GridContext) {
 	switch (event.type) {
 		case 'cell-validation':
 			onGridCellValidation(event);
-			break;
-		case 'row-context-menu':
-			onGridRowContextMenu(event, currentState);
-			break;
-		case 'cell-context-menu':
-			onGridCellContextMenu(event, currentState);
 			break;
 		case 'cell-value-change':
 			onGridCellValueChange(event);
@@ -324,40 +350,6 @@ function onGridCellValidation(event: GridCellValidationEvent) {
 	registerButtonDisabled.value = event.all.filter(it => !it.valid).length > 0;
 }
 
-function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: GridCurrentState) {
-	event.menuItems.push(
-		{
-			type: 'button',
-			text: '選択行をコピー',
-			icon: 'ti ti-copy',
-			action: () => optInGridUtils.copyToClipboard(gridItems, currentState),
-		},
-		{
-			type: 'button',
-			text: '選択行を削除',
-			icon: 'ti ti-trash',
-			action: () => optInGridUtils.deleteSelectionRange(gridItems, currentState),
-		},
-	);
-}
-
-function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: GridCurrentState) {
-	event.menuItems.push(
-		{
-			type: 'button',
-			text: '選択範囲をコピー',
-			icon: 'ti ti-copy',
-			action: () => optInGridUtils.copyToClipboard(gridItems, currentState),
-		},
-		{
-			type: 'button',
-			text: '選択行を削除',
-			icon: 'ti ti-trash',
-			action: () => optInGridUtils.deleteSelectionRange(gridItems, currentState),
-		},
-	);
-}
-
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
@@ -365,7 +357,7 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	}
 }
 
-function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
+function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
 	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
 }
 

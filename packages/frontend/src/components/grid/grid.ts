@@ -1,11 +1,12 @@
 import { EventEmitter } from 'eventemitter3';
-import { CellValue } from '@/components/grid/cell.js';
+import { CellValue, GridCellSetting } from '@/components/grid/cell.js';
 import { GridColumnSetting } from '@/components/grid/column.js';
 import { GridRowSetting } from '@/components/grid/row.js';
 
 export type GridSetting = {
 	row?: GridRowSetting;
 	cols: GridColumnSetting[];
+	cells?: GridCellSetting;
 };
 
 export type DataSource = Record<string, CellValue>;

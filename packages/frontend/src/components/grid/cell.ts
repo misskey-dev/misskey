@@ -2,6 +2,8 @@ import { ValidateViolation } from '@/components/grid/cell-validators.js';
 import { Size } from '@/components/grid/grid.js';
 import { GridColumn } from '@/components/grid/column.js';
 import { GridRow } from '@/components/grid/row.js';
+import { MenuItem } from '@/types/menu.js';
+import { GridContext } from '@/components/grid/grid-event.js';
 
 export type CellValue = string | boolean | number | undefined | null
 
@@ -23,13 +25,21 @@ export type GridCell = {
 	selected: boolean;
 	ranged: boolean;
 	contentSize: Size;
+	setting: GridCellSetting;
 	violation: ValidateViolation;
+}
+
+export type GridCellContextMenuFactory = (col: GridColumn, row: GridRow, value: CellValue, context: GridContext) => MenuItem[];
+
+export type GridCellSetting = {
+	contextMenuFactory?: GridCellContextMenuFactory;
 }
 
 export function createCell(
 	column: GridColumn,
 	row: GridRow,
 	value: CellValue,
+	setting: GridCellSetting,
 ): GridCell {
 	return {
 		address: { row: row.index, col: column.index },
@@ -48,6 +58,7 @@ export function createCell(
 			},
 			violations: [],
 		},
+		setting,
 	};
 }
 

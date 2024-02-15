@@ -137,13 +137,11 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
 import {
-	GridCellContextMenuEvent,
 	GridCellValidationEvent,
 	GridCellValueChangeEvent,
-	GridCurrentState,
+	GridContext,
 	GridEvent,
 	GridKeyDownEvent,
-	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -209,6 +207,26 @@ function setupGrid(): GridSetting {
 					applyStyle: { className: 'violationRow' },
 				},
 			],
+			contextMenuFactory: (row, context) => {
+				return [
+					{
+						type: 'button',
+						text: '選択行をコピー',
+						icon: 'ti ti-copy',
+						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+					},
+					{
+						type: 'button',
+						text: '選択行を削除対象とする',
+						icon: 'ti ti-trash',
+						action: () => {
+							for (const row of context.rangedRows) {
+								gridItems.value[row.index].checked = true;
+							}
+						},
+					},
+				];
+			},
 		},
 		cols: [
 			{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
@@ -224,6 +242,34 @@ function setupGrid(): GridSetting {
 			{ bindTo: 'publicUrl', type: 'text', editable: false, width: 180 },
 			{ bindTo: 'originalUrl', type: 'text', editable: false, width: 180 },
 		],
+		cells: {
+			contextMenuFactory: (col, row, value, context) => {
+				return [
+					{
+						type: 'button',
+						text: '選択範囲をコピー',
+						icon: 'ti ti-copy',
+						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+					},
+					{
+						type: 'button',
+						text: '選択範囲を削除',
+						icon: 'ti ti-trash',
+						action: () => optInGridUtils.deleteSelectionRange(gridItems, context),
+					},
+					{
+						type: 'button',
+						text: '選択行を削除対象とする',
+						icon: 'ti ti-trash',
+						action: () => {
+							for (const rowIdx of [...new Set(context.rangedCells.map(it => it.row.index)).values()]) {
+								gridItems.value[rowIdx].checked = true;
+							}
+						},
+					},
+				];
+			},
+		},
 	};
 }
 
@@ -407,16 +453,10 @@ async function onPageChanged(pageNumber: number) {
 	await refreshCustomEmojis();
 }
 
-function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
+function onGridEvent(event: GridEvent, currentState: GridContext) {
 	switch (event.type) {
 		case 'cell-validation':
 			onGridCellValidation(event);
-			break;
-		case 'row-context-menu':
-			onGridRowContextMenu(event, currentState);
-			break;
-		case 'cell-context-menu':
-			onGridCellContextMenu(event, currentState);
 			break;
 		case 'cell-value-change':
 			onGridCellValueChange(event);
@@ -429,54 +469,6 @@ function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 
 function onGridCellValidation(event: GridCellValidationEvent) {
 	updateButtonDisabled.value = event.all.filter(it => !it.valid).length > 0;
-}
-
-function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: GridCurrentState) {
-	event.menuItems.push(
-		{
-			type: 'button',
-			text: '選択行をコピー',
-			icon: 'ti ti-copy',
-			action: () => optInGridUtils.copyToClipboard(gridItems, currentState),
-		},
-		{
-			type: 'button',
-			text: '選択行を削除対象とする',
-			icon: 'ti ti-trash',
-			action: () => {
-				for (const row of currentState.rangedRows) {
-					gridItems.value[row.index].checked = true;
-				}
-			},
-		},
-	);
-}
-
-function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: GridCurrentState) {
-	event.menuItems.push(
-		{
-			type: 'button',
-			text: '選択範囲をコピー',
-			icon: 'ti ti-copy',
-			action: () => optInGridUtils.copyToClipboard(gridItems, currentState),
-		},
-		{
-			type: 'button',
-			text: '選択範囲を削除',
-			icon: 'ti ti-trash',
-			action: () => optInGridUtils.deleteSelectionRange(gridItems, currentState),
-		},
-		{
-			type: 'button',
-			text: '選択行を削除対象とする',
-			icon: 'ti ti-trash',
-			action: () => {
-				for (const rowIdx of [...new Set(currentState.rangedCells.map(it => it.row.index)).values()]) {
-					gridItems.value[rowIdx].checked = true;
-				}
-			},
-		},
-	);
 }
 
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
@@ -492,7 +484,7 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	}
 }
 
-async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
+async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
 	const { ctrlKey, shiftKey, code } = event.event;
 
 	switch (true) {
