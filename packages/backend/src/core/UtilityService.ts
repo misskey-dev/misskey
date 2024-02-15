@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,13 +43,13 @@ export class UtilityService {
 	}
 
 	@bindThis
-	public isSensitiveWordIncluded(text: string, sensitiveWords: string[]): boolean {
-		if (sensitiveWords.length === 0) return false;
+	public isKeyWordIncluded(text: string, keyWords: string[]): boolean {
+		if (keyWords.length === 0) return false;
 		if (text === '') return false;
 
 		const regexpregexp = /^\/(.+)\/(.*)$/;
 
-		const matched = sensitiveWords.some(filter => {
+		const matched = keyWords.some(filter => {
 			// represents RegExp
 			const regexp = filter.match(regexpregexp);
 			// This should never happen due to input sanitisation.

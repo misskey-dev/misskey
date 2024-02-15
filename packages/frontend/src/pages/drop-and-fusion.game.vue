@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -893,7 +893,6 @@ function getGameImageDriveFile() {
 				formData.append('file', blob);
 				formData.append('name', `bubble-game-${Date.now()}.png`);
 				formData.append('isSensitive', 'false');
-				formData.append('comment', 'null');
 				formData.append('i', $i.token);
 				if (defaultStore.state.uploadFolder) {
 					formData.append('folderId', defaultStore.state.uploadFolder);
