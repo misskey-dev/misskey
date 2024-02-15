@@ -44,15 +44,16 @@
 #           license again carefully.  Anyway, enabling this
 #           option will automatically generate and publish a
 #           tarball at build time, protecting you from
-#           inadvertent license violations.  The tarball will
-#           generated from the root directory of the codebase.
-#           So it is also recommended to check <built/tarball>
-#           directory once after building and before activating
-#           the server to avoid ACCIDENTAL LEAKING OF SENSITIVE
-#           INFORMATION.  To prevent certain files from being
-#           included in the tarball, add a glob pattern after
-#           line 15 in <scripts/tarball.mjs>.  DO NOT FORGET TO
-#           BUILD AFTER ENABLING THIS OPTION!)
+#           inadvertent license violations. (There is no legal
+#           guarantee, of course.)  The tarball will generated
+#           from the root directory of your codebase.  So it is
+#           also recommended to check <built/tarball> directory
+#           once after building and before activating the server
+#           to avoid ACCIDENTAL LEAKING OF SENSITIVE INFORMATION.
+#           To prevent certain files from being included in the
+#           tarball, add a glob pattern after line 15 in
+#           <scripts/tarball.mjs>.  DO NOT FORGET TO BUILD AFTER
+#           ENABLING THIS OPTION!)
 #
 # Step 1: Uncomment the following line.
 #
