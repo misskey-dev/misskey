@@ -6,6 +6,7 @@
 import { Module } from '@nestjs/common';
 
 import { CoreModule } from '@/core/CoreModule.js';
+import * as ep___admin_nirilaDeleteUserLogAccess from './endpoints/admin/nirila-delete-user-log-access.js';
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
@@ -368,6 +369,7 @@ import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
 
+const $admin_nirilaDeleteUserLogAccess: Provider = { provide: 'ep:admin/nirila-delete-user-log-access', useClass: ep___admin_nirilaDeleteUserLogAccess.default };
 const $admin_meta: Provider = { provide: 'ep:admin/meta', useClass: ep___admin_meta.default };
 const $admin_abuseUserReports: Provider = { provide: 'ep:admin/abuse-user-reports', useClass: ep___admin_abuseUserReports.default };
 const $admin_accounts_create: Provider = { provide: 'ep:admin/accounts/create', useClass: ep___admin_accounts_create.default };
@@ -734,6 +736,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 	providers: [
 		GetterService,
 		ApiLoggerService,
+		$admin_nirilaDeleteUserLogAccess,
 		$admin_meta,
 		$admin_abuseUserReports,
 		$admin_accounts_create,
@@ -1094,6 +1097,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$retention,
 	],
 	exports: [
+		$admin_nirilaDeleteUserLogAccess,
 		$admin_meta,
 		$admin_abuseUserReports,
 		$admin_accounts_create,
