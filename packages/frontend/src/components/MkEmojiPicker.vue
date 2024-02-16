@@ -57,15 +57,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
 				<div class="body">
 					<button
-						v-for="emoji in recentlyUsedEmojis"
-						:key="emoji"
+						v-for="emoji in recentlyUsedEmojisDef"
+						:key="getKey(emoji)"
 						class="_button item"
-						:data-emoji="emoji"
+						:disabled="!canReact(emoji)"
+						:data-emoji="getKey(emoji)"
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
 			</section>
@@ -76,7 +77,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).map(e => `:${e.name}:`))"
+				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -145,6 +147,16 @@ const {
 	emojiPickerHeight,
 	recentlyUsedEmojis,
 } = defaultStore.reactiveState;
+
+const recentlyUsedEmojisDef = computed(() => {
+	return recentlyUsedEmojis.value.map((emoji: string) => {
+		if (emoji.includes(':')) {
+			return customEmojisMap.get(emoji.replace(/:/g, ''))!;
+		} else {
+			return emojilist.find(e => e.char === emoji)!;
+		}
+	});
+});
 
 const pinned = computed(() => props.pinnedEmojis);
 const size = computed(() => emojiPickerScale.value);
@@ -337,12 +349,16 @@ watch(q, () => {
 		return matches;
 	};
 
-	searchResultCustom.value = Array.from(searchCustom()).filter(filterAvailable);
+	searchResultCustom.value = Array.from(searchCustom());
 	searchResultUnicode.value = Array.from(searchUnicode());
 });
 
-function filterAvailable(emoji: Misskey.entities.EmojiSimple): boolean {
+function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef): boolean {
 	return !props.targetNote || checkReactionPermissions($i!, props.targetNote, emoji);
+}
+
+function filterCategory(emoji: Misskey.entities.EmojiSimple, category: string): boolean {
+	return category === '' ? (emoji.category === 'null' || !emoji.category) : emoji.category === category;
 }
 
 function focus() {
@@ -526,6 +542,11 @@ defineExpose({
 						width: auto;
 						height: auto;
 						min-width: 0;
+
+						&:disabled {
+							opacity: 1;
+							filter: grayscale(1);
+						}
 					}
 				}
 			}
@@ -548,6 +569,11 @@ defineExpose({
 						width: auto;
 						height: auto;
 						min-width: 0;
+
+						&:disabled {
+							opacity: 1;
+							filter: grayscale(1);
+						}
 					}
 				}
 			}
@@ -661,6 +687,11 @@ defineExpose({
 					&:active {
 						background: var(--accent);
 						box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
+					}
+
+					&:disabled {
+						opacity: 1;
+						filter: grayscale(1);
 					}
 
 					> .emoji {
