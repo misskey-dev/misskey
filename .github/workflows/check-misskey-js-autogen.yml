@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
         with:
           submodules: true
           ref: ${{ github.event.pull_request.head.sha }}
@@ -31,7 +31,7 @@ jobs:
 
       - name: setup node
         id: setup-node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.2
         with:
           node-version-file: '.node-version'
           cache: pnpm
@@ -48,7 +48,7 @@ jobs:
           wait-interval: 30
 
       - name: Download artifact
-        uses: actions/github-script@v7
+        uses: actions/github-script@v7.0.1
         with:
           script: |
             const fs = require('fs');
