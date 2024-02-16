@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -27,6 +28,9 @@ export class SignupApiService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -160,6 +164,29 @@ export class SignupApiService {
 				reply.code(400);
 				return;
 			}
+		// 登録停止と登録インターバル制限の両方が有効の場合は、登録停止のほうを優先する
+		} else if (instance.secondsPerSignup > 0) {
+			let usingInvitationCode = false;
+
+			if (invitationCode && typeof invitationCode === 'string') {
+				ticket = await this.registrationTicketsRepository.findOneBy({
+					code: invitationCode,
+				});
+
+				if (ticket && ticket.usedBy == null && (!ticket.expiresAt || ticket.expiresAt > new Date()) && (!ticket.usedAt || ticket.usedAt.getTime() + (1000 * 60 * 30) < Date.now())) {
+					usingInvitationCode = true;
+				}
+			}
+
+			const lastSignup = await this.redisClient.get('signup:lastSignupAt'); // ISO8601
+			if (lastSignup && !usingInvitationCode) {
+				const lastSignupAt = new Date(lastSignup);
+				const now = new Date();
+				const diff = now.getTime() - lastSignupAt.getTime();
+				if (diff < instance.secondsPerSignup * 1000) {
+					throw new FastifyReplyError(429, 'SIGNUP_RATE_LIMIT_EXCEEDED');
+				}
+			}
 		}
 
 		if (instance.emailRequiredForSignup) {
@@ -204,6 +231,8 @@ export class SignupApiService {
 				});
 			}
 
+			this.redisClient.set('signup:lastSignupAt', new Date().toISOString());
+
 			reply.code(204);
 			return;
 		} else {
@@ -224,6 +253,8 @@ export class SignupApiService {
 						usedById: account.id,
 					});
 				}
+
+				this.redisClient.set('signup:lastSignupAt', new Date().toISOString());
 
 				return {
 					...res,

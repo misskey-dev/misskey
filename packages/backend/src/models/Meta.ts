@@ -51,6 +51,11 @@ export class MiMeta {
 	})
 	public disableRegistration: boolean;
 
+	@Column('integer', {
+		default: 0,
+	})
+	public secondsPerSignup: number;
+
 	@Column('varchar', {
 		length: 1024, array: true, default: '{}',
 	})
