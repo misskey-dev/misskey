@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -121,10 +121,10 @@ function onGameEnd() {
 	gameStarted.value = false;
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-device-gamepad',
-});
+}));
 </script>
 
 <style lang="scss" module>

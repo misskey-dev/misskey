@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -123,7 +123,7 @@ function callback(response?: string) {
 function onReceivedMessage(message: MessageEvent) {
 	if (message.data.token) {
 		if (props.instanceUrl && new URL(message.origin).host === new URL(props.instanceUrl).host) {
-			callback(<string>message.data.token);
+			callback(message.data.token);
 		}
 	}
 }

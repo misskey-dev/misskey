@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -86,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink :to="`/.well-known/nodeinfo`" external>nodeinfo</FormLink>
 						<FormLink :to="`/robots.txt`" external>robots.txt</FormLink>
 						<FormLink :to="`/manifest.json`" external>manifest.json</FormLink>
+						<FormLink :to="`/tarball/misskey-${version}.tar.gz`" external>source code</FormLink>
 					</div>
 				</FormSection>
 			</div>
@@ -163,10 +164,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-chart-line',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'ti ti-info-circle',
-})));
+}));
 </script>
 
 <style lang="scss" module>

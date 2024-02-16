@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,7 +37,17 @@ import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/jso
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
-import { packedRoleLiteSchema, packedRoleSchema, packedRolePoliciesSchema } from '@/models/json-schema/role.js';
+import {
+	packedRoleLiteSchema,
+	packedRoleSchema,
+	packedRolePoliciesSchema,
+	packedRoleCondFormulaLogicsSchema,
+	packedRoleCondFormulaValueNot,
+	packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	packedRoleCondFormulaValueCreatedSchema,
+	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	packedRoleCondFormulaValueSchema,
+} from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
 import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
 
@@ -78,6 +88,12 @@ export const refs = {
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
 	Signin: packedSigninSchema,
+	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
+	RoleCondFormulaValueNot: packedRoleCondFormulaValueNot,
+	RoleCondFormulaValueIsLocalOrRemote: packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	RoleCondFormulaValueCreated: packedRoleCondFormulaValueCreatedSchema,
+	RoleCondFormulaFollowersOrFollowingOrNotes: packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	RoleCondFormulaValue: packedRoleCondFormulaValueSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
 	RolePolicies: packedRolePoliciesSchema,
