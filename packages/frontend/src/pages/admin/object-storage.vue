@@ -149,10 +149,10 @@ function save() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.objectStorage,
 	icon: 'ti ti-cloud',
-});
+}));
 </script>
 
 <style lang="scss" module>

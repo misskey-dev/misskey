@@ -258,10 +258,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-search',
 }]);
 
-definePageMetadata(computed(() => channel.value ? {
-	title: channel.value.name,
+definePageMetadata(() => ({
+	title: channel.value ? channel.value.name : i18n.ts.channel,
 	icon: 'ti ti-device-tv',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

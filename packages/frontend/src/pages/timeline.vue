@@ -337,10 +337,10 @@ const headerTabsWhenNotLogin = computed(() => [
 	}] : []),
 ] as Tab[]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.timeline,
 	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : 'ti ti-home',
-})));
+}));
 </script>
 
 <style lang="scss" module>
