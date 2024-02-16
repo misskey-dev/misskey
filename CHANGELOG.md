@@ -12,6 +12,15 @@
 
 -->
 
+## 202x.x.x-nirila.x (Unreleased)
+
+### General
+
+### Client
+- センシティブチャンネルのNoteがたたまれる方法がソフトミュートと同様になりました。
+
+### Server
+
 ## 202x.x.x (Unreleased)
 
 ### Note
