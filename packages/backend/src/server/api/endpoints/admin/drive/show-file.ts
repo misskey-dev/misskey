@@ -84,6 +84,24 @@ export const meta = {
 			properties: {
 				type: 'object',
 				optional: false, nullable: false,
+				properties: {
+					width: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					height: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					orientation: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					avgColor: {
+						type: 'string',
+						optional: true, nullable: false,
+					},
+				},
 			},
 			storedInternal: {
 				type: 'boolean',
