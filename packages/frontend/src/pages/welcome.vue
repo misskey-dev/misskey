@@ -29,8 +29,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: instanceName,
 	icon: null,
-})));
+}));
 </script>

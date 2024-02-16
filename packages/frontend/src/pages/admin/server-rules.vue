@@ -67,10 +67,10 @@ const remove = (index: number): void => {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.serverRules,
 	icon: 'ti ti-checkbox',
-});
+}));
 </script>
 
 <style lang="scss" module>

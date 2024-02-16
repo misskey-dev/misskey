@@ -37,10 +37,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.roles,
 	icon: 'ti ti-badges',
-});
+}));
 </script>
 
 <style lang="scss" module>
