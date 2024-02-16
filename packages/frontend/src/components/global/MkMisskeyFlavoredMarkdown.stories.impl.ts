@@ -5,8 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
-import { within } from '@storybook/testing-library';
-import { expect } from '@storybook/jest';
+import { expect, within } from '@storybook/test';
 import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.js';
 export const Default = {
 	render(args) {

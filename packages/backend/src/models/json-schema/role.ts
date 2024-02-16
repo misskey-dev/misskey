@@ -1,3 +1,129 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+export const packedRoleCondFormulaLogicsSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['and', 'or'],
+		},
+		values: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				ref: 'RoleCondFormulaValue',
+			},
+		},
+	},
+} as const;
+
+export const packedRoleCondFormulaValueNot = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['not'],
+		},
+		value: {
+			type: 'object',
+			optional: false,
+			ref: 'RoleCondFormulaValue',
+		},
+	},
+} as const;
+
+export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['isLocal', 'isRemote'],
+		},
+	},
+} as const;
+
+export const packedRoleCondFormulaValueCreatedSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: [
+				'createdLessThan',
+				'createdMoreThan',
+			],
+		},
+		sec: {
+			type: 'number',
+			nullable: false, optional: false,
+		},
+	},
+} as const;
+
+export const packedRoleCondFormulaFollowersOrFollowingOrNotesSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: [
+				'followersLessThanOrEq',
+				'followersMoreThanOrEq',
+				'followingLessThanOrEq',
+				'followingMoreThanOrEq',
+				'notesLessThanOrEq',
+				'notesMoreThanOrEq',
+			],
+		},
+		value: {
+			type: 'number',
+			nullable: false, optional: false,
+		},
+	},
+} as const;
+
+export const packedRoleCondFormulaValueSchema = {
+	type: 'object',
+	oneOf: [
+		{
+			ref: 'RoleCondFormulaLogics',
+		},
+		{
+			ref: 'RoleCondFormulaValueNot',
+		},
+		{
+			ref: 'RoleCondFormulaValueIsLocalOrRemote',
+		},
+		{
+			ref: 'RoleCondFormulaValueCreated',
+		},
+		{
+			ref: 'RoleCondFormulaFollowersOrFollowingOrNotes',
+		},
+	],
+} as const;
+
 export const packedRolePoliciesSchema = {
 	type: 'object',
 	optional: false, nullable: false,
@@ -174,6 +300,7 @@ export const packedRoleSchema = {
 				condFormula: {
 					type: 'object',
 					optional: false, nullable: false,
+					ref: 'RoleCondFormulaValue',
 				},
 				isPublic: {
 					type: 'boolean',
