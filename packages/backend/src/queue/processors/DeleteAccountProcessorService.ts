@@ -63,8 +63,8 @@ export class DeleteAccountProcessorService {
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 		// data from src/server/api/endpoints/users/show.ts
-		const detailedUser = await this.userEntityService.pack(user, null, {
-			detail: true,
+		const detailedUser = await this.userEntityService.pack<'UserDetailed'>(user, null, {
+			schema: 'UserDetailed',
 			asModerator: true,
 		});
 
