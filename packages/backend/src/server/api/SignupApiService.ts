@@ -75,14 +75,6 @@ export class SignupApiService {
 
 		const instance = await this.metaService.fetch(true);
 
-		if (instance.enableProxyCheckio) {
-			if (instance.proxyCheckioApiKey == null) throw new FastifyReplyError(400, 'PROXY_CHECKIO_API_KEY_NOT_SET');
-			const proxyCheck = new ProxyCheck({ api_key: instance.proxyCheckioApiKey });
-			const result = await proxyCheck.check(request.headers['x-real-ip'] ?? request.ip, {
-				vpn: 1,
-			});
-			if (result[request.headers['x-real-ip'] ?? request.ip].proxy === 'yes') throw new FastifyReplyError(400, 'PROXY_DETECTED');
-		}
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
@@ -116,6 +108,24 @@ export class SignupApiService {
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
+
+		const { DiscordWebhookUrl } = (await this.metaService.fetch());
+		if (DiscordWebhookUrl) {
+			const data_disc = { 'username': 'ユーザー登録お知らせ',
+																							'content':
+					'ユーザー名 :' + username + '\n' +
+					'メールアドレス : ' + emailAddress + '\n' +
+					'IPアドレス : ' + request.headers['x-real-ip'] ?? request.ip,
+			};
+
+			await fetch(DiscordWebhookUrl, {
+				'method': 'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data_disc),
+			});
+		}
 
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {

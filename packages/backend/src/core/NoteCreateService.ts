@@ -265,6 +265,24 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+			const { DiscordWebhookUrl } = (await this.metaService.fetch());
+
+			if (DiscordWebhookUrl) {
+				const data_disc = { 'username': 'ノートブロックお知らせ',
+																								'content':
+						'ユーザー名 :' + user.username + '\n' +
+						'url : ' + user.host + '\n' +
+						'contents : ' + data.text,
+				};
+
+				await fetch(DiscordWebhookUrl, {
+					'method': 'post',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data_disc),
+				});
+			}
 			throw new NoteCreateService.ContainsProhibitedWordsError();
 		}
 
