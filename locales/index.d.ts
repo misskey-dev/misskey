@@ -4061,7 +4061,7 @@ export interface Locale extends ILocale {
      */
     "signupRateLimited": string;
     /**
-     * ただいま、単位時間あたりに登録できるアカウントの量を制限しています。しばらく待ってから再度お試しいただくか、招待コードをお持ちの場合はそちらをご利用ください。
+     * ただいま、アカウントの登録にインターバルを設けています。しばらく待ってから再度お試しいただくか、招待コードをお持ちの場合はそちらをご利用ください。
      */
     "signupRateLimitedDescription": string;
     /**

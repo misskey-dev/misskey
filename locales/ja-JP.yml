@@ -1011,7 +1011,7 @@ invalidParamErrorDescription: "リクエストパラメータに問題があり�
 permissionDeniedError: "操作が拒否されました"
 permissionDeniedErrorDescription: "このアカウントにはこの操作を行うための権限がありません。"
 signupRateLimited: "登録が制限されています"
-signupRateLimitedDescription: "ただいま、単位時間あたりに登録できるアカウントの量を制限しています。しばらく待ってから再度お試しいただくか、招待コードをお持ちの場合はそちらをご利用ください。"
+signupRateLimitedDescription: "ただいま、アカウントの登録にインターバルを設けています。しばらく待ってから再度お試しいただくか、招待コードをお持ちの場合はそちらをご利用ください。"
 preset: "プリセット"
 selectFromPresets: "プリセットから選択"
 achievements: "実績"
