@@ -15,7 +15,7 @@
 ## 202x.x.x (Unreleased)
 
 ### Note
-- 外部サイトからプラグインをインストールする場合のパスが`/install-extentions`から`/install-extensions`に変わります。現時点では以前のパスも利用できますが、非推奨です。
+- 外部サイトからプラグインをインストールする場合のパスが`/install-extentions`から`/install-extensions`に変わります。以前のパスからは自動でリダイレクトされるようになっていますが、新しいパスに変更することをお勧めします。
 
 ### General
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
