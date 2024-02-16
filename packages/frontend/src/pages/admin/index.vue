@@ -36,11 +36,9 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
-import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
-
-import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store.js";
+import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -68,17 +66,17 @@ const currentPage = computed(() => router.currentRef.value.child);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 let iconUrl = ref();
 if (darkMode.value) {
-    iconUrl.value = iconDark;
+	iconUrl.value = iconDark;
 } else {
-    iconUrl.value = iconLight;
+	iconUrl.value = iconLight;
 }
 watch(darkMode, () => {
-    if (darkMode.value) {
-        iconUrl.value = iconDark;
-    } else {
-        iconUrl.value = iconLight;
-    }
-})
+	if (darkMode.value) {
+		iconUrl.value = iconDark;
+	} else {
+		iconUrl.value = iconLight;
+	}
+});
 misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,
