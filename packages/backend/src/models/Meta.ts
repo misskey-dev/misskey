@@ -229,6 +229,13 @@ export class MiMeta {
 		nullable: true,
 	})
 	public DiscordWebhookUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public DiscordWebhookUrlWordBlock: string | null;
+
 	@Column('varchar', {
 		length: 1024,
 		nullable: true,

@@ -92,6 +92,7 @@ export const paramDef = {
 		},
 		summalyProxy: { type: 'string', nullable: true },
 		DiscordWebhookUrl: { type: 'string', nullable: true },
+		DiscordWebhookUrlWordBlock: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
 		enableEmail: { type: 'boolean' },
@@ -209,6 +210,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 			if (ps.DiscordWebhookUrl !== undefined) {
 				set.DiscordWebhookUrl = ps.DiscordWebhookUrl;
+			}
+			if (ps.DiscordWebhookUrlWordBlock !== undefined) {
+				set.DiscordWebhookUrlWordBlock = ps.DiscordWebhookUrlWordBlock;
 			}
 			if (ps.EmojiBotToken !== undefined) {
 				set.EmojiBotToken = ps.EmojiBotToken;

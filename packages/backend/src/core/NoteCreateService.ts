@@ -265,17 +265,43 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
-			const { DiscordWebhookUrl } = (await this.metaService.fetch());
+			const { DiscordWebhookUrlWordBlock } = (await this.metaService.fetch());
+			const regexpregexp = /^\/(.+)\/(.*)$/;
+			let matchedString = '';
+			for (const filter of meta.prohibitedWords) {
+				// represents RegExp
+				const regexp = filter.match(regexpregexp);
+				// This should never happen due to input sanitisation.
+				if (!regexp) {
+					const words = filter.split(' ');
+					const foundWord = words.find(keyword => (data.cw ?? data.text ?? '').includes(keyword));
+					if (foundWord) {
+						matchedString = foundWord;
+						break;
+					}
+				} else {
+					const match = new RE2(regexp[1], regexp[2]).exec(data.cw ?? data.text ?? '');
+					if (match) {
+						matchedString = match[0];
+						break;
+					}
+				}
+			}
 
-			if (DiscordWebhookUrl) {
+			console.log('matched', matchedString);
+			if (DiscordWebhookUrlWordBlock) {
 				const data_disc = { 'username': 'ノートブロックお知らせ',
 																								'content':
 						'ユーザー名 :' + user.username + '\n' +
 						'url : ' + user.host + '\n' +
-						'contents : ' + data.text,
+						'contents : ' + data.text + '\n' +
+						'引っかかったワード :' + matchedString,
+																								'allowed_mentions': {
+																									'parse': [],
+																								},
 				};
 
-				await fetch(DiscordWebhookUrl, {
+				await fetch(DiscordWebhookUrlWordBlock, {
 					'method': 'post',
 					headers: {
 						'Content-Type': 'application/json',

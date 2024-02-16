@@ -458,6 +458,9 @@ export const meta = {
 			DiscordWebhookUrl: {
 				type: 'string',
 				optional: false, nullable: true,
+			},			DiscordWebhookUrlWordBlock: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			enableProxyCheckio: {
 				type: 'boolean',
@@ -595,6 +598,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				notesPerOneAd: instance.notesPerOneAd,
 				DiscordWebhookUrl: instance.DiscordWebhookUrl,
+				DiscordWebhookUrlWordBlock: instance.DiscordWebhookUrlWordBlock,
 				EmojiBotToken: instance.EmojiBotToken,
 				ApiBase: instance.ApiBase,
 				enableGDPRMode: instance.enableGDPRMode,

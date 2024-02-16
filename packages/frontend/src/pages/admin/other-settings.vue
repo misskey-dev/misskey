@@ -36,21 +36,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
 				</div>
-                <MkInput v-model="DiscordWebhookUrl" type="password">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>Discord Webhook URL</template>
-                </MkInput>
-                <MkInput v-model="EmojiBotToken" type="password">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>EmojiBotToken</template>
-                </MkInput>
-                <MkInput v-model="ApiBase">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>ApiBase</template>
-                </MkInput>
-                <MkSwitch v-model="requestEmojiAllOk">
-絵文字の申請全部許可
-                </MkSwitch>
+				<MkInput v-model="DiscordWebhookUrl" type="password">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>Discord Webhook URL</template>
+				</MkInput>
+				<MkInput v-model="DiscordWebhookUrlWordBlock" type="password">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>Discord Webhook Url WordBlock</template>
+				</MkInput>
+				<MkInput v-model="EmojiBotToken" type="password">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>EmojiBotToken</template>
+				</MkInput>
+				<MkInput v-model="ApiBase">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>ApiBase</template>
+				</MkInput>
+				<MkSwitch v-model="requestEmojiAllOk">
+					絵文字の申請全部許可
+				</MkSwitch>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -67,26 +71,29 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkInput from "@/components/MkInput.vue";
+import MkInput from '@/components/MkInput.vue';
 
 const enableServerMachineStats = ref<boolean>(false);
 const enableIdenticonGeneration = ref<boolean>(false);
 const enableChartsForRemoteUser = ref<boolean>(false);
 const enableChartsForFederatedInstances = ref<boolean>(false);
-const requestEmojiAllOk = ref(false)
+const requestEmojiAllOk = ref(false);
 let DiscordWebhookUrl = ref(null);
-let EmojiBotToken= ref(null);
-let ApiBase= ref(null)
+let DiscordWebhookUrlWordBlock = ref(null);
+let EmojiBotToken = ref(null);
+let ApiBase = ref(null);
+
 async function init() {
 	const meta = await misskeyApi('admin/meta');
 	enableServerMachineStats.value = meta.enableServerMachineStats;
 	enableIdenticonGeneration.value = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser.value = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances.value = meta.enableChartsForFederatedInstances;
-    requestEmojiAllOk.value = meta.requestEmojiAllOk;
-    DiscordWebhookUrl.value = meta.DiscordWebhookUrl;
-    EmojiBotToken.value = meta.EmojiBotToken;
-    ApiBase.value = meta.ApiBase;
+	requestEmojiAllOk.value = meta.requestEmojiAllOk;
+	DiscordWebhookUrl.value = meta.DiscordWebhookUrl;
+	DiscordWebhookUrlWordBlock.value = meta.DiscordWebhookUrlWordBlock;
+	EmojiBotToken.value = meta.EmojiBotToken;
+	ApiBase.value = meta.ApiBase;
 }
 
 function save() {
@@ -94,11 +101,12 @@ function save() {
 		enableServerMachineStats: enableServerMachineStats.value,
 		enableIdenticonGeneration: enableIdenticonGeneration.value,
 		enableChartsForRemoteUser: enableChartsForRemoteUser.value,
-        requestEmojiAllOk: requestEmojiAllOk.value,
+		requestEmojiAllOk: requestEmojiAllOk.value,
 		enableChartsForFederatedInstances: enableChartsForFederatedInstances.value,
-        DiscordWebhookUrl:DiscordWebhookUrl.value,
-        EmojiBotToken:EmojiBotToken.value,
-        ApiBase:ApiBase.value
+		DiscordWebhookUrl: DiscordWebhookUrl.value,
+		EmojiBotToken: EmojiBotToken.value,
+		ApiBase: ApiBase.value,
+		DiscordWebhookUrlWordBlock: DiscordWebhookUrlWordBlock.value,
 	}).then(() => {
 		fetchInstance();
 	});
