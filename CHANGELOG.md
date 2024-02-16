@@ -19,6 +19,7 @@
 
 ### General
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
+- Feat: ユーザー登録を承認制にできるように (cherry-pick from https://git.joinsharkey.org/Sharkey/Sharkey)
 - Fix: リストライムラインの「リノートを表示」が正しく機能しない問題を修正
 - Feat: Add support for TrueMail
 - Fix: リモートユーザーのリアクション一覧がすべて見えてしまうのを修正

@@ -375,6 +375,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'string',
 			nullable: false, optional: true,
 		},
+		approved: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
 		//#region relations
 		isFollowing: {
 			type: 'boolean',

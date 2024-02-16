@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 				<MkInfo v-if="noBotProtection" warn class="info">{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 				<MkInfo v-if="noEmailServer" warn class="info">{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="pendingUserApprovals" warn class="info">{{ i18n.ts.pendingUserApprovals }} <MkA to="/admin/approvals" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
 
 				<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
 			</div>
@@ -61,6 +62,7 @@ let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instan
 let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
 let noEmailServer = !instance.enableEmail;
 const thereIsUnresolvedAbuseReport = ref(false);
+const pendingUserApprovals = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
 
 misskeyApi('admin/abuse-user-reports', {
@@ -68,6 +70,14 @@ misskeyApi('admin/abuse-user-reports', {
 	limit: 1,
 }).then(reports => {
 	if (reports.length > 0) thereIsUnresolvedAbuseReport.value = true;
+});
+
+misskeyApi('admin/show-users', {
+	state: 'approved',
+	origin: 'local',
+	limit: 1,
+}).then(approvals => {
+	if (approvals.length > 0) pendingUserApprovals.value = true;
 });
 
 const NARROW_THRESHOLD = 600;
@@ -106,6 +116,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.invite,
 		to: '/admin/invites',
 		active: currentPage.value?.route.name === 'invites',
+	}, {
+		icon: 'ti ti-user-check',
+		text: i18n.ts.signupPendingApprovals,
+		to: '/admin/approvals',
+		active: currentPage.value?.route.name === 'approvals',
 	}, {
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,

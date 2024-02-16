@@ -48,6 +48,7 @@ export const permissions = [
 	'read:admin:abuse-user-reports',
 	'write:admin:delete-account',
 	'write:admin:delete-all-files-of-a-user',
+	'write:admin:approve-account',
 	'read:admin:index-stats',
 	'read:admin:table-stats',
 	'read:admin:user-ips',
@@ -98,6 +99,7 @@ export const permissions = [
 export const moderationLogTypes = [
 	'updateServerSettings',
 	'suspend',
+	'approve',
 	'unsuspend',
 	'updateUserNote',
 	'addCustomEmoji',
@@ -141,6 +143,11 @@ export type ModerationLogPayloads = {
 		after: any | null;
 	};
 	suspend: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+	};
+	approve: {
 		userId: string;
 		userUsername: string;
 		userHost: string | null;

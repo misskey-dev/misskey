@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.state }}</template>
 						<option value="all">{{ i18n.ts.all }}</option>
 						<option value="available">{{ i18n.ts.normal }}</option>
+						<option value="approved">{{ i18n.ts.notApproved }}</option>
 						<option value="admin">{{ i18n.ts.administrator }}</option>
 						<option value="moderator">{{ i18n.ts.moderator }}</option>
 						<option value="suspended">{{ i18n.ts.suspend }}</option>

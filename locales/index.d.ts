@@ -153,6 +153,10 @@ export interface Locale extends ILocale {
      */
     "users": string;
     /**
+     * 承認
+     */
+    "approvals": string;
+    /**
      * ユーザーを追加
      */
     "addUser": string;
@@ -596,6 +600,14 @@ export interface Locale extends ILocale {
      * 凍結しますか？
      */
     "suspendConfirm": string;
+    /**
+     * 登録を承認しますか？
+     */
+    "registerApproveConfirm": string;
+    /**
+     * この操作は取り消せません。承認後、このユーザーに登録が承認された旨が記載されたメールが送信されます。
+     */
+    "registerApproveConfirmDescription": string;
     /**
      * 解凍しますか？
      */
@@ -3537,6 +3549,14 @@ export interface Locale extends ILocale {
      */
     "emailRequiredForSignup": string;
     /**
+     * アカウント登録を承認制にする
+     */
+    "approvalRequiredForSignup": string;
+    /**
+     * アカウント登録の承認
+     */
+    "signupPendingApprovals": string;
+    /**
      * 未読
      */
     "unread": string;
@@ -3737,6 +3757,10 @@ export interface Locale extends ILocale {
      */
     "thereIsUnresolvedAbuseReportWarning": string;
     /**
+     * 承認待ちのユーザーがいます。
+     */
+    "pendingUserApprovals": string;
+    /**
      * 推奨
      */
     "recommended": string;
@@ -3768,6 +3792,26 @@ export interface Locale extends ILocale {
      * アカウント削除
      */
     "deleteAccount": string;
+    /**
+     * 承認する
+     */
+    "approveAccount": string;
+    /**
+     * 拒否してアカウント削除
+     */
+    "denyAccount": string;
+    /**
+     * 承認済み
+     */
+    "approved": string;
+    /**
+     * 未承認
+     */
+    "notApproved": string;
+    /**
+     * 承認状況
+     */
+    "approvalStatus": string;
     /**
      * ドキュメント
      */
@@ -4128,6 +4172,22 @@ export interface Locale extends ILocale {
      * 現在このサーバーは招待制です。招待コードをお持ちの方のみ登録できます。
      */
     "invitationRequiredToRegister": string;
+    /**
+     * 現在このサーバーは承認制です。参加したい理由を記入し、承認された方のみ登録できます。
+     */
+    "approvalRequiredToRegister": string;
+    /**
+     * 登録理由
+     */
+    "registerReason": string;
+    /**
+     * サーバーへの登録はまだ承認されていません。しばらくしてから再度お試しください。登録時にメールアドレスを記入した場合は、登録が承認されたらメールでお知らせします。
+     */
+    "registerHasNotBeenApprovedYet": string;
+    /**
+     * サーバーへの登録が承認されたかどうかの通知を行うために、併せてアカウント登録にメールアドレスを必須にすることを強く推奨します。
+     */
+    "registerApprovalEmailRecommended": string;
     /**
      * このサーバーではメール配信はサポートされていません
      */
@@ -6579,6 +6639,14 @@ export interface Locale extends ILocale {
          * 入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。メールに記載されているリンクの有効期限は30分です。
          */
         "emailSent": ParameterizedString<"email">;
+        /**
+         * アカウントが作成され、承認待ちの状態です。
+         */
+        "approvalPending": string;
+        /**
+         * このサーバーに参加したい理由を入力してください。
+         */
+        "reasonInfo": string;
     };
     "_accountDelete": {
         /**
@@ -9107,6 +9175,10 @@ export interface Locale extends ILocale {
          * ロールのアサイン解除
          */
         "unassignRole": string;
+        /**
+         * 承認済み
+         */
+        "approve": string;
         /**
          * 凍結
          */

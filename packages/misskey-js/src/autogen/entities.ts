@@ -84,6 +84,7 @@ export type AdminShowUserResponse = operations['admin/show-user']['responses']['
 export type AdminShowUsersRequest = operations['admin/show-users']['requestBody']['content']['application/json'];
 export type AdminShowUsersResponse = operations['admin/show-users']['responses']['200']['content']['application/json'];
 export type AdminSuspendUserRequest = operations['admin/suspend-user']['requestBody']['content']['application/json'];
+export type AdminApproveUserRequest = operations['admin/approve-user']['requestBody']['content']['application/json'];
 export type AdminUnsuspendUserRequest = operations['admin/unsuspend-user']['requestBody']['content']['application/json'];
 export type AdminUpdateMetaRequest = operations['admin/update-meta']['requestBody']['content']['application/json'];
 export type AdminDeleteAccountRequest = operations['admin/delete-account']['requestBody']['content']['application/json'];

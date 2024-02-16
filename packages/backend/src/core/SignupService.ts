@@ -49,10 +49,12 @@ export class SignupService {
 		password?: string | null;
 		passwordHash?: MiUserProfile['password'] | null;
 		host?: string | null;
+		reason?: string | null;
 		ignorePreservedUsernames?: boolean;
 	}) {
-		const { username, password, passwordHash, host } = opts;
+		const { username, password, passwordHash, host, reason } = opts;
 		let hash = passwordHash;
+		const instance = await this.metaService.fetch(true);
 
 		// Validate username
 		if (!this.userEntityService.validateLocalUsername(username)) {
@@ -86,7 +88,6 @@ export class SignupService {
 		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
 
 		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
-			const instance = await this.metaService.fetch(true);
 			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
 				throw new Error('USED_USERNAME');
@@ -111,6 +112,9 @@ export class SignupService {
 			));
 
 		let account!: MiUser;
+		let defaultApproval = false;
+
+		if (!instance.approvalRequiredForSignup) defaultApproval = true;
 
 		// Start transaction
 		await this.db.transaction(async transactionalEntityManager => {
@@ -128,6 +132,8 @@ export class SignupService {
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
 				isRoot: isTheFirstUser,
+				approved: defaultApproval,
+				signupReason: reason,
 			}));
 
 			await transactionalEntityManager.save(new MiUserKeypair({

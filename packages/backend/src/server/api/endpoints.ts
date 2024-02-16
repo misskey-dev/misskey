@@ -69,6 +69,7 @@ import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderatio
 import * as ep___admin_showUser from './endpoints/admin/show-user.js';
 import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
+import * as ep___admin_approveUser from './endpoints/admin/approve-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
@@ -438,6 +439,7 @@ const eps = [
 	['admin/show-user', ep___admin_showUser],
 	['admin/show-users', ep___admin_showUsers],
 	['admin/suspend-user', ep___admin_suspendUser],
+	['admin/approve-user', ep___admin_approveUser],
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/delete-account', ep___admin_deleteAccount],

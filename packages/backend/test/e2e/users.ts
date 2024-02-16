@@ -167,6 +167,7 @@ describe('ユーザー', () => {
 			policies: user.policies,
 			...(security ? {
 				email: user.email,
+				signupReason: user.signupReason,
 				emailVerified: user.emailVerified,
 				securityKeysList: user.securityKeysList,
 			} : {}),
@@ -408,6 +409,7 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.loggedInDays, 0);
 		assert.deepStrictEqual(response.policies, DEFAULT_POLICIES);
 		assert.notStrictEqual(response.email, undefined);
+		assert.notStrictEqual(response.signupReason, undefined);
 		assert.strictEqual(response.emailVerified, false);
 		assert.deepStrictEqual(response.securityKeysList, []);
 	});

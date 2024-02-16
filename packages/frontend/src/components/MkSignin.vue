@@ -194,6 +194,14 @@ function loginFailed(err: any): void {
 			showSuspendedDialog();
 			break;
 		}
+		case '2fe70810-0ed2-47db-a70b-dc3ecbf5f069': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.registerHasNotBeenApprovedYet,
+			});
+			break;
+		}
 		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
 			os.alert({
 				type: 'error',
