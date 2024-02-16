@@ -18,7 +18,7 @@ import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router/supplier.js';
 
 const props = withDefaults(defineProps<{
-	to: string;
+	to?: string;
 	activeClass?: null | string;
 	behavior?: null | 'window' | 'browser';
 }>(), {
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const active = computed(() => {
-	if (props.activeClass == null) return false;
+	if (props.activeClass == null || !props.to) return false;
 	const resolved = router.resolve(props.to);
 	if (resolved == null) return false;
 	if (resolved.route.path === router.currentRoute.value.path) return true;
@@ -40,7 +40,7 @@ const active = computed(() => {
 
 function onContextmenu(ev) {
 	const selection = window.getSelection();
-	if (selection && selection.toString() !== '') return;
+	if (!props.to || (selection && selection.toString() !== '')) return;
 	os.contextMenu([{
 		type: 'label',
 		text: props.to,
@@ -48,34 +48,37 @@ function onContextmenu(ev) {
 		icon: 'ti ti-app-window',
 		text: i18n.ts.openInWindow,
 		action: () => {
-			os.pageWindow(props.to);
+			os.pageWindow(props.to ?? '/');
 		},
 	}, {
 		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: () => {
-			router.push(props.to, 'forcePage');
+			router.push(props.to ?? '/', 'forcePage');
 		},
 	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {
-			window.open(props.to, '_blank', 'noopener');
+			window.open(props.to ?? '/', '_blank', 'noopener');
 		},
 	}, {
 		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyToClipboard(`${url}${props.to}`);
+			copyToClipboard(`${url}${props.to ?? ''}`);
 		},
 	}], ev);
 }
 
 function openWindow() {
+	if (!props.to) return;
 	os.pageWindow(props.to);
 }
 
 function nav(ev: MouseEvent) {
+	if (!props.to) return;
+
 	if (props.behavior === 'browser') {
 		location.href = props.to;
 		return;

@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 
 const props = defineProps<{
-	to: string;
+	to?: string;
 	active?: boolean;
 	external?: boolean;
 	behavior?: null | 'window' | 'browser';
