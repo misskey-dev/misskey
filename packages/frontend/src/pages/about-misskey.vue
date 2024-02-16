@@ -381,10 +381,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.aboutMisskey,
 	icon: null,
-});
+}));
 </script>
 
 <style lang="scss" scoped>

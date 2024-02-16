@@ -452,9 +452,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash.value ? {
-	title: i18n.ts._play.edit + ': ' + flash.value.title,
-} : {
-	title: i18n.ts._play.new,
+definePageMetadata(() => ({
+	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>

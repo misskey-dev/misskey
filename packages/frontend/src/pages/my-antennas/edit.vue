@@ -36,8 +36,8 @@ misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaRespons
 	antenna.value = antennaResponse;
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.manageAntennas,
 	icon: 'ti ti-antenna',
-});
+}));
 </script>
