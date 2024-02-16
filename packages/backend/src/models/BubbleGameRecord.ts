@@ -48,7 +48,7 @@ export class MiBubbleGameRecord {
 	@Column('jsonb', {
 		default: [],
 	})
-	public logs: any[];
+	public logs: number[][];
 
 	@Column('boolean', {
 		default: false,
