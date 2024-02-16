@@ -164,10 +164,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-chart-line',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'ti ti-info-circle',
-})));
+}));
 </script>
 
 <style lang="scss" module>

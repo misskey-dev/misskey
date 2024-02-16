@@ -137,10 +137,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
-})));
+}));
 </script>
 
 <style lang="scss" module>

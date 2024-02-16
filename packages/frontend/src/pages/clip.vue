@@ -157,10 +157,10 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	},
 }] : null);
 
-definePageMetadata(computed(() => clip.value ? {
-	title: clip.value.name,
+definePageMetadata(() => ({
+	title: clip.value ? clip.value.name : i18n.ts.clip,
 	icon: 'ti ti-paperclip',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>
