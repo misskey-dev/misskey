@@ -2,7 +2,7 @@
 _lang_: "Français"
 headlineMisskey: "Réseau relié par des notes"
 introMisskey: "Bienvenue ! Misskey est un service de microblogage décentralisé, libre et ouvert.\nÉcrivez des « notes » et partagez ce qui se passe à l’instant présent, autour de vous avec les autres 📡\nLa fonction « réactions », vous permet également d’ajouter une réaction rapide aux notes des autres utilisateur·rice·s 👍\nExplorons un nouveau monde 🚀"
-poweredByMisskeyDescription: "{nom} est l'un des services propulsés par la plateforme ouverte <b>Misskey</b> (appelée \"instance Misskey\")."
+poweredByMisskeyDescription: "{name} est l'un des services propulsés par la plateforme ouverte <b>Misskey</b> (appelée \"instance Misskey\")."
 monthAndDay: "{day}/{month}"
 search: "Rechercher"
 notifications: "Notifications"
@@ -1175,7 +1175,7 @@ _initialAccountSetting:
   profileSetting: "Paramètres du profil"
   privacySetting: "Paramètres de confidentialité"
   initialAccountSettingCompleted: "Configuration du profil terminée avec succès !"
-  youCanContinueTutorial: "Vous pouvez procéder au tutoriel sur l'utilisation de {nom}(Misskey) ou vous arrêter ici et commencer à l'utiliser immédiatement."
+  youCanContinueTutorial: "Vous pouvez procéder au tutoriel sur l'utilisation de {name}(Misskey) ou vous arrêter ici et commencer à l'utiliser immédiatement."
   startTutorial: "Démarrer le tutoriel"
   skipAreYouSure: "Désirez-vous ignorer la configuration du profil ?"
 _initialTutorial:
