@@ -140,6 +140,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		mentionLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
 		canInvite: {
 			type: 'boolean',
 			optional: false, nullable: false,
