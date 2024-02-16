@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
+import ProxyCheck from 'proxycheck-ts';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -74,6 +75,14 @@ export class SignupApiService {
 
 		const instance = await this.metaService.fetch(true);
 
+		if (instance.enableProxyCheckio) {
+			if (instance.proxyCheckioApiKey == null) throw new FastifyReplyError(400, 'PROXY_CHECKIO_API_KEY_NOT_SET');
+			const proxyCheck = new ProxyCheck({ api_key: instance.proxyCheckioApiKey });
+			const result = await proxyCheck.check(request.headers['x-real-ip'] ?? request.ip, {
+				vpn: 1,
+			});
+			if (result[request.headers['x-real-ip'] ?? request.ip].proxy === 'yes') throw new FastifyReplyError(400, 'PROXY_DETECTED');
+		}
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {

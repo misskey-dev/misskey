@@ -91,7 +91,7 @@ export const paramDef = {
 			},
 		},
 		summalyProxy: { type: 'string', nullable: true },
-		DiscordWebhookUrl:{ type: 'string', nullable: true},
+		DiscordWebhookUrl: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
 		enableEmail: { type: 'boolean' },
@@ -152,9 +152,15 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
-		EmojiBotToken:{ type: 'string', nullable: true},
-		ApiBase:{ type: 'string',nullable:true},
+		EmojiBotToken: { type: 'string', nullable: true },
+		ApiBase: { type: 'string', nullable: true },
 		enableGDPRMode: { type: 'boolean' },
+		enableProxyCheckio: {
+			type: 'boolean', nullable: true,
+		},
+		proxyCheckioApiKey: {
+			type: 'string', nullable: true,
+		},
 	},
 	required: [],
 } as const;
@@ -201,14 +207,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
-			if (ps.DiscordWebhookUrl !== undefined){
-				set.DiscordWebhookUrl = ps.DiscordWebhookUrl
+			if (ps.DiscordWebhookUrl !== undefined) {
+				set.DiscordWebhookUrl = ps.DiscordWebhookUrl;
 			}
-			if (ps.EmojiBotToken !== undefined){
-				set.EmojiBotToken = ps.EmojiBotToken
+			if (ps.EmojiBotToken !== undefined) {
+				set.EmojiBotToken = ps.EmojiBotToken;
 			}
-			if (ps.ApiBase !== undefined){
-				set.ApiBase = ps.ApiBase
+			if (ps.ApiBase !== undefined) {
+				set.ApiBase = ps.ApiBase;
 			}
 			if (ps.mascotImageUrl !== undefined) {
 				set.mascotImageUrl = ps.mascotImageUrl;
@@ -234,10 +240,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.serverErrorImageUrl = ps.serverErrorImageUrl;
 			}
 
+			if (ps.enableProxyCheckio !== undefined) {
+				set.enableProxyCheckio = ps.enableProxyCheckio;
+			}
+
+			if (ps.proxyCheckioApiKey !== undefined) {
+				set.proxyCheckioApiKey = ps.proxyCheckioApiKey;
+			}
+
 			if (ps.infoImageUrl !== undefined) {
 				set.infoImageUrl = ps.infoImageUrl;
 			}
-			console.log(ps.enableGDPRMode);
+
 			if (ps.enableGDPRMode !== undefined) {
 				set.enableGDPRMode = ps.enableGDPRMode;
 			}

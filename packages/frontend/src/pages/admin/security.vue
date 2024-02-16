@@ -103,6 +103,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkTextarea v-model="bannedEmailDomains">
 							<template #label>Banned Email Domains List</template>
 						</MkTextarea>
+
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label> Signup Protection</template>
+
+					<div class="_gaps_m">
+                        <MkSwitch v-model="enableProxyCheckio">
+                            <template #label>Use ProxyCheck.io API</template>
+                        </MkSwitch>
+                        <MkInput v-model="proxyCheckioApiKey">
+                            <template #prefix><i class="ti ti-key"></i></template>
+                            <template #label>ProxyCheck.io API Key</template>
+                        </MkInput>
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -167,11 +183,13 @@ const enableSensitiveMediaDetectionForVideos = ref<boolean>(false);
 const enableIpLogging = ref<boolean>(false);
 const enableActiveEmailValidation = ref<boolean>(false);
 const enableVerifymailApi = ref<boolean>(false);
+const enableProxyCheckio = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
 const enableTruemailApi = ref<boolean>(false);
 const truemailInstance = ref<string | null>(null);
 const truemailAuthKey = ref<string | null>(null);
 const bannedEmailDomains = ref<string>('');
+const proxyCheckioApiKey = ref<string | null>(null);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -196,7 +214,9 @@ async function init() {
 	enableTruemailApi.value = meta.enableTruemailApi;
 	truemailInstance.value = meta.truemailInstance;
 	truemailAuthKey.value = meta.truemailAuthKey;
-	bannedEmailDomains.value = meta.bannedEmailDomains?.join('\n') || "";
+	bannedEmailDomains.value = meta.bannedEmailDomains?.join('\n') || '';
+    enableProxyCheckio.value = meta.enableProxyCheckio;
+    proxyCheckioApiKey.value = meta.proxyCheckioApiKey;
 }
 
 function save() {
@@ -220,6 +240,8 @@ function save() {
 		truemailInstance: truemailInstance.value,
 		truemailAuthKey: truemailAuthKey.value,
 		bannedEmailDomains: bannedEmailDomains.value.split('\n'),
+        enableProxyCheckio: enableProxyCheckio.value,
+        proxyCheckioApiKey: proxyCheckioApiKey.value,
 	}).then(() => {
 		fetchInstance();
 	});

@@ -150,6 +150,7 @@
 		"pkce-challenge": "4.1.0",
 		"probe-image-size": "7.2.3",
 		"promise-limit": "2.7.0",
+		"proxycheck-ts": "^0.0.9",
 		"pug": "3.0.2",
 		"punycode": "2.3.1",
 		"pureimage": "0.3.17",

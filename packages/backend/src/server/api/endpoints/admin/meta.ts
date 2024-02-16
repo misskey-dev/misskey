@@ -459,6 +459,14 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableProxyCheckio: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			proxyCheckioApiKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	},
 } as const;
@@ -590,6 +598,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				EmojiBotToken: instance.EmojiBotToken,
 				ApiBase: instance.ApiBase,
 				enableGDPRMode: instance.enableGDPRMode,
+				enableProxyCheckio: instance.enableProxyCheckio,
+				proxyCheckioApiKey: instance.proxyCheckioApiKey,
 			};
 		});
 	}

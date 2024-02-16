@@ -611,4 +611,15 @@ export class MiMeta {
 		default: false,
 	})
 	public enableGDPRMode: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableProxyCheckio: boolean;
+
+	@Column('varchar', {
+		length: 32,
+		nullable: true,
+	})
+	public proxyCheckioApiKey: string;
 }
