@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
-import { api } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
 
@@ -26,7 +26,7 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
 export async function fetchInstance() {
-	const meta = await api('meta', {
+	const meta = await misskeyApi('meta', {
 		detail: false,
 	});
 

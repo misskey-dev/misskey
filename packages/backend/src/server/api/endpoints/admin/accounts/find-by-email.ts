@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,7 +27,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'User',
+		ref: 'UserDetailedNotMe',
 	},
 } as const;
 
@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const res = await this.userEntityService.pack(profile.user!, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			});
 
 			return res;

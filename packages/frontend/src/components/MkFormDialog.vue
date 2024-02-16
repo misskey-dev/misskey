@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<MkSpacer :marginMin="20" :marginMax="32">
-		<div class="_gaps_m">
+		<div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
@@ -40,11 +40,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 				<MkSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
+					<option v-for="option in form[item].enum" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkSelect>
 				<MkRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
+					<option v-for="option in form[item].options" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkRadios>
 				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :textConverter="form[item].textConverter">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
@@ -54,6 +54,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-text="form[item].content || item"></span>
 				</MkButton>
 			</template>
+		</div>
+		<div v-else class="_fullinfo">
+			<img :src="infoImageUrl" class="_ghost"/>
+			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</MkSpacer>
 </MkModalWindow>
@@ -70,6 +74,7 @@ import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	title: string;
@@ -81,6 +86,7 @@ const emit = defineEmits<{
 		canceled?: boolean;
 		result?: any;
 	}): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -94,13 +100,13 @@ function ok() {
 	emit('done', {
 		result: values,
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 function cancel() {
 	emit('done', {
 		canceled: true,
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -28,13 +28,14 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
-const FALLBACK = '❤';
+const FALLBACK = '\u2764';
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
 	'like': '👍',
-	'love': '❤', // ここに記述する場合は異体字セレクタを入れない
+	'love': '\u2764', // ハート、異体字セレクタを入れない
 	'laugh': '😆',
 	'hmm': '🤔',
 	'surprise': '😮',
@@ -119,7 +120,7 @@ export class ReactionService {
 		let reaction = _reaction ?? FALLBACK;
 
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
-			reaction = '❤️';
+			reaction = '\u2764';
 		} else if (_reaction) {
 			const custom = reaction.match(isCustomEmojiRegexp);
 			if (custom) {
@@ -268,7 +269,7 @@ export class ReactionService {
 				}
 			}
 
-			dm.execute();
+			trackPromise(dm.execute());
 		}
 		//#endregion
 	}
@@ -316,7 +317,7 @@ export class ReactionService {
 				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 			dm.addFollowersRecipe();
-			dm.execute();
+			trackPromise(dm.execute());
 		}
 		//#endregion
 	}

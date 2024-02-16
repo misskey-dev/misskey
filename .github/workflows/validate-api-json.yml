@@ -1,0 +1,47 @@
+name: Test (backend)
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+  pull_request:
+    paths:
+      - packages/backend/**
+
+jobs:
+  validate-api-json:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.10.0]
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 8
+        run_install: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4.0.2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - name: Install Redocly CLI
+      run: npm i -g @redocly/cli
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .config/example.yml .config/default.yml
+    - name: Build and generate
+      run: pnpm build && pnpm --filter backend generate-api-json
+    - name: Validation
+      run: npx @redocly/cli lint --extends=minimal ./packages/backend/built/api.json

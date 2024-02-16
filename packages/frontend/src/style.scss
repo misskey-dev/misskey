@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -425,13 +425,13 @@ rt {
 	transform: scale(0.9);
 }
 
-@keyframes blink {
+@keyframes global-blink {
 	0% { opacity: 1; transform: scale(1); }
 	30% { opacity: 1; transform: scale(1); }
 	90% { opacity: 0; transform: scale(0.5); }
 }
 
-@keyframes tada {
+@keyframes global-tada {
 	from {
 		transform: scale3d(1, 1, 1);
 	}
@@ -461,7 +461,7 @@ rt {
 
 ._anime_bounce {
 	will-change: transform;
-  animation: bounce ease 0.7s;
+  animation: global-bounce ease 0.7s;
   animation-iteration-count: 1;
   transform-origin: 50% 50%;
 }
@@ -473,7 +473,7 @@ rt {
 	transition: transform 0.1s ease;
 }
 
-@keyframes bounce {
+@keyframes global-bounce {
   0% {
     transform:  scaleX(0.90) scaleY(0.90) ;
   }

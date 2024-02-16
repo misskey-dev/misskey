@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,9 +22,13 @@ import { SigninApiService } from './api/SigninApiService.js';
 import { SigninService } from './api/SigninService.js';
 import { SignupApiService } from './api/SignupApiService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
+import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { FeedService } from './web/FeedService.js';
 import { UrlPreviewService } from './web/UrlPreviewService.js';
+import { ClientLoggerService } from './web/ClientLoggerService.js';
+import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+
 import { MainChannelService } from './api/stream/channels/main.js';
 import { AdminChannelService } from './api/stream/channels/admin.js';
 import { AntennaChannelService } from './api/stream/channels/antenna.js';
@@ -38,10 +42,9 @@ import { LocalTimelineChannelService } from './api/stream/channels/local-timelin
 import { QueueStatsChannelService } from './api/stream/channels/queue-stats.js';
 import { ServerStatsChannelService } from './api/stream/channels/server-stats.js';
 import { UserListChannelService } from './api/stream/channels/user-list.js';
-import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
-import { ClientLoggerService } from './web/ClientLoggerService.js';
 import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.js';
-import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+import { ReversiChannelService } from './api/stream/channels/reversi.js';
+import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js';
 
 @Module({
 	imports: [
@@ -77,6 +80,8 @@ import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 		GlobalTimelineChannelService,
 		HashtagChannelService,
 		RoleTimelineChannelService,
+		ReversiChannelService,
+		ReversiGameChannelService,
 		HomeTimelineChannelService,
 		HybridTimelineChannelService,
 		LocalTimelineChannelService,

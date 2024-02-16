@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -144,7 +144,7 @@ export class UserFollowingService implements OnModuleInit {
 			let autoAccept = false;
 
 			// 鍵アカウントであっても、既にフォローされていた場合はスルー
-			const isFollowing = await this.followingsRepository.exist({
+			const isFollowing = await this.followingsRepository.exists({
 				where: {
 					followerId: follower.id,
 					followeeId: followee.id,
@@ -156,7 +156,7 @@ export class UserFollowingService implements OnModuleInit {
 
 			// フォローしているユーザーは自動承認オプション
 			if (!autoAccept && (this.userEntityService.isLocalUser(followee) && followeeProfile.autoAcceptFollowed)) {
-				const isFollowed = await this.followingsRepository.exist({
+				const isFollowed = await this.followingsRepository.exists({
 					where: {
 						followerId: followee.id,
 						followeeId: follower.id,
@@ -170,7 +170,7 @@ export class UserFollowingService implements OnModuleInit {
 			if (followee.isLocked && !autoAccept) {
 				autoAccept = !!(await this.accountMoveService.validateAlsoKnownAs(
 					follower,
-					(oldSrc, newSrc) => this.followingsRepository.exist({
+					(oldSrc, newSrc) => this.followingsRepository.exists({
 						where: {
 							followeeId: followee.id,
 							followerId: newSrc.id,
@@ -233,7 +233,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.cacheService.userFollowingsCache.refresh(follower.id);
 
-		const requestExist = await this.followRequestsRepository.exist({
+		const requestExist = await this.followRequestsRepository.exists({
 			where: {
 				followeeId: followee.id,
 				followerId: follower.id,
@@ -293,9 +293,9 @@ export class UserFollowingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			// Publish follow event
 			this.userEntityService.pack(followee.id, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
-				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
+				this.globalEventService.publishMainStream(follower.id, 'follow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
@@ -360,7 +360,7 @@ export class UserFollowingService implements OnModuleInit {
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
 			// Publish unfollow event
 			this.userEntityService.pack(followee.id, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
@@ -500,7 +500,7 @@ export class UserFollowingService implements OnModuleInit {
 			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventService.publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
 			this.userEntityService.pack(followee.id, followee, {
-				detail: true,
+				schema: 'MeDetailed',
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 
 			// 通知を作成
@@ -531,7 +531,7 @@ export class UserFollowingService implements OnModuleInit {
 			}
 		}
 
-		const requestExist = await this.followRequestsRepository.exist({
+		const requestExist = await this.followRequestsRepository.exists({
 			where: {
 				followeeId: followee.id,
 				followerId: follower.id,
@@ -548,7 +548,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		this.userEntityService.pack(followee.id, followee, {
-			detail: true,
+			schema: 'MeDetailed',
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
@@ -576,7 +576,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		this.userEntityService.pack(followee.id, followee, {
-			detail: true,
+			schema: 'MeDetailed',
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
@@ -696,7 +696,7 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async publishUnfollow(followee: Both, follower: Local): Promise<void> {
 		const packedFollowee = await this.userEntityService.pack(followee.id, follower, {
-			detail: true,
+			schema: 'UserDetailedNotMe',
 		});
 
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);

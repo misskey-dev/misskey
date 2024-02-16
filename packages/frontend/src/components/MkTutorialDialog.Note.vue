@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="phase === 'howToReact'" class="_gaps">
 	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
-	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction" @updateReaction="updateReaction"/>
+	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
 	<div v-if="onceReacted"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
 </div>
 </template>
@@ -53,7 +53,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 		isBot: false,
 		isCat: true,
 		emojis: {},
-		onlineStatus: null,
+		onlineStatus: 'unknown',
 		badgeRoles: [],
 	},
 	text: 'just setting up my msky',
@@ -86,7 +86,6 @@ function doNotification(emoji: string): void {
 	const notification: Misskey.entities.Notification = {
 		id: Math.random().toString(),
 		createdAt: new Date().toUTCString(),
-		isRead: false,
 		type: 'reaction',
 		reaction: emoji,
 		user: $i,

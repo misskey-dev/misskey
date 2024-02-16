@@ -1,13 +1,13 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="mk-app">
-	<a v-if="root" href="https://github.com/misskey-dev/misskey" target="_blank" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:var(--panel); color:var(--fg); position: fixed; z-index: 10; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+	<a v-if="isRoot" href="https://github.com/misskey-dev/misskey" target="_blank" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:var(--panel); color:var(--fg); position: fixed; z-index: 10; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
-	<div v-if="!narrow && !root" class="side">
+	<div v-if="!narrow && !isRoot" class="side">
 		<div class="banner" :style="{ backgroundImage: instance.backgroundImageUrl ? `url(${ instance.backgroundImageUrl })` : 'none' }"></div>
 		<div class="dashboard">
 			<MkVisitorDashboard/>
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div class="main">
-		<div v-if="!root" class="header">
+		<div v-if="!isRoot" class="header">
 			<div v-if="narrow === false" class="wide">
 				<MkA to="/" class="link" activeClass="active"><i class="ti ti-home icon"></i> {{ i18n.ts.home }}</MkA>
 				<MkA v-if="isTimelineAvailable" to="/timeline" class="link" activeClass="active"><i class="ti ti-message icon"></i> {{ i18n.ts.timeline }}</MkA>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div class="contents">
-			<main v-if="!root" style="container-type: inline-size;">
+			<main v-if="!isRoot" style="container-type: inline-size;">
 				<RouterView/>
 			</main>
 			<main v-else>
@@ -69,31 +69,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, provide, ref, computed } from 'vue';
+import { onMounted, provide, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
+import { mainRouter } from '@/router/main.js';
+
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
 const DESKTOP_THRESHOLD = 1100;
 
-const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | PageMetadata>(null);
 
 provide('router', mainRouter);
-provideMetadataReceiver((info) => {
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	pageMetadata.value = info;
-	if (pageMetadata.value.value) {
-		document.title = `${pageMetadata.value.value.title} | ${instanceName}`;
+	if (pageMetadata.value) {
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
+			document.title = pageMetadata.value.title;
+		} else {
+			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
 	}
 });
+provideReactiveMetadata(pageMetadata);
 
 const announcements = {
 	endpoint: 'announcements',
@@ -119,9 +128,7 @@ const keymap = computed(() => {
 	};
 });
 
-const root = computed(() => mainRouter.currentRoute.value.name === 'index');
-
-os.api('meta', { detail: true }).then(res => {
+misskeyApi('meta', { detail: true }).then(res => {
 	meta.value = res;
 });
 

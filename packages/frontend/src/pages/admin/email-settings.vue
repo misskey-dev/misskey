@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -73,6 +73,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -87,7 +88,7 @@ const smtpUser = ref<string>('');
 const smtpPass = ref<string>('');
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	enableEmail.value = meta.enableEmail;
 	email.value = meta.email;
 	smtpSecure.value = meta.smtpSecure;
@@ -129,10 +130,10 @@ function save() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.emailServer,
 	icon: 'ti ti-mail',
-});
+}));
 </script>
 
 <style lang="scss" module>

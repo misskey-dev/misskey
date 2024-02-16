@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,6 +20,7 @@ import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { UserListService } from '@/core/UserListService.js';
 import type { FilterUnionByProperty } from '@/types.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -74,7 +75,18 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async createNotification<T extends MiNotification['type']>(
+	public createNotification<T extends MiNotification['type']>(
+		notifieeId: MiUser['id'],
+		type: T,
+		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
+		notifierId?: MiUser['id'] | null,
+	) {
+		trackPromise(
+			this.#createNotificationInternal(notifieeId, type, data, notifierId),
+		);
+	}
+
+	async #createNotificationInternal<T extends MiNotification['type']>(
 		notifieeId: MiUser['id'],
 		type: T,
 		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,

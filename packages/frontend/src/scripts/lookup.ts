@@ -1,12 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
 import { Router } from '@/nirax.js';
+import { mainRouter } from '@/router/main.js';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
@@ -28,7 +29,7 @@ export async function lookup(router?: Router) {
 	}
 
 	if (query.startsWith('https://')) {
-		const promise = os.api('ap/show', {
+		const promise = misskeyApi('ap/show', {
 			uri: query,
 		});
 

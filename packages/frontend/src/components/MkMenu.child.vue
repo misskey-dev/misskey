@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,6 +33,7 @@ const align = 'left';
 const SCROLLBAR_THICKNESS = 16;
 
 function setPosition() {
+	if (el.value == null) return;
 	const rootRect = props.rootElement.getBoundingClientRect();
 	const parentRect = props.targetElement.getBoundingClientRect();
 	const myRect = el.value.getBoundingClientRect();
@@ -66,7 +67,7 @@ const ro = new ResizeObserver((entries, observer) => {
 });
 
 onMounted(() => {
-	ro.observe(el.value);
+	if (el.value) ro.observe(el.value);
 	setPosition();
 	nextTick(() => {
 		setPosition();
@@ -79,7 +80,7 @@ onUnmounted(() => {
 
 defineExpose({
 	checkHit: (ev: MouseEvent) => {
-		return (ev.target === el.value || el.value.contains(ev.target));
+		return (ev.target === el.value || el.value?.contains(ev.target as Node));
 	},
 });
 </script>
