@@ -327,7 +327,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
-			mentionLimit: calc('mentionLimit', vs => Maht.max(...vs)),
+			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
 			inviteLimit: calc('inviteLimit', vs => Math.max(...vs)),
 			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
