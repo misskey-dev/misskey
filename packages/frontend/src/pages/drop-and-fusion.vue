@@ -126,10 +126,10 @@ function onGameEnd() {
 	gameStarted.value = false;
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-device-gamepad',
-});
+}));
 </script>
 
 <style lang="scss" module>

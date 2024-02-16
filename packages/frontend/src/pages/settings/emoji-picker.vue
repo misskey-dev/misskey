@@ -281,10 +281,10 @@ async function setDefaultProfile() {
 	await defaultStore.set('pickerProfileDefault', nowProfileId.value);
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.emojiPicker,
 	icon: 'ti ti-mood-happy',
-});
+}));
 </script>
 
 <style lang="scss" module>

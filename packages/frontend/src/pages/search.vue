@@ -52,8 +52,8 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-users',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.search,
 	icon: 'ti ti-search',
-})));
+}));
 </script>

@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                                                        :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
           class="_indicatorCircle"></i></span></button>
       <button :class="$style.navButton" class="_button"
-              @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i
+              @click="isRoot ? top() : mainRouter.push('/')"><i
           :class="$style.navButtonIcon" class="ti ti-home"></i></button>
       <button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i
           :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification"
@@ -161,6 +161,8 @@ const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
+
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
@@ -198,18 +200,23 @@ window.addEventListener('resize', () => {
   isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
 
-const pageMetadata = ref<null | PageMetadata>();
+const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 const navFooter = shallowRef<HTMLElement>();
 const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
 provide('router', mainRouter);
-provideMetadataReceiver((info) => {
-  pageMetadata.value = info.value;
-  if (pageMetadata.value) {
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+  pageMetadata.value = info;
+	if (pageMetadata.value) {
+  if (isRoot.value && pageMetadata.value.title === instanceName) {
+			document.title = pageMetadata.value.title;
+		} else {
     document.title = `${pageMetadata.value.title} | ${instanceName}`;
-  }
+  }}
 });
+provideReactiveMetadata(pageMetadata);
 
 const menuIndicated = computed(() => {
   for (const def in navbarItemDef) {

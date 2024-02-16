@@ -172,8 +172,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.share,
 	icon: 'ti ti-share',
-});
+}));
 </script>

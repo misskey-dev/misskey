@@ -89,10 +89,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-mail',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
-})));
+}));
 onMounted(() => {
 	misskeyApi('notifications/mark-all-as-read');
 });

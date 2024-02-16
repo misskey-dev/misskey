@@ -45,8 +45,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'API',
 	icon: 'ti ti-api',
-});
+}));
 </script>

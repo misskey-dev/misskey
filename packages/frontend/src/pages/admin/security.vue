@@ -251,8 +251,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
-});
+}));
 </script>
