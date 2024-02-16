@@ -4,158 +4,188 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-  <div :class="$style.root">
-    <XSidebar v-if="!isMobile" :class="$style.sidebar"/>
+<div :class="$style.root">
+	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-    <MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;"
-                       @contextmenu.stop="onContextmenu">
-      <template #header>
-        <div>
-          <XAnnouncements v-if="$i"/>
-          <XStatusBars :class="$style.statusbars"/>
-        </div>
-      </template>
-      <RouterView/>
-      <div :class="$style.spacer"></div>
-    </MkStickyContainer>
+	<MkStickyContainer
+		ref="contents" :class="$style.contents" style="container-type: inline-size;"
+		@contextmenu.stop="onContextmenu"
+	>
+		<template #header>
+			<div>
+				<XAnnouncements v-if="$i"/>
+				<XStatusBars :class="$style.statusbars"/>
+			</div>
+		</template>
+		<RouterView/>
+		<div :class="$style.spacer"></div>
+	</MkStickyContainer>
 
-    <div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
-      <XWidgets/>
-    </div>
+	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
+		<XWidgets/>
+	</div>
 
-    <button v-if="(!isDesktop || pageMetadata?.needWideArea) && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true">
-      <i class="ti ti-apps"></i></button>
+	<button v-if="(!isDesktop || pageMetadata?.needWideArea) && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true">
+		<i class="ti ti-apps"></i>
+	</button>
 
-    <div v-if="isMobile" ref="navFooter" :class="$style.nav">
-      <button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i
-          :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated"
-                                                                       :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
-          class="_indicatorCircle"></i></span></button>
-      <button :class="$style.navButton" class="_button"
-              @click="isRoot ? top() : mainRouter.push('/')"><i
-          :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-      <button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i
-          :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification"
-                                                                     :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
+	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
+		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true">
+			<i
+				:class="$style.navButtonIcon" class="ti ti-menu-2"
+			></i><span
+				v-if="menuIndicated"
+				:class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"
+			><i
+				class="_indicatorCircle"
+			></i></span>
+		</button>
+		<button
+			:class="$style.navButton" class="_button"
+			@click="isRoot ? top() : mainRouter.push('/')"
+		>
+			<i
+				:class="$style.navButtonIcon" class="ti ti-home"
+			></i>
+		</button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+			<i
+				:class="$style.navButtonIcon" class="ti ti-bell"
+			></i><span
+				v-if="$i?.hasUnreadNotification"
+				:class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"
+			>
 				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 && indicatorCounterToggle ? '99+' : $i.unreadNotificationsCount }}</span>
-			</span></button>
-      <button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon"
-                                                                                          class="ti ti-apps"></i>
-      </button>
-      <button
-          :class="[{[$style.postButton_gamingDark]: gaming === 'dark',[$style.postButton_gamingLight]: gaming === 'light',[$style.postButton]: gaming === ''}]"
-          class="_button" @click="os.post()"><i :class="$style.navButtonIcon"
-                                                class="ti ti-pencil"></i></button>
-    </div>
+			</span>
+		</button>
+		<button :class="$style.navButton" class="_button" @click="widgetsShowing = true">
+			<i
+				:class="$style.navButtonIcon"
+				class="ti ti-apps"
+			></i>
+		</button>
+		<button
+			:class="[{[$style.postButton_gamingDark]: gaming === 'dark',[$style.postButton_gamingLight]: gaming === 'light',[$style.postButton]: gaming === ''}]"
+			class="_button" @click="os.post()"
+		>
+			<i
+				:class="$style.navButtonIcon"
+				class="ti ti-pencil"
+			></i>
+		</button>
+	</div>
 
-    <Transition
-        :enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-        :leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-        :enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-        :leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
-    >
-      <div
-          v-if="drawerMenuShowing"
-          :class="$style.menuDrawerBg"
-          class="_modalBg"
-          @click="drawerMenuShowing = false"
-          @touchstart.passive="drawerMenuShowing = false"
-      ></div>
-    </Transition>
+	<Transition
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+	>
+		<div
+			v-if="drawerMenuShowing"
+			:class="$style.menuDrawerBg"
+			class="_modalBg"
+			@click="drawerMenuShowing = false"
+			@touchstart.passive="drawerMenuShowing = false"
+		></div>
+	</Transition>
 
-    <Transition
-        :enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-        :leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-        :enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-        :leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
-    >
-      <div v-if="drawerMenuShowing" :class="$style.menuDrawer">
-        <XDrawerMenu/>
-      </div>
-    </Transition>
+	<Transition
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+	>
+		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
+			<XDrawerMenu/>
+		</div>
+	</Transition>
 
-    <Transition
-        :enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
-        :leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
-        :enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
-        :leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
-    >
-      <div
-          v-if="widgetsShowing"
-          :class="$style.widgetsDrawerBg"
-          class="_modalBg"
-          @click="widgetsShowing = false"
-          @touchstart.passive="widgetsShowing = false"
-      ></div>
-    </Transition>
+	<Transition
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+	>
+		<div
+			v-if="widgetsShowing"
+			:class="$style.widgetsDrawerBg"
+			class="_modalBg"
+			@click="widgetsShowing = false"
+			@touchstart.passive="widgetsShowing = false"
+		></div>
+	</Transition>
 
-    <Transition
-        :enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
-        :leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
-        :enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
-        :leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
-    >
-      <div v-if="widgetsShowing" :class="$style.widgetsDrawer">
-        <button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i
-            class="ti ti-x"></i></button>
-        <XWidgets/>
-      </div>
-    </Transition>
+	<Transition
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+	>
+		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false">
+				<i
+					class="ti ti-x"
+				></i>
+			</button>
+			<XWidgets/>
+		</div>
+	</Transition>
 
-    <XCommon/>
-  </div>
+	<XCommon/>
+</div>
 </template>
 
 <script lang="ts" setup>
-import {defineAsyncComponent, provide, onMounted, computed, ref, watch, shallowRef, Ref} from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, watch, shallowRef, Ref } from 'vue';
 import XCommon from './_common_/common.vue';
 import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
-import {instanceName} from '@/config';
+import { instanceName } from '@/config';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os';
-import {defaultStore} from '@/store';
-import {navbarItemDef} from '@/navbar';
-import {i18n} from '@/i18n';
-import {$i} from '@/account';
+import { defaultStore } from '@/store';
+import { navbarItemDef } from '@/navbar';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
 import { mainRouter } from '@/router/main.js';
-import {PageMetadata, provideMetadataReceiver} from '@/scripts/page-metadata';
-import {deviceKind} from '@/scripts/device-kind';
-import {miLocalStorage} from '@/local-storage';
-import {CURRENT_STICKY_BOTTOM} from '@/const';
-import {useScrollPositionManager} from '@/nirax';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata';
+import { deviceKind } from '@/scripts/device-kind';
+import { miLocalStorage } from '@/local-storage';
+import { CURRENT_STICKY_BOTTOM } from '@/const';
+import { useScrollPositionManager } from '@/nirax';
 
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
-let gaming = ref()
+let gaming = ref();
 // gaming.valueに新しい値を代入する
 if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
+	gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
+	gaming.value = 'light';
 } else {
-  gaming.value = '';
+	gaming.value = '';
 }
 
 watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 
 watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -167,37 +197,36 @@ const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
 onMounted(() => {
-  if (
-      window.navigator.connection.type === "cellular" &&
+	if (
+		window.navigator.connection.type === 'cellular' &&
       !defaultStore.state.enableUltimateDataSaverMode &&
       defaultStore.state.enableCellularWithUltimateDataSaver
-  ) {
-    defaultStore.state.enableDataSaverMode = true;
-    defaultStore.state.enableUltimateDataSaverMode = true;
-  } else if (window.navigator.connection.type !== "cellular" && window.navigator.connection.type !== "undefined" && defaultStore.state.enableDataSaverMode && defaultStore.state.enableCellularWithDataSaver) {
-    defaultStore.state.enableDataSaverMode = false;
-    defaultStore.state.enableUltimateDataSaverMode = true;
-  }
+	) {
+		defaultStore.state.enableDataSaverMode = true;
+		defaultStore.state.enableUltimateDataSaverMode = true;
+	} else if (window.navigator.connection.type !== 'cellular' && window.navigator.connection.type !== 'undefined' && defaultStore.state.enableDataSaverMode && defaultStore.state.enableCellularWithDataSaver) {
+		defaultStore.state.enableDataSaverMode = false;
+		defaultStore.state.enableUltimateDataSaverMode = true;
+	}
 
-  if (
-      window.navigator.connection.type === "cellular" &&
+	if (
+		window.navigator.connection.type === 'cellular' &&
       !defaultStore.state.enableDataSaverMode &&
       defaultStore.state.enableCellularWithDataSaver
-  ) {
-    defaultStore.state.enableDataSaverMode = true;
-
-  } else if (window.navigator.connection.type !== "cellular" && window.navigator.connection.type !== "undefined" && defaultStore.state.enableDataSaverMode && defaultStore.state.enableCellularWithDataSaver) {
-    defaultStore.state.enableDataSaverMode = false;
-  }
-  if (defaultStore.state.enableUltimateDataSaverMode) {
-    defaultStore.state.enableDataSaverMode = true;
-  }
+	) {
+		defaultStore.state.enableDataSaverMode = true;
+	} else if (window.navigator.connection.type !== 'cellular' && window.navigator.connection.type !== 'undefined' && defaultStore.state.enableDataSaverMode && defaultStore.state.enableCellularWithDataSaver) {
+		defaultStore.state.enableDataSaverMode = false;
+	}
+	if (defaultStore.state.enableUltimateDataSaverMode) {
+		defaultStore.state.enableDataSaverMode = true;
+	}
 });
 // デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 window.addEventListener('resize', () => {
-  isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
+	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
 
 const pageMetadata = ref<null | PageMetadata>(null);
@@ -208,107 +237,108 @@ const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 provide('router', mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
-  pageMetadata.value = info;
+	pageMetadata.value = info;
 	if (pageMetadata.value) {
-  if (isRoot.value && pageMetadata.value.title === instanceName) {
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
 			document.title = pageMetadata.value.title;
 		} else {
-    document.title = `${pageMetadata.value.title} | ${instanceName}`;
-  }}
+			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
+	}
 });
 provideReactiveMetadata(pageMetadata);
 
 const menuIndicated = computed(() => {
-  for (const def in navbarItemDef) {
-    if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
-    if (navbarItemDef[def].indicated) return true;
-  }
-  return false;
+	for (const def in navbarItemDef) {
+		if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
 });
 
 const drawerMenuShowing = ref(false);
 
 mainRouter.on('change', () => {
-  drawerMenuShowing.value = false;
+	drawerMenuShowing.value = false;
 });
 
 if (window.innerWidth > 1024) {
-  const tempUI = miLocalStorage.getItem('ui_temp');
-  if (tempUI) {
-    miLocalStorage.setItem('ui', tempUI);
-    miLocalStorage.removeItem('ui_temp');
-    location.reload();
-  }
+	const tempUI = miLocalStorage.getItem('ui_temp');
+	if (tempUI) {
+		miLocalStorage.setItem('ui', tempUI);
+		miLocalStorage.removeItem('ui_temp');
+		location.reload();
+	}
 }
 
 defaultStore.loaded.then(() => {
-  if (defaultStore.state.widgets.length === 0) {
-    defaultStore.set('widgets', [{
-      name: 'calendar',
-      id: 'a', place: 'right', data: {},
-    }, {
-      name: 'notifications',
-      id: 'b', place: 'right', data: {},
-    }, {
-      name: 'trends',
-      id: 'c', place: 'right', data: {},
-    }]);
-  }
+	if (defaultStore.state.widgets.length === 0) {
+		defaultStore.set('widgets', [{
+			name: 'calendar',
+			id: 'a', place: 'right', data: {},
+		}, {
+			name: 'notifications',
+			id: 'b', place: 'right', data: {},
+		}, {
+			name: 'trends',
+			id: 'c', place: 'right', data: {},
+		}]);
+	}
 });
 
 onMounted(() => {
-  if (!isDesktop.value) {
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= DESKTOP_THRESHOLD) isDesktop.value = true;
-    }, {passive: true});
-  }
+	if (!isDesktop.value) {
+		window.addEventListener('resize', () => {
+			if (window.innerWidth >= DESKTOP_THRESHOLD) isDesktop.value = true;
+		}, { passive: true });
+	}
 });
 
 const onContextmenu = (ev) => {
-  const isLink = (el: HTMLElement) => {
-    if (el.tagName === 'A') return true;
-    if (el.parentElement) {
-      return isLink(el.parentElement);
-    }
-  };
-  if (isLink(ev.target)) return;
-  if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
-  if (window.getSelection()?.toString() !== '') return;
-  const path = mainRouter.getCurrentPath();
-  os.contextMenu([{
-    type: 'label',
-    text: path,
-  }, {
-    icon: 'ti ti-window-maximize',
-    text: i18n.ts.openInWindow,
-    action: () => {
-      os.pageWindow(path);
-    },
-  }], ev);
+	const isLink = (el: HTMLElement) => {
+		if (el.tagName === 'A') return true;
+		if (el.parentElement) {
+			return isLink(el.parentElement);
+		}
+	};
+	if (isLink(ev.target)) return;
+	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+	if (window.getSelection()?.toString() !== '') return;
+	const path = mainRouter.getCurrentPath();
+	os.contextMenu([{
+		type: 'label',
+		text: path,
+	}, {
+		icon: 'ti ti-window-maximize',
+		text: i18n.ts.openInWindow,
+		action: () => {
+			os.pageWindow(path);
+		},
+	}], ev);
 };
 
 function top() {
-  contents.value.rootEl.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
+	contents.value.rootEl.scrollTo({
+		top: 0,
+		behavior: 'smooth',
+	});
 }
 
 const navFooterHeight = ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
 watch(navFooter, () => {
-  if (navFooter.value) {
-    navFooterHeight.value = navFooter.value.offsetHeight;
-    document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
-    document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
-  } else {
-    navFooterHeight.value = 0;
-    document.body.style.setProperty('--stickyBottom', '0px');
-    document.body.style.setProperty('--minBottomSpacing', '0px');
-  }
+	if (navFooter.value) {
+		navFooterHeight.value = navFooter.value.offsetHeight;
+		document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
+		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
+	} else {
+		navFooterHeight.value = 0;
+		document.body.style.setProperty('--stickyBottom', '0px');
+		document.body.style.setProperty('--minBottomSpacing', '0px');
+	}
 }, {
-  immediate: true,
+	immediate: true,
 });
 
 useScrollPositionManager(() => contents.value.rootEl, mainRouter);
@@ -568,7 +598,6 @@ $widgets-hide-threshold: 1090px;
   &:active {
     background: linear-gradient(90deg, var(--X8), var(--X8));
   }
-
 
 }
 
