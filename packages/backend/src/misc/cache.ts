@@ -189,7 +189,7 @@ export class RedisSingleCache<T> {
 export class MemoryKVCache<T> {
 	public cache: Map<string, { date: number; value: T; }>;
 	private lifetime: number;
-	private gcIntervalHandle: NodeJS.Timer;
+	private gcIntervalHandle: NodeJS.Timeout;
 
 	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
 		this.cache = new Map();
