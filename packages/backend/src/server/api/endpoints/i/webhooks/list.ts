@@ -23,7 +23,7 @@ export const meta = {
 			properties: {
 				id: {
 					type: 'string',
-					format: 'misskey:id',
+					format: 'misskey:id'
 				},
 				userId: {
 					type: 'string',
@@ -35,7 +35,7 @@ export const meta = {
 					items: {
 						type: 'string',
 						enum: webhookEventTypes,
-					},
+					}
 				},
 				url: { type: 'string' },
 				secret: { type: 'string' },
@@ -43,8 +43,8 @@ export const meta = {
 				latestSentAt: { type: 'string', format: 'date-time', nullable: true },
 				latestStatus: { type: 'integer', nullable: true },
 			},
-		},
-	},
+		}
+	}
 } as const;
 
 export const paramDef = {
