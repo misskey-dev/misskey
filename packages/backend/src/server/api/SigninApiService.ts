@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type {
@@ -20,6 +19,7 @@ import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
@@ -41,6 +41,7 @@ export class SigninApiService {
 		private signinsRepository: SigninsRepository,
 
 		private idService: IdService,
+		private loggerService: LoggerService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
 		private userAuthService: UserAuthService,
@@ -60,6 +61,10 @@ export class SigninApiService {
 		}>,
 		reply: FastifyReply,
 	) {
+		const logger = this.loggerService.getLogger('api:signin');
+		logger.setContext({ username: request.body.username, ip: request.ip, headers: request.headers });
+		logger.info('Requested to sign in.');
+
 		reply.header('Access-Control-Allow-Origin', this.config.url);
 		reply.header('Access-Control-Allow-Credentials', 'true');
 
@@ -77,6 +82,7 @@ export class SigninApiService {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
 			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
 		} catch (err) {
+			logger.warn('Too many failed attempts to sign in.');
 			reply.code(429);
 			return {
 				error: {
@@ -88,16 +94,19 @@ export class SigninApiService {
 		}
 
 		if (typeof username !== 'string') {
+			logger.warn('Invalid parameter: username is not a string.');
 			reply.code(400);
 			return;
 		}
 
 		if (typeof password !== 'string') {
+			logger.warn('Invalid parameter: password is not a string.');
 			reply.code(400);
 			return;
 		}
 
 		if (token != null && typeof token !== 'string') {
+			logger.warn('Invalid parameter: token is not a string.');
 			reply.code(400);
 			return;
 		}
@@ -109,12 +118,14 @@ export class SigninApiService {
 		}) as MiLocalUser;
 
 		if (user == null) {
+			logger.error('No such user.');
 			return error(404, {
 				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
 			});
 		}
 
 		if (user.isSuspended) {
+			logger.error('User is suspended.');
 			return error(403, {
 				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
 			});
@@ -140,8 +151,10 @@ export class SigninApiService {
 
 		if (!profile.twoFactorEnabled) {
 			if (same) {
+				logger.info('Successfully signed in with password.');
 				return this.signinService.signin(request, reply, user);
 			} else {
+				logger.error('Invalid request: incorrect password.');
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
@@ -150,6 +163,7 @@ export class SigninApiService {
 
 		if (token) {
 			if (!same) {
+				logger.error('Invalid request: incorrect password.');
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
@@ -158,14 +172,17 @@ export class SigninApiService {
 			try {
 				await this.userAuthService.twoFactorAuthenticate(profile, token);
 			} catch (e) {
+				logger.error('Invalid request: Unable to authenticate with two-factor token.');
 				return await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
 				});
 			}
 
+			logger.info('Successfully signed in with password and two-factor token.');
 			return this.signinService.signin(request, reply, user);
 		} else if (body.credential) {
 			if (!same && !profile.usePasswordLessLogin) {
+				logger.error('Invalid request: incorrect password.');
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
@@ -174,14 +191,17 @@ export class SigninApiService {
 			const authorized = await this.webAuthnService.verifyAuthentication(user.id, body.credential);
 
 			if (authorized) {
+				logger.info('Successfully signed in with WebAuthn authentication.');
 				return this.signinService.signin(request, reply, user);
 			} else {
+				logger.error('Invalid request: Unable to authenticate with WebAuthn credential.');
 				return await fail(403, {
 					id: '93b86c4b-72f9-40eb-9815-798928603d1e',
 				});
 			}
 		} else {
 			if (!same && !profile.usePasswordLessLogin) {
+				logger.error('Invalid request: incorrect password.');
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
@@ -189,6 +209,7 @@ export class SigninApiService {
 
 			const authRequest = await this.webAuthnService.initiateAuthentication(user.id);
 
+			logger.info('Successfully initiated WebAuthn authentication.');
 			reply.code(200);
 			return authRequest;
 		}

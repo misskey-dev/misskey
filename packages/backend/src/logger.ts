@@ -56,6 +56,11 @@ export default class Logger {
 	}
 
 	@bindThis
+	public setContext(context: Record<string, any>): void {
+		this.logger = this.logger.child({ context });
+	}
+
+	@bindThis
 	public error(x: string | Error, context?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (context === null) context = undefined;
 

@@ -20,6 +20,7 @@ import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -239,19 +240,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
+		private loggerService: LoggerService,
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, _token, _file, _cleanup, ip, headers) => {
+			const logger = this.loggerService.getLogger('api:notes:create');
 			const hash = createHash('sha256').update(JSON.stringify(ps)).digest('base64');
+			logger.setContext({ userId: me.id, hash, ip, headers });
+			logger.info('Requested to create a note.');
+
 			const idempotent = process.env.FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING !== 'true' ? await this.redisForTimelines.get(`note:idempotent:${me.id}:${hash}`) : null;
-			if (idempotent === '_') throw new ApiError(meta.errors.processing); // 他のサーバーで処理中
+			if (idempotent === '_') { // 他のサーバーで処理中
+				logger.warn('The request is being processed by another server.');
+				throw new ApiError(meta.errors.processing);
+			}
 
 			// すでに同じリクエストが処理されている場合、そのノートを返す
 			// ただし、記録されているノート見つからない場合は、新規として処理を続行
 			if (idempotent) {
 				const note = await this.notesRepository.findOneBy({ id: idempotent });
-				if (note) return { createdNote: await this.noteEntityService.pack(note, me) };
+				if (note) {
+					logger.info('The request has already been processed.', { noteId: note.id });
+					return { createdNote: await this.noteEntityService.pack(note, me) };
+				}
 			}
 
 			// 30秒の間、リクエストを処理中として記録
@@ -277,6 +289,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.getMany();
 
 				if (files.length !== fileIds.length) {
+					logger.error('Some files are not found.', { missingFileIds: fileIds.filter(id => !files.some(file => file.id === id)) });
 					throw new ApiError(meta.errors.noSuchFile);
 				}
 			}
@@ -287,8 +300,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
 
 				if (renote == null) {
+					logger.error('No such renote target.', { renoteId: ps.renoteId });
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
 				} else if (isPureRenote(renote)) {
+					logger.error('Cannot Renote a pure Renote.', { renoteId: ps.renoteId });
 					throw new ApiError(meta.errors.cannotReRenote);
 				}
 
@@ -301,15 +316,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						},
 					});
 					if (blockExist) {
+						logger.error('User has been blocked by the user who wrote the note.', { renoteUserId: renote.userId });
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
 
 				if (renote.visibility === 'followers' && renote.userId !== me.id) {
 					// 他人のfollowers noteはreject
+					logger.error('Cannot Renote due to target visibility.', { renoteId: ps.renoteId, renoteVisibility: renote.visibility });
 					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
 				} else if (renote.visibility === 'specified') {
 					// specified / direct noteはreject
+					logger.error('Cannot Renote due to target visibility.', { renoteId: ps.renoteId, renoteVisibility: renote.visibility });
 					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
 				}
 
@@ -319,9 +337,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
 					if (renoteChannel == null) {
 						// リノートしたいノートが書き込まれているチャンネルが無い
+						logger.error('No such channel.', { channelId: renote.channelId });
 						throw new ApiError(meta.errors.noSuchChannel);
 					} else if (!renoteChannel.allowRenoteToExternal) {
 						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
+						logger.error('Cannot renote outside of channel.', { channelId: renote.channelId });
 						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
 					}
 				}
@@ -333,10 +353,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				reply = await this.notesRepository.findOneBy({ id: ps.replyId });
 
 				if (reply == null) {
+					logger.error('No such reply target.', { replyId: ps.replyId });
 					throw new ApiError(meta.errors.noSuchReplyTarget);
 				} else if (isPureRenote(reply)) {
+					logger.error('Cannot reply to a pure Renote.', { replyId: ps.replyId });
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
+					logger.error('Cannot reply to an invisible Note.', { replyId: ps.replyId });
 					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 				}
 
@@ -349,6 +372,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						},
 					});
 					if (blockExist) {
+						logger.error('User has been blocked by the user who wrote the note.', { replyUserId: reply.userId });
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
@@ -357,6 +381,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.poll) {
 				if (typeof ps.poll.expiresAt === 'number') {
 					if (ps.poll.expiresAt < Date.now()) {
+						logger.error('Poll is already expired.', { expiresAt: ps.poll.expiresAt });
 						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
 					}
 				} else if (typeof ps.poll.expiredAfter === 'number') {
@@ -369,6 +394,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
 
 				if (channel == null) {
+					logger.error('No such channel.', { channelId: ps.channelId });
 					throw new ApiError(meta.errors.noSuchChannel);
 				}
 			}
@@ -400,12 +426,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// 1分間、リクエストの処理結果を記録
 				await this.redisForTimelines.set(`note:idempotent:${me.id}:${hash}`, note.id, 'EX', 60);
 
+				logger.info('Successfully created a note.', { noteId: note.id });
 				return {
 					createdNote: await this.noteEntityService.pack(note, me),
 				};
 			} catch (err) {
 				// エラーが発生した場合、リクエストの処理結果を削除
 				await this.redisForTimelines.unlink(`note:idempotent:${me.id}:${hash}`);
+
+				logger.error('Failed to create a note.', { error: err });
 
 				if (err instanceof IdentifiableError) {
 					if (err.id === '057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30') throw new ApiError(meta.errors.containsProhibitedWords);

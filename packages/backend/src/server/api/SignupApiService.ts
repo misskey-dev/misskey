@@ -19,6 +19,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -43,6 +44,7 @@ export class SignupApiService {
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
+		private loggerService: LoggerService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
@@ -70,6 +72,10 @@ export class SignupApiService {
 		}>,
 		reply: FastifyReply,
 	) {
+		const logger = this.loggerService.getLogger('api:signup');
+		logger.setContext({ username: request.body.username, email: request.body.emailAddress, ip: request.ip, headers: request.headers });
+		logger.info('Requested to create user account.');
+
 		const body = request.body;
 
 		const instance = await this.metaService.fetch(true);
@@ -79,24 +85,28 @@ export class SignupApiService {
 		if (process.env.NODE_ENV !== 'test') {
 			if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
 				await this.captchaService.verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+					logger.error('Failed to verify hCaptcha.', { error: err });
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (instance.enableMcaptcha && instance.mcaptchaSecretKey && instance.mcaptchaSitekey && instance.mcaptchaInstanceUrl) {
 				await this.captchaService.verifyMcaptcha(instance.mcaptchaSecretKey, instance.mcaptchaSitekey, instance.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+					logger.error('Failed to verify mCaptcha.', { error: err });
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+					logger.error('Failed to verify reCAPTCHA.', { error: err });
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (instance.enableTurnstile && instance.turnstileSecretKey) {
 				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(err => {
+					logger.error('Failed to verify Turnstile.', { error: err });
 					throw new FastifyReplyError(400, err);
 				});
 			}
@@ -110,12 +120,14 @@ export class SignupApiService {
 
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
+				logger.error('Invalid request: email address is required.');
 				reply.code(400);
 				return;
 			}
 
 			const res = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!res.available) {
+				logger.error('Failed to validate email address.', { reason: res.reason });
 				reply.code(400);
 				return;
 			}
@@ -125,6 +137,7 @@ export class SignupApiService {
 
 		if (instance.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
+				logger.error('Invalid request: invitation code is required.');
 				reply.code(400);
 				return;
 			}
@@ -134,11 +147,13 @@ export class SignupApiService {
 			});
 
 			if (ticket == null || ticket.usedById != null) {
+				logger.error('Invalid request: invalid invitation code.');
 				reply.code(400);
 				return;
 			}
 
 			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
+				logger.error('Invalid request: expired invitation code.');
 				reply.code(400);
 				return;
 			}
@@ -147,16 +162,19 @@ export class SignupApiService {
 			if (instance.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
+					logger.error('Invalid request: invitation code is already used.');
 					reply.code(400);
 					return;
 				}
 
 				// 認証しておらず、メール送信から30分以内ならエラー
 				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
+					logger.error('Invalid request: invitation code is already used.');
 					reply.code(400);
 					return;
 				}
 			} else if (ticket.usedAt) {
+				logger.error('Invalid request: invitation code is already used.');
 				reply.code(400);
 				return;
 			}
@@ -164,16 +182,19 @@ export class SignupApiService {
 
 		if (instance.emailRequiredForSignup) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
+				logger.error('Invalid request: username is already taken by another user.');
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
 			if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
+				logger.error('Invalid request: username is already used.');
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
 			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
+				logger.error('Invalid request: username is preserved.');
 				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}
 
@@ -198,12 +219,14 @@ export class SignupApiService {
 				`To complete signup, please click this link: ${link}`);
 
 			if (ticket) {
+				logger.info('Update invitation code as used by pending user.', { ticketId: ticket.id, pendingUserId: pendingUser.id, pendingUsername: pendingUser.username });
 				await this.registrationTicketsRepository.update(ticket.id, {
 					usedAt: new Date(),
 					pendingUserId: pendingUser.id,
 				});
 			}
 
+			logger.info('Successfully created pending user.', { pendingUserId: pendingUser.id });
 			reply.code(204);
 			return;
 		} else {
@@ -218,6 +241,7 @@ export class SignupApiService {
 				});
 
 				if (ticket) {
+					logger.info('Update invitation code as used by user.', { ticketId: ticket.id, userId: account.id, username });
 					await this.registrationTicketsRepository.update(ticket.id, {
 						usedAt: new Date(),
 						usedBy: account,
@@ -225,11 +249,13 @@ export class SignupApiService {
 					});
 				}
 
+				logger.info('Successfully created user.', { userId: account.id });
 				return {
 					...res,
 					token: secret,
 				};
 			} catch (err) {
+				logger.error('Failed to create user.', { error: err });
 				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
@@ -237,6 +263,10 @@ export class SignupApiService {
 
 	@bindThis
 	public async signupPending(request: FastifyRequest<{ Body: { code: string; } }>, reply: FastifyReply) {
+		const logger = this.loggerService.getLogger('api:signup:pending');
+		logger.setContext({ code: request.body.code, ip: request.ip, headers: request.headers });
+		logger.info('Requested to complete creating user account.');
+
 		const body = request.body;
 
 		const code = body['code'];
@@ -245,6 +275,7 @@ export class SignupApiService {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
 			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
+				logger.error('Invalid request: expired code.', { code });
 				throw new FastifyReplyError(400, 'EXPIRED');
 			}
 
@@ -274,8 +305,10 @@ export class SignupApiService {
 				});
 			}
 
+			logger.info('Successfully created user.', { userId: account.id });
 			return this.signinService.signin(request, reply, account as MiLocalUser);
 		} catch (err) {
+			logger.error('Failed to complete creating user account.', { error: err });
 			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}
 	}
