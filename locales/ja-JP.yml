@@ -364,7 +364,7 @@ disablingTimelinesInfo: "これらのタイムラインを無効化しても、�
 registration: "登録"
 enableRegistration: "誰でも新規登録できるようにする"
 secondsPerSignup: "アカウントを新規作成できるインターバル（秒）"
-secondsPerSignupDescription: "一度アカウントの作成があってから上記の秒数が経たないと他のユーザーが登録できないようになります。0に設定すると無効になります。招待コードがある場合はこの制限を無視できます。「誰でも新規登録できるようにする」が有効の場合はそちらが優先されます。"
+secondsPerSignupDescription: "一度アカウントの作成があってから上記の秒数が経たないと他のユーザーが登録できないようになります。0に設定すると無効になります。招待コードがある場合はこの制限を無視できます。「誰でも新規登録できるようにする」が無効の場合はそちらが優先されます。"
 invite: "招待"
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
