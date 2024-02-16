@@ -235,10 +235,10 @@ async function save(): void {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.general,
 	icon: 'ti ti-settings',
-});
+}));
 </script>
 
 <style lang="scss" module>
