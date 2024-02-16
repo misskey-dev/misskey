@@ -38,7 +38,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.1
+      uses: actions/setup-node@v4.0.2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -96,7 +96,7 @@ jobs:
         version: 7
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.1
+      uses: actions/setup-node@v4.0.2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -115,6 +115,7 @@ jobs:
       run: pnpm exec cypress install
     - name: Cypress run
       uses: cypress-io/github-action@v6
+      timeout-minutes: 15
       with:
         install: false
         start: pnpm start:test
