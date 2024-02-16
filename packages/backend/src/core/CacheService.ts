@@ -133,14 +133,14 @@ export class CacheService implements OnApplicationShutdown {
 					if (user == null) {
 						this.userByIdCache.delete(body.id);
 						for (const [k, v] of this.uriPersonCache.cache.entries()) {
-							if (v.value === body.id) {
+							if (v.value?.id === body.id) {
 								this.uriPersonCache.delete(k);
 							}
 						}
 					} else {
 						this.userByIdCache.set(user.id, user);
 						for (const [k, v] of this.uriPersonCache.cache.entries()) {
-							if (v.value === user.id) {
+							if (v.value?.id === user.id) {
 								this.uriPersonCache.set(k, user);
 							}
 						}
