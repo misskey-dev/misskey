@@ -85,6 +85,7 @@ export class CacheService implements OnApplicationShutdown {
 		this.uriPersonCache = new MemoryKVCache<MiUser | null, string | null>(Infinity, {
 			toMapConverter: user => {
 				if (user === null) return null;
+				if (user.isDeleted) return null;
 
 				userByIdCache.set(user.id, user);
 				return user.id;
@@ -160,16 +161,25 @@ export class CacheService implements OnApplicationShutdown {
 			switch (type) {
 				case 'userChangeSuspendedState':
 				case 'remoteUserUpdated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
-					this.userByIdCache.set(user.id, user);
-					for (const [k, v] of this.uriPersonCache.cache.entries()) {
-						if (v.value === user.id) {
-							this.uriPersonCache.set(k, user);
+					const user = await this.usersRepository.findOneBy({ id: body.id });
+					if (user == null) {
+						this.userByIdCache.delete(body.id);
+						for (const [k, v] of this.uriPersonCache.cache.entries()) {
+							if (v.value === body.id) {
+								this.uriPersonCache.delete(k);
+							}
 						}
-					}
-					if (this.userEntityService.isLocalUser(user)) {
-						this.localUserByNativeTokenCache.set(user.token!, user);
-						this.localUserByIdCache.set(user.id, user);
+					} else {
+						this.userByIdCache.set(user.id, user);
+						for (const [k, v] of this.uriPersonCache.cache.entries()) {
+							if (v.value === user.id) {
+								this.uriPersonCache.set(k, user);
+							}
+						}
+						if (this.userEntityService.isLocalUser(user)) {
+							this.localUserByNativeTokenCache.set(user.token!, user);
+							this.localUserByIdCache.set(user.id, user);
+						}
 					}
 					break;
 				}
