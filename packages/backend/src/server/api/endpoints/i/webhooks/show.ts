@@ -30,7 +30,7 @@ export const meta = {
 		properties: {
 			id: {
 				type: 'string',
-				format: 'misskey:id',
+				format: 'misskey:id'
 			},
 			userId: {
 				type: 'string',
@@ -42,7 +42,7 @@ export const meta = {
 				items: {
 					type: 'string',
 					enum: webhookEventTypes,
-				},
+				}
 			},
 			url: { type: 'string' },
 			secret: { type: 'string' },
