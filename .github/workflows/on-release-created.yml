@@ -1,0 +1,45 @@
+name: On Release Created (Publish misskey-js)
+
+on:
+  release:
+    types: [created]
+
+  workflow_dispatch:
+
+jobs:
+  publish-misskey-js:
+    name: Publish misskey-js
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    strategy:
+      matrix:
+        node-version: [20.10.0]
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish package
+        run: |
+          corepack enable
+          pnpm i --frozen-lockfile
+          pnpm build
+          pnpm --filter misskey-js publish --access public --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

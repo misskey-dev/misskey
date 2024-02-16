@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,20 +8,8 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { inspect } from 'node:util';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { Packed } from '@/misc/json-schema.js';
-import {
-	signup,
-	post,
-	page,
-	role,
-	startServer,
-	api,
-	successfulApiCall,
-	failedApiCall,
-	uploadFile,
-} from '../utils.js';
+import { api, page, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
@@ -185,8 +173,6 @@ describe('ユーザー', () => {
 		});
 	};
 
-	let app: INestApplicationContext;
-
 	let root: User;
 	let alice: User;
 	let aliceNote: misskey.entities.Note;
@@ -229,10 +215,6 @@ describe('ユーザー', () => {
 	let userRnMutedByAlice: User;
 	let userFollowRequesting: User;
 	let userFollowRequested: User;
-
-	beforeAll(async () => {
-		app = await startServer();
-	}, 1000 * 60 * 2);
 
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
@@ -320,10 +302,6 @@ describe('ユーザー', () => {
 		userFollowRequested = userLocking;
 		await api('following/create', { userId: userFollowRequested.id }, userFollowRequesting);
 	}, 1000 * 60 * 10);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	beforeEach(async () => {
 		alice = {

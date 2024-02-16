@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -36,6 +36,8 @@ import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
 
@@ -83,6 +85,8 @@ export class ApInboxService {
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
+		private cacheService: CacheService,
+		private globalEventService: GlobalEventService,
 		private abuseDiscordHookService: AbuseDiscordHookService,
 	) {
 		this.logger = this.apLoggerService.logger;
@@ -99,6 +103,8 @@ export class ApInboxService {
 				} catch (err) {
 					if (err instanceof Error || typeof err === 'string') {
 						this.logger.error(err);
+					} else {
+						throw err;
 					}
 				}
 			}
@@ -258,7 +264,7 @@ export class ApInboxService {
 
 		const targetUri = getApId(activity.object);
 
-		this.announceNote(actor, activity, targetUri);
+		await this.announceNote(actor, activity, targetUri);
 	}
 
 	@bindThis
@@ -290,7 +296,7 @@ export class ApInboxService {
 			} catch (err) {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
-					if (err.isClientError) {
+					if (!err.isRetryable) {
 						this.logger.warn(`Ignored announce target ${targetUri} - ${err.statusCode}`);
 						return;
 					}
@@ -375,7 +381,7 @@ export class ApInboxService {
 		});
 
 		if (isPost(object)) {
-			this.createNote(resolver, actor, object, false, activity);
+			await this.createNote(resolver, actor, object, false, activity);
 		} else {
 			this.logger.warn(`Unknown type: ${getApType(object)}`);
 		}
@@ -406,7 +412,7 @@ export class ApInboxService {
 			await this.apNoteService.createNote(note, resolver, silent);
 			return 'ok';
 		} catch (err) {
-			if (err instanceof StatusError && err.isClientError) {
+			if (err instanceof StatusError && !err.isRetryable) {
 				return `skip ${err.statusCode}`;
 			} else {
 				throw err;
@@ -478,6 +484,8 @@ export class ApInboxService {
 		await this.usersRepository.update(actor.id, {
 			isDeleted: true,
 		});
+
+		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
 
 		return `ok: queued ${job.name} ${job.id}`;
 	}
@@ -633,7 +641,7 @@ export class ApInboxService {
 			return 'skip: follower not found';
 		}
 
-		const isFollowing = await this.followingsRepository.exist({
+		const isFollowing = await this.followingsRepository.exists({
 			where: {
 				followerId: follower.id,
 				followeeId: actor.id,
@@ -690,14 +698,14 @@ export class ApInboxService {
 			return 'skip: フォロー解除しようとしているユーザーはローカルユーザーではありません';
 		}
 
-		const requestExist = await this.followRequestsRepository.exist({
+		const requestExist = await this.followRequestsRepository.exists({
 			where: {
 				followerId: actor.id,
 				followeeId: followee.id,
 			},
 		});
 
-		const isFollowing = await this.followingsRepository.exist({
+		const isFollowing = await this.followingsRepository.exists({
 			where: {
 				followerId: actor.id,
 				followeeId: followee.id,

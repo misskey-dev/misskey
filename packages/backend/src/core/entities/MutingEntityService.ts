@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -39,7 +39,7 @@ export class MutingEntityService {
 			expiresAt: muting.expiresAt ? muting.expiresAt.toISOString() : null,
 			muteeId: muting.muteeId,
 			mutee: this.userEntityService.pack(muting.muteeId, me, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}

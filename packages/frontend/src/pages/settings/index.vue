@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -28,16 +28,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ComputedRef, Ref, computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
 import { clearCache } from '@/scripts/clear-cache.js';
 import { instance } from '@/instance.js';
-import { useRouter } from '@/router.js';
-import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
+import { useRouter } from '@/router/supplier.js';
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -46,7 +46,7 @@ const indexInfo = {
 };
 const INFO = ref(indexInfo);
 const el = shallowRef<HTMLElement | null>(null);
-const childInfo: Ref<ComputedRef<PageMetadata> | null> = ref(null);
+const childInfo = ref<null | PageMetadata>(null);
 
 const router = useRouter();
 
@@ -231,20 +231,22 @@ watch(router.currentRef, (to) => {
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
-provideMetadataReceiver((info) => {
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	if (info == null) {
 		childInfo.value = null;
 	} else {
 		childInfo.value = info;
-		INFO.value.needWideArea = info.value.needWideArea ?? undefined;
+		INFO.value.needWideArea = info.needWideArea ?? undefined;
 	}
 });
+provideReactiveMetadata(INFO);
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(INFO);
+definePageMetadata(() => INFO.value);
 // w 890
 // h 700
 </script>

@@ -5,10 +5,18 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/backend/**
+      # for permissions
+      - packages/misskey-js/**
   pull_request:
+    paths:
+      - packages/backend/**
+      # for permissions
+      - packages/misskey-js/**
 
 jobs:
-  jest:
+  unit:
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,12 +41,12 @@ jobs:
       with:
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v3
       with:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.1
+      uses: actions/setup-node@v4.0.2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -51,9 +59,59 @@ jobs:
     - name: Build
       run: pnpm build
     - name: Test
-      run: pnpm jest-and-coverage
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v3
+      run: pnpm --filter backend test-and-coverage
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./packages/backend/coverage/coverage-final.json
+
+  e2e:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.10.0]
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7
+        ports:
+          - 56312:6379
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - run: corepack enable
+      - run: pnpm i --frozen-lockfile
+      - name: Check pnpm-lock.yaml
+        run: git diff --exit-code pnpm-lock.yaml
+      - name: Copy Configure
+        run: cp .github/misskey/test.yml .config
+      - name: Build
+        run: pnpm build
+      - name: Test
+        run: pnpm --filter backend test-and-coverage:e2e
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/backend/coverage/coverage-final.json

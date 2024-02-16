@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			scrolling="no"
-			:allow="player.allow.join(';')"
+			:allow="player.allow == null ? 'autoplay;encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
 			:class="$style.playerIframe"
 			:src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')"
 			:style="{ border: 0 }"
@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onUnmounted, ref } from 'vue';
-import type { summaly } from 'summaly';
+import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
+import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -130,6 +130,10 @@ const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
+
+onDeactivated(() => {
+	playerEnabled.value = false;
+});
 
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');

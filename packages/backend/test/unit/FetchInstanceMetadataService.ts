@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -55,7 +55,8 @@ describe('FetchInstanceMetadataService', () => {
 					return { fetch: jest.fn() };
 				} else if (token === DI.redis) {
 					return mockRedis;
-				}})
+				}
+			})
 			.compile();
 
 		app.enableShutdownHooks();

@@ -1,33 +1,25 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire, sleep } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, post, signup, sleep, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Renote Mute', () => {
-	let app: INestApplicationContext;
-
 	// alice mutes carol
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	test('ミュート作成', async () => {
 		const res = await api('/renote-mute/create', {

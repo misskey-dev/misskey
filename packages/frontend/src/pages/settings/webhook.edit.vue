@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -53,9 +53,10 @@ import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/router/supplier.js';
 import { $i } from '@/account.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
@@ -65,7 +66,7 @@ const props = defineProps<{
 	webhookId: string;
 }>();
 
-const webhook = await os.api('i/webhooks/show', {
+const webhook = await misskeyApi('i/webhooks/show', {
 	webhookId: props.webhookId,
 });
 
@@ -107,7 +108,7 @@ async function save(): Promise<void> {
 async function del(): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: webhook.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: webhook.name }),
 	});
 	if (canceled) return;
 
@@ -122,10 +123,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'Edit webhook',
 	icon: 'ti ti-webhook',
-});
+}));
 </script>
 
 <style lang="scss" module>

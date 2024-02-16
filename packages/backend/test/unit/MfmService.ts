@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,6 +31,12 @@ describe('MfmService', () => {
 		test('br alt', () => {
 			const input = 'foo\r\nbar\rbaz';
 			const output = '<p><span>foo<br>bar<br>baz</span></p>';
+			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
+		});
+
+		test('Do not generate unnecessary span', () => {
+			const input = 'foo $[tada bar]';
+			const output = '<p>foo <i>bar</i></p>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 	});

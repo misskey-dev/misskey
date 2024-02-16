@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-else :class="$style.ready">
 						<div class="_panel main">
 							<div class="title">{{ flash.title }}</div>
-							<div class="summary">{{ flash.summary }}</div>
+							<div class="summary"><Mfm :text="flash.summary"/></div>
 							<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
 							<div class="info">
 								<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
-					<MkCode :code="flash.script" lang="is" :inline="false" class="_monospace"/>
+					<MkCode :code="flash.script" lang="is" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
@@ -62,12 +62,13 @@ import * as Misskey from 'misskey-js';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store.js';
@@ -84,7 +85,7 @@ const error = ref<any>(null);
 
 function fetchFlash() {
 	flash.value = null;
-	os.api('flash/show', {
+	misskeyApi('flash/show', {
 		flashId: props.id,
 	}).then(_flash => {
 		flash.value = _flash;
@@ -162,15 +163,7 @@ async function run() {
 		THIS_ID: values.STR(flash.value.id),
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
-		in: (q) => {
-			return new Promise(ok => {
-				os.inputText({
-					title: q,
-				}).then(({ result: a }) => {
-					ok(a ?? '');
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value) => {
 			// nop
 		},
@@ -212,15 +205,17 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash.value ? {
-	title: flash.value.title,
-	avatar: flash.value.user,
-	path: `/play/${flash.value.id}`,
-	share: {
-		title: flash.value.title,
-		text: flash.value.summary,
-	},
-} : null));
+definePageMetadata(() => ({
+	title: flash.value ? flash.value.title : 'Play',
+	...flash.value ? {
+		avatar: flash.value.user,
+		path: `/play/${flash.value.id}`,
+		share: {
+			title: flash.value.title,
+			text: flash.value.summary,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" module>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,14 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.wordMute }}</template>
 
-		<XWordMute :muted="$i!.mutedWords" @save="saveMutedWords"/>
+		<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
 	</MkFolder>
 
 	<MkFolder>
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.hardWordMute }}</template>
 
-		<XWordMute :muted="$i!.hardMutedWords" @save="saveHardMutedWords"/>
+		<XWordMute :muted="$i.hardMutedWords" @save="saveHardMutedWords"/>
 	</MkFolder>
 
 	<MkFolder>
@@ -135,9 +135,12 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
+
+const $i = signinRequired();
 
 const renoteMutingPagination = {
 	endpoint: 'renote-mute/list' as const,
@@ -216,21 +219,21 @@ async function toggleBlockItem(item) {
 }
 
 async function saveMutedWords(mutedWords: (string | string[])[]) {
-	await os.api('i/update', { mutedWords });
+	await misskeyApi('i/update', { mutedWords });
 }
 
 async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
-	await os.api('i/update', { hardMutedWords });
+	await misskeyApi('i/update', { hardMutedWords });
 }
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.muteAndBlock,
 	icon: 'ti ti-ban',
-});
+}));
 </script>
 
 <style lang="scss" module>
