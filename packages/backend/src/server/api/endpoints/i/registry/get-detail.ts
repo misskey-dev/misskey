@@ -22,7 +22,16 @@ export const meta = {
 
 	res: {
 		type: 'object',
-	}
+		properties: {
+			updatedAt: {
+				type: 'string',
+				optional: false,
+			},
+			value: {
+				optional: false,
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -50,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			return {
-				updatedAt: item.updatedAt,
+				updatedAt: item.updatedAt.toISOString(),
 				value: item.value,
 			};
 		});
