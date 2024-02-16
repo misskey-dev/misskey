@@ -16,12 +16,12 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=7168"
 
     steps:
-    - uses: actions/checkout@v3.6.0
+    - uses: actions/checkout@v4.1.1
       if: github.event_name != 'pull_request_target'
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/checkout@v3.6.0
+    - uses: actions/checkout@v4.1.1
       if: github.event_name == 'pull_request_target'
       with:
         fetch-depth: 0
