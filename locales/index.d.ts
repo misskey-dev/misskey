@@ -4852,6 +4852,10 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     "enableHorizontalSwipe": string;
+    /**
+     * URLを検知しました。照会しますか？
+     */
+    "searchOrLookup": string;
     "_bubbleGame": {
         /**
          * 遊び方

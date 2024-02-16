@@ -166,6 +166,11 @@ export class Resolver {
 						}
 						return this.apRendererService.addContext(this.apRendererService.renderFollow(follower as MiLocalUser | MiRemoteUser, followee as MiLocalUser | MiRemoteUser, url));
 					});
+			case '__ui_user__': {
+				const [, username, host] = parsed.id.split('@');
+				return this.usersRepository.findOneByOrFail({ username, host, isDeleted: false })
+					.then(user => this.apRendererService.renderPerson(user as MiLocalUser));
+			}
 			default:
 				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}

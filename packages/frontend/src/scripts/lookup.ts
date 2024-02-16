@@ -10,13 +10,19 @@ import { Router } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
 
 export async function lookup(router?: Router) {
-	const _router = router ?? mainRouter;
-
 	const { canceled, result: temp } = await os.inputText({
 		title: i18n.ts.lookup,
 	});
-	const query = temp ? temp.trim() : '';
+
 	if (canceled) return;
+
+	await doLookup(temp, router);
+}
+
+export async function doLookup(url: string, router?: Router) {
+	const _router = router ?? mainRouter;
+
+	const query = url ? url.trim() : '';
 
 	if (query.startsWith('@') && !query.includes(' ')) {
 		_router.push(`/${query}`);
@@ -28,7 +34,7 @@ export async function lookup(router?: Router) {
 		return;
 	}
 
-	if (query.startsWith('https://')) {
+	if (query.startsWith('https://') || query.startsWith('http://')) {
 		const promise = misskeyApi('ap/show', {
 			uri: query,
 		});
@@ -38,7 +44,7 @@ export async function lookup(router?: Router) {
 		const res = await promise;
 
 		if (res.type === 'User') {
-			_router.push(`/@${res.object.username}@${res.object.host}`);
+			_router.push(res.object.host ? `/@${res.object.username}@${res.object.host}` : `/@${res.object.username}`);
 		} else if (res.type === 'Note') {
 			_router.push(`/notes/${res.object.id}`);
 		}

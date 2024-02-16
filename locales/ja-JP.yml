@@ -1209,6 +1209,7 @@ hemisphere: "お住まいの地域"
 withSensitive: "センシティブなファイルを含むノートを表示"
 userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
+searchOrLookup: "URLを検知しました。照会しますか？"
 
 _bubbleGame:
   howToPlay: "遊び方"

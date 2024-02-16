@@ -49,12 +49,9 @@ import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { doLookup } from '@/scripts/lookup.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { useRouter } from '@/router/supplier.js';
-
-const router = useRouter();
 
 const key = ref(0);
 const searchQuery = ref('');
@@ -62,6 +59,7 @@ const searchOrigin = ref('combined');
 const notePagination = ref();
 const user = ref<any>(null);
 const isLocalOnly = ref(false);
+const isSearching = ref(false);
 
 function selectUser() {
 	os.selectUser({ includeSelf: true }).then(_user => {
@@ -70,26 +68,43 @@ function selectUser() {
 }
 
 async function search() {
+	if (isSearching.value) return;
+	isSearching.value = true;
+
 	const query = searchQuery.value.toString().trim();
 
-	if (query == null || query === '') return;
+	if (query == null || query === '') {
+		isSearching.value = false;
+		return;
+	}
 
-	if (query.startsWith('https://')) {
-		const promise = misskeyApi('ap/show', {
-			uri: query,
+	if (query.startsWith('https://') || query.startsWith('http://')) {
+		const confirm = await os.actions({
+			type: 'question',
+			text: i18n.ts.searchOrLookup,
+			actions: [
+				{
+					text: i18n.ts.lookup,
+					primary: true,
+					value: 'lookup' as const,
+				},
+				{
+					text: i18n.ts.search,
+					value: 'search' as const,
+				},
+			],
 		});
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-		const res = await promise;
-
-		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
+		if (confirm.canceled) {
+			isSearching.value = false;
+			return;
 		}
 
-		return;
+		if (confirm.result === 'lookup') {
+			await doLookup(query);
+			isSearching.value = false;
+			return;
+		}
 	}
 
 	notePagination.value = {
@@ -104,5 +119,6 @@ async function search() {
 	if (isLocalOnly.value) notePagination.value.params.host = '.';
 
 	key.value++;
+	isSearching.value = false;
 }
 </script>
