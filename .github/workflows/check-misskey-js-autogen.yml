@@ -48,7 +48,7 @@ jobs:
           wait-interval: 30
 
       - name: Download artifact
-        uses: actions/github-script@v7
+        uses: actions/github-script@v7.0.1
         with:
           script: |
             const fs = require('fs');
