@@ -211,7 +211,7 @@ const emit = defineEmits<{
 }>();
 
 const inTimeline = inject<boolean>('inTimeline', false);
-const collapseSensitiveChannel = inject('collapseSensitiveChannel', false);
+const collapseSensitiveChannel = inject<boolean>('collapseSensitiveChannel', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
@@ -285,6 +285,7 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 	if (checkOnly) return false;
 
 	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
+	if (collapseSensitiveChannel && noteToCheck.channel?.isSensitive) return 'sensitiveMute';
 	return false;
 }
 
