@@ -1204,10 +1204,10 @@ onDeactivated(() => {
 	bgmNodes?.soundSource.stop();
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-apple',
-});
+}));
 </script>
 
 <style lang="scss" module>

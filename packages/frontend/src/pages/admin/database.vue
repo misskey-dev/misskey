@@ -33,8 +33,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.database,
 	icon: 'ti ti-database',
-});
+}));
 </script>
