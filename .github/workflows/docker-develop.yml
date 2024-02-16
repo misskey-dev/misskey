@@ -43,7 +43,6 @@ jobs:
           push: true
           platforms: ${{ matrix.platform }}
           provenance: false
-          tags: ${{ env.REGISTRY_IMAGE }}:develop
           labels: develop
           cache-from: type=gha
           cache-to: type=gha,mode=max
