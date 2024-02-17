@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { CONTEXTS } from './misc/contexts.js';
+import { validateContentTypeSetAsJsonLD } from './misc/validator.js';
 import type { JsonLdDocument } from 'jsonld';
 import type { JsonLd, RemoteDocument } from 'jsonld/jsonld-spec.js';
 
@@ -133,7 +134,10 @@ class LdSignature {
 				},
 				timeout: this.loderTimeout,
 			},
-			{ throwErrorWhenResponseNotOk: false },
+			{
+				throwErrorWhenResponseNotOk: false,
+				validators: [validateContentTypeSetAsJsonLD],
+			},
 		).then(res => {
 			if (!res.ok) {
 				throw new Error(`${res.status} ${res.statusText}`);

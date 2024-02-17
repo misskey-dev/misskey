@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:withOkButton="true"
 	:okButtonDisabled="false"
 	@ok="ok()"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.describeFile }}</template>
@@ -48,6 +48,6 @@ const caption = ref(props.default);
 
 async function ok() {
 	emit('done', caption.value);
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -45,7 +45,7 @@ async function init() {
 }
 
 function chooseProxyAccount() {
-	os.selectUser().then(user => {
+	os.selectUser({ localOnly: true }).then(user => {
 		proxyAccount.value = user;
 		proxyAccountId.value = user.id;
 		save();
@@ -64,8 +64,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.proxyAccount,
 	icon: 'ti ti-ghost',
-});
+}));
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
 	mode?: 'relative' | 'absolute' | 'detail';
 	colored?: boolean;
 }>(), {
-	origin: isChromatic() ? new Date('2023-04-01T00:00:00Z') : null,
+	origin: isChromatic() ? () => new Date('2023-04-01T00:00:00Z') : null,
 	mode: 'relative',
 });
 

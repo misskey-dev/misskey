@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -141,16 +141,18 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => note.value ? {
+definePageMetadata(() => ({
 	title: i18n.ts.note,
-	subtitle: dateString(note.value.createdAt),
-	avatar: note.value.user,
-	path: `/notes/${note.value.id}`,
-	share: {
-		title: i18n.tsx.noteOf({ user: note.value.user.name }),
-		text: note.value.text,
-	},
-} : null));
+	...note.value ? {
+		subtitle: dateString(note.value.createdAt),
+		avatar: note.value.user,
+		path: `/notes/${note.value.id}`,
+		share: {
+			title: i18n.tsx.noteOf({ user: note.value.user.name }),
+			text: note.value.text,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" module>

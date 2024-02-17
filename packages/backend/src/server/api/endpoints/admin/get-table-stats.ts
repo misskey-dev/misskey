@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,6 +18,18 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
+		additionalProperties: {
+			type: 'object',
+			properties: {
+				count: {
+					type: 'number',
+				},
+				size: {
+					type: 'number',
+				},
+			},
+			required: ['count', 'size'],
+		},
 		example: {
 			migrations: {
 				count: 66,
