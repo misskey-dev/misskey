@@ -75,7 +75,6 @@ import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { globalEvents } from '@/events.js';
 
 const props = defineProps<{
 	id: string;
@@ -147,7 +146,6 @@ const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 
 function start() {
-	globalEvents.emit('requestClearPageCache', 'Flash');
 	started.value = true;
 	run();
 }
