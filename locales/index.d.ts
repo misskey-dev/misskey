@@ -217,7 +217,7 @@ export interface Locale extends ILocale {
      */
     "deleteAndTagging": string;
     /**
-     * 削除してタグづけの確認メッセージ
+     * このノートを削除してタグづけしますか？このノートへのリアクション、Renote、返信も全て削除されます。
      */
     "deleteAndTaggingConfirm": string;
     /**
@@ -2836,14 +2836,17 @@ export interface Locale extends ILocale {
      * UI切り替え
      */
     "switchUi": string;
-<<<<<<< HEAD
+    /**
+     * モロヘイヤHOME
+     */
     "mulukhiyaHome": string;
+    /**
+     * ダイスキーBlog
+     */
     "daisskeyBlog": string;
-=======
     /**
      * デスクトップ
      */
->>>>>>> develop
     "desktop": string;
     /**
      * クリップ
@@ -6928,6 +6931,9 @@ export interface Locale extends ILocale {
          * 控えめに警告
          */
         "quiet": string;
+        /**
+         * なにもしない
+         */
         "nothing": string;
     };
     "_channel": {
@@ -7930,7 +7936,7 @@ export interface Locale extends ILocale {
          */
         "permissionAsk": string;
         /**
-         * アプリケーションに戻ってやっていってください
+         * 以下の認証コードをコピーしてこのウィンドウを閉じ、アプリケーション（モロヘイヤ等）に戻って貼り付けてください。
          */
         "pleaseGoBack": string;
         /**
@@ -8117,6 +8123,9 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
+        /**
+         * 実況用固定タグ
+         */
         "koteitag": string;
     };
     "_cw": {
@@ -9142,14 +9151,41 @@ export interface Locale extends ILocale {
         };
     };
     "_koteitag": {
+        /**
+         * タグをクリア
+         */
         "clearTags": string;
+        /**
+         * エア番組
+         */
         "air": string;
+        /**
+         * 実況
+         */
         "livecure": string;
+        /**
+         * エピソードブラウザ
+         */
         "episodeBrowser": string;
+        /**
+         * 番組表の取得
+         */
         "fetch": string;
+        /**
+         * 第
+         */
         "episodePrefix": string;
+        /**
+         * 話
+         */
         "episodeSuffix": string;
+        /**
+         * この番組でよろしいでしょうか？
+         */
         "confirmMessage": string;
+        /**
+         * 固定タグ用コマンドを送信しました。
+         */
         "successMessage": string;
     };
     "_moderationLogTypes": {
