@@ -2,7 +2,7 @@ import * as Misskey from 'misskey-js';
 import { UnicodeEmojiDef } from './emojilist.js';
 
 export function checkReactionPermissions(me: Misskey.entities.MeDetailed, note: Misskey.entities.Note, emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef): boolean {
-  if (emoji.hasOwnProperty('char')) return true; // UnicodeEmojiDefなら常にリアクション可能
+  if ('char' in emoji) return true; // UnicodeEmojiDefなら常にリアクション可能
 
   emoji = emoji as Misskey.entities.EmojiSimple;
   const roleIdsThatCanBeUsedThisEmojiAsReaction = emoji.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [];
