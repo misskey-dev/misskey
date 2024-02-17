@@ -326,23 +326,23 @@ export class ReactionService {
 	public convertLegacyReactions(reactions: Record<string, number>) {
 		const _reactions: Record<string, number> = {};
 
-		for (const reaction of Object.keys(reactions)) {
-			if (reactions[reaction] <= 0) continue;
+		for (const [reaction, count] of Object.entries(reactions)) {
+			if (count <= 0) continue;
 
 			// unchecked indexed access
 			const convertedReaction = legacies[reaction] as string | undefined;
 
 			if (convertedReaction !== undefined) {
 				if (_reactions[convertedReaction]) {
-					_reactions[convertedReaction] += reactions[reaction];
+					_reactions[convertedReaction] += count;
 				} else {
-					_reactions[convertedReaction] = reactions[reaction];
+					_reactions[convertedReaction] = count;
 				}
 			} else {
 				if (_reactions[reaction]) {
-					_reactions[reaction] += reactions[reaction];
+					_reactions[reaction] += count;
 				} else {
-					_reactions[reaction] = reactions[reaction];
+					_reactions[reaction] = count;
 				}
 			}
 		}
