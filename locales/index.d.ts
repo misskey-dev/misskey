@@ -704,11 +704,15 @@ export interface Locale extends ILocale {
      * オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します。
      */
     "flagShowTimelineRepliesDescription": string;
-
+    /**
+     * ローカルタイムラインにローカルのパブリック未満のノートを表示する
+     */
     "flagShowLocalTimelineBelowPublic": string;
+    /**
+     * オンにすると、ローカルタイムラインにもフォロー済みローカルユーザの公開範囲がパブリック未満のノートを表示します。
+     */
     "flagShowLocalTimelineBelowPublicDescription": string;
-
-		/**
+    /**
      * フォロー中ユーザーからのフォロリクを自動承認
      */
     "autoAcceptFollowed": string;
@@ -3864,9 +3868,11 @@ export interface Locale extends ILocale {
      * ベータ
      */
     "beta": string;
-
+    /**
+     * Nadesskey
+     */
     "originalFeature": string;
-		/**
+    /**
      * 自動センシティブ判定
      */
     "enableAutoSensitive": string;
@@ -3878,6 +3884,14 @@ export interface Locale extends ILocale {
      * ユーザーのメールアドレスのバリデーションを、捨てアドかどうかや実際に通信可能かどうかなどを判定しより積極的に行います。オフにすると単に文字列として正しいかどうかのみチェックされます。
      */
     "activeEmailValidationDescription": string;
+    /**
+     * ファイル名をランダム化
+     */
+    "filenameRandomize": string;
+    /**
+     * ファイルのアップロード時にファイル名をランダムな文字列に変更します。以前にアップロードしたファイルのファイル名は変更されません。
+     */
+    "filenameRandomizeDescription": string;
     /**
      * ナビゲーションバー
      */
@@ -4306,9 +4320,17 @@ export interface Locale extends ILocale {
      * 常に広告を表示する
      */
     "forceShowAds": string;
-
+    /**
+     * ノート通知
+     */
     "noteNotification": string;
+    /**
+     * ノート通知を有効にする
+     */
     "noteSubscribe": string;
+    /**
+     * ノート通知を無効にする
+     */
     "noteUnsubscribe": string;
     /**
      * メモを追加
