@@ -108,6 +108,7 @@ import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
 	emojilist,
+	unicodeEmojisMap,
 	emojiCharByCategory,
 	UnicodeEmojiDef,
 	unicodeEmojiCategories as categories,
@@ -381,7 +382,7 @@ function getDef(emoji: string) {
 	if (emoji.includes(':')) {
 		return customEmojisMap.get(emoji.replace(/:/g, ''))!;
 	} else {
-		return emojilist.find(e => e.char === emoji)!;
+		return unicodeEmojisMap.get(emoji)!;
 	}
 }
 
