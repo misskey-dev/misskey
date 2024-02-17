@@ -324,7 +324,7 @@ export class ReactionService {
 
 	@bindThis
 	public convertLegacyReactions(reactions: Record<string, number>) {
-		const _reactions = Object.entries(reactions)
+		return Object.entries(reactions)
 			.filter(([, count]) => {
 				// `ReactionService.prototype.delete`ではリアクション削除時に、
 				// `MiNote['reactions']`のエントリの値をデクリメントしているが、
@@ -332,12 +332,15 @@ export class ReactionService {
 				// そのため、この処理がなければ、「0個のリアクションがついている」ということになってしまう。
 				return count > 0;
 			})
-			.reduce<Record<string, number>>((acc, [reaction, count]) => {
+			.map(([reaction, count]) => {
 				// unchecked indexed access
 				const convertedReaction = legacies[reaction] as string | undefined;
 
-				const key = convertedReaction ?? reaction;
+				const key = this.decodeReaction(convertedReaction ?? reaction).reaction;
 
+				return [key, count] as const;
+			})
+			.reduce<Record<string, number>>((acc, [key, count]) => {
 				// unchecked indexed access
 				const prevCount = acc[key] as number | undefined;
 
@@ -345,15 +348,6 @@ export class ReactionService {
 
 				return acc;
 			}, {});
-
-		const _reactions2 = Object.entries(_reactions)
-			.reduce<Record<string, number>>((acc, [reaction, count]) => {
-				const key = this.decodeReaction(reaction).reaction;
-				acc[key] = count;
-				return acc;
-			}, {});
-
-		return _reactions2;
 	}
 
 	@bindThis
