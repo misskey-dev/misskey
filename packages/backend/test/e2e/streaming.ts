@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,12 +8,10 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
-import { signup, api, post, startServer, initTestDb, waitFire, createAppToken, port } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Streaming', () => {
-	let app: INestApplicationContext;
 	let Followings: any;
 
 	const follow = async (follower: any, followee: any) => {
@@ -32,15 +30,15 @@ describe('Streaming', () => {
 
 	describe('Streaming', () => {
 		// Local users
-		let ayano: misskey.entities.MeSignup;
-		let kyoko: misskey.entities.MeSignup;
-		let chitose: misskey.entities.MeSignup;
-		let kanako: misskey.entities.MeSignup;
+		let ayano: misskey.entities.SignupResponse;
+		let kyoko: misskey.entities.SignupResponse;
+		let chitose: misskey.entities.SignupResponse;
+		let kanako: misskey.entities.SignupResponse;
 
 		// Remote users
-		let akari: misskey.entities.MeSignup;
-		let chinatsu: misskey.entities.MeSignup;
-		let takumi: misskey.entities.MeSignup;
+		let akari: misskey.entities.SignupResponse;
+		let chinatsu: misskey.entities.SignupResponse;
+		let takumi: misskey.entities.SignupResponse;
 
 		let kyokoNote: any;
 		let kanakoNote: any;
@@ -48,7 +46,6 @@ describe('Streaming', () => {
 		let list: any;
 
 		beforeAll(async () => {
-			app = await startServer();
 			const connection = await initTestDb(true);
 			Followings = connection.getRepository(MiFollowing);
 
@@ -94,10 +91,6 @@ describe('Streaming', () => {
 				userId: takumi.id,
 			}, chitose);
 		}, 1000 * 60 * 2);
-
-		afterAll(async () => {
-			await app.close();
-		});
 
 		describe('Events', () => {
 			test('mention event', async () => {

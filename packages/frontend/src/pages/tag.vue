@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -55,21 +55,22 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: props.tag,
 	icon: 'ti ti-hash',
-})));
+}));
 </script>
 
 <style lang="scss" module>
 .footer {
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+	background: var(--acrylicBg);
 	border-top: solid 0.5px var(--divider);
 	display: flex;
 }
 
 .button {
-		margin: 0 auto var(--margin) auto;
+	margin: 0 auto;
 }
 </style>

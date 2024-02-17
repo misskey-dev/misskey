@@ -1,16 +1,16 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api.js';
-export { pendingApiRequestsCount, api, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
+import type { ComponentProps } from 'vue-component-type-helpers';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
@@ -33,7 +33,7 @@ export const apiWithDialog = ((
 	data: Record<string, any> = {},
 	token?: string | null | undefined,
 ) => {
-	const promise = api(endpoint, data, token);
+	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
 		let title = null;
 		let text = err.message + '\n' + (err as any).id;
@@ -83,7 +83,7 @@ export const apiWithDialog = ((
 	});
 
 	return promise;
-}) as typeof api;
+}) as typeof misskeyApi;
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
@@ -128,9 +128,10 @@ export function promiseDialog<T extends Promise<any>>(
 
 let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
-	id: any;
-	component: any;
+	id: number;
+	component: Component;
 	props: Record<string, any>;
+	events: Record<string, any>;
 }[]>;
 
 const zIndexes = {
@@ -144,7 +145,18 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 	return zIndexes[priority];
 }
 
-export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
+// InstanceType<typeof Component>['$emit'] だとインターセクション型が返ってきて
+// 使い物にならないので、代わりに ['$props'] から色々省くことで emit の型を生成する
+// FIXME: 何故か *.ts ファイルからだと型がうまく取れない？ことがあるのをなんとかしたい
+type ComponentEmit<T> = T extends new () => { $props: infer Props }
+	? EmitsExtractor<Props>
+	: never;
+
+type EmitsExtractor<T> = {
+	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
+};
+
+export async function popup<T extends Component>(component: T, props: ComponentProps<T>, events: ComponentEmit<T> = {} as ComponentEmit<T>, disposeEvent?: keyof ComponentEmit<T>) {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -420,10 +432,11 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser(opts: { includeSelf?: boolean } = {}) {
+export async function selectUser(opts: { includeSelf?: boolean; localOnly?: boolean; } = {}): Promise<Misskey.entities.UserDetailed> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
+			localOnly: opts.localOnly,
 		}, {
 			ok: user => {
 				resolve(user);
@@ -621,7 +634,7 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		const data = new FormData();
 		data.append('md5', getMD5(fileData));
 
-		os.api('drive/files/find-by-hash', {
+		api('drive/files/find-by-hash', {
 			md5: getMD5(fileData)
 		}).then(resp => {
 			resolve(resp.length > 0 ? resp[0] : null);

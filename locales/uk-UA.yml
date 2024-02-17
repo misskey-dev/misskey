@@ -352,6 +352,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Увімкнути hCaptcha"
 hcaptchaSiteKey: "Ключ сайту"
 hcaptchaSecretKey: "Секретний ключ"
+mcaptchaSiteKey: "Ключ сайту"
+mcaptchaSecretKey: "Секретний ключ"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Увімкнути reCAPTCHA"
 recaptchaSiteKey: "Ключ сайту"
@@ -909,7 +911,9 @@ youFollowing: "Підписки"
 icon: "Аватар"
 replies: "Відповісти"
 renotes: "Поширити"
+sourceCode: "Вихідний код"
 flip: "Перевернути"
+lastNDays: "Останні {n} днів"
 _achievements:
   earnedAt: "Відкрито"
   _types:
@@ -1468,6 +1472,7 @@ _profile:
   changeBanner: "Змінити банер"
 _exportOrImport:
   allNotes: "Всі нотатки"
+  clips: "Добірка"
   followingList: "Підписки"
   muteList: "Ігнорувати"
   blockingList: "Заблокувати"
@@ -1616,3 +1621,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Призупинити"
   resetPassword: "Скинути пароль"
+_reversi:
+  total: "Всього"
+

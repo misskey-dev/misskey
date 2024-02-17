@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { describe, beforeAll, afterAll, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, test } from '@jest/globals';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 //import { DI } from '@/di-symbols.js';

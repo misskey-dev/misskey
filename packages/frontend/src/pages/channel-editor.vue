@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -76,12 +76,13 @@ import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { useRouter } from '@/router/supplier.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -105,7 +106,7 @@ watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {
 		bannerUrl.value = null;
 	} else {
-		bannerUrl.value = (await os.api('drive/files/show', {
+		bannerUrl.value = (await misskeyApi('drive/files/show', {
 			fileId: bannerId.value,
 		})).url;
 	}
@@ -114,7 +115,7 @@ watch(() => bannerId.value, async () => {
 async function fetchChannel() {
 	if (props.channelId == null) return;
 
-	channel.value = await os.api('channels/show', {
+	channel.value = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 
@@ -173,13 +174,13 @@ function save() {
 async function archive() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.t('channelArchiveConfirmTitle', { name: name.value }),
+		title: i18n.tsx.channelArchiveConfirmTitle({ name: name.value }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
 
 	if (canceled) return;
 
-	os.api('channels/update', {
+	misskeyApi('channels/update', {
 		channelId: props.channelId,
 		isArchived: true,
 	}).then(() => {
@@ -201,11 +202,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => props.channelId ? {
-	title: i18n.ts._channel.edit,
-	icon: 'ti ti-device-tv',
-} : {
-	title: i18n.ts._channel.create,
+definePageMetadata(() => ({
+	title: props.channelId ? i18n.ts._channel.edit : i18n.ts._channel.create,
 	icon: 'ti ti-device-tv',
 }));
 </script>

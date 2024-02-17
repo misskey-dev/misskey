@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -94,6 +94,29 @@ type ToJsonSchema<S> = {
 };
 
 export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+	const unflatten = (str: string, parent: Record<string, any>) => {
+		const keys = str.split('.');
+		const key = keys.shift();
+		const nextKey = keys[0];
+
+		if (key == null) return;
+
+		if (parent.properties[key] == null) {
+			parent.properties[key] = nextKey ? {
+				type: 'object',
+				properties: {},
+				required: [],
+			} : {
+				type: 'array',
+				items: {
+					type: 'number',
+				},
+			};
+		}
+
+		if (nextKey) unflatten(keys.join('.'), parent.properties[key] as Record<string, any>);
+	};
+
 	const jsonSchema = {
 		type: 'object',
 		properties: {} as Record<string, unknown>,
@@ -101,10 +124,7 @@ export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatt
 	};
 
 	for (const k in schema) {
-		jsonSchema.properties[k] = {
-			type: 'array',
-			items: { type: 'number' },
-		};
+		unflatten(k, jsonSchema);
 	}
 
 	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;

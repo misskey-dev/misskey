@@ -360,6 +360,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "فعّل hCaptcha"
 hcaptchaSiteKey: "مفتاح الموقع"
 hcaptchaSecretKey: "المفتاح السري"
+mcaptchaSiteKey: "مفتاح الموقع"
+mcaptchaSecretKey: "المفتاح السري"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "تمكين reCAPTCHA"
 recaptchaSiteKey: "مفتاح الموقع"
@@ -1009,7 +1011,9 @@ expired: "منتهية صلاحيته"
 icon: "الصورة الرمزية"
 replies: "رد"
 renotes: "أعد النشر"
+sourceCode: "الشفرة المصدرية"
 flip: "اقلب"
+lastNDays: "آخر {n} أيام"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
   letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."
@@ -1414,6 +1418,7 @@ _profile:
 _exportOrImport:
   allNotes: "كل الملاحظات"
   favoritedNotes: " الملاحظات المفضلة"
+  clips: "مِشبك"
   followingList: "المتابَعون"
   muteList: "المستخدمون المكتومون"
   blockingList: "المستخدمون المحجوبون"
@@ -1561,3 +1566,6 @@ _moderationLogTypes:
   suspend: "علِق"
   resetPassword: "أعد تعيين كلمتك السرية"
   createInvitation: "ولِّد دعوة"
+_reversi:
+  total: "المجموع"
+

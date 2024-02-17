@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,10 +16,10 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class CacheService implements OnApplicationShutdown {
-	public userByIdCache: MemoryKVCache<MiUser, MiUser | string>;
-	public localUserByNativeTokenCache: MemoryKVCache<MiLocalUser | null, string | null>;
+	public userByIdCache: MemoryKVCache<MiUser>;
+	public localUserByNativeTokenCache: MemoryKVCache<MiLocalUser | null>;
 	public localUserByIdCache: MemoryKVCache<MiLocalUser>;
-	public uriPersonCache: MemoryKVCache<MiUser | null, string | null>;
+	public uriPersonCache: MemoryKVCache<MiUser | null>;
 	public userProfileCache: RedisKVCache<MiUserProfile>;
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
@@ -56,41 +56,10 @@ export class CacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		const localUserByIdCache = new MemoryKVCache<MiLocalUser>(1000 * 60 * 60 * 6 /* 6h */);
-		this.localUserByIdCache	= localUserByIdCache;
-
-		// ローカルユーザーならlocalUserByIdCacheにデータを追加し、こちらにはid(文字列)だけを追加する
-		const userByIdCache = new MemoryKVCache<MiUser, MiUser | string>(1000 * 60 * 60 * 6 /* 6h */, {
-			toMapConverter: user => {
-				if (user.host === null) {
-					localUserByIdCache.set(user.id, user as MiLocalUser);
-					return user.id;
-				}
-
-				return user;
-			},
-			fromMapConverter: userOrId => typeof userOrId === 'string' ? localUserByIdCache.get(userOrId) : userOrId,
-		});
-		this.userByIdCache = userByIdCache;
-
-		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null, string | null>(Infinity, {
-			toMapConverter: user => {
-				if (user === null) return null;
-
-				localUserByIdCache.set(user.id, user);
-				return user.id;
-			},
-			fromMapConverter: id => id === null ? null : localUserByIdCache.get(id),
-		});
-		this.uriPersonCache = new MemoryKVCache<MiUser | null, string | null>(Infinity, {
-			toMapConverter: user => {
-				if (user === null) return null;
-
-				userByIdCache.set(user.id, user);
-				return user.id;
-			},
-			fromMapConverter: id => id === null ? null : userByIdCache.get(id),
-		});
+		this.userByIdCache = new MemoryKVCache<MiUser>(Infinity);
+		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null>(Infinity);
+		this.localUserByIdCache = new MemoryKVCache<MiLocalUser>(Infinity);
+		this.uriPersonCache = new MemoryKVCache<MiUser | null>(Infinity);
 
 		this.userProfileCache = new RedisKVCache<MiUserProfile>(this.redisClient, 'userProfile', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -160,16 +129,25 @@ export class CacheService implements OnApplicationShutdown {
 			switch (type) {
 				case 'userChangeSuspendedState':
 				case 'remoteUserUpdated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
-					this.userByIdCache.set(user.id, user);
-					for (const [k, v] of this.uriPersonCache.cache.entries()) {
-						if (v.value === user.id) {
-							this.uriPersonCache.set(k, user);
+					const user = await this.usersRepository.findOneBy({ id: body.id });
+					if (user == null) {
+						this.userByIdCache.delete(body.id);
+						for (const [k, v] of this.uriPersonCache.cache.entries()) {
+							if (v.value?.id === body.id) {
+								this.uriPersonCache.delete(k);
+							}
 						}
-					}
-					if (this.userEntityService.isLocalUser(user)) {
-						this.localUserByNativeTokenCache.set(user.token!, user);
-						this.localUserByIdCache.set(user.id, user);
+					} else {
+						this.userByIdCache.set(user.id, user);
+						for (const [k, v] of this.uriPersonCache.cache.entries()) {
+							if (v.value?.id === user.id) {
+								this.uriPersonCache.set(k, user);
+							}
+						}
+						if (this.userEntityService.isLocalUser(user)) {
+							this.localUserByNativeTokenCache.set(user.token!, user);
+							this.localUserByIdCache.set(user.id, user);
+						}
 					}
 					break;
 				}

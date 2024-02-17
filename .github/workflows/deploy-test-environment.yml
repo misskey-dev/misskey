@@ -1,0 +1,87 @@
+name: deploy-test-environment
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository to deploy (optional, use the repository where this workflow is stored by default)'
+        required: false
+        default: ''
+      branch_or_hash:
+        description: 'Branch or Commit hash to deploy (optional, use the branch where this workflow is stored by default)'
+        required: false
+        default: ''
+      wait_time:
+        description: 'Time to wait in seconds (optional, 1800 seconds by default)'
+        required: false
+        default: ''
+
+jobs:
+  get-pr-ref:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/preview')
+    outputs:
+      is-allowed-user: ${{ steps.check-allowed-users.outputs.is-allowed-user }}
+      pr-ref: ${{ steps.get-ref.outputs.pr-ref }}
+      wait_time: ${{ steps.get-wait-time.outputs.wait_time }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Check allowed users
+        id: check-allowed-users
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_ID: ${{ github.repository_owner_id }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+        run: |
+          MEMBERSHIP_STATUS=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          "https://api.github.com/organizations/$ORG_ID/public_members/$COMMENT_AUTHOR" \
+          -o /dev/null -w '%{http_code}\n' -s)
+          if [ "$MEMBERSHIP_STATUS" -eq 204 ]; then
+            echo "is-allowed-user=true" > $GITHUB_OUTPUT
+          else
+            echo "is-allowed-user=false" > $GITHUB_OUTPUT
+          fi
+
+      - name: Get PR ref
+        id: get-ref
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
+          PR_REF=$(gh pr view $PR_NUMBER --json headRefName -q '.headRefName')
+          echo "pr-ref=$PR_REF" > $GITHUB_OUTPUT
+
+      - name: Extract wait time
+        id: get-wait-time
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          WAIT_TIME=$(echo "$COMMENT_BODY" | grep -oP '(?<=/preview\s)\d+' || echo "1800")
+          echo "wait_time=$WAIT_TIME" > $GITHUB_OUTPUT
+
+  deploy-test-environment-pr-comment:
+    needs: get-pr-ref
+    if: needs.get-pr-ref.outputs.is-allowed-user == 'true'
+    uses: joinmisskey/misskey-tga/.github/workflows/deploy-test-environment.yml@main
+    with:
+      repository: ${{ github.repository }}
+      branch_or_hash: ${{ needs.get-pr-ref.outputs.pr-ref }}
+      wait_time: ${{ needs.get-pr-ref.outputs.wait_time }}
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  deploy-test-environment-wd:
+    if: github.event_name == 'workflow_dispatch'
+    uses: joinmisskey/misskey-tga/.github/workflows/deploy-test-environment.yml@main
+    with:
+      repository: ${{ inputs.repository || github.repository }}
+      branch_or_hash: ${{ inputs.branch_or_hash || github.ref_name }}
+      wait_time: ${{ inputs.wait_time || '1800' }}
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
