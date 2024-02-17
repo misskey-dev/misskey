@@ -1166,6 +1166,7 @@ hideRepliesToOthersInTimelineAll: "Ocultar tus respuestas a otros usuarios que s
 confirmShowRepliesAll: "Esta operación es irreversible. ¿Confirmas que quieres mostrar tus respuestas a otros usuarios que sigues en tu línea de tiempo?"
 confirmHideRepliesAll: "Esta operación es irreversible. ¿Confirmas que quieres ocultar tus respuestas a otros usuarios que sigues en tu línea de tiempo?"
 externalServices: "Servicios Externos"
+sourceCode: "Código fuente"
 impressum: "Impressum"
 impressumUrl: "Impressum URL"
 impressumDescription: "En algunos países, como Alemania, la inclusión del operador de datos (el Impressum) es requerido legalmente para sitios web comerciales."

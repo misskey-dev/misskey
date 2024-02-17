@@ -170,10 +170,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
-	title: i18n.ts.role + ': ' + role.name,
+definePageMetadata(() => ({
+	title: `${i18n.ts.role}: ${role.name}`,
 	icon: 'ti ti-badge',
-})));
+}));
 </script>
 
 <style lang="scss" module>

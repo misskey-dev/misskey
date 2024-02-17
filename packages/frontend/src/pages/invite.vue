@@ -93,10 +93,10 @@ async function update() {
 
 update();
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.invite,
 	icon: 'ti ti-user-plus',
-});
+}));
 </script>
 
 <style lang="scss" module>

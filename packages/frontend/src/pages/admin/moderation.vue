@@ -116,10 +116,10 @@ function save() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.moderation,
 	icon: 'ti ti-shield',
-});
+}));
 </script>
 
 <style lang="scss" module>

@@ -85,7 +85,6 @@ import type {
 	AdminUnsuspendUserRequest,
 	AdminUpdateMetaRequest,
 	AdminDeleteAccountRequest,
-	AdminDeleteAccountResponse,
 	AdminUpdateUserNoteRequest,
 	AdminRolesCreateRequest,
 	AdminRolesCreateResponse,
@@ -283,6 +282,7 @@ import type {
 	HashtagsUsersResponse,
 	IResponse,
 	I2faDoneRequest,
+	I2faDoneResponse,
 	I2faKeyDoneRequest,
 	I2faKeyDoneResponse,
 	I2faPasswordLessRequest,
@@ -333,6 +333,7 @@ import type {
 	IRegistryKeysWithTypeRequest,
 	IRegistryKeysWithTypeResponse,
 	IRegistryKeysRequest,
+	IRegistryKeysResponse,
 	IRegistryRemoveRequest,
 	IRegistryScopesWithDomainResponse,
 	IRegistrySetRequest,
@@ -536,11 +537,9 @@ import type {
 	FetchExternalResourcesResponse,
 	RetentionResponse,
 	BubbleGameRegisterRequest,
-	BubbleGameRegisterResponse,
 	BubbleGameRankingRequest,
 	BubbleGameRankingResponse,
 	ReversiCancelMatchRequest,
-	ReversiCancelMatchResponse,
 	ReversiGamesRequest,
 	ReversiGamesResponse,
 	ReversiMatchRequest,
@@ -619,7 +618,7 @@ export type Endpoints = {
 	'admin/suspend-user': { req: AdminSuspendUserRequest; res: EmptyResponse };
 	'admin/unsuspend-user': { req: AdminUnsuspendUserRequest; res: EmptyResponse };
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
-	'admin/delete-account': { req: AdminDeleteAccountRequest; res: AdminDeleteAccountResponse };
+	'admin/delete-account': { req: AdminDeleteAccountRequest; res: EmptyResponse };
 	'admin/update-user-note': { req: AdminUpdateUserNoteRequest; res: EmptyResponse };
 	'admin/roles/create': { req: AdminRolesCreateRequest; res: AdminRolesCreateResponse };
 	'admin/roles/delete': { req: AdminRolesDeleteRequest; res: EmptyResponse };
@@ -739,7 +738,7 @@ export type Endpoints = {
 	'hashtags/trend': { req: EmptyRequest; res: HashtagsTrendResponse };
 	'hashtags/users': { req: HashtagsUsersRequest; res: HashtagsUsersResponse };
 	'i': { req: EmptyRequest; res: IResponse };
-	'i/2fa/done': { req: I2faDoneRequest; res: EmptyResponse };
+	'i/2fa/done': { req: I2faDoneRequest; res: I2faDoneResponse };
 	'i/2fa/key-done': { req: I2faKeyDoneRequest; res: I2faKeyDoneResponse };
 	'i/2fa/password-less': { req: I2faPasswordLessRequest; res: EmptyResponse };
 	'i/2fa/register-key': { req: I2faRegisterKeyRequest; res: I2faRegisterKeyResponse };
@@ -780,7 +779,7 @@ export type Endpoints = {
 	'i/registry/get-detail': { req: IRegistryGetDetailRequest; res: IRegistryGetDetailResponse };
 	'i/registry/get': { req: IRegistryGetRequest; res: IRegistryGetResponse };
 	'i/registry/keys-with-type': { req: IRegistryKeysWithTypeRequest; res: IRegistryKeysWithTypeResponse };
-	'i/registry/keys': { req: IRegistryKeysRequest; res: EmptyResponse };
+	'i/registry/keys': { req: IRegistryKeysRequest; res: IRegistryKeysResponse };
 	'i/registry/remove': { req: IRegistryRemoveRequest; res: EmptyResponse };
 	'i/registry/scopes-with-domain': { req: EmptyRequest; res: IRegistryScopesWithDomainResponse };
 	'i/registry/set': { req: IRegistrySetRequest; res: EmptyResponse };
@@ -912,9 +911,9 @@ export type Endpoints = {
 	'fetch-rss': { req: FetchRssRequest; res: FetchRssResponse };
 	'fetch-external-resources': { req: FetchExternalResourcesRequest; res: FetchExternalResourcesResponse };
 	'retention': { req: EmptyRequest; res: RetentionResponse };
-	'bubble-game/register': { req: BubbleGameRegisterRequest; res: BubbleGameRegisterResponse };
+	'bubble-game/register': { req: BubbleGameRegisterRequest; res: EmptyResponse };
 	'bubble-game/ranking': { req: BubbleGameRankingRequest; res: BubbleGameRankingResponse };
-	'reversi/cancel-match': { req: ReversiCancelMatchRequest; res: ReversiCancelMatchResponse };
+	'reversi/cancel-match': { req: ReversiCancelMatchRequest; res: EmptyResponse };
 	'reversi/games': { req: ReversiGamesRequest; res: ReversiGamesResponse };
 	'reversi/match': { req: ReversiMatchRequest; res: ReversiMatchResponse };
 	'reversi/invitations': { req: EmptyRequest; res: ReversiInvitationsResponse };
