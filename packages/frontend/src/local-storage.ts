@@ -12,6 +12,7 @@ type Keys =
 	'latestDonationInfoShownAt' |
 	'neverShowDonationInfo' |
 	'neverShowLocalOnlyInfo' |
+	'modifiedVersionMustProminentlyOfferInAgplV3Section13Read' |
 	'lastUsed' |
 	'lang' |
 	'drafts' |
