@@ -329,11 +329,14 @@ export class ReactionService {
 		for (const reaction of Object.keys(reactions)) {
 			if (reactions[reaction] <= 0) continue;
 
-			if (Object.keys(legacies).includes(reaction)) {
-				if (_reactions[legacies[reaction]]) {
-					_reactions[legacies[reaction]] += reactions[reaction];
+			// unchecked indexed access
+			const convertedReaction = legacies[reaction] as string | undefined;
+
+			if (convertedReaction !== undefined) {
+				if (_reactions[convertedReaction]) {
+					_reactions[convertedReaction] += reactions[reaction];
 				} else {
-					_reactions[legacies[reaction]] = reactions[reaction];
+					_reactions[convertedReaction] = reactions[reaction];
 				}
 			} else {
 				if (_reactions[reaction]) {
