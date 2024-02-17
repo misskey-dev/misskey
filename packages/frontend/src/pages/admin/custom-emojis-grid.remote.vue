@@ -217,7 +217,7 @@ async function refreshCustomEmojis(query?: string, host?: string, sinceId?: stri
 	gridItems.value = customEmojis.value.map(it => ({
 		checked: false,
 		id: it.id,
-		url: it.uri!,
+		url: it.publicUrl,
 		name: it.name,
 		host: it.host!,
 	}));
