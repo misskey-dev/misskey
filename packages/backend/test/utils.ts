@@ -15,6 +15,7 @@ import { JSDOM } from 'jsdom';
 import * as Redis from 'ioredis';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { Packed } from '@/misc/json-schema.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { entities } from '@/postgres.js';
 import { loadConfig } from '@/config.js';
 import type * as misskey from 'misskey-js';
@@ -328,7 +329,6 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	});
 
 	const body = res.status !== 204 ? await res.json() as misskey.Endpoints['drive/files/create']['res'] : null;
-
 	return {
 		status: res.status,
 		headers: res.headers,
@@ -476,6 +476,14 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	const htmlTypes = [
 		'text/html; charset=utf-8',
 	];
+
+	if (res.ok && (
+		accept.startsWith('application/activity+json') ||
+		(accept.startsWith('application/ld+json') && accept.includes('https://www.w3.org/ns/activitystreams'))
+	)) {
+		// validateContentTypeSetAsActivityPubのテストを兼ねる
+		validateContentTypeSetAsActivityPub(res);
+	}
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
