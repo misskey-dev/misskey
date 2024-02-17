@@ -322,8 +322,12 @@ export class ReactionService {
 		//#endregion
 	}
 
+	/**
+	 * 文字列タイプのレガシーな形式のリアクションを現在の形式に変換しつつ、
+	 * データベース上には存在する「0個のリアクションがついている」という情報を削除する。
+	 */
 	@bindThis
-	public convertLegacyReactions(reactions: Record<string, number>) {
+	public convertLegacyReactions(reactions: MiNote['reactions']): MiNote['reactions'] {
 		return Object.entries(reactions)
 			.filter(([, count]) => {
 				// `ReactionService.prototype.delete`ではリアクション削除時に、
@@ -340,7 +344,7 @@ export class ReactionService {
 
 				return [key, count] as const;
 			})
-			.reduce<Record<string, number>>((acc, [key, count]) => {
+			.reduce<MiNote['reactions']>((acc, [key, count]) => {
 				// unchecked indexed access
 				const prevCount = acc[key] as number | undefined;
 
