@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -39,6 +39,8 @@ export class EmailService {
 	@bindThis
 	public async sendEmail(to: string, subject: string, html: string, text: string) {
 		const meta = await this.metaService.fetch(true);
+
+		if (!meta.enableEmail) return;
 
 		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
 		const emailSettingUrl = `${this.config.url}/settings/email`;

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,7 +19,7 @@ export class Autocomplete {
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;
 	private currentType: string;
-	private textRef: Ref<string>;
+	private textRef: Ref<string | number | null>;
 	private opening: boolean;
 	private onlyType: SuggestionType[];
 
@@ -38,7 +38,7 @@ export class Autocomplete {
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
-	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>, onlyType?: SuggestionType[]) {
+	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string | number | null>, onlyType?: SuggestionType[]) {
 		//#region BIND
 		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);

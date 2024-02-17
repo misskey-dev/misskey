@@ -3981,6 +3981,10 @@ export interface Locale extends ILocale {
      */
     "pleaseDonate": ParameterizedString<"host">;
     /**
+     * 対応するソースコードは{anchor}から利用可能です。
+     */
+    "correspondingSourceIsAvailable": ParameterizedString<"anchor">;
+    /**
      * ロール
      */
     "roles": string;
@@ -4177,6 +4181,18 @@ export interface Locale extends ILocale {
      * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
      */
     "sensitiveWordsDescription2": string;
+    /**
+     * 禁止ワード
+     */
+    "prohibitedWords": string;
+    /**
+     * 設定したワードが含まれるノートを投稿しようとした際、エラーとなるようにします。改行で区切って複数設定できます。
+     */
+    "prohibitedWordsDescription": string;
+    /**
+     * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
+     */
+    "prohibitedWordsDescription2": string;
     /**
      * 非表示ハッシュタグ
      */
@@ -4670,6 +4686,34 @@ export interface Locale extends ILocale {
      */
     "externalServices": string;
     /**
+     * ソースコード
+     */
+    "sourceCode": string;
+    /**
+     * ソースコードはまだ提供されていません。この問題の修正について管理者に問い合わせてください。
+     */
+    "sourceCodeIsNotYetProvided": string;
+    /**
+     * リポジトリURL
+     */
+    "repositoryUrl": string;
+    /**
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     */
+    "repositoryUrlDescription": string;
+    /**
+     * リポジトリを公開していない場合、代わりにtarballを提供する必要があります。詳細は.config/example.ymlを参照してください。
+     */
+    "repositoryUrlOrTarballRequired": string;
+    /**
+     * フィードバック
+     */
+    "feedback": string;
+    /**
+     * フィードバックURL
+     */
+    "feedbackUrl": string;
+    /**
      * 運営者情報
      */
     "impressum": string;
@@ -4891,7 +4935,7 @@ export interface Locale extends ILocale {
          */
         "readConfirmText": ParameterizedString<"title">;
         /**
-         * 特に新規ユーザーのUXを損ねる可能性が高いため、ストック情報ではなくフロー情報の掲示にお知らせを使用することを推奨します。
+         * 特に新規ユーザーのUXを損ねる可能性が高いため、常時掲示するための情報ではなく、即時性が求められる情報の掲示のためにお知らせを使用することを推奨します。
          */
         "shouldNotBeUsedToPresentPermanentInfo": string;
         /**
@@ -6795,6 +6839,17 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         "source": string;
+        /**
+         * オリジナル
+         */
+        "original": string;
+        /**
+         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         */
+        "thisIsModifiedVersion": ParameterizedString<"name">;
+        /**
+         * Misskeyを翻訳
+         */
         "translation": string;
         /**
          * Misskeyに寄付

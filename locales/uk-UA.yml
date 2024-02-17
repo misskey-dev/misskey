@@ -911,6 +911,7 @@ youFollowing: "Підписки"
 icon: "Аватар"
 replies: "Відповісти"
 renotes: "Поширити"
+sourceCode: "Вихідний код"
 flip: "Перевернути"
 lastNDays: "Останні {n} днів"
 _achievements:

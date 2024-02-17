@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -431,7 +431,7 @@ function applySelect() {
 
 function chooseUser() {
 	props.close();
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		complete('user', user);
 		props.textarea.focus();
 	});

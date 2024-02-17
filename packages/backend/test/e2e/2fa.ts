@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,7 +18,7 @@ import type {
 	PublicKeyCredentialCreationOptionsJSON,
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types';
+} from '@simplewebauthn/types';
 import type * as misskey from 'misskey-js';
 
 describe('2要素認証', () => {

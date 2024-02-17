@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,7 +37,7 @@ export class BlockingEntityService {
 			createdAt: this.idService.parse(blocking.id).date.toISOString(),
 			blockeeId: blocking.blockeeId,
 			blockee: this.userEntityService.pack(blocking.blockeeId, me, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}
