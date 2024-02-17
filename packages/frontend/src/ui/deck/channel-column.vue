@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -26,6 +26,7 @@ import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -41,7 +42,7 @@ if (props.column.channelId == null) {
 }
 
 async function setChannel() {
-	const channels = await os.api('channels/my-favorites', {
+	const channels = await misskeyApi('channels/my-favorites', {
 		limit: 100,
 	});
 	const { canceled, result: channel } = await os.select({
@@ -60,7 +61,7 @@ async function setChannel() {
 
 async function post() {
 	if (!channel.value || channel.value.id !== props.column.channelId) {
-		channel.value = await os.api('channels/show', {
+		channel.value = await misskeyApi('channels/show', {
 			channelId: props.column.channelId,
 		});
 	}

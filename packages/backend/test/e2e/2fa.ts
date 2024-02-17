@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,7 +10,7 @@ import * as crypto from 'node:crypto';
 import cbor from 'cbor';
 import * as OTPAuth from 'otpauth';
 import { loadConfig } from '@/config.js';
-import { api, signup, startServer } from '../utils.js';
+import { api, signup } from '../utils.js';
 import type {
 	AuthenticationResponseJSON,
 	AuthenticatorAssertionResponseJSON,
@@ -18,13 +18,11 @@ import type {
 	PublicKeyCredentialCreationOptionsJSON,
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types';
-import type { INestApplicationContext } from '@nestjs/common';
+} from '@simplewebauthn/types';
 import type * as misskey from 'misskey-js';
 
 describe('2要素認証', () => {
-	let app: INestApplicationContext;
-	let alice: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
 
 	const config = loadConfig();
 	const password = 'test';
@@ -185,13 +183,8 @@ describe('2要素認証', () => {
 	};
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username, password });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	test('が設定でき、OTPでログインできる。', async () => {
 		const registerResponse = await api('/i/2fa/register', {

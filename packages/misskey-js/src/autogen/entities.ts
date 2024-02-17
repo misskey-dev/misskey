@@ -1,8 +1,3 @@
-/*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.489Z
- */
-
 import { operations } from './types.js';
 
 export type EmptyRequest = Record<string, unknown> | undefined;
@@ -92,7 +87,6 @@ export type AdminSuspendUserRequest = operations['admin/suspend-user']['requestB
 export type AdminUnsuspendUserRequest = operations['admin/unsuspend-user']['requestBody']['content']['application/json'];
 export type AdminUpdateMetaRequest = operations['admin/update-meta']['requestBody']['content']['application/json'];
 export type AdminDeleteAccountRequest = operations['admin/delete-account']['requestBody']['content']['application/json'];
-export type AdminDeleteAccountResponse = operations['admin/delete-account']['responses']['200']['content']['application/json'];
 export type AdminUpdateUserNoteRequest = operations['admin/update-user-note']['requestBody']['content']['application/json'];
 export type AdminRolesCreateRequest = operations['admin/roles/create']['requestBody']['content']['application/json'];
 export type AdminRolesCreateResponse = operations['admin/roles/create']['responses']['200']['content']['application/json'];
@@ -290,6 +284,7 @@ export type HashtagsUsersRequest = operations['hashtags/users']['requestBody']['
 export type HashtagsUsersResponse = operations['hashtags/users']['responses']['200']['content']['application/json'];
 export type IResponse = operations['i']['responses']['200']['content']['application/json'];
 export type I2faDoneRequest = operations['i/2fa/done']['requestBody']['content']['application/json'];
+export type I2faDoneResponse = operations['i/2fa/done']['responses']['200']['content']['application/json'];
 export type I2faKeyDoneRequest = operations['i/2fa/key-done']['requestBody']['content']['application/json'];
 export type I2faKeyDoneResponse = operations['i/2fa/key-done']['responses']['200']['content']['application/json'];
 export type I2faPasswordLessRequest = operations['i/2fa/password-less']['requestBody']['content']['application/json'];
@@ -340,6 +335,7 @@ export type IRegistryGetResponse = operations['i/registry/get']['responses']['20
 export type IRegistryKeysWithTypeRequest = operations['i/registry/keys-with-type']['requestBody']['content']['application/json'];
 export type IRegistryKeysWithTypeResponse = operations['i/registry/keys-with-type']['responses']['200']['content']['application/json'];
 export type IRegistryKeysRequest = operations['i/registry/keys']['requestBody']['content']['application/json'];
+export type IRegistryKeysResponse = operations['i/registry/keys']['responses']['200']['content']['application/json'];
 export type IRegistryRemoveRequest = operations['i/registry/remove']['requestBody']['content']['application/json'];
 export type IRegistryScopesWithDomainResponse = operations['i/registry/scopes-with-domain']['responses']['200']['content']['application/json'];
 export type IRegistrySetRequest = operations['i/registry/set']['requestBody']['content']['application/json'];
@@ -542,3 +538,17 @@ export type FetchRssResponse = operations['fetch-rss']['responses']['200']['cont
 export type FetchExternalResourcesRequest = operations['fetch-external-resources']['requestBody']['content']['application/json'];
 export type FetchExternalResourcesResponse = operations['fetch-external-resources']['responses']['200']['content']['application/json'];
 export type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+export type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
+export type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
+export type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
+export type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
+export type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];
+export type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
+export type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];
+export type ReversiMatchResponse = operations['reversi/match']['responses']['200']['content']['application/json'];
+export type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
+export type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
+export type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];
+export type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+export type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+export type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];

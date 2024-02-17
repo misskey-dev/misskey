@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -33,6 +33,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { notificationRecieveConfig } from '@/models/json-schema/user.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
@@ -184,7 +185,26 @@ export const paramDef = {
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
 		} },
-		notificationRecieveConfig: { type: 'object' },
+		notificationRecieveConfig: {
+			type: 'object',
+			nullable: false,
+			properties: {
+				note: notificationRecieveConfig,
+				follow: notificationRecieveConfig,
+				mention: notificationRecieveConfig,
+				reply: notificationRecieveConfig,
+				renote: notificationRecieveConfig,
+				quote: notificationRecieveConfig,
+				reaction: notificationRecieveConfig,
+				pollEnded: notificationRecieveConfig,
+				receiveFollowRequest: notificationRecieveConfig,
+				followRequestAccepted: notificationRecieveConfig,
+				roleAssigned: notificationRecieveConfig,
+				achievementEarned: notificationRecieveConfig,
+				app: notificationRecieveConfig,
+				test: notificationRecieveConfig,
+			},
+		},
 		emailNotificationTypes: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -446,8 +466,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				verifiedLinks: [],
 			});
 
-			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
-				detail: true,
+			const iObj = await this.userEntityService.pack(user.id, user, {
+				schema: 'MeDetailed',
 				includeSecrets: isSecure,
 			});
 

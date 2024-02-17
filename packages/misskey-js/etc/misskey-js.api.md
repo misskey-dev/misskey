@@ -104,9 +104,6 @@ type AdminAvatarDecorationsUpdateRequest = operations['admin/avatar-decorations/
 type AdminDeleteAccountRequest = operations['admin/delete-account']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type AdminDeleteAccountResponse = operations['admin/delete-account']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type AdminDeleteAllFilesOfAUserRequest = operations['admin/delete-all-files-of-a-user']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -474,6 +471,15 @@ type BlockingListRequest = operations['blocking/list']['requestBody']['content']
 type BlockingListResponse = operations['blocking/list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type Channel = components['schemas']['Channel'];
 
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
@@ -508,10 +514,10 @@ export type Channels = {
             mention: (payload: Note) => void;
             reply: (payload: Note) => void;
             renote: (payload: Note) => void;
-            follow: (payload: User) => void;
-            followed: (payload: User) => void;
-            unfollow: (payload: User) => void;
-            meUpdated: (payload: MeDetailed) => void;
+            follow: (payload: UserDetailedNotMe) => void;
+            followed: (payload: UserDetailed | UserLite) => void;
+            unfollow: (payload: UserDetailed) => void;
+            meUpdated: (payload: UserDetailed) => void;
             pageEvent: (payload: PageEvent) => void;
             urlUploadFinished: (payload: {
                 marker: string;
@@ -586,6 +592,7 @@ export type Channels = {
         params: {
             listId: string;
             withFiles?: boolean;
+            withRenotes?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -636,7 +643,7 @@ export type Channels = {
             fileUpdated: (payload: DriveFile) => void;
             folderCreated: (payload: DriveFolder) => void;
             folderDeleted: (payload: DriveFolder['id']) => void;
-            folderUpdated: (payload: DriveFile) => void;
+            folderUpdated: (payload: DriveFolder) => void;
         };
         receives: null;
     };
@@ -677,6 +684,46 @@ export type Channels = {
             };
         };
         receives: null;
+    };
+    reversiGame: {
+        params: {
+            gameId: string;
+        };
+        events: {
+            started: (payload: {
+                game: ReversiGameDetailed;
+            }) => void;
+            ended: (payload: {
+                winnerId: User['id'] | null;
+                game: ReversiGameDetailed;
+            }) => void;
+            canceled: (payload: {
+                userId: User['id'];
+            }) => void;
+            changeReadyStates: (payload: {
+                user1: boolean;
+                user2: boolean;
+            }) => void;
+            updateSettings: (payload: {
+                userId: User['id'];
+                key: string;
+                value: any;
+            }) => void;
+            log: (payload: Record<string, any>) => void;
+        };
+        receives: {
+            putStone: {
+                pos: number;
+                id: string;
+            };
+            ready: boolean;
+            cancel: null | Record<string, never>;
+            updateSettings: {
+                key: string;
+                value: any;
+            };
+            claimTimeIsUp: null | Record<string, never>;
+        };
     };
 };
 
@@ -1034,6 +1081,18 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
+    'signup': {
+        req: SignupRequest;
+        res: SignupResponse;
+    };
+    'signup-pending': {
+        req: SignupPendingRequest;
+        res: SignupPendingResponse;
+    };
+    'signin': {
+        req: SigninRequest;
+        res: SigninResponse;
+    };
 }>;
 
 // @public (undocumented)
@@ -1053,6 +1112,12 @@ declare namespace entities {
         EmojiUpdated,
         EmojiDeleted,
         AnnouncementCreated,
+        SignupRequest,
+        SignupResponse,
+        SignupPendingRequest,
+        SignupPendingResponse,
+        SigninRequest,
+        SigninResponse,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -1139,7 +1204,6 @@ declare namespace entities {
         AdminUnsuspendUserRequest,
         AdminUpdateMetaRequest,
         AdminDeleteAccountRequest,
-        AdminDeleteAccountResponse,
         AdminUpdateUserNoteRequest,
         AdminRolesCreateRequest,
         AdminRolesCreateResponse,
@@ -1337,6 +1401,7 @@ declare namespace entities {
         HashtagsUsersResponse,
         IResponse,
         I2faDoneRequest,
+        I2faDoneResponse,
         I2faKeyDoneRequest,
         I2faKeyDoneResponse,
         I2faPasswordLessRequest,
@@ -1387,6 +1452,7 @@ declare namespace entities {
         IRegistryKeysWithTypeRequest,
         IRegistryKeysWithTypeResponse,
         IRegistryKeysRequest,
+        IRegistryKeysResponse,
         IRegistryRemoveRequest,
         IRegistryScopesWithDomainResponse,
         IRegistrySetRequest,
@@ -1589,6 +1655,20 @@ declare namespace entities {
         FetchExternalResourcesRequest,
         FetchExternalResourcesResponse,
         RetentionResponse,
+        BubbleGameRegisterRequest,
+        BubbleGameRankingRequest,
+        BubbleGameRankingResponse,
+        ReversiCancelMatchRequest,
+        ReversiGamesRequest,
+        ReversiGamesResponse,
+        ReversiMatchRequest,
+        ReversiMatchResponse,
+        ReversiInvitationsResponse,
+        ReversiShowGameRequest,
+        ReversiShowGameResponse,
+        ReversiSurrenderRequest,
+        ReversiVerifyRequest,
+        ReversiVerifyResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -1614,6 +1694,7 @@ declare namespace entities {
         Hashtag,
         InviteCode,
         Page,
+        PageBlock,
         Channel,
         QueueCount,
         Antenna,
@@ -1624,8 +1705,17 @@ declare namespace entities {
         EmojiDetailed,
         Flash,
         Signin,
+        RoleCondFormulaLogics,
+        RoleCondFormulaValueNot,
+        RoleCondFormulaValueIsLocalOrRemote,
+        RoleCondFormulaValueCreated,
+        RoleCondFormulaFollowersOrFollowingOrNotes,
+        RoleCondFormulaValue,
         RoleLite,
-        Role
+        Role,
+        RolePolicies,
+        ReversiGameLite,
+        ReversiGameDetailed
     }
 }
 export { entities }
@@ -1882,6 +1972,9 @@ type HashtagsUsersResponse = operations['hashtags/users']['responses']['200']['c
 type I2faDoneRequest = operations['i/2fa/done']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type I2faDoneResponse = operations['i/2fa/done']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type I2faKeyDoneRequest = operations['i/2fa/key-done']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2053,6 +2146,9 @@ type IRegistryGetResponse = operations['i/registry/get']['responses']['200']['co
 type IRegistryKeysRequest = operations['i/registry/keys']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryKeysResponse = operations['i/registry/keys']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type IRegistryKeysWithTypeRequest = operations['i/registry/keys-with-type']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2074,7 +2170,7 @@ type IResponse = operations['i']['responses']['200']['content']['application/jso
 type IRevokeTokenRequest = operations['i/revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function isAPIError(reason: any): reason is APIError;
+function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError;
 
 // @public (undocumented)
 type ISigninHistoryRequest = operations['i/signin-history']['requestBody']['content']['application/json'];
@@ -2144,7 +2240,7 @@ type ModerationLog = {
     id: ID;
     createdAt: DateString;
     userId: User['id'];
-    user: UserDetailed | null;
+    user: UserDetailedNotMe | null;
 } & ({
     type: 'updateServerSettings';
     info: ModerationLogPayloads['updateServerSettings'];
@@ -2463,6 +2559,9 @@ export const notificationTypes: readonly ["note", "follow", "mention", "reply", 
 type Page = components['schemas']['Page'];
 
 // @public (undocumented)
+type PageBlock = components['schemas']['PageBlock'];
+
+// @public (undocumented)
 type PageEvent = {
     pageId: Page['id'];
     event: string;
@@ -2536,7 +2635,7 @@ type QueueStats = {
 };
 
 // @public (undocumented)
-type QueueStatsLog = string[];
+type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
@@ -2563,10 +2662,70 @@ type ResetPasswordRequest = operations['reset-password']['requestBody']['content
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
+
+// @public (undocumented)
+type ReversiGameLite = components['schemas']['ReversiGameLite'];
+
+// @public (undocumented)
+type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchResponse = operations['reversi/match']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type Role = components['schemas']['Role'];
 
 // @public (undocumented)
+type RoleCondFormulaFollowersOrFollowingOrNotes = components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
+
+// @public (undocumented)
+type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
+
+// @public (undocumented)
+type RoleCondFormulaValue = components['schemas']['RoleCondFormulaValue'];
+
+// @public (undocumented)
+type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
+
+// @public (undocumented)
+type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCondFormulaValueIsLocalOrRemote'];
+
+// @public (undocumented)
+type RoleCondFormulaValueNot = components['schemas']['RoleCondFormulaValueNot'];
+
+// @public (undocumented)
 type RoleLite = components['schemas']['RoleLite'];
+
+// @public (undocumented)
+type RolePolicies = components['schemas']['RolePolicies'];
 
 // @public (undocumented)
 type RolesListResponse = operations['roles/list']['responses']['200']['content']['application/json'];
@@ -2610,10 +2769,51 @@ type ServerStats = {
 };
 
 // @public (undocumented)
-type ServerStatsLog = string[];
+type ServerStatsLog = ServerStats[];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
+
+// @public (undocumented)
+type SigninRequest = {
+    username: string;
+    password: string;
+    token?: string;
+};
+
+// @public (undocumented)
+type SigninResponse = {
+    id: User['id'];
+    i: string;
+};
+
+// @public (undocumented)
+type SignupPendingRequest = {
+    code: string;
+};
+
+// @public (undocumented)
+type SignupPendingResponse = {
+    id: User['id'];
+    i: string;
+};
+
+// @public (undocumented)
+type SignupRequest = {
+    username: string;
+    password: string;
+    host?: string;
+    invitationCode?: string;
+    emailAddress?: string;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+};
+
+// @public (undocumented)
+type SignupResponse = MeDetailed & {
+    token: string;
+};
 
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
