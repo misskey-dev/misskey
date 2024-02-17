@@ -1799,7 +1799,6 @@ _aboutMisskey:
   projectMembers: "プロジェクトメンバー"
   forkContributors: "このサーバーで使用しているforkの主要な開発者"
   allForkContributors: "このサーバーで使用しているforkの全てのコントリビューター"
-  forkSource: "このサーバーで使用しているforkのソースコード"
 
 _displayOfSensitiveMedia:
   respect: "センシティブ設定されたメディアを隠す"
