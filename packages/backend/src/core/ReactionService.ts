@@ -324,7 +324,7 @@ export class ReactionService {
 
 	@bindThis
 	public convertLegacyReactions(reactions: Record<string, number>) {
-		const _reactions = {} as Record<string, number>;
+		const _reactions: Record<string, number> = {};
 
 		for (const reaction of Object.keys(reactions)) {
 			if (reactions[reaction] <= 0) continue;
@@ -344,7 +344,7 @@ export class ReactionService {
 			}
 		}
 
-		const _reactions2 = {} as Record<string, number>;
+		const _reactions2: Record<string, number> = {};
 
 		for (const reaction of Object.keys(_reactions)) {
 			_reactions2[this.decodeReaction(reaction).reaction] = _reactions[reaction];
