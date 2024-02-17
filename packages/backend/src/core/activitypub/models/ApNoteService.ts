@@ -170,8 +170,9 @@ export class ApNoteService {
 			}
 		}
 
+		// SPAM対策
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
-		if (apMentions.length >= 5){
+		if (apMentions.length >= 5 && actor.followersCount === 0 && actor.followingCount === 0){
 			throw new Error('too many mensions included.');
 			this.logger.error('Too many mensions included', {
 				value,
@@ -184,7 +185,13 @@ export class ApNoteService {
 				value,
 				object,
 			});
-
+		}
+		if (actor.username === actor.name && /^[a-z0-9]+$/.test(actor.username) && apMentions.length > 0 && actor.followersCount === 0 && actor.followingCount === 0){
+			throw new Error('suspected SPAM')
+			this.logger.error('Suspected SPAM', {
+				value,
+				object,
+			});
 		}
 
 		const apHashtags = extractApHashtags(note.tag);
