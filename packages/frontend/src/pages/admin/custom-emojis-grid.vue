@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header>
-			<MkPageHeader v-model:tab="headerTab" :actions="headerActions" :tabs="headerTabs"/>
+			<MkPageHeader v-model:tab="headerTab" :tabs="headerTabs"/>
 		</template>
 		<XGridLocalComponent v-if="headerTab === 'local'"/>
 		<XGridRemoteComponent v-else/>
@@ -16,6 +16,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import XGridLocalComponent from '@/pages/admin/custom-emojis-grid.local.vue';
 import XGridRemoteComponent from '@/pages/admin/custom-emojis-grid.remote.vue';
+import MkPageHeader from '@/components/global/MkPageHeader.vue';
+import MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 
 type PageMode = 'local' | 'remote';
 
@@ -27,19 +29,6 @@ const headerTabs = computed(() => [{
 }, {
 	key: 'remote',
 	title: i18n.ts.remote,
-}]);
-
-const headerActions = computed(() => [{
-	asFullButton: true,
-	icon: 'ti ti-plus',
-	text: i18n.ts.addEmoji,
-	handler: () => {
-	},
-}, {
-	icon: 'ti ti-dots',
-	text: '',
-	handler: () => {
-	},
 }]);
 
 definePageMetadata(computed(() => ({
