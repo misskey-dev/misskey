@@ -6897,10 +6897,6 @@ export interface Locale extends ILocale {
          * このサーバーで使用しているforkの全てのコントリビューター
          */
         "allForkContributors": string;
-        /**
-         * このサーバーで使用しているforkのソースコード
-         */
-        "forkSource": string;
     };
     "_displayOfSensitiveMedia": {
         /**
