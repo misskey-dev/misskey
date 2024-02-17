@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -187,15 +187,17 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => page.value ? {
-	title: page.value.title || page.value.name,
-	avatar: page.value.user,
-	path: `/@${page.value.user.username}/pages/${page.value.name}`,
-	share: {
-		title: page.value.title || page.value.name,
-		text: page.value.summary,
-	},
-} : null));
+definePageMetadata(() => ({
+	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
+	...page.value ? {
+		avatar: page.value.user,
+		path: `/@${page.value.user.username}/pages/${page.value.name}`,
+		share: {
+			title: page.value.title || page.value.name,
+			text: page.value.summary,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" scoped>

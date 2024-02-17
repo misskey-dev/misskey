@@ -1,18 +1,40 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const notificationRecieveConfig = {
+export const notificationRecieveConfig = {
 	type: 'object',
-	nullable: false, optional: true,
-	properties: {
-		type: {
-			type: 'string',
-			nullable: false, optional: false,
-			enum: ['all', 'following', 'follower', 'mutualFollow', 'list', 'never'],
+	oneOf: [
+		{
+			type: 'object',
+			nullable: false,
+			properties: {
+				type: {
+					type: 'string',
+					nullable: false,
+					enum: ['all', 'following', 'follower', 'mutualFollow', 'never'],
+				},
+			},
+			required: ['type'],
 		},
-	},
+		{
+			type: 'object',
+			nullable: false,
+			properties: {
+				type: {
+					type: 'string',
+					nullable: false,
+					enum: ['list'],
+				},
+				userListId: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+			},
+			required: ['type', 'userListId'],
+		},
+	],
 } as const;
 
 export const packedUserLiteSchema = {
@@ -546,15 +568,20 @@ export const packedMeDetailedOnlySchema = {
 			type: 'object',
 			nullable: false, optional: false,
 			properties: {
-				app: notificationRecieveConfig,
-				quote: notificationRecieveConfig,
-				reply: notificationRecieveConfig,
-				follow: notificationRecieveConfig,
-				renote: notificationRecieveConfig,
-				mention: notificationRecieveConfig,
-				reaction: notificationRecieveConfig,
-				pollEnded: notificationRecieveConfig,
-				receiveFollowRequest: notificationRecieveConfig,
+				note: { optional: true, ...notificationRecieveConfig },
+				follow: { optional: true, ...notificationRecieveConfig },
+				mention: { optional: true, ...notificationRecieveConfig },
+				reply: { optional: true, ...notificationRecieveConfig },
+				renote: { optional: true, ...notificationRecieveConfig },
+				quote: { optional: true, ...notificationRecieveConfig },
+				reaction: { optional: true, ...notificationRecieveConfig },
+				pollEnded: { optional: true, ...notificationRecieveConfig },
+				receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
+				followRequestAccepted: { optional: true, ...notificationRecieveConfig },
+				roleAssigned: { optional: true, ...notificationRecieveConfig },
+				achievementEarned: { optional: true, ...notificationRecieveConfig },
+				app: { optional: true, ...notificationRecieveConfig },
+				test: { optional: true, ...notificationRecieveConfig },
 			},
 		},
 		emailNotificationTypes: {

@@ -17,7 +17,7 @@ export type APIError = {
 	info: Record<string, any>;
 };
 
-export function isAPIError(reason: any): reason is APIError {
+export function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError {
 	return reason[MK_API_ERROR] === true;
 }
 

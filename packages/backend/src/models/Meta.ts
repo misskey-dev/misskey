@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -357,9 +357,9 @@ export class MiMeta {
 	@Column('varchar', {
 		length: 1024,
 		default: 'https://github.com/misskey-dev/misskey',
-		nullable: false,
+		nullable: true,
 	})
-	public repositoryUrl: string;
+	public repositoryUrl: string | null;
 
 	@Column('varchar', {
 		length: 1024,
