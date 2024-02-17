@@ -225,10 +225,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.importAndExport,
 	icon: 'ti ti-package',
-});
+}));
 </script>
 
 <style module>

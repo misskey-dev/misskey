@@ -27,8 +27,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'Misskey Games',
 	icon: 'ti ti-device-gamepad',
-});
+}));
 </script>
