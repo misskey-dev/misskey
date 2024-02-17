@@ -346,11 +346,12 @@ export class ReactionService {
 				return acc;
 			}, {});
 
-		const _reactions2: Record<string, number> = {};
-
-		for (const reaction of Object.keys(_reactions)) {
-			_reactions2[this.decodeReaction(reaction).reaction] = _reactions[reaction];
-		}
+		const _reactions2 = Object.entries(_reactions)
+			.reduce<Record<string, number>>((acc, [reaction, count]) => {
+				const key = this.decodeReaction(reaction).reaction;
+				acc[key] = count;
+				return acc;
+			}, {});
 
 		return _reactions2;
 	}
