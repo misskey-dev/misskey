@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -60,8 +60,8 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.roles,
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.explore,
 	icon: 'ti ti-hash',
-})));
+}));
 </script>

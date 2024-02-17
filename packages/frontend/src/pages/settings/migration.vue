@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -121,10 +121,10 @@ async function save(): Promise<void> {
 
 init();
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.accountMigration,
 	icon: 'ti ti-plane',
-});
+}));
 </script>
 
 <style lang="scss">
