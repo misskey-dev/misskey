@@ -124,5 +124,11 @@ describe('ReactionService', () => {
 			const output = {};
 			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
 		});
+
+		test('host部分の有無によりデコードすると同じ表記になるカスタム絵文字リアクションの個数情報を正しく足し合わせる', () => {
+			const input = { ':custom_emoji:': 1, ':custom_emoji@.:': 2 };
+			const output = { ':custom_emoji@.:': 3 };
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
+		});
 	});
 });
