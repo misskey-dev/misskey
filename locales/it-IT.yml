@@ -1167,6 +1167,7 @@ hideRepliesToOthersInTimelineAll: "Nascondi le risposte dei tuoi follow nella TL
 confirmShowRepliesAll: "Questa è una attività irreversibile. Vuoi davvero includere tutte le risposte dei following in TL?"
 confirmHideRepliesAll: "Questa è una attività irreversibile. Vuoi davvero escludere tutte le risposte dei following in TL?"
 externalServices: "Servizi esterni"
+sourceCode: "Codice sorgente"
 impressum: "Dichiarazione di proprietà"
 impressumUrl: "URL della dichiarazione di proprietà"
 impressumDescription: "La dichiarazione di proprietà, è obbligatoria in alcuni paesi come la Germania (Impressum)."

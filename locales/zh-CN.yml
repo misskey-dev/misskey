@@ -1166,6 +1166,7 @@ hideRepliesToOthersInTimelineAll: "在时间线中隐藏现在关注的所有人
 confirmShowRepliesAll: "此操作不可撤销。确认要在时间线中包含现在关注的所有人的回复吗？"
 confirmHideRepliesAll: "此操作不可撤销。确认要在时间线中隐藏现在关注的所有人的回复吗？"
 externalServices: "外部服务"
+sourceCode: "源代码"
 impressum: "运营商信息"
 impressumUrl: "运营商信息地址"
 impressumDescription: "德国等国家和地区有义务展示此类信息（Impressum）。"

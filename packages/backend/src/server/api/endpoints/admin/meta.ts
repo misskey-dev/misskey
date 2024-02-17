@@ -429,7 +429,7 @@ export const meta = {
 			},
 			repositoryUrl: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			summalyProxy: {
 				type: 'string',
