@@ -31,7 +31,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkKeyValue>
 						<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 						</div>
-						<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
+						<FormLink to="/about-misskey">
+							<template #icon><i class="ti ti-info-circle"></i></template>
+							{{ i18n.ts.aboutMisskey }}
+						</FormLink>
+						<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts.sourceCode }}
+						</FormLink>
+						<MkInfo v-else warn>
+							{{ i18n.ts.sourceCodeIsNotYetProvided }}
+						</MkInfo>
 					</div>
 				</FormSection>
 
@@ -47,17 +57,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #value>{{ instance.maintainerEmail }}</template>
 							</MkKeyValue>
 						</FormSplit>
-						<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>{{ i18n.ts.impressum }}</FormLink>
+						<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>
+							<template #icon><i class="ti ti-user-shield"></i></template>
+							{{ i18n.ts.impressum }}
+						</FormLink>
 						<div class="_gaps_s">
 							<MkFolder v-if="instance.serverRules.length > 0">
-								<template #label>{{ i18n.ts.serverRules }}</template>
+								<template #label>
+									<i class="ti ti-checkup-list"></i>
+									{{ i18n.ts.serverRules }}
+								</template>
 
 								<ol class="_gaps_s" :class="$style.rules">
-									<li v-for="item, index in instance.serverRules" :key="index" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
+									<li v-for="(item, index) in instance.serverRules" :key="index" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
 								</ol>
 							</MkFolder>
-							<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
-							<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>{{ i18n.ts.privacyPolicy }}</FormLink>
+							<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>
+								<template #icon><i class="ti ti-license"></i></template>
+								{{ i18n.ts.termsOfService }}
+							</FormLink>
+							<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>
+								<template #icon><i class="ti ti-shield-lock"></i></template>
+								{{ i18n.ts.privacyPolicy }}
+							</FormLink>
+							<FormLink v-if="instance.feedbackUrl" :to="instance.feedbackUrl" external>
+								<template #icon><i class="ti ti-message"></i></template>
+								{{ i18n.ts.feedback }}
+							</FormLink>
 						</div>
 					</div>
 				</FormSection>
@@ -86,7 +112,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink :to="`/.well-known/nodeinfo`" external>nodeinfo</FormLink>
 						<FormLink :to="`/robots.txt`" external>robots.txt</FormLink>
 						<FormLink :to="`/manifest.json`" external>manifest.json</FormLink>
-						<FormLink :to="`/tarball/misskey-${version}.tar.gz`" external>source code</FormLink>
 					</div>
 				</FormSection>
 			</div>
@@ -116,6 +141,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
