@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-for="emoji in searchResultCustom"
 					:key="emoji.name"
 					class="_button item"
+					:disabled="!canReact(emoji)"
 					:title="emoji.name"
 					tabindex="0"
 					@click="chosen(emoji, $event)"
@@ -39,16 +40,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<section v-if="showPinned && (pinned && pinned.length > 0)">
 				<div class="body">
 					<button
-						v-for="emoji in pinned"
-						:key="emoji"
-						:data-emoji="emoji"
+						v-for="emoji in pinnedEmojisDef"
+						:key="getKey(emoji)"
+						:data-emoji="getKey(emoji)"
 						class="_button item"
+						:disabled="!canReact(emoji)"
 						tabindex="0"
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
 			</section>
@@ -149,13 +151,10 @@ const {
 } = defaultStore.reactiveState;
 
 const recentlyUsedEmojisDef = computed(() => {
-	return recentlyUsedEmojis.value.map((emoji: string) => {
-		if (emoji.includes(':')) {
-			return customEmojisMap.get(emoji.replace(/:/g, ''))!;
-		} else {
-			return emojilist.find(e => e.char === emoji)!;
-		}
-	});
+	return recentlyUsedEmojis.value.map(getDef);
+});
+const pinnedEmojisDef = computed(() => {
+	return pinned.value?.map(getDef);
 });
 
 const pinned = computed(() => props.pinnedEmojis);
@@ -376,6 +375,14 @@ function reset() {
 
 function getKey(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef): string {
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
+}
+
+function getDef(emoji: string) {
+	if (emoji.includes(':')) {
+		return customEmojisMap.get(emoji.replace(/:/g, ''))!;
+	} else {
+		return emojilist.find(e => e.char === emoji)!;
+	}
 }
 
 /** @see MkEmojiPicker.section.vue */
