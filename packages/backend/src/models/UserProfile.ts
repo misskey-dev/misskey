@@ -242,7 +242,7 @@ export class MiUserProfile {
 		[notificationType in typeof notificationTypes[number]]?: {
 			type: 'all';
 		} | {
-			type: 'localOnly';
+			type: 'localOrFollowing';
 		} | {
 			type: 'never';
 		} | {

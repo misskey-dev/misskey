@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #suffix>
 					{{
 						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-						$i.notificationRecieveConfig[type]?.type === 'localOnly' ? i18n.ts.localOnly :
+						$i.notificationRecieveConfig[type]?.type === 'localOrFollowing' ? i18n.ts.localOrFollowing :
 						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
 						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
 						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
