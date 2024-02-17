@@ -1011,6 +1011,7 @@ expired: "منتهية صلاحيته"
 icon: "الصورة الرمزية"
 replies: "رد"
 renotes: "أعد النشر"
+sourceCode: "الشفرة المصدرية"
 flip: "اقلب"
 lastNDays: "آخر {n} أيام"
 _initialAccountSetting:
