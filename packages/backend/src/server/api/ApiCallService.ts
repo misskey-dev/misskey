@@ -85,7 +85,12 @@ export class ApiCallService implements OnApplicationShutdown {
 				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
 			}));
 		} else {
-			this.send(reply, 500, new ApiError());
+			this.#sendApiError(reply, new ApiError({
+				message: 'Internal error occurred. Please contact us if the error persists.',
+				code: 'INTERNAL_ERROR',
+				id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
+				kind: 'server',
+			}));
 		}
 	}
 
@@ -364,8 +369,33 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
-			if (err instanceof ApiError || err instanceof IdentifiableError || err instanceof AuthenticationError) {
+			if (err instanceof ApiError || err instanceof AuthenticationError) {
 				throw err;
+			} else if (err instanceof IdentifiableError) {
+				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
+					ep: ep.name,
+					ps: data,
+					id: err.id,
+					error: {
+						message: err.message,
+						code: 'INTERNAL_ERROR',
+						stack: err.stack,
+					},
+				});
+				throw new ApiError(
+					{
+						message: err.message,
+						code: 'INTERNAL_ERROR',
+						id: err.id,
+					},
+					{
+						e: {
+							message: err.message,
+							code: err.name,
+							id: err.id,
+						},
+					},
+				);
 			} else {
 				const errId = randomUUID();
 				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
@@ -378,13 +408,21 @@ export class ApiCallService implements OnApplicationShutdown {
 						stack: err.stack,
 					},
 				});
-				throw new ApiError(null, {
-					e: {
-						message: err.message,
-						code: err.name,
-						id: errId,
+				throw new ApiError(
+					{
+						message: 'Internal error occurred. Please contact us if the error persists.',
+						code: 'INTERNAL_ERROR',
+						id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
+						kind: 'server',
 					},
-				});
+					{
+						e: {
+							message: err.message,
+							code: err.name,
+							id: errId,
+						},
+					},
+				);
 			}
 		});
 	}

@@ -271,7 +271,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
 			this.logger.error('Request rejected because prohibited words are included', { user: user.id, note: data });
-			throw new IdentifiableError('057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30');
+			throw new IdentifiableError('057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30', 'Notes including prohibited words are not allowed.');
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);

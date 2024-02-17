@@ -108,7 +108,7 @@ export class ReactionService {
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
 			if (blocked) {
-				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
+				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7', 'You are blocked by the user.');
 			}
 		}
 
@@ -181,7 +181,7 @@ export class ReactionService {
 					await this.noteReactionsRepository.insert(record);
 				} else {
 					// 同じリアクションがすでにされていたらエラー
-					throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+					throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298', 'You already reacted to this note with the same reaction.');
 				}
 			} else {
 				throw e;
@@ -288,14 +288,14 @@ export class ReactionService {
 		});
 
 		if (exist == null) {
-			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
+			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'You have not reacted to this note.');
 		}
 
 		// Delete reaction
 		const result = await this.noteReactionsRepository.delete(exist.id);
 
 		if (result.affected !== 1) {
-			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
+			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'You have not reacted to this note.');
 		}
 
 		// Decrement reactions count

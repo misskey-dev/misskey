@@ -36,7 +36,7 @@ export class UserAuthService {
 			});
 
 			if (delta === null) {
-				throw new IdentifiableError('7d0a7d85-206c-4d16-8cf3-8af92249a082', 'authentication failed');
+				throw new IdentifiableError('7d0a7d85-206c-4d16-8cf3-8af92249a082', 'Two-factor authentication failed.');
 			}
 		}
 	}

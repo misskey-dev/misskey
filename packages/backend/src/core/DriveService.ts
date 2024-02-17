@@ -523,7 +523,7 @@ export class DriveService {
 			// If usage limit exceeded
 			if (driveCapacity < usage + info.size) {
 				if (isLocalUser) {
-					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
+					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space in drive.');
 				}
 				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as MiRemoteUser, driveCapacity - info.size);
 			}

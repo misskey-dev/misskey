@@ -13,15 +13,7 @@ export class ApiError extends Error {
 	public httpStatusCode?: number;
 	public info?: any;
 
-	constructor(err?: E | null | undefined, info?: any | null | undefined) {
-		if (err == null) err = {
-			message: 'Internal error occurred. Please contact us if the error persists.',
-			code: 'INTERNAL_ERROR',
-			id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
-			kind: 'server',
-			httpStatusCode: 500,
-		};
-
+	constructor(err: E, info?: any | null | undefined) {
 		super(err.message);
 		this.message = err.message;
 		this.code = err.code;

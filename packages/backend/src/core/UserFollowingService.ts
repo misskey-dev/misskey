@@ -124,8 +124,8 @@ export class UserFollowingService implements OnModuleInit {
 			await this.userBlockingService.unblock(follower, followee);
 		} else {
 			// それ以外は単純に例外
-			if (blocking) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
-			if (blocked) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
+			if (blocking) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'You have blocked this user.');
+			if (blocked) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'You have been blocked by this user.');
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
@@ -538,7 +538,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		if (!requestExist) {
-			throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
+			throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'No such follow request.');
 		}
 
 		await this.followRequestsRepository.delete({
@@ -564,7 +564,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		if (request == null) {
-			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No follow request.');
+			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No such follow request.');
 		}
 
 		await this.insertFollowingDoc(followee, follower, false, request.withReplies);
