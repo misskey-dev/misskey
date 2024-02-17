@@ -13,6 +13,7 @@ import type { KEYWORD } from 'color-convert/conversions.js';
 export default class Logger {
 	private readonly domain: string;
 	private logger: pino.Logger;
+	private context: Record<string, any> = {};
 
 	constructor(domain: string, _color?: KEYWORD, _store = true, parentLogger?: Logger) {
 		if (parentLogger) {
@@ -34,7 +35,7 @@ export default class Logger {
 			formatters: {
 				level: (label, number) => ({ severity: label, level: number }),
 			},
-			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}` }),
+			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}`, ...this.context }),
 			transport: !envOption.logJson ? {
 				target: 'pino-pretty',
 				options: {
@@ -57,7 +58,7 @@ export default class Logger {
 
 	@bindThis
 	public setContext(context: Record<string, any>): void {
-		this.logger = this.logger.child({ context });
+		this.context = context;
 	}
 
 	@bindThis
