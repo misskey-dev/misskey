@@ -60,6 +60,11 @@ export class DeleteAccountProcessorService {
 
 	@bindThis
 	async logDelete(user: MiUser) {
+		if (user.host != null) {
+			this.logger.info(`Skipping logging account deletion of ${user.id} ...`);
+			return;
+		}
+
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 		// data from src/server/api/endpoints/users/show.ts
@@ -120,6 +125,8 @@ export class DeleteAccountProcessorService {
 			email: profile.email,
 			info,
 		});
+
+		this.logger.info(`Finished logging account deletion of ${user.id} ...`);
 	}
 
 	@bindThis
