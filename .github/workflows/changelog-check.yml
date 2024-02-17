@@ -1,0 +1,43 @@
+name: Check the description in CHANGELOG.md
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout head
+        uses: actions/checkout@v4.1.1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version-file: '.node-version'
+
+      - name: Checkout base
+        run: |
+          mkdir _base
+          cp -r .git _base/.git
+          cd _base
+          git fetch --depth 1 origin ${{ github.base_ref }}
+          git checkout origin/${{ github.base_ref }} CHANGELOG.md
+
+      - name: Copy to Checker directory for CHANGELOG-base.md
+        run: cp _base/CHANGELOG.md scripts/changelog-checker/CHANGELOG-base.md
+      - name: Copy to Checker directory for CHANGELOG-head.md
+        run: cp CHANGELOG.md scripts/changelog-checker/CHANGELOG-head.md
+      - name: diff
+        continue-on-error: true
+        run: diff -u CHANGELOG-base.md CHANGELOG-head.md
+        working-directory: scripts/changelog-checker
+
+      - name: Setup Checker
+        run: npm install
+        working-directory: scripts/changelog-checker
+      - name: Run Checker
+        run: npm run run
+        working-directory: scripts/changelog-checker

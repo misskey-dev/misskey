@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -35,6 +35,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span>{{ tag }}</span>
 		</li>
 	</ol>
+	<ol v-else-if="mfmParams.length > 0" ref="suggests" :class="$style.list">
+		<li v-for="param in mfmParams" tabindex="-1" :class="$style.item" @click="complete(type, q.params.toSpliced(-1, 1, param).join(','))" @keydown="onKeydown">
+			<span>{{ param }}</span>
+		</li>
+	</ol>
 </div>
 </template>
 
@@ -45,12 +50,13 @@ import contains from '@/scripts/contains.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { emojilist, getEmojiName } from '@/scripts/emojilist.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { MFM_TAGS } from '@/const.js';
+import { MFM_TAGS, MFM_PARAMS } from '@/const.js';
 
 type EmojiDef = {
 	emoji: string;
@@ -129,7 +135,7 @@ export default {
 <script lang="ts" setup>
 const props = defineProps<{
 	type: string;
-	q: string | null;
+	q: any;
 	textarea: HTMLTextAreaElement;
 	close: () => void;
 	x: number;
@@ -150,6 +156,7 @@ const hashtags = ref<any[]>([]);
 const emojis = ref<(EmojiDef)[]>([]);
 const items = ref<Element[] | HTMLCollection>([]);
 const mfmTags = ref<string[]>([]);
+const mfmParams = ref<string[]>([]);
 const select = ref(-1);
 const zIndex = os.claimZIndex('high');
 
@@ -201,7 +208,7 @@ function exec() {
 			users.value = JSON.parse(cache);
 			fetching.value = false;
 		} else {
-			os.api('users/search-by-username-and-host', {
+			misskeyApi('users/search-by-username-and-host', {
 				username: props.q,
 				limit: 10,
 				detail: false,
@@ -224,7 +231,7 @@ function exec() {
 				hashtags.value = hashtags;
 				fetching.value = false;
 			} else {
-				os.api('hashtags/search', {
+				misskeyApi('hashtags/search', {
 					query: props.q,
 					limit: 30,
 				}).then(searchedHashtags => {
@@ -250,6 +257,13 @@ function exec() {
 		}
 
 		mfmTags.value = MFM_TAGS.filter(tag => tag.startsWith(props.q ?? ''));
+	} else if (props.type === 'mfmParam') {
+		if (props.q.params.at(-1) === '') {
+			mfmParams.value = MFM_PARAMS[props.q.tag] ?? [];
+			return;
+		}
+
+		mfmParams.value = MFM_PARAMS[props.q.tag].filter(param => param.startsWith(props.q.params.at(-1) ?? ''));
 	}
 }
 
@@ -261,14 +275,23 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 	}
 
 	const matched = new Map<string, EmojiScore>();
-
-	// 前方一致（エイリアスなし）
+	// 完全一致（エイリアス込み）
 	emojiDb.some(x => {
-		if (x.name.startsWith(query) && !x.aliasOf) {
-			matched.set(x.name, { emoji: x, score: query.length + 1 });
+		if (x.name === query && !matched.has(x.aliasOf ?? x.name)) {
+			matched.set(x.aliasOf ?? x.name, { emoji: x, score: query.length + 2 });
 		}
 		return matched.size === max;
 	});
+
+	// 前方一致（エイリアスなし）
+	if (matched.size < max) {
+		emojiDb.some(x => {
+			if (x.name.startsWith(query) && !x.aliasOf) {
+				matched.set(x.name, { emoji: x, score: query.length + 1 });
+			}
+			return matched.size === max;
+		});
+	}
 
 	// 前方一致（エイリアス込み）
 	if (matched.size < max) {
@@ -408,7 +431,7 @@ function applySelect() {
 
 function chooseUser() {
 	props.close();
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		complete('user', user);
 		props.textarea.focus();
 	});

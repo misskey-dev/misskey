@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,15 +14,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { ImageBlock } from './block.type.js';
 import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
-	block: ImageBlock,
+	block: Misskey.entities.PageBlock,
 	page: Misskey.entities.Page,
 }>();
 
-const image = ref<Misskey.entities.DriveFile>(props.page.attachedFiles.find(x => x.id === props.block.fileId));
+const image = ref<Misskey.entities.DriveFile | null>(null);
+
+onMounted(() => {
+	image.value = props.page.attachedFiles.find(x => x.id === props.block.fileId) ?? null;
+});
+
 </script>

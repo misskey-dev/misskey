@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -38,11 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
-import { defaultStore } from "@/store.js";
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -63,7 +64,7 @@ const wait = ref(false);
 const connection = useStream().useChannel('main');
 
 if (props.user.isFollowing == null) {
-	os.api('users/show', {
+	misskeyApi('users/show', {
 		userId: props.user.id,
 	})
 		.then(onFollowChange);
@@ -83,22 +84,22 @@ async function onClick() {
 		if (isFollowing.value) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.t('unfollowConfirm', { name: props.user.name || props.user.username }),
+				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
 			});
 
 			if (canceled) return;
 
-			await os.api('following/delete', {
+			await misskeyApi('following/delete', {
 				userId: props.user.id,
 			});
 		} else {
 			if (hasPendingFollowRequestFromYou.value) {
-				await os.api('following/requests/cancel', {
+				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou.value = false;
 			} else {
-				await os.api('following/create', {
+				await misskeyApi('following/create', {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});

@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 export function calcPopupPosition(el: HTMLElement, props: {
-	anchorElement: HTMLElement | null;
+	anchorElement?: HTMLElement | null;
 	innerMargin: number;
 	direction: 'top' | 'bottom' | 'left' | 'right';
 	align: 'top' | 'bottom' | 'left' | 'right' | 'center';

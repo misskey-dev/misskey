@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -30,12 +30,12 @@ export const packedFollowingSchema = {
 		followee: {
 			type: 'object',
 			optional: true, nullable: false,
-			ref: 'UserDetailed',
+			ref: 'UserDetailedNotMe',
 		},
 		follower: {
 			type: 'object',
 			optional: true, nullable: false,
-			ref: 'UserDetailed',
+			ref: 'UserDetailedNotMe',
 		},
 	},
 } as const;

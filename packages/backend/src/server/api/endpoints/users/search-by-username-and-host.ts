@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -131,7 +131,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.getMany();
 			}
 
-			return await this.userEntityService.packMany(users, me, { detail: !!ps.detail });
+			return await this.userEntityService.packMany(users, me, { schema: ps.detail ? 'UserDetailed' : 'UserLite' });
 		});
 	}
 }

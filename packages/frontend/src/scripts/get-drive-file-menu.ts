@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,6 +8,7 @@ import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 
@@ -18,7 +19,7 @@ function rename(file: Misskey.entities.DriveFile) {
 		default: file.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
-		os.api('drive/files/update', {
+		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			name: name,
 		});
@@ -31,7 +32,7 @@ function describe(file: Misskey.entities.DriveFile) {
 		file: file,
 	}, {
 		done: caption => {
-			os.api('drive/files/update', {
+			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				comment: caption.length === 0 ? null : caption,
 			});
@@ -40,7 +41,7 @@ function describe(file: Misskey.entities.DriveFile) {
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {
-	os.api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).catch(err => {
@@ -65,11 +66,11 @@ function addApp() {
 async function deleteFile(file: Misskey.entities.DriveFile) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
+		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
 
 	if (canceled) return;
-	os.api('drive/files/delete', {
+	misskeyApi('drive/files/delete', {
 		fileId: file.id,
 	});
 }

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,8 +25,8 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { mainRouter } from '@/router/main.js';
 
 const props = defineProps<{
 	token?: string;
@@ -53,8 +53,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.resetPassword,
 	icon: 'ti ti-lock',
-});
+}));
 </script>

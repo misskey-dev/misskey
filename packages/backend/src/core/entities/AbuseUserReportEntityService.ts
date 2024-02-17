@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -38,13 +38,13 @@ export class AbuseUserReportEntityService {
 			targetUserId: report.targetUserId,
 			assigneeId: report.assigneeId,
 			reporter: this.userEntityService.pack(report.reporter ?? report.reporterId, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 			targetUser: this.userEntityService.pack(report.targetUser ?? report.targetUserId, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 			assignee: report.assigneeId ? this.userEntityService.pack(report.assignee ?? report.assigneeId, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}) : null,
 			forwarded: report.forwarded,
 		});

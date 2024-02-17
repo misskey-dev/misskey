@@ -1,14 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { startServer, channel, clip, cookie, galleryPost, signup, page, play, post, simpleGet, uploadFile } from '../utils.js';
+import { channel, clip, cookie, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type { SimpleGetResponse } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
 
 // Request Accept
@@ -23,9 +22,7 @@ const HTML = 'text/html; charset=utf-8';
 const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Webリソース', () => {
-	let app: INestApplicationContext;
-
-	let alice: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
 	let aliceUploadedFile: any;
 	let alicesPost: any;
 	let alicePage: any;
@@ -34,7 +31,7 @@ describe('Webリソース', () => {
 	let aliceGalleryPost: any;
 	let aliceChannel: any;
 
-	let bob: misskey.entities.MeSignup;
+	let bob: misskey.entities.SignupResponse;
 
 	type Request = {
 		path: string,
@@ -79,7 +76,6 @@ describe('Webリソース', () => {
 	};
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		aliceUploadedFile = await uploadFile(alice);
 		alicesPost = await post(alice, {
@@ -95,10 +91,6 @@ describe('Webリソース', () => {
 
 		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	describe.each([
 		{ path: '/', type: HTML },

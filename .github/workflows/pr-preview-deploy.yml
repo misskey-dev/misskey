@@ -13,7 +13,7 @@ jobs:
       github.event.client_payload.slash_command.sha != '' &&
       contains(github.event.client_payload.pull_request.head.sha, github.event.client_payload.slash_command.sha)
     steps:
-    - uses: actions/github-script@v7
+    - uses: actions/github-script@v7.0.1
       id: check-id
       env:
         number: ${{ github.event.client_payload.pull_request.number }}
@@ -37,7 +37,7 @@ jobs:
 
           return check[0].id;
 
-    - uses: actions/github-script@v7
+    - uses: actions/github-script@v7.0.1
       env:
         check_id: ${{ steps.check-id.outputs.result }}
         details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.run_id }}
@@ -72,7 +72,7 @@ jobs:
         timeout: 15m
 
     # Update check run called "integration-fork"
-    - uses: actions/github-script@v7
+    - uses: actions/github-script@v7.0.1
       id: update-check-run
       if: ${{ always() }}
       env:

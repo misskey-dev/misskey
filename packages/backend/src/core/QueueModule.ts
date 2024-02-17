@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setTimeout } from 'node:timers/promises';
 import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { QUEUE, baseQueueOptions } from '@/queue/const.js';
+import { allSettled } from '@/misc/promise-tracker.js';
 import type { Provider } from '@nestjs/common';
 import type { DeliverJobData, InboxJobData, EndedPollNotificationJobData, WebhookDeliverJobData, RelationshipJobData } from '../queue/types.js';
 
@@ -106,14 +106,9 @@ export class QueueModule implements OnApplicationShutdown {
 	) {}
 
 	public async dispose(): Promise<void> {
-		if (process.env.NODE_ENV === 'test') {
-			// XXX:
-			// Shutting down the existing connections causes errors on Jest as
-			// Misskey has asynchronous postgres/redis connections that are not
-			// awaited.
-			// Let's wait for some random time for them to finish.
-			await setTimeout(5000);
-		}
+		// Wait for all potential queue jobs
+		await allSettled();
+		// And then close all queues
 		await Promise.all([
 			this.systemQueue.close(),
 			this.endedPollNotificationQueue.close(),

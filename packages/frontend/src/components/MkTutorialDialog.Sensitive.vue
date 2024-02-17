@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -40,7 +40,7 @@ const emit = defineEmits<{
 const onceSucceeded = ref<boolean>(false);
 
 function doSucceeded(fileId: string, to: boolean) {
-	if (fileId === exampleNote.fileIds[0] && to) {
+	if (fileId === exampleNote.fileIds?.[0] && to) {
 		onceSucceeded.value = true;
 		emit('succeeded');
 	}
