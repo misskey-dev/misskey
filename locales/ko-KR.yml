@@ -1167,6 +1167,7 @@ hideRepliesToOthersInTimelineAll: "타임라인에 현재 팔로우 중인 사�
 confirmShowRepliesAll: "이 조작은 되돌릴 수 없습니다. 정말로 타임라인에 현재 팔로우 중인 사람 전원의 답글이 나오게 하시겠습니까?"
 confirmHideRepliesAll: "이 조작은 되돌릴 수 없습니다. 정말로 타임라인에 현재 팔로우 중인 사람 전원의 답글이 나오지 않게 하시겠습니까?"
 externalServices: "외부 서비스"
+sourceCode: "소스 코드"
 impressum: "운영자 정보"
 impressumUrl: "운영자 정보 URL"
 impressumDescription: "독일 등의 일부 나라와 지역에서는 꼭 표시해야 합니다(Impressum)."

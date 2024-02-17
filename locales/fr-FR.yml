@@ -1136,6 +1136,7 @@ hideRepliesToOthersInTimelineAll: "Masquer les réponses de toutes les personnes
 confirmShowRepliesAll: "Cette opération est irréversible. Voulez-vous vraiment afficher les réponses de toutes les personnes que vous suivez dans le fil ?"
 confirmHideRepliesAll: "Cette opération est irréversible. Voulez-vous vraiment masquer les réponses de toutes les personnes que vous suivez dans le fil ?"
 externalServices: "Services externes"
+sourceCode: "Code source"
 impressum: "Impressum"
 impressumUrl: "URL de l'impressum"
 impressumDescription: "Dans certains pays comme l'Allemagne, il est obligatoire d'afficher les informations sur l'opérateur d'un site (un impressum)."
