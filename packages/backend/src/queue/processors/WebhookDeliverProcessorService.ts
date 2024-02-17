@@ -36,26 +36,39 @@ export class WebhookDeliverProcessorService {
 	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
+			const isDiscord = job.data.to.startsWith('https://discordapp.com') || job.data.to.startsWith('https://discord.com')
 
-			const res = await this.httpRequestService.send(job.data.to, {
-				method: 'POST',
-				headers: {
-					'User-Agent': 'Misskey-Hooks',
-					'X-Misskey-Host': this.config.host,
-					'X-Misskey-Hook-Id': job.data.webhookId,
-					'X-Misskey-Hook-Secret': job.data.secret,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					server: this.config.url,
-					hookId: job.data.webhookId,
-					userId: job.data.userId,
-					eventId: job.data.eventId,
-					createdAt: job.data.createdAt,
-					type: job.data.type,
-					body: job.data.content,
-				}),
-			});
+			if (isDiscord && job.data.type !== 'note') throw Error('Not new post')
+
+			const res = (isDiscord)
+				? await this.httpRequestService.send(job.data.to, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						content: `[@${job.data.content.note.user.name}](https://misskey.sweshelo.jp/notes/${job.data.content.note.id})\n> ${job.data.content.note.text}`,
+					})
+				})
+				: await this.httpRequestService.send(job.data.to, {
+					method: 'POST',
+					headers: {
+						'User-Agent': 'Misskey-Hooks',
+						'X-Misskey-Host': this.config.host,
+						'X-Misskey-Hook-Id': job.data.webhookId,
+						'X-Misskey-Hook-Secret': job.data.secret,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						server: this.config.url,
+						hookId: job.data.webhookId,
+						userId: job.data.userId,
+						eventId: job.data.eventId,
+						createdAt: job.data.createdAt,
+						type: job.data.type,
+						body: job.data.content,
+					}),
+				});
 
 			this.webhooksRepository.update({ id: job.data.webhookId }, {
 				latestSentAt: new Date(),
