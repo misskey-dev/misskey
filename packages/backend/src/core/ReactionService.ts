@@ -332,19 +332,12 @@ export class ReactionService {
 			// unchecked indexed access
 			const convertedReaction = legacies[reaction] as string | undefined;
 
-			if (convertedReaction !== undefined) {
-				if (_reactions[convertedReaction]) {
-					_reactions[convertedReaction] += count;
-				} else {
-					_reactions[convertedReaction] = count;
-				}
-			} else {
-				if (_reactions[reaction]) {
-					_reactions[reaction] += count;
-				} else {
-					_reactions[reaction] = count;
-				}
-			}
+			const key = convertedReaction ?? reaction;
+
+			// unchecked indexed access
+			const prevCount = _reactions[key] as number | undefined;
+
+			_reactions[key] = (prevCount ?? 0) + count;
 		}
 
 		const _reactions2: Record<string, number> = {};
