@@ -148,7 +148,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { instance } from '@/instance.js';
 import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store';
 import { signinRequired } from '@/account.js';
-const $i = signinRequired();
+import { $i } from '@/account.js';
 const props = withDefaults(defineProps<{
 	initialTab?: string;
 }>(), {
