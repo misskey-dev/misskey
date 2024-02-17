@@ -111,7 +111,12 @@ export class NotificationService implements OnApplicationShutdown {
 				return null;
 			}
 
-			if (recieveConfig?.type === 'following') {
+			if (recieveConfig?.type === 'localOnly') {
+				const isLocal = await this.usersRepository.findOneByOrFail({ id: notifierId }).then(notifier => notifier.host === null);
+				if (!isLocal) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'following') {
 				const isFollowing = await this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId));
 				if (!isFollowing) {
 					return null;

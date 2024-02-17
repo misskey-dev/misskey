@@ -242,6 +242,8 @@ export class MiUserProfile {
 		[notificationType in typeof notificationTypes[number]]?: {
 			type: 'all';
 		} | {
+			type: 'localOnly';
+		} | {
 			type: 'never';
 		} | {
 			type: 'following';

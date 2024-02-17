@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<MkSelect v-model="type">
 		<option value="all">{{ i18n.ts.all }}</option>
+		<option value="localOnly">{{ i18n.ts.localOnly }}</option>
 		<option value="following">{{ i18n.ts.following }}</option>
 		<option value="follower">{{ i18n.ts.followers }}</option>
 		<option value="mutualFollow">{{ i18n.ts.mutualFollow }}</option>
