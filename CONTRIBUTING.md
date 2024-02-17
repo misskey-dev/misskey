@@ -122,6 +122,19 @@ command.
 If you have not changed it from the default, it will be "http://localhost:3000".
 If "port" in .config/default.yml is set to something other than 3000, you need to change the proxy settings in packages/frontend/vite.config.local-dev.ts.
 
+### `MK_DEV_PREFER=backend pnpm dev`
+pnpm dev has another mode with `MK_DEV_PREFER=backend`.
+
+```
+MK_DEV_PREFER=backend pnpm dev
+```
+
+- This mode is closer to the production environment than the default mode.
+- Vite runs behind the backend (the backend will proxy Vite at /vite).
+- You can see Misskey by accessing `http://localhost:3000` (Replace `3000` with the port configured with `port` in .config/default.yml).
+- To change the port of Vite, specify with `VITE_PORT` environment variable.
+- HMR may not work in some environments such as Windows.
+
 ### Dev Container
 Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
 To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
@@ -286,18 +299,17 @@ export const argTypes = {
 			min: 1,
 			max: 4,
 		},
+	},
 };
 ```
 
 Also, you can use msw to mock API requests in the storybook. Creating a `MyComponent.stories.msw.ts` file to define the mock handlers.
 
 ```ts
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 export const handlers = [
-	rest.post('/api/notes/timeline', (req, res, ctx) => {
-		return res(
-			ctx.json([]),
-		);
+	http.post('/api/notes/timeline', ({ request }) => {
+		return HttpResponse.json([]);
 	}),
 ];
 ```

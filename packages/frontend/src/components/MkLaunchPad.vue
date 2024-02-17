@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -119,6 +119,7 @@ function close() {
 				margin-top: 12px;
 				font-size: 0.8em;
 				line-height: 1.5em;
+				text-align: center;
 			}
 
 			> .indicatorWithValue {

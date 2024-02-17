@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -60,6 +60,8 @@ type Source = {
 		tag: string;
 		append: boolean;
 	};
+
+	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
 	proxy?: string;
 	proxySmtp?: string;
@@ -153,6 +155,7 @@ export type Config = {
 	signToActivityPubGet: boolean | undefined;
 
 	version: string;
+	publishTarballInsteadOfProvideRepositoryUrl: boolean;
 	host: string;
 	hostname: string;
 	scheme: string;
@@ -217,6 +220,7 @@ export function loadConfig(): Config {
 
 	return {
 		version,
+		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,

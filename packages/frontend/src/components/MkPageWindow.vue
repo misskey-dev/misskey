@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,9 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<template v-if="pageMetadata?.value">
-			<i v-if="pageMetadata.value.icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
-			<span>{{ pageMetadata.value.title }}</span>
+		<template v-if="pageMetadata">
+			<i v-if="pageMetadata.icon" :class="pageMetadata.icon" style="margin-right: 0.5em;"></i>
+			<span>{{ pageMetadata.title }}</span>
 		</template>
 	</template>
 
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ComputedRef, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
@@ -37,7 +37,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
@@ -56,7 +56,7 @@ const routerFactory = useRouterFactory();
 const windowRouter = routerFactory(props.initialPath);
 
 const contents = shallowRef<HTMLElement | null>(null);
-const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | PageMetadata>(null);
 const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
 const history = ref<{ path: string; key: any; }[]>([{
 	path: windowRouter.getCurrentPath(),
@@ -101,9 +101,11 @@ windowRouter.addListener('replace', ctx => {
 windowRouter.init();
 
 provide('router', windowRouter);
-provideMetadataReceiver((info) => {
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	pageMetadata.value = info;
 });
+provideReactiveMetadata(pageMetadata);
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 provide('forceSpacerMin', true);
