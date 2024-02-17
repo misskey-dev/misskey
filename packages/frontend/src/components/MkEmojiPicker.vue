@@ -554,7 +554,7 @@ defineExpose({
 						&:disabled {
 							filter: grayscale(1);
 							cursor: not-allowed;
-							background: linear-gradient(45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
+							background: linear-gradient(-45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
 						}
 					}
 				}
@@ -582,7 +582,7 @@ defineExpose({
 						&:disabled {
 							filter: grayscale(1);
 							cursor: not-allowed;
-							background: linear-gradient(45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
+							background: linear-gradient(-45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
 						}
 					}
 				}
@@ -702,7 +702,7 @@ defineExpose({
 					&:disabled {
 						filter: grayscale(1);
 						cursor: not-allowed;
-						background: linear-gradient(45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
+						background: linear-gradient(-45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
 					}
 
 					> .emoji {
