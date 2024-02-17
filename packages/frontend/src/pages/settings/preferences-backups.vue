@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -37,12 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { useStream } from '@/stream.js';
@@ -144,7 +145,7 @@ const connection = $i && useStream().useChannel('main');
 
 const profiles = ref<Record<string, Profile> | null>(null);
 
-os.api('i/registry/get-all', { scope })
+misskeyApi('i/registry/get-all', { scope })
 	.then(res => {
 		profiles.value = res || {};
 	});
@@ -436,10 +437,10 @@ onUnmounted(() => {
 	connection?.off('registryUpdated');
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
-})));
+}));
 </script>
 
 <style lang="scss" module>

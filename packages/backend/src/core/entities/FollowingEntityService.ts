@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -89,10 +89,10 @@ export class FollowingEntityService {
 			followeeId: following.followeeId,
 			followerId: following.followerId,
 			followee: opts.populateFollowee ? this.userEntityService.pack(following.followee ?? following.followeeId, me, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}) : undefined,
 			follower: opts.populateFollower ? this.userEntityService.pack(following.follower ?? following.followerId, me, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}) : undefined,
 		});
 	}

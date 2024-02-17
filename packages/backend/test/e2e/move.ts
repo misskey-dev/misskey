@@ -1,37 +1,37 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { INestApplicationContext } from '@nestjs/common';
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { loadConfig } from '@/config.js';
 import { MiUser, UsersRepository } from '@/models/_.js';
-import { jobQueue } from '@/boot/common.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { uploadFile, signup, startServer, initTestDb, api, sleep, successfulApiCall } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { jobQueue } from '@/boot/common.js';
+import { api, initTestDb, signup, sleep, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Account Move', () => {
-	let app: INestApplicationContext;
 	let jq: INestApplicationContext;
 	let url: URL;
 
 	let root: any;
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
-	let dave: misskey.entities.MeSignup;
-	let eve: misskey.entities.MeSignup;
-	let frank: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
+	let dave: misskey.entities.SignupResponse;
+	let eve: misskey.entities.SignupResponse;
+	let frank: misskey.entities.SignupResponse;
 
 	let Users: UsersRepository;
 
 	beforeAll(async () => {
-		app = await startServer();
 		jq = await jobQueue();
+
 		const config = loadConfig();
 		url = new URL(config.url);
 		const connection = await initTestDb(false);
@@ -46,7 +46,7 @@ describe('Account Move', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await Promise.all([app.close(), jq.close()]);
+		await jq.close();
 	});
 
 	describe('Create Alias', () => {

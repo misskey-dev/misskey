@@ -1,9 +1,9 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { onMounted, onUnmounted } from 'vue';
+import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 
 export function useInterval(fn: () => void, interval: number, options: {
 	immediate: boolean;
@@ -27,6 +27,16 @@ export function useInterval(fn: () => void, interval: number, options: {
 		if (intervalId) window.clearInterval(intervalId);
 		intervalId = null;
 	};
+
+	onActivated(() => {
+		if (intervalId) return;
+		if (options.immediate) fn();
+		intervalId = window.setInterval(fn, interval);
+	});
+
+	onDeactivated(() => {
+		clear();
+	});
 
 	onUnmounted(() => {
 		clear();

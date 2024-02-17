@@ -6,8 +6,12 @@ name: Test (misskey.js)
 on:
   push:
     branches: [ develop ]
+    paths:
+      - packages/misskey-js/**
   pull_request:
     branches: [ develop ]
+    paths:
+      - packages/misskey-js/**
 
 jobs:
   test:
@@ -26,7 +30,7 @@ jobs:
       - run: corepack enable
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.1
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
@@ -46,7 +50,7 @@ jobs:
           CI: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/misskey-js/coverage/coverage-final.json

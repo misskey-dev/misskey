@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,24 +18,12 @@ import { paramDef as UnfavoriteParamDef } from '@/server/api/endpoints/clips/unf
 import { paramDef as AddNoteParamDef } from '@/server/api/endpoints/clips/add-note.js';
 import { paramDef as RemoveNoteParamDef } from '@/server/api/endpoints/clips/remove-note.js';
 import { paramDef as NotesParamDef } from '@/server/api/endpoints/clips/notes.js';
-import {
-	signup,
-	post,
-	startServer,
-	api,
-	successfulApiCall,
-	failedApiCall,
-	ApiRequest,
-	hiddenNote,
-} from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, ApiRequest, failedApiCall, hiddenNote, post, signup, successfulApiCall } from '../utils.js';
 
 describe('クリップ', () => {
 	type User = Packed<'User'>;
 	type Note = Packed<'Note'>;
 	type Clip = Packed<'Clip'>;
-
-	let app: INestApplicationContext;
 
 	let alice: User;
 	let bob: User;
@@ -145,7 +133,6 @@ describe('クリップ', () => {
 	};
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 
@@ -159,10 +146,6 @@ describe('クリップ', () => {
 		bobFollowersNote = await post(bob, { text: 'followers only', visibility: 'followers' }) as any;
 		bobSpecifiedNote = await post(bob, { text: 'specified only', visibility: 'specified' }) as any;
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	afterEach(async () => {
 		// テスト間で影響し合わないように毎回全部消す。

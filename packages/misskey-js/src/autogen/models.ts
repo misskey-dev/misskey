@@ -1,8 +1,3 @@
-/*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.485Z
- */
-
 import { components } from './types.js';
 export type Error = components['schemas']['Error'];
 export type UserLite = components['schemas']['UserLite'];
@@ -29,6 +24,7 @@ export type Blocking = components['schemas']['Blocking'];
 export type Hashtag = components['schemas']['Hashtag'];
 export type InviteCode = components['schemas']['InviteCode'];
 export type Page = components['schemas']['Page'];
+export type PageBlock = components['schemas']['PageBlock'];
 export type Channel = components['schemas']['Channel'];
 export type QueueCount = components['schemas']['QueueCount'];
 export type Antenna = components['schemas']['Antenna'];
@@ -39,5 +35,14 @@ export type EmojiSimple = components['schemas']['EmojiSimple'];
 export type EmojiDetailed = components['schemas']['EmojiDetailed'];
 export type Flash = components['schemas']['Flash'];
 export type Signin = components['schemas']['Signin'];
+export type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
+export type RoleCondFormulaValueNot = components['schemas']['RoleCondFormulaValueNot'];
+export type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCondFormulaValueIsLocalOrRemote'];
+export type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
+export type RoleCondFormulaFollowersOrFollowingOrNotes = components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
+export type RoleCondFormulaValue = components['schemas']['RoleCondFormulaValue'];
 export type RoleLite = components['schemas']['RoleLite'];
 export type Role = components['schemas']['Role'];
+export type RolePolicies = components['schemas']['RolePolicies'];
+export type ReversiGameLite = components['schemas']['ReversiGameLite'];
+export type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];

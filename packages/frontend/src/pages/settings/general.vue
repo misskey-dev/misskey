@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,6 +16,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</I18n>
 		</template>
 	</MkSelect>
+
+	<MkRadios v-model="hemisphere">
+		<template #label>{{ i18n.ts.hemisphere }}</template>
+		<option value="N">{{ i18n.ts._hemisphere.N }}</option>
+		<option value="S">{{ i18n.ts._hemisphere.S }}</option>
+		<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
+	</MkRadios>
 
 	<MkRadios v-model="overridedDeviceKind">
 		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
@@ -77,9 +84,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkRadios v-model="mediaListWithOneImageAppearance">
 				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
 				<option value="expand">{{ i18n.ts.default }}</option>
-				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
-				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
-				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
+				<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
+				<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
+				<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
@@ -155,6 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
 				<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
+				<MkSwitch v-model="enableHorizontalSwipe">{{ i18n.ts.enableHorizontalSwipe }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -206,9 +214,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.additionalEmojiDictionary }}</template>
-				<div v-for="lang in emojiIndexLangs" class="_buttons">
-					<MkButton @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ lang }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
-					<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				<div class="_buttons">
+					<template v-for="lang in emojiIndexLangs" :key="lang">
+						<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
+						<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+					</template>
 				</div>
 			</MkFolder>
 			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
@@ -234,6 +244,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -256,6 +267,7 @@ async function reloadAsk() {
 	unisonReload();
 }
 
+const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
 const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
 const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
@@ -293,6 +305,7 @@ const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
+const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -317,6 +330,7 @@ watch(useSystemFont, () => {
 });
 
 watch([
+	hemisphere,
 	lang,
 	fontSize,
 	useSystemFont,
@@ -337,15 +351,29 @@ watch([
 	await reloadAsk();
 });
 
-const emojiIndexLangs = ['en-US'];
+const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 
-function downloadEmojiIndex(lang: string) {
+function getEmojiIndexLangName(targetLang: typeof emojiIndexLangs[number]) {
+	if (langs.find(x => x[0] === targetLang)) {
+		return langs.find(x => x[0] === targetLang)![1];
+	} else {
+		// 絵文字辞書限定の言語定義
+		switch (targetLang) {
+			case 'ja-JP_hira': return 'ひらがな';
+			default: return targetLang;
+		}
+	}
+}
+
+function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 	async function main() {
 		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
 
 		function download() {
 			switch (lang) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
+				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JP.json').then(x => x.default);
+				case 'ja-JP_hira': return import('../../unicode-emoji-indexes/ja-JP_hira.json').then(x => x.default);
 				default: throw new Error('unrecognized lang: ' + lang);
 			}
 		}
@@ -368,7 +396,7 @@ function removeEmojiIndex(lang: string) {
 }
 
 async function setPinnedList() {
-	const lists = await os.api('users/lists/list');
+	const lists = await misskeyApi('users/lists/list');
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
@@ -437,8 +465,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.general,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>

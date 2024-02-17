@@ -1,16 +1,24 @@
-import { Endpoints as Gen } from './autogen/endpoint';
-import { UserDetailed } from './autogen/models';
-import { UsersShowRequest } from './autogen/entities';
+import { Endpoints as Gen } from './autogen/endpoint.js';
+import { UserDetailed } from './autogen/models.js';
+import { UsersShowRequest } from './autogen/entities.js';
+import {
+	SigninRequest,
+	SigninResponse,
+	SignupPendingRequest,
+	SignupPendingResponse,
+	SignupRequest,
+	SignupResponse,
+} from './entities.js';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
 	T,
 	keyof U
 > & U;
 
-type SwitchCase = {
+type SwitchCase<Condition = unknown, Result = unknown> = {
 	$switch: {
-		$cases: [any, any][],
-		$default: any;
+		$cases: [Condition, Result][],
+		$default: Result;
 	};
 };
 
@@ -55,6 +63,21 @@ export type Endpoints = Overwrite<
 					$default: UserDetailed;
 				};
 			};
-		}
+		},
+		// api.jsonには載せないものなのでここで定義
+		'signup': {
+			req: SignupRequest;
+			res: SignupResponse;
+		},
+		// api.jsonには載せないものなのでここで定義
+		'signup-pending': {
+			req: SignupPendingRequest;
+			res: SignupPendingResponse;
+		},
+		// api.jsonには載せないものなのでここで定義
+		'signin': {
+			req: SigninRequest;
+			res: SigninResponse;
+		},
 	}
 >

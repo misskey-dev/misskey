@@ -1,11 +1,11 @@
-import './autogen/apiClientJSDoc';
+import './autogen/apiClientJSDoc.js';
 
-import { SwitchCaseResponseType } from './api.types';
-import type { Endpoints } from './api.types';
+import { SwitchCaseResponseType } from './api.types.js';
+import type { Endpoints } from './api.types.js';
 
 export {
 	SwitchCaseResponseType,
-} from './api.types';
+} from './api.types.js';
 
 const MK_API_ERROR = Symbol();
 
@@ -17,7 +17,7 @@ export type APIError = {
 	info: Record<string, any>;
 };
 
-export function isAPIError(reason: any): reason is APIError {
+export function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError {
 	return reason[MK_API_ERROR] === true;
 }
 

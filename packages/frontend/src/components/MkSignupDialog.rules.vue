@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,8 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ tosPrivacyPolicyLabel }}</template>
 				<template #suffix><i v-if="agreeTosAndPrivacyPolicy" class="ti ti-check" style="color: var(--success)"></i></template>
 				<div class="_gaps_s">
-					<div v-if="availableTos"><a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a></div>
-					<div v-if="availablePrivacyPolicy"><a :href="instance.privacyPolicyUrl" class="_link" target="_blank">{{ i18n.ts.privacyPolicy }} <i class="ti ti-external-link"></i></a></div>
+					<div v-if="availableTos"><a :href="instance.tosUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a></div>
+					<div v-if="availablePrivacyPolicy"><a :href="instance.privacyPolicyUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.privacyPolicy }} <i class="ti ti-external-link"></i></a></div>
 				</div>
 
 				<MkSwitch :modelValue="agreeTosAndPrivacyPolicy" style="margin-top: 16px;" @update:modelValue="updateAgreeTosAndPrivacyPolicy">{{ i18n.ts.agree }}</MkSwitch>
@@ -96,7 +96,7 @@ const tosPrivacyPolicyLabel = computed(() => {
 	} else if (availablePrivacyPolicy) {
 		return i18n.ts.privacyPolicy;
 	} else {
-		return "";
+		return '';
 	}
 });
 
@@ -105,7 +105,7 @@ async function updateAgreeServerRules(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.serverRules }),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.serverRules }),
 		});
 		if (confirm.canceled) return;
 		agreeServerRules.value = true;
@@ -119,7 +119,7 @@ async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', {
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({
 				x: tosPrivacyPolicyLabel.value,
 			}),
 		});
@@ -135,7 +135,7 @@ async function updateAgreeNote(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.basicNotesBeforeCreateAccount }),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.basicNotesBeforeCreateAccount }),
 		});
 		if (confirm.canceled) return;
 		agreeNote.value = true;
