@@ -1166,6 +1166,7 @@ hideRepliesToOthersInTimelineAll: "Sembuyikan balasan ke lainnya dari semua oran
 confirmShowRepliesAll: "Operasi ini tidak dapat diubah. Apakah kamu yakin untuk menampilkan balasan ke lainnya dari semua orang yang kamu ikuti di lini masa?"
 confirmHideRepliesAll: "Operasi ini tidak dapat diubah. Apakah kamu yakin untuk menyembunyikan balasan ke lainnya dari semua orang yang kamu ikuti di lini masa?"
 externalServices: "Layanan eksternal"
+sourceCode: "Sumber kode"
 impressum: "Impressum"
 impressumUrl: "Tautan Impressum"
 impressumDescription: "Pada beberapa negara seperti Jerman, inklusi dari informasi kontak operator (sebuah Impressum) diperlukan secara legal untuk situs web komersil."
