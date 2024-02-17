@@ -12,6 +12,17 @@
 
 -->
 
+## 202x.x.x (unreleased)
+
+### General
+-
+
+### Client
+- Fix: 最優先されるフォントをSegoe UIとHelveticaNeueに変更
+
+### Server
+-
+
 ## 2024.2.0
 
 ### Note
