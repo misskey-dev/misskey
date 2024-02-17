@@ -1,29 +1,25 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { inspect } from 'node:util';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import {
-	signup,
-	post,
-	userList,
-	page,
-	role,
-	startServer,
 	api,
-	successfulApiCall,
 	failedApiCall,
-	uploadFile,
+	post,
+	role,
+	signup,
+	successfulApiCall,
 	testPaginationConsistency,
+	uploadFile,
+	userList,
 } from '../utils.js';
 import type * as misskey from 'misskey-js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
@@ -37,7 +33,7 @@ describe('アンテナ', () => {
 	// - srcのenumにgroupが残っている
 	// - userGroupIdが残っている, isActiveがない
 	type Antenna = misskey.entities.Antenna | Packed<'Antenna'>;
-	type User = misskey.entities.MeSignup;
+	type User = misskey.entities.SignupResponse;
 	type Note = misskey.entities.Note;
 
 	// アンテナを作成できる最小のパラメタ
@@ -53,8 +49,6 @@ describe('アンテナ', () => {
 		withFile: false,
 		withReplies: false,
 	};
-
-	let app: INestApplicationContext;
 
 	let root: User;
 	let alice: User;
@@ -78,10 +72,6 @@ describe('アンテナ', () => {
 	let userBlockedByAlice: User;
 	let userMutingAlice: User;
 	let userMutedByAlice: User;
-
-	beforeAll(async () => {
-		app = await startServer();
-	}, 1000 * 60 * 2);
 
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
@@ -135,10 +125,6 @@ describe('アンテナ', () => {
 		await post(userMutedByAlice, { text: 'test' });
 		await api('mute/create', { userId: userMutedByAlice.id }, alice);
 	}, 1000 * 60 * 10);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	beforeEach(async () => {
 		// テスト間で影響し合わないように毎回全部消す。

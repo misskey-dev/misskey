@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -277,7 +277,11 @@ export type Serialized<T> = {
 				? (string | null)
 				: T[K] extends Record<string, any>
 					? Serialized<T[K]>
-					: T[K];
+					: T[K] extends (Record<string, any> | null)
+					? (Serialized<T[K]> | null)
+						: T[K] extends (Record<string, any> | undefined)
+						? (Serialized<T[K]> | undefined)
+							: T[K];
 };
 
 export type FilterUnionByProperty<

@@ -1,0 +1,134 @@
+name: Check Misskey JS autogen
+
+on:
+  pull_request_target:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+
+jobs:
+  check-misskey-js-autogen:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    env:
+      api_json_name: "api-head.json"
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: setup node
+        id: setup-node
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version-file: '.node-version'
+          cache: pnpm
+
+      - name: install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: wait get-api-diff
+        uses: lewagon/wait-on-check-action@v1.3.3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-regexp: get-from-misskey .+
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 30
+
+      - name: Download artifact
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+
+            const workflows = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head_sha: `${{ github.event.pull_request.head.sha }}`
+            }).then(x => x.data.workflow_runs);
+
+            console.log(workflows.map(x => ({name: x.name, title: x.display_title})));
+
+            const run_id = workflows.find(x => x.name.includes("Get api.json from Misskey")).id;
+
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: run_id,
+            });
+
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("api-artifact-") || artifact.name == "api-artifact"
+            });
+
+            await Promise.all(matchArtifacts.map(async (artifact) => {
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+            }));
+
+      - name: unzip artifacts
+        run: |-
+          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d . ';'
+          ls -la
+
+      - name: get head checksum
+        run: |-
+          checksum=$(realpath head_checksum)
+
+          cd packages/misskey-js/src
+          find autogen -type f -exec sh -c 'echo $(sed -E "s/^\s+\*\s+generatedAt:.+$//" {} | sha256sum | cut -d" " -f 1) {}' \; > $checksum
+          cd ../../..
+
+      - name: build autogen
+        run: |-
+            checksum=$(realpath ${api_json_name}_checksum)
+            mv $api_json_name packages/misskey-js/generator/api.json
+
+            cd packages/misskey-js/generator
+            pnpm run generate
+            cd built
+            find autogen -type f -exec sh -c 'echo $(sed -E "s/^\s+\*\s+generatedAt:.+$//" {} | sha256sum | cut -d" " -f 1) {}' \; > $checksum
+            cd ../../../..
+
+      - name: check update for type definitions
+        run: diff head_checksum ${api_json_name}_checksum
+
+      - name: send message
+        if: failure()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          comment_tag: check-misskey-js-autogen
+          message: |-
+            Thank you for sending us a great Pull Request! 👍
+            Please regenerate misskey-js type definitions! 🙏
+
+            example:
+            ```sh
+            pnpm run build-misskey-js-with-types
+            ```
+
+      - name: send message
+        if: success()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          comment_tag: check-misskey-js-autogen
+          mode: delete
+          message: "Thank you!"
+          create_if_not_exists: false

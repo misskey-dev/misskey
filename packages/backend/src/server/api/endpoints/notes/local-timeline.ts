@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,6 +18,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ApiError } from '../../error.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { loadConfig } from '@/config.js';
 
 export const meta = {
@@ -151,9 +152,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withReplies: boolean,
 	}, me: MiLocalUser | null) {
 		const config = loadConfig();
+		const defaultTag: string | null = config.defaultTag?.tag;
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
-			.andWhere(`(note.visibility = 'public') AND ('${String(config.mulukhiya.defaultTag)}' = any(note.tags)) AND (note.channelId IS NULL)`)
+			.andWhere(new Brackets(qb => {
+				qb.andWhere('note.visibility = \'public\'');
+				qb.andWhere('note.channelId IS NULL');
+				if (defaultTag == null) {
+					qb.andWhere('note.userHost IS NULL');
+				} else {
+					qb.andWhere(`':t' = any(note.tags)`, { t: normalizeForSearch(defaultTag) });
+				}
+			}))
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')

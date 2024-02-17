@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,7 +18,7 @@ export async function genSearchQuery(v: any, q: string) {
 					host = at;
 				}
 			} else {
-				const user = await v.os.api('users/show', Misskey.acct.parse(at)).catch(x => null);
+				const user = await v.api('users/show', Misskey.acct.parse(at)).catch(x => null);
 				if (user) {
 					userId = user.id;
 				} else {

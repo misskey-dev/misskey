@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -218,7 +218,7 @@ function getTextOptions(def: values.Value | undefined): Omit<AsUiText, 'id' | 't
 	};
 }
 
-function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'type'> {
+function getMfmOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiMfm, 'id' | 'type'> {
 	utils.assertObject(def);
 
 	const text = def.value.get('text');
@@ -241,7 +241,7 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 		color: color?.value,
 		font: font?.value,
 		onClickEv: (evId: string) => {
-			if (onClickEv) call(onClickEv, values.STR(evId));
+			if (onClickEv) call(onClickEv, [values.STR(evId)]);
 		},
 	};
 }

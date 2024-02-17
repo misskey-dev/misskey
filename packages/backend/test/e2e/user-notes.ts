@@ -1,25 +1,21 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, post, uploadUrl, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, post, signup, uploadUrl } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('users/notes', () => {
-	let app: INestApplicationContext;
-
-	let alice: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
 	let jpgNote: any;
 	let pngNote: any;
 	let jpgPngNote: any;
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.png');
@@ -33,10 +29,6 @@ describe('users/notes', () => {
 			fileIds: [jpg.id, png.id],
 		});
 	}, 1000 * 60 * 2);
-
-	afterAll(async() => {
-		await app.close();
-	});
 
 	test('withFiles', async () => {
 		const res = await api('/users/notes', {

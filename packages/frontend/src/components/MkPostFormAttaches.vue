@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,6 +24,7 @@ import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
@@ -55,13 +56,30 @@ function detachMedia(id: string) {
 	}
 }
 
+async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
+	if (mock) return;
+
+	detachMedia(file.id);
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
+	});
+
+	if (canceled) return;
+
+	os.apiWithDialog('drive/files/delete', {
+		fileId: file.id,
+	});
+}
+
 function toggleSensitive(file) {
 	if (mock) {
 		emit('changeSensitive', file, !file.isSensitive);
 		return;
 	}
 
-	os.api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).then(() => {
@@ -75,10 +93,10 @@ async function rename(file) {
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
 		default: file.name,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
-	os.api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		name: result,
 	}).then(() => {
@@ -96,7 +114,7 @@ async function describe(file) {
 	}, {
 		done: caption => {
 			let comment = caption.length === 0 ? null : caption;
-			os.api('drive/files/update', {
+			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				comment: comment,
 			}).then(() => {
@@ -137,6 +155,13 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		text: i18n.ts.attachCancel,
 		icon: 'ti ti-circle-x',
 		action: () => { detachMedia(file.id); },
+	}, {
+		type: 'divider',
+	}, {
+		text: i18n.ts.deleteFile,
+		icon: 'ti ti-trash',
+		danger: true,
+		action: () => { detachAndDeleteMedia(file); },
 	}], ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
 }

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -7,15 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<div v-if="tab === 'all'">
-			<XNotifications class="notifications" :excludeTypes="excludeTypes"/>
-		</div>
-		<div v-else-if="tab === 'mentions'">
-			<MkNotes :pagination="mentionsPagination"/>
-		</div>
-		<div v-else-if="tab === 'directNotes'">
-			<MkNotes :pagination="directNotesPagination"/>
-		</div>
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+			<div v-if="tab === 'all'" key="all">
+				<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
+			</div>
+			<div v-else-if="tab === 'mentions'" key="mention">
+				<MkNotes :pagination="mentionsPagination"/>
+			</div>
+			<div v-else-if="tab === 'directNotes'" key="directNotes">
+				<MkNotes :pagination="directNotesPagination"/>
+			</div>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -24,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -48,7 +51,7 @@ const directNotesPagination = {
 
 function setFilter(ev) {
 	const typeItems = notificationTypes.map(t => ({
-		text: i18n.t(`_notification._types.${t}`),
+		text: i18n.ts._notification._types[t],
 		active: includeTypes.value && includeTypes.value.includes(t),
 		action: () => {
 			includeTypes.value = [t];
@@ -91,8 +94,15 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-mail',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
-})));
+}));
 </script>
+
+<style module lang="scss">
+.notifications {
+	border-radius: var(--radius);
+	overflow: clip;
+}
+</style>

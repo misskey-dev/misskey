@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 @Injectable()
 export class NoteReadService implements OnApplicationShutdown {
@@ -48,7 +49,7 @@ export class NoteReadService implements OnApplicationShutdown {
 		//#endregion
 
 		// スレッドミュート
-		const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+		const isThreadMuted = await this.noteThreadMutingsRepository.exists({
 			where: {
 				userId: userId,
 				threadId: note.threadId ?? note.id,
@@ -69,7 +70,7 @@ export class NoteReadService implements OnApplicationShutdown {
 
 		// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 		setTimeout(2000, 'unread note', { signal: this.#shutdownController.signal }).then(async () => {
-			const exist = await this.noteUnreadsRepository.exist({ where: { id: unread.id } });
+			const exist = await this.noteUnreadsRepository.exists({ where: { id: unread.id } });
 
 			if (!exist) return;
 
@@ -107,7 +108,7 @@ export class NoteReadService implements OnApplicationShutdown {
 
 			// TODO: ↓まとめてクエリしたい
 
-			this.noteUnreadsRepository.countBy({
+			trackPromise(this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isMentioned: true,
 			}).then(mentionsCount => {
@@ -115,9 +116,9 @@ export class NoteReadService implements OnApplicationShutdown {
 					// 全て既読になったイベントを発行
 					this.globalEventService.publishMainStream(userId, 'readAllUnreadMentions');
 				}
-			});
+			}));
 
-			this.noteUnreadsRepository.countBy({
+			trackPromise(this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isSpecified: true,
 			}).then(specifiedCount => {
@@ -125,7 +126,7 @@ export class NoteReadService implements OnApplicationShutdown {
 					// 全て既読になったイベントを発行
 					this.globalEventService.publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
 				}
-			});
+			}));
 		}
 	}
 

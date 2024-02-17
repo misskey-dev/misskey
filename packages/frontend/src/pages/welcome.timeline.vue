@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkMediaList :mediaList="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<MkPoll :note="note" :readOnly="true"/>
+					<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="true"/>
 				</div>
 			</div>
 			<MkReactionsViewer ref="reactionsViewer" :note="note"/>
@@ -32,14 +32,14 @@ import { onUpdated, ref, shallowRef } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
 const notes = ref<Misskey.entities.Note[]>([]);
 const isScrolling = ref(false);
 const scrollEl = shallowRef<HTMLElement>();
 
-os.apiGet('notes/featured').then(_notes => {
+misskeyApiGet('notes/featured').then(_notes => {
 	notes.value = _notes;
 });
 

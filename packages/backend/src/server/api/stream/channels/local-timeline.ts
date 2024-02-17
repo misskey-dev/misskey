@@ -1,17 +1,19 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Injectable } from '@nestjs/common';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import Channel, { type MiChannelService } from '../channel.js';
-import { loadConfig } from '@/config.js';
 import { RoleService } from '@/core/RoleService.js';
+import Channel, { type MiChannelService } from '../channel.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { loadConfig } from '@/config.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
@@ -20,9 +22,11 @@ class LocalTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
-	private q: string[][];
+	private defaultTag: string | null;
 
 	constructor(
+		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -34,21 +38,29 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		const config = loadConfig();
-		this.q = [[String(config.mulukhiya.defaultTag)]];
+		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
+		if (!policies.ltlAvailable) return;
 
-		// Subscribe stream
+		this.withRenotes = params.withRenotes ?? true;
+		this.withReplies = params.withReplies ?? false;
+		this.withFiles = params.withFiles ?? false;
+		const config = loadConfig();
+		this.defaultTag = config.defaultTag?.tag;
+
+		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
-		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
-		if (!matched) return;
-
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
+		if (this.defaultTag == null) {
+			if (note.user.host !== null) return;
+		} else {
+			const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
+			if (!noteTags.includes(normalizeForSearch(this.defaultTag))) return;
+		}
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 
@@ -94,6 +106,8 @@ export class LocalTimelineChannelService implements MiChannelService<false> {
 	public readonly kind = LocalTimelineChannel.kind;
 
 	constructor(
+		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -101,6 +115,8 @@ export class LocalTimelineChannelService implements MiChannelService<false> {
 	@bindThis
 	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
 		return new LocalTimelineChannel(
+			this.metaService,
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

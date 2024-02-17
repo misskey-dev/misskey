@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -28,15 +28,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, Ref, onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
+import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
-import { useRouter } from '@/router.js';
-import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router/supplier.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -51,7 +52,7 @@ const indexInfo = {
 provide('shouldOmitHeaderTitle', false);
 
 const INFO = ref(indexInfo);
-const childInfo: Ref<ComputedRef<PageMetadata> | null> = ref(null);
+const childInfo = ref<null | PageMetadata>(null);
 const narrow = ref(false);
 const view = ref(null);
 const el = ref<HTMLDivElement | null>(null);
@@ -62,7 +63,7 @@ let noEmailServer = !instance.enableEmail;
 const thereIsUnresolvedAbuseReport = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
 
-os.api('admin/abuse-user-reports', {
+misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,
 }).then(reports => {
@@ -256,17 +257,19 @@ watch(router.currentRef, (to) => {
 	}
 });
 
-provideMetadataReceiver((info) => {
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	if (info == null) {
 		childInfo.value = null;
 	} else {
 		childInfo.value = info;
-		INFO.value.needWideArea = info.value.needWideArea ?? undefined;
+		INFO.value.needWideArea = info.needWideArea ?? undefined;
 	}
 });
+provideReactiveMetadata(INFO);
 
 function invite() {
-	os.api('admin/invite/create').then(x => {
+	misskeyApi('admin/invite/create').then(x => {
 		os.alert({
 			type: 'info',
 			text: x[0].code,
@@ -317,7 +320,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(INFO.value);
+definePageMetadata(() => INFO.value);
 
 defineExpose({
 	header: {

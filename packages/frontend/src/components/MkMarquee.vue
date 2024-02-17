@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -30,6 +30,7 @@ export default {
 		const contentEl = ref<HTMLElement>();
 
 		function calc() {
+			if (contentEl.value == null) return;
 			const eachLength = contentEl.value.offsetWidth / props.repeat;
 			const factor = 3000;
 			const duration = props.duration / ((1 / eachLength) * factor);
