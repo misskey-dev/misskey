@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -114,6 +114,34 @@ describe('MkUrlPreview', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.allow, 'fullscreen;web-share');
+	});
+
+	test('A Summaly proxy response without allow falls back to the default', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://example.local',
+			player: {
+				url: 'https://example.local/player',
+				width: null,
+				height: null,
+				allow: undefined as any,
+			},
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.allow, 'autoplay;encrypted-media;fullscreen');
+	});
+
+	test('Filtering the allow list from the Summaly proxy', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://example.local',
+			player: {
+				url: 'https://example.local/player',
+				width: null,
+				height: null,
+				allow: ['autoplay', 'camera', 'fullscreen'],
+			},
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.allow, 'autoplay;fullscreen');
 	});
 
 	test('Having a player width should keep the fixed aspect ratio', async () => {

@@ -1,13 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as Misskey from 'misskey-js';
-import { ComputedRef, inject, isRef, onActivated, onMounted, provide, ref, Ref } from 'vue';
-
-export const setPageMetadata = Symbol('setPageMetadata');
-export const pageMetadataProvider = Symbol('pageMetadataProvider');
+import { MaybeRefOrGetter, Ref, inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
 
 export type PageMetadata = {
 	title: string;
@@ -18,29 +15,56 @@ export type PageMetadata = {
 	needWideArea?: boolean;
 };
 
-export function definePageMetadata(metadata: PageMetadata | null | Ref<PageMetadata | null> | ComputedRef<PageMetadata | null>): void {
-	const _metadata = isRef(metadata) ? metadata : ref(metadata);
+type PageMetadataGetter = () => PageMetadata;
+type PageMetadataReceiver = (getter: PageMetadataGetter) => void;
 
-	provide(pageMetadataProvider, _metadata);
+const RECEIVER_KEY = Symbol('ReceiverKey');
+const setReceiver = (v: PageMetadataReceiver): void => {
+	provide<PageMetadataReceiver>(RECEIVER_KEY, v);
+};
+const getReceiver = (): PageMetadataReceiver | undefined => {
+	return inject<PageMetadataReceiver>(RECEIVER_KEY);
+};
 
-	const set = inject(setPageMetadata) as any;
-	if (set) {
-		set(_metadata);
+const METADATA_KEY = Symbol('MetadataKey');
+const setMetadata = (v: Ref<PageMetadata | null>): void => {
+	provide<Ref<PageMetadata | null>>(METADATA_KEY, v);
+};
+const getMetadata = (): Ref<PageMetadata | null> | undefined => {
+	return inject<Ref<PageMetadata | null>>(METADATA_KEY);
+};
 
-		onMounted(() => {
-			set(_metadata);
-		});
+export const definePageMetadata = (maybeRefOrGetterMetadata: MaybeRefOrGetter<PageMetadata>): void => {
+	const metadataRef = ref(toValue(maybeRefOrGetterMetadata));
+	const metadataGetter = () => metadataRef.value;
+	const receiver = getReceiver();
 
-		onActivated(() => {
-			set(_metadata);
-		});
-	}
-}
+	// setup handler
+	receiver?.(metadataGetter);
 
-export function provideMetadataReceiver(callback: (info: ComputedRef<PageMetadata>) => void): void {
-	provide(setPageMetadata, callback);
-}
+	// update handler
+	onBeforeUnmount(watch(
+		() => toValue(maybeRefOrGetterMetadata),
+		(metadata) => {
+			metadataRef.value = metadata;
+			receiver?.(metadataGetter);
+		},
+		{ deep: true },
+	));
+	onActivated(() => {
+		receiver?.(metadataGetter);
+	});
+};
 
-export function injectPageMetadata(): PageMetadata | undefined {
-	return inject(pageMetadataProvider);
-}
+export const provideMetadataReceiver = (receiver: PageMetadataReceiver): void => {
+	setReceiver(receiver);
+};
+
+export const provideReactiveMetadata = (metadataRef: Ref<PageMetadata | null>): void => {
+	setMetadata(metadataRef);
+};
+
+export const injectReactiveMetadata = (): Ref<PageMetadata | null> => {
+	const metadataRef = getMetadata();
+	return isRef(metadataRef) ? metadataRef : ref(null);
+};

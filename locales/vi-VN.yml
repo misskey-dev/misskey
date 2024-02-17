@@ -1045,6 +1045,7 @@ loadReplies: "Hiển thị các trả lời"
 pinnedList: "Các mục đã được ghim"
 keepScreenOn: "Giữ màn hình luôn bật"
 verifiedLink: "Chúng tôi đã xác nhận bạn là chủ sở hữu của đường dẫn này"
+sourceCode: "Mã nguồn"
 flip: "Lật"
 lastNDays: "{n} ngày trước"
 _announcement:

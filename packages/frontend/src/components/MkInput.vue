@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -88,17 +88,18 @@ const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = shallowRef<HTMLElement>();
+const inputEl = shallowRef<HTMLInputElement>();
 const prefixEl = shallowRef<HTMLElement>();
 const suffixEl = shallowRef<HTMLElement>();
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
 	36;
-let autocomplete: Autocomplete;
+let autocompleteWorker: Autocomplete | null = null;
 
-const focus = () => inputEl.value.focus();
-const onInput = (ev: KeyboardEvent) => {
+const focus = () => inputEl.value?.focus();
+const onInput = (event: Event) => {
+	const ev = event as KeyboardEvent;
 	changed.value = true;
 	emit('change', ev);
 };
@@ -115,9 +116,9 @@ const onKeydown = (ev: KeyboardEvent) => {
 const updated = () => {
 	changed.value = false;
 	if (type.value === 'number') {
-		emit('update:modelValue', parseFloat(v.value));
+		emit('update:modelValue', typeof v.value === 'number' ? v.value : parseFloat(v.value ?? '0'));
 	} else {
-		emit('update:modelValue', v.value);
+		emit('update:modelValue', v.value ?? '');
 	}
 };
 
@@ -127,7 +128,7 @@ watch(modelValue, newValue => {
 	v.value = newValue;
 });
 
-watch(v, newValue => {
+watch(v, () => {
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -136,12 +137,14 @@ watch(v, newValue => {
 		}
 	}
 
-	invalid.value = inputEl.value.validity.badInput;
+	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 useInterval(() => {
+	if (inputEl.value == null) return;
+
 	if (prefixEl.value) {
 		if (prefixEl.value.offsetWidth) {
 			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
@@ -163,15 +166,15 @@ onMounted(() => {
 			focus();
 		}
 	});
-	
-	if (props.mfmAutocomplete) {
-		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
+
+	if (props.mfmAutocomplete && inputEl.value) {
+		autocompleteWorker = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? undefined : props.mfmAutocomplete);
 	}
 });
 
 onUnmounted(() => {
-	if (autocomplete) {
-		autocomplete.detach();
+	if (autocompleteWorker) {
+		autocompleteWorker.detach();
 	}
 });
 

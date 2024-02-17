@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -205,7 +205,7 @@ function onDragend() {
 }
 
 function go() {
-	emit('move', props.folder.id);
+	emit('move', props.folder);
 }
 
 function rename() {

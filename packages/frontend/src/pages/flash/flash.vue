@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -205,15 +205,17 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash.value ? {
-	title: flash.value.title,
-	avatar: flash.value.user,
-	path: `/play/${flash.value.id}`,
-	share: {
-		title: flash.value.title,
-		text: flash.value.summary,
-	},
-} : null));
+definePageMetadata(() => ({
+	title: flash.value ? flash.value.title : 'Play',
+	...flash.value ? {
+		avatar: flash.value.user,
+		path: `/play/${flash.value.id}`,
+		share: {
+			title: flash.value.title,
+			text: flash.value.summary,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" module>

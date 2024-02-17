@@ -21,11 +21,11 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v3
       with:
         version: 8
         run_install: false
-    - uses: actions/setup-node@v4.0.1
+    - uses: actions/setup-node@v4.0.2
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -48,11 +48,11 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v3
       with:
         version: 7
         run_install: false
-    - uses: actions/setup-node@v4.0.1
+    - uses: actions/setup-node@v4.0.2
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -74,11 +74,11 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v3
       with:
         version: 7
         run_install: false
-    - uses: actions/setup-node@v4.0.1
+    - uses: actions/setup-node@v4.0.2
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

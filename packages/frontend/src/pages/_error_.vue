@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ i18n.ts.youShouldUpgradeClient }}</div>
 				<MkButton style="margin: 8px auto;" @click="reload">{{ i18n.ts.reload }}</MkButton>
 			</template>
-			<div><MkA to="/docs/general/troubleshooting" class="_link">{{ i18n.ts.troubleshooting }}</MkA></div>
+			<div><MkLink url="https://misskey-hub.net/docs/for-users/resources/troubleshooting/" target="_blank">{{ i18n.ts.troubleshooting }}</MkLink></div>
 			<div v-if="error" style="opacity: 0.7;">ERROR: {{ error }}</div>
 		</div>
 	</div>
@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
+import MkLink from '@/components/MkLink.vue';
 import { version } from '@/config.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
@@ -66,10 +67,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.error,
 	icon: 'ti ti-alert-triangle',
-});
+}));
 </script>
 
 <style lang="scss" module>

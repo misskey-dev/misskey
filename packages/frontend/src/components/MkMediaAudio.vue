@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -273,7 +273,7 @@ onDeactivated(() => {
 
 .hidden {
 	width: 100%;
-	background: none;
+	background: #000;
 	border: none;
 	outline: none;
 	font: inherit;
@@ -283,7 +283,6 @@ onDeactivated(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #000;
 }
 
 .hiddenTextWrapper {
