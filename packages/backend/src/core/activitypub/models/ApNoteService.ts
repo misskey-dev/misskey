@@ -171,6 +171,22 @@ export class ApNoteService {
 		}
 
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
+		if (apMentions.length >= 5){
+			throw new Error('too many mensions included.');
+			this.logger.error('Too many mensions included', {
+				value,
+				object,
+			});
+		}
+		if (apMentions.includes((user) => user.isSuspended)) {
+			throw new Error('includes suspended user.')
+			this.logger.error('Suspended user mention included', {
+				value,
+				object,
+			});
+
+		}
+
 		const apHashtags = extractApHashtags(note.tag);
 
 		// 添付ファイル
