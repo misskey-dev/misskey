@@ -1494,6 +1494,10 @@ declare namespace entities {
         RenoteMuteDeleteRequest,
         RenoteMuteListRequest,
         RenoteMuteListResponse,
+        NoteNotificationCreateRequest,
+        NoteNotificationDeleteRequest,
+        NoteNotificationListRequest,
+        NoteNotificationListResponse,
         MyAppsRequest,
         MyAppsResponse,
         NotesRequest,
@@ -1684,6 +1688,7 @@ declare namespace entities {
         Note,
         NoteReaction,
         NoteFavorite,
+        NoteNotification,
         Notification_2 as Notification,
         DriveFile,
         DriveFolder,
@@ -2386,6 +2391,21 @@ type Note = components['schemas']['Note'];
 
 // @public (undocumented)
 type NoteFavorite = components['schemas']['NoteFavorite'];
+
+// @public (undocumented)
+type NoteNotification = components['schemas']['NoteNotification'];
+
+// @public (undocumented)
+type NoteNotificationCreateRequest = operations['note-notification/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoteNotificationDeleteRequest = operations['note-notification/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoteNotificationListRequest = operations['note-notification/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoteNotificationListResponse = operations['note-notification/list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NoteReaction = components['schemas']['NoteReaction'];

@@ -2473,7 +2473,7 @@ export type paths = {
      * note-notification/create
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:account*
      */
     post: operations['note-notification/create'];
   };
@@ -2482,7 +2482,7 @@ export type paths = {
      * note-notification/delete
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:account*
      */
     post: operations['note-notification/delete'];
   };
@@ -2491,7 +2491,7 @@ export type paths = {
      * note-notification/list
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:account*
      */
     post: operations['note-notification/list'];
   };
@@ -20107,7 +20107,7 @@ export type operations = {
    * note-notification/create
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:account*
    */
   'note-notification/create': {
     requestBody: {
@@ -20165,7 +20165,7 @@ export type operations = {
    * note-notification/delete
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:account*
    */
   'note-notification/delete': {
     requestBody: {
@@ -20223,7 +20223,7 @@ export type operations = {
    * note-notification/list
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:account*
    */
   'note-notification/list': {
     requestBody: {
