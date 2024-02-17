@@ -8,7 +8,8 @@ import { GridContext } from '@/components/grid/grid-event.js';
 
 export type ColumnType = 'text' | 'number' | 'date' | 'boolean' | 'image' | 'hidden';
 
-export type CellValueConverter = (row: GridRow, col: GridColumn, value: CellValue) => CellValue;
+export type CustomValueEditor = (row: GridRow, col: GridColumn, value: CellValue, cellElement: HTMLElement) => Promise<CellValue>;
+export type CellValueTransformer = (row: GridRow, col: GridColumn, value: CellValue) => CellValue;
 export type GridColumnContextMenuFactory = (col: GridColumn, context: GridContext) => MenuItem[];
 
 export type GridColumnSetting = {
@@ -19,7 +20,8 @@ export type GridColumnSetting = {
 	width: SizeStyle;
 	editable?: boolean;
 	validators?: CellValidator[];
-	valueConverter?: CellValueConverter;
+	customValueEditor?: CustomValueEditor;
+	valueTransformer?: CellValueTransformer;
 	contextMenuFactory?: GridColumnContextMenuFactory;
 };
 

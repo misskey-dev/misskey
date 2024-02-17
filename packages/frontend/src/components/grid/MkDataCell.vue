@@ -59,7 +59,6 @@ import * as os from '@/os.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
 import { GridRowSetting } from '@/components/grid/row.js';
-import { selectFile } from '@/scripts/select-file.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -107,7 +106,7 @@ watch(() => cell.value.selected, () => {
 function onCellDoubleClick(ev: MouseEvent) {
 	switch (ev.type) {
 		case 'dblclick': {
-			beginEditing();
+			beginEditing(ev.target as HTMLElement);
 			break;
 		}
 	}
@@ -127,7 +126,7 @@ function onCellKeyDown(ev: KeyboardEvent) {
 			case 'NumpadEnter':
 			case 'Enter':
 			case 'F2': {
-				beginEditing();
+				beginEditing(ev.target as HTMLElement);
 				break;
 			}
 		}
@@ -164,37 +163,47 @@ function unregisterOutsideMouseDown() {
 	removeEventListener('mousedown', onOutsideMouseDown);
 }
 
-async function beginEditing() {
+async function beginEditing(target: HTMLElement) {
 	if (editing.value || !cell.value.column.setting.editable) {
 		return;
 	}
 
-	switch (cellType.value) {
-		case 'text': {
-			editingValue.value = cell.value.value;
-			editing.value = true;
-			registerOutsideMouseDown();
-			emit('operation:beginEdit', cell.value);
+	if (cell.value.column.setting.customValueEditor) {
+		emit('operation:beginEdit', cell.value);
+		const newValue = await cell.value.column.setting.customValueEditor(
+			cell.value.row,
+			cell.value.column,
+			cell.value.value,
+			target,
+		);
+		emit('operation:endEdit', cell.value);
 
-			await nextTick(() => {
-				// inputの展開後にフォーカスを当てたい
-				if (inputAreaEl.value) {
-					(inputAreaEl.value.querySelector('*') as HTMLElement).focus();
-				}
-			});
-			break;
+		if (newValue !== cell.value.value) {
+			emitValueChange(newValue);
 		}
-		case 'boolean': {
-			// とくに特殊なUIは設けず、トグルするだけ
-			emitValueChange(!cell.value.value);
-			break;
-		}
-		case 'image': {
-			const file = await selectFile(rootEl.value);
-			if (file) {
-				emitValueChange(JSON.stringify(file));
+
+		rootEl.value?.focus();
+	} else {
+		switch (cellType.value) {
+			case 'text': {
+				editingValue.value = cell.value.value;
+				editing.value = true;
+				registerOutsideMouseDown();
+				emit('operation:beginEdit', cell.value);
+
+				await nextTick(() => {
+					// inputの展開後にフォーカスを当てたい
+					if (inputAreaEl.value) {
+						(inputAreaEl.value.querySelector('*') as HTMLElement).focus();
+					}
+				});
+				break;
 			}
-			break;
+			case 'boolean': {
+				// とくに特殊なUIは設けず、トグルするだけ
+				emitValueChange(!cell.value.value);
+				break;
+			}
 		}
 	}
 }

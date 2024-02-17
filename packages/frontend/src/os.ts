@@ -475,6 +475,27 @@ export async function selectDriveFolder(multiple: boolean) {
 	});
 }
 
+export async function selectRole(params: {
+	initialRoleIds?: string[],
+	title?: string,
+	infoMessage?: string,
+	publicOnly?: boolean,
+}): Promise<
+	{ canceled: true; result: undefined; } |
+	{ canceled: false; result: Misskey.entities.Role[] }
+> {
+	return new Promise((resolve) => {
+		popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
+			done: roles => {
+				resolve({ canceled: false, result: roles });
+			},
+			closed: () => {
+				resolve({ canceled: true, result: undefined });
+			},
+		}, 'closed');
+	});
+}
+
 export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
 		popup(MkEmojiPickerDialog, {

@@ -97,6 +97,14 @@ export class EmojiEntityService {
 					...await this.rolesRepository.findBy({ id: In(emoji.roleIdsThatCanBeUsedThisEmojiAsReaction) }),
 				);
 			}
+
+			roles.sort((a, b) => {
+				if (a.displayOrder !== b.displayOrder) {
+					return b.displayOrder - a.displayOrder;
+				}
+
+				return a.id.localeCompare(b.id);
+			});
 		}
 
 		return {

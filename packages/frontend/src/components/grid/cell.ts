@@ -5,7 +5,7 @@ import { GridRow } from '@/components/grid/row.js';
 import { MenuItem } from '@/types/menu.js';
 import { GridContext } from '@/components/grid/grid-event.js';
 
-export type CellValue = string | boolean | number | undefined | null
+export type CellValue = string | boolean | number | undefined | null | Array<unknown> | Object;
 
 export type CellAddress = {
 	row: number;
@@ -41,9 +41,13 @@ export function createCell(
 	value: CellValue,
 	setting: GridCellSetting,
 ): GridCell {
+	const newValue = (row.using && column.setting.valueTransformer)
+		? column.setting.valueTransformer(row, column, value)
+		: value;
+
 	return {
 		address: { row: row.index, col: column.index },
-		value,
+		value: newValue,
 		column,
 		row,
 		selected: false,

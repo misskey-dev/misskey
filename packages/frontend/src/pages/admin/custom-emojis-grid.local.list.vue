@@ -56,6 +56,18 @@
 					<MkInput v-model="queryUpdatedAtTo" :debounce="true" type="date" autocapitalize="off" class="col3 row3">
 						<template #label>updatedAt(to)</template>
 					</MkInput>
+					<MkInput
+						v-model="queryRolesText"
+						:debounce="true"
+						type="text"
+						readonly
+						autocapitalize="off"
+						class="col1 row4"
+						@click="onQueryRolesEditClicked"
+					>
+						<template #label>role</template>
+						<template #suffix><span class="ti ti-pencil"/></template>
+					</MkInput>
 				</div>
 
 				<MkFolder :spacerMax="8" :spacerMin="8">
@@ -153,6 +165,8 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import MkTagItem from '@/components/MkTagItem.vue';
 import { MenuItem } from '@/types/menu.js';
+import { CellValue } from '@/components/grid/cell.js';
+import { selectFile } from '@/scripts/select-file.js';
 
 type GridItem = {
 	checked: boolean;
@@ -165,7 +179,7 @@ type GridItem = {
 	license: string;
 	isSensitive: boolean;
 	localOnly: boolean;
-	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
+	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string, name: string }[];
 	fileId?: string;
 	updatedAt: string | null;
 	publicUrl?: string | null;
@@ -230,14 +244,54 @@ function setupGrid(): GridSetting {
 		},
 		cols: [
 			{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
-			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required] },
+			{
+				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
+				customValueEditor: async (row, col, value, cellElement) => {
+					const file = await selectFile(cellElement);
+					if (file) {
+						gridItems.value[row.index].url = file.url;
+						gridItems.value[row.index].fileId = file.id;
+					} else {
+						gridItems.value[row.index].url = '';
+						gridItems.value[row.index].fileId = undefined;
+					}
+
+					return file ? file.url : '';
+				},
+			},
 			{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
 			{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
 			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
-			{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140 },
+			{
+				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
+				valueTransformer: (row) => {
+					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
+					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
+						.map(({ name }) => name)
+						.join(',');
+				},
+				customValueEditor: async (row) => {
+					// ID直記入は体験的に最悪なのでモーダルを使って入力する
+					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction.map(it => it.id);
+					const result = await os.selectRole({
+						initialRoleIds: current,
+						title: i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction,
+						infoMessage: i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
+						publicOnly: true,
+					});
+					if (result.canceled) {
+						return current;
+					}
+
+					const transform = result.result.map(it => ({ id: it.id, name: it.name }));
+					gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = transform;
+
+					return transform;
+				},
+			},
 			{ bindTo: 'updatedAt', type: 'text', editable: false, width: 'auto' },
 			{ bindTo: 'publicUrl', type: 'text', editable: false, width: 180 },
 			{ bindTo: 'originalUrl', type: 'text', editable: false, width: 180 },
@@ -249,7 +303,9 @@ function setupGrid(): GridSetting {
 						type: 'button',
 						text: '選択範囲をコピー',
 						icon: 'ti ti-copy',
-						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+						action: () => {
+							return optInGridUtils.copyToClipboard(gridItems, context);
+						},
 					},
 					{
 						type: 'button',
@@ -286,6 +342,7 @@ const queryUpdatedAtFrom = ref<string | null>(null);
 const queryUpdatedAtTo = ref<string | null>(null);
 const querySensitive = ref<string | null>(null);
 const queryLocalOnly = ref<string | null>(null);
+const queryRoles = ref<{ id: string, name: string }[]>([]);
 const previousQuery = ref<string | undefined>(undefined);
 const sortOrders = ref<GridSortOrder[]>([]);
 const requestLogs = ref<RequestLogItem[]>([]);
@@ -295,6 +352,7 @@ const originGridItems = ref<GridItem[]>([]);
 const updateButtonDisabled = ref<boolean>(false);
 
 const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
+const queryRolesText = computed(() => queryRoles.value.map(it => it.name).join(','));
 
 async function onUpdateButtonClicked() {
 	const _items = gridItems.value;
@@ -334,7 +392,7 @@ async function onUpdateButtonClicked() {
 					license: emptyStrToNull(item.license),
 					isSensitive: item.isSensitive,
 					localOnly: item.localOnly,
-					roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
+					roleIdsThatCanBeUsedThisEmojiAsReaction: item.roleIdsThatCanBeUsedThisEmojiAsReaction.map(it => it.id),
 					fileId: item.fileId,
 				})
 				.then(() => ({ item, success: true, err: undefined }))
@@ -402,6 +460,19 @@ function onGridResetButtonClicked() {
 	refreshGridItems();
 }
 
+async function onQueryRolesEditClicked() {
+	const result = await os.selectRole({
+		initialRoleIds: queryRoles.value.map(it => it.id),
+		title: '絵文字に設定されたロールで検索',
+		publicOnly: true,
+	});
+	if (result.canceled) {
+		return;
+	}
+
+	queryRoles.value = result.result;
+}
+
 function onToggleSortOrderButtonClicked(order: GridSortOrder) {
 	console.log(order);
 	switch (order.direction) {
@@ -446,6 +517,7 @@ function onQueryResetButtonClicked() {
 	queryUpdatedAtTo.value = null;
 	querySensitive.value = null;
 	queryLocalOnly.value = null;
+	queryRoles.value = [];
 }
 
 async function onPageChanged(pageNumber: number) {
@@ -474,17 +546,27 @@ function onGridCellValidation(event: GridCellValidationEvent) {
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
-		if (column.setting.bindTo === 'url') {
-			const file = JSON.parse(newValue as string) as Misskey.entities.DriveFile;
-			gridItems.value[row.index].url = file.url;
-			gridItems.value[row.index].fileId = file.id;
-		} else {
-			gridItems.value[row.index][column.setting.bindTo] = newValue;
-		}
+		gridItems.value[row.index][column.setting.bindTo] = newValue;
 	}
 }
 
 async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
+	function roleIdConverter(value: string): CellValue {
+		try {
+			const obj = JSON.parse(value);
+			if (!Array.isArray(obj)) {
+				return undefined;
+			}
+			if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
+				return undefined;
+			}
+
+			return obj.map(it => ({ id: it.id, name: it.name }));
+		} catch (ex) {
+			return undefined;
+		}
+	}
+
 	const { ctrlKey, shiftKey, code } = event.event;
 
 	switch (true) {
@@ -498,7 +580,13 @@ async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext)
 					break;
 				}
 				case 'KeyV': {
-					await optInGridUtils.pasteFromClipboard(gridItems, currentState);
+					await optInGridUtils.pasteFromClipboard(
+						gridItems,
+						currentState,
+						[
+							{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', converter: roleIdConverter },
+						],
+					);
 					break;
 				}
 			}
@@ -543,6 +631,7 @@ async function refreshCustomEmojis() {
 		localOnly: queryLocalOnly.value ? Boolean(queryLocalOnly.value).valueOf() : undefined,
 		updatedAtFrom: emptyStrToUndefined(queryUpdatedAtFrom.value),
 		updatedAtTo: emptyStrToUndefined(queryUpdatedAtTo.value),
+		roleIds: queryRoles.value.map(it => it.id),
 		hostType: 'local',
 	};
 
@@ -584,7 +673,7 @@ function refreshGridItems() {
 		license: it.license ?? '',
 		isSensitive: it.isSensitive,
 		localOnly: it.localOnly,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(','),
+		roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction,
 		updatedAt: it.updatedAt,
 		publicUrl: it.publicUrl,
 		originalUrl: it.originalUrl,

@@ -1170,7 +1170,9 @@ function patchData(newItems: DataSource[]) {
 			const newValue = newItem[_col.setting.bindTo];
 			if (oldCell.value !== newValue) {
 				oldCell.violation = cellValidation(oldCell, newValue);
-				oldCell.value = newValue;
+				oldCell.value = _col.setting.valueTransformer
+					? _col.setting.valueTransformer(holder.row, _col, newValue)
+					: newValue;
 				changedCells.push(oldCell);
 			}
 		}
@@ -1199,6 +1201,8 @@ function patchData(newItems: DataSource[]) {
 // #endregion
 
 onMounted(() => {
+	state.value = 'normal';
+
 	const bindToList = columnSettings.map(it => it.bindTo);
 	if (new Set(bindToList).size !== columnSettings.length) {
 		// 取得元のプロパティ名重複は許容したくない

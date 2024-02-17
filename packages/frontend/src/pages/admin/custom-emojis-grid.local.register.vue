@@ -116,7 +116,7 @@ type GridItem = {
 	license: string;
 	isSensitive: boolean;
 	localOnly: boolean;
-	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
+	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string, name: string }[];
 }
 
 function setupGrid(): GridSetting {
@@ -159,7 +159,33 @@ function setupGrid(): GridSetting {
 			{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
 			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
-			{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
+			{
+				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
+				valueTransformer: (row) => {
+					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
+					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
+						.map(({ name }) => name)
+						.join(',');
+				},
+				customValueEditor: async (row) => {
+					// ID直記入は体験的に最悪なのでモーダルを使って入力する
+					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction.map(it => it.id);
+					const result = await os.selectRole({
+						initialRoleIds: current,
+						title: i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction,
+						infoMessage: i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
+						publicOnly: true,
+					});
+					if (result.canceled) {
+						return current;
+					}
+
+					const transform = result.result.map(it => ({ id: it.id, name: it.name }));
+					gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = transform;
+
+					return transform;
+				},
+			},
 		],
 		cells: {
 			contextMenuFactory: (col, row, value, context) => {
@@ -214,7 +240,7 @@ async function onRegistryClicked() {
 						license: emptyStrToNull(item.license),
 						isSensitive: item.isSensitive,
 						localOnly: item.localOnly,
-						roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
+						roleIdsThatCanBeUsedThisEmojiAsReaction: item.roleIdsThatCanBeUsedThisEmojiAsReaction.map(it => it.id),
 						fileId: item.fileId!,
 					})
 					.then(() => ({ item, success: true, err: undefined }))
@@ -372,7 +398,7 @@ function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 		license: '',
 		isSensitive: it.isSensitive,
 		localOnly: false,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: '',
+		roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 	};
 }
 

@@ -41,18 +41,22 @@ class OptInGridUtils {
 		}
 	}
 
-	copyToClipboard(gridItems: Ref<DataSource[]>, context: GridContext) {
+	copyToClipboard(gridItems: Ref<DataSource[]> | DataSource[], context: GridContext) {
+		const items = typeof gridItems === 'object' ? (gridItems as Ref<DataSource[]>).value : gridItems;
 		const lines = Array.of<string>();
 		const bounds = context.randedBounds;
 
 		for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
-			const items = Array.of<string>();
+			const rowItems = Array.of<string>();
 			for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
 				const bindTo = context.columns[col].setting.bindTo;
-				const cell = gridItems.value[row][bindTo];
-				items.push(cell?.toString() ?? '');
+				const cell = items[row][bindTo];
+				const value = typeof cell === 'object' || Array.isArray(cell)
+					? JSON.stringify(cell)
+					: cell?.toString() ?? '';
+				rowItems.push(value);
 			}
-			lines.push(items.join('\t'));
+			lines.push(rowItems.join('\t'));
 		}
 
 		const text = lines.join('\n');
@@ -66,9 +70,12 @@ class OptInGridUtils {
 	async pasteFromClipboard(
 		gridItems: Ref<DataSource[]>,
 		context: GridContext,
+		valueConverters?: { bindTo: string, converter: (value: string) => CellValue }[],
 	) {
-		function parseValue(value: string, type: GridColumnSetting['type']): CellValue {
-			switch (type) {
+		const converterMap = new Map<string, (value: string) => CellValue>(valueConverters?.map(it => [it.bindTo, it.converter]) ?? []);
+
+		function parseValue(value: string, setting: GridColumnSetting): CellValue {
+			switch (setting.type) {
 				case 'number': {
 					return Number(value);
 				}
@@ -76,7 +83,9 @@ class OptInGridUtils {
 					return value === 'true';
 				}
 				default: {
-					return value;
+					return converterMap.has(setting.bindTo)
+						? converterMap.get(setting.bindTo)!(value)
+						: value;
 				}
 			}
 		}
@@ -95,7 +104,7 @@ class OptInGridUtils {
 			// 単独文字列の場合は選択範囲全体に同じテキストを貼り付ける
 			const ranges = context.rangedCells;
 			for (const cell of ranges) {
-				gridItems.value[cell.row.index][cell.column.setting.bindTo] = parseValue(lines[0][0], cell.column.setting.type);
+				gridItems.value[cell.row.index][cell.column.setting.bindTo] = parseValue(lines[0][0], cell.column.setting);
 			}
 		} else {
 			// 表形式文字列の場合は表形式にパースし、選択範囲に合うように貼り付ける
@@ -117,13 +126,13 @@ class OptInGridUtils {
 						break;
 					}
 
-					gridItems.value[row][columns[col].setting.bindTo] = parseValue(items[colIdx], columns[col].setting.type);
+					gridItems.value[row][columns[col].setting.bindTo] = parseValue(items[colIdx], columns[col].setting);
 				}
 			}
 		}
 	}
 
-	deleteSelectionRange(gridItems: Ref<DataSource[]>, context: GridContext) {
+	deleteSelectionRange(gridItems: Ref<Record<string, any>[]>, context: GridContext) {
 		if (context.rangedRows.length > 0) {
 			const deletedIndexes = context.rangedRows.map(it => it.index);
 			gridItems.value = gridItems.value.filter((_, index) => !deletedIndexes.includes(index));
