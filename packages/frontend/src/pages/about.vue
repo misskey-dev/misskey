@@ -32,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 						</div>
 						<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
-						<FormLink v-if="$i && instance.repositoryUrl || $i && instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
+						<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts.sourceCode }}
 						</FormLink>
-						<MkInfo v-else-if="$i" warn>
+						<MkInfo v-else warn>
 							{{ i18n.ts.sourceCodeIsNotYetProvided }}
 						</MkInfo>
 						ソースコード含め問い合わせは下記のメールアドレスへよろしくお願いします。
