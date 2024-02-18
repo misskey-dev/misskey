@@ -85,7 +85,7 @@ const clearCacheRequested = ref(false);
 
 globalEvents.on('requestClearPageCache', () => {
 	if (_DEV_) console.log('clear page cache requested');
-	if (clearCacheRequested.value === false) {
+	if (!clearCacheRequested.value) {
 		clearCacheRequested.value = true;
 	}
 });
