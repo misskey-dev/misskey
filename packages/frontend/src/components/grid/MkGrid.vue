@@ -51,6 +51,7 @@ import * as os from '@/os.js';
 import { GridContext, GridEvent } from '@/components/grid/grid-event.js';
 import { createColumn, GridColumn } from '@/components/grid/column.js';
 import { createRow, defaultGridRowSetting, GridRow, GridRowSetting, resetRow } from '@/components/grid/row.js';
+import { handleKeyEvent } from '@/scripts/key-event.js';
 
 type RowHolder = {
 	row: GridRow,
@@ -240,183 +241,158 @@ function onResize(entries: ResizeObserverEntry[]) {
 }
 
 function onKeyDown(ev: KeyboardEvent) {
-	function emitKeyEvent() {
-		emitGridEvent({ type: 'keydown', event: ev });
+	const { ctrlKey, shiftKey, code } = ev;
+	if (_DEV_) {
+		console.log(`[grid][key] ctrl: ${ctrlKey}, shift: ${shiftKey}, code: ${code}`);
 	}
 
-	if (_DEV_) {
-		console.log(`[grid][key] ctrl: ${ev.ctrlKey}, shift: ${ev.shiftKey}, code: ${ev.code}`);
+	function updateSelectionRange(newBounds: { leftTop: CellAddress, rightBottom: CellAddress }) {
+		unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
+		expandCellRange(newBounds.leftTop, newBounds.rightBottom);
 	}
 
 	switch (state.value) {
 		case 'normal': {
 			ev.preventDefault();
 
-			if (ev.ctrlKey) {
-				if (ev.shiftKey) {
-					// ctrl + shiftキーが押されている場合は選択セルの範囲拡大（最大範囲）
-					const selectedCellAddress = requireSelectionCell();
-					const max = availableBounds.value;
-					const bounds = rangedBounds.value;
-
-					let newBounds: { leftTop: CellAddress, rightBottom: CellAddress };
-					switch (ev.code) {
-						case 'ArrowRight': {
-							newBounds = {
-								leftTop: { col: selectedCellAddress.col, row: bounds.leftTop.row },
-								rightBottom: { col: max.rightBottom.col, row: bounds.rightBottom.row },
-							};
-							break;
-						}
-						case 'ArrowLeft': {
-							newBounds = {
-								leftTop: { col: max.leftTop.col, row: bounds.leftTop.row },
-								rightBottom: { col: selectedCellAddress.col, row: bounds.rightBottom.row },
-							};
-							break;
-						}
-						case 'ArrowUp': {
-							newBounds = {
-								leftTop: { col: bounds.leftTop.col, row: max.leftTop.row },
-								rightBottom: { col: bounds.rightBottom.col, row: selectedCellAddress.row },
-							};
-							break;
-						}
-						case 'ArrowDown': {
-							newBounds = {
-								leftTop: { col: bounds.leftTop.col, row: selectedCellAddress.row },
-								rightBottom: { col: bounds.rightBottom.col, row: max.rightBottom.row },
-							};
-							break;
-						}
-						default: {
-							// その他のキーは外部にゆだねる
-							emitKeyEvent();
-							return;
-						}
-					}
-
-					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
-					expandCellRange(newBounds.leftTop, newBounds.rightBottom);
-				} else {
-					// その他のキーは外部にゆだねる
-					emitKeyEvent();
-				}
-			} else {
-				if (ev.shiftKey) {
-					// shiftキーが押されている場合は選択セルの範囲拡大（隣のセルまで）
-					const selectedCellAddress = requireSelectionCell();
-					const bounds = rangedBounds.value;
-					let newBounds: { leftTop: CellAddress, rightBottom: CellAddress };
-					switch (ev.code) {
-						case 'ArrowRight': {
-							newBounds = {
-								leftTop: {
-									col: bounds.leftTop.col < selectedCellAddress.col
-										? bounds.leftTop.col + 1
-										: selectedCellAddress.col,
-									row: bounds.leftTop.row,
-								},
-								rightBottom: {
-									col: (bounds.rightBottom.col > selectedCellAddress.col || bounds.leftTop.col === selectedCellAddress.col)
-										? bounds.rightBottom.col + 1
-										: selectedCellAddress.col,
-									row: bounds.rightBottom.row,
-								},
-							};
-							break;
-						}
-						case 'ArrowLeft': {
-							newBounds = {
-								leftTop: {
-									col: (bounds.leftTop.col < selectedCellAddress.col || bounds.rightBottom.col === selectedCellAddress.col)
-										? bounds.leftTop.col - 1
-										: selectedCellAddress.col,
-									row: bounds.leftTop.row,
-								},
-								rightBottom: {
-									col: bounds.rightBottom.col > selectedCellAddress.col
-										? bounds.rightBottom.col - 1
-										: selectedCellAddress.col,
-									row: bounds.rightBottom.row,
-								},
-							};
-							break;
-						}
-						case 'ArrowUp': {
-							newBounds = {
-								leftTop: {
-									col: bounds.leftTop.col,
-									row: (bounds.leftTop.row < selectedCellAddress.row || bounds.rightBottom.row === selectedCellAddress.row)
-										? bounds.leftTop.row - 1
-										: selectedCellAddress.row,
-								},
-								rightBottom: {
-									col: bounds.rightBottom.col,
-									row: bounds.rightBottom.row > selectedCellAddress.row
-										? bounds.rightBottom.row - 1
-										: selectedCellAddress.row,
-								},
-							};
-							break;
-						}
-						case 'ArrowDown': {
-							newBounds = {
-								leftTop: {
-									col: bounds.leftTop.col,
-									row: bounds.leftTop.row < selectedCellAddress.row
-										? bounds.leftTop.row + 1
-										: selectedCellAddress.row,
-								},
-								rightBottom: {
-									col: bounds.rightBottom.col,
-									row: (bounds.rightBottom.row > selectedCellAddress.row || bounds.leftTop.row === selectedCellAddress.row)
-										? bounds.rightBottom.row + 1
-										: selectedCellAddress.row,
-								},
-							};
-							break;
-						}
-						default: {
-							// その他のキーは外部にゆだねる
-							emitKeyEvent();
-							return;
-						}
-					}
-
-					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
-					expandCellRange(newBounds.leftTop, newBounds.rightBottom);
-				} else {
-					// shiftキーもctrlキーが押されていない場合
-					switch (ev.code) {
-						case 'ArrowRight': {
-							const selectedCellAddress = requireSelectionCell();
-							selectionCell({ col: selectedCellAddress.col + 1, row: selectedCellAddress.row });
-							break;
-						}
-						case 'ArrowLeft': {
-							const selectedCellAddress = requireSelectionCell();
-							selectionCell({ col: selectedCellAddress.col - 1, row: selectedCellAddress.row });
-							break;
-						}
-						case 'ArrowUp': {
-							const selectedCellAddress = requireSelectionCell();
-							selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row - 1 });
-							break;
-						}
-						case 'ArrowDown': {
-							const selectedCellAddress = requireSelectionCell();
-							selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row + 1 });
-							break;
-						}
-						default: {
-							// その他のキーは外部にゆだねる
-							emitKeyEvent();
-							break;
-						}
-					}
-				}
+			const selectedCellAddress = selectedCell.value?.address;
+			if (!selectedCellAddress) {
+				return;
 			}
+
+			const max = availableBounds.value;
+			const bounds = rangedBounds.value;
+
+			handleKeyEvent(ev, [
+				{
+					code: 'any', handler: () => emitGridEvent({ type: 'keydown', event: ev }),
+				},
+				{
+					code: 'ArrowRight', modifiers: ['Control', 'Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: { col: selectedCellAddress.col, row: bounds.leftTop.row },
+							rightBottom: { col: max.rightBottom.col, row: bounds.rightBottom.row },
+						});
+					},
+				},
+				{
+					code: 'ArrowLeft', modifiers: ['Control', 'Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: { col: max.leftTop.col, row: bounds.leftTop.row },
+							rightBottom: { col: selectedCellAddress.col, row: bounds.rightBottom.row },
+						});
+					},
+				},
+				{
+					code: 'ArrowUp', modifiers: ['Control', 'Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: { col: bounds.leftTop.col, row: max.leftTop.row },
+							rightBottom: { col: bounds.rightBottom.col, row: selectedCellAddress.row },
+						});
+					},
+				},
+				{
+					code: 'ArrowDown', modifiers: ['Control', 'Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: { col: bounds.leftTop.col, row: selectedCellAddress.row },
+							rightBottom: { col: bounds.rightBottom.col, row: max.rightBottom.row },
+						});
+					},
+				},
+				{
+					code: 'ArrowRight', modifiers: ['Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: {
+								col: bounds.leftTop.col < selectedCellAddress.col
+									? bounds.leftTop.col + 1
+									: selectedCellAddress.col,
+								row: bounds.leftTop.row,
+							},
+							rightBottom: {
+								col: (bounds.rightBottom.col > selectedCellAddress.col || bounds.leftTop.col === selectedCellAddress.col)
+									? bounds.rightBottom.col + 1
+									: selectedCellAddress.col,
+								row: bounds.rightBottom.row,
+							},
+						});
+					},
+				},
+				{
+					code: 'ArrowLeft', modifiers: ['Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: {
+								col: (bounds.leftTop.col < selectedCellAddress.col || bounds.rightBottom.col === selectedCellAddress.col)
+									? bounds.leftTop.col - 1
+									: selectedCellAddress.col,
+								row: bounds.leftTop.row,
+							},
+							rightBottom: {
+								col: bounds.rightBottom.col > selectedCellAddress.col
+									? bounds.rightBottom.col - 1
+									: selectedCellAddress.col,
+								row: bounds.rightBottom.row,
+							},
+						});
+					},
+				},
+				{
+					code: 'ArrowUp', modifiers: ['Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: {
+								col: bounds.leftTop.col,
+								row: (bounds.leftTop.row < selectedCellAddress.row || bounds.rightBottom.row === selectedCellAddress.row)
+									? bounds.leftTop.row - 1
+									: selectedCellAddress.row,
+							},
+							rightBottom: {
+								col: bounds.rightBottom.col,
+								row: bounds.rightBottom.row > selectedCellAddress.row
+									? bounds.rightBottom.row - 1
+									: selectedCellAddress.row,
+							},
+						});
+					},
+				},
+				{
+					code: 'ArrowDown', modifiers: ['Shift'], handler: () => {
+						updateSelectionRange({
+							leftTop: {
+								col: bounds.leftTop.col,
+								row: bounds.leftTop.row < selectedCellAddress.row
+									? bounds.leftTop.row + 1
+									: selectedCellAddress.row,
+							},
+							rightBottom: {
+								col: bounds.rightBottom.col,
+								row: (bounds.rightBottom.row > selectedCellAddress.row || bounds.leftTop.row === selectedCellAddress.row)
+									? bounds.rightBottom.row + 1
+									: selectedCellAddress.row,
+							},
+						});
+					},
+				},
+				{
+					code: 'ArrowDown', handler: () => {
+						selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row + 1 });
+					},
+				},
+				{
+					code: 'ArrowUp', handler: () => {
+						selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row - 1 });
+					},
+				},
+				{
+					code: 'ArrowRight', handler: () => {
+						selectionCell({ col: selectedCellAddress.col + 1, row: selectedCellAddress.row });
+					},
+				},
+				{
+					code: 'ArrowLeft', handler: () => {
+						selectionCell({ col: selectedCellAddress.col - 1, row: selectedCellAddress.row });
+					},
+				},
+			]);
+
 			break;
 		}
 	}
