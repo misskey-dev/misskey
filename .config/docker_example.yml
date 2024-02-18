@@ -106,7 +106,7 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-# You can set scope to local (default value) or global 
+# You can set scope to local (default value) or global
 # (include notes from remote).
 
 #meilisearch:
@@ -185,7 +185,7 @@ proxyRemoteFiles: true
 signToActivityPubGet: true
 
 # For security reasons, uploading attachments from the intranet is prohibited,
-# but exceptions can be made from the following settings. Default value is "undefined". 
+# but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
@@ -193,3 +193,7 @@ signToActivityPubGet: true
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
+
+# ローカル宛てのメンション、リプライ、引用ノートの発行元が、ローカルユーザーにフォローされていない場合に投稿を拒否するかどうか
+# default: false
+# misskeyBlockMentionsFromUnfamiliarRemoteUsers: false
