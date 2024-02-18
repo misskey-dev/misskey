@@ -312,7 +312,7 @@ function setupGrid(): GridSetting {
 				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
 				valueTransformer: (row) => {
 					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
-					return (gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction ?? [])
+					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
 						.map((it) => it.name)
 						.join(',');
 				},
@@ -597,15 +597,15 @@ async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext)
 		try {
 			const obj = JSON.parse(value);
 			if (!Array.isArray(obj)) {
-				return undefined;
+				return [];
 			}
 			if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
-				return undefined;
+				return [];
 			}
 
 			return obj.map(it => ({ id: it.id, name: it.name }));
 		} catch (ex) {
-			return undefined;
+			return [];
 		}
 	}
 

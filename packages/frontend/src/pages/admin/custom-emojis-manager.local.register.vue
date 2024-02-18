@@ -98,6 +98,7 @@ import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.local.logs.vue';
 import { GridSetting } from '@/components/grid/grid.js';
+import { CellValue } from '@/components/grid/cell.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
@@ -163,7 +164,7 @@ function setupGrid(): GridSetting {
 				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
 				valueTransformer: (row) => {
 					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
-					return (gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction ?? [])
+					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
 						.map((it) => it.name)
 						.join(',');
 				},
@@ -383,8 +384,61 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	}
 }
 
-function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
-	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
+async function onGridKeyDown(event: GridKeyDownEvent, context: GridContext) {
+	function roleIdConverter(value: string): CellValue {
+		try {
+			const obj = JSON.parse(value);
+			if (!Array.isArray(obj)) {
+				return [];
+			}
+			if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
+				return [];
+			}
+
+			return obj.map(it => ({ id: it.id, name: it.name }));
+		} catch (ex) {
+			return [];
+		}
+	}
+
+	const { ctrlKey, shiftKey, code } = event.event;
+
+	switch (true) {
+		case ctrlKey && shiftKey: {
+			break;
+		}
+		case ctrlKey: {
+			switch (code) {
+				case 'KeyC': {
+					optInGridUtils.copyToClipboard(gridItems, context);
+					break;
+				}
+				case 'KeyV': {
+					await optInGridUtils.pasteFromClipboard(
+						gridItems,
+						context,
+						[
+							{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', converter: roleIdConverter },
+						],
+					);
+					break;
+				}
+			}
+			break;
+		}
+		case shiftKey: {
+			break;
+		}
+		default: {
+			switch (code) {
+				case 'Delete': {
+					optInGridUtils.deleteSelectionRange(gridItems, context);
+					break;
+				}
+			}
+			break;
+		}
+	}
 }
 
 function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
