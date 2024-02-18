@@ -101,6 +101,8 @@ export class Autocomplete {
 		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam?.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
+		// :ok:などを🆗にするたいおぷ
+		const isEmojiCompleteToUnicode = !isEmoji && emojiIndex === text.length - 1;
 
 		let opened = false;
 
@@ -127,6 +129,14 @@ export class Autocomplete {
 			const emoji = text.substring(emojiIndex + 1);
 			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);
+				opened = true;
+			}
+		}
+
+		if (isEmojiCompleteToUnicode && !opened && this.onlyType.includes('emoji')) {
+			const emoji = text.substring(text.lastIndexOf(':', text.length - 2) + 1, text.length - 1);
+			if (!emoji.includes(' ')) {
+				this.open('emojiComplete', emoji);
 				opened = true;
 			}
 		}
@@ -269,6 +279,22 @@ export class Autocomplete {
 
 			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
+			const after = source.substring(caret);
+
+			// 挿入
+			this.text = trimmedBefore + value + after;
+
+			// キャレットを戻す
+			nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + value.length;
+				this.textarea.setSelectionRange(pos, pos);
+			});
+		} else if (type === 'emojiComplete') {
+			const source = this.text;
+
+			const before = source.substring(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf(':', before.length - 2));
 			const after = source.substring(caret);
 
 			// 挿入
