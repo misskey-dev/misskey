@@ -1165,6 +1165,7 @@ hideRepliesToOthersInTimelineAll: "タイムラインに今フォローしとる
 confirmShowRepliesAll: "これは元に戻せへんから慎重に決めてや。本当にタイムラインに今フォローしとる全員の返信を入れるか？"
 confirmHideRepliesAll: "これは元に戻せへんから慎重に決めてや。本当にタイムラインに今フォローしとる全員の返信を入れへんのか？"
 externalServices: "他のサイトのサービス"
+sourceCode: "ソースコード"
 impressum: "運営者の情報"
 impressumUrl: "運営者の情報URL"
 impressumDescription: "ドイツとかの一部んところではな、表示が義務付けられてんねん(Impressum)。"
