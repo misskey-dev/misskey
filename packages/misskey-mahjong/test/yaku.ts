@@ -78,6 +78,83 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('field-wind', () => {
+		it('north', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'n',
+				seat: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'n', 'n', 'n'],
+				huros: [],
+				tsumoTile: 's',
+			}).includes('field-wind-n'), true);
+		});
+		it('east', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				seat: 'n',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'e', 'e', 'e'],
+				huros: [],
+				tsumoTile: 'e',
+			}).includes('field-wind-e'), true);
+		});
+		it('south', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 's',
+				house: 'n',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 's', 's', 's'],
+				huros: [],
+				tsumoTile: 's',
+			}).includes('field-wind-s'), true);
+		});
+		it('west', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'w',
+				house: 'n',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'w', 'w', 'w'],
+				huros: [],
+				tsumoTile: 'w',
+			}).includes('field-wind-w'), true);
+		});
+	});
+	describe('seat-wind', () => {
+		it('north', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				seat: 'n',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'n', 'n', 'n'],
+				huros: [],
+				ronTile: 's',
+			}).includes('seat-wind-n'), true);
+		});
+		it('east', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 's',
+				seat: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'e', 'e', 'e'],
+				huros: [],
+				ronTile: 'e',
+			}).includes('seat-wind-e'), true);
+		});
+		it('south', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				house: 's',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 's', 's', 's'],
+				huros: [],
+				ronoTile: 's',
+			}).includes('seat-wind-s'), true);
+		});
+		it('west', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				house: 'w',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'w', 'w', 'w'],
+				huros: [],
+				ronTile: 'w',
+			}).includes('seat-wind-w'), true);
+		});
+	});
+
 	describe('ippatsu', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
