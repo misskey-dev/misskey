@@ -482,6 +482,10 @@ export class DriveService {
 		});
 		this.registerLogger.info(`${JSON.stringify(info)}`);
 
+		if (instance.prohibitedImageMD5.includes(info.md5)) {
+			throw new DriveService.AbusiveFileDetectedError();
+		}
+
 		// 現状 false positive が多すぎて実用に耐えない
 		//if (info.porn && instance.disallowUploadWhenPredictedAsPorn) {
 		//	throw new IdentifiableError('282f77bf-5816-4f72-9264-aa14d8261a21', 'Detected as porn.');
