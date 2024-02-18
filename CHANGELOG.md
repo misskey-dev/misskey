@@ -12,6 +12,15 @@
 
 -->
 
+## 202x.x.x (unreleased)
+
+### General
+
+### Client
+- Fix: レポジトリurlがhttps://github.com/syuilo/misskeyのときに改変されたバージョンであるとご認識される問題
+
+### Server
+
 ## 2024.2.0
 
 ### Note

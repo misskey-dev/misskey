@@ -21,6 +21,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { isOriginalMisskeyRepositoryUrl } from '@/scripts/isOriginalMisskeyRepositoryUrl.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -237,7 +238,7 @@ export async function mainBoot() {
 
 		fetchInstance().then(() => {
 			const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
-			if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
+			if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && !isOriginalMisskeyRepositoryUrl(instance.repositoryUrl)) {
 				popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
 			}
 		});
