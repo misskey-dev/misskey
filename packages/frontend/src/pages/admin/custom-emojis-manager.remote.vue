@@ -10,16 +10,44 @@
 
 			<div class="_gaps">
 				<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
-					<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" class="col1 row1">
+					<MkInput
+						v-model="queryName"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col1 row1"
+						@enter="onSearchRequest"
+					>
 						<template #label>name</template>
 					</MkInput>
-					<MkInput v-model="queryHost" :debounce="true" type="search" autocapitalize="off" class="col2 row1">
+					<MkInput
+						v-model="queryHost"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col2 row1"
+						@enter="onSearchRequest"
+					>
 						<template #label>host</template>
 					</MkInput>
-					<MkInput v-model="queryUri" :debounce="true" type="search" autocapitalize="off" class="col1 row2">
+					<MkInput
+						v-model="queryUri"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col1 row2"
+						@enter="onSearchRequest"
+					>
 						<template #label>uri</template>
 					</MkInput>
-					<MkInput v-model="queryPublicUrl" :debounce="true" type="search" autocapitalize="off" class="col2 row2">
+					<MkInput
+						v-model="queryPublicUrl"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col2 row2"
+						@enter="onSearchRequest"
+					>
 						<template #label>publicUrl</template>
 					</MkInput>
 				</div>
@@ -46,7 +74,7 @@
 				</MkFolder>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
-					<MkButton primary @click="onSearchButtonClicked">
+					<MkButton primary @click="onSearchRequest">
 						{{ i18n.ts.search }}
 					</MkButton>
 					<MkButton @click="onQueryResetButtonClicked">
@@ -97,7 +125,6 @@ import { GridSetting } from '@/components/grid/grid.js';
 import MkTagItem from '@/components/MkTagItem.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { MenuItem } from '@/types/menu.js';
-import MkTab from '@/components/MkTab.vue';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 
 type GridItem = {
@@ -209,7 +236,7 @@ function onAddSortOrderButtonClicked(ev: MouseEvent) {
 	os.contextMenu(menuItems, ev);
 }
 
-async function onSearchButtonClicked() {
+async function onSearchRequest() {
 	await refreshCustomEmojis();
 }
 
@@ -218,14 +245,6 @@ function onQueryResetButtonClicked() {
 	queryHost.value = null;
 	queryUri.value = null;
 	queryPublicUrl.value = null;
-}
-
-async function onLatestButtonClicked() {
-	await refreshCustomEmojis();
-}
-
-async function onOldestButtonClicked() {
-	await refreshCustomEmojis();
 }
 
 async function onImportClicked() {
@@ -312,12 +331,18 @@ async function refreshCustomEmojis() {
 		currentPage.value = 1;
 	}
 
-	const result = await misskeyApi('admin/emoji/v2/list', {
-		limit: 100,
-		query: query,
-		page: currentPage.value,
-		sort: sortOrders.value.map(({ key, direction }) => ({ key: key as any, direction })),
-	});
+	const result = await os.promiseDialog(
+		misskeyApi('admin/emoji/v2/list', {
+			limit: 100,
+			query: query,
+			page: currentPage.value,
+			sort: sortOrders.value.map(({ key, direction }) => ({ key: key as any, direction })),
+		}),
+		() => {
+		},
+		() => {
+		},
+	);
 
 	customEmojis.value = result.emojis;
 	allPages.value = result.allPages;

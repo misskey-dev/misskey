@@ -13,49 +13,97 @@
 
 			<div class="_gaps">
 				<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
-					<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" class="col1 row1">
+					<MkInput
+						v-model="queryName"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col1 row1"
+						@enter="onSearchRequest"
+					>
 						<template #label>name</template>
 					</MkInput>
 					<MkInput
-						v-model="queryCategory" :debounce="true" type="search" autocapitalize="off" class="col2 row1"
+						v-model="queryCategory"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col2 row1"
+						@enter="onSearchRequest"
 					>
 						<template #label>category</template>
 					</MkInput>
 					<MkInput
-						v-model="queryAlias" :debounce="true" type="search" autocapitalize="off" class="col3 row1"
+						v-model="queryAlias"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col3 row1"
+						@enter="onSearchRequest"
 					>
 						<template #label>alias</template>
 					</MkInput>
 
 					<MkInput
-						v-model="queryType" :debounce="true" type="search" autocapitalize="off" class="col1 row2"
+						v-model="queryType"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col1 row2"
+						@enter="onSearchRequest"
 					>
 						<template #label>type</template>
 					</MkInput>
 					<MkInput
-						v-model="queryLicense" :debounce="true" type="search" autocapitalize="off" class="col2 row2"
+						v-model="queryLicense"
+						:debounce="true"
+						type="search"
+						autocapitalize="off"
+						class="col2 row2"
+						@enter="onSearchRequest"
 					>
 						<template #label>license</template>
 					</MkInput>
-					<MkSelect v-model="querySensitive" class="col3 row2">
+					<MkSelect
+						v-model="querySensitive"
+						class="col3 row2"
+					>
 						<template #label>sensitive</template>
 						<option :value="null">-</option>
 						<option :value="true">true</option>
 						<option :value="false">false</option>
 					</MkSelect>
 
-					<MkSelect v-model="queryLocalOnly" class="col1 row3">
+					<MkSelect
+						v-model="queryLocalOnly"
+						class="col1 row3"
+					>
 						<template #label>localOnly</template>
 						<option :value="null">-</option>
 						<option :value="true">true</option>
 						<option :value="false">false</option>
 					</MkSelect>
-					<MkInput v-model="queryUpdatedAtFrom" :debounce="true" type="date" autocapitalize="off" class="col2 row3">
+					<MkInput
+						v-model="queryUpdatedAtFrom"
+						:debounce="true"
+						type="date"
+						autocapitalize="off"
+						class="col2 row3"
+						@enter="onSearchRequest"
+					>
 						<template #label>updatedAt(from)</template>
 					</MkInput>
-					<MkInput v-model="queryUpdatedAtTo" :debounce="true" type="date" autocapitalize="off" class="col3 row3">
+					<MkInput
+						v-model="queryUpdatedAtTo"
+						:debounce="true"
+						type="date"
+						autocapitalize="off"
+						class="col3 row3"
+						@enter="onSearchRequest"
+					>
 						<template #label>updatedAt(to)</template>
 					</MkInput>
+
 					<MkInput
 						v-model="queryRolesText"
 						:debounce="true"
@@ -92,7 +140,7 @@
 				</MkFolder>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
-					<MkButton primary @click="onSearchButtonClicked">
+					<MkButton primary @click="onSearchRequest">
 						{{ i18n.ts.search }}
 					</MkButton>
 					<MkButton @click="onQueryResetButtonClicked">
@@ -502,7 +550,7 @@ function onAddSortOrderButtonClicked(ev: MouseEvent) {
 	os.contextMenu(menuItems, ev);
 }
 
-async function onSearchButtonClicked() {
+async function onSearchRequest() {
 	await refreshCustomEmojis();
 }
 
