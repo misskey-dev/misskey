@@ -552,9 +552,15 @@ defineExpose({
 						min-width: 0;
 
 						&:disabled {
-							filter: grayscale(1);
 							cursor: not-allowed;
-							background: linear-gradient(-45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
+							background: linear-gradient(-45deg, transparent 0% 48%, var(--X6) 48% 52%, transparent 52% 100%);
+							opacity: 1;
+
+							> .emoji {
+								filter: grayscale(1);
+								mix-blend-mode: exclusion;
+								opacity: 0.8;
+							}
 						}
 					}
 				}
@@ -580,9 +586,15 @@ defineExpose({
 						min-width: 0;
 
 						&:disabled {
-							filter: grayscale(1);
 							cursor: not-allowed;
-							background: linear-gradient(-45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
+							background: linear-gradient(-45deg, transparent 0% 48%, var(--X6) 48% 52%, transparent 52% 100%);
+							opacity: 1;
+
+							> .emoji {
+								filter: grayscale(1);
+								mix-blend-mode: exclusion;
+								opacity: 0.8;
+							}
 						}
 					}
 				}
@@ -700,9 +712,15 @@ defineExpose({
 					}
 
 					&:disabled {
-						filter: grayscale(1);
 						cursor: not-allowed;
-						background: linear-gradient(-45deg, transparent 0% 48%, var(--accent) 48% 52%, transparent 52% 100%);
+						background: linear-gradient(-45deg, transparent 0% 48%, var(--X6) 48% 52%, transparent 52% 100%);
+						opacity: 1;
+
+						> .emoji {
+							filter: grayscale(1);
+							mix-blend-mode: exclusion;
+							opacity: 0.8;
+						}
 					}
 
 					> .emoji {
