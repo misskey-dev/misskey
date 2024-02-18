@@ -163,8 +163,8 @@ function setupGrid(): GridSetting {
 				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
 				valueTransformer: (row) => {
 					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
-					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
-						.map(({ name }) => name)
+					return (gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction ?? [])
+						.map((it) => it.name)
 						.join(',');
 				},
 				customValueEditor: async (row) => {

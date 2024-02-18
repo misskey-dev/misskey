@@ -296,15 +296,10 @@ function setupGrid(): GridSetting {
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				customValueEditor: async (row, col, value, cellElement) => {
 					const file = await selectFile(cellElement);
-					if (file) {
-						gridItems.value[row.index].url = file.url;
-						gridItems.value[row.index].fileId = file.id;
-					} else {
-						gridItems.value[row.index].url = '';
-						gridItems.value[row.index].fileId = undefined;
-					}
+					gridItems.value[row.index].url = file.url;
+					gridItems.value[row.index].fileId = file.id;
 
-					return file ? file.url : '';
+					return file.url;
 				},
 			},
 			{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
@@ -317,8 +312,8 @@ function setupGrid(): GridSetting {
 				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
 				valueTransformer: (row) => {
 					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
-					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
-						.map(({ name }) => name)
+					return (gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction ?? [])
+						.map((it) => it.name)
 						.join(',');
 				},
 				customValueEditor: async (row) => {
