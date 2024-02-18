@@ -169,9 +169,9 @@ function setupGrid(): GridSetting {
 				},
 				customValueEditor: async (row) => {
 					// ID直記入は体験的に最悪なのでモーダルを使って入力する
-					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction.map(it => it.id);
+					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction;
 					const result = await os.selectRole({
-						initialRoleIds: current,
+						initialRoleIds: current.map(it => it.id),
 						title: i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction,
 						infoMessage: i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
 						publicOnly: true,

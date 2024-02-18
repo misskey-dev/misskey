@@ -489,10 +489,10 @@ export async function selectRole(params: {
 			done: roles => {
 				resolve({ canceled: false, result: roles });
 			},
-			closed: () => {
+			close: () => {
 				resolve({ canceled: true, result: undefined });
 			},
-		}, 'closed');
+		}, 'dispose');
 	});
 }
 

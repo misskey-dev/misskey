@@ -1,15 +1,17 @@
 <template>
-<MkWindow
+<MkModalWindow
 	ref="windowEl"
-	:initialWidth="400"
-	:initialHeight="500"
-	:canResize="false"
-	@close="windowEl?.close()"
-	@closed="$emit('closed')"
+	:withOkButton="false"
+	:okButtonDisabled="false"
+	:width="400"
+	:height="500"
+	@close="onCloseModalWindow"
+	@closed="console.log('MkRoleSelectDialog: closed') ; $emit('dispose')"
 >
 	<template #header>{{ title }}</template>
 	<MkSpacer :marginMin="20" :marginMax="28">
-		<div class="_gaps">
+		<MkLoading v-if="fetching"/>
+		<div v-else class="_gaps">
 			<div :class="$style.header">
 				<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			</div>
@@ -35,7 +37,7 @@
 			</div>
 		</div>
 	</MkSpacer>
-</MkWindow>
+</MkModalWindow>
 </template>
 
 <script setup lang="ts">
@@ -46,14 +48,15 @@ import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import Section from '@/components/form/section.vue';
 import * as os from '@/os.js';
-import MkWindow from '@/components/MkWindow.vue';
 import MkSpacer from '@/components/global/MkSpacer.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkLoading from '@/components/global/MkLoading.vue';
 
 const emit = defineEmits<{
 	(ev: 'done', value: Misskey.entities.Role[]),
-	(ev: 'closed'),
+	(ev: 'close'),
+	(ev: 'dispose'),
 }>();
 
 const props = withDefaults(defineProps<{
@@ -70,9 +73,10 @@ const props = withDefaults(defineProps<{
 
 const { initialRoleIds, infoMessage, title, publicOnly } = toRefs(props);
 
-const windowEl = ref<InstanceType<typeof MkWindow>>();
+const windowEl = ref<InstanceType<typeof MkModalWindow>>();
 const roles = ref<Misskey.entities.Role[]>([]);
 const selectedRoleIds = ref<string[]>(initialRoleIds.value ?? []);
+const fetching = ref(false);
 
 const selectedRoles = computed(() => {
 	const r = roles.value.filter(role => selectedRoleIds.value.includes(role.id));
@@ -87,8 +91,10 @@ const selectedRoles = computed(() => {
 });
 
 async function fetchRoles() {
+	fetching.value = true;
 	const result = await misskeyApi('admin/roles/list', {});
 	roles.value = result.filter(it => publicOnly.value ? it.isPublic : true);
+	fetching.value = false;
 }
 
 async function addRole() {
@@ -115,7 +121,13 @@ function onOkClicked() {
 }
 
 function onCancelClicked() {
-	emit('closed');
+	emit('close');
+	windowEl.value?.close();
+}
+
+function onCloseModalWindow() {
+	emit('close');
+	windowEl.value?.close();
 }
 
 fetchRoles();
