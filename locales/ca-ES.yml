@@ -1167,6 +1167,7 @@ hideRepliesToOthersInTimelineAll: "Ocultar les teves respostes a tots els usuari
 confirmShowRepliesAll: "Aquesta opció no té marxa enrere. Vols mostrar les teves respostes a tots els que segueixes a la teva línia de temps?"
 confirmHideRepliesAll: "Aquesta opció no té marxa enrere. Vols ocultar les teves respostes a tots els usuaris que segueixes a la línia de temps?"
 externalServices: "Serveis externs"
+sourceCode: "Codi font"
 impressum: "Impressum"
 impressumUrl: "Adreça URL impressum"
 impressumDescription: "A països, com Alemanya, la inclusió de la informació de contacte de l'operador (un Impressum) és requereix de manera legal per llocs comercials."
