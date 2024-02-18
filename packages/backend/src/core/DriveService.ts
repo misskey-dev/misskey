@@ -90,6 +90,7 @@ export class DriveService {
 	public static NoSuchFolderError = class extends Error {};
 	public static InvalidFileNameError = class extends Error {};
 	public static CannotUnmarkSensitiveError = class extends Error {};
+	public static AbusiveFileDetectedError = class extends Error {};
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
