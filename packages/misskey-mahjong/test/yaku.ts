@@ -253,6 +253,44 @@ describe('Yaku', () => {
 			}).includes('pinfu'), true);
 		});
 	});
+	describe('iipeko', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 's9', 's9', 's4', 's5', 's6'],
+				huros: [],
+				tsumoTile: 's6',
+			}).includes('iipeko'), true);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'p5', 'p6', 'p7', 's9', 's9', 's4', 's5', 's6'],
+			    	huros: [{type: 'cii', tiles: ['m2','m3','m4']}],
+				riichi: true,
+				tsumoTile: 's6',
+			}).includes('iipeko'), false);
+
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 's5', 's6', 's7', 'p1', 'p1'],
+				huros: [],
+				tsumoTile: 'p1',
+			}).includes('iipeko'), false);
+		});
+	});
+
+	describe('chitoitsu', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m1', 'm1', 'm2', 'm2', 'm8', 'm8', 'p5', 'p5', 'p7', 's7', 's9', 's9', 'p2', 'p2'],
+				huros: [],
+				tsumoTile: 'p2',
+			}).includes('chitoitsu'), true);
+		});
+	});
 
 	describe('kokushi', () => {
 		it('valid', () => {
