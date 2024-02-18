@@ -11,6 +11,15 @@
 -
 
 -->
+## 202x.x.x (unreleased)
+
+### General
+- Fix: syuilo/misskeyの時代からあるインスタンスが改変されたバージョンであると誤認識される問題
+
+### Client
+
+### Server
+
 
 ## 2024.2.0
 
