@@ -21,10 +21,6 @@ const routes: RouteDef[] = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
 }, {
-	path: '/emojis2',
-	name: 'emojis2',
-	component: page(() => import('@/pages/admin/custom-emojis-grid.vue')),
-}, {
 	path: '/@:username/pages/:pageName',
 	component: page(() => import('@/pages/page.vue')),
 }, {
@@ -368,7 +364,7 @@ const routes: RouteDef[] = [{
 	}, {
 		path: '/emojis2',
 		name: 'emojis2',
-		component: page(() => import('@/pages/admin/custom-emojis-grid.vue')),
+		component: page(() => import('@/pages/admin/custom-emojis-manager2.vue')),
 	}, {
 		path: '/avatar-decorations',
 		name: 'avatarDecorations',

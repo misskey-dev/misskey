@@ -15,8 +15,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import MkTab from '@/components/MkTab.vue';
-import XListComponent from '@/pages/admin/custom-emojis-grid.local.list.vue';
-import XRegisterComponent from '@/pages/admin/custom-emojis-grid.local.register.vue';
+import XListComponent from '@/pages/admin/custom-emojis-manager.local.list.vue';
+import XRegisterComponent from '@/pages/admin/custom-emojis-manager.local.register.vue';
 
 type PageMode = 'list' | 'register';
 

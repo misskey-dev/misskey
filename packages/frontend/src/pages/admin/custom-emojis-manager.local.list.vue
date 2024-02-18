@@ -142,7 +142,7 @@ import {
 	emptyStrToNull,
 	emptyStrToUndefined,
 	RequestLogItem,
-} from '@/pages/admin/custom-emojis-grid.impl.js';
+} from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
@@ -158,7 +158,7 @@ import {
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.local.logs.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';

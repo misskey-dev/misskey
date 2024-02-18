@@ -75,7 +75,7 @@
 import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { emptyStrToEmptyArray, emptyStrToNull, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { emptyStrToEmptyArray, emptyStrToNull, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -96,7 +96,7 @@ import {
 } from '@/components/grid/grid-event.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
-import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.local.logs.vue';
 import { GridSetting } from '@/components/grid/grid.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;

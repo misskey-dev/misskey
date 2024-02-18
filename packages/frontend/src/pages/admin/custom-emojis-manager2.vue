@@ -14,8 +14,8 @@
 import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import XGridLocalComponent from '@/pages/admin/custom-emojis-grid.local.vue';
-import XGridRemoteComponent from '@/pages/admin/custom-emojis-grid.remote.vue';
+import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.vue';
+import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
 import MkPageHeader from '@/components/global/MkPageHeader.vue';
 import MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 

@@ -26,7 +26,7 @@
 <script setup lang="ts">
 
 import { computed, ref, toRefs } from 'vue';
-import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import {
 	GridContext,
 	GridEvent,

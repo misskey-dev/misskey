@@ -3,11 +3,11 @@
 	<div :class="$style.searchArea">
 		<MkInput v-model="query" :debounce="true" type="search" autocapitalize="off" style="flex: 1">
 			<template #prefix><i class="ti ti-search"></i></template>
-			<template #label>絵文字名</template>
+			<template #label>name</template>
 		</MkInput>
 		<MkInput v-model="host" :debounce="true" type="search" autocapitalize="off" style="flex: 1">
 			<template #prefix><i class="ti ti-cloud-network"></i></template>
-			<template #label>ホスト名</template>
+			<template #label>host</template>
 		</MkInput>
 		<MkButton primary style="margin-left: auto;" @click="onSearchButtonClicked">
 			{{ i18n.ts.search }}
@@ -51,11 +51,11 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import { GridCellValueChangeEvent, GridContext, GridEvent, GridKeyDownEvent } from '@/components/grid/grid-event.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkFolder from '@/components/MkFolder.vue';
-import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.local.logs.vue';
 import * as os from '@/os.js';
 import { GridSetting } from '@/components/grid/grid.js';
 
