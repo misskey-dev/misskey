@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
-	<ol v-else-if="type === 'emoji' && emojis.length > 0" ref="suggests" :class="$style.list">
+	<ol v-else-if="type === 'emoji' || type === 'emojiComplete' && emojis.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="emoji in emojis" :key="emoji.emoji" :class="$style.item" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
 			<MkCustomEmoji v-if="'isCustomEmoji' in emoji && emoji.isCustomEmoji" :name="emoji.emoji" :class="$style.emoji"/>
 			<MkEmoji v-else :emoji="emoji.emoji" :class="$style.emoji"/>
@@ -67,7 +67,13 @@ export type CompleteInfo = {
 		payload: string;
 		query: string;
 	},
+	// `:emo` -> `:emoji:` or some unicode emoji
 	emoji: {
+		payload: string;
+		query: string;
+	},
+	// like emoji but for `:emoji:` -> unicode emoji
+	emojiComplete: {
 		payload: string;
 		query: string;
 	},
@@ -98,8 +104,7 @@ type EmojiDef = {
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
-const emojiDb = computed(() => {
-	//#region Unicode Emoji
+const unicodeEmojiDB = computed(() => {
 	const char2path = defaultStore.reactiveState.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 	const unicodeEmojiDB: EmojiDef[] = lib.map(x => ({
@@ -122,6 +127,12 @@ const emojiDb = computed(() => {
 	}
 
 	unicodeEmojiDB.sort((a, b) => a.name.length - b.name.length);
+
+	return unicodeEmojiDB;
+});
+
+const emojiDb = computed(() => {
+	//#region Unicode Emoji
 	//#endregion
 
 	//#region Custom Emoji
@@ -149,7 +160,7 @@ const emojiDb = computed(() => {
 	customEmojiDB.sort((a, b) => a.name.length - b.name.length);
 	//#endregion
 
-	return markRaw([...customEmojiDB, ...unicodeEmojiDB]);
+	return markRaw([...customEmojiDB, ...unicodeEmojiDB.value]);
 });
 
 export default {
@@ -171,7 +182,7 @@ type PropsType<T extends keyof CompleteInfo> = {
 //const props = defineProps<PropsType<keyof CompleteInfo>>();
 // ↑と同じだけど↓にしないとdiscriminated unionにならない。
 // https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions
-const props = defineProps<PropsType<'user'> | PropsType<'hashtag'> | PropsType<'emoji'> | PropsType<'mfmTag'> | PropsType<'mfmParam'>>();
+const props = defineProps<PropsType<'user'> | PropsType<'hashtag'> | PropsType<'emoji'> | PropsType<'emojiComplete'> | PropsType<'mfmTag'> | PropsType<'mfmParam'>>();
 
 const emit = defineEmits<{
 	<T extends keyof CompleteInfo>(event: 'done', value: { type: T; value: CompleteInfo[T]['payload'] }): void;
@@ -194,7 +205,7 @@ const zIndex = os.claimZIndex('high');
 function complete<T extends keyof CompleteInfo>(type: T, value: CompleteInfo[T]['payload']) {
 	emit('done', { type, value });
 	emit('closed');
-	if (type === 'emoji') {
+	if (type === 'emoji' || type === 'emojiComplete') {
 		let recents = defaultStore.state.recentlyUsedEmojis;
 		recents = recents.filter((emoji: any) => emoji !== value);
 		recents.unshift(value);
@@ -281,6 +292,14 @@ function exec() {
 		}
 
 		emojis.value = emojiAutoComplete(props.q, emojiDb.value);
+	} else if (props.type === 'emojiComplete') {
+		if (!props.q || props.q === '') {
+			// 最近使った絵文字をサジェスト
+			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => unicodeEmojiDB.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
+			return;
+		}
+
+		emojis.value = emojiAutoComplete(props.q, unicodeEmojiDB.value);
 	} else if (props.type === 'mfmTag') {
 		if (!props.q || props.q === '') {
 			mfmTags.value = MFM_TAGS;
