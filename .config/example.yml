@@ -282,3 +282,7 @@ signToActivityPubGet: true
 
 # PID File of master process
 #pidFile: /tmp/misskey.pid
+
+# ローカル宛てのメンション、リプライ、引用ノートの発行元が、ローカルユーザーにフォローされていない場合に投稿を拒否するかどうか
+# default: false
+# misskeyBlockMentionsFromUnfamiliarRemoteUsers: false
