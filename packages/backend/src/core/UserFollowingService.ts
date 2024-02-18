@@ -95,6 +95,32 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
+	public async deliverAccept(follower: MiRemoteUser, followee: MiPartialLocalUser, requestId?: string) {
+		const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
+		this.queueService.deliver(followee, content, follower.inbox, false);
+	}
+
+	@bindThis
+	public async followFromRemote(
+		follower: MiRemoteUser,
+		followee: MiLocalUser,
+		options: { requestId?: string } = {},
+	) {
+		if (await this.followingsRepository.exists({
+			where: {
+				followerId: follower.id,
+				followeeId: followee.id,
+			},
+		})) {
+			// すでにフォロー関係が存在している場合、acceptを送り返しておしまい
+			this.deliverAccept(follower, followee, options.requestId);
+			return;
+		}
+
+		await this.follow(follower, followee, options);
+	}
+
+	@bindThis
 	public async follow(
 		_follower: { id: MiUser['id'] },
 		_followee: { id: MiUser['id'] },
@@ -189,8 +215,7 @@ export class UserFollowingService implements OnModuleInit {
 		await this.insertFollowingDoc(followee, follower, silent, withReplies);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
-			this.queueService.deliver(followee, content, follower.inbox, false);
+			this.deliverAccept(follower, followee, requestId);
 		}
 	}
 
@@ -571,8 +596,7 @@ export class UserFollowingService implements OnModuleInit {
 		await this.insertFollowingDoc(followee, follower, false, request.withReplies);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee as MiPartialLocalUser, request.requestId!), followee));
-			this.queueService.deliver(followee, content, follower.inbox, false);
+			this.deliverAccept(follower, followee as MiPartialLocalUser, request.requestId ?? undefined);
 		}
 
 		this.userEntityService.pack(followee.id, followee, {
