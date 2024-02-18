@@ -12,6 +12,15 @@
 
 -->
 
+## 202x.x.x (unreleased)
+
+### General
+
+### Client
+
+### Server
+- Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
+
 ## 2024.2.0
 
 ### Note
