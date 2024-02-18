@@ -30,6 +30,11 @@
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
 
+## 202x.x.x (unreleased)
+
+### Client
+- Fix: MFMのオートコンプリートが出るべき状況で出ないことがある問題を修正
+
 ## 2024.2.0
 
 ### Note
