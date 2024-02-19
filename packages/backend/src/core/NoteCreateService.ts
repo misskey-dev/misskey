@@ -368,7 +368,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		const willCauseNotification = mentionedUsers.filter(u => u.host === null).length > 0 || data.reply?.userHost === null || data.renote?.userHost === null;
 
-		if (process.env.MISSKEY_BLOCK_MENTIONS_FROM_UNFAMILIAR_REMOTE_USERS === 'true' && user.host !== null && willCauseNotification) {
+		if (this.config.nirila.blockMentionsFromUnfamiliarRemoteUsers && user.host !== null && willCauseNotification) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
 			if ((userEntity?.followersCount ?? 0) === 0) {
 				this.logger.error('Request rejected because user has no local followers', { user: user.id, note: data });

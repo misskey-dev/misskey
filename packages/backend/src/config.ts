@@ -100,6 +100,7 @@ type Source = {
 		maxWebImageSize?: number;
 		withRepliesInHomeTL?: boolean;
 		withRepliesInUserList?: boolean;
+		blockMentionsFromUnfamiliarRemoteUsers?: boolean;
 	}
 };
 
@@ -185,6 +186,7 @@ export type Config = {
 		maxWebImageSize?: number;
 		withRepliesInHomeTL?: boolean,
 		withRepliesInUserList: boolean,
+		blockMentionsFromUnfamiliarRemoteUsers: boolean;
 	}
 };
 
@@ -230,6 +232,7 @@ export function loadConfig(): Config {
 		// to avoid merge conflict in the future, this is at top
 		nirila: Object.assign({
 			withRepliesInUserList: true,
+			blockMentionsFromUnfamiliarRemoteUsers: false,
 		}, config.nirila ?? {}),
 		version,
 		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
