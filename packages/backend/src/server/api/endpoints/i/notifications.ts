@@ -6,7 +6,7 @@
 import { Brackets, In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/_.js';
+import type { NotesRepository, UsersRepository } from '@/models/_.js';
 import { obsoleteNotificationTypes, notificationTypes, FilterUnionByProperty } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
@@ -15,6 +15,7 @@ import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { MiNotification } from '@/models/Notification.js';
+import { CacheService } from '@/core/CacheService.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],
@@ -66,10 +67,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private idService: IdService,
 		private notificationEntityService: NotificationEntityService,
 		private notificationService: NotificationService,
 		private noteReadService: NoteReadService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// includeTypes が空の場合はクエリしない
@@ -102,6 +107,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} else if (excludeTypes && excludeTypes.length > 0) {
 				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
 			}
+
+			//#region Check muting
+
+			const [
+				userIdsWhoMeMuting,
+				userMutedInstances,
+			] = await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
+			]);
+
+			notifications = (await Promise.all(notifications.map(async (notification): Promise<MiNotification|null> => {
+				if (!('notifierId' in notification)) return null;
+				if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
+
+				const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
+				if (notifier === null) return null;
+				if (notifier.host && userMutedInstances.has(notifier.host)) return null;
+
+				return notification;
+			}))).filter((notification): notification is MiNotification => notification !== null);
+
+			//#endregion Check muting
 
 			if (notifications.length === 0) {
 				return [];
