@@ -3981,6 +3981,10 @@ export interface Locale extends ILocale {
      */
     "pleaseDonate": ParameterizedString<"host">;
     /**
+     * 対応するソースコードは{anchor}から利用可能です。
+     */
+    "correspondingSourceIsAvailable": ParameterizedString<"anchor">;
+    /**
      * ロール
      */
     "roles": string;
@@ -4180,6 +4184,18 @@ export interface Locale extends ILocale {
      * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
      */
     "sensitiveWordsDescription2": string;
+    /**
+     * 禁止ワード
+     */
+    "prohibitedWords": string;
+    /**
+     * 設定したワードが含まれるノートを投稿しようとした際、エラーとなるようにします。改行で区切って複数設定できます。
+     */
+    "prohibitedWordsDescription": string;
+    /**
+     * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
+     */
+    "prohibitedWordsDescription2": string;
     /**
      * 非表示ハッシュタグ
      */
@@ -4672,6 +4688,34 @@ export interface Locale extends ILocale {
      * 外部サービス
      */
     "externalServices": string;
+    /**
+     * ソースコード
+     */
+    "sourceCode": string;
+    /**
+     * ソースコードはまだ提供されていません。この問題の修正について管理者に問い合わせてください。
+     */
+    "sourceCodeIsNotYetProvided": string;
+    /**
+     * リポジトリURL
+     */
+    "repositoryUrl": string;
+    /**
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     */
+    "repositoryUrlDescription": string;
+    /**
+     * リポジトリを公開していない場合、代わりにtarballを提供する必要があります。詳細は.config/example.ymlを参照してください。
+     */
+    "repositoryUrlOrTarballRequired": string;
+    /**
+     * フィードバック
+     */
+    "feedback": string;
+    /**
+     * フィードバックURL
+     */
+    "feedbackUrl": string;
     /**
      * 運営者情報
      */
@@ -6801,6 +6845,14 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         "source": string;
+        /**
+         * オリジナル
+         */
+        "original": string;
+        /**
+         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         */
+        "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
          * Misskeyを翻訳
          */

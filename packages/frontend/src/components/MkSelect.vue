@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
@@ -138,6 +138,7 @@ function show() {
 			active: computed(() => v.value === option.props?.value),
 			action: () => {
 				v.value = option.props?.value;
+				changed.value = true;
 				emit('changeByUser', v.value);
 			},
 		});
@@ -286,6 +287,10 @@ function show() {
 .suffix {
 	right: 0;
 	padding-left: 6px;
+}
+
+.save {
+	margin: 8px 0 0 0;
 }
 
 .chevron {

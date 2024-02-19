@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -113,8 +113,8 @@ onUnmounted(() => {
 	}
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
-})));
+}));
 </script>
