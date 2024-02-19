@@ -176,7 +176,7 @@ export class ApNoteService {
 		if (apMentions.length >= 5 && hasNoFF){
 			this.logger.error('Too many mensions included', {
 				account: `@${actor.username}@${actor.host}`,
-				note: `https://${actor.host}/notes/${note.id}`,
+				note: `${note.id}`,
 				mentions: apMentions.map((user) => user.uri),
 			});
 			throw new Error('too many mensions included.');
@@ -192,7 +192,7 @@ export class ApNoteService {
 		if (actor.username === actor.name && /^[a-z0-9]+$/.test(actor.username) && apMentions.length > 0 && hasNoFF){
 			this.logger.error('Suspected SPAM', {
 				account: `@${actor.username}@${actor.host}`,
-				note: `https://${actor.host}/notes/${note.id}`,
+				note: `${note.id}`,
 			});
 			throw new Error('suspected SPAM')
 		}
