@@ -431,6 +431,7 @@ export type NotesUnrenoteRequest = operations['notes/unrenote']['requestBody']['
 export type NotesUserListTimelineRequest = operations['notes/user-list-timeline']['requestBody']['content']['application/json'];
 export type NotesUserListTimelineResponse = operations['notes/user-list-timeline']['responses']['200']['content']['application/json'];
 export type NotificationsCreateRequest = operations['notifications/create']['requestBody']['content']['application/json'];
+export type NotificationsDeleteRequest = operations['notifications/delete']['requestBody']['content']['application/json'];
 export type PagePushRequest = operations['page-push']['requestBody']['content']['application/json'];
 export type PagesCreateRequest = operations['pages/create']['requestBody']['content']['application/json'];
 export type PagesCreateResponse = operations['pages/create']['responses']['200']['content']['application/json'];

@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -67,6 +68,10 @@ function onNotification(notification) {
 	}
 }
 
+function onNotificationDeleted(notificationId) {
+	pagingComponent.value?.removeItem(notificationId);
+}
+
 function reload() {
 	return new Promise<void>((res) => {
 		pagingComponent.value?.reload().then(() => {
@@ -80,12 +85,14 @@ let connection;
 onMounted(() => {
 	connection = useStream().useChannel('main');
 	connection.on('notification', onNotification);
+	connection.on('notificationDeleted', onNotificationDeleted);
 });
 
 onActivated(() => {
 	pagingComponent.value?.reload();
 	connection = useStream().useChannel('main');
 	connection.on('notification', onNotification);
+	connection.on('notificationDeleted', onNotificationDeleted);
 });
 
 onUnmounted(() => {

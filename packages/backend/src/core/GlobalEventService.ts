@@ -10,6 +10,7 @@ import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { MiNote } from '@/models/Note.js';
+import type { MiNotification } from '@/models/Notification.js';
 import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
@@ -69,6 +70,7 @@ export interface MainEventTypes {
 		file: Packed<'DriveFile'>;
 	};
 	readAllNotifications: undefined;
+	notificationDeleted: MiNotification['id'];
 	unreadNotification: Packed<'Notification'>;
 	unreadMention: MiNote['id'];
 	readAllUnreadMentions: undefined;
