@@ -22925,10 +22925,10 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           flashId: string;
-          title: string;
-          summary: string;
-          script: string;
-          permissions: string[];
+          title?: string;
+          summary?: string;
+          script?: string;
+          permissions?: string[];
           /** @enum {string} */
           visibility?: 'public' | 'private';
         };
