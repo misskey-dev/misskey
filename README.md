@@ -25,3 +25,4 @@
 
 - デフォルトハッシュタグ対応
   - https://github.com/misskey-dev/misskey/pull/13098
+- 2024/2に大量発生したスパムへの対策
