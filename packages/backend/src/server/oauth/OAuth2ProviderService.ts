@@ -525,7 +525,7 @@ export class OAuth2ProviderService {
 				picture: accessToken.user?.avatarUrl,
 				email: user?.email,
 				email_verified: user?.emailVerified,
-				updated_at: accessToken.lastUsedAt?.getTime() ?? 0 / 1000,
+				updated_at: (accessToken.lastUsedAt?.getTime() ?? 0) / 1000,
 			};
 		});
 	}
