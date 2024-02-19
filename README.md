@@ -10,7 +10,7 @@
 - 「削除してタグづけ」（[モロヘイヤ](https://github.com/pooza/mulukhiya-toot-proxy/)の機能）へのリンクをノートのメニューに追加
 - 左メニュー
   - モロヘイヤHOMEへのリンクを追加
-  - [ダイスキーブログ](https://blog.misskey.delmulin.com)へのリンクを追加
+  - [ダイスキーBlog](https://blog.misskey.delmulin.com)へのリンクを追加
 - OAuth認証まわりでの文言修正
   - 不自然な文言「アプリケーションに戻ってやっていってください」を修正。
   - 認証キーが画面に表示されていなかった為、追加。
@@ -23,6 +23,5 @@
 
 ### バックエンド
 
-- デフォルトハッシュタグ（`#delmulin`）対応
-  - ローカルタイムラインを修正
-  - ソーシャルタイムラインを修正
+- デフォルトハッシュタグ対応
+  - https://github.com/misskey-dev/misskey/pull/13098
