@@ -119,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			]);
 
 			notifications = (await Promise.all(notifications.map(async (notification): Promise<MiNotification|null> => {
-				if (!('notifierId' in notification)) return null;
+				if (!('notifierId' in notification)) return notification;
 				if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
 
 				const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
