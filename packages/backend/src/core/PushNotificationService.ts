@@ -115,6 +115,8 @@ export class PushNotificationService implements OnApplicationShutdown {
 						endpoint: subscription.endpoint,
 						auth: subscription.auth,
 						publickey: subscription.publickey,
+					}).then(() => {
+						this.subscriptionsCache.refresh(userId);
 					});
 				}
 			});
