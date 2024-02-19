@@ -19,6 +19,7 @@
 ### Client
 
 ### Server
+- エンドポイント`flash/update`の`flashId`以外のパラメータは必須ではなくなりました
 
 
 ## 202x.x.x (unreleased)
