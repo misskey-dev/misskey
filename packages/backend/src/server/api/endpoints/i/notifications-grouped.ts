@@ -6,7 +6,6 @@
 import { Brackets, In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
-import { not } from 'ajv/dist/compile/codegen/index.js';
 import type { NotesRepository, UsersRepository } from '@/models/_.js';
 import { obsoleteNotificationTypes, notificationTypes, FilterUnionByProperty } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
