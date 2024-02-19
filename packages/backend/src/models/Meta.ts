@@ -253,6 +253,8 @@ export class MiMeta {
 	})
 	public turnstileSecretKey: string | null;
 
+	// chaptcha系を追加した際にはnodeinfoのレスポンスに追加するのを忘れないようにすること
+
 	@Column('enum', {
 		enum: ['none', 'all', 'local', 'remote'],
 		default: 'none',
