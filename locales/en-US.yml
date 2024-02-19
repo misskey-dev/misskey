@@ -1165,6 +1165,7 @@ hideRepliesToOthersInTimelineAll: "Hide replies to others from everyone you foll
 confirmShowRepliesAll: "This operation is irreversible. Would you really like to show replies to others from everyone you follow in your timeline?"
 confirmHideRepliesAll: "This operation is irreversible. Would you really like to hide replies to others from everyone you follow in your timeline?"
 externalServices: "External Services"
+sourceCode: "Source code"
 impressum: "Impressum"
 impressumUrl: "Impressum URL"
 impressumDescription: "In some countries, like germany, the inclusion of operator contact information (an Impressum) is legally required for commercial websites."

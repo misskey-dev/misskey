@@ -1167,6 +1167,7 @@ hideRepliesToOthersInTimelineAll: "在時間軸不包含追隨中所有人的回
 confirmShowRepliesAll: "進行此操作後無法復原。您真的希望時間軸「包含」您目前追隨的所有人的回覆嗎？"
 confirmHideRepliesAll: "進行此操作後無法復原。您真的希望時間軸「不包含」您目前追隨的所有人的回覆嗎？"
 externalServices: "外部服務"
+sourceCode: "原始碼"
 impressum: "營運者資訊"
 impressumUrl: "營運者資訊網址"
 impressumDescription: "在德國與部份地區必須要明確顯示營運者資訊。"
