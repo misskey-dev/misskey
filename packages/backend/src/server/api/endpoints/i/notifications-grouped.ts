@@ -6,6 +6,7 @@
 import { Brackets, In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
+import { not } from 'ajv/dist/compile/codegen/index.js';
 import type { NotesRepository, UsersRepository } from '@/models/_.js';
 import { obsoleteNotificationTypes, notificationTypes, FilterUnionByProperty } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -121,7 +122,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			]);
 
 			notifications = (await Promise.all(notifications.map(async (notification): Promise<MiNotification|null> => {
-				if (!('notifierId' in notification)) return null;
+				if (!('notifierId' in notification)) return notification;
 				if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
 
 				const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
