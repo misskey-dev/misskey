@@ -93,9 +93,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<MkReactionsViewer :note="appearNote" :maxNumber="1" @mockUpdateMyReaction="emitUpdReaction">
+			<MkReactionsViewer :class="$style.reactionsViewer" :note="appearNote" :maxNumber="1" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
-					<MkButton class="_button" link :to="`/notes/${appearNote.id}/reactions`" :class="$style.reactionOmitted">{{ i18n.ts.more }}</MkButton>
+					<MkButton class="_button" link :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted, { [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]">{{ i18n.ts.more }}</MkButton>
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
@@ -984,14 +984,33 @@ function emitUpdReaction(emoji: string, delta: number) {
 	opacity: 0.7;
 }
 
+.reactionsViewer {
+	display: flex;
+	flex-wrap: wrap;
+}
+
 .reactionOmitted {
 	display: inline-flex;
+	min-width: 0;
+	height: 42px;
+	margin: 2px;
+	padding: 0 6px;
+	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
-	height: 32px;
-	margin: auto 2px;
-	border-radius: 6px;
-	padding: 0 3px;
+	cursor: pointer;
 	border: dashed 1px var(--divider);
+
+	&.small {
+		height: 32px;
+		font-size: 1em;
+		border-radius: 4px;
+	}
+
+	&.large {
+		height: 52px;
+		font-size: 2em;
+		border-radius: 8px;
+	}
 }
 </style>
