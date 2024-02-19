@@ -172,26 +172,29 @@ export class ApNoteService {
 
 		// SPAM対策
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
-		if (apMentions.length >= 5 && actor.followersCount === 0 && actor.followingCount === 0){
-			throw new Error('too many mensions included.');
+		const hasNoFF = actor.followersCount === 0 && actor.followingCount === 0;
+		if (apMentions.length >= 5 && hasNoFF){
 			this.logger.error('Too many mensions included', {
-				value,
-				object,
+				account: `@${actor.username}@${actor.host}`,
+				note: `https://${actor.host}/notes/${note.id}`,
+				mentions: apMentions.map((user) => user.uri),
 			});
+			throw new Error('too many mensions included.');
 		}
-		if (apMentions.includes((user) => user.isSuspended)) {
-			throw new Error('includes suspended user.')
+		if (apMentions.includes((user) => user.isSuspended) && hasNoFF) {
 			this.logger.error('Suspended user mention included', {
-				value,
-				object,
+				account: `@${actor.username}@${actor.host}`,
+				note: `${note.id}`,
+				suspended: apMentions.find((user)  => user.isSuspended)
 			});
+			throw new Error('includes suspended user.')
 		}
-		if (actor.username === actor.name && /^[a-z0-9]+$/.test(actor.username) && apMentions.length > 0 && actor.followersCount === 0 && actor.followingCount === 0){
-			throw new Error('suspected SPAM')
+		if (actor.username === actor.name && /^[a-z0-9]+$/.test(actor.username) && apMentions.length > 0 && hasNoFF){
 			this.logger.error('Suspected SPAM', {
-				value,
-				object,
+				account: `@${actor.username}@${actor.host}`,
+				note: `https://${actor.host}/notes/${note.id}`,
 			});
+			throw new Error('suspected SPAM')
 		}
 
 		const apHashtags = extractApHashtags(note.tag);
