@@ -58,9 +58,9 @@ const getPrograms = async () => {
       programs = e;
       Object.keys(programs).filter(k => programs[k]?.enable).map(k => {
         const v = programs[k];
-				if (!v) return;
+        if (!v) return;
         const label: string[] = [];
-				if (v.series) label.push(v.series);
+        if (v.series) label.push(v.series);
         if (v.episode) {
           label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
         }
@@ -91,9 +91,9 @@ const setPrograms = async () => {
 
     default:
       const v = programs[program_selected.value];
-			if (!v) return;
-			commandToot.tagging['user_tags'] = []
-			if (v.series) commandToot.tagging['user_tags'].push(v.series);
+      if (!v) return;
+      commandToot.tagging['user_tags'] = []
+      if (v.series) commandToot.tagging['user_tags'].push(v.series);
       if (v.episode) {
         commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
       }
