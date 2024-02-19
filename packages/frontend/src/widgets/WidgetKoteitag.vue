@@ -19,18 +19,18 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const name = 'koteitag';
 const dic = i18n.ts._koteitag;
 const program_selected = ref('');
-let programs:object[] = [];
+let programs = [];
 let options = reactive({});
 
 const widgetPropsDef = {};
@@ -52,13 +52,15 @@ defineExpose<WidgetComponentExpose>({
 const getPrograms = async () => {
   options = {clear_tags: {key:'clear_tags', label: dic.clearTags}};
   fetch('/mulukhiya/api/program/update', {method: 'POST'})
-    .then(e => fetch('/mulukhiya/api/program'))
+    .then(() => fetch('/mulukhiya/api/program'))
     .then(e => e.json())
     .then(e => {
       programs = e;
       Object.keys(programs).filter(k => programs[k]?.enable).map(k => {
         const v = programs[k];
-        const label = [v.series];
+				if (!v) return;
+        const label: string[] = [];
+				if (v.series) label.push(v.series);
         if (v.episode) {
           label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
         }
@@ -89,7 +91,9 @@ const setPrograms = async () => {
 
     default:
       const v = programs[program_selected.value];
-      commandToot.tagging['user_tags'] = [v.series];
+			if (!v) return;
+			commandToot.tagging['user_tags'] = []
+			if (v.series) commandToot.tagging['user_tags'].push(v.series);
       if (v.episode) {
         commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
       }
@@ -108,7 +112,7 @@ const setPrograms = async () => {
   }).then(({ canceled }) => {
     program_selected.value = '';
     if (canceled) return;
-    os.api('notes/create', {
+    os.apiWithDialog('notes/create', {
       localOnly: true, // コマンドトゥートは連合に流す必要なし
       poll: null,
       text: JSON.stringify(commandToot),
