@@ -489,6 +489,16 @@ describe('Yaku', () => {
 			}).includes('chinitsu'), true);
 		});
 	});
+	describe('shosangen', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+			      	house: 'e',
+				handTiles: ['haku', 'haku', 'haku', 'chun', 'chun', 'hatsu', 'hatsu', 'hatsu', 'm1', 'm1', 'm1', 'm2', 'm2', 'm2'] ,
+				huros: [],
+				tsumoTile: 'm2',
+			}).includes('shosangen'), true);
+		});
+	});
 
 	describe('kokushi', () => {
 		it('valid', () => {
