@@ -366,7 +366,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
 		}
 
-		const willCauseNotification = mentionedUsers.filter(u => u.host === null).length > 0 || data.reply?.userHost === null || data.renote?.userHost === null;
+		const willCauseNotification = mentionedUsers.some(u => u.host === null)
+			|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.host === null))
+			|| data.reply?.userHost === null || (this.isQuote(data) && data.renote?.userHost === null) || false;
 
 		if (process.env.MISSKEY_BLOCK_MENTIONS_FROM_UNFAMILIAR_REMOTE_USERS === 'true' && user.host !== null && willCauseNotification) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
