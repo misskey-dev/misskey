@@ -11,6 +11,16 @@
 -
 
 -->
+## 202x.x.x (unreleased)
+
+### General
+
+### Client
+- Fix: syuilo/misskeyの時代からあるインスタンスが改変されたバージョンであると誤認識される問題
+- Fix: MFMのオートコンプリートが出るべき状況で出ないことがある問題を修正
+
+### Server
+- Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
 
 ## 202x.x.x (unreleased)
 
