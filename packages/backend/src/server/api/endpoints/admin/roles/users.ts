@@ -17,7 +17,7 @@ export const meta = {
 	tags: ['admin', 'role', 'users'],
 
 	requireCredential: false,
-	requireAdmin: true,
+	requireModerator: true,
 	kind: 'read:admin:roles',
 
 	errors: {

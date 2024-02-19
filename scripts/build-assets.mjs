@@ -5,7 +5,9 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import cssnano from 'cssnano';
+import * as yaml from 'js-yaml';
 import postcss from 'postcss';
 import * as terser from 'terser';
 
@@ -14,7 +16,18 @@ import generateDTS from '../locales/generateDTS.js';
 import meta from '../package.json' assert { type: "json" };
 import buildTarball from './tarball.mjs';
 
+const configDir = fileURLToPath(new URL('../.config', import.meta.url));
+const configPath = process.env.MISSKEY_CONFIG_YML
+	? path.resolve(configDir, process.env.MISSKEY_CONFIG_YML)
+	: process.env.NODE_ENV === 'test'
+		? path.resolve(configDir, 'test.yml')
+		: path.resolve(configDir, 'default.yml');
+
 let locales = buildLocales();
+
+async function loadConfig() {
+	return fs.readFile(configPath, 'utf-8').then(data => yaml.load(data)).catch(() => null);
+}
 
 async function copyFrontendFonts() {
   await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
@@ -78,7 +91,7 @@ async function build() {
     copyBackendViews(),
     buildBackendScript(),
     buildBackendStyle(),
-		buildTarball(),
+		loadConfig().then(config => config?.publishTarballInsteadOfProvideRepositoryUrl && buildTarball()),
   ]);
 }
 
