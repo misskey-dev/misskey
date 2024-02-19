@@ -275,10 +275,28 @@ describe('Yaku', () => {
 
 			assert.deepStrictEqual(calcYakus({
 				house: 'e',
-				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 's5', 's6', 's7', 'p1', 'p1'],
+				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 'p5', 'p6', 'p7', 'p1', 'p1'],
 				huros: [],
 				tsumoTile: 'p1',
 			}).includes('iipeko'), false);
+		});
+	});
+	describe('ryanpeko', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 'p5', 'p6', 'p7', 'p1', 'p1'],
+				huros: [],
+				tsumoTile: 'p1',
+			}).includes('ryanpeko'), true);
+		});
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				house: 'e',
+				handTiles: ['m2', 'm3', 'm4', 'm4', 'p5', 'p6', 'p7', 'p5', 'p6', 'p7', 'p1', 'p1'],
+			    	huros: [{type: 'cii', tiles: ['m2','m3','m4']}],
+				tsumoTile: 'p1',
+			}).includes('ryanpeko'), true);
 		});
 	});
 
