@@ -59,6 +59,9 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -149,6 +152,7 @@ type Option = {
 
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
+	private logger: Logger;
 	#shutdownController = new AbortController();
 
 	public static ContainsProhibitedWordsError = class extends Error {};
@@ -219,7 +223,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private instanceChart: InstanceChart,
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
-	) { }
+		private loggerService: LoggerService,
+	) {
+		this.logger = this.loggerService.getLogger('note:create');
+	}
 
 	@bindThis
 	public async create(user: {
@@ -357,6 +364,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
 			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
+		}
+
+		const willCauseNotification = mentionedUsers.filter(u => u.host === null).length > 0 || data.reply?.userHost === null || data.renote?.userHost === null;
+
+		if (this.config.nirila.blockMentionsFromUnfamiliarRemoteUsers && user.host !== null && willCauseNotification) {
+			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
+			if ((userEntity?.followersCount ?? 0) === 0) {
+				this.logger.error('Request rejected because user has no local followers', { user: user.id, note: data });
+				throw new IdentifiableError('e11b3a16-f543-4885-8eb1-66cad131dbfd', 'Notes including mentions, replies, or renotes from remote users are not allowed until user has at least one local follower.');
+			}
 		}
 
 		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
