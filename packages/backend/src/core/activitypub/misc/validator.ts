@@ -20,7 +20,7 @@ export function validateContentTypeSetAsActivityPub(response: Response): void {
 	throw new Error('Validate content type of AP response: Content type is not application/activity+json or application/ld+json');
 }
 
-const plusJsonSuffixRegex = /(application|text)\/[a-zA-Z0-9\.\-\+]+\+json/;
+const plusJsonSuffixRegex = /^\s*(application|text)\/[a-zA-Z0-9\.\-\+]+\+json\s*(;|$)/;
 
 export function validateContentTypeSetAsJsonLD(response: Response): void {
 	const contentType = (response.headers.get('content-type') ?? '').toLowerCase();

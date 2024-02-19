@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.target">
-		<MkA v-user-preview="report.targetUserId" :class="$style.info" :to="`/admin/user/${report.targetUserId}`">
+		<MkA v-user-preview="report.targetUserId" :class="$style.info" :to="`/admin/user/${report.targetUserId}`" :behavior="'window'">
 			<MkAvatar :class="$style.avatar" :user="report.targetUser" indicator/>
 			<div :class="$style.name">
 				<MkUserName :class="$style.names" :user="report.targetUser"/>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 		<hr/>
-		<div>{{ i18n.ts.reporter }}: <MkA :to="`/admin/user/${report.reporter.id}`" class="_link">@{{ report.reporter.username }}</MkA></div>
+		<div>{{ i18n.ts.reporter }}: <MkA :to="`/admin/user/${report.reporter.id}`" class="_link" :behavior="'window'">@{{ report.reporter.username }}</MkA></div>
 		<div v-if="report.assignee">
 			{{ i18n.ts.moderator }}:
 			<MkAcct :user="report.assignee"/>

@@ -1158,6 +1158,7 @@ hideRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutz
 confirmShowRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern in der Chronik anzeigen?"
 confirmHideRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern nicht in der Chronik anzeigen?"
 externalServices: "Externe Dienste"
+sourceCode: "Quellcode"
 impressum: "Impressum"
 impressumUrl: "Impressums-URL"
 impressumDescription: "In manchen Ländern, wie Deutschland und dessen Umgebung, ist die Angabe von Betreiberinformationen (ein Impressum) bei kommerziellem Betrieb zwingend."
