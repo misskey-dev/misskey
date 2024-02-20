@@ -35,9 +35,14 @@ export const notificationTypes = [
 	'achievementEarned',
 	'app',
 	'test',
+] as const;
+
+export const groupedNotificationTypes = [
+	...notificationTypes,
 	'reaction:grouped',
 	'renote:grouped',
 ] as const;
+
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
