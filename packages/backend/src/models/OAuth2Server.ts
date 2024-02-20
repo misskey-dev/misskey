@@ -64,7 +64,7 @@ export class MiOAuth2Server {
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public idPath?: string;
+	public usernamePath?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
@@ -80,11 +80,6 @@ export class MiOAuth2Server {
 		default: false,
 	})
 	public markEmailAsVerified: boolean;
-
-	@Column('varchar', {
-		length: 256, nullable: true,
-	})
-	public usernamePath: string;
 }
 
 export const titleSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;
