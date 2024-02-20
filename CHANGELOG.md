@@ -20,6 +20,7 @@
 - Fix: syuilo/misskeyの時代からあるインスタンスが改変されたバージョンであると誤認識される問題
 - Fix: MFMのオートコンプリートが出るべき状況で出ないことがある問題を修正
 - Fix: チャートのラベルが消えている問題を修正
+- Fix: 画面表示後最初の音声再生が爆音になることがある問題を修正
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
