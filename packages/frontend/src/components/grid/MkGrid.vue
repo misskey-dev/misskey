@@ -605,6 +605,7 @@ function onMouseMove(ev: MouseEvent) {
 
 	const targetCellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
 	if (equalCellAddress(previousCellAddress.value, targetCellAddress)) {
+		// セルが変わるまでイベントを起こしたくない
 		return;
 	}
 
@@ -615,7 +616,8 @@ function onMouseMove(ev: MouseEvent) {
 	switch (state.value) {
 		case 'cellSelecting': {
 			const selectedCellAddress = selectedCell.value?.address;
-			if (equalCellAddress(previousCellAddress.value, targetCellAddress) || !availableCellAddress(targetCellAddress) || !selectedCellAddress) {
+			if (!availableCellAddress(targetCellAddress) || !selectedCellAddress) {
+				// 正しいセル範囲ではない
 				return;
 			}
 
@@ -629,6 +631,7 @@ function onMouseMove(ev: MouseEvent) {
 				row: Math.max(targetCellAddress.row, selectedCellAddress.row),
 			};
 
+			// 範囲外のセルは選択解除し、範囲内のセルは選択状態にする
 			unSelectionOutOfRange(leftTop, rightBottom);
 			expandCellRange(leftTop, rightBottom);
 			previousCellAddress.value = targetCellAddress;
@@ -637,6 +640,7 @@ function onMouseMove(ev: MouseEvent) {
 		}
 		case 'colSelecting': {
 			if (!isColumnHeaderCellAddress(targetCellAddress) || previousCellAddress.value.col === targetCellAddress.col) {
+				// セルが変わるまでイベントを起こしたくない
 				return;
 			}
 
@@ -650,6 +654,7 @@ function onMouseMove(ev: MouseEvent) {
 				row: cells.value.length - 1,
 			};
 
+			// 範囲外のセルは選択解除し、範囲内のセルは選択状態にする
 			unSelectionOutOfRange(leftTop, rightBottom);
 			expandCellRange(leftTop, rightBottom);
 			previousCellAddress.value = targetCellAddress;
@@ -661,6 +666,7 @@ function onMouseMove(ev: MouseEvent) {
 		}
 		case 'rowSelecting': {
 			if (!isRowNumberCellAddress(targetCellAddress) || previousCellAddress.value.row === targetCellAddress.row) {
+				// セルが変わるまでイベントを起こしたくない
 				return;
 			}
 
@@ -674,9 +680,11 @@ function onMouseMove(ev: MouseEvent) {
 				row: Math.max(targetCellAddress.row, firstSelectionRowIdx.value),
 			};
 
+			// 範囲外のセルは選択解除し、範囲内のセルは選択状態にする
 			unSelectionOutOfRange(leftTop, rightBottom);
 			expandCellRange(leftTop, rightBottom);
 
+			// 行も同様に
 			const rangedRowIndexes = [rows.value[targetCellAddress.row].index, ...rangedRows.value.map(it => it.index)];
 			expandRowRange(Math.min(...rangedRowIndexes), Math.max(...rangedRowIndexes));
 
@@ -714,6 +722,7 @@ function onContextMenu(ev: MouseEvent) {
 	const context = createContext();
 	const menuItems = Array.of<MenuItem>();
 	switch (true) {
+		// 通常セルのコンテキストメニュー作成
 		case availableCellAddress(cellAddress): {
 			const cell = cells.value[cellAddress.row].cells[cellAddress.col];
 			if (cell.setting.contextMenuFactory) {
@@ -721,6 +730,7 @@ function onContextMenu(ev: MouseEvent) {
 			}
 			break;
 		}
+		// 列ヘッダセルのコンテキストメニュー作成
 		case isColumnHeaderCellAddress(cellAddress): {
 			const col = columns.value[cellAddress.col];
 			if (col.setting.contextMenuFactory) {
@@ -728,6 +738,7 @@ function onContextMenu(ev: MouseEvent) {
 			}
 			break;
 		}
+		// 行ヘッダセルのコンテキストメニュー作成
 		case isRowNumberCellAddress(cellAddress): {
 			const row = rows.value[cellAddress.row];
 			if (row.setting.contextMenuFactory) {
@@ -768,7 +779,9 @@ function onChangeCellContentSize(sender: GridCell, contentSize: Size) {
 	if (_cells.length > sender.address.row && _cells[sender.address.row].cells.length > sender.address.col) {
 		const currentSize = _cells[sender.address.row].cells[sender.address.col].contentSize;
 		if (currentSize.width !== contentSize.width || currentSize.height !== contentSize.height) {
+			// 通常セルのセル幅が確定したら、そのサイズを保持しておく（内容に引っ張られて想定よりも大きいセルサイズにならないようにするためのCSS作成に使用）
 			_cells[sender.address.row].cells[sender.address.col].contentSize = contentSize;
+
 			if (sender.column.setting.width === 'auto') {
 				calcLargestCellWidth(sender.column);
 			}
@@ -809,7 +822,9 @@ function onHeaderCellChangeContentSize(sender: GridColumn, newSize: Size) {
 		case 'normal': {
 			const currentSize = columns.value[sender.index].contentSize;
 			if (currentSize.width !== newSize.width || currentSize.height !== newSize.height) {
+				// ヘッダセルのセル幅が確定したら、そのサイズを保持しておく（内容に引っ張られて想定よりも大きいセルサイズにならないようにするためのCSS作成に使用）
 				columns.value[sender.index].contentSize = newSize;
+
 				if (sender.setting.width === 'auto') {
 					calcLargestCellWidth(sender);
 				}
@@ -880,7 +895,8 @@ function emitGridEvent(ev: GridEvent) {
 }
 
 /**
- * 親コンポーネントに新しい値を通知する。セル値のバリデーション結果は問わない（親コンポーネント側で制御する）
+ * 親コンポーネントに新しい値を通知する。
+ * 新しい値は、イベント通知→元データへの反映→再計算（バリデーション含む）→再描画の流れで反映される。
  */
 function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
@@ -938,7 +954,7 @@ function unSelectionRangeAll() {
 		cell.ranged = false;
 	}
 
-	const _rows = rows.value;
+	const _rows = rows.value.filter(it => it.using);
 	for (const row of _rows) {
 		row.ranged = false;
 	}
@@ -992,6 +1008,9 @@ function expandRowRange(top: number, bottom: number) {
 	}
 }
 
+/**
+ * 特定の条件下でのみ適用されるCSSを反映する。
+ */
 function applyRowRules(targetCells: GridCell[]) {
 	const _rows = rows.value;
 	const targetRowIdxes = [...new Set(targetCells.map(it => it.address.row))];
@@ -1086,6 +1105,9 @@ function refreshData() {
 		console.log('[grid][refresh-data][begin]');
 	}
 
+	// データを元に行・列・セルを作成する。
+	// 行は元データの配列の長さに応じて作成するが、最低限の行数は設定によって決まる。
+	// 行数が変わるたびに都度レンダリングするとパフォーマンスがイマイチなので、あらかじめ多めにセルを用意しておくための措置。
 	const _data: DataSource[] = data.value;
 	const _rows: GridRow[] = (_data.length > rowSetting.minimumDefinitionCount)
 		? _data.map((_, index) => createRow(index, true, rowSetting))
@@ -1137,7 +1159,7 @@ function patchData(newItems: DataSource[]) {
 		const newRows = Array.of<GridRow>();
 		const newCells = Array.of<RowHolder>();
 
-		// 行数が増えているので新しい行を追加する
+		// 未使用の行を含めても足りないので新しい行を追加する
 		for (let rowIdx = rows.value.length; rowIdx < newItems.length; rowIdx++) {
 			const newRow = createRow(rowIdx, true, rowSetting);
 			newRows.push(newRow);
@@ -1169,6 +1191,7 @@ function patchData(newItems: DataSource[]) {
 		}
 	}
 
+	// 新しい値と既に設定されていた値を入れ替える
 	const changedCells = Array.of<GridCell>();
 	for (let rowIdx = 0; rowIdx < newItems.length; rowIdx++) {
 		const holder = cells.value[rowIdx];

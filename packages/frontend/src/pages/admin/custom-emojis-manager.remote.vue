@@ -116,7 +116,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { emptyStrToUndefined, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import { GridCellValueChangeEvent, GridContext, GridEvent, GridKeyDownEvent } from '@/components/grid/grid-event.js';
+import { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import * as os from '@/os.js';
@@ -251,13 +251,10 @@ async function onImportClicked() {
 	await importEmojis(targets);
 }
 
-function onGridEvent(event: GridEvent, currentState: GridContext) {
+function onGridEvent(event: GridEvent) {
 	switch (event.type) {
 		case 'cell-value-change':
 			onGridCellValueChange(event);
-			break;
-		case 'keydown':
-			onGridKeyDown(event, currentState);
 			break;
 	}
 }
@@ -267,10 +264,6 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		gridItems.value[row.index][column.setting.bindTo] = newValue;
 	}
-}
-
-function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
-	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
 }
 
 async function importEmojis(targets: GridItem[]) {

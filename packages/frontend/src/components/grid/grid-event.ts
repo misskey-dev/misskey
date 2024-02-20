@@ -23,8 +23,6 @@ export type GridContext = {
 
 export type GridEvent =
 	GridCellValueChangeEvent |
-	GridKeyDownEvent |
-	GridMouseDownEvent |
 	GridCellValidationEvent
 	;
 
@@ -40,15 +38,4 @@ export type GridCellValidationEvent = {
 	type: 'cell-validation';
 	violation?: ValidateViolation;
 	all: ValidateViolation[];
-};
-
-export type GridKeyDownEvent = {
-	type: 'keydown';
-	event: KeyboardEvent;
-};
-
-export type GridMouseDownEvent = {
-	type: 'mousedown';
-	event: MouseEvent;
-	clickedCellAddress: CellAddress;
 };
