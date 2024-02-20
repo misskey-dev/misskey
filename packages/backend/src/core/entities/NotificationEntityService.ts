@@ -353,7 +353,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
 			const isValid = await this.#validateNotifier(notification, meId, userIdsWhoMeMuting, userMutedInstances);
 			return isValid ? notification : null;
-		}))) as [T|null] ).filter((notification): notification is T => notification !== null);
+		}))) as [T|null] ).filter(isNotNull);
 
 		return filteredNotifications;
 	}
