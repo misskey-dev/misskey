@@ -222,7 +222,7 @@ export class NotificationEntityService implements OnModuleInit {
 					user,
 					reaction: reaction.reaction,
 				};
-			}))).filter(r => r.user);
+			}))).filter(r => isNotNull(r.user));
 			// if all users have been deleted, don't show this notification
 			if (!reactions.length) {
 				return null;
@@ -243,7 +243,7 @@ export class NotificationEntityService implements OnModuleInit {
 				}
 
 				return this.userEntityService.pack(userId, { id: meId });
-			}))).filter(u => u);
+			}))).filter(isNotNull);
 			// if all users have been deleted, don't show this notification
 			if (!users.length) {
 				return null;
