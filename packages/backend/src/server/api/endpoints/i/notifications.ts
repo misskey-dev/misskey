@@ -108,29 +108,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
 			}
 
-			//#region Check muting
-
-			const [
-				userIdsWhoMeMuting,
-				userMutedInstances,
-			] = await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
-			]);
-
-			notifications = (await Promise.all(notifications.map(async (notification): Promise<MiNotification|null> => {
-				if (!('notifierId' in notification)) return notification;
-				if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
-
-				const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
-				if (notifier === null) return null;
-				if (notifier.host && userMutedInstances.has(notifier.host)) return null;
-
-				return notification;
-			}))).filter((notification): notification is MiNotification => notification !== null);
-
-			//#endregion Check muting
-
 			if (notifications.length === 0) {
 				return [];
 			}
