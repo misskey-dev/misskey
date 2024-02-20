@@ -196,25 +196,18 @@ import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
-import {
-	GridCellValidationEvent,
-	GridCellValueChangeEvent,
-	GridContext,
-	GridEvent,
-	GridKeyDownEvent,
-} from '@/components/grid/grid-event.js';
-import { optInGridUtils } from '@/components/grid/optin-utils.js';
+import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import XRegisterLogs from '@/pages/admin/custom-emojis-manager.local.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import MkTagItem from '@/components/MkTagItem.vue';
 import { MenuItem } from '@/types/menu.js';
-import { CellValue } from '@/components/grid/cell.js';
 import { selectFile } from '@/scripts/select-file.js';
+import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
 
 type GridItem = {
 	checked: boolean;
@@ -275,26 +268,33 @@ function setupGrid(): GridSetting {
 						type: 'button',
 						text: '選択行をコピー',
 						icon: 'ti ti-copy',
-						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
 						text: '選択行を削除対象とする',
 						icon: 'ti ti-trash',
 						action: () => {
-							for (const row of context.rangedRows) {
-								gridItems.value[row.index].checked = true;
+							for (const rangedRow of context.rangedRows) {
+								gridItems.value[rangedRow.index].checked = true;
 							}
 						},
 					},
 				];
+			},
+			events: {
+				delete(rows) {
+					for (const row of rows) {
+						gridItems.value[row.index].checked = true;
+					}
+				},
 			},
 		},
 		cols: [
 			{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
 			{
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
-				customValueEditor: async (row, col, value, cellElement) => {
+				async customValueEditor(row, col, value, cellElement) {
 					const file = await selectFile(cellElement);
 					gridItems.value[row.index].url = file.url;
 					gridItems.value[row.index].fileId = file.id;
@@ -310,13 +310,13 @@ function setupGrid(): GridSetting {
 			{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 			{
 				bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140,
-				valueTransformer: (row) => {
+				valueTransformer(row) {
 					// バックエンドからからはIDと名前のペア配列で受け取るが、表示にIDがあると煩雑なので名前だけにする
 					return gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction
 						.map((it) => it.name)
 						.join(',');
 				},
-				customValueEditor: async (row) => {
+				async customValueEditor(row) {
 					// ID直記入は体験的に最悪なのでモーダルを使って入力する
 					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction;
 					const result = await os.selectRole({
@@ -334,27 +334,54 @@ function setupGrid(): GridSetting {
 
 					return transform;
 				},
+				events: {
+					paste(text) {
+						// idとnameのペア配列をJSONで受け取る。それ以外の形式は許容しない
+						try {
+							const obj = JSON.parse(text);
+							if (!Array.isArray(obj)) {
+								return [];
+							}
+							if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
+								return [];
+							}
+
+							return obj.map(it => ({ id: it.id, name: it.name }));
+						} catch (ex) {
+							console.warn(ex);
+							return [];
+						}
+					},
+					delete(cell) {
+						// デフォルトはundefinedになるが、このプロパティは空配列にしたい
+						gridItems.value[cell.row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = [];
+					},
+				},
 			},
 			{ bindTo: 'updatedAt', type: 'text', editable: false, width: 'auto' },
 			{ bindTo: 'publicUrl', type: 'text', editable: false, width: 180 },
 			{ bindTo: 'originalUrl', type: 'text', editable: false, width: 180 },
 		],
 		cells: {
-			contextMenuFactory: (col, row, value, context) => {
+			contextMenuFactory(col, row, value, context) {
 				return [
 					{
 						type: 'button',
 						text: '選択範囲をコピー',
 						icon: 'ti ti-copy',
 						action: () => {
-							return optInGridUtils.copyToClipboard(gridItems, context);
+							return copyGridDataToClipboard(gridItems, context);
 						},
 					},
 					{
 						type: 'button',
 						text: '選択範囲を削除',
 						icon: 'ti ti-trash',
-						action: () => optInGridUtils.deleteSelectionRange(gridItems, context),
+						action: () => {
+							removeDataFromGrid(context, (cell) => {
+								gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+							});
+						},
 					},
 					{
 						type: 'button',
@@ -567,16 +594,13 @@ async function onPageChanged(pageNumber: number) {
 	await refreshCustomEmojis();
 }
 
-function onGridEvent(event: GridEvent, currentState: GridContext) {
+function onGridEvent(event: GridEvent) {
 	switch (event.type) {
 		case 'cell-validation':
 			onGridCellValidation(event);
 			break;
 		case 'cell-value-change':
 			onGridCellValueChange(event);
-			break;
-		case 'keydown':
-			onGridKeyDown(event, currentState);
 			break;
 	}
 }
@@ -589,74 +613,6 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		gridItems.value[row.index][column.setting.bindTo] = newValue;
-	}
-}
-
-async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
-	function roleIdConverter(value: string): CellValue {
-		try {
-			const obj = JSON.parse(value);
-			if (!Array.isArray(obj)) {
-				return [];
-			}
-			if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
-				return [];
-			}
-
-			return obj.map(it => ({ id: it.id, name: it.name }));
-		} catch (ex) {
-			return [];
-		}
-	}
-
-	const { ctrlKey, shiftKey, code } = event.event;
-
-	switch (true) {
-		case ctrlKey && shiftKey: {
-			break;
-		}
-		case ctrlKey: {
-			switch (code) {
-				case 'KeyC': {
-					optInGridUtils.copyToClipboard(gridItems, currentState);
-					break;
-				}
-				case 'KeyV': {
-					await optInGridUtils.pasteFromClipboard(
-						gridItems,
-						currentState,
-						[
-							{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', converter: roleIdConverter },
-						],
-					);
-					break;
-				}
-			}
-			break;
-		}
-		case shiftKey: {
-			break;
-		}
-		default: {
-			switch (code) {
-				case 'Delete': {
-					if (currentState.rangedRows.length > 0) {
-						for (const row of currentState.rangedRows) {
-							gridItems.value[row.index].checked = true;
-						}
-					} else {
-						const ranges = currentState.rangedCells;
-						for (const cell of ranges) {
-							if (cell.column.setting.editable) {
-								gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
-							}
-						}
-					}
-					break;
-				}
-			}
-			break;
-		}
 	}
 }
 

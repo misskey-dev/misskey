@@ -32,7 +32,6 @@ export type GridCellValueChangeEvent = {
 	type: 'cell-value-change';
 	column: GridColumn;
 	row: GridRow;
-	violation: ValidateViolation;
 	oldValue: CellValue;
 	newValue: CellValue;
 };

@@ -1,7 +1,7 @@
 import { CellValidator } from '@/components/grid/cell-validators.js';
 import { Size, SizeStyle } from '@/components/grid/grid.js';
 import { calcCellWidth } from '@/components/grid/grid-utils.js';
-import { CellValue } from '@/components/grid/cell.js';
+import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { GridRow } from '@/components/grid/row.js';
 import { MenuItem } from '@/types/menu.js';
 import { GridContext } from '@/components/grid/grid-event.js';
@@ -23,6 +23,11 @@ export type GridColumnSetting = {
 	customValueEditor?: CustomValueEditor;
 	valueTransformer?: CellValueTransformer;
 	contextMenuFactory?: GridColumnContextMenuFactory;
+	events?: {
+		copy?: (value: CellValue) => string;
+		paste?: (text: string) => CellValue;
+		delete?: (cell: GridCell, context: GridContext) => void;
+	}
 };
 
 export type GridColumn = {

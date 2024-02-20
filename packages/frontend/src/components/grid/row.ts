@@ -10,6 +10,7 @@ export const defaultGridRowSetting: Required<GridRowSetting> = {
 	minimumDefinitionCount: 100,
 	styleRules: [],
 	contextMenuFactory: () => [],
+	events: {},
 };
 
 export type GridRowStyleRuleConditionParams = {
@@ -31,6 +32,9 @@ export type GridRowSetting = {
 	minimumDefinitionCount?: number;
 	styleRules?: GridRowStyleRule[];
 	contextMenuFactory?: GridRowContextMenuFactory;
+	events?: {
+		delete?: (rows: GridRow[]) => void;
+	}
 }
 
 export type GridRow = {

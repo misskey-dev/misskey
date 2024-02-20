@@ -9,7 +9,6 @@
 				<MkGrid
 					:data="filteredLogs"
 					:settings="setupGrid()"
-					@event="onGridEvent"
 				/>
 			</div>
 			<div v-else>
@@ -27,15 +26,10 @@
 
 import { computed, ref, toRefs } from 'vue';
 import { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import {
-	GridContext,
-	GridEvent,
-	GridKeyDownEvent,
-} from '@/components/grid/grid-event.js';
-import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { GridSetting } from '@/components/grid/grid.js';
+import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 
 function setupGrid(): GridSetting {
 	return {
@@ -48,7 +42,7 @@ function setupGrid(): GridSetting {
 						type: 'button',
 						text: '選択行をコピー',
 						icon: 'ti ti-copy',
-						action: () => optInGridUtils.copyToClipboard(logs, context),
+						action: () => copyGridDataToClipboard(logs, context),
 					},
 				];
 			},
@@ -66,7 +60,7 @@ function setupGrid(): GridSetting {
 						type: 'button',
 						text: '選択範囲をコピー',
 						icon: 'ti ti-copy',
-						action: () => optInGridUtils.copyToClipboard(logs, context),
+						action: () => copyGridDataToClipboard(logs, context),
 					},
 				];
 			},
@@ -85,18 +79,6 @@ const filteredLogs = computed(() => {
 	const forceShowing = showingSuccessLogs.value;
 	return logs.value.filter((log) => forceShowing || log.failed);
 });
-
-function onGridEvent(event: GridEvent, currentState: GridContext) {
-	switch (event.type) {
-		case 'keydown':
-			onGridKeyDown(event, currentState);
-			break;
-	}
-}
-
-function onGridKeyDown(event: GridKeyDownEvent, currentState: GridContext) {
-	optInGridUtils.defaultKeyDownHandler(logs, event, currentState);
-}
 
 </script>
 

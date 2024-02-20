@@ -87,18 +87,12 @@ import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
 import { uploadFile } from '@/scripts/upload.js';
-import {
-	GridCellValidationEvent,
-	GridCellValueChangeEvent,
-	GridContext,
-	GridEvent,
-	GridKeyDownEvent,
-} from '@/components/grid/grid-event.js';
+import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
-import { optInGridUtils } from '@/components/grid/optin-utils.js';
-import XRegisterLogs from '@/pages/admin/custom-emojis-manager.local.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { GridSetting } from '@/components/grid/grid.js';
-import { CellValue } from '@/components/grid/cell.js';
+import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import { GridRow } from '@/components/grid/row.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
@@ -124,6 +118,11 @@ function setupGrid(): GridSetting {
 	const required = validators.required();
 	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
 
+	function removeRows(rows: GridRow[]) {
+		const idxes = [...new Set(rows.map(it => it.index))];
+		gridItems.value = gridItems.value.filter((_, i) => !idxes.includes(i));
+	}
+
 	return {
 		row: {
 			showNumber: true,
@@ -141,15 +140,20 @@ function setupGrid(): GridSetting {
 						type: 'button',
 						text: '選択行をコピー',
 						icon: 'ti ti-copy',
-						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
 						text: '選択行を削除',
 						icon: 'ti ti-trash',
-						action: () => optInGridUtils.deleteSelectionRange(gridItems, context),
+						action: () => removeRows(context.rangedRows),
 					},
 				];
+			},
+			events: {
+				delete(rows) {
+					removeRows(rows);
+				},
 			},
 		},
 		cols: [
@@ -195,13 +199,13 @@ function setupGrid(): GridSetting {
 						type: 'button',
 						text: '選択範囲をコピー',
 						icon: 'ti ti-copy',
-						action: () => optInGridUtils.copyToClipboard(gridItems, context),
+						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
 						text: '選択行を削除',
 						icon: 'ti ti-trash',
-						action: () => optInGridUtils.deleteSelectionRange(gridItems, context),
+						action: () => removeRows(context.rangedCells.map(it => it.row)),
 					},
 				];
 			},
@@ -359,16 +363,13 @@ async function onDriveSelectClicked() {
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
-function onGridEvent(event: GridEvent, currentState: GridContext) {
+function onGridEvent(event: GridEvent) {
 	switch (event.type) {
 		case 'cell-validation':
 			onGridCellValidation(event);
 			break;
 		case 'cell-value-change':
 			onGridCellValueChange(event);
-			break;
-		case 'keydown':
-			onGridKeyDown(event, currentState);
 			break;
 	}
 }
@@ -381,63 +382,6 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		gridItems.value[row.index][column.setting.bindTo] = newValue;
-	}
-}
-
-async function onGridKeyDown(event: GridKeyDownEvent, context: GridContext) {
-	function roleIdConverter(value: string): CellValue {
-		try {
-			const obj = JSON.parse(value);
-			if (!Array.isArray(obj)) {
-				return [];
-			}
-			if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
-				return [];
-			}
-
-			return obj.map(it => ({ id: it.id, name: it.name }));
-		} catch (ex) {
-			return [];
-		}
-	}
-
-	const { ctrlKey, shiftKey, code } = event.event;
-
-	switch (true) {
-		case ctrlKey && shiftKey: {
-			break;
-		}
-		case ctrlKey: {
-			switch (code) {
-				case 'KeyC': {
-					optInGridUtils.copyToClipboard(gridItems, context);
-					break;
-				}
-				case 'KeyV': {
-					await optInGridUtils.pasteFromClipboard(
-						gridItems,
-						context,
-						[
-							{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', converter: roleIdConverter },
-						],
-					);
-					break;
-				}
-			}
-			break;
-		}
-		case shiftKey: {
-			break;
-		}
-		default: {
-			switch (code) {
-				case 'Delete': {
-					optInGridUtils.deleteSelectionRange(gridItems, context);
-					break;
-				}
-			}
-			break;
-		}
 	}
 }
 

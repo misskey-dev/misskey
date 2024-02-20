@@ -45,7 +45,14 @@ import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import { cellValidation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell, resetCell } from '@/components/grid/cell.js';
-import { equalCellAddress, getCellAddress, getCellElement } from '@/components/grid/grid-utils.js';
+import {
+	copyGridDataToClipboard,
+	equalCellAddress,
+	getCellAddress,
+	getCellElement,
+	pasteToGridFromClipboard,
+	removeDataFromGrid,
+} from '@/components/grid/grid-utils.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { GridContext, GridEvent } from '@/components/grid/grid-event.js';
@@ -255,17 +262,42 @@ function onKeyDown(ev: KeyboardEvent) {
 		case 'normal': {
 			ev.preventDefault();
 
-			const selectedCellAddress = selectedCell.value?.address;
-			if (!selectedCellAddress) {
-				return;
-			}
-
+			const selectedCellAddress = selectedCell.value?.address ?? CELL_ADDRESS_NONE;
 			const max = availableBounds.value;
 			const bounds = rangedBounds.value;
 
 			handleKeyEvent(ev, [
 				{
 					code: 'any', handler: () => emitGridEvent({ type: 'keydown', event: ev }),
+				},
+				{
+					code: 'Delete', handler: () => {
+						if (rangedRows.value.length > 0) {
+							if (rowSetting.events.delete) {
+								rowSetting.events.delete(rangedRows.value);
+							}
+						} else {
+							const context = createContext();
+							removeDataFromGrid(context, (cell) => {
+								emitCellValue(cell, undefined);
+							});
+						}
+					},
+				},
+				{
+					code: 'KeyC', modifiers: ['Control'], handler: () => {
+						const context = createContext();
+						copyGridDataToClipboard(data.value, context);
+					},
+				},
+				{
+					code: 'KeyV', modifiers: ['Control'], handler: async () => {
+						const _cells = cells.value;
+						const context = createContext();
+						await pasteToGridFromClipboard(context, (row, col, parsedValue) => {
+							emitCellValue(_cells[row.index].cells[col.index], parsedValue);
+						});
+					},
 				},
 				{
 					code: 'ArrowRight', modifiers: ['Control', 'Shift'], handler: () => {
@@ -854,19 +886,10 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
 	const cell = cells.value[cellAddress.row].cells[cellAddress.col];
 
-	const violation = cellValidation(cell, newValue);
-	cell.violation = violation;
-	emitGridEvent({
-		type: 'cell-validation',
-		violation: violation,
-		all: cells.value.flatMap(it => it.cells).map(it => it.violation),
-	});
-
 	emitGridEvent({
 		type: 'cell-value-change',
 		column: cell.column,
 		row: cell.row,
-		violation: violation,
 		oldValue: cell.value,
 		newValue: newValue,
 	});
@@ -874,19 +897,6 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	if (_DEV_) {
 		console.log(`[grid][cell-value] row:${cell.row}, col:${cell.column.index}, value:${newValue}`);
 	}
-}
-
-/**
- * {@link selectedCell}のセル番地を取得する。
- * いずれかのセルが選択されている状態で呼ばれることを想定しているため、選択されていない場合は例外を投げる。
- */
-function requireSelectionCell(): CellAddress {
-	const selected = selectedCell.value;
-	if (!selected) {
-		throw new Error('No selected cell');
-	}
-
-	return selected.address;
 }
 
 /**
@@ -911,7 +921,10 @@ function selectionCell(target: CellAddress) {
 function selectionRange(...targets: CellAddress[]) {
 	const _cells = cells.value;
 	for (const target of targets) {
-		_cells[target.row].cells[target.col].ranged = true;
+		const row = _cells[target.row];
+		if (row.row.using) {
+			row.cells[target.col].ranged = true;
+		}
 	}
 }
 
@@ -935,16 +948,18 @@ function unSelectionRangeAll() {
  * {@link leftTop}から{@link rightBottom}の範囲外にあるセルを範囲選択状態から外す。
  */
 function unSelectionOutOfRange(leftTop: CellAddress, rightBottom: CellAddress) {
+	const safeBounds = getSafeAddressBounds({ leftTop, rightBottom });
+
 	const _cells = rangedCells.value;
 	for (const cell of _cells) {
-		const outOfRangeCol = cell.address.col < leftTop.col || cell.address.col > rightBottom.col;
-		const outOfRangeRow = cell.address.row < leftTop.row || cell.address.row > rightBottom.row;
+		const outOfRangeCol = cell.address.col < safeBounds.leftTop.col || cell.address.col > safeBounds.rightBottom.col;
+		const outOfRangeRow = cell.address.row < safeBounds.leftTop.row || cell.address.row > safeBounds.rightBottom.row;
 		if (outOfRangeCol || outOfRangeRow) {
 			cell.ranged = false;
 		}
 	}
 
-	const outOfRangeRows = rows.value.filter((_, index) => index < leftTop.row || index > rightBottom.row);
+	const outOfRangeRows = rows.value.filter((_, index) => index < safeBounds.leftTop.row || index > safeBounds.rightBottom.row);
 	for (const row of outOfRangeRows) {
 		row.ranged = false;
 	}
@@ -954,9 +969,10 @@ function unSelectionOutOfRange(leftTop: CellAddress, rightBottom: CellAddress) {
  * {@link leftTop}から{@link rightBottom}の範囲内にあるセルを範囲選択状態にする。
  */
 function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
-	const targetRows = cells.value.slice(leftTop.row, rightBottom.row + 1);
+	const safeBounds = getSafeAddressBounds({ leftTop, rightBottom });
+	const targetRows = cells.value.slice(safeBounds.leftTop.row, safeBounds.rightBottom.row + 1);
 	for (const row of targetRows) {
-		for (const cell of row.cells.slice(leftTop.col, rightBottom.col + 1)) {
+		for (const cell of row.cells.slice(safeBounds.leftTop.col, safeBounds.rightBottom.col + 1)) {
 			cell.ranged = true;
 		}
 	}
@@ -989,10 +1005,10 @@ function applyRowRules(targetCells: GridCell[]) {
 	for (const group of rowGroups.filter(it => it.row.using)) {
 		const row = group.row;
 		const targetCols = group.cells.map(it => it.column);
-		const cells = _cells[group.row.index].cells;
+		const rowCells = _cells[group.row.index].cells;
 
 		const newStyles = rowSetting.styleRules
-			.filter(it => it.condition({ row, targetCols, cells }))
+			.filter(it => it.condition({ row, targetCols, cells: rowCells }))
 			.map(it => it.applyStyle);
 
 		if (JSON.stringify(newStyles) !== JSON.stringify(row.additionalStyles)) {
@@ -1002,7 +1018,11 @@ function applyRowRules(targetCells: GridCell[]) {
 }
 
 function availableCellAddress(cellAddress: CellAddress): boolean {
-	return cellAddress.row >= 0 && cellAddress.col >= 0 && cellAddress.row < rows.value.length && cellAddress.col < columns.value.length;
+	const safeBounds = availableBounds.value;
+	return cellAddress.row >= safeBounds.leftTop.row &&
+		cellAddress.col >= safeBounds.leftTop.col &&
+		cellAddress.row <= safeBounds.rightBottom.row &&
+		cellAddress.col <= safeBounds.rightBottom.col;
 }
 
 function isColumnHeaderCellAddress(cellAddress: CellAddress): boolean {
@@ -1011,6 +1031,23 @@ function isColumnHeaderCellAddress(cellAddress: CellAddress): boolean {
 
 function isRowNumberCellAddress(cellAddress: CellAddress): boolean {
 	return cellAddress.row >= 0 && cellAddress.col === -1;
+}
+
+function getSafeAddressBounds(
+	bounds: { leftTop: CellAddress, rightBottom: CellAddress },
+): { leftTop: CellAddress, rightBottom: CellAddress } {
+	const available = availableBounds.value;
+
+	const safeLeftTop = {
+		col: Math.max(bounds.leftTop.col, available.leftTop.col),
+		row: Math.max(bounds.leftTop.row, available.leftTop.row),
+	};
+	const safeRightBottom = {
+		col: Math.min(bounds.rightBottom.col, available.rightBottom.col),
+		row: Math.min(bounds.rightBottom.row, available.rightBottom.row),
+	};
+
+	return { leftTop: safeLeftTop, rightBottom: safeRightBottom };
 }
 
 function registerMouseMove() {
