@@ -114,7 +114,7 @@ export class NotificationEntityService implements OnModuleInit {
 	public async packMany(
 		notifications: MiNotification[],
 		meId: MiUser['id'],
-	) {
+	): Promise<MiNotification[]> {
 		if (notifications.length === 0) return [];
 
 		let validNotifications = notifications;
@@ -147,10 +147,10 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
+		return (await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
 			packedNotes,
 			packedUsers,
-		})));
+		})))).filter(isNotNull);
 	}
 
 	@bindThis
@@ -248,7 +248,7 @@ export class NotificationEntityService implements OnModuleInit {
 	public async packGroupedMany(
 		notifications: MiGroupedNotification[],
 		meId: MiUser['id'],
-	) {
+	) : Promise<MiGroupedNotification[]> {
 		if (notifications.length === 0) return [];
 
 		let validNotifications = notifications;
@@ -286,10 +286,10 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, {}, {
+		return (await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, {}, {
 			packedNotes,
 			packedUsers,
-		})));
+		})))).filter(isNotNull);
 	}
 
 	/**
