@@ -119,6 +119,8 @@ export class NotificationEntityService implements OnModuleInit {
 
 		let validNotifications = notifications;
 
+		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
+
 		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(isNotNull);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
@@ -253,6 +255,8 @@ export class NotificationEntityService implements OnModuleInit {
 
 		let validNotifications = notifications;
 
+		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
+
 		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(isNotNull);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
@@ -317,5 +321,36 @@ export class NotificationEntityService implements OnModuleInit {
 		if (notifier.isSuspended) return false;
 
 		return true;
+	}
+
+	/**
+	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを複数確認する
+	 */
+	async #filterValidNotifier <T extends MiNotification | MiGroupedNotification> (
+		notifications: T[],
+		meId: MiUser['id'],
+	) : Promise<T[]> {
+		const [
+			userIdsWhoMeMuting,
+			userMutedInstances,
+		] = await Promise.all([
+			this.cacheService.userMutingsCache.fetch(meId),
+			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
+		]);
+
+		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
+			if (!('notifierId' in notification)) return notification;
+			if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
+
+			const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
+			if (notifier === null) return null;
+			if (notifier.host && userMutedInstances.has(notifier.host)) return null;
+
+			if (notifier.isSuspended) return null;
+
+			return notification;
+		}))) as [T|null] ).filter((notification): notification is T => notification !== null);
+
+		return filteredNotifications;
 	}
 }
