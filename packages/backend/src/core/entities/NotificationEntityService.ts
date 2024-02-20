@@ -61,7 +61,7 @@ export class NotificationEntityService implements OnModuleInit {
 		meId: MiUser['id'],
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
-
+			checkValidNotifier?: boolean;
 		},
 		hint?: {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
@@ -70,7 +70,7 @@ export class NotificationEntityService implements OnModuleInit {
 	): Promise<Packed<'Notification'>|null> {
 		const notification = src;
 
-		if (!(await this.#isValidNotifier(notification, meId))) return null;
+		if (options.checkValidNotifier && !(await this.#isValidNotifier(notification, meId))) return null;
 
 		const noteIfNeed = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
 			hint?.packedNotes != null
@@ -149,7 +149,7 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return (await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
+		return (await Promise.all(validNotifications.map(x => this.pack(x, meId, { checkValidNotifier: false }, {
 			packedNotes,
 			packedUsers,
 		})))).filter(isNotNull);
@@ -290,7 +290,7 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return (await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, {}, {
+		return (await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, { checkValidNotifier: false }, {
 			packedNotes,
 			packedUsers,
 		})))).filter(isNotNull);
