@@ -15,6 +15,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { FilterUnionByProperty, notificationTypes } from '@/types.js';
+import { CacheService } from '@/core/CacheService.js';
 import { RoleEntityService } from './RoleEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { UserEntityService } from './UserEntityService.js';
@@ -41,6 +42,8 @@ export class NotificationEntityService implements OnModuleInit {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
+		private cacheService: CacheService,
+
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,
 	) {
@@ -64,8 +67,11 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
-	): Promise<Packed<'Notification'>> {
+	): Promise<Packed<'Notification'>|null> {
 		const notification = src;
+
+		if (!(await this.#isValidNotifier(notification, meId))) return null;
+
 		const noteIfNeed = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
 			hint?.packedNotes != null
 				? hint.packedNotes.get(notification.noteId)
@@ -113,6 +119,8 @@ export class NotificationEntityService implements OnModuleInit {
 
 		let validNotifications = notifications;
 
+		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
+
 		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(isNotNull);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
@@ -159,8 +167,11 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
-	): Promise<Packed<'Notification'>> {
+	): Promise<Packed<'Notification'>|null> {
 		const notification = src;
+
+		if (!(await this.#isValidNotifier(notification, meId))) return null;
+
 		const noteIfNeed = NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
 			hint?.packedNotes != null
 				? hint.packedNotes.get(notification.noteId)
@@ -244,6 +255,8 @@ export class NotificationEntityService implements OnModuleInit {
 
 		let validNotifications = notifications;
 
+		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
+
 		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(isNotNull);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
@@ -281,5 +294,63 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes,
 			packedUsers,
 		})));
+	}
+
+	/**
+	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを確認する
+	 */
+	async #isValidNotifier <T extends MiNotification | MiGroupedNotification> (
+		notification: T,
+		meId: MiUser['id'],
+	) : Promise<boolean> {
+		const [
+			userIdsWhoMeMuting,
+			userMutedInstances,
+		] = await Promise.all([
+			this.cacheService.userMutingsCache.fetch(meId),
+			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
+		]);
+
+		if (!('notifierId' in notification)) return true;
+		if (userIdsWhoMeMuting.has(notification.notifierId)) return false;
+
+		const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
+		if (notifier === null) return false;
+		if (notifier.host && userMutedInstances.has(notifier.host)) return false;
+
+		if (notifier.isSuspended) return false;
+
+		return true;
+	}
+
+	/**
+	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを複数確認する
+	 */
+	async #filterValidNotifier <T extends MiNotification | MiGroupedNotification> (
+		notifications: T[],
+		meId: MiUser['id'],
+	) : Promise<T[]> {
+		const [
+			userIdsWhoMeMuting,
+			userMutedInstances,
+		] = await Promise.all([
+			this.cacheService.userMutingsCache.fetch(meId),
+			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
+		]);
+
+		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
+			if (!('notifierId' in notification)) return notification;
+			if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
+
+			const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
+			if (notifier === null) return null;
+			if (notifier.host && userMutedInstances.has(notifier.host)) return null;
+
+			if (notifier.isSuspended) return null;
+
+			return notification;
+		}))) as [T|null] ).filter((notification): notification is T => notification !== null);
+
+		return filteredNotifications;
 	}
 }
