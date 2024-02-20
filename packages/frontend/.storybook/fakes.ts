@@ -149,3 +149,50 @@ export function inviteCode(isUsed = false, hasExpiration = false, isExpired = fa
 		used: isUsed,
 	}
 }
+
+export function role(params: {
+	id?: string,
+	name?: string,
+	color?: string | null,
+	iconUrl?: string | null,
+	description?: string,
+	isModerator?: boolean,
+	isAdministrator?: boolean,
+	displayOrder?: number,
+	createdAt?: string,
+	updatedAt?: string,
+	target?: 'manual' | 'conditional',
+	isPublic?: boolean,
+	isExplorable?: boolean,
+	asBadge?: boolean,
+	canEditMembersByModerator?: boolean,
+	usersCount?: number,
+}): entities.Role {
+	const prefix = params.displayOrder ? params.displayOrder.toString().padStart(3, '0') + '-' : '';
+	const genId = Math.random().toString(36).substring(10);
+
+	return {
+		id: params.id ?? genId,
+		name: params.name ?? `${prefix}TestRole-${genId}`,
+		color: params.color ?? '#445566',
+		iconUrl: params.iconUrl ?? null,
+		description: params.description ?? '',
+		isModerator: params.isModerator ?? false,
+		isAdministrator: params.isAdministrator ?? false,
+		displayOrder: params.displayOrder ?? 0,
+		createdAt: params.createdAt ?? new Date().toISOString(),
+		updatedAt: params.updatedAt ?? new Date().toISOString(),
+		target: params.target ?? 'manual',
+		isPublic: params.isPublic ?? true,
+		isExplorable: params.isExplorable ?? true,
+		asBadge: params.asBadge ?? true,
+		canEditMembersByModerator: params.canEditMembersByModerator ?? false,
+		usersCount: params.usersCount ?? 10,
+		condFormula: {
+			id: '',
+			type: 'or',
+			values: []
+		},
+		policies: {},
+	}
+}

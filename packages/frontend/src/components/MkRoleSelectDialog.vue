@@ -11,22 +11,20 @@
 	<template #header>{{ title }}</template>
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<MkLoading v-if="fetching"/>
-		<div v-else class="_gaps">
+		<div v-else class="_gaps" :class="$style.root">
 			<div :class="$style.header">
 				<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			</div>
 
-			<div>
-				<div v-if="selectedRoles.length > 0" class="_gaps" :class="$style.roleItemArea">
-					<div v-for="role in selectedRoles" :key="role.id" :class="$style.roleItem">
-						<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
-						<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnAssign" @click="removeRole(role.id)"><i class="ti ti-x"></i></button>
-						<button v-else class="_button" :class="$style.roleUnAssign" disabled><i class="ti ti-ban"></i></button>
-					</div>
+			<div v-if="selectedRoles.length > 0" class="_gaps" :class="$style.roleItemArea">
+				<div v-for="role in selectedRoles" :key="role.id" :class="$style.roleItem">
+					<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
+					<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnAssign" @click="removeRole(role.id)"><i class="ti ti-x"></i></button>
+					<button v-else class="_button" :class="$style.roleUnAssign" disabled><i class="ti ti-ban"></i></button>
 				</div>
-				<div v-else :class="$style.roleItemArea" style="text-align: center">
-					何も選択されていません
-				</div>
+			</div>
+			<div v-else :class="$style.roleItemArea" style="text-align: center">
+				何も選択されていません
 			</div>
 
 			<MkInfo v-if="infoMessage">{{ infoMessage }}</MkInfo>
@@ -134,10 +132,18 @@ fetchRoles();
 </script>
 
 <style module lang="scss">
+.root {
+	max-height: 410px;
+	height: 410px;
+	display: flex;
+	flex-direction: column;
+}
+
 .roleItemArea {
 	background-color: var(--acrylicBg);
 	border-radius: var(--radius);
 	padding: 12px;
+	overflow-y: auto;
 }
 
 .roleItem {
@@ -180,6 +186,7 @@ fetchRoles();
 	justify-content: center;
 	align-items: center;
 	gap: 8px;
+	margin-top: auto;
 }
 
 .divider {
