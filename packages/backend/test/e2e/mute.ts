@@ -207,7 +207,7 @@ describe('Mute', () => {
 			await react(bob, aliceNote, 'like');
 			await react(carol, aliceNote, 'like');
 
-			const res = await api('/i/notifications-grouped-gropued', {}, alice);
+			const res = await api('/i/notifications-grouped', {}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
