@@ -25,7 +25,9 @@
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
-
+- Fix: 破損した通知をクライアントに送信しないように
+	* 通知欄が無限にリロードされる問題が改善する可能性があります
+ 
 ## 2024.2.0
 
 ### Note
