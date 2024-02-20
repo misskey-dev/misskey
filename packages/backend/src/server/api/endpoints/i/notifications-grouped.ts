@@ -110,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
 			}
 
-			//#region Check muting & suspended
+			//#region Check muting
 
 			const [
 				userIdsWhoMeMuting,
@@ -128,12 +128,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (notifier === null) return null;
 				if (notifier.host && userMutedInstances.has(notifier.host)) return null;
 
-				if (notifier.isSuspended) return null;
-
 				return notification;
 			}))).filter((notification): notification is MiNotification => notification !== null);
 
-			//#endregion Check muting & suspended
+			//#endregion Check muting
 
 			if (notifications.length === 0) {
 				return [];
