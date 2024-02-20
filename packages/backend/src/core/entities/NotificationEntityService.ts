@@ -297,20 +297,14 @@ export class NotificationEntityService implements OnModuleInit {
 	}
 
 	/**
-	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを確認する
+	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを確認するvalidator
 	 */
-	async #isValidNotifier <T extends MiNotification | MiGroupedNotification> (
+	async #validateNotifier <T extends MiNotification | MiGroupedNotification> (
 		notification: T,
 		meId: MiUser['id'],
-	) : Promise<boolean> {
-		const [
-			userIdsWhoMeMuting,
-			userMutedInstances,
-		] = await Promise.all([
-			this.cacheService.userMutingsCache.fetch(meId),
-			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
-		]);
-
+		userIdsWhoMeMuting: Set<MiUser['id']>,
+		userMutedInstances: Set<string>,
+	): Promise<boolean> {
 		if (!('notifierId' in notification)) return true;
 		if (userIdsWhoMeMuting.has(notification.notifierId)) return false;
 
@@ -324,7 +318,25 @@ export class NotificationEntityService implements OnModuleInit {
 	}
 
 	/**
-	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを複数確認する
+	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを実際に確認する
+	 */
+	async #isValidNotifier <T extends MiNotification | MiGroupedNotification> (
+		notification: T,
+		meId: MiUser['id'],
+	) : Promise<boolean> {
+		const [
+			userIdsWhoMeMuting,
+			userMutedInstances,
+		] = await Promise.all([
+			this.cacheService.userMutingsCache.fetch(meId),
+			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
+		]);
+
+		return this.#validateNotifier(notification, meId, userIdsWhoMeMuting, userMutedInstances);
+	}
+
+	/**
+	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを実際に複数確認する
 	 */
 	async #filterValidNotifier <T extends MiNotification | MiGroupedNotification> (
 		notifications: T[],
@@ -339,16 +351,8 @@ export class NotificationEntityService implements OnModuleInit {
 		]);
 
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
-			if (!('notifierId' in notification)) return notification;
-			if (userIdsWhoMeMuting.has(notification.notifierId)) return null;
-
-			const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
-			if (notifier === null) return null;
-			if (notifier.host && userMutedInstances.has(notifier.host)) return null;
-
-			if (notifier.isSuspended) return null;
-
-			return notification;
+			const isValid = await this.#validateNotifier(notification, meId, userIdsWhoMeMuting, userMutedInstances);
+			return isValid ? notification : null;
 		}))) as [T|null] ).filter((notification): notification is T => notification !== null);
 
 		return filteredNotifications;
