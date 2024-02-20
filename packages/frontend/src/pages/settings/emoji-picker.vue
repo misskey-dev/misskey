@@ -237,10 +237,10 @@ watch(pinnedEmojis, () => {
 	deep: true,
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.emojiPicker,
 	icon: 'ti ti-mood-happy',
-});
+}));
 </script>
 
 <style lang="scss" module>

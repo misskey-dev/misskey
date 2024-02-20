@@ -5,8 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from '@storybook/addon-actions';
-import { expect } from '@storybook/jest';
-import { waitFor } from '@storybook/testing-library';
+import { expect, waitFor } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
 import MkError from './MkError.vue';
 export const Default = {

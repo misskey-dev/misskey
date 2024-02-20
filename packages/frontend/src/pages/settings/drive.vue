@@ -143,10 +143,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.drive,
 	icon: 'ti ti-cloud',
-});
+}));
 </script>
 
 <style lang="scss" module>

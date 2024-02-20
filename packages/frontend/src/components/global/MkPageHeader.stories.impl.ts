@@ -4,7 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { waitFor } from '@storybook/testing-library';
+import { waitFor } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
 import MkPageHeader from './MkPageHeader.vue';
 export const Empty = {

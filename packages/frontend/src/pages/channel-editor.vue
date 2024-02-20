@@ -202,11 +202,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => props.channelId ? {
-	title: i18n.ts._channel.edit,
-	icon: 'ti ti-device-tv',
-} : {
-	title: i18n.ts._channel.create,
+definePageMetadata(() => ({
+	title: props.channelId ? i18n.ts._channel.edit : i18n.ts._channel.create,
 	icon: 'ti ti-device-tv',
 }));
 </script>
