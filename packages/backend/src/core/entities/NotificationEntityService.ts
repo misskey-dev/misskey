@@ -21,8 +21,7 @@ import type { OnModuleInit } from '@nestjs/common';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 
-const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded'] as (typeof notificationTypes[number])[]);
-const NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'renote:grouped', 'quote', 'reaction', 'reaction:grouped', 'pollEnded']);
+const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'renote:grouped', 'quote', 'reaction', 'reaction:grouped', 'pollEnded'] as (typeof notificationTypes[number])[]);
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
@@ -55,9 +54,11 @@ export class NotificationEntityService implements OnModuleInit {
 		this.roleEntityService = this.moduleRef.get('RoleEntityService');
 	}
 
-	@bindThis
-	public async pack(
-		src: MiNotification,
+	/**
+	 * 通知をパックする共通処理
+	*/
+	async #packInternal <T extends MiNotification | MiGroupedNotification> (
+		src: T,
 		meId: MiUser['id'],
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
@@ -67,7 +68,7 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
-	): Promise<Packed<'Notification'> | null> {
+	) : Promise<Packed<'Notification'> | null> {
 		const notification = src;
 
 		if (options.checkValidNotifier !== false && !(await this.#isValidNotifier(notification, meId))) return null;
@@ -96,123 +97,7 @@ export class NotificationEntityService implements OnModuleInit {
 			return null;
 		}
 
-		const needsRole = notification.type === 'roleAssigned';
-		const role = needsRole ? await this.roleEntityService.pack(notification.roleId) : undefined;
-		// if the role has been deleted, don't show this notification
-		if (needsRole && !role) {
-			return null;
-		}
-
-		return await awaitAll({
-			id: notification.id,
-			createdAt: new Date(notification.createdAt).toISOString(),
-			type: notification.type,
-			userId: 'notifierId' in notification ? notification.notifierId : undefined,
-			...(userIfNeed != null ? { user: userIfNeed } : {}),
-			...(noteIfNeed != null ? { note: noteIfNeed } : {}),
-			...(notification.type === 'reaction' ? {
-				reaction: notification.reaction,
-			} : {}),
-			...(notification.type === 'roleAssigned' ? {
-				role: role,
-			} : {}),
-			...(notification.type === 'achievementEarned' ? {
-				achievement: notification.achievement,
-			} : {}),
-			...(notification.type === 'app' ? {
-				body: notification.customBody,
-				header: notification.customHeader,
-				icon: notification.customIcon,
-			} : {}),
-		});
-	}
-
-	@bindThis
-	public async packMany(
-		notifications: MiNotification[],
-		meId: MiUser['id'],
-	): Promise<MiNotification[]> {
-		if (notifications.length === 0) return [];
-
-		let validNotifications = notifications;
-
-		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
-
-		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(isNotNull);
-		const notes = noteIds.length > 0 ? await this.notesRepository.find({
-			where: { id: In(noteIds) },
-			relations: ['user', 'reply', 'reply.user', 'renote', 'renote.user'],
-		}) : [];
-		const packedNotesArray = await this.noteEntityService.packMany(notes, { id: meId }, {
-			detail: true,
-		});
-		const packedNotes = new Map(packedNotesArray.map(p => [p.id, p]));
-
-		validNotifications = validNotifications.filter(x => !('noteId' in x) || packedNotes.has(x.noteId));
-
-		const userIds = validNotifications.map(x => 'notifierId' in x ? x.notifierId : null).filter(isNotNull);
-		const users = userIds.length > 0 ? await this.usersRepository.find({
-			where: { id: In(userIds) },
-		}) : [];
-		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId });
-		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
-
-		// 既に解決されたフォローリクエストの通知を除外
-		const followRequestNotifications = validNotifications.filter((x): x is FilterUnionByProperty<MiGroupedNotification, 'type', 'receiveFollowRequest'> => x.type === 'receiveFollowRequest');
-		if (followRequestNotifications.length > 0) {
-			const reqs = await this.followRequestsRepository.find({
-				where: { followerId: In(followRequestNotifications.map(x => x.notifierId)) },
-			});
-			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
-		}
-
-		return (await Promise.all(validNotifications.map(x => this.pack(x, meId, { checkValidNotifier: false }, {
-			packedNotes,
-			packedUsers,
-		})))).filter(isNotNull);
-	}
-
-	@bindThis
-	public async packGrouped(
-		src: MiGroupedNotification,
-		meId: MiUser['id'],
-		// eslint-disable-next-line @typescript-eslint/ban-types
-		options: {
-			checkValidNotifier?: boolean;
-		},
-		hint?: {
-			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
-		},
-	): Promise<Packed<'Notification'> | null> {
-		const notification = src;
-
-		if ( options.checkValidNotifier !== false && !(await this.#isValidNotifier(notification, meId))) return null;
-
-		const needsNote = NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification;
-		const noteIfNeed = needsNote ? (
-			hint?.packedNotes != null
-				? hint.packedNotes.get(notification.noteId)
-				: this.noteEntityService.pack(notification.noteId, { id: meId }, {
-					detail: true,
-				})
-		) : undefined;
-		// if the note has been deleted, don't show this notification
-		if (needsNote && !noteIfNeed) {
-			return null;
-		}
-
-		const needsUser = 'notifierId' in notification;
-		const userIfNeed = needsUser ? (
-			hint?.packedUsers != null
-				? hint.packedUsers.get(notification.notifierId)
-				: this.userEntityService.pack(notification.notifierId, { id: meId })
-		) : undefined;
-		// if the user has been deleted, don't show this notification
-		if (needsUser && !userIfNeed) {
-			return null;
-		}
-
+		// #region Grouped notifications
 		if (notification.type === 'reaction:grouped') {
 			const reactions = (await Promise.all(notification.reactions.map(async reaction => {
 				const user = hint?.packedUsers != null
@@ -257,6 +142,7 @@ export class NotificationEntityService implements OnModuleInit {
 				users,
 			});
 		}
+		// #endregion
 
 		const needsRole = notification.type === 'roleAssigned';
 		const role = needsRole ? await this.roleEntityService.pack(notification.roleId) : undefined;
@@ -289,11 +175,10 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 	}
 
-	@bindThis
-	public async packGroupedMany(
-		notifications: MiGroupedNotification[],
+	async #packManyInternal <T extends MiNotification | MiGroupedNotification>	(
+		notifications: T[],
 		meId: MiUser['id'],
-	) : Promise<MiGroupedNotification[]> {
+	): Promise<T[]> {
 		if (notifications.length === 0) return [];
 
 		let validNotifications = notifications;
@@ -325,7 +210,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
 
 		// 既に解決されたフォローリクエストの通知を除外
-		const followRequestNotifications = validNotifications.filter((x): x is FilterUnionByProperty<MiGroupedNotification, 'type', 'receiveFollowRequest'> => x.type === 'receiveFollowRequest');
+		const followRequestNotifications = validNotifications.filter((x): x is FilterUnionByProperty<T, 'type', 'receiveFollowRequest'> => x.type === 'receiveFollowRequest');
 		if (followRequestNotifications.length > 0) {
 			const reqs = await this.followRequestsRepository.find({
 				where: { followerId: In(followRequestNotifications.map(x => x.notifierId)) },
@@ -339,12 +224,59 @@ export class NotificationEntityService implements OnModuleInit {
 		})))).filter(isNotNull);
 	}
 
+	@bindThis
+	public async pack(
+		src: MiNotification,
+		meId: MiUser['id'],
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		options: {
+			checkValidNotifier?: boolean;
+		},
+		hint?: {
+			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
+			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
+		},
+	): Promise<Packed<'Notification'> | null> {
+		return this.#packInternal(src, meId, options, hint);
+	}
+
+	@bindThis
+	public async packMany(
+		notifications: MiNotification[],
+		meId: MiUser['id'],
+	): Promise<MiNotification[]> {
+		return await this.#packManyInternal(notifications, meId);
+	}
+
+	@bindThis
+	public async packGrouped(
+		src: MiGroupedNotification,
+		meId: MiUser['id'],
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		options: {
+			checkValidNotifier?: boolean;
+		},
+		hint?: {
+			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
+			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
+		},
+	): Promise<Packed<'Notification'> | null> {
+		return await this.#packInternal(src, meId, options, hint);
+	}
+
+	@bindThis
+	public async packGroupedMany(
+		notifications: MiGroupedNotification[],
+		meId: MiUser['id'],
+	) : Promise<MiGroupedNotification[]> {
+		return await this.#packManyInternal(notifications, meId);
+	}
+
 	/**
 	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを確認するvalidator
 	 */
 	async #validateNotifier <T extends MiNotification | MiGroupedNotification> (
 		notification: T,
-		meId: MiUser['id'],
 		userIdsWhoMeMuting: Set<MiUser['id']>,
 		userMutedInstances: Set<string>,
 	): Promise<boolean> {
@@ -375,7 +307,7 @@ export class NotificationEntityService implements OnModuleInit {
 			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
 		]);
 
-		return this.#validateNotifier(notification, meId, userIdsWhoMeMuting, userMutedInstances);
+		return this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances);
 	}
 
 	/**
@@ -394,7 +326,7 @@ export class NotificationEntityService implements OnModuleInit {
 		]);
 
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
-			const isValid = await this.#validateNotifier(notification, meId, userIdsWhoMeMuting, userMutedInstances);
+			const isValid = await this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances);
 			return isValid ? notification : null;
 		}))) as [T|null] ).filter(isNotNull);
 
