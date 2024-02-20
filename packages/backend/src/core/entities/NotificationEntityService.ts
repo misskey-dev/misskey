@@ -70,7 +70,7 @@ export class NotificationEntityService implements OnModuleInit {
 	): Promise<Packed<'Notification'>|null> {
 		const notification = src;
 
-		if (options.checkValidNotifier && !(await this.#isValidNotifier(notification, meId))) return null;
+		if (options.checkValidNotifier !== false && !(await this.#isValidNotifier(notification, meId))) return null;
 
 		const noteIfNeed = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
 			hint?.packedNotes != null
@@ -170,7 +170,7 @@ export class NotificationEntityService implements OnModuleInit {
 	): Promise<Packed<'Notification'>|null> {
 		const notification = src;
 
-		if ( options.checkValidNotifier && !(await this.#isValidNotifier(notification, meId))) return null;
+		if ( options.checkValidNotifier !== false && !(await this.#isValidNotifier(notification, meId))) return null;
 
 		const noteIfNeed = NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES.has(notification.type) && 'noteId' in notification ? (
 			hint?.packedNotes != null
