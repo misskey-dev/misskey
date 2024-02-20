@@ -42,6 +42,7 @@ import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { ClientLoggerService } from './web/ClientLoggerService.js';
 import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+import { OAuth2ConsumerService } from './oauth/OAuth2ConsumerService.js';
 
 @Module({
 	imports: [
@@ -85,6 +86,7 @@ import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 		UserListChannelService,
 		OpenApiServerService,
 		OAuth2ProviderService,
+		OAuth2ConsumerService,
 	],
 	exports: [
 		ServerService,

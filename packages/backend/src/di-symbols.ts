@@ -23,7 +23,7 @@ export const DI = {
 	noteThreadMutingsRepository: Symbol('noteThreadMutingsRepository'),
 	noteReactionsRepository: Symbol('noteReactionsRepository'),
 	noteUnreadsRepository: Symbol('noteUnreadsRepository'),
-	oauth2ServerRepository: Symbol('oauth2ServerRepository'),
+	oauth2ServersRepository: Symbol('oauth2ServersRepository'),
 	pollsRepository: Symbol('pollsRepository'),
 	pollVotesRepository: Symbol('pollVotesRepository'),
 	userProfilesRepository: Symbol('userProfilesRepository'),

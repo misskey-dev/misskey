@@ -69,8 +69,8 @@ const $noteUnreadsRepository: Provider = {
 	inject: [DI.db],
 };
 
-const $oauth2ServerRepository: Provider = {
-	provide: DI.oauth2ServerRepository,
+const $oauth2ServersRepository: Provider = {
+	provide: DI.oauth2ServersRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiOAuth2Server),
 	inject: [DI.db],
 };
@@ -419,7 +419,7 @@ const $userMemosRepository: Provider = {
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
 		$noteUnreadsRepository,
-		$oauth2ServerRepository,
+		$oauth2ServersRepository,
 		$pollsRepository,
 		$pollVotesRepository,
 		$userProfilesRepository,
@@ -487,7 +487,7 @@ const $userMemosRepository: Provider = {
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
 		$noteUnreadsRepository,
-		$oauth2ServerRepository,
+		$oauth2ServersRepository,
 		$pollsRepository,
 		$pollVotesRepository,
 		$userProfilesRepository,

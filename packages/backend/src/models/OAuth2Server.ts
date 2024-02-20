@@ -24,57 +24,57 @@ export class MiOAuth2Server {
 	@Column('varchar', {
 		length: 1024, nullable: true,
 	})
-	public description: string;
+	public description?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public clientId: string;
+	public clientId?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public clientSecret: string;
+	public clientSecret?: string;
 
 	@Column('varchar', {
 		length: 1024, nullable: true,
 	})
-	public authorizeUrl: string;
+	public authorizeUrl?: string;
 
 	@Column('varchar', {
 		length: 1024, nullable: true,
 	})
-	public tokenUrl: string;
+	public tokenUrl?: string;
 
 	@Column('varchar', {
 		length: 1024, nullable: true,
 	})
-	public signUpUrl: string;
+	public signUpUrl?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public scope: string;
+	public scope?: string;
 
 	@Column('varchar', {
 		length: 1024, nullable: true,
 	})
-	public profileUrl: string;
+	public profileUrl?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public idPath: string;
+	public idPath?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public namePath: string;
+	public namePath?: string;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
-	public emailPath: string;
+	public emailPath?: string;
 
 	@Column('boolean', {
 		default: false,
@@ -86,3 +86,5 @@ export class MiOAuth2Server {
 	})
 	public usernamePath: string;
 }
+
+export const titleSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;

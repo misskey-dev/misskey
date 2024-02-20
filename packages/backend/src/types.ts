@@ -65,6 +65,8 @@ export const moderationLogTypes = [
 	'deleteAvatarDecoration',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'createOAuth2Server',
+	'updateOAuth2Server',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -250,6 +252,15 @@ export type ModerationLogPayloads = {
 		userUsername: string;
 		userHost: string | null;
 		fileId: string;
+	};
+	createOAuth2Server: {
+		oauth2ServerId: string;
+		oauth2Server: any;
+	};
+	updateOAuth2Server: {
+		oauth2ServerId: string;
+		before: any;
+		after: any;
 	};
 };
 
