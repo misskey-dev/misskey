@@ -301,8 +301,8 @@ export class NotificationEntityService implements OnModuleInit {
 	/**
 	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを実際に確認する
 	 */
-	async #isValidNotifier <T extends MiNotification | MiGroupedNotification> (
-		notification: T,
+	async #isValidNotifier(
+		notification: MiNotification | MiGroupedNotification,
 		meId: MiUser['id'],
 	): Promise<boolean> {
 		return (await this.#filterValidNotifier([notification], meId)).length === 1;
