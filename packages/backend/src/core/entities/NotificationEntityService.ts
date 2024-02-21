@@ -16,6 +16,8 @@ import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
 import { CacheService } from '@/core/CacheService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 import { RoleEntityService } from './RoleEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { UserEntityService } from './UserEntityService.js';
@@ -42,6 +44,7 @@ export class NotificationEntityService implements OnModuleInit {
 		private followRequestsRepository: FollowRequestsRepository,
 
 		private cacheService: CacheService,
+		private noteReadService: NoteReadService,
 
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,
@@ -82,9 +85,7 @@ export class NotificationEntityService implements OnModuleInit {
 				})
 		) : undefined;
 		// if the note has been deleted, don't show this notification
-		if (needsNote && !noteIfNeed) {
-			return null;
-		}
+		if (needsNote && !noteIfNeed) return null;
 
 		const needsUser = 'notifierId' in notification;
 		const userIfNeed = needsUser ? (
@@ -93,9 +94,7 @@ export class NotificationEntityService implements OnModuleInit {
 				: this.userEntityService.pack(notification.notifierId, { id: meId })
 		) : undefined;
 		// if the user has been deleted, don't show this notification
-		if (needsUser && !userIfNeed) {
-			return null;
-		}
+		if (needsUser && !userIfNeed) return null;
 
 		// #region Grouped notifications
 		if (notification.type === 'reaction:grouped') {
@@ -178,6 +177,7 @@ export class NotificationEntityService implements OnModuleInit {
 	async #packManyInternal <T extends MiNotification | MiGroupedNotification>	(
 		notifications: T[],
 		meId: MiUser['id'],
+		markNotesAsRead = false,
 	): Promise<T[]> {
 		if (notifications.length === 0) return [];
 
@@ -218,39 +218,29 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return (await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, { checkValidNotifier: false }, {
-			packedNotes,
-			packedUsers,
-		})))).filter(isNotNull);
+		const packPromises = validNotifications.map(x => {
+			return this.pack(
+				x,
+				meId,
+				{ checkValidNotifier: false },
+				{ packedNotes, packedUsers },
+			);
+		});
+
+		if (markNotesAsRead) {
+			try {
+				trackPromise(this.noteReadService.read(meId, notes));
+			} catch (e) {
+				// console.error('error thrown by NoteReadService.read', e);
+			}
+		}
+
+		return (await Promise.all(packPromises)).filter(isNotNull);
 	}
 
 	@bindThis
 	public async pack(
-		src: MiNotification,
-		meId: MiUser['id'],
-		// eslint-disable-next-line @typescript-eslint/ban-types
-		options: {
-			checkValidNotifier?: boolean;
-		},
-		hint?: {
-			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
-		},
-	): Promise<Packed<'Notification'> | null> {
-		return this.#packInternal(src, meId, options, hint);
-	}
-
-	@bindThis
-	public async packMany(
-		notifications: MiNotification[],
-		meId: MiUser['id'],
-	): Promise<MiNotification[]> {
-		return await this.#packManyInternal(notifications, meId);
-	}
-
-	@bindThis
-	public async packGrouped(
-		src: MiGroupedNotification,
+		src: MiNotification | MiGroupedNotification,
 		meId: MiUser['id'],
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
@@ -265,11 +255,21 @@ export class NotificationEntityService implements OnModuleInit {
 	}
 
 	@bindThis
+	public async packMany(
+		notifications: MiNotification[],
+		meId: MiUser['id'],
+		markNotesAsRead = false,
+	): Promise<MiNotification[]> {
+		return await this.#packManyInternal(notifications, meId, markNotesAsRead);
+	}
+
+	@bindThis
 	public async packGroupedMany(
 		notifications: MiGroupedNotification[],
 		meId: MiUser['id'],
+		markNotesAsRead = false,
 	) : Promise<MiGroupedNotification[]> {
-		return await this.#packManyInternal(notifications, meId);
+		return await this.#packManyInternal(notifications, meId, markNotesAsRead);
 	}
 
 	/**
@@ -301,21 +301,7 @@ export class NotificationEntityService implements OnModuleInit {
 		notification: T,
 		meId: MiUser['id'],
 	) : Promise<boolean> {
-		const [
-			userIdsWhoMeMuting,
-			userMutedInstances,
-		] = await Promise.all([
-			this.cacheService.userMutingsCache.fetch(meId),
-			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
-		]);
-
-		const notifiers = (await Promise.all([notification]
-			.map(x => 'notifierId' in x ? x.notifierId : null)
-			.filter(isNotNull)
-			.map(async id => await this.usersRepository.findOneBy({ id }))))
-			.filter(isNotNull);
-
-		return this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
+		return (await this.#filterValidNotifier([notification], meId)).length === 1;
 	}
 
 	/**

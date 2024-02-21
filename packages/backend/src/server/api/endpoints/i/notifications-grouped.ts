@@ -163,16 +163,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			groupedNotifications = groupedNotifications.slice(0, ps.limit);
 
-			const noteIds = groupedNotifications
-				.filter((notification): notification is FilterUnionByProperty<MiNotification, 'type', 'mention' | 'reply' | 'quote'> => ['mention', 'reply', 'quote'].includes(notification.type))
-				.map(notification => notification.noteId!);
-
-			if (noteIds.length > 0) {
-				const notes = await this.notesRepository.findBy({ id: In(noteIds) });
-				this.noteReadService.read(me.id, notes);
-			}
-
-			return await this.notificationEntityService.packGroupedMany(groupedNotifications, me.id);
+			return await this.notificationEntityService.packGroupedMany(groupedNotifications, me.id, true);
 		});
 	}
 }
