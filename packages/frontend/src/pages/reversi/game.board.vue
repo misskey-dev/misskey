@@ -248,7 +248,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 			crc32: crc32.toString(),
 		}).then((res) => {
 			if (res.desynced) {
-				console.log('resynced');
+				if (_DEV_) console.log('resynced');
 				restoreGame(res.game!);
 			}
 		});
