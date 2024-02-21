@@ -275,18 +275,28 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 	}
 
 	const matched = new Map<string, EmojiScore>();
-	// 完全一致（エイリアス込み）
+	// 完全一致（エイリアスなし）
 	emojiDb.some(x => {
-		if (x.name === query && !matched.has(x.aliasOf ?? x.name)) {
-			matched.set(x.aliasOf ?? x.name, { emoji: x, score: query.length + 2 });
+		if (x.name === query && !x.aliasOf) {
+			matched.set(x.name, { emoji: x, score: query.length + 3 });
 		}
 		return matched.size === max;
 	});
 
+	// 完全一致（エイリアス込み）
+	if (matched.size < max) {
+		emojiDb.some(x => {
+			if (x.name === query && !matched.has(x.aliasOf ?? x.name)) {
+				matched.set(x.aliasOf ?? x.name, { emoji: x, score: query.length + 2 });
+			}
+			return matched.size === max;
+		});
+	}
+
 	// 前方一致（エイリアスなし）
 	if (matched.size < max) {
 		emojiDb.some(x => {
-			if (x.name.startsWith(query) && !x.aliasOf) {
+			if (x.name.startsWith(query) && !x.aliasOf && !matched.has(x.name)) {
 				matched.set(x.name, { emoji: x, score: query.length + 1 });
 			}
 			return matched.size === max;
