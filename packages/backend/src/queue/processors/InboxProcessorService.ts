@@ -24,6 +24,7 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
 
@@ -180,7 +181,15 @@ export class InboxProcessorService {
 		});
 
 		// アクティビティを処理
-		await this.apInboxService.performActivity(authUser.user, activity, job.data.user?.id);
+		try {
+			await this.apInboxService.performActivity(authUser.user, activity, job.data.user?.id);
+		} catch (e) {
+			if (e instanceof IdentifiableError) {
+				if (e.id === 'e11b3a16-f543-4885-8eb1-66cad131dbfd') return 'blocked mentions from unfamiliar user';
+				if (e.id === '057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30') return 'blocked notes with prohibited words';
+			}
+			throw e;
+		}
 		return 'ok';
 	}
 }
