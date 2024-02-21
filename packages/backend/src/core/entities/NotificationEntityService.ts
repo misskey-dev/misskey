@@ -24,6 +24,7 @@ import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 
 const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'renote:grouped', 'quote', 'reaction', 'reaction:grouped', 'pollEnded'] as (typeof groupedNotificationTypes[number])[]);
+const MARK_NOTE_READ_NOTIFICATION_TYPES = new Set(['mention', 'reply', 'quote'] as (typeof groupedNotificationTypes[number])[]);
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
@@ -229,7 +230,13 @@ export class NotificationEntityService implements OnModuleInit {
 
 		if (markNotesAsRead) {
 			try {
-				trackPromise(this.noteReadService.read(meId, notes));
+				const noteIdsToRead = validNotifications.reduce((acc, x) => {
+					if (MARK_NOTE_READ_NOTIFICATION_TYPES.has(x.type) && 'noteId' in x) {
+						acc.add(x.noteId);
+					}
+					return acc;
+				}, new Set<MiNote['id']>());
+				trackPromise(this.noteReadService.read(meId, notes.filter(x => noteIdsToRead.has(x.id))));
 			} catch (e) {
 				// console.error('error thrown by NoteReadService.read', e);
 			}
