@@ -141,6 +141,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</template>
 	</I18n>
+	<I18n v-if="muted === 'sensitiveChannel'" :src="i18n.ts.userSaysSomethingSensitiveInChannel" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+	</I18n>
 	<I18n v-else :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -273,9 +280,9 @@ const renoteCollapsed = ref(
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute' | 'sensitiveChannel';
 */
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' {
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' | 'sensitiveChannel' {
 	if (mutedWords == null) return false;
 
 	if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
@@ -284,8 +291,8 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	if (checkOnly) return false;
 
+	if (collapseSensitiveChannel && noteToCheck.channel?.isSensitive) return 'sensitiveChannel';
 	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
-	if (collapseSensitiveChannel && noteToCheck.channel?.isSensitive) return 'sensitiveMute';
 	return false;
 }
 
