@@ -72,7 +72,7 @@ export class NotificationEntityService implements OnModuleInit {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
-	) : Promise<Packed<'Notification'> | null> {
+	): Promise<Packed<'Notification'> | null> {
 		const notification = src;
 
 		if (options.checkValidNotifier !== false && !(await this.#isValidNotifier(notification, meId))) return null;
@@ -276,7 +276,7 @@ export class NotificationEntityService implements OnModuleInit {
 		notifications: MiGroupedNotification[],
 		meId: MiUser['id'],
 		markNotesAsRead = false,
-	) : Promise<MiGroupedNotification[]> {
+	): Promise<MiGroupedNotification[]> {
 		return await this.#packManyInternal(notifications, meId, markNotesAsRead);
 	}
 
@@ -308,7 +308,7 @@ export class NotificationEntityService implements OnModuleInit {
 	async #isValidNotifier <T extends MiNotification | MiGroupedNotification> (
 		notification: T,
 		meId: MiUser['id'],
-	) : Promise<boolean> {
+	): Promise<boolean> {
 		return (await this.#filterValidNotifier([notification], meId)).length === 1;
 	}
 
@@ -318,7 +318,7 @@ export class NotificationEntityService implements OnModuleInit {
 	async #filterValidNotifier <T extends MiNotification | MiGroupedNotification> (
 		notifications: T[],
 		meId: MiUser['id'],
-	) : Promise<T[]> {
+	): Promise<T[]> {
 		const [
 			userIdsWhoMeMuting,
 			userMutedInstances,
