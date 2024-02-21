@@ -170,7 +170,7 @@ export class ApInboxService {
 		}
 
 		// don't queue because the sender may attempt again when timeout
-		await this.userFollowingService.followFromRemote(actor, followee, { requestId: activity.id });
+		await this.userFollowingService.follow(actor, followee, { requestId: activity.id });
 		return 'ok';
 	}
 
