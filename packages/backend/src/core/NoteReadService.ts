@@ -88,8 +88,6 @@ export class NoteReadService implements OnApplicationShutdown {
 		userId: MiUser['id'],
 		notes: (MiNote | Packed<'Note'>)[],
 	): Promise<void> {
-		if (notes.length === 0) return;
-
 		const readMentions: (MiNote | Packed<'Note'>)[] = [];
 		const readSpecifiedNotes: (MiNote | Packed<'Note'>)[] = [];
 
