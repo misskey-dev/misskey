@@ -110,10 +110,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-point',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
-});
+}));
 
 const unreadCount = ref($i?.unreadAnnouncements.length ?? 0);
 watch(() => $i?.unreadAnnouncements.length ?? 0, () => {

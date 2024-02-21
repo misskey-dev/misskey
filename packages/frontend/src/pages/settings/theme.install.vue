@@ -59,8 +59,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts._theme.install,
 	icon: 'ti ti-download',
-});
+}));
 </script>

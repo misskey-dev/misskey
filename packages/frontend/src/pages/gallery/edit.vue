@@ -122,11 +122,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => props.postId ? {
-	title: i18n.ts.edit,
-	icon: 'ti ti-pencil',
-} : {
-	title: i18n.ts.postToGallery,
+definePageMetadata(() => ({
+	title: props.postId ? i18n.ts.edit : i18n.ts.postToGallery,
 	icon: 'ti ti-pencil',
 }));
 </script>

@@ -84,10 +84,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.relays,
 	icon: 'ti ti-planet',
-});
+}));
 </script>
 
 <style lang="scss" module>

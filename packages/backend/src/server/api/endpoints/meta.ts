@@ -69,12 +69,12 @@ export const meta = {
 			},
 			repositoryUrl: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 				default: 'https://github.com/misskey-dev/misskey',
 			},
 			feedbackUrl: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 				default: 'https://github.com/misskey-dev/misskey/issues/new',
 			},
 			defaultDarkTheme: {

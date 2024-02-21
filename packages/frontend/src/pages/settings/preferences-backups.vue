@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -52,6 +52,7 @@ import { i18n } from '@/i18n.js';
 import { version, host } from '@/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
+
 const { t, ts } = i18n;
 
 const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
@@ -437,10 +438,10 @@ onUnmounted(() => {
 	connection?.off('registryUpdated');
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
-})));
+}));
 </script>
 
 <style lang="scss" module>

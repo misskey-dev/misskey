@@ -192,28 +192,14 @@ export class RedisSingleCache<T> {
 
 // TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
 
-function nothingToDo<T, V = T>(value: T): V {
-	return value as unknown as V;
-}
-
-export class MemoryKVCache<T, V = T> {
-	public cache: Map<string, { date: number; value: V; }>;
+export class MemoryKVCache<T> {
+	public cache: Map<string, { date: number; value: T; }>;
 	private lifetime: number;
 	private gcIntervalHandle: NodeJS.Timeout;
-	private toMapConverter: (value: T) => V;
-	private fromMapConverter: (cached: V) => T | undefined;
 
-	constructor(lifetime: MemoryKVCache<never>['lifetime'], options: {
-		toMapConverter: (value: T) => V;
-		fromMapConverter: (cached: V) => T | undefined;
-	} = {
-		toMapConverter: nothingToDo,
-		fromMapConverter: nothingToDo,
-	}) {
+	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
 		this.cache = new Map();
 		this.lifetime = lifetime;
-		this.toMapConverter = options.toMapConverter;
-		this.fromMapConverter = options.fromMapConverter;
 
 		this.gcIntervalHandle = setInterval(() => {
 			this.gc();
@@ -224,7 +210,7 @@ export class MemoryKVCache<T, V = T> {
 	public set(key: string, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),
-			value: this.toMapConverter(value),
+			value,
 		});
 	}
 
@@ -236,7 +222,7 @@ export class MemoryKVCache<T, V = T> {
 			this.cache.delete(key);
 			return undefined;
 		}
-		return this.fromMapConverter(cached.value);
+		return cached.value;
 	}
 
 	@bindThis
@@ -247,10 +233,9 @@ export class MemoryKVCache<T, V = T> {
 	/**
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
 	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
-	 * fetcherの引数はcacheに保存されている値があれば渡されます
 	 */
 	@bindThis
-	public async fetch(key: string, fetcher: (value: V | undefined) => Promise<T>, validator?: (cachedValue: T) => boolean): Promise<T> {
+	public async fetch(key: string, fetcher: () => Promise<T>, validator?: (cachedValue: T) => boolean): Promise<T> {
 		const cachedValue = this.get(key);
 		if (cachedValue !== undefined) {
 			if (validator) {
@@ -265,7 +250,7 @@ export class MemoryKVCache<T, V = T> {
 		}
 
 		// Cache MISS
-		const value = await fetcher(this.cache.get(key)?.value);
+		const value = await fetcher();
 		this.set(key, value);
 		return value;
 	}
@@ -273,10 +258,9 @@ export class MemoryKVCache<T, V = T> {
 	/**
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
 	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
-	 * fetcherの引数はcacheに保存されている値があれば渡されます
 	 */
 	@bindThis
-	public async fetchMaybe(key: string, fetcher: (value: V | undefined) => Promise<T | undefined>, validator?: (cachedValue: T) => boolean): Promise<T | undefined> {
+	public async fetchMaybe(key: string, fetcher: () => Promise<T | undefined>, validator?: (cachedValue: T) => boolean): Promise<T | undefined> {
 		const cachedValue = this.get(key);
 		if (cachedValue !== undefined) {
 			if (validator) {
@@ -291,7 +275,7 @@ export class MemoryKVCache<T, V = T> {
 		}
 
 		// Cache MISS
-		const value = await fetcher(this.cache.get(key)?.value);
+		const value = await fetcher();
 		if (value !== undefined) {
 			this.set(key, value);
 		}

@@ -31,12 +31,12 @@ COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 
+ARG NODE_ENV=production
+
 RUN pnpm i --frozen-lockfile --aggregate-output --offline \
 	&& pnpm rebuild -r
 
 COPY --link . ./
-
-ARG NODE_ENV=production
 
 RUN git submodule update --init
 RUN pnpm build
@@ -64,6 +64,8 @@ COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
+
+ARG NODE_ENV=production
 
 RUN pnpm i --frozen-lockfile --aggregate-output --offline \
 	&& pnpm rebuild -r

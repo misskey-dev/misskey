@@ -37,12 +37,12 @@ export class NodeinfoServerService {
 	@bindThis
 	public getLinks() {
 		return [{
-			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
-			href: this.config.url + nodeinfo2_1path,
-		}, {
-			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-			href: this.config.url + nodeinfo2_0path,
-		}];
+				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
+				href: this.config.url + nodeinfo2_1path
+			}, {
+				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
+				href: this.config.url + nodeinfo2_0path,
+			}];
 	}
 
 	@bindThis
@@ -117,6 +117,8 @@ export class NodeinfoServerService {
 					emailRequiredForSignup: meta.emailRequiredForSignup,
 					enableHcaptcha: meta.enableHcaptcha,
 					enableRecaptcha: meta.enableRecaptcha,
+					enableMcaptcha: meta.enableMcaptcha,
+					enableTurnstile: meta.enableTurnstile,
 					maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 					enableEmail: meta.enableEmail,
 					enableServiceWorker: meta.enableServiceWorker,

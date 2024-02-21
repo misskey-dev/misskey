@@ -52,6 +52,7 @@ async function fetchLanguage(to: string): Promise<void> {
 			return bundle.id === language || bundle.aliases?.includes(language);
 		});
 		if (bundles.length > 0) {
+			if (_DEV_) console.log(`Loading language: ${language}`);
 			await highlighter.loadLanguage(bundles[0].import);
 			codeLang.value = language;
 		} else {

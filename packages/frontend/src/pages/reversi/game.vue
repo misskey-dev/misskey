@@ -113,8 +113,8 @@ onUnmounted(() => {
 	}
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
-})));
+}));
 </script>

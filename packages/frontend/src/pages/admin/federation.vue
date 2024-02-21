@@ -102,10 +102,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.federation,
 	icon: 'ti ti-whirl',
-})));
+}));
 </script>
 
 <style lang="scss" module>

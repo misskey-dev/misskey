@@ -39,7 +39,17 @@ import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js'
 import { packedUserListMembershipSchema, packedUserListSchema } from '@/models/json-schema/user-list.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
-import { packedRoleLiteSchema, packedRoleSchema, packedRolePoliciesSchema } from '@/models/json-schema/role.js';
+import {
+	packedRoleLiteSchema,
+	packedRoleSchema,
+	packedRolePoliciesSchema,
+	packedRoleCondFormulaLogicsSchema,
+	packedRoleCondFormulaValueNot,
+	packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	packedRoleCondFormulaValueCreatedSchema,
+	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	packedRoleCondFormulaValueSchema,
+} from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
 import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
 
@@ -86,6 +96,12 @@ export const refs = {
 	FlashLike: packedFlashLikeSchema,
 
 	Signin: packedSigninSchema,
+	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
+	RoleCondFormulaValueNot: packedRoleCondFormulaValueNot,
+	RoleCondFormulaValueIsLocalOrRemote: packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	RoleCondFormulaValueCreated: packedRoleCondFormulaValueCreatedSchema,
+	RoleCondFormulaFollowersOrFollowingOrNotes: packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	RoleCondFormulaValue: packedRoleCondFormulaValueSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
 	RolePolicies: packedRolePoliciesSchema,

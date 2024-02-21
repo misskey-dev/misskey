@@ -214,10 +214,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
-});
+}));
 </script>
 
 <style lang="scss" module>

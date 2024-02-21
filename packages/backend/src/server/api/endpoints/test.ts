@@ -19,20 +19,24 @@ export const meta = {
 			id: {
 				type: 'string',
 				format: 'misskey:id',
+				optional: true, nullable: false,
 			},
 			required: {
 				type: 'boolean',
+				optional: false, nullable: false,
 			},
 			string: {
 				type: 'string',
+				optional: true, nullable: false,
 			},
 			default: {
 				type: 'string',
+				optional: true, nullable: false,
 			},
 			nullableDefault: {
 				type: 'string',
 				default: 'hello',
-				nullable: true,
+				optional: true, nullable: true,
 			},
 		},
 	},

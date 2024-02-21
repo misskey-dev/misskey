@@ -1082,6 +1082,7 @@ icon: "Аватар"
 replies: "Ответы"
 renotes: "Репост"
 loadReplies: "Показать ответы"
+sourceCode: "Исходный код"
 flip: "Переворот"
 lastNDays: "Последние {n} сут"
 _initialAccountSetting:
