@@ -78,7 +78,7 @@ class HomeTimelineChannel extends Channel {
 				const reply = note.renote.reply;
 				if (this.following[note.userId]?.withReplies) {
 					// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く
-					if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return true;
+					if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
 				}
 			}
 		}
