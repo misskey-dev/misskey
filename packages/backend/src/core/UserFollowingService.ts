@@ -133,24 +133,6 @@ export class UserFollowingService implements OnModuleInit {
 			throw new Error('Remote user cannot follow remote user.');
 		}
 
-		if (await this.followingsRepository.exists({
-			where: {
-				followerId: follower.id,
-				followeeId: followee.id,
-			},
-		})) {
-			// すでにフォロー関係が存在している場合
-			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-				// リモート → ローカル: acceptを送り返しておしまい
-				this.deliverAccept(follower, followee, requestId);
-				return;
-			}
-			if (this.userEntityService.isLocalUser(follower)) {
-				// ローカル → リモート/ローカル: 例外
-				throw new IdentifiableError('ec3f65c0-a9d1-47d9-8791-b2e7b9dcdced', 'already following');
-			}
-		}
-
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
 			this.userBlockingService.checkBlocked(follower.id, followee.id),
@@ -169,6 +151,24 @@ export class UserFollowingService implements OnModuleInit {
 			// それ以外は単純に例外
 			if (blocking) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
 			if (blocked) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
+		}
+
+		if (await this.followingsRepository.exists({
+			where: {
+				followerId: follower.id,
+				followeeId: followee.id,
+			},
+		})) {
+			// すでにフォロー関係が存在している場合
+			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+				// リモート → ローカル: acceptを送り返しておしまい
+				this.deliverAccept(follower, followee, requestId);
+				return;
+			}
+			if (this.userEntityService.isLocalUser(follower)) {
+				// ローカル → リモート/ローカル: 例外
+				throw new IdentifiableError('ec3f65c0-a9d1-47d9-8791-b2e7b9dcdced', 'already following');
+			}
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
