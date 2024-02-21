@@ -279,11 +279,13 @@ export class NotificationEntityService implements OnModuleInit {
 		notification: T,
 		userIdsWhoMeMuting: Set<MiUser['id']>,
 		userMutedInstances: Set<string>,
+		notifiers: MiUser[],
 	): Promise<boolean> {
 		if (!('notifierId' in notification)) return true;
 		if (userIdsWhoMeMuting.has(notification.notifierId)) return false;
 
-		const notifier = await this.usersRepository.findOneBy({ id: notification.notifierId });
+		const notifier = notifiers.find(x => x.id === notification.notifierId) ?? null;
+
 		if (notifier === null) return false;
 		if (notifier.host && userMutedInstances.has(notifier.host)) return false;
 
@@ -307,7 +309,13 @@ export class NotificationEntityService implements OnModuleInit {
 			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
 		]);
 
-		return this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances);
+		const notifiers = (await Promise.all([notification]
+			.map(x => 'notifierId' in x ? x.notifierId : null)
+			.filter(isNotNull)
+			.map(async id => await this.usersRepository.findOneBy({ id }))))
+			.filter(isNotNull);
+
+		return this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
 	}
 
 	/**
@@ -325,8 +333,13 @@ export class NotificationEntityService implements OnModuleInit {
 			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
 		]);
 
+		const notifierIds = notifications.map(notification => 'notifierId' in notification ? notification.notifierId : null).filter(isNotNull);
+		const notifiers = notifierIds.length > 0 ? await this.usersRepository.find({
+			where: { id: In(notifierIds) },
+		}) : [];
+
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
-			const isValid = await this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances);
+			const isValid = await this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
 			return isValid ? notification : null;
 		}))) as [T|null] ).filter(isNotNull);
 
