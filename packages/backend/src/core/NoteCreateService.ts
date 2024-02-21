@@ -155,8 +155,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private logger: Logger;
 	#shutdownController = new AbortController();
 
-	public static ContainsProhibitedWordsError = class extends Error {};
-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -271,7 +269,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
-			throw new NoteCreateService.ContainsProhibitedWordsError();
+			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
