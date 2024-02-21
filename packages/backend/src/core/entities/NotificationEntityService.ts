@@ -229,18 +229,14 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 
 		if (markNotesAsRead) {
-			try {
-				const notesToRead = validNotifications.reduce((acc, x) => {
-					if (MARK_NOTE_READ_NOTIFICATION_TYPES.has(x.type) && 'noteId' in x && !acc.has(x.noteId)) {
-						const note = packedNotes.get(x.noteId);
-						if (note) acc.set(x.noteId, note);
-					}
-					return acc;
-				}, new Map<string, Packed<'Note'>>());
-				trackPromise(this.noteReadService.read(meId, Array.from(notesToRead.values())));
-			} catch (err) {
-				console.error('error thrown by NoteReadService.read', err);
-			}
+			const notesToRead = validNotifications.reduce((acc, x) => {
+				if (MARK_NOTE_READ_NOTIFICATION_TYPES.has(x.type) && 'noteId' in x && !acc.has(x.noteId)) {
+					const note = packedNotes.get(x.noteId);
+					if (note) acc.set(x.noteId, note);
+				}
+				return acc;
+			}, new Map<string, Packed<'Note'>>());
+			trackPromise(this.noteReadService.read(meId, Array.from(notesToRead.values())));
 		}
 
 		return (await Promise.all(packPromises)).filter(isNotNull);
