@@ -4899,7 +4899,7 @@ export interface Locale extends ILocale {
     /**
      * {name}のセンシティブチャンネルの投稿
      */
-    "userSaysSomethingSensitiveInChannel": ParameterizedString<"name">;
+    "userSaysSomethingInSensitiveChannel": ParameterizedString<"name">;
     /**
      * スワイプしてタブを切り替える
      */

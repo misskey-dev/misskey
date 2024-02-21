@@ -141,7 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</template>
 	</I18n>
-	<I18n v-if="muted === 'sensitiveChannel'" :src="i18n.ts.userSaysSomethingSensitiveInChannel" tag="small">
+	<I18n v-if="muted === 'sensitiveChannel'" :src="i18n.ts.userSaysSomethingInSensitiveChannel" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
