@@ -24,6 +24,7 @@
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
+- Fix: 禁止キーワードを含むノートがDelayed Queueに追加されて再処理される問題を修正
 
 ## 2024.2.0
 
