@@ -19,8 +19,8 @@ import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
-import {IdentifiableError} from "@/misc/identifiable-error.js";
 
 export const meta = {
 	tags: ['notes'],
