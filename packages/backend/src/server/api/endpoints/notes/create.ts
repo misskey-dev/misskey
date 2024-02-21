@@ -19,6 +19,7 @@ import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -376,8 +377,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				};
 			} catch (e) {
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
-				if (e instanceof NoteCreateService.ContainsProhibitedWordsError) {
-					throw new ApiError(meta.errors.containsProhibitedWords);
+				if (e instanceof IdentifiableError) {
+					if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') throw new ApiError(meta.errors.containsProhibitedWords);
 				}
 
 				throw e;
