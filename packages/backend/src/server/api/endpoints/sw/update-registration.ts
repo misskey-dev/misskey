@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sendReadMessage: swSubscription.sendReadMessage,
 			});
 
-			this.pushNotificationService.subscriptionsCache.refresh(me.id);
+			this.pushNotificationService.refreshCache(me.id);
 
 			return {
 				userId: swSubscription.userId,

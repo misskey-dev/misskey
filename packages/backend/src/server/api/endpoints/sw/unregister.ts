@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			if (me) {
-				this.pushNotificationService.subscriptionsCache.refresh(me.id);
+				this.pushNotificationService.refreshCache(me.id);
 			}
 		});
 	}

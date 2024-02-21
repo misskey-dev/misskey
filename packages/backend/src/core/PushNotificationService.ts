@@ -48,7 +48,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 
 @Injectable()
 export class PushNotificationService implements OnApplicationShutdown {
-	public subscriptionsCache: RedisKVCache<MiSwSubscription[]>;
+	private subscriptionsCache: RedisKVCache<MiSwSubscription[]>;
 
 	constructor(
 		@Inject(DI.config)
@@ -116,11 +116,16 @@ export class PushNotificationService implements OnApplicationShutdown {
 						auth: subscription.auth,
 						publickey: subscription.publickey,
 					}).then(() => {
-						this.subscriptionsCache.refresh(userId);
+						this.refreshCache(userId);
 					});
 				}
 			});
 		}
+	}
+
+	@bindThis
+	public refreshCache(userId: string): void {
+		this.subscriptionsCache.refresh(userId);
 	}
 
 	@bindThis
