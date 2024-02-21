@@ -237,9 +237,7 @@ export class NotificationEntityService implements OnModuleInit {
 					}
 					return acc;
 				}, new Set<Packed<'Note'>>());
-				if (notesToRead.size > 0) {
-					trackPromise(this.noteReadService.read(meId, Array.from(notesToRead)));
-				}
+				trackPromise(this.noteReadService.read(meId, Array.from(notesToRead)));
 			} catch (e) {
 				// console.error('error thrown by NoteReadService.read', e);
 			}
