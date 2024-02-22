@@ -209,10 +209,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts._abuse.resolver,
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.abuseReports,
 	icon: 'ti ti-exclamation-circle',
-});
+}));
 </script>
 <style lang="scss" module>
 .input-base {

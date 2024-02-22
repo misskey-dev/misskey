@@ -46,28 +46,29 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"chokidar": "3.5.3",
+		"chokidar": "3.6.0",
 		"lodash": "4.17.21",
-		"sharp": "0.33.2"
+		"sharp": "0.33.2",
+		"@tensorflow/tfjs-core": "4.17.0"
 	},
 	"dependencies": {
 		"cssnano": "6.0.3",
 		"execa": "8.0.1",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.35",
-		"terser": "5.27.0",
+		"terser": "5.27.2",
 		"typescript": "5.3.3"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.21.0",
-		"@typescript-eslint/parser": "6.21.0",
+		"@typescript-eslint/eslint-plugin": "7.0.2",
+		"@typescript-eslint/parser": "7.0.2",
 		"cross-env": "7.0.3",
-		"cypress": "13.6.4",
+		"cypress": "13.6.5",
 		"eslint": "8.56.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.3"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.4.0"
+		"@tensorflow/tfjs-core": "4.17.0"
 	}
 }

@@ -31,10 +31,10 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'Misskey Games',
 	icon: 'ti ti-device-gamepad',
-});
+}));
 
 const featuredPagination = {
 	endpoint: 'channels/featured-games' as const,

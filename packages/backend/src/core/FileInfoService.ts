@@ -14,7 +14,7 @@ import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import { type predictionType } from 'nsfwjs';
-import sharp from 'sharp';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
@@ -122,7 +122,7 @@ export class FileInfoService {
 			'image/avif',
 			'image/svg+xml',
 		].includes(type.mime)) {
-			blurhash = await this.getBlurhash(path).catch(e => {
+			blurhash = await this.getBlurhash(path, type.mime).catch(e => {
 				warnings.push(`getBlurhash failed: ${e}`);
 				return undefined;
 			});
@@ -407,25 +407,14 @@ export class FileInfoService {
 	 * Calculate average color of image
 	 */
 	@bindThis
-	private getBlurhash(path: string): Promise<string> {
-		return new Promise((resolve, reject) => {
-			sharp(path)
-				.raw()
-				.ensureAlpha()
-				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, info) => {
-					if (err) return reject(err);
+	private async getBlurhash(path: string, type: string): Promise<string> {
+		const sharp = await sharpBmp(path, type);
+		const { data, info } = await sharp
+			.raw()
+			.ensureAlpha()
+			.resize(64, 64, { fit: 'inside' })
+			.toBuffer({ resolveWithObject: true });
 
-					let hash;
-
-					try {
-						hash = encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
-					} catch (e) {
-						return reject(e);
-					}
-
-					resolve(hash);
-				});
-		});
+		return encode(new Uint8ClampedArray(data), info.width, info.height, 5, 5);
 	}
 }

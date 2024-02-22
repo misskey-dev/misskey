@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onMounted, ref, shallowRef, onUnmounted } from 'vue';
+import { watch, onMounted, ref, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
@@ -113,8 +113,8 @@ onUnmounted(() => {
 	}
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
-})));
+}));
 </script>

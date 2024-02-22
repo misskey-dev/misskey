@@ -9,13 +9,13 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"esbuild": "0.20.0",
+		"esbuild": "0.20.1",
 		"idb-keyval": "6.2.1",
 		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@typescript-eslint/parser": "6.21.0",
+		"@typescript-eslint/parser": "7.0.2",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.67",
 		"eslint": "8.56.0",
 		"eslint-plugin-import": "2.29.1",

@@ -258,10 +258,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: props.host,
 	icon: 'ti ti-server',
-});
+}));
 </script>
 
 <style lang="scss" scoped>

@@ -119,10 +119,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-edit',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
-});
+}));
 </script>
 
 <style lang="scss" module>
