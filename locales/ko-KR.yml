@@ -2380,6 +2380,7 @@ _moderationLogTypes:
   resetPassword: "비밀번호 재설정"
   suspendRemoteInstance: "리모트 서버를 정지"
   unsuspendRemoteInstance: "리모트 서버의 정지를 해제"
+  updateRemoteInstanceNote: "리모트 서버의 조정 기록 갱신"
   markSensitiveDriveFile: "파일에 열람주의를 설정"
   unmarkSensitiveDriveFile: "파일에 열람주의를 해제"
   resolveAbuseReport: "신고 처리"
