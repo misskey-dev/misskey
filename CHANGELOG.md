@@ -22,6 +22,7 @@
 - Fix: MFMのオートコンプリートが出るべき状況で出ないことがある問題を修正
 - Fix: チャートのラベルが消えている問題を修正
 - Fix: 画面表示後最初の音声再生が爆音になることがある問題を修正
+- Feat: MFMタグ`color`を追加　`$[color.fg=xxx,bg=yyy ...]`の形式で文字色と背景色を同時に設定可能
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
@@ -52,7 +53,6 @@
 - Feat: 絵文字の詳細ダイアログを追加
 - Feat: 枠線をつけるMFM`$[border.width=1,style=solid,color=fff,radius=0 ...]`を追加
   - デフォルトで枠線からはみ出る部分が隠されるようにしました。初期と同じ挙動にするには`$[border.noclip`が必要です
-- Feat: MFMタグ`color`を追加　`$[color.fg=xxx,bg=yyy ...]`の形式で文字色と背景色を同時に設定可能
 - Feat: スワイプでタブを切り替えられるように
 - Enhance: MFM等のコードブロックに全文コピー用のボタンを追加
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
