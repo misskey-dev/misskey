@@ -450,13 +450,6 @@ rt {
 	}
 }
 
-._woodenFrameDivider {
-	height: 0;
-	border: none;
-	border-top: 1px solid #693410;
-	border-bottom: 1px solid #ce8a5c;
-}
-
 ._transition_zoom-enter-active, ._transition_zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
