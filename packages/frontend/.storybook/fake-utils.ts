@@ -83,13 +83,47 @@ export function choose<T>(array: T[]): T {
 }
 
 export function firstName(): string {
-	return firstNameDict[Math.floor(Math.random() * firstNameDict.length)];
+	return choose(firstNameDict);
 }
 
 export function lastName(): string {
-	return lastNameDict[Math.floor(Math.random() * lastNameDict.length)];
+	return choose(lastNameDict);
 }
 
 export function country(): string {
-	return countryDict[Math.floor(Math.random() * countryDict.length)];
+	return choose(countryDict);
+}
+
+export function imageDataUrl(options?: {
+	size?: {
+		width?: number,
+		height?: number,
+	},
+	color?: {
+		red?: number,
+		green?: number,
+		blue?: number,
+		alpha?: number,
+	}
+}): string {
+	const canvas = document.createElement('canvas');
+	canvas.width = options?.size?.width ?? 100;
+	canvas.height = options?.size?.height ?? 100;
+
+	const ctx = canvas.getContext('2d');
+	if (!ctx) {
+		throw new Error('Failed to get 2d context');
+	}
+
+	ctx.beginPath()
+
+	const red = options?.color?.red ?? integer(0, 255);
+	const green = options?.color?.green ?? integer(0, 255);
+	const blue = options?.color?.blue ?? integer(0, 255);
+	const alpha = options?.color?.alpha ?? 0;
+	ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2, true);
+	ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+	ctx.fill();
+
+	return canvas.toDataURL('image/png', 1.0);
 }

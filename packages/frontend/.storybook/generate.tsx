@@ -413,6 +413,7 @@ function toStories(component: string): Promise<string> {
 		glob('src/components/MkRoleSelectDialog.vue'),
 		glob('src/components/grid/MkGrid.vue'),
 		glob('src/pages/user/home.vue'),
+		glob('src/pages/admin/custom-emojis-manager2.vue'),
 	]);
 	const components = globs.flat();
 	await Promise.all(components.map(async (component) => {
