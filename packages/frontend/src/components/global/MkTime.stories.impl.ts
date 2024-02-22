@@ -48,7 +48,7 @@ export const Empty = {
 } satisfies StoryObj<typeof MkTime>;
 export const RelativeFuture = {
 	...Empty,
-	async play({ canvasElement, args }) {
+	async play({ canvasElement }) {
 		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 273919 }));
 	},
 	args: {
