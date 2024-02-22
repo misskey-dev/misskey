@@ -25,6 +25,7 @@
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
+- エンドポイント`flash/update`の`flashId`以外のパラメータは必須ではなくなりました
 - Fix: 禁止キーワードを含むノートがDelayed Queueに追加されて再処理される問題を修正
 
 ## 2024.2.0
