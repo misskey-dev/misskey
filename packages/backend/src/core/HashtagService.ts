@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 @Injectable()
 export class HashtagService {
@@ -29,6 +30,7 @@ export class HashtagService {
 		private featuredService: FeaturedService,
 		private idService: IdService,
 		private metaService: MetaService,
+		private utilityService: UtilityService,
 	) {
 	}
 
@@ -161,6 +163,7 @@ export class HashtagService {
 		const instance = await this.metaService.fetch();
 		const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
 		if (hiddenTags.includes(hashtag)) return;
+		if (this.utilityService.isKeyWordIncluded(hashtag, instance.sensitiveWords)) return;
 
 		// YYYYMMDDHHmm (10分間隔)
 		const now = new Date();

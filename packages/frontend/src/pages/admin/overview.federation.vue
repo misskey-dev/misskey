@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -47,15 +47,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import XPie from './overview.pie.vue';
+import XPie, { type InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { i18n } from '@/i18n.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 
-const topSubInstancesForPie = ref<any>(null);
-const topPubInstancesForPie = ref<any>(null);
+const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
+const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);
 const federationPubActive = ref<number | null>(null);
 const federationPubActiveDiff = ref<number | null>(null);
 const federationSubActive = ref<number | null>(null);
@@ -65,29 +66,35 @@ const fetching = ref(true);
 const { handler: externalTooltipHandler } = useChartTooltip();
 
 onMounted(async () => {
-	const chart = await os.apiGet('charts/federation', { limit: 2, span: 'day' });
+	const chart = await misskeyApiGet('charts/federation', { limit: 2, span: 'day' });
 	federationPubActive.value = chart.pubActive[0];
 	federationPubActiveDiff.value = chart.pubActive[0] - chart.pubActive[1];
 	federationSubActive.value = chart.subActive[0];
 	federationSubActiveDiff.value = chart.subActive[0] - chart.subActive[1];
 
-	os.apiGet('federation/stats', { limit: 10 }).then(res => {
-		topSubInstancesForPie.value = res.topSubInstances.map(x => ({
-			name: x.host,
-			color: x.themeColor,
-			value: x.followersCount,
-			onClick: () => {
-				os.pageWindow(`/instance-info/${x.host}`);
-			},
-		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowersCount }]);
-		topPubInstancesForPie.value = res.topPubInstances.map(x => ({
-			name: x.host,
-			color: x.themeColor,
-			value: x.followingCount,
-			onClick: () => {
-				os.pageWindow(`/instance-info/${x.host}`);
-			},
-		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
+	misskeyApiGet('federation/stats', { limit: 10 }).then(res => {
+		topSubInstancesForPie.value = [
+			...res.topSubInstances.map(x => ({
+				name: x.host,
+				color: x.themeColor,
+				value: x.followersCount,
+				onClick: () => {
+					os.pageWindow(`/instance-info/${x.host}`);
+				},
+			})),
+			{ name: '(other)', color: '#80808080', value: res.otherFollowersCount },
+		];
+		topPubInstancesForPie.value = [
+			...res.topPubInstances.map(x => ({
+				name: x.host,
+				color: x.themeColor,
+				value: x.followingCount,
+				onClick: () => {
+					os.pageWindow(`/instance-info/${x.host}`);
+				},
+			})),
+			{ name: '(other)', color: '#80808080', value: res.otherFollowingCount },
+		];
 	});
 
 	fetching.value = false;

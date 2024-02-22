@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -40,13 +40,13 @@ import MkButton from '@/components/MkButton.vue';
 import { Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { getThemes, removeTheme } from '@/theme-store';
+import { getThemes, removeTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
-const selectedThemeId = ref(null);
+const selectedThemeId = ref<string | null>(null);
 
 const themes = computed(() => [...installedThemes.value, ...builtinThemes.value]);
 
@@ -76,8 +76,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts._theme.manage,
 	icon: 'ti ti-tool',
-});
+}));
 </script>

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,10 +13,9 @@ import { ApiError } from '@/server/api/error.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:account',
 
 	errors: {
 		userNotFound: {
@@ -28,7 +27,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'User',
+		ref: 'UserDetailedNotMe',
 	},
 } as const;
 
@@ -59,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const res = await this.userEntityService.pack(profile.user!, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			});
 
 			return res;

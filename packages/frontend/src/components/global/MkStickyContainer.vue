@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
 
-import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const';
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
 
 const rootEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();
@@ -63,27 +63,32 @@ onMounted(() => {
 	watch([parentStickyTop, parentStickyBottom], calc);
 
 	watch(childStickyTop, () => {
+		if (bodyEl.value == null) return;
 		bodyEl.value.style.setProperty('--stickyTop', `${childStickyTop.value}px`);
 	}, {
 		immediate: true,
 	});
 
 	watch(childStickyBottom, () => {
+		if (bodyEl.value == null) return;
 		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
 	}, {
 		immediate: true,
 	});
 
-	headerEl.value.style.position = 'sticky';
-	headerEl.value.style.top = 'var(--stickyTop, 0)';
-	headerEl.value.style.zIndex = '1000';
+	if (headerEl.value != null) {
+		headerEl.value.style.position = 'sticky';
+		headerEl.value.style.top = 'var(--stickyTop, 0)';
+		headerEl.value.style.zIndex = '1000';
+		observer.observe(headerEl.value);
+	}
 
-	footerEl.value.style.position = 'sticky';
-	footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
-	footerEl.value.style.zIndex = '1000';
-
-	observer.observe(headerEl.value);
-	observer.observe(footerEl.value);
+	if (footerEl.value != null) {
+		footerEl.value.style.position = 'sticky';
+		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
+		footerEl.value.style.zIndex = '1000';
+		observer.observe(footerEl.value);
+	}
 });
 
 onUnmounted(() => {

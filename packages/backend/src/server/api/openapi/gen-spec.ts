@@ -1,16 +1,16 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import type { Config } from '@/config.js';
 import endpoints, { IEndpoint } from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import { getSchemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
-export function genOpenapiSpec(config: Config) {
+export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 	const spec = {
-		openapi: '3.0.0',
+		openapi: '3.1.0',
 
 		info: {
 			version: config.version,
@@ -30,7 +30,7 @@ export function genOpenapiSpec(config: Config) {
 		paths: {} as any,
 
 		components: {
-			schemas: schemas,
+			schemas: getSchemas(includeSelfRef),
 
 			securitySchemes: {
 				bearerAuth: {
@@ -56,7 +56,7 @@ export function genOpenapiSpec(config: Config) {
 			}
 		}
 
-		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
+		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res, 'res', includeSelfRef) : {};
 
 		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
 
@@ -71,7 +71,7 @@ export function genOpenapiSpec(config: Config) {
 		}
 
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = { ...endpoint.params };
+		const schema = { ...convertSchemaToOpenApiSchema(endpoint.params, 'param', false) };
 
 		if (endpoint.meta.requireFile) {
 			schema.properties = {
@@ -210,7 +210,9 @@ export function genOpenapiSpec(config: Config) {
 		};
 
 		spec.paths['/' + endpoint.name] = {
-			...(endpoint.meta.allowGet ? { get: info } : {}),
+			...(endpoint.meta.allowGet ? {
+				get: info,
+			} : {}),
 			post: info,
 		};
 	}

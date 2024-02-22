@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,10 +16,9 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin', 'role', 'users'],
 
-	kind: 'read:admin',
-
 	requireCredential: false,
-	requireAdmin: true,
+	requireModerator: true,
+	kind: 'read:admin:roles',
 
 	errors: {
 		noSuchRole: {
@@ -41,7 +40,7 @@ export const meta = {
 			},
 			required: ['id', 'createdAt', 'user'],
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
@@ -93,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
 				createdAt: this.idService.parse(assign.id).date.toISOString(),
-				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
+				user: await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
 				expiresAt: assign.expiresAt?.toISOString() ?? null,
 			})));
 		});

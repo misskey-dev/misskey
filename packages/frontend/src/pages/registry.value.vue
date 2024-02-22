@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -48,6 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -64,11 +65,11 @@ const props = defineProps<{
 const scope = computed(() => props.path.split('/').slice(0, -1));
 const key = computed(() => props.path.split('/').at(-1));
 
-const value = ref(null);
-const valueForEditor = ref(null);
+const value = ref<any>(null);
+const valueForEditor = ref<string | null>(null);
 
 function fetchValue() {
-	os.api('i/registry/get-detail', {
+	misskeyApi('i/registry/get-detail', {
 		scope: scope.value,
 		key: key.value,
 		domain: props.domain === '@' ? null : props.domain,
@@ -122,8 +123,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.registry,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>

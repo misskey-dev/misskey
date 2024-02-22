@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -48,10 +48,10 @@ onDeactivated(() => {
 	}
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
-});
+}));
 </script>
 
 <style lang="scss" module>

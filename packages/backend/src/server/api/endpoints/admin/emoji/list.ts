@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,10 +15,9 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'read:admin:emoji',
 
 	res: {
 		type: 'array',

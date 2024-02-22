@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -52,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				host: acct.host ?? IsNull(),
 			})));
 
-			return await this.userEntityService.packMany(users.filter(x => x !== null) as MiUser[], me, { detail: true });
+			return await this.userEntityService.packMany(users.filter(x => x !== null) as MiUser[], me, { schema: 'UserDetailed' });
 		});
 	}
 }

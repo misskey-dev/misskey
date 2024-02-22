@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -71,8 +71,11 @@ export default class Logger {
 		let log = `${l} ${worker}\t[${contexts.join(' ')}]\t${m}`;
 		if (envOption.withLogTime) log = chalk.gray(time) + ' ' + log;
 
-		console.log(important ? chalk.bold(log) : log);
-		if (level === 'error' && data) console.log(data);
+		const args: unknown[] = [important ? chalk.bold(log) : log];
+		if (data != null) {
+			args.push(data);
+		}
+		console.log(...args);
 	}
 
 	@bindThis

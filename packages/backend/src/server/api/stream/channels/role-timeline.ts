@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,12 +10,12 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private roleId: string;
 
 	constructor(
@@ -67,9 +67,10 @@ class RoleTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class RoleTimelineChannelService {
+export class RoleTimelineChannelService implements MiChannelService<false> {
 	public readonly shouldShare = RoleTimelineChannel.shouldShare;
 	public readonly requireCredential = RoleTimelineChannel.requireCredential;
+	public readonly kind = RoleTimelineChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,10 +12,9 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:relays',
 
 	errors: {
 		invalidUrl: {

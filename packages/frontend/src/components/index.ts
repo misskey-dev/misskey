@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,7 +16,7 @@ import MkUserName from './global/MkUserName.vue';
 import MkEllipsis from './global/MkEllipsis.vue';
 import MkTime from './global/MkTime.vue';
 import MkUrl from './global/MkUrl.vue';
-import I18n from './global/i18n.js';
+import I18n from './global/I18n.vue';
 import RouterView from './global/RouterView.vue';
 import MkLoading from './global/MkLoading.vue';
 import MkError from './global/MkError.vue';

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -18,16 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import * as Misskey from 'misskey-js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import { defaultStore } from '@/store.js';
 
-const instances = ref([]);
+const instances = ref<Misskey.entities.FederationInstance[]>([]);
 const fetching = ref(true);
 
 const fetch = async () => {
-	const fetchedInstances = await os.api('federation/instances', {
+	const fetchedInstances = await misskeyApi('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 6,
 	});

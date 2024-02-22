@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,12 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
-import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -38,13 +39,13 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-const list = ref(null);
+const list = ref<Misskey.entities.UserList | null>(null);
 const queue = ref(0);
 const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {
-	list.value = await os.api('users/lists/show', {
+	list.value = await misskeyApi('users/lists/show', {
 		listId: props.listId,
 	});
 }, { immediate: true });
@@ -69,10 +70,10 @@ const headerActions = computed(() => list.value ? [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => list.value ? {
-	title: list.value.name,
+definePageMetadata(() => ({
+	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

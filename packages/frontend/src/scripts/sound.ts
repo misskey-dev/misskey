@@ -1,11 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
-import * as os from '@/os.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
@@ -89,63 +88,33 @@ export type OperationType = typeof operationTypes[number];
 
 /**
  * 音声を読み込む
- * @param soundStore サウンド設定
+ * @param url url
  * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
  */
-export async function loadAudio(soundStore: SoundStore, options?: { useCache?: boolean; }) {
-	if (_DEV_) console.log('loading audio. opts:', options);
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
-		return;
-	}
+export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (ctx == null) {
 		ctx = new AudioContext();
 	}
 	if (options?.useCache ?? true) {
-		if (soundStore.type === '_driveFile_' && cache.has(soundStore.fileId)) {
-			if (_DEV_) console.log('use cache');
-			return cache.get(soundStore.fileId) as AudioBuffer;
-		} else if (cache.has(soundStore.type)) {
-			if (_DEV_) console.log('use cache');
-			return cache.get(soundStore.type) as AudioBuffer;
+		if (cache.has(url)) {
+			return cache.get(url) as AudioBuffer;
 		}
 	}
 
 	let response: Response;
 
-	if (soundStore.type === '_driveFile_') {
-		try {
-			response = await fetch(soundStore.fileUrl);
-		} catch (err) {
-			try {
-				// URLが変わっている可能性があるのでドライブ側からURLを取得するフォールバック
-				const apiRes = await os.api('drive/files/show', {
-					fileId: soundStore.fileId,
-				});
-				response = await fetch(apiRes.url);
-			} catch (fbErr) {
-				// それでも無理なら諦める
-				return;
-			}
-		}
-	} else {
-		try {
-			response = await fetch(`/client-assets/sounds/${soundStore.type}.mp3`);
-		} catch (err) {
-			return;
-		}
+	try {
+		response = await fetch(url);
+	} catch (err) {
+		return;
 	}
 
 	const arrayBuffer = await response.arrayBuffer();
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
 	if (options?.useCache ?? true) {
-		if (soundStore.type === '_driveFile_') {
-			cache.set(soundStore.fileId, audioBuffer);
-		} else {
-			cache.set(soundStore.type, audioBuffer);
-		}
+		cache.set(url, audioBuffer);
 	}
 
 	return audioBuffer;
@@ -155,13 +124,12 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
  * 既定のスプライトを再生する
  * @param type スプライトの種類を指定
  */
-export function play(operationType: OperationType) {
+export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (_DEV_) console.log('play', operationType, sound);
 	if (sound.type == null || !canPlay) return;
 
 	canPlay = false;
-	playFile(sound).finally(() => {
+	playMisskeySfxFile(sound).finally(() => {
 		// ごく短時間に音が重複しないように
 		setTimeout(() => {
 			canPlay = true;
@@ -173,26 +141,59 @@ export function play(operationType: OperationType) {
  * サウンド設定形式で指定された音声を再生する
  * @param soundStore サウンド設定
  */
-export async function playFile(soundStore: SoundStore) {
-	const buffer = await loadAudio(soundStore);
+export async function playMisskeySfxFile(soundStore: SoundStore) {
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+		return;
+	}
+	const masterVolume = defaultStore.state.sound_masterVolume;
+	if (isMute() || masterVolume === 0 || soundStore.volume === 0) {
+		return;
+	}
+	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
+	const buffer = await loadAudio(url);
 	if (!buffer) return;
-	createSourceNode(buffer, soundStore.volume)?.start();
+	const volume = soundStore.volume * masterVolume;
+	createSourceNode(buffer, { volume }).soundSource.start();
 }
 
-export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
-	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (isMute() || masterVolume === 0 || volume === 0) {
-		return null;
+export async function playUrl(url: string, opts: {
+	volume?: number;
+	pan?: number;
+	playbackRate?: number;
+}) {
+	if (opts.volume === 0) {
+		return;
 	}
+	const buffer = await loadAudio(url);
+	if (!buffer) return;
+	createSourceNode(buffer, opts).soundSource.start();
+}
+
+export function createSourceNode(buffer: AudioBuffer, opts: {
+	volume?: number;
+	pan?: number;
+	playbackRate?: number;
+}): {
+	soundSource: AudioBufferSourceNode;
+	panNode: StereoPannerNode;
+	gainNode: GainNode;
+} {
+	const panNode = ctx.createStereoPanner();
+	panNode.pan.value = opts.pan ?? 0;
 
 	const gainNode = ctx.createGain();
-	gainNode.gain.value = masterVolume * volume;
+
+	gainNode.gain.value = opts.volume ?? 1;
 
 	const soundSource = ctx.createBufferSource();
 	soundSource.buffer = buffer;
-	soundSource.connect(gainNode).connect(ctx.destination);
+	soundSource.playbackRate.value = opts.playbackRate ?? 1;
+	soundSource
+		.connect(panNode)
+		.connect(gainNode)
+		.connect(ctx.destination);
 
-	return soundSource;
+	return { soundSource, panNode, gainNode };
 }
 
 /**

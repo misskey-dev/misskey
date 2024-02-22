@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div>
 			<p v-if="useCw" :class="$style.cw">
-				<Mfm v-if="cw != ''" :text="cw" :author="user" :nyaize="'respect'" :i="user" style="margin-right: 8px;"/>
+				<Mfm v-if="cw != null && cw != ''" :text="cw" :author="user" :nyaize="'respect'" :i="user" style="margin-right: 8px;"/>
 				<MkCwButton v-model="showContent" :text="text.trim()" :files="files" :poll="poll" style="margin: 4px 0;"/>
 			</p>
 			<div v-show="!useCw || showContent">
@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 
 const showContent = ref(false);
@@ -33,12 +34,7 @@ const showContent = ref(false);
 const props = defineProps<{
 	text: string;
 	files: Misskey.entities.DriveFile[];
-	poll?: {
-		choices: string[];
-		multiple: boolean;
-		expiresAt: string | null;
-		expiredAfter: string | null;
-	};
+	poll?: PollEditorModelValue;
 	useCw: boolean;
 	cw: string | null;
 	user: Misskey.entities.User;

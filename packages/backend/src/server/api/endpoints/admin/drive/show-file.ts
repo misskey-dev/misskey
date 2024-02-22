@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,10 +14,9 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:drive',
 
 	errors: {
 		noSuchFile: {
@@ -85,6 +84,24 @@ export const meta = {
 			properties: {
 				type: 'object',
 				optional: false, nullable: false,
+				properties: {
+					width: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					height: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					orientation: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					avgColor: {
+						type: 'string',
+						optional: true, nullable: false,
+					},
+				},
 			},
 			storedInternal: {
 				type: 'boolean',

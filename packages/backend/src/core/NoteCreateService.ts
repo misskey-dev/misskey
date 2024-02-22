@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -58,6 +58,7 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -149,6 +150,8 @@ type Option = {
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
+
+	public static ContainsProhibitedWordsError = class extends Error {};
 
 	constructor(
 		@Inject(DI.config)
@@ -253,11 +256,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = meta.sensitiveWords;
-			if (this.isSensitive(data, sensitiveWords)) {
+			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
 			}
+		}
+
+		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+			throw new NoteCreateService.ContainsProhibitedWordsError();
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
@@ -324,6 +331,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
 			}
 			data.text = data.text.trim();
+			if (data.text === '') {
+				data.text = null;
+			}
 		} else {
 			data.text = null;
 		}
@@ -599,7 +609,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (data.reply) {
 				// 通知
 				if (data.reply.userHost === null) {
-					const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+					const isThreadMuted = await this.noteThreadMutingsRepository.exists({
 						where: {
 							userId: data.reply.userId,
 							threadId: data.reply.threadId ?? data.reply.id,
@@ -676,7 +686,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						this.relayService.deliverToRelays(user, noteActivity);
 					}
 
-					dm.execute();
+					trackPromise(dm.execute());
 				})();
 			}
 			//#endregion
@@ -702,31 +712,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// Register to search database
 		this.index(note);
-	}
-
-	@bindThis
-	private isSensitive(note: Option, sensitiveWord: string[]): boolean {
-		if (sensitiveWord.length > 0) {
-			const text = note.cw ?? note.text ?? '';
-			if (text === '') return false;
-			const matched = sensitiveWord.some(filter => {
-				// represents RegExp
-				const regexp = filter.match(/^\/(.+)\/(.*)$/);
-				// This should never happen due to input sanitisation.
-				if (!regexp) {
-					const words = filter.split(' ');
-					return words.every(keyword => text.includes(keyword));
-				}
-				try {
-					return new RE2(regexp[1], regexp[2]).test(text);
-				} catch (err) {
-					// This should never happen due to input sanitisation.
-					return false;
-				}
-			});
-			if (matched) return true;
-		}
-		return false;
 	}
 
 	@bindThis
@@ -762,7 +747,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: MiNote, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
-			const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+			const isThreadMuted = await this.noteThreadMutingsRepository.exists({
 				where: {
 					userId: u.id,
 					threadId: note.threadId ?? note.id,
@@ -912,6 +897,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// ダイレクトのとき、そのリストが対象外のユーザーの場合
 				if (
 					note.visibility === 'specified' &&
+					note.userId !== userListMembership.userListUserId &&
 					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
 				) continue;
 

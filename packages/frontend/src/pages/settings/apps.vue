@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<details>
 							<summary>{{ i18n.ts.details }}</summary>
 							<ul>
-								<li v-for="p in token.permission" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+								<li v-for="p in token.permission" :key="p">{{ i18n.ts._permissions[p] }}</li>
 							</ul>
 						</details>
 						<div>
@@ -47,14 +47,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import FormPagination from '@/components/MkPagination.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import { infoImageUrl } from '@/instance.js';
 
-const list = ref<any>(null);
+const list = ref<InstanceType<typeof FormPagination>>();
 
 const pagination = {
 	endpoint: 'i/apps' as const,
@@ -66,7 +66,7 @@ const pagination = {
 };
 
 function revoke(token) {
-	os.api('i/revoke-token', { tokenId: token.id }).then(() => {
+	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
 		list.value.reload();
 	});
 }
@@ -75,10 +75,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.installedApps,
 	icon: 'ti ti-plug',
-});
+}));
 </script>
 
 <style lang="scss" module>

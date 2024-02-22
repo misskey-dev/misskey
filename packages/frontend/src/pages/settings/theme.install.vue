@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const installThemeCode = ref(null);
+const installThemeCode = ref<string | null>(null);
 
 async function install(code: string): Promise<void> {
 	try {
@@ -33,7 +33,7 @@ async function install(code: string): Promise<void> {
 		await installTheme(code);
 		os.alert({
 			type: 'success',
-			text: i18n.t('_theme.installed', { name: theme.name }),
+			text: i18n.tsx._theme.installed({ name: theme.name }),
 		});
 	} catch (err) {
 		switch (err.message.toLowerCase()) {
@@ -59,8 +59,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts._theme.install,
 	icon: 'ti ti-download',
-});
+}));
 </script>

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,10 +10,9 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 
 	errors: {
 		noSuchEmoji: {

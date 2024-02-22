@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,10 +12,9 @@ import { IdService } from '@/core/IdService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:user-ips',
 	res: {
 		type: 'array',
 		optional: false,
@@ -34,7 +33,7 @@ export const meta = {
 				},
 			},
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {

@@ -368,6 +368,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Bật hCaptcha"
 hcaptchaSiteKey: "Khóa của trang"
 hcaptchaSecretKey: "Khóa bí mật"
+mcaptchaSiteKey: "Khóa của trang"
+mcaptchaSecretKey: "Khóa bí mật"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Bật reCAPTCHA"
 recaptchaSiteKey: "Khóa của trang"
@@ -1043,7 +1045,9 @@ loadReplies: "Hiển thị các trả lời"
 pinnedList: "Các mục đã được ghim"
 keepScreenOn: "Giữ màn hình luôn bật"
 verifiedLink: "Chúng tôi đã xác nhận bạn là chủ sở hữu của đường dẫn này"
+sourceCode: "Mã nguồn"
 flip: "Lật"
+lastNDays: "{n} ngày trước"
 _announcement:
   forExistingUsers: "Chỉ những người dùng đã tồn tại"
   forExistingUsersDescription: "Nếu được bật, thông báo này sẽ chỉ hiển thị với những người dùng đã tồn tại vào lúc thông báo được tạo. Nếu tắt đi, những tài khoản mới đăng ký sau khi thông báo được đăng lên cũng sẽ thấy nó."
@@ -1669,6 +1673,7 @@ _profile:
 _exportOrImport:
   allNotes: "Toàn bộ tút"
   favoritedNotes: "Bài viết đã thích"
+  clips: "Lưu bài viết"
   followingList: "Đang theo dõi"
   muteList: "Ẩn"
   blockingList: "Chặn"
@@ -1846,3 +1851,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Vô hiệu hóa"
   resetPassword: "Đặt lại mật khẩu"
+_reversi:
+  total: "Tổng cộng"
+

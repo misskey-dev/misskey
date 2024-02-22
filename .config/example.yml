@@ -2,6 +2,63 @@
 # Misskey configuration
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+#   ┌──────────────────────────────┐
+#───┘ a boring but important thing └────────────────────────────
+
+#
+# First of all, let me tell you a story that may possibly be
+# boring to you and possibly important to you.
+#
+# Misskey is licensed under the AGPLv3 license. This license is
+# known to be often misunderstood.  Please read the following
+# instructions carefully and select the appropriate option so
+# that you do not negligently cause a license violation.
+#
+
+# --------
+# Option 1: If you host Misskey AS-IS (without any changes to
+#           the source code. forks are not included).
+#
+# Step 1: Congratulations! You don't need to do anything.
+
+# --------
+# Option 2: If you have made changes to the source code (forks
+#           are included) and publish a Git repository of source
+#           code.  There should be no access restrictions on
+#           this repository.  Strictly speaking, it doesn't have
+#           to be a Git repository, but you'll probably use Git!
+#
+# Step 1: Build and run the Misskey server first.
+# Step 2: Open <https://your.misskey.example/admin/settings> in
+#         your browser with the administrator account.
+# Step 3: Enter the URL of your Git repository in the
+#         "Repository URL" field.
+
+# --------
+# Option 3: If neither of the above applies to you.
+#           (In this case, the source code should be published
+#           on the Misskey interface.  IT IS NOT ENOUGH TO
+#           DISCLOSE THE SOURCE CODE WEHN A USER REQUESTS IT BY
+#           E-MAIL OR OTHER MEANS.  If you are not satisfied
+#           with this, it is recommended that you read the
+#           license again carefully.  Anyway, enabling this
+#           option will automatically generate and publish a
+#           tarball at build time, protecting you from
+#           inadvertent license violations. (There is no legal
+#           guarantee, of course.)  The tarball will generated
+#           from the root directory of your codebase.  So it is
+#           also recommended to check <built/tarball> directory
+#           once after building and before activating the server
+#           to avoid ACCIDENTAL LEAKING OF SENSITIVE INFORMATION.
+#           To prevent certain files from being included in the
+#           tarball, add a glob pattern after line 15 in
+#           <scripts/tarball.mjs>.  DO NOT FORGET TO BUILD AFTER
+#           ENABLING THIS OPTION!)
+#
+# Step 1: Uncomment the following line.
+#
+# publishTarballInsteadOfProvideRepositoryUrl: true
+
 #   ┌─────┐
 #───┘ URL └─────────────────────────────────────────────────────
 
@@ -118,7 +175,7 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-# You can set scope to local (default value) or global 
+# You can set scope to local (default value) or global
 # (include notes from remote).
 
 #meilisearch:
@@ -160,14 +217,14 @@ id: 'aidx'
 # Job concurrency per worker
 #deliverJobConcurrency: 128
 #inboxJobConcurrency: 16
-#relashionshipJobConcurrency: 16
-# What's relashionshipJob?:
+#relationshipJobConcurrency: 16
+# What's relationshipJob?:
 #  Follow, unfollow, block and unblock(ings) while following-imports, etc. or account migrations.
 
 # Job rate limiter
 #deliverJobPerSec: 128
 #inboxJobPerSec: 32
-#relashionshipJobPerSec: 64
+#relationshipJobPerSec: 64
 
 # Job attempts
 #deliverJobMaxAttempts: 12
@@ -214,7 +271,7 @@ proxyRemoteFiles: true
 signToActivityPubGet: true
 
 # For security reasons, uploading attachments from the intranet is prohibited,
-# but exceptions can be made from the following settings. Default value is "undefined". 
+# but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -76,6 +76,8 @@ import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
+import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
+import { MiReversiGame } from '@/models/ReversiGame.js';
 
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -190,6 +192,8 @@ export const entities = [
 	MiFlash,
 	MiFlashLike,
 	MiUserMemo,
+	MiBubbleGameRecord,
+	MiReversiGame,
 	...charts,
 ];
 
@@ -207,22 +211,24 @@ export function createPostgresDataSource(config: Config) {
 			statement_timeout: 1000 * 10,
 			...config.db.extra,
 		},
-		replication: config.dbReplications ? {
-			master: {
-				host: config.db.host,
-				port: config.db.port,
-				username: config.db.user,
-				password: config.db.pass,
-				database: config.db.db,
+		...(config.dbReplications ? {
+			replication: {
+				master: {
+					host: config.db.host,
+					port: config.db.port,
+					username: config.db.user,
+					password: config.db.pass,
+					database: config.db.db,
+				},
+				slaves: config.dbSlaves!.map(rep => ({
+					host: rep.host,
+					port: rep.port,
+					username: rep.user,
+					password: rep.pass,
+					database: rep.db,
+				})),
 			},
-			slaves: config.dbSlaves!.map(rep => ({
-				host: rep.host,
-				port: rep.port,
-				username: rep.user,
-				password: rep.pass,
-				database: rep.db,
-			})),
-		} : undefined,
+		} : {}),
 		synchronize: process.env.NODE_ENV === 'test',
 		dropSchema: process.env.NODE_ENV === 'test',
 		cache: !config.db.disableCache && process.env.NODE_ENV !== 'test' ? { // dbをcloseしても何故かredisのコネクションが内部的に残り続けるようで、テストの際に支障が出るため無効にする(キャッシュも含めてテストしたいため本当は有効にしたいが...)

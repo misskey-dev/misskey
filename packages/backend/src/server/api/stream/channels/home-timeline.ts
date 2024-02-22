@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,12 +10,13 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = false;
-	public static requireCredential = true;
+	public static requireCredential = true as const;
+	public static kind = 'read:account';
 	private withRenotes: boolean;
 	private withFiles: boolean;
 
@@ -99,9 +100,10 @@ class HomeTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class HomeTimelineChannelService {
+export class HomeTimelineChannelService implements MiChannelService<true> {
 	public readonly shouldShare = HomeTimelineChannel.shouldShare;
 	public readonly requireCredential = HomeTimelineChannel.requireCredential;
+	public readonly kind = HomeTimelineChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -49,9 +49,10 @@ export class WebhookService implements OnApplicationShutdown {
 			switch (type) {
 				case 'webhookCreated':
 					if (body.active) {
-						this.webhooks.push({
+						this.webhooks.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 							...body,
 							latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
+							user: null, // joinなカラムは通常取ってこないので
 						});
 					}
 					break;
@@ -59,14 +60,16 @@ export class WebhookService implements OnApplicationShutdown {
 					if (body.active) {
 						const i = this.webhooks.findIndex(a => a.id === body.id);
 						if (i > -1) {
-							this.webhooks[i] = {
+							this.webhooks[i] = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 								...body,
 								latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
+								user: null, // joinなカラムは通常取ってこないので
 							};
 						} else {
-							this.webhooks.push({
+							this.webhooks.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 								...body,
 								latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
+								user: null, // joinなカラムは通常取ってこないので
 							});
 						}
 					} else {

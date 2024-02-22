@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
-	kind: 'write:admin',
+	secure: true,
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
 } as const;

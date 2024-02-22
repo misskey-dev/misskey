@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Schema } from '@/misc/json-schema.js';
-import { RolePolicies } from '@/core/RoleService.js';
+import { permissions } from 'misskey-js';
+import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -208,6 +208,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportClips from './endpoints/i/export-clips.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
@@ -363,6 +364,15 @@ import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
+import * as ep___bubbleGame_register from './endpoints/bubble-game/register.js';
+import * as ep___bubbleGame_ranking from './endpoints/bubble-game/ranking.js';
+import * as ep___reversi_cancelMatch from './endpoints/reversi/cancel-match.js';
+import * as ep___reversi_games from './endpoints/reversi/games.js';
+import * as ep___reversi_match from './endpoints/reversi/match.js';
+import * as ep___reversi_invitations from './endpoints/reversi/invitations.js';
+import * as ep___reversi_showGame from './endpoints/reversi/show-game.js';
+import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
+import * as ep___reversi_verify from './endpoints/reversi/verify.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -567,6 +577,7 @@ const eps = [
 	['i/export-following', ep___i_exportFollowing],
 	['i/export-mute', ep___i_exportMute],
 	['i/export-notes', ep___i_exportNotes],
+	['i/export-clips', ep___i_exportClips],
 	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
 	['i/export-antennas', ep___i_exportAntennas],
@@ -722,9 +733,18 @@ const eps = [
 	['fetch-rss', ep___fetchRss],
 	['fetch-external-resources', ep___fetchExternalResources],
 	['retention', ep___retention],
+	['bubble-game/register', ep___bubbleGame_register],
+	['bubble-game/ranking', ep___bubbleGame_ranking],
+	['reversi/cancel-match', ep___reversi_cancelMatch],
+	['reversi/games', ep___reversi_games],
+	['reversi/match', ep___reversi_match],
+	['reversi/invitations', ep___reversi_invitations],
+	['reversi/show-game', ep___reversi_showGame],
+	['reversi/surrender', ep___reversi_surrender],
+	['reversi/verify', ep___reversi_verify],
 ];
 
-export interface IEndpointMeta {
+interface IEndpointMetaBase {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
 
 	readonly tags?: ReadonlyArray<string>;
@@ -755,7 +775,7 @@ export interface IEndpointMeta {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requireRolePolicy?: keyof RolePolicies;
+	readonly requireRolePolicy?: KeyOf<'RolePolicies'>;
 
 	/**
 	 * 引っ越し済みのユーザーによるリクエストを禁止するか
@@ -822,6 +842,23 @@ export interface IEndpointMeta {
 	 */
 	readonly cacheSec?: number;
 }
+
+export type IEndpointMeta = (Omit<IEndpointMetaBase, 'requireCrential' | 'requireModerator' | 'requireAdmin'> & {
+	requireCredential?: false,
+	requireAdmin?: false,
+	requireModerator?: false,
+}) | (Omit<IEndpointMetaBase, 'secure'> & {
+	secure: true,
+}) | (Omit<IEndpointMetaBase, 'requireCredential' | 'kind'> & {
+	requireCredential: true,
+	kind: (typeof permissions)[number],
+}) | (Omit<IEndpointMetaBase, 'requireModerator' | 'kind'> & {
+	requireModerator: true,
+	kind: (typeof permissions)[number],
+}) | (Omit<IEndpointMetaBase, 'requireAdmin' | 'kind'> & {
+	requireAdmin: true,
+	kind: (typeof permissions)[number],
+})
 
 export interface IEndpoint {
 	name: string;

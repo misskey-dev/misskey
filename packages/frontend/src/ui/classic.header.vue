@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -48,9 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
-import { openInstanceMenu } from './_common_/common';
+import { openInstanceMenu } from './_common_/common.js';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar';
+import { navbarItemDef } from '@/navbar.js';
 import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
@@ -141,7 +141,7 @@ onMounted(() => {
 					left: 0;
 					color: var(--navIndicator);
 					font-size: 8px;
-					animation: blink 1s infinite;
+					animation: global-blink 1s infinite;
 				}
 
 				&:hover {

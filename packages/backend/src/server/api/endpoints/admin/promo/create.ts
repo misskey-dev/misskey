@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,10 +13,9 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:promo',
 
 	errors: {
 		noSuchNote: {
@@ -56,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw e;
 			});
 
-			const exist = await this.promoNotesRepository.exist({ where: { noteId: note.id } });
+			const exist = await this.promoNotesRepository.exists({ where: { noteId: note.id } });
 
 			if (exist) {
 				throw new ApiError(meta.errors.alreadyPromoted);

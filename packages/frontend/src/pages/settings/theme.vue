@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -85,9 +85,21 @@ import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/scripts/array.js';
-import { fetchThemes, getThemes } from '@/theme-store';
+import { fetchThemes, getThemes } from '@/theme-store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import * as os from '@/os.js';
+
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
+
+	unisonReload();
+}
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -124,6 +136,7 @@ const lightThemeId = computed({
 		}
 	},
 });
+
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
@@ -141,7 +154,7 @@ watch(wallpaper, () => {
 	} else {
 		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
-	location.reload();
+	reloadAsk();
 });
 
 onActivated(() => {
@@ -164,10 +177,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.theme,
 	icon: 'ti ti-palette',
-});
+}));
 </script>
 
 <style lang="scss" scoped>

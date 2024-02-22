@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
+			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.tsx._poll.choiceN({ n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>
@@ -62,21 +62,18 @@ import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import { addTime } from '@/scripts/time.js';
 import { i18n } from '@/i18n.js';
 
+export type PollEditorModelValue = {
+	expiresAt: number | null;
+	expiredAfter: number | null;
+	choices: string[];
+	multiple: boolean;
+};
+
 const props = defineProps<{
-	modelValue: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	};
+	modelValue: PollEditorModelValue;
 }>();
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	}): void;
+	(ev: 'update:modelValue', v: PollEditorModelValue): void;
 }>();
 
 const choices = ref(props.modelValue.choices);
@@ -89,7 +86,9 @@ const unit = ref('second');
 
 if (props.modelValue.expiresAt) {
 	expiration.value = 'at';
-	atDate.value = atTime.value = props.modelValue.expiresAt;
+	const expiresAt = new Date(props.modelValue.expiresAt);
+	atDate.value = formatDateTimeString(expiresAt, 'yyyy-MM-dd');
+	atTime.value = formatDateTimeString(expiresAt, 'HH:mm');
 } else if (typeof props.modelValue.expiredAfter === 'number') {
 	expiration.value = 'after';
 	after.value = props.modelValue.expiredAfter / 1000;
@@ -113,20 +112,21 @@ function remove(i) {
 	choices.value = choices.value.filter((_, _i) => _i !== i);
 }
 
-function get() {
+function get(): PollEditorModelValue {
 	const calcAt = () => {
 		return new Date(`${atDate.value} ${atTime.value}`).getTime();
 	};
 
 	const calcAfter = () => {
-		let base = parseInt(after.value);
+		let base = parseInt(after.value.toString());
 		switch (unit.value) {
+			// @ts-expect-error fallthrough
 			case 'day': base *= 24;
-				// fallthrough
+			// @ts-expect-error fallthrough
 			case 'hour': base *= 60;
-				// fallthrough
+			// @ts-expect-error fallthrough
 			case 'minute': base *= 60;
-				// fallthrough
+			// eslint-disable-next-line no-fallthrough
 			case 'second': return base *= 1000;
 			default: return null;
 		}
@@ -135,10 +135,8 @@ function get() {
 	return {
 		choices: choices.value,
 		multiple: multiple.value,
-		...(
-			expiration.value === 'at' ? { expiresAt: calcAt() } :
-			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
-		),
+		expiresAt: expiration.value === 'at' ? calcAt() : null,
+		expiredAfter: expiration.value === 'after' ? calcAfter() : null,
 	};
 }
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -29,37 +29,10 @@ export const meta = {
 				optional: false,
 				nullable: false,
 				items: {
-					properties: {
-						id: { type: 'string' },
-						firstRetrievedAt: { type: 'string' },
-						host: { type: 'string' },
-						usersCount: { type: 'number' },
-						notesCount: { type: 'number' },
-						followingCount: { type: 'number' },
-						followersCount: { type: 'number' },
-						isNotResponding: { type: 'boolean' },
-						isSuspended: { type: 'boolean' },
-						isBlocked: { type: 'boolean' },
-						softwareName: { type: 'string' },
-						softwareVersion: { type: 'string' },
-						openRegistrations: { type: 'boolean' },
-						name: { type: 'string' },
-						description: { type: 'string' },
-						maintainerName: { type: 'string' },
-						maintainerEmail: { type: 'string' },
-						isSilenced: { type: 'boolean' },
-						iconUrl: { type: 'string' },
-						faviconUrl: { type: 'string' },
-						themeColor: { type: 'string' },
-						infoUpdatedAt: {
-							type: 'string',
-							nullable: true,
-						},
-						latestRequestReceivedAt: {
-							type: 'string',
-							nullable: true,
-						},
-					}
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
 				},
 			},
 			otherFollowersCount: { type: 'number' },
@@ -68,42 +41,15 @@ export const meta = {
 				optional: false,
 				nullable: false,
 				items: {
-					properties: {
-						id: { type: 'string' },
-						firstRetrievedAt: { type: 'string' },
-						host: { type: 'string' },
-						usersCount: { type: 'number' },
-						notesCount: { type: 'number' },
-						followingCount: { type: 'number' },
-						followersCount: { type: 'number' },
-						isNotResponding: { type: 'boolean' },
-						isSuspended: { type: 'boolean' },
-						isBlocked: { type: 'boolean' },
-						softwareName: { type: 'string' },
-						softwareVersion: { type: 'string' },
-						openRegistrations: { type: 'boolean' },
-						name: { type: 'string' },
-						description: { type: 'string' },
-						maintainerName: { type: 'string' },
-						maintainerEmail: { type: 'string' },
-						isSilenced: { type: 'boolean' },
-						iconUrl: { type: 'string' },
-						faviconUrl: { type: 'string' },
-						themeColor: { type: 'string' },
-						infoUpdatedAt: {
-							type: 'string',
-							nullable: true,
-						},
-						latestRequestReceivedAt: {
-							type: 'string',
-							nullable: true,
-						},
-					}
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
 				},
 			},
 			otherFollowingCount: { type: 'number' },
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 
 type Request = {
 	url: string;
@@ -34,9 +35,9 @@ type PrivateKey = {
 };
 
 export class ApRequestCreator {
-	static createSignedPost(args: { key: PrivateKey, url: string, body: string, additionalHeaders: Record<string, string> }): Signed {
+	static createSignedPost(args: { key: PrivateKey, url: string, body: string, digest?: string, additionalHeaders: Record<string, string> }): Signed {
 		const u = new URL(args.url);
-		const digestHeader = `SHA-256=${crypto.createHash('sha256').update(args.body).digest('base64')}`;
+		const digestHeader = args.digest ?? this.createDigest(args.body);
 
 		const request: Request = {
 			url: u.href,
@@ -59,6 +60,10 @@ export class ApRequestCreator {
 		};
 	}
 
+	static createDigest(body: string) {
+		return `SHA-256=${crypto.createHash('sha256').update(body).digest('base64')}`;
+	}
+
 	static createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
 		const u = new URL(args.url);
 
@@ -66,7 +71,7 @@ export class ApRequestCreator {
 			url: u.href,
 			method: 'GET',
 			headers: this.#objectAssignWithLcKey({
-				'Accept': 'application/activity+json, application/ld+json',
+				'Accept': 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				'Date': new Date().toUTCString(),
 				'Host': new URL(args.url).host,
 			}, args.additionalHeaders),
@@ -145,8 +150,8 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown): Promise<void> {
-		const body = JSON.stringify(object);
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, digest?: string): Promise<void> {
+		const body = typeof object === 'string' ? object : JSON.stringify(object);
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
@@ -157,6 +162,7 @@ export class ApRequestService {
 			},
 			url,
 			body,
+			digest,
 			additionalHeaders: {
 			},
 		});
@@ -190,6 +196,9 @@ export class ApRequestService {
 		const res = await this.httpRequestService.send(url, {
 			method: req.request.method,
 			headers: req.request.headers,
+		}, {
+			throwErrorWhenResponseNotOk: true,
+			validators: [validateContentTypeSetAsActivityPub],
 		});
 
 		return await res.json();

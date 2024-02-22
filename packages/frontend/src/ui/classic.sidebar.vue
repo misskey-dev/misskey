@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -220,7 +220,7 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 			left: 0;
 			color: var(--navIndicator);
 			font-size: 8px;
-			animation: blink 1s infinite;
+			animation: global-blink 1s infinite;
 
 			&:has(.itemIndicateValueIcon) {
 				animation: none;

@@ -1,16 +1,16 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div ref="el" class="fdidabkc" :style="{ background: bg }" @click="onClick">
-	<template v-if="metadata">
+	<template v-if="pageMetadata">
 		<div class="titleContainer" @click="showTabsPopup">
-			<i v-if="metadata.icon" class="icon" :class="metadata.icon"></i>
+			<i v-if="pageMetadata.icon" class="icon" :class="pageMetadata.icon"></i>
 
 			<div class="title">
-				<div class="title">{{ metadata.title }}</div>
+				<div class="title">{{ pageMetadata.title }}</div>
 			</div>
 		</div>
 		<div class="tabs">
@@ -38,8 +38,8 @@ import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os.js';
 import { scrollToTop } from '@/scripts/scroll.js';
 import MkButton from '@/components/MkButton.vue';
-import { globalEvents } from '@/events';
-import { injectPageMetadata } from '@/scripts/page-metadata.js';
+import { globalEvents } from '@/events.js';
+import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 
 type Tab = {
 	key?: string | null;
@@ -65,12 +65,12 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const metadata = injectPageMetadata();
+const pageMetadata = injectReactiveMetadata();
 
 const el = shallowRef<HTMLElement>(null);
 const tabRefs = {};
 const tabHighlightEl = shallowRef<HTMLElement | null>(null);
-const bg = ref(null);
+const bg = ref<string | null>(null);
 const height = ref(0);
 const hasTabs = computed(() => {
 	return props.tabs && props.tabs.length > 0;
@@ -118,7 +118,7 @@ function onTabClick(tab: Tab, ev: MouseEvent): void {
 }
 
 const calcBg = () => {
-	const rawBg = metadata?.bg ?? 'var(--bg)';
+	const rawBg = pageMetadata.value?.bg ?? 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();

@@ -3,10 +3,10 @@ import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
 
-import locales from '../../locales';
+import locales from '../../locales/index.js';
 import meta from '../../package.json';
-import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
-import pluginJson5 from './vite.json5';
+import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
+import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -26,6 +26,7 @@ const hash = (str: string, seed = 0): number => {
 };
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';
@@ -100,11 +101,6 @@ export function getConfig(): UserConfig {
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
-		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
-		optimizeDeps: {
-			include: ['misskey-js'],
-		},
-
 		build: {
 			target: [
 				'chrome116',
@@ -134,7 +130,7 @@ export function getConfig(): UserConfig {
 
 			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 			commonjsOptions: {
-				include: [/misskey-js/, /node_modules/],
+				include: [/misskey-js/, /misskey-reversi/, /misskey-bubble-game/, /node_modules/],
 			},
 		},
 
@@ -154,6 +150,7 @@ export function getConfig(): UserConfig {
 					},
 				},
 			},
+			includeSource: ['src/**/*.ts'],
 		},
 	};
 }

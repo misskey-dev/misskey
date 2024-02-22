@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -86,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -95,10 +96,11 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const ads = ref<any[]>([]);
+const ads = ref<Misskey.entities.Ad[]>([]);
 
 // ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
 const localTime = new Date();
@@ -107,7 +109,7 @@ const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, 
 const filterType = ref('all');
 let publishing: boolean | null = null;
 
-os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 	if (adsResponse != null) {
 		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
@@ -158,7 +160,7 @@ function add() {
 function remove(ad) {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: ad.url }),
+		text: i18n.tsx.removeAreYouSure({ x: ad.url }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		ads.value = ads.value.filter(x => x !== ad);
@@ -173,7 +175,7 @@ function remove(ad) {
 
 function save(ad) {
 	if (ad.id == null) {
-		os.api('admin/ad/create', {
+		misskeyApi('admin/ad/create', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
 			startsAt: new Date(ad.startsAt).getTime(),
@@ -190,7 +192,7 @@ function save(ad) {
 			});
 		});
 	} else {
-		os.api('admin/ad/update', {
+		misskeyApi('admin/ad/update', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
 			startsAt: new Date(ad.startsAt).getTime(),
@@ -209,7 +211,7 @@ function save(ad) {
 }
 
 function more() {
-	os.api('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
+	misskeyApi('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
 		ads.value = ads.value.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
@@ -226,7 +228,7 @@ function more() {
 }
 
 function refresh() {
-	os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+	misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
 		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
@@ -253,10 +255,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.ads,
 	icon: 'ti ti-ad',
-});
+}));
 </script>
 
 <style lang="scss" module>

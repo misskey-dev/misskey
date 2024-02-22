@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
@@ -56,6 +56,7 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -63,14 +64,14 @@ import MkRadios from '@/components/MkRadios.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User,
-	announcement?: any,
+	announcement?: Misskey.entities.Announcement,
 }>();
 
-const dialog = ref(null);
-const title = ref<string>(props.announcement ? props.announcement.title : '');
-const text = ref<string>(props.announcement ? props.announcement.text : '');
-const icon = ref<string>(props.announcement ? props.announcement.icon : 'info');
-const display = ref<string>(props.announcement ? props.announcement.display : 'dialog');
+const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
+const title = ref(props.announcement ? props.announcement.title : '');
+const text = ref(props.announcement ? props.announcement.text : '');
+const icon = ref(props.announcement ? props.announcement.icon : 'info');
+const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
@@ -91,18 +92,18 @@ async function done() {
 
 	if (props.announcement) {
 		await os.apiWithDialog('admin/announcements/update', {
-			id: props.announcement.id,
 			...params,
+			id: props.announcement.id,
 		});
 
 		emit('done', {
 			updated: {
-				id: props.announcement.id,
 				...params,
+				id: props.announcement.id,
 			},
 		});
 
-		dialog.value.close();
+		dialog.value?.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -110,25 +111,27 @@ async function done() {
 			created: created,
 		});
 
-		dialog.value.close();
+		dialog.value?.close();
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title.value }),
+		text: i18n.tsx.removeAreYouSure({ x: title.value }),
 	});
 	if (canceled) return;
 
-	os.api('admin/announcements/delete', {
-		id: props.announcement.id,
-	}).then(() => {
-		emit('done', {
-			deleted: true,
+	if (props.announcement) {
+		await misskeyApi('admin/announcements/delete', {
+			id: props.announcement.id,
 		});
-		dialog.value.close();
+	}
+
+	emit('done', {
+		deleted: true,
 	});
+	dialog.value?.close();
 }
 </script>
 

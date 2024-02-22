@@ -1,12 +1,12 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div>
 	<div v-if="achievements" :class="$style.root">
-		<div v-for="achievement in achievements" :key="achievement" :class="$style.achievement" class="_panel">
+		<div v-for="achievement in achievements" :key="achievement.name" :class="$style.achievement" class="_panel">
 			<div :class="$style.icon">
 				<div
 					:class="[$style.iconFrame, {
@@ -55,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, computed } from 'vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements.js';
 
@@ -67,11 +68,11 @@ const props = withDefaults(defineProps<{
 	withDescription: true,
 });
 
-const achievements = ref();
+const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null);
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {
-	os.api('users/achievements', { userId: props.user.id }).then(res => {
+	misskeyApi('users/achievements', { userId: props.user.id }).then(res => {
 		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
 			const a = res.find(x => x.name === t);

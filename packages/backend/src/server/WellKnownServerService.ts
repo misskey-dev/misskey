@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import * as Acct from '@/misc/acct.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
+import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
@@ -30,6 +31,7 @@ export class WellKnownServerService {
 
 		private nodeinfoServerService: NodeinfoServerService,
 		private userEntityService: UserEntityService,
+		private oauth2ProviderService: OAuth2ProviderService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -85,6 +87,10 @@ export class WellKnownServerService {
 
 		fastify.get('/.well-known/nodeinfo', async (request, reply) => {
 			return { links: this.nodeinfoServerService.getLinks() };
+		});
+
+		fastify.get('/.well-known/oauth-authorization-server', async () => {
+			return this.oauth2ProviderService.generateRFC8414();
 		});
 
 		/* TODO

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,12 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
 import { watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -41,7 +42,7 @@ const emit = defineEmits<{
 }>();
 
 const id = ref<any>(props.modelValue.note);
-const note = ref<any>(null);
+const note = ref<Misskey.entities.Note | null>(null);
 
 watch(id, async () => {
 	if (id.value && (id.value.startsWith('http://') || id.value.startsWith('https://'))) {
@@ -52,7 +53,7 @@ watch(id, async () => {
 		...props.modelValue,
 		note: id.value,
 	});
-	note.value = await os.api('notes/show', { noteId: id.value });
+	note.value = await misskeyApi('notes/show', { noteId: id.value });
 }, {
 	immediate: true,
 });

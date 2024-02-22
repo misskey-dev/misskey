@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
-import { rest } from 'msw';
-import { userDetailed } from '../../.storybook/fakes';
-import { commonHandlers } from '../../.storybook/mocks';
+import { HttpResponse, http } from 'msw';
+import { userDetailed } from '../../.storybook/fakes.js';
+import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAbuseReportWindow from './MkAbuseReportWindow.vue';
 export const Default = {
 	render(args) {
@@ -44,9 +44,9 @@ export const Default = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.post('/api/users/report-abuse', async (req, res, ctx) => {
-					action('POST /api/users/report-abuse')(await req.json());
-					return res(ctx.json({}));
+				http.post('/api/users/report-abuse', async ({ request }) => {
+					action('POST /api/users/report-abuse')(await request.json());
+					return HttpResponse.json({});
 				}),
 			],
 		},

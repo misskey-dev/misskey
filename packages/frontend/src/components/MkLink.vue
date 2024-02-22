@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -29,7 +29,7 @@ const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 
-const el = ref();
+const el = ref<HTMLElement>();
 
 useTooltip(el, (showing) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,10 +11,9 @@ import { RoleService } from '@/core/RoleService.js';
 export const meta = {
 	tags: ['admin', 'role'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:roles',
 
 	res: {
 		type: 'object',

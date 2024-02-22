@@ -1,18 +1,17 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
-import { signup, api, post, startServer, initTestDb, waitFire } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Streaming', () => {
-	let app: INestApplicationContext;
 	let Followings: any;
 
 	const follow = async (follower: any, followee: any) => {
@@ -31,15 +30,15 @@ describe('Streaming', () => {
 
 	describe('Streaming', () => {
 		// Local users
-		let ayano: misskey.entities.MeSignup;
-		let kyoko: misskey.entities.MeSignup;
-		let chitose: misskey.entities.MeSignup;
-		let kanako: misskey.entities.MeSignup;
+		let ayano: misskey.entities.SignupResponse;
+		let kyoko: misskey.entities.SignupResponse;
+		let chitose: misskey.entities.SignupResponse;
+		let kanako: misskey.entities.SignupResponse;
 
 		// Remote users
-		let akari: misskey.entities.MeSignup;
-		let chinatsu: misskey.entities.MeSignup;
-		let takumi: misskey.entities.MeSignup;
+		let akari: misskey.entities.SignupResponse;
+		let chinatsu: misskey.entities.SignupResponse;
+		let takumi: misskey.entities.SignupResponse;
 
 		let kyokoNote: any;
 		let kanakoNote: any;
@@ -47,7 +46,6 @@ describe('Streaming', () => {
 		let list: any;
 
 		beforeAll(async () => {
-			app = await startServer();
 			const connection = await initTestDb(true);
 			Followings = connection.getRepository(MiFollowing);
 
@@ -93,10 +91,6 @@ describe('Streaming', () => {
 				userId: takumi.id,
 			}, chitose);
 		}, 1000 * 60 * 2);
-
-		afterAll(async () => {
-			await app.close();
-		});
 
 		describe('Events', () => {
 			test('mention event', async () => {
@@ -558,6 +552,28 @@ describe('Streaming', () => {
 
 				assert.strictEqual(fired, false);
 			});
+		});
+
+		test('Authentication', async () => {
+			const application = await createAppToken(ayano, []);
+			const application2 = await createAppToken(ayano, ['read:account']);
+			const socket = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${application}`);
+			const established = await new Promise<boolean>((resolve, reject) => {
+				socket.on('error', () => resolve(false));
+				socket.on('unexpected-response', () => resolve(false));
+				setTimeout(() => resolve(true), 3000);
+			});
+
+			socket.close();
+			assert.strictEqual(established, false);
+
+			const fired = await waitFire(
+				{ token: application2 }, 'hybridTimeline',
+				() => api('notes/create', { text: 'Hello, world!' }, ayano),
+				msg => msg.type === 'note' && msg.body.userId === ayano.id,
+			);
+
+			assert.strictEqual(fired, true);
 		});
 
 		// XXX: QueryFailedError: duplicate key value violates unique constraint "IDX_347fec870eafea7b26c8a73bac"

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,10 +13,9 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:drive',
 
 	res: {
 		type: 'array',

@@ -16,27 +16,31 @@ jobs:
 # api-artifact
     steps:
       - name: Download artifact
-        uses: actions/github-script@v7
+        uses: actions/github-script@v7.0.1
         with:
           script: |
+            const fs = require('fs');
             let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: context.payload.workflow_run.id,
             });
-            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "api-artifact"
-            })[0];
-            let download = await github.rest.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("api-artifact-") || artifact.name == "api-artifact"
             });
-            let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/api-artifact.zip`, Buffer.from(download.data));
-      - name: Extract artifact
-        run: unzip api-artifact.zip -d artifacts
+            await Promise.all(matchArtifacts.map(async (artifact) => {
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+            }));
+      - name: Extract all artifacts
+        run: |
+          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d artifacts ';'
+          ls -la
       - name: Load PR Number
         id: load-pr-num
         run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
@@ -83,3 +87,11 @@ jobs:
           pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
           comment_tag: show_diff
           filePath: ./output.md
+      - name: Tell error to PR
+        uses: thollander/actions-comment-pull-request@v2
+        if: failure() && steps.load-pr-num.outputs.pr-number
+        with:
+          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment_tag: show_diff_error
+          message: |
+            api.jsonの差分作成中にエラーが発生しました。詳細は[Workflowのログ](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})を確認してください。

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,11 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { useStream } from '@/stream.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -57,7 +58,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const connection = useStream().useChannel('main');
-const images = ref([]);
+const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
 
 const onDriveFileCreated = (file) => {
@@ -73,7 +74,7 @@ const thumbnail = (image: any): string => {
 		: image.thumbnailUrl;
 };
 
-os.api('drive/stream', {
+misskeyApi('drive/stream', {
 	type: 'image/*',
 	limit: 9,
 }).then(res => {

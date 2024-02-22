@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -76,16 +76,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
 const viewBoxX = ref<number>(50);
 const viewBoxY = ref<number>(30);
-const stats = ref<any[]>([]);
+const stats = ref<Misskey.entities.ServerStats[]>([]);
 const cpuGradientId = uuid();
 const cpuMaskId = uuid();
 const memGradientId = uuid();
@@ -94,10 +95,10 @@ const cpuPolylinePoints = ref<string>('');
 const memPolylinePoints = ref<string>('');
 const cpuPolygonPoints = ref<string>('');
 const memPolygonPoints = ref<string>('');
-const cpuHeadX = ref<any>(null);
-const cpuHeadY = ref<any>(null);
-const memHeadX = ref<any>(null);
-const memHeadY = ref<any>(null);
+const cpuHeadX = ref<number>();
+const cpuHeadY = ref<number>();
+const memHeadX = ref<number>();
+const memHeadY = ref<number>();
 const cpuP = ref<string>('');
 const memP = ref<string>('');
 
@@ -106,6 +107,7 @@ onMounted(() => {
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
 		id: Math.random().toString().substring(2, 10),
+		length: 50,
 	});
 });
 
@@ -114,7 +116,7 @@ onBeforeUnmount(() => {
 	props.connection.off('statsLog', onStatsLog);
 });
 
-function onStats(connStats) {
+function onStats(connStats: Misskey.entities.ServerStats) {
 	stats.value.push(connStats);
 	if (stats.value.length > 50) stats.value.shift();
 
@@ -135,8 +137,8 @@ function onStats(connStats) {
 	memP.value = (connStats.mem.active / props.meta.mem.total * 100).toFixed(0);
 }
 
-function onStatsLog(statsLog) {
-	for (const revStats of [...statsLog].reverse()) {
+function onStatsLog(statsLog: Misskey.entities.ServerStatsLog) {
+	for (const revStats of statsLog.reverse()) {
 		onStats(revStats);
 	}
 }
