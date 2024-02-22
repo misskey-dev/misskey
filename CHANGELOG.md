@@ -25,6 +25,7 @@
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
+- Fix: 禁止キーワードを含むノートがDelayed Queueに追加されて再処理される問題を修正
 
 ## 2024.2.0
 
@@ -97,6 +98,7 @@
 - Fix: エラー画像URLを設定した後解除すると，デフォルトの画像が表示されない問題の修正
 - Fix: MkCodeEditorで行がずれていってしまう問題の修正
 - Fix: Summaly proxy利用時にプレイヤーが動作しないことがあるのを修正 #13196
+- Fix: ユーザの情報のポップアップが消えなくなることがある問題を修正
 
 ### Server
 - Enhance: 連合先のレートリミットを超過した際にリトライするようになりました
