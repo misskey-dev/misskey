@@ -10,7 +10,7 @@ import MkTime from './MkTime.vue';
 import { i18n } from '@/i18n.js';
 import { dateTimeFormat } from '@/scripts/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
-const future = new Date(8640000000000000);
+const future = new Date('+275760-04-01T00:00:00.000Z');
 const oneHourAgo = new Date(now.getTime() - 3600000);
 const oneDayAgo = new Date(now.getTime() - 86400000);
 const oneWeekAgo = new Date(now.getTime() - 604800000);
@@ -48,12 +48,13 @@ export const Empty = {
 } satisfies StoryObj<typeof MkTime>;
 export const RelativeFuture = {
 	...Empty,
-	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.ts._ago.future);
+	async play({ canvasElement, args }) {
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 273919 }));
 	},
 	args: {
 		...Empty.args,
 		time: future,
+		origin: now,
 	},
 } satisfies StoryObj<typeof MkTime>;
 export const AbsoluteFuture = {
