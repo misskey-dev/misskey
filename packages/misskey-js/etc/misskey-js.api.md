@@ -1669,6 +1669,11 @@ declare namespace entities {
         ReversiSurrenderRequest,
         ReversiVerifyRequest,
         ReversiVerifyResponse,
+        MahjongCreateRoomResponse,
+        MahjongJoinRoomRequest,
+        MahjongJoinRoomResponse,
+        MahjongShowRoomRequest,
+        MahjongShowRoomResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -1715,7 +1720,8 @@ declare namespace entities {
         Role,
         RolePolicies,
         ReversiGameLite,
-        ReversiGameDetailed
+        ReversiGameDetailed,
+        MahjongRoomDetailed
     }
 }
 export { entities }
@@ -2216,6 +2222,24 @@ type IWebhooksShowResponse = operations['i/webhooks/show']['responses']['200']['
 
 // @public (undocumented)
 type IWebhooksUpdateRequest = operations['i/webhooks/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MahjongCreateRoomResponse = operations['mahjong/create-room']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MahjongJoinRoomRequest = operations['mahjong/join-room']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MahjongJoinRoomResponse = operations['mahjong/join-room']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MahjongRoomDetailed = components['schemas']['MahjongRoomDetailed'];
+
+// @public (undocumented)
+type MahjongShowRoomRequest = operations['mahjong/show-room']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MahjongShowRoomResponse = operations['mahjong/show-room']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type MeDetailed = components['schemas']['MeDetailed'];

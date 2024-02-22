@@ -46,6 +46,12 @@ await execa('pnpm', ['--filter', 'misskey-bubble-game', 'build:tsc'], {
 	stderr: process.stderr,
 });
 
+await execa('pnpm', ['--filter', 'misskey-mahjong', 'build:tsc'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 execa('pnpm', ['build-pre', '--watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
@@ -89,6 +95,12 @@ execa('pnpm', ['--filter', 'misskey-reversi', 'watch'], {
 });
 
 execa('pnpm', ['--filter', 'misskey-bubble-game', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'misskey-mahjong', 'watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

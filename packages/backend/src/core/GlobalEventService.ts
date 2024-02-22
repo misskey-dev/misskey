@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as Reversi from 'misskey-reversi';
+import * as Mmj from 'misskey-mahjong';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -192,6 +193,52 @@ export interface ReversiGameEventTypes {
 		userId: MiUser['id'];
 	};
 }
+
+export interface MahjongRoomEventTypes {
+	joined: {
+		index: number;
+		user: Packed<'UserLite'>;
+	};
+	changeReadyStates: {
+		user1: boolean;
+		user2: boolean;
+		user3: boolean;
+		user4: boolean;
+	};
+	started: {
+		room: Packed<'MahjongRoomDetailed'>;
+	};
+	tsumo: {
+		house: Mmj.House;
+		tile: Mmj.Tile;
+	};
+	dahai: {
+		house: Mmj.House;
+		tile: Mmj.Tile;
+		riichi: boolean;
+	};
+	dahaiAndTsumo: {
+		dahaiHouse: Mmj.House;
+		dahaiTile: Mmj.Tile;
+		tsumoTile: Mmj.Tile;
+		riichi: boolean;
+	};
+	ponned: {
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tile: Mmj.Tile;
+	};
+	kanned: {
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tile: Mmj.Tile;
+		rinsyan: Mmj.Tile;
+	};
+	ronned: {
+	};
+	tsumoHora: {
+	};
+}
 //#endregion
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
@@ -289,6 +336,10 @@ export type GlobalEvents = {
 	reversiGame: {
 		name: `reversiGameStream:${MiReversiGame['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<ReversiGameEventTypes>>;
+	};
+	mahjongRoom: {
+		name: `mahjongRoomStream:${string}`;
+		payload: EventUnionFromDictionary<SerializedAll<MahjongRoomEventTypes>>;
 	};
 };
 
@@ -388,5 +439,10 @@ export class GlobalEventService {
 	@bindThis
 	public publishReversiGameStream<K extends keyof ReversiGameEventTypes>(gameId: MiReversiGame['id'], type: K, value?: ReversiGameEventTypes[K]): void {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishMahjongRoomStream<K extends keyof MahjongRoomEventTypes>(roomId: string, type: K, value?: MahjongRoomEventTypes[K]): void {
+		this.publish(`mahjongRoomStream:${roomId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }
