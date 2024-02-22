@@ -4857,6 +4857,14 @@ export interface Locale extends ILocale {
      */
     "replaying": string;
     /**
+     * リプレイを終了
+     */
+    "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    "copyReplayData": string;
+    /**
      * ランキング
      */
     "ranking": string;
@@ -4884,11 +4892,87 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     "enableHorizontalSwipe": string;
+    /**
+     * 読み込み中
+     */
+    "loading": string;
+    /**
+     * やめる
+     */
+    "surrender": string;
+    /**
+     * リトライ
+     */
+    "gameRetry": string;
     "_bubbleGame": {
         /**
          * 遊び方
          */
         "howToPlay": string;
+        /**
+         * クレジット
+         */
+        "credit": string;
+        /**
+         * ホールド
+         */
+        "hold": string;
+        /**
+         * フュージョン レシピ
+         */
+        "fusionRecipe": string;
+        "_score": {
+            /**
+             * スコア:
+             */
+            "score": string;
+            /**
+             * 稼いだ金額:
+             */
+            "scoreYen": string;
+            /**
+             * ハイスコア:
+             */
+            "highScore": string;
+            /**
+             * 最大チェーン数:
+             */
+            "maxChain": string;
+            /**
+             * {yen}円
+             */
+            "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
+        "_gameMode": {
+            /**
+             * ノーマル
+             */
+            "normal": string;
+            /**
+             * 正方形
+             */
+            "square": string;
+            /**
+             * お金
+             */
+            "yen": string;
+            /**
+             * スイーツ
+             */
+            "sweets": string;
+            /**
+             * スペース
+             */
+            "space": string;
+        };
         "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -9655,6 +9739,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        "useAvatarAsStone": string;
     };
     "_offlineScreen": {
         /**
