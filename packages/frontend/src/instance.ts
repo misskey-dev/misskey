@@ -31,8 +31,13 @@ export async function fetchInstance(initial = false) {
 	let meta;
 	if (initial && el && el.textContent) {
 		try {
-			// 初回ロードはHTMLに埋め込まれたmetaを使う
-			meta = JSON.parse(el.textContent);
+			const now = new Date();
+			// 半日以内のデータならキャッシュを使う
+			if (el.dataset.generatedAt && now.getTime() - new Date(el.dataset.generatedAt).getTime() < 1000 * 60 * 60 * 12) {
+				meta = JSON.parse(el.textContent);
+			} else {
+				throw new Error('[meta] Metadata is too old. Fallback to API');
+			}
 		} catch (err) {
 			console.error(err);
 
