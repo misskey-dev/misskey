@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -240,7 +240,7 @@ const render = () => {
 					},
 					external: externalTooltipHandler,
 					callbacks: {
-						label: (item) => chartData?.bytes ? bytes(item.parsed.y * 1000, 1) : item.parsed.y.toString(),
+						label: (item) => `${item.dataset.label}: ${chartData?.bytes ? bytes(item.parsed.y * 1000, 1) : item.parsed.y.toString()}`,
 					},
 				},
 				zoom: props.detailed ? {

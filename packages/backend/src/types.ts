@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -69,6 +69,7 @@ export const moderationLogTypes = [
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
+	'updateRemoteInstanceNote',
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
@@ -208,6 +209,12 @@ export type ModerationLogPayloads = {
 	unsuspendRemoteInstance: {
 		id: string;
 		host: string;
+	};
+	updateRemoteInstanceNote: {
+		id: string;
+		host: string;
+		before: string | null;
+		after: string | null;
 	};
 	markSensitiveDriveFile: {
 		fileId: string;

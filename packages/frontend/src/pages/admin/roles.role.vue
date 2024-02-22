@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -170,10 +170,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
-	title: i18n.ts.role + ': ' + role.name,
+definePageMetadata(() => ({
+	title: `${i18n.ts.role}: ${role.name}`,
 	icon: 'ti ti-badge',
-})));
+}));
 </script>
 
 <style lang="scss" module>
