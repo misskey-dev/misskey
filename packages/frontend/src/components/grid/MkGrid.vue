@@ -67,7 +67,7 @@ type RowHolder = {
 }
 
 const emit = defineEmits<{
-	(ev: 'event', event: GridEvent, current: GridContext): void;
+	(ev: 'event', event: GridEvent, context: GridContext): void;
 }>();
 
 const props = defineProps<{

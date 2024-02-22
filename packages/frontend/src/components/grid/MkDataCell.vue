@@ -22,6 +22,12 @@
 				<div v-if="cellType === 'text'">
 					{{ cell.value }}
 				</div>
+				<div v-if="cellType === 'number'">
+					{{ cell.value }}
+				</div>
+				<div v-if="cellType === 'date'">
+					{{ cell.value }}
+				</div>
 				<div v-else-if="cellType === 'boolean'">
 					<span v-if="cell.value === true" class="ti ti-check"/>
 					<span v-else class="ti"/>
@@ -40,6 +46,24 @@
 			<input
 				v-if="cellType === 'text'"
 				type="text"
+				:class="$style.editingInput"
+				:value="editingValue"
+				@input="onInputText"
+				@mousedown.stop
+				@contextmenu.stop
+			/>
+			<input
+				v-if="cellType === 'number'"
+				type="number"
+				:class="$style.editingInput"
+				:value="editingValue"
+				@input="onInputText"
+				@mousedown.stop
+				@contextmenu.stop
+			/>
+			<input
+				v-if="cellType === 'date'"
+				type="date"
 				:class="$style.editingInput"
 				:value="editingValue"
 				@input="onInputText"
@@ -185,6 +209,8 @@ async function beginEditing(target: HTMLElement) {
 		rootEl.value?.focus();
 	} else {
 		switch (cellType.value) {
+			case 'number':
+			case 'date':
 			case 'text': {
 				editingValue.value = cell.value.value;
 				editing.value = true;
