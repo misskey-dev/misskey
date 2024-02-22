@@ -2377,6 +2377,7 @@ _moderationLogTypes:
   resetPassword: "重置密码"
   suspendRemoteInstance: "停止远程服务器"
   unsuspendRemoteInstance: "恢复远程服务器"
+  updateRemoteInstanceNote: "更新远程服务器的管理笔记"
   markSensitiveDriveFile: "标记网盘文件为敏感媒体"
   unmarkSensitiveDriveFile: "取消标记网盘文件为敏感媒体"
   resolveAbuseReport: "处理举报"
