@@ -4480,6 +4480,7 @@ export type components = {
       infoUpdatedAt: string | null;
       /** Format: date-time */
       latestRequestReceivedAt: string | null;
+      moderationNote?: string | null;
     };
     GalleryPost: {
       /**
@@ -7213,7 +7214,8 @@ export type operations = {
       content: {
         'application/json': {
           host: string;
-          isSuspended: boolean;
+          isSuspended?: boolean;
+          moderationNote?: string;
         };
       };
     };

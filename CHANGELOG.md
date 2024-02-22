@@ -14,6 +14,7 @@
 ## 202x.x.x (unreleased)
 
 ### General
+- Enhance: サーバーごとにモデレーションノートを残せるように
 
 ### Client
 - Enhance: ノート作成画面のファイル添付メニューの区切り線の位置を調整
