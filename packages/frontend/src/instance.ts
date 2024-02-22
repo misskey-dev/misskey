@@ -25,10 +25,27 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
-export async function fetchInstance() {
-	const meta = await misskeyApi('meta', {
-		detail: false,
-	});
+export async function fetchInstance(initial = false) {
+	const el = document.getElementById('misskey_meta');
+
+	let meta;
+	if (initial && el && el.textContent) {
+		try {
+			// 初回ロードはHTMLに埋め込まれたmetaを使う
+			meta = JSON.parse(el.textContent);
+		} catch (err) {
+			console.error(err);
+
+			// 取れなかったらAPIから取得
+			meta = await misskeyApi('meta', {
+				detail: false,
+			});
+		}
+	} else {
+		meta = await misskeyApi('meta', {
+			detail: false,
+		});
+	}
 
 	for (const [k, v] of Object.entries(meta)) {
 		instance[k] = v;

@@ -118,7 +118,7 @@ export async function common(createVue: () => App<Element>) {
 	await defaultStore.ready;
 	await deckStore.ready;
 
-	const fetchInstanceMetaPromise = fetchInstance();
+	const fetchInstanceMetaPromise = fetchInstance(true);
 
 	fetchInstanceMetaPromise.then(() => {
 		miLocalStorage.setItem('v', instance.version);
