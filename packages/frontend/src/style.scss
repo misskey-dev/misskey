@@ -440,10 +440,10 @@ rt {
 ._woodenFrameInner {
 	padding: 8px;
 	margin-top: 8px;
-	background: #F1E8DC;
+	background: var(--bg);
 	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
 	border-radius: 6px;
-	color: #693410;
+	color: var(--fg);
 
 	&:first-child {
 		margin-top: 0;
