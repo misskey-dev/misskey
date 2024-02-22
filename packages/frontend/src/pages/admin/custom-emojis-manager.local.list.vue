@@ -1,6 +1,6 @@
 <template>
 <div>
-	<div v-if="gridItems.value === 0" style="text-align: center">
+	<div v-if="gridItems.length === 0" style="text-align: center">
 		登録された絵文字はありません。
 	</div>
 	<div v-else class="_gaps">

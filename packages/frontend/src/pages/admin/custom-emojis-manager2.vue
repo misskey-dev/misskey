@@ -36,20 +36,3 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-icons',
 })));
 </script>
-
-<style lang="scss">
-.emoji-grid-row-edited {
-	background-color: var(--ag-advanced-filter-column-pill-color);
-}
-
-.emoji-grid-item-image {
-	width: auto;
-	height: 26px;
-	max-width: 100%;
-	max-height: 100%;
-}
-</style>
-
-<style module lang="scss">
-
-</style>
