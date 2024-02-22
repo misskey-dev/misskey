@@ -90,7 +90,7 @@ export class NoteReadService implements OnApplicationShutdown {
 	): Promise<void> {
 		if (notes.length === 0) return;
 
-		const noteIds = new Set<string>();
+		const noteIds = new Set<MiNote['id']>();
 
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {
