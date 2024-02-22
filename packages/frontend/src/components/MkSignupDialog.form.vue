@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<MkSpacer :marginMin="20" :marginMax="32">
 		<form class="_gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
-			<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
-				<template #label>{{ i18n.ts.invitationCode }}</template>
+			<MkInput v-if="instance.disableRegistration || instance.enableSignupRateLimit" v-model="invitationCode" type="text" :spellcheck="false" :required="instance.disableRegistration">
+				<template #label>{{ i18n.ts.invitationCode }}{{ !instance.disableRegistration && ` (${i18n.ts.optional})` }}</template>
 				<template #prefix><i class="ti ti-key"></i></template>
 			</MkInput>
 			<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" autocomplete="username" required data-cy-signup-username @update:modelValue="onChangeUsername">
@@ -278,11 +278,20 @@ async function onSubmit(): Promise<void> {
 				return login(res.i);
 			}
 		}
-	} catch {
+	} catch (err) {
 		submitting.value = false;
 		hcaptcha.value?.reset?.();
 		recaptcha.value?.reset?.();
 		turnstile.value?.reset?.();
+
+		if (err === 'Too Many Requests') {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.signupRateLimited,
+				text: i18n.ts.signupRateLimitedDescription,
+			});
+			return;
+		}
 
 		os.alert({
 			type: 'error',

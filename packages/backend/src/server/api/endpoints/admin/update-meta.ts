@@ -21,6 +21,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
+		secondsPerSignup: { type: 'integer' },
 		pinnedUsers: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
@@ -165,6 +166,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (typeof ps.disableRegistration === 'boolean') {
 				set.disableRegistration = ps.disableRegistration;
+			}
+
+			if (ps.secondsPerSignup !== undefined) {
+				set.secondsPerSignup = ps.secondsPerSignup;
 			}
 
 			if (Array.isArray(ps.pinnedUsers)) {

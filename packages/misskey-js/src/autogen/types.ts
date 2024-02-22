@@ -4839,6 +4839,7 @@ export type operations = {
             defaultLightTheme: string | null;
             description: string | null;
             disableRegistration: boolean;
+            secondsPerSignup: number;
             impressumUrl: string | null;
             maintainerEmail: string | null;
             maintainerName: string | null;
@@ -8697,6 +8698,7 @@ export type operations = {
       content: {
         'application/json': {
           disableRegistration?: boolean | null;
+          secondsPerSignup?: number;
           pinnedUsers?: string[] | null;
           hiddenTags?: string[] | null;
           blockedHosts?: string[] | null;
@@ -19470,6 +19472,7 @@ export type operations = {
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
             disableRegistration: boolean;
+            enableSignupRateLimit: boolean;
             cacheRemoteFiles: boolean;
             cacheRemoteSensitiveFiles: boolean;
             emailRequiredForSignup: boolean;

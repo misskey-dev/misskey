@@ -399,6 +399,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			secondsPerSignup: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
 			impressumUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -488,6 +492,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				impressumUrl: instance.impressumUrl,
 				privacyPolicyUrl: instance.privacyPolicyUrl,
 				disableRegistration: instance.disableRegistration,
+				secondsPerSignup: instance.secondsPerSignup,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,

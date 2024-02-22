@@ -1469,6 +1469,14 @@ export interface Locale extends ILocale {
      */
     "enableRegistration": string;
     /**
+     * アカウントを新規作成できるインターバル（秒）
+     */
+    "secondsPerSignup": string;
+    /**
+     * 一度アカウントの作成があってから上記の秒数が経たないと他のユーザーが登録できないようになります。0に設定すると無効になります。招待コードがある場合はこの制限を無視できます。「誰でも新規登録できるようにする」が無効の場合はそちらが優先されます。
+     */
+    "secondsPerSignupDescription": string;
+    /**
      * 招待
      */
     "invite": string;
@@ -4052,6 +4060,14 @@ export interface Locale extends ILocale {
      * このアカウントにはこの操作を行うための権限がありません。
      */
     "permissionDeniedErrorDescription": string;
+    /**
+     * 登録が制限されています
+     */
+    "signupRateLimited": string;
+    /**
+     * ただいま、アカウントの登録にインターバルを設けています。しばらく待ってから再度お試しいただくか、招待コードをお持ちの場合はそちらをご利用ください。
+     */
+    "signupRateLimitedDescription": string;
     /**
      * プリセット
      */
