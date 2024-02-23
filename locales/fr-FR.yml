@@ -1168,6 +1168,7 @@ sfx: "Effets sonores"
 showReplay: "Voir le replay"
 ranking: "Classement"
 lastNDays: "Derniers {n} jours"
+surrender: "Annuler"
 _announcement:
   forExistingUsers: "Pour les utilisateurs existants seulement"
   readConfirmTitle: "Marquer comme lu ?"
