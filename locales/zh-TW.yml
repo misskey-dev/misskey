@@ -2514,6 +2514,7 @@ _reversi:
   opponentHasSettingsChanged: "對手更改了設定"
   allowIrregularRules: "允許異常規則（完全自由）"
   disallowIrregularRules: "不允許異常規則"
+  showBoardLabels: "在棋盤上顯示行、列號"
 _offlineScreen:
   title: "離線－無法連接伺服器"
   header: "無法連接伺服器"
