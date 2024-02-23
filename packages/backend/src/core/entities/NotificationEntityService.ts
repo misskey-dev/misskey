@@ -16,7 +16,6 @@ import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
 import { CacheService } from '@/core/CacheService.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { RoleEntityService } from './RoleEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { UserEntityService } from './UserEntityService.js';
@@ -43,7 +42,6 @@ export class NotificationEntityService implements OnModuleInit {
 		private followRequestsRepository: FollowRequestsRepository,
 
 		private cacheService: CacheService,
-		private noteReadService: NoteReadService,
 
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,
