@@ -120,6 +120,12 @@ export const meta = {
 			code: 'CONTAINS_PROHIBITED_WORDS',
 			id: 'aa6e01d3-a85c-669d-758a-76aab43af334',
 		},
+
+		containsTooManyMentions: {
+			message: 'Cannot post because it exceeds the allowed number of mentions.'
+			code: 'CONTAINS_TOO_MANY_MENTIONS',
+			id: '4de0363a-3046-481b-9b0f-feff3e211025',
+		},
 	},
 } as const;
 
@@ -378,9 +384,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (e) {
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
 				if (e instanceof IdentifiableError) {
-					if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') throw new ApiError(meta.errors.containsProhibitedWords);
+					if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
+						throw new ApiError(meta.errors.containsProhibitedWords);
+					} else if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
+						throw new ApiError(meta.errors.containsTooManyMentions);
+					}
 				}
-
 				throw e;
 			}
 		});
