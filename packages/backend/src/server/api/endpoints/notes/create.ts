@@ -122,7 +122,7 @@ export const meta = {
 		},
 
 		containsTooManyMentions: {
-			message: 'Cannot post because it exceeds the allowed number of mentions.'
+			message: 'Cannot post because it exceeds the allowed number of mentions.',
 			code: 'CONTAINS_TOO_MANY_MENTIONS',
 			id: '4de0363a-3046-481b-9b0f-feff3e211025',
 		},
