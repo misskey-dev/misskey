@@ -1217,6 +1217,7 @@ hemisphere: "Geolocalizzazione"
 withSensitive: "Mostra le Note con allegati espliciti"
 userSaysSomethingSensitive: "Note da {name} con allegati espliciti"
 enableHorizontalSwipe: "Trascina per invertire i tab"
+surrender: "Annulla"
 _bubbleGame:
   howToPlay: "Come giocare"
   _howToPlay:
