@@ -4854,7 +4854,7 @@ export type operations = {
             shortName: string | null;
             objectStorageS3ForcePathStyle: boolean;
             privacyPolicyUrl: string | null;
-            repositoryUrl: string;
+            repositoryUrl: string | null;
             summalyProxy: string | null;
             themeColor: string | null;
             tosUrl: string | null;
@@ -8766,8 +8766,8 @@ export type operations = {
           swPublicKey?: string | null;
           swPrivateKey?: string | null;
           tosUrl?: string | null;
-          repositoryUrl?: string;
-          feedbackUrl?: string;
+          repositoryUrl?: string | null;
+          feedbackUrl?: string | null;
           impressumUrl?: string | null;
           privacyPolicyUrl?: string | null;
           useObjectStorage?: boolean;
@@ -19459,6 +19459,7 @@ export type operations = {
             maintainerName: string | null;
             maintainerEmail: string | null;
             version: string;
+            providesTarball: boolean;
             name: string;
             shortName: string | null;
             /**
@@ -19470,9 +19471,9 @@ export type operations = {
             langs: string[];
             tosUrl: string | null;
             /** @default https://github.com/misskey-dev/misskey */
-            repositoryUrl: string;
+            repositoryUrl: string | null;
             /** @default https://github.com/misskey-dev/misskey/issues/new */
-            feedbackUrl: string;
+            feedbackUrl: string | null;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
             disableRegistration: boolean;

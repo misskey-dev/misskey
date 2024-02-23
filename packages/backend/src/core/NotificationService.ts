@@ -213,17 +213,6 @@ export class NotificationService implements OnApplicationShutdown {
 		this.globalEventService.publishMainStream(userId, 'notificationFlushed');
 	}
 
-	/*
-	@bindThis
-	public async flushAllUsersNotifications() {
-		// これだと時間かかりそう（Queueを使う？）
-		const tlKeys = await this.redisClient.keys('notificationTimeline:*');
-		const latestReadNotificationkeys = await this.redisClient.keys('latestReadNotification:*');
-
-		await this.redisClient.del(...tlKeys, ...latestReadNotificationkeys);
-	}
-	*/
-
 	@bindThis
 	public dispose(): void {
 		this.#shutdownController.abort();
