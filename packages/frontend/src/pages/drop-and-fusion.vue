@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame">
 					<div class="_woodenFrameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>CREDIT</b></div>
+							<div><b>Credit</b></div>
 							<div>
 								<div>Ai-chan illustration: @poteriri@misskey.io</div>
 								<div>BGM: @ys@misskey.design</div>
