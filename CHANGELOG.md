@@ -25,6 +25,7 @@
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
 - Fix: 禁止キーワードを含むノートがDelayed Queueに追加されて再処理される問題を修正
+- Feat: 投稿者のロールに応じて、一つのノートに含むことのできるメンションとダイレクト投稿の宛先の人数に上限を設定できるように
 
 ## 2024.2.0
 
