@@ -68,6 +68,9 @@ html
 			var VERSION = "#{version}";
 			var CLIENT_ENTRY = "#{clientEntry.file}";
 
+		script(type='application/json' id='misskey_meta' data-generated-at=now)
+			!= metaJson
+
 		script
 			include ../boot.js
 
