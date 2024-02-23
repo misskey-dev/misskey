@@ -116,6 +116,7 @@ import { FlashEntityService } from './entities/FlashEntityService.js';
 import { FlashLikeEntityService } from './entities/FlashLikeEntityService.js';
 import { RoleEntityService } from './entities/RoleEntityService.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
+import { MetaEntityService } from './entities/MetaEntityService.js';
 
 import { ApAudienceService } from './activitypub/ApAudienceService.js';
 import { ApDbResolverService } from './activitypub/ApDbResolverService.js';
@@ -205,6 +206,7 @@ const $FanoutTimelineEndpointService: Provider = { provide: 'FanoutTimelineEndpo
 const $ChannelFollowingService: Provider = { provide: 'ChannelFollowingService', useExisting: ChannelFollowingService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
+const $MetaEntityService: Provider = { provide: 'MetaEntityService', useExisting: MetaEntityService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -393,6 +395,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FlashLikeEntityService,
 		RoleEntityService,
 		ReversiGameEntityService,
+		MetaEntityService,
 
 		ApAudienceService,
 		ApDbResolverService,
@@ -528,6 +531,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FlashLikeEntityService,
 		$RoleEntityService,
 		$ReversiGameEntityService,
+		$MetaEntityService,
 
 		$ApAudienceService,
 		$ApDbResolverService,
@@ -663,6 +667,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FlashLikeEntityService,
 		RoleEntityService,
 		ReversiGameEntityService,
+		MetaEntityService,
 
 		ApAudienceService,
 		ApDbResolverService,
@@ -797,6 +802,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FlashLikeEntityService,
 		$RoleEntityService,
 		$ReversiGameEntityService,
+		$MetaEntityService,
 
 		$ApAudienceService,
 		$ApDbResolverService,
