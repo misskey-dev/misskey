@@ -100,22 +100,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			// Check if already following
-			const exist = await this.followingsRepository.exists({
-				where: {
-					followerId: follower.id,
-					followeeId: followee.id,
-				},
-			});
-
-			if (exist) {
-				throw new ApiError(meta.errors.alreadyFollowing);
-			}
-
 			try {
 				await this.userFollowingService.follow(follower, followee, { withReplies: ps.withReplies });
 			} catch (e) {
 				if (e instanceof IdentifiableError) {
+					if (e.id === 'ec3f65c0-a9d1-47d9-8791-b2e7b9dcdced') throw new ApiError(meta.errors.alreadyFollowing);
 					if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
 					if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
 				}
