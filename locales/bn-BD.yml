@@ -855,6 +855,7 @@ youFollowing: "অনুসরণ করা হচ্ছে"
 icon: "প্রোফাইল ছবি"
 replies: "জবাব"
 renotes: "রিনোট"
+sourceCode: "সোর্স কোড"
 flip: "উল্টান"
 _role:
   priority: "অগ্রাধিকার"
