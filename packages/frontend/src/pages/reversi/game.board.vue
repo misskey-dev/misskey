@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div :class="$style.board">
+		<div class="_woodenFrame">
 			<div :class="$style.boardInner">
 				<div v-if="showBoardLabels" :class="$style.labelsX">
 					<span v-for="i in game.map[0].length" :key="i" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
@@ -124,8 +124,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkFolder>
 			<template #label>{{ i18n.ts.options }}</template>
 			<div class="_gaps_s" style="text-align: left;">
-				<MkSwitch v-model="showBoardLabels">Show labels</MkSwitch>
-				<MkSwitch v-model="useAvatarAsStone">useAvatarAsStone</MkSwitch>
+				<MkSwitch v-model="showBoardLabels">{{ i18n.ts._reversi.showBoardLabels }}</MkSwitch>
+				<MkSwitch v-model="useAvatarAsStone">{{ i18n.ts._reversi.useAvatarAsStone }}</MkSwitch>
 			</div>
 		</MkFolder>
 
@@ -498,17 +498,6 @@ $gap: 4px;
 
 .root {
 	text-align: center;
-}
-
-.board {
-	width: 100%;
-	box-sizing: border-box;
-	margin: 0 auto;
-
-	padding: 7px;
-	background: #8C4F26;
-	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
-	border-radius: 12px;
 }
 
 .boardInner {
