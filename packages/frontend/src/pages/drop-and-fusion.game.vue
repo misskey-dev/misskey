@@ -528,17 +528,11 @@ const monoDefinitions = computed(() => {
 });
 
 function getScoreUnit(gameMode: string) {
-	switch (gameMode) {
-		case 'normal':
-		case 'square':
-			return 'pt';
-		case 'yen':
-			return '円';
-		case 'sweets':
-			return 'kcal';
-		default:
-			return '' as never;
-	}
+	return gameMode === 'normal' ? 'pt' :
+		gameMode === 'square' ? 'pt' :
+		gameMode === 'yen' ? '円' :
+		gameMode === 'sweets' ? 'kcal' :
+		'' as never;
 }
 
 function getMonoRenderOptions(mono: Mono) {
