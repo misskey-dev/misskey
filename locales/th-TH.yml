@@ -1217,6 +1217,7 @@ hemisphere: "พื้นที่ที่อาศัยอยู่"
 withSensitive: "แสดงโน้ตที่มีไฟล์ที่ระบุว่ามีเนื้อหาละเอียดอ่อน"
 userSaysSomethingSensitive: "โพสต์ที่มีไฟล์เนื้อหาละเอียดอ่อนของ {name}"
 enableHorizontalSwipe: "ปัดเพื่อสลับแท็บ"
+surrender: "เลิก"
 _bubbleGame:
   howToPlay: "วิธีเล่น"
   _howToPlay:
