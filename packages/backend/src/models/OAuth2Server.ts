@@ -64,6 +64,11 @@ export class MiOAuth2Server {
 	@Column('varchar', {
 		length: 256, nullable: true,
 	})
+	public idPath?: string; // determiner to same account authorized by OAuth2
+
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
 	public usernamePath?: string;
 
 	@Column('varchar', {
@@ -80,6 +85,11 @@ export class MiOAuth2Server {
 		default: false,
 	})
 	public markEmailAsVerified: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public allowSignUp: boolean;
 }
 
 export const titleSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;

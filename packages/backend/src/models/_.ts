@@ -70,6 +70,7 @@ import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import type { Repository } from 'typeorm';
+import { MiUserIntegration } from './UserIntegration.js';
 
 export {
 	MiAbuseUserReport,
@@ -106,6 +107,7 @@ export {
 	MiNoteThreadMuting,
 	MiNoteUnread,
 	MiOAuth2Server,
+	MiUserIntegration,
 	MiPage,
 	MiPageLike,
 	MiPasswordResetRequest,
@@ -174,6 +176,7 @@ export type NoteReactionsRepository = Repository<MiNoteReaction>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<MiNoteUnread>;
 export type MiOAuth2ServersRepository = Repository<MiOAuth2Server>;
+export type MiUserIntegrationRepository = Repository<MiUserIntegration>;
 export type PagesRepository = Repository<MiPage>;
 export type PageLikesRepository = Repository<MiPageLike>;
 export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest>;

@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
+				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="oauth()">OAuth2 Test</MkButton>
 			</div>
 		</div>
 	</div>
@@ -89,6 +90,10 @@ function signup() {
 	os.popup(XSignupDialog, {
 		autoSet: true,
 	}, {}, 'closed');
+}
+
+function oauth() {
+	window.location.href = 'http://localhost:3000/oauth/9px2ia1gx9qu0001/authorize';
 }
 
 function showMenu(ev) {

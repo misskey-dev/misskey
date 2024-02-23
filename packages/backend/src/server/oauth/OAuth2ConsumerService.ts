@@ -10,7 +10,7 @@ import { IsNull } from 'typeorm';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { MiOAuth2ServersRepository, UserPendingsRepository, UsersRepository } from '@/models/_.js';
+import type { MiOAuth2ServersRepository, MiUserIntegrationRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
@@ -45,10 +45,14 @@ export class OAuth2ConsumerService {
 		private config: Config,
 		@Inject(DI.oauth2ServersRepository)
 		private oauth2ServersRepository: MiOAuth2ServersRepository,
+		@Inject(DI.userIntegrationRepository)
+		private userIntegrationRepository: MiUserIntegrationRepository,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 		@Inject(DI.userPendingsRepository)
 		private userPendingsRepository: UserPendingsRepository,
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
 		private idService: IdService,
@@ -114,7 +118,7 @@ export class OAuth2ConsumerService {
 				},
 			});
 
-			if (oauth2Server.clientId == null || oauth2Server.clientSecret == null || oauth2Server.authorizeUrl == null || oauth2Server.tokenUrl == null || oauth2Server.profileUrl == null) {
+			if (oauth2Server.clientId == null || oauth2Server.clientSecret == null || oauth2Server.authorizeUrl == null || oauth2Server.tokenUrl == null || oauth2Server.profileUrl == null || oauth2Server.idPath == null) {
 				return reply.code(500).send({
 					error: {
 						message: 'Invalid OAuth2 server configuration.',
@@ -152,47 +156,77 @@ export class OAuth2ConsumerService {
 				},
 			});
 
-			const profile: any = await profileResponse.json();
+			const profile: Record<string, string | null> = await profileResponse.json() as any;
 
-			const user = await this.usersRepository.findOneBy({ usernameLower: profile[oauth2Server.usernamePath!].toLowerCase(), host: IsNull() }) as MiLocalUser | null; // for testing; should add frontend to get if not exists
+			const serverUserId = profile[oauth2Server.idPath];
+			if (serverUserId === null) {
+				return reply.code(500).send({
+					error: {
+						message: 'Invalid OAuth2 server configuration.',
+						code: 'INVALID_OAUTH2_SERVER_CONFIGURATION',
+						id: 'change this',
+						kind: 'client',
+					},
+				});
+			}
+
+			const userIntegration = await this.userIntegrationRepository.findOneBy({ serverUserId, serverId: oauth2Server.id });
 
 			const instance = await this.metaService.fetch(true);
 
-			if (user === null) {
-				if (instance.emailRequiredForSignup) {
-					if (oauth2Server.emailPath == null) {
-						return reply.code(500).send({
-							error: {
-								message: 'Email is required for signup.',
-								code: 'EMAIL_REQUIRED_FOR_SIGNUP',
-								id: 'change this',
-								kind: 'client',
-							},
-						});
-					}
-					if (!oauth2Server.markEmailAsVerified) {
-						const code = secureRndstr(16, { chars: L_CHARS });
+			if (userIntegration) {
+				return this.signinService.signin(request, reply, userIntegration.user as MiLocalUser);
+			}
 
-						await this.userPendingsRepository.insert({
-							id: this.idService.gen(),
-							code,
-							email: profile[oauth2Server.emailPath],
-							username: profile[oauth2Server.usernamePath!],
-						}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
+			if (!oauth2Server.allowSignUp) {
+				return reply.code(401).send({
+					error: {
+						message: 'Not registered integration.',
+						code: 'NO_SUCH_INTEGRATION',
+						id: 'change this',
+						kind: 'client',
+					},
+				});
+			}
 
-						const link = `${this.config.url}/signup-complete/${code}`;
+			if (!oauth2Server.usernamePath) {
+				return reply.code(500).send({
+					error: {
+						message: 'Username Path is required for signin.',
+						code: 'USERNAME_PATH_REQUIRED_FOR_SIGNIN',
+						id: 'change this',
+						kind: 'server',
+					},
+				});
+			}
 
-						this.emailService.sendEmail(profile[oauth2Server.emailPath]!, 'Signup',
-							`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-							`To complete signup, please click this link: ${link}`);
+			const username = profile[oauth2Server.usernamePath];
+			if (!username) {
+				return reply.code(500).send({
+					error: {
+						message: 'Username is required for signin.',
+						code: 'USERNAME_REQUIRED_FOR_SIGNIN',
+						id: 'change this',
+						kind: 'server',
+					},
+				});
+			}
 
-						reply.code(204);
-						return;
-					}
-				}
+			const user = await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() }) as MiLocalUser | null;
+			if (user !== null) {
+				await this.userIntegrationRepository.insert({
+					id: this.idService.gen(),
+					userId: user.id,
+					serverId: oauth2Server.id,
+					serverUserId,
+				});
 
+				return this.signinService.signin(request, reply, user);
+			}
+
+			if (!instance.emailRequiredForSignup) {
 				const { account, secret } = await this.signupService.signup({
-					username: profile[oauth2Server.usernamePath!],
+					username,
 				});
 
 				const res = await this.userEntityService.pack(account, account, {
@@ -204,9 +238,70 @@ export class OAuth2ConsumerService {
 					...res,
 					token: secret,
 				};
-			} else {
-				return this.signinService.signin(request, reply, user);
 			}
+
+			if (!oauth2Server.emailPath) {
+				return reply.code(500).send({
+					error: {
+						message: 'Email is required for signup.',
+						code: 'EMAIL_REQUIRED_FOR_SIGNUP',
+						id: 'change this',
+						kind: 'server',
+					},
+				});
+			}
+
+			const email = profile[oauth2Server.emailPath];
+			if (!email) {
+				return reply.code(500).send({
+					error: {
+						message: 'Email is required for signup.',
+						code: 'EMAIL_REQUIRED_FOR_SIGNUP',
+						id: 'change this',
+						kind: 'server',
+					},
+				});
+			}
+
+			if (oauth2Server.markEmailAsVerified) {
+				const { account, secret } = await this.signupService.signup({
+					username,
+				});
+
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: account.id }); // is this correct?
+				await this.userProfilesRepository.update({ userId: profile.userId }, {
+					email,
+					emailVerified: true,
+					emailVerifyCode: null,
+				});
+
+				const res = await this.userEntityService.pack(account, account, {
+					detail: true,
+					includeSecrets: true,
+				});
+
+				return {
+					...res,
+					token: secret,
+				};
+			}
+
+			const code = secureRndstr(16, { chars: L_CHARS });
+
+			await this.userPendingsRepository.insert({
+				id: this.idService.gen(),
+				code,
+				email,
+				username,
+			}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
+
+			const link = `${this.config.url}/signup-complete/${code}`;
+
+			this.emailService.sendEmail(email, 'Signup',
+				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+				`To complete signup, please click this link: ${link}`);
+
+			return reply.code(204);
 		});
 	}
 }

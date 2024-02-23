@@ -81,6 +81,7 @@ import { MiUserMemo } from '@/models/UserMemo.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { MiUserIntegration } from './models/UserIntegration.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -155,6 +156,7 @@ export const entities = [
 	MiNoteThreadMuting,
 	MiNoteUnread,
 	MiOAuth2Server,
+	MiUserIntegration,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,

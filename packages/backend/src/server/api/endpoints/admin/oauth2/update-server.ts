@@ -73,7 +73,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				signUpUrl: ps.signUpUrl,
 				scope: ps.scope,
 				profileUrl: ps.profileUrl,
-				idPath: ps.idPath,
 				namePath: ps.namePath,
 				emailPath: ps.emailPath,
 				markEmailAsVerified: ps.markEmailAsVerified,
