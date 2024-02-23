@@ -108,17 +108,18 @@ export class OAuth2ConsumerService {
 		});
 		fastify.get<OAuth2CallbackRequest>('/oauth/:serverId/callback', async (request, reply) => {
 			const oauth2Server = await this.oauth2ServersRepository.findOneBy({ id: request.params.serverId });
+			if (!oauth2Server) {
+				return reply.code(404).send({
+					error: {
+						message: 'No such oauth2 server.',
+						code: 'NO_SUCH_OAUTH2_SERVER',
+						id: 'ac8a48f4-a184-461d-b11f-e10448b3cd37',
+						kind: 'client',
+					},
+				});
+			}
 
-			if (oauth2Server == null) return reply.code(404).send({
-				error: {
-					message: 'No such oauth2 server.',
-					code: 'NO_SUCH_OAUTH2_SERVER',
-					id: 'ac8a48f4-a184-461d-b11f-e10448b3cd37',
-					kind: 'client',
-				},
-			});
-
-			if (oauth2Server.clientId == null || oauth2Server.clientSecret == null || oauth2Server.authorizeUrl == null || oauth2Server.tokenUrl == null || oauth2Server.profileUrl == null || oauth2Server.idPath == null) {
+			if (!oauth2Server.clientId || !oauth2Server.clientSecret || !oauth2Server.authorizeUrl || !oauth2Server.tokenUrl || !oauth2Server.profileUrl || !oauth2Server.idPath) {
 				return reply.code(500).send({
 					error: {
 						message: 'Invalid OAuth2 server configuration.',
@@ -171,9 +172,6 @@ export class OAuth2ConsumerService {
 			}
 
 			const userIntegration = await this.userIntegrationRepository.findOneBy({ serverUserId, serverId: oauth2Server.id });
-
-			const instance = await this.metaService.fetch(true);
-
 			if (userIntegration) {
 				return this.signinService.signin(request, reply, userIntegration.user as MiLocalUser);
 			}
@@ -224,6 +222,7 @@ export class OAuth2ConsumerService {
 				return this.signinService.signin(request, reply, user);
 			}
 
+			const instance = await this.metaService.fetch(true);
 			if (!instance.emailRequiredForSignup) {
 				const { account, secret } = await this.signupService.signup({
 					username,
@@ -284,24 +283,24 @@ export class OAuth2ConsumerService {
 					...res,
 					token: secret,
 				};
+			} else {
+				const code = secureRndstr(16, { chars: L_CHARS });
+
+				await this.userPendingsRepository.insert({
+					id: this.idService.gen(),
+					code,
+					email,
+					username,
+				}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
+
+				const link = `${this.config.url}/signup-complete/${code}`;
+
+				this.emailService.sendEmail(email, 'Signup',
+					`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+					`To complete signup, please click this link: ${link}`);
+
+				return reply.code(204);
 			}
-
-			const code = secureRndstr(16, { chars: L_CHARS });
-
-			await this.userPendingsRepository.insert({
-				id: this.idService.gen(),
-				code,
-				email,
-				username,
-			}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
-
-			const link = `${this.config.url}/signup-complete/${code}`;
-
-			this.emailService.sendEmail(email, 'Signup',
-				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-				`To complete signup, please click this link: ${link}`);
-
-			return reply.code(204);
 		});
 	}
 }

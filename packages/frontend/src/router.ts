@@ -255,6 +255,13 @@ export const routes = [{
 	path: '/oauth/authorize',
 	component: page(() => import('./pages/oauth.vue')),
 }, {
+	path: '/oauth-client/callback/:serverId',
+	component: page(() => import('./pages/oauth-callback.vue')),
+	query: {
+		code: 'code',
+		state: 'state',
+	},
+}, {
 	path: '/tags/:tag',
 	component: page(() => import('./pages/tag.vue')),
 }, {

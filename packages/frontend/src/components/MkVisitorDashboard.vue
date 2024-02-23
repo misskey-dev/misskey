@@ -93,7 +93,13 @@ function signup() {
 }
 
 function oauth() {
-	window.location.href = 'http://localhost:3000/oauth/9px2ia1gx9qu0001/authorize';
+	os.api('oauth/authorize', {
+		'serverId': '9q2hif5p0pe20003',
+	}).then((res) => {
+		console.log(res);
+
+		window.location.href = res!.authorizeUrl;
+	});
 }
 
 function showMenu(ev) {

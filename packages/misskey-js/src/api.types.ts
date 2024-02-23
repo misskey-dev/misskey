@@ -642,6 +642,10 @@ export type Endpoints = {
 		};
 	}; };
 
+	// oauth
+	'oauth/authorize': { req: TODO; res: TODO; };
+	'oauth/callback': { req: TODO; res: TODO; };
+
 	// fetching external data
 	'fetch-rss': { req: { url: string; }; res: TODO; };
 	'fetch-external-resources': {

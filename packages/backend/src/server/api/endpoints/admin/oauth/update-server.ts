@@ -44,6 +44,7 @@ export const paramDef = {
 		emailPath: { type: 'string' },
 		markEmailAsVerified: { type: 'boolean' },
 		usernamePath: { type: 'string' },
+		allowSignUp: { type: 'boolean' },
 	},
 	required: ['id', 'title'],
 } as const;
@@ -77,6 +78,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailPath: ps.emailPath,
 				markEmailAsVerified: ps.markEmailAsVerified,
 				usernamePath: ps.usernamePath,
+				idPath: ps.idPath,
+				allowSignUp: ps.allowSignUp,
 			});
 
 			const updatedOAuth2Server = this.oauth2ServersRepository.findOneByOrFail({ id: ps.id });
