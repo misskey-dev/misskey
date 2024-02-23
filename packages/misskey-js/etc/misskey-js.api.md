@@ -1715,7 +1715,10 @@ declare namespace entities {
         Role,
         RolePolicies,
         ReversiGameLite,
-        ReversiGameDetailed
+        ReversiGameDetailed,
+        MetaLite,
+        MetaDetailedOnly,
+        MetaDetailed
     }
 }
 export { entities }
@@ -2222,6 +2225,15 @@ type MeDetailed = components['schemas']['MeDetailed'];
 
 // @public (undocumented)
 type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
+
+// @public (undocumented)
+type MetaDetailed = components['schemas']['MetaDetailed'];
+
+// @public (undocumented)
+type MetaDetailedOnly = components['schemas']['MetaDetailedOnly'];
+
+// @public (undocumented)
+type MetaLite = components['schemas']['MetaLite'];
 
 // @public (undocumented)
 type MetaRequest = operations['meta']['requestBody']['content']['application/json'];
