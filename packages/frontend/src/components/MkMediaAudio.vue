@@ -5,6 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	ref="playerEl"
+	v-hotkey.global="keymap"
+	tabindex="0"
 	:class="[
 		$style.audioContainer,
 		(audio.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive,
@@ -25,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			preload="metadata"
 			controls
 			:class="$style.nativeAudio"
+			@keydown.prevent
 		>
 			<source :src="audio.url">
 		</audio>
@@ -84,6 +88,41 @@ const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
 
+const keymap = {
+	'up': () => {
+		if (hasFocus() && audioEl.value) {
+			volume.value = Math.min(volume.value + 0.1, 1);
+		}
+	},
+	'down': () => {
+		if (hasFocus() && audioEl.value) {
+			volume.value = Math.max(volume.value - 0.1, 0);
+		}
+	},
+	'left': () => {
+		if (hasFocus() && audioEl.value) {
+			audioEl.value.currentTime = Math.max(audioEl.value.currentTime - 5, 0);
+		}
+	},
+	'right': () => {
+		if (hasFocus() && audioEl.value) {
+			audioEl.value.currentTime = Math.min(audioEl.value.currentTime + 5, audioEl.value.duration);
+		}
+	},
+	'space': () => {
+		if (hasFocus()) {
+			togglePlayPause();
+		}
+	},
+};
+
+// PlayerElもしくはその子要素にフォーカスがあるかどうか
+function hasFocus() {
+	if (!playerEl.value) return false;
+	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
+}
+
+const playerEl = shallowRef<HTMLDivElement>();
 const audioEl = shallowRef<HTMLAudioElement>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -198,6 +237,7 @@ function toggleMute() {
 }
 
 let onceInit = false;
+let mediaTickFrameId: number | null = null;
 let stopAudioElWatch: () => void;
 
 function init() {
@@ -218,7 +258,7 @@ function init() {
 
 					elapsedTimeMs.value = audioEl.value.currentTime * 1000;
 				}
-				window.requestAnimationFrame(updateMediaTick);
+				mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 			}
 
 			updateMediaTick();
@@ -278,6 +318,10 @@ onDeactivated(() => {
 	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.audio.isSensitive && defaultStore.state.nsfw !== 'ignore');
 	stopAudioElWatch();
 	onceInit = false;
+	if (mediaTickFrameId) {
+		window.cancelAnimationFrame(mediaTickFrameId);
+		mediaTickFrameId = null;
+	}
 });
 </script>
 
@@ -288,6 +332,10 @@ onDeactivated(() => {
 	border: .5px solid var(--divider);
 	border-radius: var(--radius);
 	overflow: clip;
+
+	&:focus {
+		outline: none;
+	}
 }
 
 .sensitive {

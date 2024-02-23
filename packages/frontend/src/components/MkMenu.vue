@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
 		@contextmenu.self="e => e.preventDefault()"
 	>
-		<template v-for="(item, i) in (items2 ?? [])">
+		<template v-for="(item, i) in (items2 ?? [])" :key="i">
 			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
 			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
 				<span style="opacity: 0.7;">{{ item.text }}</span>
@@ -184,7 +184,7 @@ function onItemMouseLeave(item) {
 }
 
 async function showRadioOptions(item: MenuRadio, ev: MouseEvent) {
-	const children: MenuItem[] = Object.keys(item.options).map(key => {
+	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
 		const value = item.options[key];
 		return {
 			type: 'radioOption',
@@ -193,7 +193,7 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent) {
 				item.ref = value;
 			},
 			active: computed(() => item.ref === value),
-		} as MenuRadioOption;
+		};
 	});
 
 	if (props.asDrawer) {

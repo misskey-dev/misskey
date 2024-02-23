@@ -6,6 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="playerEl"
+	v-hotkey.global="keymap"
+	tabindex="0"
 	:class="[
 		$style.videoContainer,
 		controlsShowing && $style.active,
@@ -32,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:alt="video.comment"
 			preload="metadata"
 			controls
+			@keydown.prevent
 		>
 			<source :src="video.url">
 		</video>
@@ -120,6 +123,40 @@ import { iAmModerator } from '@/account.js';
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
 }>();
+
+const keymap = {
+	'up': () => {
+		if (hasFocus() && videoEl.value) {
+			volume.value = Math.min(volume.value + 0.1, 1);
+		}
+	},
+	'down': () => {
+		if (hasFocus() && videoEl.value) {
+			volume.value = Math.max(volume.value - 0.1, 0);
+		}
+	},
+	'left': () => {
+		if (hasFocus() && videoEl.value) {
+			videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
+		}
+	},
+	'right': () => {
+		if (hasFocus() && videoEl.value) {
+			videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
+		}
+	},
+	'space': () => {
+		if (hasFocus()) {
+			togglePlayPause();
+		}
+	},
+};
+
+// PlayerElもしくはその子要素にフォーカスがあるかどうか
+function hasFocus() {
+	if (!playerEl.value) return false;
+	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
+}
 
 // eslint-disable-next-line vue/no-setup-props-destructure
 const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
@@ -298,6 +335,7 @@ function toggleMute() {
 }
 
 let onceInit = false;
+let mediaTickFrameId: number | null = null;
 let stopVideoElWatch: () => void;
 
 function init() {
@@ -318,7 +356,7 @@ function init() {
 
 					elapsedTimeMs.value = videoEl.value.currentTime * 1000;
 				}
-				window.requestAnimationFrame(updateMediaTick);
+				mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 			}
 
 			updateMediaTick();
@@ -391,6 +429,10 @@ onDeactivated(() => {
 	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore');
 	stopVideoElWatch();
 	onceInit = false;
+	if (mediaTickFrameId) {
+		window.cancelAnimationFrame(mediaTickFrameId);
+		mediaTickFrameId = null;
+	}
 });
 </script>
 
@@ -399,6 +441,10 @@ onDeactivated(() => {
 	container-type: inline-size;
 	position: relative;
 	overflow: clip;
+
+	&:focus {
+		outline: none;
+	}
 }
 
 .sensitive {
