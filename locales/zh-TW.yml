@@ -1228,9 +1228,10 @@ _bubbleGame:
   _score:
     score: "分數"
     scoreYen: "賺取的金額"
-    highScore: "排行榜"
+    highScore: "最高分"
     maxChain: "最大連線數"
     yen: "{yen}円"
+    estimatedQty: "{qty}個"
     scoreSweets: "飯糰 {onigiriQtyWithUnit}"
   _howToPlay:
     section1: "調整位置並將物體放入盒子中。"
