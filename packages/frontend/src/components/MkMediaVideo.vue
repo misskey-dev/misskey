@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:alt="video.comment"
 			preload="metadata"
 			playsinline
+			@keydown.prevent
 			@click.self="togglePlayPause"
 		>
 			<source :src="video.url">
