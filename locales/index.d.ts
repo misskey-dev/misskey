@@ -4923,19 +4923,19 @@ export interface Locale extends ILocale {
         "fusionRecipe": string;
         "_score": {
             /**
-             * スコア:
+             * スコア
              */
             "score": string;
             /**
-             * 稼いだ金額:
+             * 稼いだ金額
              */
             "scoreYen": string;
             /**
-             * ハイスコア:
+             * ハイスコア
              */
             "highScore": string;
             /**
-             * 最大チェーン数:
+             * 最大チェーン数
              */
             "maxChain": string;
             /**

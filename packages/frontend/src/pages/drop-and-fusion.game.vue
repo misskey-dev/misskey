@@ -88,10 +88,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>{{ i18n.ts._bubbleGame._score.score }} <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
-						<div>{{ i18n.ts._bubbleGame._score.maxChain }} <MkNumber :value="maxCombo"/></div>
+						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
+						<div>{{ i18n.ts._bubbleGame._score.maxChain }}: <MkNumber :value="maxCombo"/></div>
 						<div v-if="gameMode === 'yen'">
-							{{ i18n.ts._bubbleGame._score.scoreYen }}
+							{{ i18n.ts._bubbleGame._score.scoreYen }}:
 							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
 								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
 							</I18n>
@@ -137,10 +137,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div class="_woodenFrame" style="flex: 1; margin-right: 10px;">
 					<div class="_woodenFrameInner">
-						<div>{{ i18n.ts._bubbleGame._score.score }} <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
-						<div>{{ i18n.ts._bubbleGame._score.highScore }} <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
+						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
+						<div>{{ i18n.ts._bubbleGame._score.highScore }}: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
 						<div v-if="gameMode === 'yen'">
-							{{ i18n.ts._bubbleGame._score.scoreYen }}
+							{{ i18n.ts._bubbleGame._score.scoreYen }}: 
 							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
 								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
 							</I18n>
