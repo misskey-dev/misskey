@@ -22,6 +22,7 @@
 - Fix: MFMのオートコンプリートが出るべき状況で出ないことがある問題を修正
 - Fix: チャートのラベルが消えている問題を修正
 - Fix: 画面表示後最初の音声再生が爆音になることがある問題を修正
+- Feat: MFMタグ`color`を追加　`$[color.fg=xxx,bg=yyy ...]`の形式で文字色と背景色を同時に設定可能
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
