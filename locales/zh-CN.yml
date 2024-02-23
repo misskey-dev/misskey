@@ -1215,6 +1215,7 @@ hemisphere: "居住地区"
 withSensitive: "显示包含敏感媒体的帖子"
 userSaysSomethingSensitive: "含 {name} 敏感文件的帖子"
 enableHorizontalSwipe: "滑动切换标签页"
+surrender: "取消"
 _bubbleGame:
   howToPlay: "游戏说明"
   _howToPlay:
