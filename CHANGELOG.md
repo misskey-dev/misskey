@@ -14,6 +14,7 @@
 ## 202x.x.x (unreleased)
 
 ### General
+- Enhance: サーバーごとにモデレーションノートを残せるように
 
 ### Client
 - Enhance: ノート作成画面のファイル添付メニューの区切り線の位置を調整
@@ -24,6 +25,7 @@
 
 ### Server
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
+- エンドポイント`flash/update`の`flashId`以外のパラメータは必須ではなくなりました
 - Fix: 禁止キーワードを含むノートがDelayed Queueに追加されて再処理される問題を修正
 - Fix: 自分がフォローしていないアカウントのフォロワー限定ノートが閲覧できることがある問題を修正
 - Fix: タイムラインのオプションで「リノートを表示」を無効にしている際、投票のみの引用リノートが流れてこない問題を修正
