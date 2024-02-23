@@ -34,7 +34,7 @@ import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
-import { deepClone } from '@/misc/clone.js';
+import { escapeValue } from '@/misc/prelude/xml.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
@@ -185,7 +185,7 @@ export class ClientServerService {
 			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
 			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
 			instanceUrl: this.config.url,
-			metaJson: JSON.stringify(await this.metaEntityService.packDetailed(meta)),
+			metaJson: escapeValue(JSON.stringify(await this.metaEntityService.packDetailed(meta))),
 			now: Date.now(),
 		};
 	}
