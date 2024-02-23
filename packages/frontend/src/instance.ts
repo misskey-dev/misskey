@@ -6,7 +6,6 @@
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { unescapeValue } from '@/scripts/xml-escape.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
 
@@ -17,7 +16,7 @@ const providedMetaEl = document.getElementById('misskey_meta');
 
 let cachedMeta = miLocalStorage.getItem('instance') ? JSON.parse(miLocalStorage.getItem('instance')!) : null;
 let cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
-const providedMeta = providedMetaEl && providedMetaEl.textContent ? JSON.parse(unescapeValue(providedMetaEl.textContent)) : null;
+const providedMeta = providedMetaEl && providedMetaEl.textContent ? JSON.parse(providedMetaEl.textContent) : null;
 const providedAt = providedMetaEl && providedMetaEl.dataset.generatedAt ? parseInt(providedMetaEl.dataset.generatedAt) : 0;
 if (providedAt > cachedAt) {
 	miLocalStorage.setItem('instance', JSON.stringify(providedMeta));

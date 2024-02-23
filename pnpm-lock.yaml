@@ -227,6 +227,9 @@ importers:
       hpagent:
         specifier: 1.2.0
         version: 1.2.0
+      htmlescape:
+        specifier: ^1.1.1
+        version: 1.1.1
       http-link-header:
         specifier: 1.1.1
         version: 1.1.1
@@ -538,6 +541,9 @@ importers:
       '@types/fluent-ffmpeg':
         specifier: 2.1.24
         version: 2.1.24
+      '@types/htmlescape':
+        specifier: ^1.1.3
+        version: 1.1.3
       '@types/http-link-header':
         specifier: 1.0.5
         version: 1.0.5
@@ -7405,6 +7411,10 @@ packages:
       '@types/unist': 3.0.2
     dev: true
 
+  /@types/htmlescape@1.1.3:
+    resolution: {integrity: sha512-tuC81YJXGUe0q8WRtBNW+uyx79rkkzWK651ALIXXYq5/u/IxjX4iHneGF2uUqzsNp+F+9J2mFZOv9jiLTtIq0w==}
+    dev: true
+
   /@types/http-cache-semantics@4.0.4:
     resolution: {integrity: sha512-1m0bIFVc7eJWyve9S0RnuRgcQqF/Xd5QsUZAZeQFr1Q3/p9JWoQQEqmVy+DPTNpGXwhgIetAoYF8JSc33q29QA==}
 
@@ -12455,6 +12465,11 @@ packages:
     resolution: {integrity: sha512-vy7ClnArOZwCnqZgvv+ddgHgJiAFXe3Ge9ML5/mBctVJoUoYPCdxVucOywjDARn6CVoh3dRSFdPHy2sX80L0Wg==}
     engines: {node: '>=8'}
     dev: true
+
+  /htmlescape@1.1.1:
+    resolution: {integrity: sha512-eVcrzgbR4tim7c7soKQKtxa/kQM4TzjnlU83rcZ9bHU6t31ehfV7SktN6McWgwPWg+JYMA/O3qpGxBvFq1z2Jg==}
+    engines: {node: '>=0.10'}
+    dev: false
 
   /htmlparser2@8.0.1:
     resolution: {integrity: sha512-4lVbmc1diZC7GUJQtRQ5yBAeUCL1exyMwmForWkRLnwyzWBFxN633SALPMGYaWZvKe9j1pRZJpauvmxENSp/EA==}
