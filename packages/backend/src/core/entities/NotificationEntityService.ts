@@ -17,14 +17,12 @@ import { isNotNull } from '@/misc/is-not-null.js';
 import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
 import { CacheService } from '@/core/CacheService.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
-import { trackPromise } from '@/misc/promise-tracker.js';
 import { RoleEntityService } from './RoleEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 
 const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'renote:grouped', 'quote', 'reaction', 'reaction:grouped', 'pollEnded'] as (typeof groupedNotificationTypes[number])[]);
-const MARK_NOTE_READ_NOTIFICATION_TYPES = new Set(['mention', 'reply', 'quote'] as (typeof groupedNotificationTypes[number])[]);
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
@@ -178,7 +176,6 @@ export class NotificationEntityService implements OnModuleInit {
 	async #packManyInternal <T extends MiNotification | MiGroupedNotification>	(
 		notifications: T[],
 		meId: MiUser['id'],
-		markNotesAsRead = false,
 	): Promise<T[]> {
 		if (notifications.length === 0) return [];
 
@@ -228,17 +225,6 @@ export class NotificationEntityService implements OnModuleInit {
 			);
 		});
 
-		if (markNotesAsRead) {
-			const notesToRead = validNotifications.reduce((acc, x) => {
-				if (MARK_NOTE_READ_NOTIFICATION_TYPES.has(x.type) && 'noteId' in x && !acc.has(x.noteId)) {
-					const note = packedNotes.get(x.noteId);
-					if (note) acc.set(x.noteId, note);
-				}
-				return acc;
-			}, new Map<string, Packed<'Note'>>());
-			trackPromise(this.noteReadService.read(meId, Array.from(notesToRead.values())));
-		}
-
 		return (await Promise.all(packPromises)).filter(isNotNull);
 	}
 
@@ -262,18 +248,16 @@ export class NotificationEntityService implements OnModuleInit {
 	public async packMany(
 		notifications: MiNotification[],
 		meId: MiUser['id'],
-		markNotesAsRead = false,
 	): Promise<MiNotification[]> {
-		return await this.#packManyInternal(notifications, meId, markNotesAsRead);
+		return await this.#packManyInternal(notifications, meId);
 	}
 
 	@bindThis
 	public async packGroupedMany(
 		notifications: MiGroupedNotification[],
 		meId: MiUser['id'],
-		markNotesAsRead = false,
 	): Promise<MiGroupedNotification[]> {
-		return await this.#packManyInternal(notifications, meId, markNotesAsRead);
+		return await this.#packManyInternal(notifications, meId);
 	}
 
 	/**
