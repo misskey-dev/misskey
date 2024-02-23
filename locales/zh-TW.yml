@@ -1217,6 +1217,7 @@ hemisphere: "您居住的地區"
 withSensitive: "顯示包含敏感檔案的貼文"
 userSaysSomethingSensitive: "包含 {name} 敏感檔案的貼文"
 enableHorizontalSwipe: "滑動切換時間軸"
+surrender: "退出"
 _bubbleGame:
   howToPlay: "玩法說明"
   _howToPlay:
