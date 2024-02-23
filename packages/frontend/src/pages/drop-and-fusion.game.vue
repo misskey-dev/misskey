@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame" :class="[$style.headerTitle]">
 					<div class="_woodenFrameInner">
 						<b>{{ i18n.ts.bubbleGame }}</b>
-						<div>- {{ i18n.ts._bubbleGame._gameMode[gameMode] }} -</div>
+						<div>- {{ gameMode.toUpperCase() }} -</div>
 					</div>
 				</div>
 				<div class="_woodenFrame _woodenFrameH">
@@ -140,7 +140,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
 						<div>{{ i18n.ts._bubbleGame._score.highScore }}: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
 						<div v-if="gameMode === 'yen'">
-							{{ i18n.ts._bubbleGame._score.scoreYen }}: 
+							{{ i18n.ts._bubbleGame._score.scoreYen }}:
 							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
 								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
 							</I18n>
@@ -169,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_woodenFrame">
 				<div class="_woodenFrameInner">
-					<div>{{ i18n.ts._bubbleGame.fusionRecipe }}</div>
+					<div>FUSION RECIPE</div>
 					<div>
 						<div v-for="(mono, i) in game.monoDefinitions.sort((a, b) => a.level - b.level)" :key="mono.id" style="display: inline-block;">
 							<img :src="getTextureImageUrl(mono)" style="width: 32px; vertical-align: bottom;"/>
@@ -528,11 +528,17 @@ const monoDefinitions = computed(() => {
 });
 
 function getScoreUnit(gameMode: string) {
-	return gameMode === 'normal' ? 'pt' :
-		gameMode === 'square' ? 'pt' :
-		gameMode === 'yen' ? '円' :
-		gameMode === 'sweets' ? 'kcal' :
-		'' as never;
+	switch (gameMode) {
+		case 'normal':
+		case 'square':
+			return 'pt';
+		case 'yen':
+			return '円';
+		case 'sweets':
+			return 'kcal';
+		default:
+			return '' as never;
+	}
 }
 
 function getMonoRenderOptions(mono: Mono) {

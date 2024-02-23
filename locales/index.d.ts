@@ -4910,17 +4910,9 @@ export interface Locale extends ILocale {
          */
         "howToPlay": string;
         /**
-         * クレジット
-         */
-        "credit": string;
-        /**
          * ホールド
          */
         "hold": string;
-        /**
-         * フュージョン レシピ
-         */
-        "fusionRecipe": string;
         "_score": {
             /**
              * スコア
@@ -4950,28 +4942,6 @@ export interface Locale extends ILocale {
              * おにぎり {onigiriQtyWithUnit}
              */
             "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
-        };
-        "_gameMode": {
-            /**
-             * ノーマル
-             */
-            "normal": string;
-            /**
-             * 正方形
-             */
-            "square": string;
-            /**
-             * お金
-             */
-            "yen": string;
-            /**
-             * スイーツ
-             */
-            "sweets": string;
-            /**
-             * スペース
-             */
-            "space": string;
         };
         "_howToPlay": {
             /**

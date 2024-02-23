@@ -24,10 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<MkSelect v-model="gameMode">
-								<option value="normal">{{ i18n.ts._bubbleGame._gameMode.normal }}</option>
-								<option value="square">{{ i18n.ts._bubbleGame._gameMode.square }}</option>
-								<option value="yen">{{ i18n.ts._bubbleGame._gameMode.yen }}</option>
-								<option value="sweets">{{ i18n.ts._bubbleGame._gameMode.sweets }}</option>
+								<option value="normal">NORMAL</option>
+								<option value="square">SQUARE</option>
+								<option value="yen">YEN</option>
+								<option value="sweets">SWEETS</option>
 								<!--<option value="space">SPACE</option>-->
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame">
 					<div class="_woodenFrameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ i18n.ts._bubbleGame._gameMode[gameMode] }})</div>
+							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode.toUpperCase() }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame">
 					<div class="_woodenFrameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.ts._bubbleGame.credit }}</b></div>
+							<div><b>CREDIT</b></div>
 							<div>
 								<div>Ai-chan illustration: @poteriri@misskey.io</div>
 								<div>BGM: @ys@misskey.design</div>

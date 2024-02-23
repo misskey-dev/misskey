@@ -1225,9 +1225,7 @@ gameRetry: "リトライ"
 
 _bubbleGame:
   howToPlay: "遊び方"
-  credit: "クレジット"
   hold: "ホールド"
-  fusionRecipe: "フュージョン レシピ"
   _score:
     score: "スコア"
     scoreYen: "稼いだ金額"
@@ -1236,12 +1234,6 @@ _bubbleGame:
     yen: "{yen}円"
     estimatedQty: "{qty}個分"
     scoreSweets: "おにぎり {onigiriQtyWithUnit}"
-  _gameMode:
-    normal: "ノーマル"
-    square: "正方形"
-    yen: "お金"
-    sweets: "スイーツ"
-    space: "スペース"
   _howToPlay:
     section1: "位置を調整してハコにモノを落とします。"
     section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
