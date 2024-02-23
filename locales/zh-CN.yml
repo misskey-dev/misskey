@@ -1228,8 +1228,8 @@ _bubbleGame:
     scoreYen: "赚到的钱"
     highScore: "最高分"
     maxChain: "最高连击数"
-    yen: "{yen}日元"
-    estimatedQty: "{qty}个"
+    yen: "{yen} 日元"
+    estimatedQty: "约 {qty} 个"
   _howToPlay:
     section1: "对准位置将Emoji投入盒子。"
     section2: "相同的Emoji相互接触合成后会得到新的Emoji，以此获得分数。"
@@ -2506,6 +2506,8 @@ _reversi:
   opponentHasSettingsChanged: "对手更改了设定"
   allowIrregularRules: "允许非常规规则（完全自由）"
   disallowIrregularRules: "禁止非常规规则"
+  showBoardLabels: "显示行号和列号"
+  useAvatarAsStone: "将石头设为头像"
 _offlineScreen:
   title: "离线——无法连接到服务器"
   header: "无法连接到服务器"
