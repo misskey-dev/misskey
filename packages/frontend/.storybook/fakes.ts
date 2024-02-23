@@ -4,6 +4,7 @@
  */
 
 import type { entities } from 'misskey-js'
+import { imageDataUrl, text } from "./fake-utils.js";
 
 export function abuseUserReport() {
 	return {
@@ -194,5 +195,44 @@ export function role(params: {
 			values: []
 		},
 		policies: {},
+	}
+}
+
+export function emoji(params?: {
+	id?: string,
+	name?: string,
+	host?: string,
+	uri?: string,
+	publicUrl?: string,
+	originalUrl?: string,
+	type?: string,
+	aliases?: string[],
+	category?: string,
+	license?: string,
+	isSensitive?: boolean,
+	localOnly?: boolean,
+	roleIdsThatCanBeUsedThisEmojiAsReaction?: {id:string, name:string}[],
+	updatedAt?: string,
+}): entities.EmojiDetailedAdmin {
+	const id = params?.id ?? new Date().getTime().toString() + text(5);
+	const name = params?.name ?? text(8);
+
+	const image = imageDataUrl()
+
+	return {
+		id: id,
+		name: name,
+		host: params?.host ?? null,
+		uri: params?.uri ?? null,
+		publicUrl: params?.publicUrl ?? image,
+		originalUrl: params?.originalUrl ?? image,
+		type: params?.type ?? 'image/png',
+		aliases: params?.aliases ?? [`alias1-${name}`, `alias2-${name}`],
+		category: params?.category ?? null,
+		license: params?.license ?? null,
+		isSensitive: params?.isSensitive ?? false,
+		localOnly: params?.localOnly ?? false,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: params?.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+		updatedAt: params?.updatedAt ?? new Date().toISOString(),
 	}
 }

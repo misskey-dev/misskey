@@ -7,6 +7,7 @@ import { delay, http, HttpResponse } from 'msw';
 import { StoryObj } from '@storybook/vue3';
 import { entities } from 'misskey-js';
 import { commonHandlers } from '../../../.storybook/mocks.js';
+import { emoji } from '../../../.storybook/fakes.js';
 import custom_emojis_manager2 from './custom-emojis-manager2.vue';
 
 function createRender(params: {
@@ -43,7 +44,11 @@ function createRender(params: {
 					...commonHandlers,
 					http.post('/api/admin/emoji/v2/list', async (req) => {
 						await delay(100);
+
+						const bodyStream = req.request.body.
 						const body = req.body as entities.AdminEmojiV2ListRequest;
+
+						console.log(req);
 
 						const emojis = params.emojis;
 						const limit = body.limit ?? 10;
@@ -65,4 +70,10 @@ function createRender(params: {
 
 export const Default = createRender({
 	emojis: [],
+});
+
+export const Max10 = createRender({
+	emojis: [
+		emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(),
+	],
 });
