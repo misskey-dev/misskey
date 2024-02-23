@@ -186,7 +186,7 @@ export class ClientServerService {
 			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
 			instanceUrl: this.config.url,
 			metaJson: JSON.stringify(await this.metaEntityService.packDetailed(meta)),
-			now: new Date().toISOString(),
+			now: Date.now(),
 		};
 	}
 
