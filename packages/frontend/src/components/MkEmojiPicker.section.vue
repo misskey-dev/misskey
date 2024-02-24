@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="emoji"
 			:data-emoji="emoji"
 			class="_button item"
+			:disabled="disabledEmojis?.value.includes(emoji)"
 			@pointerenter="computeButtonTitle"
 			@click="emit('chosen', emoji, $event)"
 		>
@@ -48,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="emoji"
 			:data-emoji="emoji"
 			class="_button item"
+			:disabled="disabledEmojis?.value.includes(emoji)"
 			@pointerenter="computeButtonTitle"
 			@click="emit('chosen', emoji, $event)"
 		>
@@ -67,6 +69,7 @@ import MkEmojiPickerSection from '@/components/MkEmojiPicker.section.vue';
 
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;
+	disabledEmojis?: Ref<string[]>;
 	initialShown?: boolean;
 	hasChildSection?: boolean;
 	customEmojiTree?: CustomEmojiFolderTree[];

@@ -12,6 +12,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 
 export const meta = {
 	tags: ['users'],
@@ -52,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				host: acct.host ?? IsNull(),
 			})));
 
-			return await this.userEntityService.packMany(users.filter(x => x !== null) as MiUser[], me, { schema: 'UserDetailed' });
+			return await this.userEntityService.packMany(users.filter(isNotNull), me, { schema: 'UserDetailed' });
 		});
 	}
 }

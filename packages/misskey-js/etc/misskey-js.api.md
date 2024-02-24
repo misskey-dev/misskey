@@ -1778,6 +1778,9 @@ declare namespace entities {
         RolePolicies,
         ReversiGameLite,
         ReversiGameDetailed,
+        MetaLite,
+        MetaDetailedOnly,
+        MetaDetailed,
         AbuseUserReport
     }
 }
@@ -2296,6 +2299,15 @@ type MeDetailed = components['schemas']['MeDetailed'];
 type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
 
 // @public (undocumented)
+type MetaDetailed = components['schemas']['MetaDetailed'];
+
+// @public (undocumented)
+type MetaDetailedOnly = components['schemas']['MetaDetailedOnly'];
+
+// @public (undocumented)
+type MetaLite = components['schemas']['MetaLite'];
+
+// @public (undocumented)
 type MetaRequest = operations['meta']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2389,6 +2401,9 @@ type ModerationLog = {
     type: 'unsuspendRemoteInstance';
     info: ModerationLogPayloads['unsuspendRemoteInstance'];
 } | {
+    type: 'updateRemoteInstanceNote';
+    info: ModerationLogPayloads['updateRemoteInstanceNote'];
+} | {
     type: 'markSensitiveDriveFile';
     info: ModerationLogPayloads['markSensitiveDriveFile'];
 } | {
@@ -2436,7 +2451,7 @@ type ModerationLog = {
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createIndieAuthClient", "updateIndieAuthClient", "deleteIndieAuthClient", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createIndieAuthClient", "updateIndieAuthClient", "deleteIndieAuthClient", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
 
 // @public (undocumented)
 type MuteCreateRequest = operations['mute/create']['requestBody']['content']['application/json'];

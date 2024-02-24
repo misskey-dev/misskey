@@ -61,6 +61,9 @@ html
 			meta(property='og:image'       content= img)
 			meta(property='twitter:card'   content='summary')
 
+		script(type='application/json' id='misskey_meta' data-generated-at=now)
+			!= metaJson
+
 		style
 			include ../style.css
 
