@@ -278,7 +278,7 @@ async function applyProfile(id: string): Promise<void> {
 	const { canceled: cancel1 } = await os.confirm({
 		type: 'warning',
 		title: ts._preferencesBackups.apply,
-		text: t('_preferencesBackups.applyConfirm', { name: profile.name }),
+		text: t('_preferencesBackups.applyConfirm', { name: profile.name || '' }),
 	});
 	if (cancel1) return;
 
@@ -336,7 +336,7 @@ async function deleteProfile(id: string): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'info',
 		title: ts.delete,
-		text: t('deleteAreYouSure', { x: profiles.value[id].name }),
+		text: t('deleteAreYouSure', { x: profiles.value[id].name || '' }),
 	});
 	if (canceled) return;
 
@@ -352,7 +352,7 @@ async function save(id: string): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'info',
 		title: ts._preferencesBackups.save,
-		text: t('_preferencesBackups.saveConfirm', { name }),
+		text: t('_preferencesBackups.saveConfirm', { name: name || '' }),
 	});
 	if (canceled) return;
 
@@ -387,7 +387,7 @@ async function rename(id: string): Promise<void> {
 	const { canceled: cancel2 } = await os.confirm({
 		type: 'info',
 		title: ts.rename,
-		text: t('_preferencesBackups.renameConfirm', { old: registry.name, new: name }),
+		text: t('_preferencesBackups.renameConfirm', { old: registry.name || '', new: name }),
 	});
 	if (cancel2) return;
 

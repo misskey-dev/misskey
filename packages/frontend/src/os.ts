@@ -289,7 +289,7 @@ export function inputText(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(typeof result.result === 'string' ? result : { canceled: true, result: undefined });
 			},
 		}, 'closed');
 	});
