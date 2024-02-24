@@ -61,6 +61,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
@@ -867,7 +868,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const mentions = extractMentions(tokens);
 		let mentionedUsers = (await Promise.all(mentions.map(m =>
 			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
-		))).filter(x => x != null) as MiUser[];
+		))).filter(isNotNull);
 
 		// Drop duplicate users
 		mentionedUsers = mentionedUsers.filter((u, i, self) =>

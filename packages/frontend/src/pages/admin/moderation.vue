@@ -118,7 +118,7 @@ function save() {
 		preservedUsernames: preservedUsernames.value.split('\n'),
 		urlPreviewDenyList: urlPreviewDenyList.value?.split('\n'),
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

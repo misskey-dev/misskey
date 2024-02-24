@@ -27,6 +27,8 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import { isNotNull } from '@/misc/is-not-null.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -35,8 +37,6 @@ import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
-import { CacheService } from '@/core/CacheService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
 
@@ -84,7 +84,6 @@ export class ApInboxService {
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
-		private cacheService: CacheService,
 		private globalEventService: GlobalEventService,
 	) {
 		this.logger = this.apLoggerService.logger;
@@ -532,7 +531,7 @@ export class ApInboxService {
 		const userIds = uris
 			.filter(uri => uri.startsWith(this.config.url + '/users/'))
 			.map(uri => uri.split('/').at(-1))
-			.filter((userId): userId is string => userId !== undefined);
+			.filter(isNotNull);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});

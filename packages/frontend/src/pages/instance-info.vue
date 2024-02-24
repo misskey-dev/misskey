@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'overview'" key="overview" class="_gaps_m">
 				<div class="fnfelxur">
-					<img :src="faviconUrl" alt="" class="icon"/>
+					<img v-if="faviconUrl" :src="faviconUrl" alt="" class="icon"/>
 					<span class="name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
 				</div>
 				<div style="display: flex; flex-direction: column; gap: 1em;">
@@ -35,6 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection v-if="iAmModerator">
 					<template #label>Moderation</template>
 					<div class="_gaps_s">
+						<MkTextarea v-model="moderationNote" manualSave>
+							<template #label>{{ i18n.ts.moderationNote }}</template>
+						</MkTextarea>
 						<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
 						<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 						<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
@@ -120,7 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
@@ -142,6 +145,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { dateString } from '@/filters/date.js';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const props = defineProps<{
 	host: string;
@@ -157,9 +161,10 @@ const isBlocked = ref(false);
 const isSilenced = ref(false);
 const isSensitiveMedia = ref(false);
 const faviconUrl = ref<string | null>(null);
+const moderationNote = ref('');
 
 const usersPagination = {
-	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
+	endpoint: iAmModerator ? 'admin/show-users' as const : 'users' as const,
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
@@ -168,6 +173,15 @@ const usersPagination = {
 	},
 	offsetMode: true,
 };
+
+watch(moderationNote, async () => {
+	if (!instance.value) return;
+
+	await misskeyApi('admin/federation/update-instance', {
+		host: instance.value.host,
+		moderationNote: moderationNote.value
+	});
+});
 
 async function fetch(): Promise<void> {
 	if (iAmAdmin) {
@@ -181,6 +195,7 @@ async function fetch(): Promise<void> {
 	isSilenced.value = instance.value?.isSilenced ?? false;
 	isSensitiveMedia.value = instance.value?.isSensitiveMedia ?? false;
 	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
+	moderationNote.value = instance.value?.moderationNote ?? '';
 }
 
 async function toggleBlock(): Promise<void> {

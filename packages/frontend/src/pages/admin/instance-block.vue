@@ -57,7 +57,7 @@ function save() {
 		sensitiveMediaHosts: sensitiveMediaHosts.value.split('\n') || [],
 
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

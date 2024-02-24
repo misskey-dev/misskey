@@ -77,7 +77,9 @@ export class NoteReactionEntityService implements OnModuleInit {
 			withNote: boolean;
 		},
 	) : Promise<Packed<'NoteReaction'>[]> {
-		return (await Promise.allSettled(reactions.map(x => this.pack(x, me, options))))
+		const opts = { withNote: false, ...options };
+
+		return (await Promise.allSettled(reactions.map(x => this.pack(x, me, opts))))
 			.filter(result => result.status === 'fulfilled')
 			.map(result => (result as PromiseFulfilledResult<Packed<'NoteReaction'>>).value);
 	}

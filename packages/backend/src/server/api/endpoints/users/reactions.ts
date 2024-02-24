@@ -97,10 +97,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						qb
 							.from(this.noteReactionsRepository.metadata.targetName, 'reaction')
 							.where('"reaction"."userId" = :userId', { userId: ps.userId }),
-						ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate
+						ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate,
 					),
 					'reaction',
-					'"reaction"."noteId" = note.id'
+					'"reaction"."noteId" = note.id',
 				);
 
 			this.queryService.generateVisibilityQuery(query, me);
