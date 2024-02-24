@@ -1636,7 +1636,7 @@ _role:
   baseRole: "基本角色"
   useBaseValue: "使用基本角色的值"
   chooseRoleToAssign: "選擇要指派的角色"
-  iconUrl: "圖示的URL"
+  iconUrl: "圖示的 URL"
   asBadge: "顯示為徽章"
   descriptionOfAsBadge: "開啟的話，角色圖示會顯示在使用者名稱旁邊。"
   isExplorable: "讓使用者更容易找到您"
@@ -2515,6 +2515,7 @@ _reversi:
   allowIrregularRules: "允許異常規則（完全自由）"
   disallowIrregularRules: "不允許異常規則"
   showBoardLabels: "在棋盤上顯示行、列號"
+  useAvatarAsStone: "用大頭貼當作棋子"
 _offlineScreen:
   title: "離線－無法連接伺服器"
   header: "無法連接伺服器"
