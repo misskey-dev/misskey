@@ -195,7 +195,7 @@ export class RedisSingleCache<T> {
 export class MemoryKVCache<T> {
 	/**
 	 * データを持つマップ
-	 * @deprecated これを直接操作するべきではない
+	 * これを直接操作するべきではない
 	 */
 	public cache: Map<string, { date: number; value: T; }>;
 	private lifetime: number;
@@ -213,7 +213,7 @@ export class MemoryKVCache<T> {
 	@bindThis
 	/**
 	 * Mapにキャッシュをセットします
-	 * @deprecated これを直接呼び出すべきではない。InternalEventなどで変更を全てのプロセス/マシンに通知するべき
+	 * これを直接呼び出すべきではない。InternalEventなどで変更を全てのプロセス/マシンに通知するべき
 	 */
 	public set(key: string, value: T): void {
 		this.cache.set(key, {
