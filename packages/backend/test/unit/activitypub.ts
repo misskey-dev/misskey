@@ -203,7 +203,7 @@ describe('ActivityPub', () => {
 
 	describe('Renderer', () => {
 		test('Render an announce with visibility: followers', () => {
-			rendererService.renderAnnounce(null, {
+			rendererService.renderAnnounce('https://example.com/notes/00example', {
 				id: genAidx(Date.now()),
 				visibility: 'followers',
 			} as MiNote);
