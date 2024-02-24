@@ -49,7 +49,7 @@ export const Empty = {
 export const RelativeFuture = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 1 })); // n (1) = future (2024) - now (2023)
 	},
 	args: {
 		...Empty.args,
