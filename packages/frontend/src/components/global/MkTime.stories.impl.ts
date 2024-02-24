@@ -10,7 +10,7 @@ import MkTime from './MkTime.vue';
 import { i18n } from '@/i18n.js';
 import { dateTimeFormat } from '@/scripts/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
-const future = new Date('2775-04-01T00:00:00.000Z'); // FIXME: 2776年以降だと未来過ぎて閏年分の誤差が出て落ちる
+const future = new Date('2024-04-01T00:00:00.000Z');
 const oneHourAgo = new Date(now.getTime() - 3600000);
 const oneDayAgo = new Date(now.getTime() - 86400000);
 const oneWeekAgo = new Date(now.getTime() - 604800000);
@@ -49,7 +49,7 @@ export const Empty = {
 export const RelativeFuture = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: future.getFullYear() - now.getFullYear() }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
