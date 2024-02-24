@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { MiNote } from '@/models/Note.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { api, initTestDb, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
+import { api, initTestDb, makeStreamCatcher, post, sendEnvUpdateRequest, signup, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import type{ Repository } from 'typeorm';
 
@@ -19,6 +19,8 @@ describe('Drive', () => {
 	let bob: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
+		await sendEnvUpdateRequest({ key: 'FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING', value: 'true' });
+
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(MiNote);
 		alice = await signup({ username: 'alice' });

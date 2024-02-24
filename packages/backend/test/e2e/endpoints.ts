@@ -10,7 +10,7 @@ import * as assert from 'assert';
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
 import { MiUser } from '@/models/_.js';
-import { api, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
+import { api, initTestDb, post, sendEnvUpdateRequest, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Endpoints', () => {
@@ -20,6 +20,8 @@ describe('Endpoints', () => {
 	let dave: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
+		await sendEnvUpdateRequest({ key: 'FORCE_IGNORE_IDEMPOTENCY_FOR_TESTING', value: 'true' });
+
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
