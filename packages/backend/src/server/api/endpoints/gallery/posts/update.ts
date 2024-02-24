@@ -7,7 +7,6 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { isNotNull } from '@/misc/is-not-null.js';
