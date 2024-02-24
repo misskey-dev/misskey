@@ -21,7 +21,6 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { CacheService } from '@/core/CacheService.js';
 import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -61,7 +60,6 @@ export class AccountMoveService {
 		private instanceChart: InstanceChart,
 		private metaService: MetaService,
 		private relayService: RelayService,
-		private cacheService: CacheService,
 		private queueService: QueueService,
 	) {
 	}
@@ -85,7 +83,7 @@ export class AccountMoveService {
 		Object.assign(src, update);
 
 		// Update cache
-		this.cacheService.uriPersonCache.set(srcUri, src);
+		this.globalEventService.publishInternalEvent('localUserUpdated', src);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
 		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
