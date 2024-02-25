@@ -1,7 +1,9 @@
+import crypto from "node:crypto";
+
 /**
  * AIで生成した無作為なファーストネーム
  */
-export const firstNameDict: string = [
+export const firstNameDict = [
 	'Ethan', 'Olivia', 'Jackson', 'Emma', 'Liam', 'Ava', 'Aiden', 'Sophia', 'Mason', 'Isabella',
 	'Noah', 'Mia', 'Lucas', 'Harper', 'Caleb', 'Abigail', 'Samuel', 'Emily', 'Logan',
 	'Madison', 'Benjamin', 'Chloe', 'Elijah', 'Grace', 'Alexander', 'Scarlett', 'William', 'Zoey', 'James', 'Lily',
@@ -10,7 +12,7 @@ export const firstNameDict: string = [
 /**
  * AIで生成した無作為なラストネーム
  */
-export const lastNameDict: string = [
+export const lastNameDict = [
 	'Anderson', 'Johnson', 'Thompson', 'Davis', 'Rodriguez', 'Smith', 'Patel', 'Williams', 'Lee', 'Brown',
 	'Garcia', 'Jackson', 'Martinez', 'Taylor', 'Harris', 'Nguyen', 'Miller', 'Jones', 'Wilson',
 	'White', 'Thomas', 'Garcia', 'Martinez', 'Robinson', 'Turner', 'Lewis', 'Hall', 'King', 'Baker', 'Cooper',
@@ -19,7 +21,7 @@ export const lastNameDict: string = [
 /**
  * AIで生成した無作為な国名
  */
-export const countryDict: string = [
+export const countryDict = [
 	'Japan', 'Canada', 'Brazil', 'Australia', 'Italy', 'SouthAfrica', 'Mexico', 'Sweden', 'Russia', 'India',
 	'Germany', 'Argentina', 'South Korea', 'France', 'Nigeria', 'Turkey', 'Spain', 'Egypt', 'Thailand',
 	'Vietnam', 'Kenya', 'Saudi Arabia', 'Netherlands', 'Colombia', 'Poland', 'Chile', 'Malaysia', 'Ukraine', 'New Zealand', 'Peru',
@@ -92,6 +94,19 @@ export function lastName(): string {
 
 export function country(): string {
 	return choose(countryDict);
+}
+
+const TIME2000 = 946684800000;
+export function fakeId(): string {
+	let time = new Date().getTime();
+
+	time = time - TIME2000;
+	if (time < 0) time = 0;
+
+	const timeStr = time.toString(36).padStart(8, '0');
+	const noiseStr = text(2);
+
+	return timeStr + noiseStr;
 }
 
 export function imageDataUrl(options?: {
