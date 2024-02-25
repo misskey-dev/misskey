@@ -45,10 +45,8 @@ function createRender(params: {
 					http.post('/api/admin/emoji/v2/list', async (req) => {
 						await delay(100);
 
-						const bodyStream = req.request.body.
-						const body = req.body as entities.AdminEmojiV2ListRequest;
-
-						console.log(req);
+						const bodyStream = req.request.body as ReadableStream;
+						const body = await new Response(bodyStream).json() as entities.AdminEmojiV2ListRequest;
 
 						const emojis = params.emojis;
 						const limit = body.limit ?? 10;
@@ -72,8 +70,14 @@ export const Default = createRender({
 	emojis: [],
 });
 
-export const Max10 = createRender({
-	emojis: [
-		emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(), emoji(),
-	],
+export const List10 = createRender({
+	emojis: Array.from({ length: 10 }, (_, i) => emoji({ name: `emoji_${i}` })),
+});
+
+export const List100 = createRender({
+	emojis: Array.from({ length: 100 }, (_, i) => emoji({ name: `emoji_${i}` })),
+});
+
+export const List1000 = createRender({
+	emojis: Array.from({ length: 1000 }, (_, i) => emoji({ name: `emoji_${i}` })),
 });

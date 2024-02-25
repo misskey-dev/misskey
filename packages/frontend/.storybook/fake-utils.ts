@@ -120,7 +120,7 @@ export function imageDataUrl(options?: {
 	const red = options?.color?.red ?? integer(0, 255);
 	const green = options?.color?.green ?? integer(0, 255);
 	const blue = options?.color?.blue ?? integer(0, 255);
-	const alpha = options?.color?.alpha ?? 0;
+	const alpha = options?.color?.alpha ?? 1;
 	ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2, true);
 	ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 	ctx.fill();
