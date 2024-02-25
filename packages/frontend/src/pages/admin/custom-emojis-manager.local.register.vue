@@ -136,10 +136,12 @@ function setupGrid(): GridSetting {
 			minimumDefinitionCount: 100,
 			styleRules: [
 				{
+					// 1つでもバリデーションエラーがあれば行全体をエラー表示する
 					condition: ({ cells }) => cells.some(it => !it.violation.valid),
 					applyStyle: { className: 'violationRow' },
 				},
 			],
+			// 行のコンテキストメニュー設定
 			contextMenuFactory: (row, context) => {
 				return [
 					{
@@ -209,6 +211,7 @@ function setupGrid(): GridSetting {
 			},
 		],
 		cells: {
+			// セルのコンテキストメニュー設定
 			contextMenuFactory: (col, row, value, context) => {
 				return [
 					{
@@ -307,9 +310,18 @@ async function onClearClicked() {
 async function onDrop(ev: DragEvent) {
 	isDragOver.value = false;
 
+	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
+	const confirm = await os.confirm({
+		type: 'info',
+		title: '確認',
+		text: `ドラッグ＆ドロップされた${droppedFiles.length}個のファイルをドライブにアップロードします。実行しますか？`,
+	});
+	if (confirm.canceled) {
+		return;
+	}
+
 	const uploadedItems = Array.of<{ droppedFile: DroppedFile, driveFile: Misskey.entities.DriveFile }>();
 	try {
-		const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
 		uploadedItems.push(
 			...await os.promiseDialog(
 				Promise.all(
@@ -332,15 +344,6 @@ async function onDrop(ev: DragEvent) {
 		);
 	} catch (err) {
 		// ダイアログは共通部品側で出ているはずなので何もしない
-		return;
-	}
-
-	const confirm = await os.confirm({
-		type: 'info',
-		title: '確認',
-		text: `ドラッグ＆ドロップされた${uploadedItems.length}個のファイルをドライブにアップロードします。実行しますか？`,
-	});
-	if (confirm.canceled) {
 		return;
 	}
 
