@@ -75,7 +75,12 @@
 import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { emptyStrToEmptyArray, emptyStrToNull, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import {
+	emptyStrToEmptyArray,
+	emptyStrToNull,
+	RequestLogItem,
+	roleIdsParser,
+} from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -117,6 +122,7 @@ type GridItem = {
 function setupGrid(): GridSetting {
 	const required = validators.required();
 	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
+	const unique = validators.unique();
 
 	function removeRows(rows: GridRow[]) {
 		const idxes = [...new Set(rows.map(it => it.index))];
@@ -158,7 +164,10 @@ function setupGrid(): GridSetting {
 		},
 		cols: [
 			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
-			{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
+			{
+				bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140,
+				validators: [required, regex, unique],
+			},
 			{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
@@ -189,6 +198,13 @@ function setupGrid(): GridSetting {
 					gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = transform;
 
 					return transform;
+				},
+				events: {
+					paste: roleIdsParser,
+					delete(cell) {
+						// デフォルトはundefinedになるが、このプロパティは空配列にしたい
+						gridItems.value[cell.row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = [];
+					},
 				},
 			},
 		],
@@ -343,16 +359,14 @@ async function onDrop(ev: DragEvent) {
 }
 
 async function onFileSelectClicked() {
-	const driveFiles = await os.promiseDialog(
-		chooseFileFromPc(
-			true,
-			{
-				uploadFolder: selectedFolderId.value,
-				keepOriginal: keepOriginalUploading.value,
-				// 拡張子は消す
-				nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
-			},
-		),
+	const driveFiles = await chooseFileFromPc(
+		true,
+		{
+			uploadFolder: selectedFolderId.value,
+			keepOriginal: keepOriginalUploading.value,
+			// 拡張子は消す
+			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+		},
 	);
 
 	gridItems.value.push(...driveFiles.map(fromDriveFile));

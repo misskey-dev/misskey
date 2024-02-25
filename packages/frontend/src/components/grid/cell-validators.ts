@@ -6,6 +6,7 @@ export type ValidatorParams = {
 	column: GridColumn;
 	row: GridRow;
 	value: CellValue;
+	allCells: GridCell[];
 };
 
 export type ValidatorResult = {
@@ -13,7 +14,7 @@ export type ValidatorResult = {
 	message?: string;
 }
 
-export type CellValidator = {
+export type GridCellValidator = {
 	name?: string;
 	ignoreViolation?: boolean;
 	validate: (params: ValidatorParams) => ValidatorResult;
@@ -27,11 +28,11 @@ export type ValidateViolation = {
 
 export type ValidateViolationItem = {
 	valid: boolean;
-	validator: CellValidator;
+	validator: GridCellValidator;
 	result: ValidatorResult;
 }
 
-export function cellValidation(cell: GridCell, newValue: CellValue): ValidateViolation {
+export function cellValidation(allCells: GridCell[], cell: GridCell, newValue: CellValue): ValidateViolation {
 	const { column, row } = cell;
 	const validators = column.setting.validators ?? [];
 
@@ -39,6 +40,7 @@ export function cellValidation(cell: GridCell, newValue: CellValue): ValidateVio
 		column,
 		row,
 		value: newValue,
+		allCells,
 	};
 
 	const violations: ValidateViolationItem[] = validators.map(validator => {
@@ -58,11 +60,10 @@ export function cellValidation(cell: GridCell, newValue: CellValue): ValidateVio
 }
 
 class ValidatorPreset {
-	required(): CellValidator {
+	required(): GridCellValidator {
 		return {
 			name: 'required',
-			validate: (params: ValidatorParams): ValidatorResult => {
-				const { value } = params;
+			validate: ({ value }): ValidatorResult => {
 				return {
 					valid: value !== null && value !== undefined && value !== '',
 					message: 'This field is required.',
@@ -71,11 +72,10 @@ class ValidatorPreset {
 		};
 	}
 
-	regex(pattern: RegExp): CellValidator {
+	regex(pattern: RegExp): GridCellValidator {
 		return {
 			name: 'regex',
-			validate: (params: ValidatorParams): ValidatorResult => {
-				const { value, column } = params;
+			validate: ({ value, column }): ValidatorResult => {
 				if (column.setting.type !== 'text') {
 					return {
 						valid: false,
@@ -86,6 +86,22 @@ class ValidatorPreset {
 				return {
 					valid: pattern.test(value?.toString() ?? ''),
 					message: 'Not an allowed format. Please check the input. (Allowed format: ' + pattern.source + ')',
+				};
+			},
+		};
+	}
+
+	unique(): GridCellValidator {
+		return {
+			name: 'unique',
+			validate: ({ column, row, value, allCells }): ValidatorResult => {
+				const bindTo = column.setting.bindTo;
+				const isUnique = allCells
+					.filter(it => it.column.setting.bindTo === bindTo && it.row.index !== row.index)
+					.every(cell => cell.value !== value);
+				return {
+					valid: isUnique,
+					message: 'This value is already used.',
 				};
 			},
 		};

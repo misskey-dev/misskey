@@ -76,12 +76,14 @@ const props = defineProps<{
 }>();
 
 // non-reactive
+// eslint-disable-next-line vue/no-setup-props-destructure
 const rowSetting: Required<GridRowSetting> = {
 	...defaultGridRowSetting,
 	...props.settings.row,
 };
 
 // non-reactive
+// eslint-disable-next-line vue/no-setup-props-destructure
 const columnSettings = props.settings.cols;
 
 // non-reactive
@@ -1117,21 +1119,22 @@ function refreshData() {
 	// 行・列の定義から、元データの配列より値を取得してセルを作成する。
 	// 行・列の定義はそれぞれインデックスを持っており、そのインデックスは元データの配列番地に対応している。
 	const _cells: RowHolder[] = _rows.map(row => {
-		const cells = row.using
-			? _cols.map(col => {
-				const cell = createCell(col, row, _data[row.index][col.setting.bindTo], cellSettings);
-				cell.violation = cellValidation(cell, cell.value);
-				return cell;
-			})
+		const newCells = row.using
+			? _cols.map(col => createCell(col, row, _data[row.index][col.setting.bindTo], cellSettings))
 			: _cols.map(col => createCell(col, row, undefined, cellSettings));
 
-		return { row, cells, origin: _data[row.index] };
+		return { row, cells: newCells, origin: _data[row.index] };
 	});
 
 	rows.value = _rows;
 	cells.value = _cells;
 
-	applyRowRules(_cells.filter(it => it.row.using).flatMap(it => it.cells));
+	const allCells = _cells.filter(it => it.row.using).flatMap(it => it.cells);
+	for (const cell of allCells) {
+		cell.violation = cellValidation(allCells, cell, cell.value);
+	}
+
+	applyRowRules(allCells);
 
 	if (_DEV_) {
 		console.log('[grid][refresh-data][end]');
@@ -1205,7 +1208,6 @@ function patchData(newItems: DataSource[]) {
 			const oldCell = oldCells[colIdx];
 			const newValue = newItem[_col.setting.bindTo];
 			if (oldCell.value !== newValue) {
-				oldCell.violation = cellValidation(oldCell, newValue);
 				oldCell.value = _col.setting.valueTransformer
 					? _col.setting.valueTransformer(holder.row, _col, newValue)
 					: newValue;
@@ -1215,6 +1217,11 @@ function patchData(newItems: DataSource[]) {
 	}
 
 	if (changedCells.length > 0) {
+		const allCells = cells.value.slice(0, newItems.length).flatMap(it => it.cells);
+		for (const cell of allCells) {
+			cell.violation = cellValidation(allCells, cell, cell.value);
+		}
+
 		applyRowRules(changedCells);
 
 		// セル値が書き換わっており、バリデーションの結果も変わっているので外部に通知する必要がある

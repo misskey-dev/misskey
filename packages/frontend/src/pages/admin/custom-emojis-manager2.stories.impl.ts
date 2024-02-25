@@ -118,18 +118,18 @@ function createRender(params: {
 						const body = await new Response(bodyStream).json() as entities.AdminEmojiAddRequest;
 
 						const fileId = body.fileId;
-						const file = storedDriveFiles.find(f => f.id === fileId);
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						const file = storedDriveFiles.find(f => f.id === fileId)!;
 
 						const em = emoji({
 							id: fakeId(),
 							name: body.name,
-							url: body.url,
 							publicUrl: file.url,
 							originalUrl: file.url,
 							type: file.type,
 							aliases: body.aliases,
-							category: body.category,
-							license: body.license,
+							category: body.category ?? undefined,
+							license: body.license ?? undefined,
 							localOnly: body.localOnly,
 							isSensitive: body.isSensitive,
 						});

@@ -269,7 +269,7 @@ useTooltip(rootEl, (showing) => {
 		return;
 	}
 
-	const content = cell.value.violation.violations.map(it => it.result.message).join('\n');
+	const content = cell.value.violation.violations.filter(it => !it.valid).map(it => it.result.message).join('\n');
 	os.popup(defineAsyncComponent(() => import('@/components/grid/MkCellTooltip.vue')), {
 		showing,
 		content,

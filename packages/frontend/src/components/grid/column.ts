@@ -1,4 +1,4 @@
-import { CellValidator } from '@/components/grid/cell-validators.js';
+import { GridCellValidator } from '@/components/grid/cell-validators.js';
 import { Size, SizeStyle } from '@/components/grid/grid.js';
 import { calcCellWidth } from '@/components/grid/grid-utils.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
@@ -19,7 +19,7 @@ export type GridColumnSetting = {
 	type: ColumnType;
 	width: SizeStyle;
 	editable?: boolean;
-	validators?: CellValidator[];
+	validators?: GridCellValidator[];
 	customValueEditor?: CustomValueEditor;
 	valueTransformer?: CellValueTransformer;
 	contextMenuFactory?: GridColumnContextMenuFactory;

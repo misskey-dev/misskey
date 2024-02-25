@@ -189,13 +189,13 @@ import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
 	emptyStrToUndefined,
-	RequestLogItem,
+	RequestLogItem, roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { validators } from '@/components/grid/cell-validators.js';
+import { GridCellValidator, validators } from '@/components/grid/cell-validators.js';
 import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
@@ -247,6 +247,7 @@ type GridSortOrder = {
 function setupGrid(): GridSetting {
 	const required = validators.required();
 	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
+	const unique = validators.unique();
 	return {
 		row: {
 			showNumber: true,
@@ -302,7 +303,10 @@ function setupGrid(): GridSetting {
 					return file.url;
 				},
 			},
-			{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
+			{
+				bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140,
+				validators: [required, regex, unique],
+			},
 			{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
 			{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
@@ -335,23 +339,7 @@ function setupGrid(): GridSetting {
 					return transform;
 				},
 				events: {
-					paste(text) {
-						// idとnameのペア配列をJSONで受け取る。それ以外の形式は許容しない
-						try {
-							const obj = JSON.parse(text);
-							if (!Array.isArray(obj)) {
-								return [];
-							}
-							if (!obj.every(it => typeof it === 'object' && 'id' in it && 'name' in it)) {
-								return [];
-							}
-
-							return obj.map(it => ({ id: it.id, name: it.name }));
-						} catch (ex) {
-							console.warn(ex);
-							return [];
-						}
-					},
+					paste: roleIdsParser,
 					delete(cell) {
 						// デフォルトはundefinedになるが、このプロパティは空配列にしたい
 						gridItems.value[cell.row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = [];
