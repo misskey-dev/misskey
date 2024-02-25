@@ -35,7 +35,7 @@ export class RelationshipProcessorService {
 	@bindThis
 	public async processFollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id} ${job.data.withReplies ? "with replies" : "without replies"}`);
-		await this.userFollowingService.followByThinUser(job.data.from, job.data.to, {
+		await this.userFollowingService.follow(job.data.from, job.data.to, {
 			requestId: job.data.requestId,
 			silent: job.data.silent,
 			withReplies: job.data.withReplies,
