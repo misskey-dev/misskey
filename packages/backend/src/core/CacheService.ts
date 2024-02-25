@@ -129,10 +129,12 @@ export class CacheService implements OnApplicationShutdown {
 			switch (type) {
 				case 'userChangeSuspendedState':
 				case 'userChangeDeletedState':
-				case 'remoteUserUpdated': {
+				case 'remoteUserUpdated':
+				case 'localUserUpdated': {
 					const user = await this.usersRepository.findOneBy({ id: body.id });
 					if (user == null) {
 						this.userByIdCache.delete(body.id);
+						this.localUserByIdCache.delete(body.id);
 						for (const [k, v] of this.uriPersonCache.cache.entries()) {
 							if (v.value?.id === body.id) {
 								this.uriPersonCache.delete(k);
