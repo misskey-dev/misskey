@@ -28,6 +28,10 @@
 - Fix: nodeinfoにenableMcaptchaとenableTurnstileが無いのを修正
 - エンドポイント`flash/update`の`flashId`以外のパラメータは必須ではなくなりました
 - Fix: 禁止キーワードを含むノートがDelayed Queueに追加されて再処理される問題を修正
+- エンドポイント`admin/emoji/update`の各種修正
+  - 必須パラメータを`id`または`name`のいずれかのみに
+  - `id`の代わりに`name`で絵文字を指定可能に（`id`・`name`両指定時は従来通り`name`を変更する挙動）
+  - `category`および`licence`が指定なしの時勝手にnullに上書きされる挙動を修正
 
 ## 2024.2.0
 
