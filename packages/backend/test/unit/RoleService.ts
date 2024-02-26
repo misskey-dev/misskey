@@ -263,7 +263,7 @@ describe('RoleService', () => {
 				name: 'conditional role',
 				target: 'conditional',
 				condFormula: {
-					// TODO idはバックエンドのロジックに必要ない？
+					// idはバックエンドのロジックに必要ない？
 					id: 'bdc612bd-9d54-4675-ae83-0499c82ea670',
 					type: 'roleAssignedTo',
 					roleId: role1.id,
