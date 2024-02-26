@@ -102,12 +102,6 @@ export async function mainBoot() {
 		// only add post shortcuts if logged in
 		hotkeys['p|n'] = post;
 
-		defaultStore.loaded.then(() => {
-			if (defaultStore.state.accountSetupWizard !== -1) {
-				popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
-			}
-		});
-
 		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
 			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 				announcement,

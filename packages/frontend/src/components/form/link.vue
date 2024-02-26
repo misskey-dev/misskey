@@ -5,17 +5,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.inline]: inline }]">
-	<a v-if="external" :class="$style.main" class="_button" :href="to" target="_blank">
+	<a v-if="external" :class="[$style.main, { [$style.large]: large }]" class="_button" :href="to" target="_blank">
 		<span :class="$style.icon"><slot name="icon"></slot></span>
-		<span :class="$style.text"><slot></slot></span>
+		<div :class="$style.headerText">
+			<div>
+				<MkCondensedLine :minScale="2 / 3"><slot></slot></MkCondensedLine>
+			</div>
+			<div v-if="$slots.caption" :class="$style.headerTextSub">
+				<MkCondensedLine :minScale="2 / 3"><slot name="caption"></slot></MkCondensedLine>
+			</div>
+		</div>
 		<span :class="$style.suffix">
 			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
 			<i class="ti ti-external-link"></i>
 		</span>
 	</a>
-	<MkA v-else :class="[$style.main, { [$style.active]: active }]" class="_button" :to="to" :behavior="behavior">
+	<MkA v-else :class="[$style.main, { [$style.large]: large, [$style.active]: active }]" class="_button" :to="to" :behavior="behavior">
 		<span :class="$style.icon"><slot name="icon"></slot></span>
-		<span :class="$style.text"><slot></slot></span>
+		<div :class="$style.headerText">
+			<div>
+				<MkCondensedLine :minScale="2 / 3"><slot></slot></MkCondensedLine>
+			</div>
+			<div v-if="$slots.caption" :class="$style.headerTextSub">
+				<MkCondensedLine :minScale="2 / 3"><slot name="caption"></slot></MkCondensedLine>
+			</div>
+		</div>
 		<span :class="$style.suffix">
 			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
 			<i class="ti ti-chevron-right"></i>
@@ -33,6 +47,7 @@ const props = defineProps<{
 	external?: boolean;
 	behavior?: null | 'window' | 'browser';
 	inline?: boolean;
+	large?: boolean;
 }>();
 </script>
 
@@ -54,6 +69,10 @@ const props = defineProps<{
 	background: var(--buttonBg);
 	border-radius: 6px;
 	font-size: 0.9em;
+
+	&.large {
+		font-size: 1em;
+	}
 
 	&:hover {
 		text-decoration: none;
@@ -81,11 +100,17 @@ const props = defineProps<{
 	}
 }
 
-.text {
-	flex-shrink: 1;
-	white-space: normal;
+.headerText {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: start;
+	overflow: hidden;
 	padding-right: 12px;
-	text-align: center;
+}
+
+.headerTextSub {
+	color: var(--fgTransparentWeak);
+	font-size: .85em;
 }
 
 .suffix {

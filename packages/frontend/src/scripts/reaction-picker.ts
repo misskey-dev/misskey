@@ -14,12 +14,15 @@ class ReactionPicker {
 	private targetNote: Ref<Misskey.entities.Note | null> = ref(null);
 	private onChosen?: (reaction: string) => void;
 	private onClosed?: () => void;
+	public isInitialized = false;
 
 	constructor() {
 		// nop
 	}
 
 	public async init() {
+		if (this.isInitialized) return;
+
 		const reactionsRef = defaultStore.reactiveState.reactions;
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
@@ -39,6 +42,7 @@ class ReactionPicker {
 				if (this.onClosed) this.onClosed();
 			},
 		});
+		this.isInitialized = true;
 	}
 
 	public show(src: HTMLElement | null, targetNote: Misskey.entities.Note | null, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {

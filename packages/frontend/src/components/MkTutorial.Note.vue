@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="phase === 'aboutNote'" class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._note.description }}</div>
-	<MkNote :class="$style.exampleNoteRoot" style="pointer-events: none;" :note="exampleNote" :mock="true"/>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._note.description }}</div>
+	<MkNote tabindex="-1" :class="$style.exampleNoteRoot" style="pointer-events: none;" :note="exampleNote" :mock="true"/>
 	<div class="_gaps_s">
 		<div><i class="ti ti-arrow-back-up"></i> <b>{{ i18n.ts.reply }}</b> … {{ i18n.ts._initialTutorial._note.reply }}</div>
 		<div><i class="ti ti-repeat"></i> <b>{{ i18n.ts.renote }}</b> … {{ i18n.ts._initialTutorial._note.renote }}</div>
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </div>
 <div v-else-if="phase === 'howToReact'" class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
 	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
 	<div v-if="onceReacted"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>

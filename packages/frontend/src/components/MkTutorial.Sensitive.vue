@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.description }}</div>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.description }}</div>
 	<div>{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.tryThisFile }}</div>
 	<MkInfo>{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.method }}</MkInfo>
 	<MkPostForm

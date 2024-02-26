@@ -46,7 +46,7 @@ function submit() {
 	misskeyApi('signup-pending', {
 		code: props.code,
 	}).then(res => {
-		return login(res.i, '/');
+		return login(res.i, '/onboarding');
 	}).catch(() => {
 		submitting.value = false;
 

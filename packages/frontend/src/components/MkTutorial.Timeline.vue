@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._timeline.description1 }}</div>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._timeline.description1 }}</div>
 	<div class="_gaps_s">
 		<div><i class="ti ti-home"></i> <b>{{ i18n.ts._timelines.home }}</b> … {{ i18n.ts._initialTutorial._timeline.home }}</div>
 		<div><i class="ti ti-planet"></i> <b>{{ i18n.ts._timelines.local }}</b> … {{ i18n.ts._initialTutorial._timeline.local }}</div>
@@ -22,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<a href="https://misskey-hub.net/docs/for-users/features/timeline/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 		</template>
 	</I18n>
-
 </div>
 </template>
 

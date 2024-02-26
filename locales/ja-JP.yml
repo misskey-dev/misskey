@@ -1217,6 +1217,8 @@ hemisphere: "お住まいの地域"
 withSensitive: "センシティブなファイルを含むノートを表示"
 userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
+prohibitSkippingTutorial: "チュートリアルをスキップできないようにする"
+prohibitSkippingTutorialDescription: "新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了せずチュートリアルページを回避した場合でも、強制的にリダイレクトされます。"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -1238,23 +1240,6 @@ _announcement:
   dialogAnnouncementUxWarn: "ダイアログ形式のお知らせが同時に2つ以上ある場合、UXに悪影響を及ぼす可能性が非常に高いため、使用は慎重に行うことを推奨します。"
   silence: "非通知"
   silenceDescription: "オンにすると、このお知らせは通知されず、既読にする必要もなくなります。"
-
-_initialAccountSetting:
-  accountCreated: "アカウントの作成が完了しました！"
-  letsStartAccountSetup: "さっそくアカウントの初期設定を行いましょう。"
-  letsFillYourProfile: "まずはあなたのプロフィールを設定しましょう。"
-  profileSetting: "プロフィール設定"
-  privacySetting: "プライバシー設定"
-  theseSettingsCanEditLater: "これらの設定は後から変更できます。"
-  youCanEditMoreSettingsInSettingsPageLater: "この他にも様々な設定を「設定」ページから行えます。ぜひ後で確認してみてください。"
-  followUsers: "タイムラインを構築するため、気になるユーザーをフォローしてみましょう。"
-  pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をお使いのデバイスで受け取ることができます。"
-  initialAccountSettingCompleted: "初期設定が完了しました！"
-  haveFun: "{name}をお楽しみください！"
-  youCanContinueTutorial: "このまま{name}(Misskey)の使い方についてのチュートリアルに進むこともできますが、ここで中断してすぐに使い始めることもできます。"
-  startTutorial: "チュートリアルを開始"
-  skipAreYouSure: "初期設定をスキップしますか？"
-  laterAreYouSure: "初期設定をあとでやり直しますか？"
 
 _initialTutorial:
   launchTutorial: "チュートリアルを見る"
@@ -1287,6 +1272,9 @@ _initialTutorial:
     global: "接続している他のすべてのサーバーからの投稿を見られます。"
     description2: "それぞれのタイムラインは、画面上部でいつでも切り替えられます。"
     description3: "その他にも、リストタイムラインやチャンネルタイムラインなどがあります。詳しくは{link}をご覧ください。"
+  _followUsers:
+    description1: "誰もフォローしていない状態だと、ホームタイムラインには何も表示されません。"
+    description2: "タイムラインを構築するため、気になるユーザーをフォローしてみましょう。"
   _postNote:
     title: "ノートの投稿設定"
     description1: "Misskeyにノートを投稿する際には、様々なオプションの設定が可能です。投稿フォームはこのようになっています。"
@@ -1315,9 +1303,32 @@ _initialTutorial:
     method: "添付ファイルをセンシティブにする際は、そのファイルをクリックしてメニューを開き、「センシティブとして設定」をクリックします。"
     sensitiveSucceeded: "ファイルを添付する際は、サーバーのガイドラインに従ってセンシティブを適切に設定してください。"
     doItToContinue: "画像をセンシティブに設定すると先に進めるようになります。"
+  _pushNotification:
+    description: "プッシュ通知を有効にすると{name}の通知をお使いのデバイスで受け取ることができます。"
+  _privacySettings:
+    title: "プライバシー設定"
+    description1: "多くのユーザーが利用しているプライバシー関連の設定項目をリストアップしました。必要に応じて変更してください。"
+    theseSettingsCanEditLater: "これらの設定は後から変更できます。"
+    youCanEditMoreSettingsInSettingsPageLater: "この他にも様々な設定を「設定」ページから行えます。ぜひ後で確認してみてください。"
   _done:
     title: "チュートリアルは終了です🎉"
     description: "ここで紹介した機能はほんの一部にすぎません。Misskeyの使い方をより詳しく知るには、{link}をご覧ください。"
+    haveFun: "{name}をお楽しみください！"
+    youCanReferTutorialBy: "このチュートリアルは、「もっと！」→「情報」→「チュートリアルを見る」からいつでも見返すことができます。"
+  _onboardingLanding:
+    accountCreated: "アカウントの作成が完了しました！"
+    welcomeToX: "ようこそ、{name}へ！"
+    description: "「{name}に登録したは良いものの、どう使えばいいか分からない…💦」といったことを防ぐために、まずはMisskeyの基本的な使い方を学びましょう。"
+    takesAbout: "このチュートリアルの所要時間は{min}分程度です。\nチュートリアルを完了すると実績が解除されます。"
+  _onboardingDone:
+    description: "お疲れ様でした！次のステップに進んで、{name}をもっと楽しめるようにしましょう。"
+    backToOriginalPath: "元のページに戻る"
+    backToOriginalPathDescription: "あなたがアクセスしようとしていたページに戻ります。"
+    profile: "プロフィール設定"
+    profileDescription: "他のユーザーが親しみやすいように、プロフィールをつくりましょう。"
+    exploreDescription: "人気のノートやユーザーを見つけて交流をはじめましょう。"
+    goToTimeline: "ホーム画面に進む"
+    goToTimelineDescription: "設定等を行わず、通常のホーム画面（タイムライン）に進みます。"
 
 _timelineDescription:
   home: "ホームタイムラインでは、あなたがフォローしているアカウントの投稿を見られます。"

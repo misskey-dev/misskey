@@ -21,6 +21,7 @@ import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { claimedAchievements } from '@/scripts/achievements.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/definition.js';
 
@@ -117,6 +118,14 @@ export async function common(createVue: () => App<Element>) {
 
 	await defaultStore.ready;
 	await deckStore.ready;
+
+	// 2024年3月1日JST以降に作成されたアカウントで、チュートリアル完了していない場合、チュートリアルにリダイレクト
+	if ($i && new Date($i.createdAt).getTime() >= 1709218800000 && !claimedAchievements.includes('tutorialCompleted') && !location.pathname.startsWith('/onboarding') && !location.pathname.startsWith('/signup-complete')) {
+		const param = new URLSearchParams();
+		param.set('redirected_from', location.pathname + location.search + location.hash);
+		location.replace('/onboarding?' + param.toString());
+		return;
+	}
 
 	const fetchInstanceMetaPromise = fetchInstance();
 

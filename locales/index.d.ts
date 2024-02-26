@@ -4884,6 +4884,14 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     "enableHorizontalSwipe": string;
+    /**
+     * チュートリアルをスキップできないようにする
+     */
+    "prohibitSkippingTutorial": string;
+    /**
+     * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了せずチュートリアルページを回避した場合でも、強制的にリダイレクトされます。
+     */
+    "prohibitSkippingTutorialDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -4953,68 +4961,6 @@ export interface Locale extends ILocale {
          * オンにすると、このお知らせは通知されず、既読にする必要もなくなります。
          */
         "silenceDescription": string;
-    };
-    "_initialAccountSetting": {
-        /**
-         * アカウントの作成が完了しました！
-         */
-        "accountCreated": string;
-        /**
-         * さっそくアカウントの初期設定を行いましょう。
-         */
-        "letsStartAccountSetup": string;
-        /**
-         * まずはあなたのプロフィールを設定しましょう。
-         */
-        "letsFillYourProfile": string;
-        /**
-         * プロフィール設定
-         */
-        "profileSetting": string;
-        /**
-         * プライバシー設定
-         */
-        "privacySetting": string;
-        /**
-         * これらの設定は後から変更できます。
-         */
-        "theseSettingsCanEditLater": string;
-        /**
-         * この他にも様々な設定を「設定」ページから行えます。ぜひ後で確認してみてください。
-         */
-        "youCanEditMoreSettingsInSettingsPageLater": string;
-        /**
-         * タイムラインを構築するため、気になるユーザーをフォローしてみましょう。
-         */
-        "followUsers": string;
-        /**
-         * プッシュ通知を有効にすると{name}の通知をお使いのデバイスで受け取ることができます。
-         */
-        "pushNotificationDescription": ParameterizedString<"name">;
-        /**
-         * 初期設定が完了しました！
-         */
-        "initialAccountSettingCompleted": string;
-        /**
-         * {name}をお楽しみください！
-         */
-        "haveFun": ParameterizedString<"name">;
-        /**
-         * このまま{name}(Misskey)の使い方についてのチュートリアルに進むこともできますが、ここで中断してすぐに使い始めることもできます。
-         */
-        "youCanContinueTutorial": ParameterizedString<"name">;
-        /**
-         * チュートリアルを開始
-         */
-        "startTutorial": string;
-        /**
-         * 初期設定をスキップしますか？
-         */
-        "skipAreYouSure": string;
-        /**
-         * 初期設定をあとでやり直しますか？
-         */
-        "laterAreYouSure": string;
     };
     "_initialTutorial": {
         /**
@@ -5129,6 +5075,16 @@ export interface Locale extends ILocale {
              */
             "description3": ParameterizedString<"link">;
         };
+        "_followUsers": {
+            /**
+             * 誰もフォローしていない状態だと、ホームタイムラインには何も表示されません。
+             */
+            "description1": string;
+            /**
+             * タイムラインを構築するため、気になるユーザーをフォローしてみましょう。
+             */
+            "description2": string;
+        };
         "_postNote": {
             /**
              * ノートの投稿設定
@@ -5229,6 +5185,30 @@ export interface Locale extends ILocale {
              */
             "doItToContinue": string;
         };
+        "_pushNotification": {
+            /**
+             * プッシュ通知を有効にすると{name}の通知をお使いのデバイスで受け取ることができます。
+             */
+            "description": ParameterizedString<"name">;
+        };
+        "_privacySettings": {
+            /**
+             * プライバシー設定
+             */
+            "title": string;
+            /**
+             * 多くのユーザーが利用しているプライバシー関連の設定項目をリストアップしました。必要に応じて変更してください。
+             */
+            "description1": string;
+            /**
+             * これらの設定は後から変更できます。
+             */
+            "theseSettingsCanEditLater": string;
+            /**
+             * この他にも様々な設定を「設定」ページから行えます。ぜひ後で確認してみてください。
+             */
+            "youCanEditMoreSettingsInSettingsPageLater": string;
+        };
         "_done": {
             /**
              * チュートリアルは終了です🎉
@@ -5238,6 +5218,67 @@ export interface Locale extends ILocale {
              * ここで紹介した機能はほんの一部にすぎません。Misskeyの使い方をより詳しく知るには、{link}をご覧ください。
              */
             "description": ParameterizedString<"link">;
+            /**
+             * {name}をお楽しみください！
+             */
+            "haveFun": ParameterizedString<"name">;
+            /**
+             * このチュートリアルは、「もっと！」→「情報」→「チュートリアルを見る」からいつでも見返すことができます。
+             */
+            "youCanReferTutorialBy": string;
+        };
+        "_onboardingLanding": {
+            /**
+             * アカウントの作成が完了しました！
+             */
+            "accountCreated": string;
+            /**
+             * ようこそ、{name}へ！
+             */
+            "welcomeToX": ParameterizedString<"name">;
+            /**
+             * 「{name}に登録したは良いものの、どう使えばいいか分からない…💦」といったことを防ぐために、まずはMisskeyの基本的な使い方を学びましょう。
+             */
+            "description": ParameterizedString<"name">;
+            /**
+             * このチュートリアルの所要時間は{min}分程度です。
+             * チュートリアルを完了すると実績が解除されます。
+             */
+            "takesAbout": ParameterizedString<"min">;
+        };
+        "_onboardingDone": {
+            /**
+             * お疲れ様でした！次のステップに進んで、{name}をもっと楽しめるようにしましょう。
+             */
+            "description": ParameterizedString<"name">;
+            /**
+             * 元のページに戻る
+             */
+            "backToOriginalPath": string;
+            /**
+             * あなたがアクセスしようとしていたページに戻ります。
+             */
+            "backToOriginalPathDescription": string;
+            /**
+             * プロフィール設定
+             */
+            "profile": string;
+            /**
+             * 他のユーザーが親しみやすいように、プロフィールをつくりましょう。
+             */
+            "profileDescription": string;
+            /**
+             * 人気のノートやユーザーを見つけて交流をはじめましょう。
+             */
+            "exploreDescription": string;
+            /**
+             * ホーム画面に進む
+             */
+            "goToTimeline": string;
+            /**
+             * 設定等を行わず、通常のホーム画面（タイムライン）に進みます。
+             */
+            "goToTimelineDescription": string;
         };
     };
     "_timelineDescription": {

@@ -191,6 +191,10 @@ const routes: RouteDef[] = [{
 	path: '/signup-complete/:code',
 	component: page(() => import('@/pages/signup-complete.vue')),
 }, {
+	path: '/onboarding',
+	component: page(() => import('@/pages/onboarding.vue')),
+	loginRequired: true,
+}, {
 	path: '/announcements',
 	component: page(() => import('@/pages/announcements.vue')),
 }, {
