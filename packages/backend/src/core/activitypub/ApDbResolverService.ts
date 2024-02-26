@@ -152,16 +152,35 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
 		user: MiRemoteUser;
-		key: MiUserPublickey[] | null;
+		key: MiUserPublickey | null;
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
 		if (user.isDeleted) return null;
 
-		const key = await this.publicKeyByUserIdCache.fetch(
+		const keys = await this.publicKeyByUserIdCache.fetch(
 			user.id,
 			() => this.userPublickeysRepository.find({ where: { userId: user.id } }),
 			v => v != null,
 		);
+
+		if (keys == null || keys.length === 8) return null;
+
+		// 公開鍵は複数あるが、mainっぽいのを選ぶ
+		const key = keys.length === 1 ?
+			keys[0] :
+			keys.find(x => {
+				try {
+					const url = new URL(x.keyId);
+					if (
+						url.hash.toLowerCase().includes('main') ||
+						url.pathname.split('/').pop()?.toLowerCase().includes('main')
+					) {
+						return true;
+					}
+				} catch { /* noop */ }
+
+				return false;
+			}) ?? keys[0];
 
 		return {
 			user,
