@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
 					<div class="_gaps_s">
-						<MkInput v-model="baseRoleQ" type="search">
+						<MkInput v-model="baseRoleQ" type="text">
 							<template #prefix><i class="ti ti-search"></i></template>
 						</MkInput>
 

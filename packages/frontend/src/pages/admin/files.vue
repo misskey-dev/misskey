@@ -16,15 +16,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="local">{{ i18n.ts.local }}</option>
 						<option value="remote">{{ i18n.ts.remote }}</option>
 					</MkSelect>
-					<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
+					<MkInput v-model="searchHost" :debounce="true" type="text" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
 				</div>
 				<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-					<MkInput v-model="userId" :debounce="true" type="search" style="margin: 0; flex: 1;">
+					<MkInput v-model="userId" :debounce="true" type="text" style="margin: 0; flex: 1;">
 						<template #label>User ID</template>
 					</MkInput>
-					<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
+					<MkInput v-model="type" :debounce="true" type="text" style="margin: 0; flex: 1;">
 						<template #label>MIME type</template>
 					</MkInput>
 				</div>

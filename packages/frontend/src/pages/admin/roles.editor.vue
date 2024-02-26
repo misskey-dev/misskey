@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSlot>
 		<template #label><i class="ti ti-license"></i> {{ i18n.ts._role.policies }}</template>
 		<div class="_gaps_s">
-			<MkInput v-model="q" type="search">
+			<MkInput v-model="q" type="text">
 				<template #prefix><i class="ti ti-search"></i></template>
 			</MkInput>
 
