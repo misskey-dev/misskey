@@ -1,7 +1,11 @@
 import * as fs from 'fs';
-import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
+import pluginVue from '@vitejs/plugin-vue';
+// @ts-ignore
+import VueMacros from 'unplugin-vue-macros/vite';
+// @ts-ignore
+import Inspect from 'vite-plugin-inspect';
 import locales from '../../locales';
 import meta from '../../package.json';
 import pluginJson5 from './vite.json5';
@@ -16,10 +20,13 @@ export default defineConfig(({ command, mode }) => {
 		base: '/assets/',
 
 		plugins: [
-			pluginVue({
-				// @ts-ignore
-				reactivityTransform: true,
+			VueMacros({
+				plugins: {
+					vue: pluginVue(),
+				},
 			}),
+
+			Inspect(),
 			pluginJson5(),
 		],
 
