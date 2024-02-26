@@ -17,6 +17,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</MkSelect>
 
+	<MkRadios v-model="hemisphere">
+		<template #label>{{ i18n.ts.hemisphere }}</template>
+		<option value="N">{{ i18n.ts._hemisphere.N }}</option>
+		<option value="S">{{ i18n.ts._hemisphere.S }}</option>
+		<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
+	</MkRadios>
+
 	<MkRadios v-model="overridedDeviceKind">
 		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
 		<option :value="null">{{ i18n.ts.auto }}</option>
@@ -25,28 +32,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</MkRadios>
 
-  <MkSelect v-model="searchEngine" class="_formBlock">
-    <template #label>{{ i18n.ts.searchEngine }}</template>
-    <option value="https://google.com/search?">
-      Google Search (google.com)
-    </option>
-    <option value="https://duckduckgo.com/?">
-      DuckDuckGo (duckduckgo.com)
-    </option>
-    <option value="https://search.yahoo.com/search?">
-      Yahoo! Search (search.yahoo.com)
-    </option>
-    <option value="https://www.ecosia.org/search?">
-      Ecosia (ecosia.org)
-    </option>
-    <option value="https://www.startpage.com/do/search?">
-      Startpage (startpage.com)
-    </option>
-    <option value="https://search.yami.ski/search?">
-      SearX (search.yami.ski)
-    </option>
-    <template #caption>{{ i18n.ts.searchEngineCaption }}</template>
-  </MkSelect>
+	<MkSelect v-model="searchEngine" class="_formBlock">
+		<template #label>{{ i18n.ts.searchEngine }}</template>
+		<option value="https://google.com/search?">
+			Google Search (google.com)
+		</option>
+		<option value="https://duckduckgo.com/?">
+			DuckDuckGo (duckduckgo.com)
+		</option>
+		<option value="https://search.yahoo.com/search?">
+			Yahoo! Search (search.yahoo.com)
+		</option>
+		<option value="https://www.ecosia.org/search?">
+			Ecosia (ecosia.org)
+		</option>
+		<option value="https://www.startpage.com/do/search?">
+			Startpage (startpage.com)
+		</option>
+		<option value="https://search.yami.ski/search?">
+			SearX (search.yami.ski)
+		</option>
+		<template #caption>{{ i18n.ts.searchEngineCaption }}</template>
+	</MkSelect>
 
 	<FormSection>
 		<div class="_gaps_s">
@@ -69,10 +76,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s">
 				<MkSwitch v-model="collapseRenotes">
 					<template #label>{{ i18n.ts.collapseRenotes }}</template>
-					<template #caption>{{ i18n.ts.collapseRenotesDescription }}</template>
 				</MkSwitch>
+
+				<div v-if="collapseRenotes" style="padding-left: 46px;">
+					<MkSelect v-model="collapseRenotesTrigger">
+						<template #label>{{ i18n.ts.collapseRenotesTrigger }} <span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+						<option value="action">{{ i18n.ts._collapseRenotesTrigger.action }}</option>
+						<option value="see">{{ i18n.ts._collapseRenotesTrigger.see }}</option>
+						<option value="all">{{ i18n.ts._collapseRenotesTrigger.all }}</option>
+					</MkSelect>
+
+					<MkSwitch
+						v-model="collapseSelfRenotes"
+						style="padding-top: 12px;"
+					>
+						<template #caption>{{ i18n.ts.collapseSelfRenotesDescription }}</template>
+						{{ i18n.ts.collapseSelfRenotes }} <span class="_beta">{{ i18n.ts.originalFeature }}</span>
+					</MkSwitch>
+				</div>
+
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
+
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
@@ -331,6 +356,8 @@ const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthO
 const hideReactionUsers = computed(defaultStore.makeGetterSetter('hideReactionUsers'));
 const hideReactionCount = computed(defaultStore.makeGetterSetter('hideReactionCount'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
+const collapseRenotesTrigger = computed(defaultStore.makeGetterSetter('collapseRenotesTrigger'));
+const collapseSelfRenotes = computed(defaultStore.makeGetterSetter('collapseSelfRenotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));

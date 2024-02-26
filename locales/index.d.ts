@@ -4315,9 +4315,17 @@ export interface Locale extends ILocale {
      */
     "collapseRenotes": string;
     /**
-     * リアクションやリノートをしたことがあるノートをたたんで表示します。
+     * リノートを省略する条件
      */
-    "collapseRenotesDescription": string;
+    "collapseRenotesTrigger": string;
+    /**
+     * セルフリノートのスマート省略
+     */
+    "collapseSelfRenotes": string;
+    /**
+     * ノートを投稿した人が自分自身でリノートした場合に、そのリノートを省略します
+     */
+    "collapseSelfRenotesDescription": string;
     /**
      * サーバー内部エラー
      */
@@ -7400,6 +7408,20 @@ export interface Locale extends ILocale {
          * 非公開
          */
         "private": string;
+    };
+    "_collapseRenotesTrigger": {
+        /**
+         * リノートやリアクションをしたことがある場合 (デフォルト)
+         */
+        "action": string;
+        /**
+         * 一度でもリノートを見たことがある場合
+         */
+        "see": string;
+        /**
+         * すべてのリノートを省略する
+         */
+        "all": string;
     };
     "_signup": {
         /**

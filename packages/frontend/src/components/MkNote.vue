@@ -280,12 +280,36 @@ const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const showInstanceIcon = ref(defaultStore.state.instanceIcon);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
-const renoteCollapsed = ref(
-	defaultStore.state.collapseRenotes && isRenote && (
-		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
-		(appearNote.value.myReaction != null)
-	),
-);
+const renoteCollapsed = ref(false); // 初期値はfalse
+
+// appearNoteが変更されるたびに判定を更新
+watch(() => appearNote.value, () => {
+  if (!appearNote.value) return;
+
+  try {
+    // リノート判定のロジックを適用
+    if (isRenote && defaultStore.state.collapseRenotes) {
+      // セルフリノートの場合
+      if (defaultStore.state.collapseSelfRenotes &&
+          note.value.renoteId &&
+          note.value.userId === appearNote.value.userId) {
+        renoteCollapsed.value = true;
+        return;
+      }
+
+      // 通常のリノート判定
+      if (($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) ||
+          (appearNote.value.myReaction != null)) {
+        renoteCollapsed.value = true;
+        return;
+      }
+    }
+    renoteCollapsed.value = false;
+  } catch (e) {
+    console.error('Error in renote collapse detection:', e);
+    renoteCollapsed.value = false;
+  }
+}, { immediate: true });
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',

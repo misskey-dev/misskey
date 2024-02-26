@@ -1074,7 +1074,9 @@ thisPostMayBeAnnoyingHome: "ホームに投稿"
 thisPostMayBeAnnoyingCancel: "やめる"
 thisPostMayBeAnnoyingIgnore: "このまま投稿"
 collapseRenotes: "リノートのスマート省略"
-collapseRenotesDescription: "リアクションやリノートをしたことがあるノートをたたんで表示します。"
+collapseRenotesTrigger: "リノートを省略する条件"
+collapseSelfRenotes: "セルフリノートのスマート省略"
+collapseSelfRenotesDescription: "ノートを投稿した人が自分自身でリノートした場合に、そのリノートを省略します"
 internalServerError: "サーバー内部エラー"
 internalServerErrorDescription: "サーバー内部で予期しないエラーが発生しました。"
 copyErrorInfo: "エラー情報をコピー"
@@ -1916,6 +1918,11 @@ _ffVisibility:
   public: "公開"
   followers: "フォロワーだけに公開"
   private: "非公開"
+
+_collapseRenotesTrigger:
+  action: "リノートやリアクションをしたことがある場合 (デフォルト)"
+  see: "一度でもリノートを見たことがある場合"
+  all: "すべてのリノートを省略する"
 
 _signup:
   almostThere: "ほとんど完了です"
