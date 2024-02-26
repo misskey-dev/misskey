@@ -32,7 +32,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+// @ts-ignore
 import { } from 'vue/macros';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column , deckStore } from './deck-store';
 import * as os from '@/os';

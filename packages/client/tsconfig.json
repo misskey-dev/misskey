@@ -29,10 +29,11 @@
 		},
 		"typeRoots": [
 			"node_modules/@types",
-			"@types"
+			"@types",
+			"node_modules/unplugin-vue-macros/macros-global.d.ts"
 		],
 		"types": [
-			// "vite/client"
+			"vite/client",
 		],
 		"lib": [
 			"esnext",

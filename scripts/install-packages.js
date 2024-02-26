@@ -4,7 +4,7 @@ const __dirname = new URL('.', import.meta.url).pathname;
 (async () => {
 	console.log('installing dependencies of packages/backend ...');
 
-	await execa('npm', ['--force', 'ci'], {
+	await execa('npm', ['--force', 'install'], {
 		cwd: __dirname + '/../packages/backend',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -12,7 +12,7 @@ const __dirname = new URL('.', import.meta.url).pathname;
 
 	console.log('installing dependencies of packages/client ...');
 
-	await execa('npm', ['ci'], {
+	await execa('npm', ['install'], {
 		cwd: __dirname + '/../packages/client',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -20,7 +20,7 @@ const __dirname = new URL('.', import.meta.url).pathname;
 
 	console.log('installing dependencies of packages/sw ...');
 
-	await execa('npm', ['ci'], {
+	await execa('npm', ['install'], {
 		cwd: __dirname + '/../packages/sw',
 		stdout: process.stdout,
 		stderr: process.stderr,
