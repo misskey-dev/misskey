@@ -90,7 +90,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 	background: var(--divider);
 }
 
-.viewImage {
+.image {
 	max-width: 300px;
 	margin: 0 auto;
 }

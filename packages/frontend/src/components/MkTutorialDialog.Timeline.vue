@@ -41,7 +41,7 @@ import { i18n } from '@/i18n.js';
 	background: var(--divider);
 }
 
-.viewImage {
+.image {
 	max-width: 300px;
 	margin: 0 auto;
 }

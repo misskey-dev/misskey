@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="viewImage" :data-id="media.id" :image="media" :raw="raw"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>
