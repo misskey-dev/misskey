@@ -189,13 +189,14 @@ import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
 	emptyStrToUndefined,
-	RequestLogItem, roleIdsParser,
+	RequestLogItem,
+	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { GridCellValidator, validators } from '@/components/grid/cell-validators.js';
+import { validators } from '@/components/grid/cell-validators.js';
 import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
