@@ -1224,13 +1224,13 @@ surrender: "退出"
 gameRetry: "再試一次"
 _bubbleGame:
   howToPlay: "玩法說明"
-  hold: "舉辦"
+  hold: "保留"
   _score:
     score: "分數"
     scoreYen: "賺取的金額"
     highScore: "最高分"
-    maxChain: "最大連線數"
-    yen: "{yen}円"
+    maxChain: "最大結合數"
+    yen: "{yen} 日圓"
     estimatedQty: "{qty}個"
     scoreSweets: "飯糰 {onigiriQtyWithUnit}"
   _howToPlay:
