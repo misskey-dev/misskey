@@ -126,7 +126,7 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (sound.type == null || !canPlay || !navigator.userActivation.hasBeenActive) return;
+	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
 
 	canPlay = false;
 	playMisskeySfxFile(sound).finally(() => {
