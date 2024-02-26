@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else>{{ i18n.ts._initialTutorial.title }}</span>
 			</div>
 			<div v-if="instance.canSkipInitialTutorial" :class="$style.closeButton">
-				<button class="_button" @click="cancel"><i class="ti ti-x"></i></button>
+				<button class="_button" data-cy-user-setup-close @click="cancel"><i class="ti ti-x"></i></button>
 			</div>
 		</div>
 		<MkTutorial
@@ -54,8 +54,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<div>{{ i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }) }}</div>
 								</div>
 								<div>{{ i18n.tsx._initialTutorial._onboardingLanding.description({ name: instance.name ?? host }) }}</div>
-								<MkButton large primary rounded gradate style="margin: 16px auto 0;" @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
-								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" @click="cancel">{{ i18n.ts.later }}</MkButton>
+								<MkButton large primary rounded gradate style="margin: 16px auto 0;" data-cy-user-setup-continue @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
+								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" data-cy-user-setup-close @click="cancel">{{ i18n.ts.later }}</MkButton>
 								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 3 }) }}</MkInfo>
 							</div>
 						</MkSpacer>
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 										{{ i18n.ts.explore }}
 										<template #caption>{{ i18n.ts._initialTutorial._onboardingDone.exploreDescription }}</template>
 									</FormLink>
-									<FormLink to="/" large :behavior="'browser'">
+									<FormLink to="/" large :behavior="'browser'" data-cy-user-setup-complete>
 										<template #icon><i class="ti ti-home"></i></template>
 										{{ i18n.ts._initialTutorial._onboardingDone.goToTimeline }}
 										<template #caption>{{ i18n.ts._initialTutorial._onboardingDone.goToTimelineDescription }}</template>
