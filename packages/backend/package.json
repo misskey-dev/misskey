@@ -8,6 +8,7 @@
 		"start": "node --experimental-json-modules --experimental-specifier-resolution=node ./built/index.js",
 		"build:start": "npm run build && npm run start",
 		"type-check": "tsc --noEmit",
+		"type-check:watch": "tsc --noEmit --watch",
 		"npm:update-lock": "npm install --package-lock-only",
 		"lint": "eslint --quiet \"src/**/*.ts\"",
 		"mocha": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",

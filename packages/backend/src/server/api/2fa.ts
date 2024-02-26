@@ -38,6 +38,7 @@ function base64URLDecode(source: string) {
 }
 
 function getCertSubject(certificate: string) {
+	// @ts-ignore
 	const subjectCert = new jsrsasign.X509();
 	subjectCert.readCertPEM(certificate);
 
@@ -58,6 +59,7 @@ function verifyCertificateChain(certificates: string[]) {
 
 	for (let i = 0; i < certificates.length; i++) {
 		const Cert = certificates[i];
+		// @ts-ignore
 		const certificate = new jsrsasign.X509();
 		certificate.readCertPEM(Cert);
 
@@ -118,6 +120,8 @@ export function verifyLogin({
 	publicKey: Buffer,
 	authenticatorData: Buffer,
 	clientDataJSON: Buffer,
+	// @ts-ignore
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	clientData: any,
 	signature: Buffer,
 	challenge: string
@@ -177,9 +181,11 @@ export const procedures = {
 			rpIdHash,
 			credentialId,
 		}: {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			attStmt: any,
 			authenticatorData: Buffer,
 			clientDataHash: Buffer,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			publicKey: Map<number, any>;
 			rpIdHash: Buffer,
 			credentialId: Buffer,
@@ -237,9 +243,11 @@ export const procedures = {
 			rpIdHash,
 			credentialId,
 		}: {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			attStmt: any,
 			authenticatorData: Buffer,
 			clientDataHash: Buffer,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			publicKey: Map<number, any>;
 			rpIdHash: Buffer,
 			credentialId: Buffer,
@@ -261,6 +269,7 @@ export const procedures = {
 			}
 
 			const certificateChain = header.x5c
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				.map((key: any) => PEMString(key))
 				.concat([GSR2]);
 
@@ -311,9 +320,11 @@ export const procedures = {
 			rpIdHash,
 			credentialId,
 		}: {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			attStmt: any,
 			authenticatorData: Buffer,
 			clientDataHash: Buffer,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			publicKey: Map<number, any>;
 			rpIdHash: Buffer,
 			credentialId: Buffer,
@@ -370,9 +381,11 @@ export const procedures = {
 			rpIdHash,
 			credentialId,
 		}: {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			attStmt: any,
 			authenticatorData: Buffer,
 			clientDataHash: Buffer,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			publicKey: Map<number, any>,
 			rpIdHash: Buffer,
 			credentialId: Buffer

@@ -33,7 +33,7 @@
 		},
 		"outDir": "./built",
 		"types": [
-			"node"
+			//"node"
 		],
 		"typeRoots": [
 			"./node_modules/@types",
