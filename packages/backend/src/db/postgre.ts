@@ -72,7 +72,6 @@ import { Webhook } from '@/models/entities/webhook.js';
 import { UserIp } from '@/models/entities/user-ip.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
-import { envOption } from '../env.js';
 import { dbLogger } from './logger.js';
 import { redisClient } from './redis.js';
 
@@ -86,27 +85,27 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+		// sqlLogger.info(this.highlight(query).substring(0, 100));
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+		// sqlLogger.error(this.highlight(query));
 	}
 
 	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+		// sqlLogger.warn(this.highlight(query));
 	}
 
 	public logSchemaBuild(message: string) {
-		sqlLogger.info(message);
+		// sqlLogger.info(message);
 	}
 
 	public log(message: string) {
-		sqlLogger.info(message);
+		// sqlLogger.info(message);
 	}
 
 	public logMigration(message: string) {
-		sqlLogger.info(message);
+		// sqlLogger.info(message);
 	}
 }
 

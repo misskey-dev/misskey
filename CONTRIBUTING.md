@@ -169,9 +169,9 @@ vue-routerとの最大の違いは、niraxは複数のルーターが存在す�
 これにより、アプリ内ウィンドウでブラウザとは個別にルーティングすることなどが可能になります。
 
 ## Notes
-### How to resolve conflictions occurred at yarn.lock?
+### How to resolve conflictions occurred at package-lock.json?
 
-Just execute `yarn` to fix it.
+Just execute `npm` to fix it.
 
 ### INSERTするときにはsaveではなくinsertを使用する
 #6441

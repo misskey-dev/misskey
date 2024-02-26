@@ -8,7 +8,7 @@
 	},
 	"private": true,
 	"scripts": {
-		"postinstall": "node ./scripts/install-packages.js",
+		"postinstall": "node --experimental-default-type=module ./scripts/install-packages.js",
 		"build": "node ./scripts/build.js",
 		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
@@ -27,25 +27,26 @@
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "npm run clean-all"
+		"cleanall": "npm run clean-all",
+		"upgrade-interactive": "npx npm-check --update"
 	},
 	"dependencies": {
-		"execa": "5.1.1",
+		"execa": "^8.0.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
 		"gulp-rename": "2.0.0",
-		"gulp-replace": "1.1.3",
+		"gulp-replace": "^1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0",
 		"re2": "1.20.9"
 	},
 	"devDependencies": {
-		"@types/gulp": "4.0.9",
-		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/parser": "5.36.2",
+		"@types/gulp": "^4.0.17",
+		"@types/gulp-rename": "^2.0.6",
+		"@typescript-eslint/parser": "^7.0.2",
 		"cross-env": "7.0.3",
-		"cypress": "10.7.0",
-		"start-server-and-test": "1.14.0",
-		"typescript": "4.8.3"
+		"cypress": "^13.6.6",
+		"start-server-and-test": "^2.0.3",
+		"typescript": "^5.3.3"
 	}
 }
