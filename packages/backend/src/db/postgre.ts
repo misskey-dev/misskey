@@ -77,7 +77,7 @@ import { redisClient } from './redis.js';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
-class MyCustomLogger implements Logger {
+export class MyCustomLogger implements Logger {
 	private highlight(sql: string) {
 		return highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
@@ -204,8 +204,8 @@ export const db = new DataSource({
 		},
 	} : false,
 	logNotifications: false,
-	logging: false,
-	logger: log ? new MyCustomLogger() : undefined,
+	logging: true,
+	logger: new MyCustomLogger,
 	maxQueryExecutionTime: 300,
 	entities: entities,
 	migrations: ['../../migration/*.js'],

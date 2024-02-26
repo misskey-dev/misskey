@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import config from './built/config/index.js';
 import { entities } from './built/db/postgre.js';
+import {MyCustomLogger} from "./src/db/postgre.js";
 
 export default new DataSource({
 	type: 'postgres',
@@ -12,8 +13,8 @@ export default new DataSource({
 	extra: config.db.extra,
 	entities: entities,
 	migrations: ['migration/*.js'],
-	logger: undefined,
-	logging: false,
+	logger: new MyCustomLogger,
+	logging: true,
 	logNotifications: false,
 	loggerLevel: undefined
 });
