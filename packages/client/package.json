@@ -6,6 +6,7 @@
 		"type-check:watch": "tsc --noEmit --watch",
 		"watch": "vite build --watch --mode development",
 		"build": "vite build",
+		"npm:update-lock": "npm install --package-lock-only",
 		"lint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"upgrade-interactive": "npm-check --update"
 	},
