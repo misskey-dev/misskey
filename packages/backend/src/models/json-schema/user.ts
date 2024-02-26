@@ -148,6 +148,9 @@ export const packedUserLiteSchema = {
 		emojis: {
 			type: 'object',
 			nullable: false, optional: false,
+			additionalProperties: {
+				type: 'string',
+			},
 		},
 		onlineStatus: {
 			type: 'string',
