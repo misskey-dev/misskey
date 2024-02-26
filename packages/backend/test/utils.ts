@@ -269,6 +269,9 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
 		entities: initEntities || entities,
+		logger: undefined,
+		logging: false,
+		logNotifications: false,
 	});
 
 	await db.initialize();
