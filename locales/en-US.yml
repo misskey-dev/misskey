@@ -1664,6 +1664,7 @@ _role:
     gtlAvailable: "Can view the global timeline"
     ltlAvailable: "Can view the local timeline"
     canPublicNote: "Can send public notes"
+    canInitiateConversation: "Can mention, reply or quote"
     canCreateContent: "Can create contents"
     canUpdateContent: "Can edit contents"
     canDeleteContent: "Can delete contents"

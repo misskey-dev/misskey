@@ -212,7 +212,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const policies = await this.roleService.getUserPolicies(user.id);
 			const isModerator = await this.roleService.isModerator(user);
-			const isLimited = !(policies.canCreateContent && policies.canUpdateContent && policies.canDeleteContent);
+			const isLimited = !(policies.canCreateContent && policies.canUpdateContent && policies.canDeleteContent && policies.canInitiateConversation);
 			const isSilenced = !policies.canPublicNote;
 
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });

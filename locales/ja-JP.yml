@@ -1697,6 +1697,7 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
+    canInitiateConversation: "メンション、リプライ、引用の許可"
     canCreateContent: "コンテンツの作成"
     canUpdateContent: "コンテンツの編集"
     canDeleteContent: "コンテンツの削除"

@@ -48,6 +48,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canInitiateConversation, 'canInitiateConversation'])">
+							<template #label>{{ i18n.ts._role._options.canInitiateConversation }}</template>
+							<template #suffix>{{ policies.canInitiateConversation ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canInitiateConversation">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canCreateContent, 'canCreateContent'])">
 							<template #label>{{ i18n.ts._role._options.canCreateContent }}</template>
 							<template #suffix>{{ policies.canCreateContent ? i18n.ts.yes : i18n.ts.no }}</template>

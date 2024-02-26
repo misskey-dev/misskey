@@ -6559,6 +6559,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * メンション、リプライ、引用の許可
+             */
+            "canInitiateConversation": string;
+            /**
              * コンテンツの作成
              */
             "canCreateContent": string;
