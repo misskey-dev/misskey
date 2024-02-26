@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkCustomEmoji v-if="!emoji?.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkCustomEmoji v-if="!emoji?.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
@@ -79,8 +79,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.category}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).map(e => `:${e.name}:`))"
-				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.category)).map(e => `:${e.name}:`))"
+				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.category)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -152,10 +152,10 @@ const {
 } = defaultStore.reactiveState;
 
 const recentlyUsedEmojisDef = computed(() => {
-	return recentlyUsedEmojis.value.map(getDef);
+	return recentlyUsedEmojis.value.map(getDef).filter(x => x !== null);
 });
 const pinnedEmojisDef = computed(() => {
-	return pinned.value?.map(getDef);
+	return pinned.value?.map(getDef).filter(x => x !== null) ?? [];
 });
 
 const pinned = computed(() => props.pinnedEmojis);
@@ -384,9 +384,9 @@ function getKey(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef):
 
 function getDef(emoji: string) {
 	if (emoji.includes(':')) {
-		return customEmojisMap.get(emoji.replace(/:/g, ''))!;
+		return customEmojisMap.get(emoji.replace(/:/g, '')) ?? null;
 	} else {
-		return unicodeEmojisMap.get(emoji)!;
+		return unicodeEmojisMap.get(emoji) ?? null;
 	}
 }
 
