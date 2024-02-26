@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import config from './built/config/index.js';
 import { entities } from './built/db/postgre.js';
-import {NoLogger} from "./src/db/no-logger.js";
+import {NoLogger} from "./built/db/no-logger.js";
 
 export default new DataSource({
 	type: 'postgres',
