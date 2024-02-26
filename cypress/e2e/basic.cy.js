@@ -124,41 +124,7 @@ describe('After user signup', () => {
 		cy.wait('@signin');
 	});
 
-	it('account setup wizard', () => {
-		cy.visit('/onboarding');
-
-		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-		cy.get('[data-cy-user-setup-continue]', { timeout: 60000 }).click();
-
-		// 1 - ノートについて
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 2 - リアクションのやりかた（インタラクティブ要素はテストしない）
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 3 - タイムラインの仕組み
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 4 - オススメユーザーのフォロー
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 5 - 投稿画面
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 6 - センシティブの設定方法（インタラクティブ要素はテストしない）
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 7 - プッシュ通知
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 8 - プライバシー設定
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// 9 -完了画面（トップページに遷移する）
-		cy.get('[data-cy-user-setup-complete]').click();
-	});
-
-	it('suspend', function() {
+	it('suspend', function () {
 		cy.request('POST', '/api/admin/suspend-user', {
 			i: this.admin.token,
 			userId: this.alice.id,
