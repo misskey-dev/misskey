@@ -92,5 +92,8 @@
 		"start-server-and-test": "2.0.3",
 		"unplugin-vue-macros": "2.7.10",
 		"vite-plugin-inspect": "0.8.3"
+	},
+	"optionalDependencies": {
+		"@rollup/rollup-linux-x64-gnu": "4.12.0"
 	}
 }
