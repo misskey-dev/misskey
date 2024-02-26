@@ -76,7 +76,7 @@ export async function readDataTransferItems(itemList: DataTransferItemList): Pro
 	}
 
 	function readDirectory(fileSystemDirectoryEntry: FileSystemDirectoryEntry): Promise<DroppedItem[]> {
-		return new Promise(async (resolve, reject) => {
+		return new Promise(async (resolve) => {
 			const allEntries = Array.of<FileSystemEntry>();
 			const reader = fileSystemDirectoryEntry.createReader();
 			while (true) {

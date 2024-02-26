@@ -1,6 +1,7 @@
 import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { GridColumn } from '@/components/grid/column.js';
 import { GridRow } from '@/components/grid/row.js';
+import { i18n } from '@/i18n.js';
 
 export type ValidatorParams = {
 	column: GridColumn;
@@ -66,7 +67,7 @@ class ValidatorPreset {
 			validate: ({ value }): ValidatorResult => {
 				return {
 					valid: value !== null && value !== undefined && value !== '',
-					message: 'This field is required.',
+					message: i18n.ts._gridComponent._error.requiredValue,
 				};
 			},
 		};
@@ -79,13 +80,13 @@ class ValidatorPreset {
 				if (column.setting.type !== 'text') {
 					return {
 						valid: false,
-						message: 'Regex validation is only available for text type.',
+						message: i18n.ts._gridComponent._error.columnTypeNotSupport,
 					};
 				}
 
 				return {
 					valid: pattern.test(value?.toString() ?? ''),
-					message: 'Not an allowed format. Please check the input. (Allowed format: ' + pattern.source + ')',
+					message: i18n.tsx._gridComponent._error.patternNotMatch({ pattern: pattern.source }),
 				};
 			},
 		};
@@ -101,7 +102,7 @@ class ValidatorPreset {
 					.every(cell => cell.value !== value);
 				return {
 					valid: isUnique,
-					message: 'This value is already used.',
+					message: i18n.ts._gridComponent._error.notUnique,
 				};
 			},
 		};

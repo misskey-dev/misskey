@@ -3,9 +3,9 @@
 	<div class="_gaps">
 		<MkFolder>
 			<template #icon><i class="ti ti-search"></i></template>
-			<template #label>検索設定</template>
+			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
 			<template #caption>
-				検索条件を詳細に設定します。
+				{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
 			</template>
 
 			<div class="_gaps">
@@ -54,7 +54,7 @@
 
 				<MkFolder :spacerMax="8" :spacerMin="8">
 					<template #icon><i class="ti ti-arrows-sort"></i></template>
-					<template #label>ソート順</template>
+					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
 					<div :class="$style.sortOrderArea">
 						<div :class="$style.sortOrderAreaTags">
 							<MkTagItem
@@ -78,7 +78,7 @@
 						{{ i18n.ts.search }}
 					</MkButton>
 					<MkButton @click="onQueryResetButtonClicked">
-						リセット
+						{{ i18n.ts.reset }}
 					</MkButton>
 				</div>
 			</div>
@@ -86,9 +86,9 @@
 
 		<MkFolder>
 			<template #icon><i class="ti ti-notes"></i></template>
-			<template #label>登録ログ</template>
+			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
 			<template #caption>
-				絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページをリロードすると消えます。
+				{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
 			</template>
 
 			<XRegisterLogs :logs="requestLogs"/>
@@ -101,7 +101,7 @@
 		<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
 
 		<div v-if="gridItems.length > 0" class="_gaps" :class="$style.buttons">
-			<MkButton primary @click="onImportClicked">チェックがついた絵文字をインポート</MkButton>
+			<MkButton primary @click="onImportClicked">{{ i18n.ts._customEmojisManager._remote.importEmojisButton }}</MkButton>
 		</div>
 	</div>
 </div>
@@ -154,7 +154,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択行をインポート',
+						text: i18n.ts._customEmojisManager._remote.importSelectionRows,
 						icon: 'ti ti-download',
 						action: async () => {
 							const targets = context.rangedRows.map(it => gridItems.value[it.index]);
@@ -177,7 +177,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択範囲の行をインポート',
+						text: i18n.ts._customEmojisManager._remote.importSelectionRangesRows,
 						icon: 'ti ti-download',
 						action: async () => {
 							const targets = context.rangedCells.map(it => gridItems.value[it.row.index]);
@@ -246,6 +246,11 @@ function onQueryResetButtonClicked() {
 	queryPublicUrl.value = null;
 }
 
+async function onPageChanged(pageNumber: number) {
+	currentPage.value = pageNumber;
+	await refreshCustomEmojis();
+}
+
 async function onImportClicked() {
 	const targets = gridItems.value.filter(it => it.checked);
 	await importEmojis(targets);
@@ -281,8 +286,8 @@ async function importEmojis(targets: GridItem[]) {
 
 	const confirm = await os.confirm({
 		type: 'info',
-		title: '絵文字のインポート',
-		text: `リモートから受信した${targets.length}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？`,
+		title: i18n.ts._customEmojisManager._remote.confirmImportEmojisTitle,
+		text: i18n.tsx._customEmojisManager._remote.confirmImportEmojisDescription({ count: targets.length }),
 	});
 
 	if (confirm.canceled) {
@@ -295,8 +300,8 @@ async function importEmojis(targets: GridItem[]) {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: 'エラー',
-			text: '絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。',
+			title: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedTitle,
+			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
 

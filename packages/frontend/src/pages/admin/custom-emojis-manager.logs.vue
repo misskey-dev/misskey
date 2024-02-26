@@ -2,7 +2,7 @@
 <div>
 	<div v-if="logs.length > 0" style="display:flex; flex-direction: column; overflow-y: scroll; gap: 16px;">
 		<MkSwitch v-model="showingSuccessLogs">
-			<template #label>成功ログを表示する</template>
+			<template #label>{{ i18n.ts._customEmojisManager._logs.showSuccessLogSwitch }}</template>
 		</MkSwitch>
 		<div>
 			<div v-if="filteredLogs.length > 0">
@@ -12,12 +12,12 @@
 				/>
 			</div>
 			<div v-else>
-				失敗ログはありません。
+				{{ i18n.ts._customEmojisManager._logs.failureLogNothing }}
 			</div>
 		</div>
 	</div>
 	<div v-else>
-		ログはありません。
+		{{ i18n.ts._customEmojisManager._logs.logNothing }}
 	</div>
 </div>
 </template>
@@ -25,6 +25,7 @@
 <script setup lang="ts">
 
 import { computed, ref, toRefs } from 'vue';
+import { i18n } from '@/i18n.js';
 import { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -40,7 +41,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択行をコピー',
+						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRows,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(logs, context),
 					},
@@ -58,7 +59,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択範囲をコピー',
+						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRanges,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(logs, context),
 					},

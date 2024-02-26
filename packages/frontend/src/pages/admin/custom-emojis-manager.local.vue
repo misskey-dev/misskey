@@ -1,8 +1,8 @@
 <template>
 <div class="_gaps" :class="$style.root">
 	<MkTab v-model="modeTab" style="margin-bottom: var(--margin);">
-		<option value="list">登録済み絵文字一覧</option>
-		<option value="register">新規登録</option>
+		<option value="list">{{ i18n.ts._customEmojisManager._local.tabTitleList }}</option>
+		<option value="register">{{ i18n.ts._customEmojisManager._local.tabTitleRegister }}</option>
 	</MkTab>
 
 	<div>
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { i18n } from '@/i18n.js';
 import MkTab from '@/components/MkTab.vue';
 import XListComponent from '@/pages/admin/custom-emojis-manager.local.list.vue';
 import XRegisterComponent from '@/pages/admin/custom-emojis-manager.local.register.vue';

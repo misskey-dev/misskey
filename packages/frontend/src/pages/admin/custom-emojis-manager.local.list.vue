@@ -1,14 +1,14 @@
 <template>
 <div>
 	<div v-if="gridItems.length === 0" style="text-align: center">
-		登録された絵文字はありません。
+		{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 	</div>
 	<div v-else class="_gaps">
 		<MkFolder>
 			<template #icon><i class="ti ti-search"></i></template>
-			<template #label>検索設定</template>
+			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
 			<template #caption>
-				検索条件を詳細に設定します。
+				{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
 			</template>
 
 			<div class="_gaps">
@@ -120,7 +120,7 @@
 
 				<MkFolder :spacerMax="8" :spacerMin="8">
 					<template #icon><i class="ti ti-arrows-sort"></i></template>
-					<template #label>ソート順</template>
+					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
 					<div :class="$style.sortOrderArea">
 						<div :class="$style.sortOrderAreaTags">
 							<MkTagItem
@@ -144,7 +144,7 @@
 						{{ i18n.ts.search }}
 					</MkButton>
 					<MkButton @click="onQueryResetButtonClicked">
-						リセット
+						{{ i18n.ts.reset }}
 					</MkButton>
 				</div>
 			</div>
@@ -152,9 +152,9 @@
 
 		<MkFolder>
 			<template #icon><i class="ti ti-notes"></i></template>
-			<template #label>登録ログ</template>
+			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
 			<template #caption>
-				絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページをリロードすると消えます。
+				{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
 			</template>
 
 			<XRegisterLogs :logs="requestLogs"/>
@@ -174,7 +174,7 @@
 						i18n.ts.update
 					}}
 				</MkButton>
-				<MkButton @click="onGridResetButtonClicked">リセット</MkButton>
+				<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -272,13 +272,13 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択行をコピー',
+						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRows,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
-						text: '選択行を削除対象とする',
+						text: i18n.ts._customEmojisManager._local._list.markAsDeleteTargetRows,
 						icon: 'ti ti-trash',
 						action: () => {
 							for (const rangedRow of context.rangedRows) {
@@ -362,7 +362,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択範囲をコピー',
+						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRanges,
 						icon: 'ti ti-copy',
 						action: () => {
 							return copyGridDataToClipboard(gridItems, context);
@@ -370,7 +370,7 @@ function setupGrid(): GridSetting {
 					},
 					{
 						type: 'button',
-						text: '選択範囲を削除',
+						text: i18n.ts._customEmojisManager._gridCommon.deleteSelectionRanges,
 						icon: 'ti ti-trash',
 						action: () => {
 							removeDataFromGrid(context, (cell) => {
@@ -380,7 +380,7 @@ function setupGrid(): GridSetting {
 					},
 					{
 						type: 'button',
-						text: '選択行を削除対象とする',
+						text: i18n.ts._customEmojisManager._local._list.markAsDeleteTargetRanges,
 						icon: 'ti ti-trash',
 						action: () => {
 							for (const rowIdx of [...new Set(context.rangedCells.map(it => it.row.index)).values()]) {
@@ -426,21 +426,21 @@ async function onUpdateButtonClicked() {
 		throw new Error('The number of items has been changed. Please refresh the page and try again.');
 	}
 
-	const confirm = await os.confirm({
-		type: 'info',
-		title: '確認',
-		text: '絵文字の変更を保存します。よろしいですか？',
-	});
-	if (confirm.canceled) {
-		return;
-	}
-
 	const updatedItems = _items.filter((it, idx) => !it.checked && JSON.stringify(it) !== JSON.stringify(_originItems[idx]));
 	if (updatedItems.length === 0) {
 		await os.alert({
 			type: 'info',
-			text: '変更された絵文字はありません。',
+			text: i18n.ts._customEmojisManager._local._list.alertUpdateEmojisNothingDescription,
 		});
+		return;
+	}
+
+	const confirm = await os.confirm({
+		type: 'info',
+		title: i18n.ts._customEmojisManager._local._list.confirmUpdateEmojisTitle,
+		text: i18n.tsx._customEmojisManager._local._list.confirmUpdateEmojisDescription({ count: updatedItems.length }),
+	});
+	if (confirm.canceled) {
 		return;
 	}
 
@@ -471,8 +471,8 @@ async function onUpdateButtonClicked() {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: 'エラー',
-			text: '絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。',
+			title: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedTitle,
+			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
 
@@ -493,21 +493,21 @@ async function onDeleteButtonClicked() {
 		throw new Error('The number of items has been changed. Please refresh the page and try again.');
 	}
 
-	const confirm = await os.confirm({
-		type: 'info',
-		title: '確認',
-		text: 'チェックをつけられた絵文字を削除します。よろしいですか？',
-	});
-	if (confirm.canceled) {
-		return;
-	}
-
 	const deleteItems = _items.filter((it) => it.checked);
 	if (deleteItems.length === 0) {
 		await os.alert({
 			type: 'info',
-			text: '削除対象の絵文字はありません。',
+			text: i18n.ts._customEmojisManager._local._list.alertDeleteEmojisNothingDescription,
 		});
+		return;
+	}
+
+	const confirm = await os.confirm({
+		type: 'info',
+		title: i18n.ts._customEmojisManager._local._list.confirmDeleteEmojisTitle,
+		text: i18n.tsx._customEmojisManager._local._list.confirmDeleteEmojisDescription({ count: deleteItems.length }),
+	});
+	if (confirm.canceled) {
 		return;
 	}
 
@@ -528,7 +528,7 @@ function onGridResetButtonClicked() {
 async function onQueryRolesEditClicked() {
 	const result = await os.selectRole({
 		initialRoleIds: queryRoles.value.map(it => it.id),
-		title: '絵文字に設定されたロールで検索',
+		title: i18n.ts._customEmojisManager._local._list.dialogSelectRoleTitle,
 		publicOnly: true,
 	});
 	if (result.canceled) {

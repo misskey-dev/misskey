@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<div v-else :class="$style.roleItemArea" style="text-align: center">
-				何も選択されていません
+				{{ i18n.ts._roleSelectDialog.notSelected }}
 			</div>
 
 			<MkInfo v-if="infoMessage">{{ infoMessage }}</MkInfo>

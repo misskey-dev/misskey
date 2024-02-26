@@ -2,8 +2,8 @@
 <div class="_gaps">
 	<MkFolder>
 		<template #icon><i class="ti ti-settings"></i></template>
-		<template #label>アップロード設定</template>
-		<template #caption>この画面で絵文字アップロードを行う際の動作を設定できます。</template>
+		<template #label>{{ i18n.ts._customEmojisManager._local._register.uploadSettingTitle }}</template>
+		<template #caption>{{ i18n.ts._customEmojisManager._local._register.uploadSettingDescription }}</template>
 
 		<div class="_gaps">
 			<MkSelect v-model="selectedFolderId">
@@ -19,17 +19,17 @@
 			</MkSwitch>
 
 			<MkSwitch v-model="directoryToCategory">
-				<template #label>ディレクトリ名を"category"に入力する</template>
-				<template #caption>ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。</template>
+				<template #label>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryLabel }}</template>
+				<template #caption>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryCaption }}</template>
 			</MkSwitch>
 		</div>
 	</MkFolder>
 
 	<MkFolder>
 		<template #icon><i class="ti ti-notes"></i></template>
-		<template #label>登録ログ</template>
+		<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
 		<template #caption>
-			絵文字登録時のログが表示されます。登録操作を行ったり、ページをリロードすると消えます。
+			{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
 		</template>
 
 		<XRegisterLogs :logs="requestLogs"/>
@@ -42,12 +42,12 @@
 		@drop.prevent.stop="onDrop"
 	>
 		<div style="margin-top: 1em">
-			いずれかの方法で登録する絵文字を選択してください。
+			{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaCaption }}
 		</div>
 		<ul>
-			<li>この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ</li>
-			<li><a @click.prevent="onFileSelectClicked">このリンクをクリックしてPCから選択する</a></li>
-			<li><a @click.prevent="onDriveSelectClicked">このリンクをクリックしてドライブから選択する</a></li>
+			<li>{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList1 }}</li>
+			<li><a @click.prevent="onFileSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList2 }}</a></li>
+			<li><a @click.prevent="onDriveSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList3 }}</a></li>
 		</ul>
 	</div>
 
@@ -146,13 +146,13 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択行をコピー',
+						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRows,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
-						text: '選択行を削除',
+						text: i18n.ts._customEmojisManager._gridCommon.deleteSelectionRows,
 						icon: 'ti ti-trash',
 						action: () => removeRows(context.rangedRows),
 					},
@@ -216,13 +216,13 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: '選択範囲をコピー',
+						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRanges,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
-						text: '選択行を削除',
+						text: i18n.ts._customEmojisManager._gridCommon.deleteSelectionRanges,
 						icon: 'ti ti-trash',
 						action: () => removeRows(context.rangedCells.map(it => it.row)),
 					},
@@ -244,8 +244,8 @@ const isDragOver = ref<boolean>(false);
 async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
 		type: 'info',
-		title: '確認',
-		text: `リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は${MAXIMUM_EMOJI_REGISTER_COUNT}件までです）`,
+		title: i18n.ts._customEmojisManager._local._register.confirmRegisterEmojisTitle,
+		text: i18n.tsx._customEmojisManager._local._register.confirmRegisterEmojisDescription({ count: MAXIMUM_EMOJI_REGISTER_COUNT }),
 	});
 
 	if (dialogSelection.canceled) {
@@ -278,8 +278,8 @@ async function onRegistryClicked() {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: 'エラー',
-			text: '絵文字の登録に失敗しました。詳細は登録ログをご確認ください。',
+			title: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedTitle,
+			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
 
@@ -298,8 +298,8 @@ async function onRegistryClicked() {
 async function onClearClicked() {
 	const result = await os.confirm({
 		type: 'warning',
-		title: '確認',
-		text: '編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？',
+		title: i18n.ts._customEmojisManager._local._register.confirmClearEmojisTitle,
+		text: i18n.ts._customEmojisManager._local._register.confirmClearEmojisDescription,
 	});
 
 	if (!result.canceled) {
@@ -313,8 +313,8 @@ async function onDrop(ev: DragEvent) {
 	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
 	const confirm = await os.confirm({
 		type: 'info',
-		title: '確認',
-		text: `ドラッグ＆ドロップされた${droppedFiles.length}個のファイルをドライブにアップロードします。実行しますか？`,
+		title: i18n.ts._customEmojisManager._local._register.confirmUploadEmojisTitle,
+		text: i18n.tsx._customEmojisManager._local._register.confirmUploadEmojisDescription({ count: droppedFiles.length }),
 	});
 	if (confirm.canceled) {
 		return;
