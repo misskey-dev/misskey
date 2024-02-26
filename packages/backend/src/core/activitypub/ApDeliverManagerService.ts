@@ -9,10 +9,10 @@ import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
+import { UserKeypairService } from '../UserKeypairService.js';
 
 interface IRecipe {
 	type: string;
@@ -40,14 +40,14 @@ class DeliverManager {
 
 	/**
 	 * Constructor
-	 * @param userEntityService
+	 * @param userKeypairService
 	 * @param followingsRepository
 	 * @param queueService
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
 	constructor(
-		private userEntityService: UserEntityService,
+		private userKeypairService: UserKeypairService,
 		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
 
@@ -105,6 +105,13 @@ class DeliverManager {
 	 */
 	@bindThis
 	public async execute(): Promise<void> {
+		//#region MIGRATION
+		/**
+		 * ed25519の署名がなければ追加する
+		 */
+		await this.userKeypairService.prepareEd25519KeyPair(this.actor.id);
+		//#endregion
+
 		// The value flags whether it is shared or not.
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
@@ -154,7 +161,7 @@ export class ApDeliverManagerService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private userEntityService: UserEntityService,
+		private userKeypairService: UserKeypairService,
 		private queueService: QueueService,
 	) {
 	}
@@ -167,7 +174,7 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
+			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
 			actor,
@@ -186,7 +193,7 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToUser(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, to: MiRemoteUser): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
+			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
 			actor,
@@ -199,7 +206,7 @@ export class ApDeliverManagerService {
 	@bindThis
 	public createDeliverManager(actor: { id: MiUser['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
-			this.userEntityService,
+			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
 

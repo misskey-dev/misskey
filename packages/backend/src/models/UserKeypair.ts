@@ -18,15 +18,55 @@ export class MiUserKeypair {
 	@JoinColumn()
 	public user: MiUser | null;
 
+	/**
+	 * RSA public key
+	 */
 	@Column('varchar', {
 		length: 4096,
 	})
 	public publicKey: string;
 
+	/**
+	 * RSA private key
+	 */
 	@Column('varchar', {
 		length: 4096,
 	})
 	public privateKey: string;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		default: null,
+	})
+	public ed25519PublicKey: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		default: null,
+	})
+	public ed25519PrivateKey: string | null;
+
+	/**
+	 * Signature of ed25519PublicKey, signed by privateKey. (base64)
+	 */
+	@Column('varchar', {
+		length: 720,
+		nullable: true,
+		default: null,
+	})
+	public ed25519PublicKeySignature: string | null;
+
+	/**
+	 * Signature algorithm of ed25519PublicKeySignature.
+	 */
+	@Column('varchar', {
+		length: 32,
+		nullable: true,
+		default: null,
+	})
+	public ed25519SignatureAlgorithm: string | null;
 
 	constructor(data: Partial<MiUserKeypair>) {
 		if (data == null) return;

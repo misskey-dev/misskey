@@ -640,7 +640,7 @@ export class ActivityPubServerService {
 			if (this.userEntityService.isLocalUser(user)) {
 				reply.header('Cache-Control', 'public, max-age=180');
 				this.setResponseType(request, reply);
-				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair)));
+				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair.publicKey)));
 			} else {
 				reply.code(400);
 				return;

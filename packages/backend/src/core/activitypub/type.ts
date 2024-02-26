@@ -168,10 +168,8 @@ export interface IActor extends IObject {
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
-	publicKey?: {
-		id: string;
-		publicKeyPem: string;
-	};
+	publicKey?: IKey;
+	additionalPublicKeys?: IKey[];
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
 	featured?: string | IOrderedCollection;
@@ -235,8 +233,17 @@ export const isEmoji = (object: IObject): object is IApEmoji =>
 
 export interface IKey extends IObject {
 	type: 'Key';
+	id: string;
 	owner: string;
-	publicKeyPem: string | Buffer;
+	publicKeyPem: string;
+
+	/**
+	 * Signature of publicKeyPem, signed by root privateKey (for additionalPublicKey)
+	 */
+	signature?: {
+		type: string;
+		signatureValue: string
+	};
 }
 
 export interface IApDocument extends IObject {

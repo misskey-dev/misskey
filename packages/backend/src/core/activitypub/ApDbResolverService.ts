@@ -36,7 +36,7 @@ export type UriParseResult = {
 @Injectable()
 export class ApDbResolverService implements OnApplicationShutdown {
 	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
-	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey | null>;
+	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey[] | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -55,7 +55,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private apPersonService: ApPersonService,
 	) {
 		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(Infinity);
 	}
 
 	@bindThis
@@ -159,7 +159,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		const key = await this.publicKeyByUserIdCache.fetch(
 			user.id,
-			() => this.userPublickeysRepository.findOneBy({ userId: user.id }),
+			() => this.userPublickeysRepository.find({ where: { userId: user.id } }),
 			v => v != null,
 		);
 

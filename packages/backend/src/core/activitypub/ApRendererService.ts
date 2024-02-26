@@ -250,15 +250,16 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: MiLocalUser, key: MiUserKeypair, postfix?: string): IKey {
+	public renderKey(user: MiLocalUser, publicKey: string, postfix?: string, signature?: IKey['signature']): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
 			owner: this.userEntityService.genLocalUserUri(user.id),
-			publicKeyPem: createPublicKey(key.publicKey).export({
+			publicKeyPem: createPublicKey(publicKey).export({
 				type: 'spki',
 				format: 'pem',
-			}),
+			}) as string,
+			signature,
 		};
 	}
 
@@ -498,7 +499,10 @@ export class ApRendererService {
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
 			discoverable: user.isExplorable,
-			publicKey: this.renderKey(user, keypair, '#main-key'),
+			publicKey: this.renderKey(user, keypair.publicKey, '#main-key'),
+			additionalPublicKeys: [
+				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key', { type: keypair.ed25519SignatureAlgorithm!, signatureValue: keypair.ed25519PublicKeySignature! })] : []),
+			],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 		};
