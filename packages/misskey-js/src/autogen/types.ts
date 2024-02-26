@@ -4489,6 +4489,7 @@ export type components = {
       infoUpdatedAt: string | null;
       /** Format: date-time */
       latestRequestReceivedAt: string | null;
+      moderationNote?: string | null;
     };
     GalleryPost: {
       /**
@@ -4755,6 +4756,96 @@ export type components = {
       logs: number[][];
       map: string[];
     };
+    MetaLite: {
+      maintainerName: string | null;
+      maintainerEmail: string | null;
+      version: string;
+      providesTarball: boolean;
+      name: string | null;
+      shortName: string | null;
+      /**
+       * Format: url
+       * @example https://misskey.example.com
+       */
+      uri: string;
+      description: string | null;
+      langs: string[];
+      tosUrl: string | null;
+      /** @default https://github.com/misskey-dev/misskey */
+      repositoryUrl: string | null;
+      /** @default https://github.com/misskey-dev/misskey/issues/new */
+      feedbackUrl: string | null;
+      defaultDarkTheme: string | null;
+      defaultLightTheme: string | null;
+      disableRegistration: boolean;
+      emailRequiredForSignup: boolean;
+      enableHcaptcha: boolean;
+      hcaptchaSiteKey: string | null;
+      enableMcaptcha: boolean;
+      mcaptchaSiteKey: string | null;
+      mcaptchaInstanceUrl: string | null;
+      enableRecaptcha: boolean;
+      recaptchaSiteKey: string | null;
+      enableTurnstile: boolean;
+      turnstileSiteKey: string | null;
+      swPublickey: string | null;
+      /** @default /assets/ai.png */
+      mascotImageUrl: string;
+      bannerUrl: string | null;
+      serverErrorImageUrl: string | null;
+      infoImageUrl: string | null;
+      notFoundImageUrl: string | null;
+      iconUrl: string | null;
+      maxNoteTextLength: number;
+      ads: {
+          /**
+           * Format: id
+           * @example xxxxxxxxxx
+           */
+          id: string;
+          /** Format: url */
+          url: string;
+          place: string;
+          ratio: number;
+          /** Format: url */
+          imageUrl: string;
+          dayOfWeek: number;
+        }[];
+      /** @default 0 */
+      notesPerOneAd: number;
+      enableEmail: boolean;
+      enableServiceWorker: boolean;
+      translatorAvailable: boolean;
+      mediaProxy: string;
+      backgroundImageUrl: string | null;
+      impressumUrl: string | null;
+      logoImageUrl: string | null;
+      privacyPolicyUrl: string | null;
+      serverRules: string[];
+      themeColor: string | null;
+      policies: components['schemas']['RolePolicies'];
+    };
+    MetaDetailedOnly: {
+      features?: {
+        registration: boolean;
+        emailRequiredForSignup: boolean;
+        localTimeline: boolean;
+        globalTimeline: boolean;
+        hcaptcha: boolean;
+        turnstile: boolean;
+        recaptcha: boolean;
+        objectStorage: boolean;
+        serviceWorker: boolean;
+        /** @default true */
+        miauth?: boolean;
+      };
+      proxyAccountName: string | null;
+      /** @example false */
+      requireSetup: boolean;
+      cacheRemoteFiles: boolean;
+      cacheRemoteSensitiveFiles: boolean;
+    };
+    MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
   };
   responses: never;
   parameters: never;
@@ -7012,13 +7103,13 @@ export type operations = {
       content: {
         'application/json': {
           /** Format: misskey:id */
-          id: string;
-          name: string;
+          id?: string;
+          name?: string;
           /** Format: misskey:id */
           fileId?: string;
           /** @description Use `null` to reset the category. */
           category?: string | null;
-          aliases: string[];
+          aliases?: string[];
           license?: string | null;
           isSensitive?: boolean;
           localOnly?: boolean;
@@ -7324,7 +7415,8 @@ export type operations = {
       content: {
         'application/json': {
           host: string;
-          isSuspended: boolean;
+          isSuspended?: boolean;
+          moderationNote?: string;
         };
       };
     };
@@ -19557,91 +19649,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-            maintainerName: string | null;
-            maintainerEmail: string | null;
-            version: string;
-            providesTarball: boolean;
-            name: string;
-            shortName: string | null;
-            /**
-             * Format: url
-             * @example https://misskey.example.com
-             */
-            uri: string;
-            description: string | null;
-            langs: string[];
-            tosUrl: string | null;
-            /** @default https://github.com/misskey-dev/misskey */
-            repositoryUrl: string | null;
-            /** @default https://github.com/misskey-dev/misskey/issues/new */
-            feedbackUrl: string | null;
-            defaultDarkTheme: string | null;
-            defaultLightTheme: string | null;
-            disableRegistration: boolean;
-            cacheRemoteFiles: boolean;
-            cacheRemoteSensitiveFiles: boolean;
-            emailRequiredForSignup: boolean;
-            enableHcaptcha: boolean;
-            hcaptchaSiteKey: string | null;
-            enableMcaptcha: boolean;
-            mcaptchaSiteKey: string | null;
-            mcaptchaInstanceUrl: string | null;
-            enableRecaptcha: boolean;
-            recaptchaSiteKey: string | null;
-            enableTurnstile: boolean;
-            turnstileSiteKey: string | null;
-            swPublickey: string | null;
-            /** @default /assets/ai.png */
-            mascotImageUrl: string;
-            bannerUrl: string;
-            serverErrorImageUrl: string | null;
-            infoImageUrl: string | null;
-            notFoundImageUrl: string | null;
-            iconUrl: string | null;
-            maxNoteTextLength: number;
-            ads: {
-                /**
-                 * Format: id
-                 * @example xxxxxxxxxx
-                 */
-                id: string;
-                /** Format: url */
-                url: string;
-                place: string;
-                ratio: number;
-                /** Format: url */
-                imageUrl: string;
-                dayOfWeek: number;
-              }[];
-            /** @default 0 */
-            notesPerOneAd: number;
-            /** @example false */
-            requireSetup: boolean;
-            enableEmail: boolean;
-            enableServiceWorker: boolean;
-            translatorAvailable: boolean;
-            proxyAccountName: string | null;
-            mediaProxy: string;
-            features?: {
-              registration: boolean;
-              localTimeline: boolean;
-              globalTimeline: boolean;
-              hcaptcha: boolean;
-              recaptcha: boolean;
-              objectStorage: boolean;
-              serviceWorker: boolean;
-              /** @default true */
-              miauth?: boolean;
-            };
-            backgroundImageUrl: string | null;
-            impressumUrl: string | null;
-            logoImageUrl: string | null;
-            privacyPolicyUrl: string | null;
-            serverRules: string[];
-            themeColor: string | null;
-            policies: components['schemas']['RolePolicies'];
-          };
+          'application/json': components['schemas']['MetaLite'] | components['schemas']['MetaDetailed'];
         };
       };
       /** @description Client error */
@@ -23036,10 +23044,10 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           flashId: string;
-          title: string;
-          summary: string;
-          script: string;
-          permissions: string[];
+          title?: string;
+          summary?: string;
+          script?: string;
+          permissions?: string[];
           /** @enum {string} */
           visibility?: 'public' | 'private';
         };
