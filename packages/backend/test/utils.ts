@@ -10,9 +10,11 @@ import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { DataSource } from 'typeorm';
+// @ts-ignore
 import got from 'got';
+import { NoLogger } from '@/db/no-logger.js';
+import { entities } from '@/db/postgre.js';
 import loadConfig from '../src/config/load.js';
-import { entities, MyCustomLogger } from '../src/db/postgre.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -269,7 +271,7 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
 		entities: initEntities || entities,
-		logger: new MyCustomLogger,
+		logger: new NoLogger(),
 		logging: true,
 		logNotifications: false,
 	});

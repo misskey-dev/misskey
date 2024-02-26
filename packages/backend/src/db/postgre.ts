@@ -72,6 +72,7 @@ import { Webhook } from '@/models/entities/webhook.js';
 import { UserIp } from '@/models/entities/user-ip.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
+import { NoLogger } from '@/db/no-logger.js';
 import { dbLogger } from './logger.js';
 import { redisClient } from './redis.js';
 
@@ -205,7 +206,7 @@ export const db = new DataSource({
 	} : false,
 	logNotifications: false,
 	logging: true,
-	logger: new MyCustomLogger,
+	logger: new NoLogger(),
 	maxQueryExecutionTime: 300,
 	entities: entities,
 	migrations: ['../../migration/*.js'],
