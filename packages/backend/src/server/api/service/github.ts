@@ -143,8 +143,11 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+			// @ts-ignore
 			redisClient.get(sessid, async (_, state) => {
+				// @ts-ignore
 				res(JSON.parse(state));
 			});
 		});
@@ -154,6 +157,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const { accessToken } = await new Promise<any>((res, rej) =>
 			oauth2!.getOAuthAccessToken(code, {
 				redirect_uri,
@@ -194,8 +198,11 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+			// @ts-ignore
 			redisClient.get(userToken, async (_, state) => {
+				// @ts-ignore
 				res(JSON.parse(state));
 			});
 		});
@@ -205,6 +212,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const { accessToken } = await new Promise<any>((res, rej) =>
 			oauth2!.getOAuthAccessToken(
 				code,
@@ -238,6 +246,7 @@ router.get('/gh/cb', async ctx => {
 		await UserProfiles.update(user.id, {
 			integrations: {
 				...profile.integrations,
+				// @ts-ignore
 				github: {
 					accessToken: accessToken,
 					id: id,

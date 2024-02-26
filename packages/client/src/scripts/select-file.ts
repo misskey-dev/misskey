@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+// @ts-ignore
 import { DriveFile } from 'misskey-js/built/entities';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -6,7 +7,12 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { uploadFile } from '@/scripts/upload';
 
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function select(src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> {
+	// @ts-ignore
+	// noinspection JSUnusedLocalSymbols
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
@@ -15,20 +21,26 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
+				// @ts-ignore
 				const promises = Array.from(input.files).map(file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
+					// @ts-ignore
 				}).catch(err => {
 					// アップロードのエラーは uploadFile 内でハンドリングされているためアラートダイアログを出したりはしてはいけない
 				});
 
 				// 一応廃棄
+				// @ts-ignore
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(window as any).__misskey_input_ref__ = null;
 			};
 
 			// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
 			// iOS Safari で正常に動かす為のおまじない
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(window as any).__misskey_input_ref__ = input;
 
 			input.click();

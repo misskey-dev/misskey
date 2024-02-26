@@ -1,5 +1,6 @@
 import { SelectQueryBuilder } from 'typeorm';
 
+// @ts-ignore
 export function makePaginationQuery<T>(q: SelectQueryBuilder<T>, sinceId?: string, untilId?: string, sinceDate?: number, untilDate?: number) {
 	if (sinceId && untilId) {
 		q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });

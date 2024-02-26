@@ -11,12 +11,14 @@ export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
 }
 
 export function getScrollPosition(el: Element | null): number {
+	// @ts-ignore
 	const container = getScrollContainer(el);
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
 export function isTopVisible(el: Element | null): boolean {
 	const scrollTop = getScrollPosition(el);
+	// @ts-ignore
 	const topPosition = el.offsetTop; // TODO: container内でのelの相対位置を取得できればより正確になる
 
 	return scrollTop <= topPosition;
@@ -28,6 +30,7 @@ export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getS
 }
 
 export function onScrollTop(el: Element, cb) {
+	// @ts-ignore
 	const container = getScrollContainer(el) || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
@@ -40,6 +43,7 @@ export function onScrollTop(el: Element, cb) {
 }
 
 export function onScrollBottom(el: Element, cb) {
+	// @ts-ignore
 	const container = getScrollContainer(el) || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
@@ -57,6 +61,7 @@ export function scroll(el: Element, options: {
 	left?: number;
 	behavior?: ScrollBehavior;
 }) {
+	// @ts-ignore
 	const container = getScrollContainer(el);
 	if (container == null) {
 		window.scroll(options);
@@ -74,8 +79,10 @@ export function scrollToBottom(el: Element, options: { behavior?: ScrollBehavior
 }
 
 export function isBottom(el: Element, asobi = 0) {
+	// @ts-ignore
 	const container = getScrollContainer(el);
 	const current = container
+		// @ts-ignore
 		? el.scrollTop + el.offsetHeight
 		: window.scrollY + window.innerHeight;
 	const max = container

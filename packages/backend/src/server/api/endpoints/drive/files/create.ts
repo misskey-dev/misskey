@@ -74,6 +74,7 @@ export default define(meta, paramDef, async (ps, user, _, file, cleanup, ip, hea
 		} else if (name === 'blob') {
 			name = null;
 		} else if (!DriveFiles.validateFileName(name)) {
+			// @ts-ignore
 			throw new ApiError(meta.errors.invalidFileName);
 		}
 	} else {
@@ -101,7 +102,9 @@ export default define(meta, paramDef, async (ps, user, _, file, cleanup, ip, hea
 			apiLogger.error(e);
 		}
 		if (e instanceof IdentifiableError) {
+			// @ts-ignore
 			if (e.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
+			// @ts-ignore
 			if (e.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
 		}
 		throw new ApiError();

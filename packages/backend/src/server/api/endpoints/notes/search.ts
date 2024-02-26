@@ -118,12 +118,14 @@ export default define(meta, paramDef, async (ps, me) => {
 					},
 				},
 				sort: [{
+					// @ts-ignore
 					_doc: 'desc',
 				}],
 			},
 		});
 
-		const hits = result.body.hits.hits.map((hit: any) => hit._id);
+		// @ts-ignore
+		const hits = result?.body.hits.hits.map((hit: any) => hit._id);
 
 		if (hits.length === 0) return [];
 

@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
@@ -94,7 +94,7 @@ const props = defineProps<{
 		> .file {
 			position: relative;
 			aspect-ratio: 1;
-		
+
 			> .thumbnail {
 				width: 100%;
 				height: 100%;

@@ -1,6 +1,5 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
-import { Theme } from './scripts/theme';
 
 export const postFormActions = [];
 export const userActions = [];
@@ -315,11 +314,13 @@ export class ColdDeviceStorage {
 		localStorage.setItem(PREFIX + key, JSON.stringify(value));
 
 		for (const watcher of this.watchers) {
+			// @ts-ignore
 			if (watcher.key === key) watcher.callback(value);
 		}
 	}
 
 	public static watch(key, callback) {
+		// @ts-ignore
 		this.watchers.push({ key, callback });
 	}
 
@@ -347,6 +348,7 @@ export class ColdDeviceStorage {
 			},
 			set: (value: unknown) => {
 				const val = value;
+				// @ts-ignore
 				ColdDeviceStorage.set(key, val);
 			},
 		};

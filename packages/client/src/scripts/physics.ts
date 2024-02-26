@@ -29,7 +29,7 @@ export function physics(container: HTMLElement) {
 			height: containerHeight,
 			background: 'transparent', // transparent to hide
 			wireframeBackground: 'transparent', // transparent to hide
-		}
+		},
 	});
 
 	// Disable to hide debug
@@ -43,7 +43,7 @@ export function physics(container: HTMLElement) {
 	const ground = Matter.Bodies.rectangle(containerCenterX, containerHeight + (groundThickness / 2), containerWidth, groundThickness, {
 		isStatic: true,
 		restitution: 0.1,
-		friction: 2
+		friction: 2,
 	});
 
 	//const wallRight = Matter.Bodies.rectangle(window.innerWidth+50, window.innerHeight/2, 100, window.innerHeight, wallopts);
@@ -58,33 +58,43 @@ export function physics(container: HTMLElement) {
 	const objEls = Array.from(container.children);
 	const objs = [];
 	for (const objEl of objEls) {
+		// @ts-ignore
 		const left = objEl.dataset.physicsX ? parseInt(objEl.dataset.physicsX) : objEl.offsetLeft;
+		// @ts-ignore
 		const top = objEl.dataset.physicsY ? parseInt(objEl.dataset.physicsY) : objEl.offsetTop;
 
 		let obj;
 		if (objEl.classList.contains('_physics_circle_')) {
 			obj = Matter.Bodies.circle(
+				// @ts-ignore
 				left + (objEl.offsetWidth / 2),
+				// @ts-ignore
 				top + (objEl.offsetHeight / 2),
+				// @ts-ignore
 				Math.max(objEl.offsetWidth, objEl.offsetHeight) / 2,
 				{
-					restitution: 0.5
-				}
+					restitution: 0.5,
+				},
 			);
 		} else {
 			const style = window.getComputedStyle(objEl);
 			obj = Matter.Bodies.rectangle(
+				// @ts-ignore
 				left + (objEl.offsetWidth / 2),
+				// @ts-ignore
 				top + (objEl.offsetHeight / 2),
+				// @ts-ignore
 				objEl.offsetWidth,
+				// @ts-ignore
 				objEl.offsetHeight,
 				{
 					chamfer: { radius: parseInt(style.borderRadius || '0', 10) },
-					restitution: 0.5
-				}
+					restitution: 0.5,
+				},
 			);
 		}
 		objEl.id = obj.id;
+		// @ts-ignore
 		objs.push(obj);
 	}
 
@@ -98,9 +108,9 @@ export function physics(container: HTMLElement) {
 		constraint: {
 			stiffness: 0.1,
 			render: {
-				visible: false
-			}
-		}
+				visible: false,
+			},
+		},
 	});
 
 	Matter.World.add(engine.world, mouseConstraint);
@@ -109,9 +119,13 @@ export function physics(container: HTMLElement) {
 	render.mouse = mouse;
 
 	for (const objEl of objEls) {
-		objEl.style.position = `absolute`;
+		// @ts-ignore
+		objEl.style.position = 'absolute';
+		// @ts-ignore
 		objEl.style.top = 0;
+		// @ts-ignore
 		objEl.style.left = 0;
+		// @ts-ignore
 		objEl.style.margin = 0;
 	}
 
@@ -121,12 +135,16 @@ export function physics(container: HTMLElement) {
 
 	function update() {
 		for (const objEl of objEls) {
+			// @ts-ignore
 			const obj = objs.find(obj => obj.id.toString() === objEl.id.toString());
 			if (obj == null) continue;
-
+			// @ts-ignore
 			const x = (obj.position.x - objEl.offsetWidth / 2);
+			// @ts-ignore
 			const y = (obj.position.y - objEl.offsetHeight / 2);
+			// @ts-ignore
 			const angle = obj.angle;
+			// @ts-ignore
 			objEl.style.transform = `translate(${x}px, ${y}px) rotate(${angle}rad)`;
 		}
 
@@ -138,6 +156,7 @@ export function physics(container: HTMLElement) {
 	// 奈落に落ちたオブジェクトは消す
 	const intervalId = window.setInterval(() => {
 		for (const obj of objs) {
+			// @ts-ignore
 			if (obj.position.y > (containerHeight + 1024)) Matter.World.remove(world, obj);
 		}
 	}, 1000 * 10);
@@ -147,6 +166,6 @@ export function physics(container: HTMLElement) {
 			stop = true;
 			Matter.Runner.stop(runner);
 			window.clearInterval(intervalId);
-		}
+		},
 	};
 }

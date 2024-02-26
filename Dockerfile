@@ -1,4 +1,4 @@
-FROM node:16.15.1-bullseye AS builder
+FROM node:21.6.2-bullseye AS builder
 
 ARG NODE_ENV=production
 
@@ -9,11 +9,11 @@ COPY . ./
 RUN apt-get update
 RUN apt-get install -y build-essential
 RUN git submodule update --init
-RUN yarn install
-RUN yarn build
+RUN npm ci
+RUN npm run build
 RUN rm -rf .git
 
-FROM node:16.15.1-bullseye-slim AS runner
+FROM node:21.6.2-bullseye-slim AS runner
 
 WORKDIR /misskey
 

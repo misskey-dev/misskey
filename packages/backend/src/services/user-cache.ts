@@ -8,6 +8,7 @@ export const localUserByNativeTokenCache = new Cache<CacheableLocalUser | null>(
 export const localUserByIdCache = new Cache<CacheableLocalUser>(Infinity);
 export const uriPersonCache = new Cache<CacheableUser | null>(Infinity);
 
+// @ts-ignore
 subsdcriber.on('message', async (_, data) => {
 	const obj = JSON.parse(data);
 

@@ -37,5 +37,9 @@
 	"compileOnSave": false,
 	"include": [
 		"./**/*.ts"
+	],
+	"exclude": [
+		"../node_modules",
+		"../built"
 	]
 }

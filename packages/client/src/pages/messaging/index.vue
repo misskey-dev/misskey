@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, defineComponent, inject, markRaw, onMounted, onUnmounted } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { acct } from '@/filters/user';
 import * as os from '@/os';

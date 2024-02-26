@@ -1,7 +1,7 @@
 // NIRAX --- A lightweight router
 
 import { EventEmitter } from 'eventemitter3';
-import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
+import { Component, shallowRef, ShallowRef } from 'vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
 
@@ -71,12 +71,16 @@ export class Router extends EventEmitter<{
 	same: () => void;
 }> {
 	private routes: RouteDef[];
+	// @ts-ignore
 	public current: Resolved;
+	// @ts-ignore
 	public currentRef: ShallowRef<Resolved> = shallowRef();
+	// @ts-ignore
 	public currentRoute: ShallowRef<RouteDef> = shallowRef();
 	private currentPath: string;
 	private currentKey = Date.now().toString();
 
+	// @ts-ignore
 	public navHook: ((path: string, flag?: any) => boolean) | null = null;
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath']) {
@@ -159,11 +163,11 @@ export class Router extends EventEmitter<{
 					if (route.hash != null && hash != null) {
 						props.set(route.hash, safeURIDecode(hash));
 					}
-	
+
 					if (route.query != null && queryString != null) {
 						const queryObject = [...new URLSearchParams(queryString).entries()]
 							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
-	
+
 						for (const q in route.query) {
 							const as = route.query[q];
 							if (queryObject[q]) {
@@ -171,7 +175,7 @@ export class Router extends EventEmitter<{
 							}
 						}
 					}
-	
+
 					return {
 						route,
 						props,
@@ -243,6 +247,7 @@ export class Router extends EventEmitter<{
 		return this.currentKey;
 	}
 
+	// @ts-ignore
 	public push(path: string, flag?: any) {
 		const beforePath = this.currentPath;
 		if (path === beforePath) {

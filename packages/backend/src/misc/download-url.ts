@@ -1,13 +1,14 @@
 import * as fs from 'node:fs';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
+// @ts-ignore
 import got, * as Got from 'got';
-import { httpAgent, httpsAgent, StatusError } from './fetch.js';
-import config from '@/config/index.js';
 import chalk from 'chalk';
-import Logger from '@/services/logger.js';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
+import Logger from '@/services/logger.js';
+import config from '@/config/index.js';
+import { httpAgent, httpsAgent, StatusError } from './fetch.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -68,6 +69,7 @@ export async function downloadUrl(url: string, path: string): Promise<void> {
 		await pipeline(req, fs.createWriteStream(path));
 	} catch (e) {
 		if (e instanceof Got.HTTPError) {
+			// @ts-ignore
 			throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
 		} else {
 			throw e;
@@ -85,5 +87,6 @@ function isPrivateIp(ip: string): boolean {
 		}
 	}
 
+	// @ts-ignore
 	return PrivateIp(ip);
 }

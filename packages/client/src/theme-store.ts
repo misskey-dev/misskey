@@ -1,6 +1,6 @@
+import { Theme } from './scripts/theme';
 import { api } from '@/os';
 import { $i } from '@/account';
-import { Theme } from './scripts/theme';
 
 const lsCacheKey = $i ? `themes:${$i.id}` : '';
 
@@ -15,6 +15,7 @@ export async function fetchThemes(): Promise<void> {
 		const themes = await api('i/registry/get', { scope: ['client'], key: 'themes' });
 		localStorage.setItem(lsCacheKey, JSON.stringify(themes));
 	} catch (err) {
+		// @ts-ignore
 		if (err.code === 'NO_SUCH_KEY') return;
 		throw err;
 	}

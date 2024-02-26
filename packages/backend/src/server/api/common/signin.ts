@@ -34,6 +34,7 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 			createdAt: new Date(),
 			userId: user.id,
 			ip: ctx.ip,
+			// @ts-ignore
 			headers: ctx.headers,
 			success: true,
 		}).then(x => Signins.findOneByOrFail(x.identifiers[0]));

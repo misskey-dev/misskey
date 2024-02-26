@@ -28,18 +28,20 @@ export const urlPreviewHandler = async (ctx: Koa.Context) => {
 		: `Getting preview of ${url}@${lang} ...`);
 
 	try {
-		const summary = meta.summalyProxy ? await getJson(`${meta.summalyProxy}?${query({
+		const summary: any = meta.summalyProxy ? await getJson(`${meta.summalyProxy}?${query({
 			url: url,
 			lang: lang ?? 'ja-JP',
-		})}`) : await summaly.default(url, {
+		})}`) : await summaly(url, {
 			followRedirects: false,
 			lang: lang ?? 'ja-JP',
 		});
 
 		logger.succ(`Got preview of ${url}: ${summary.title}`);
 
-		summary.icon = wrap(summary.icon);
-		summary.thumbnail = wrap(summary.thumbnail);
+		if (summary) {
+			summary.icon = wrap(summary.icon);
+			summary.thumbnail = wrap(summary.thumbnail);
+		}
 
 		// Cache 7days
 		ctx.set('Cache-Control', 'max-age=604800, immutable');

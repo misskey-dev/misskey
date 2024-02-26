@@ -7,6 +7,8 @@
 		"noUnusedParameters": false,
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true,
 		"declaration": false,
 		"sourceMap": false,
 		"target": "es2017",
@@ -23,11 +25,12 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
+			"@/*": ["./src/*"]
 		},
 		"typeRoots": [
 			"node_modules/@types",
 			"@types",
+			"node_modules/unplugin-vue-macros/macros-global.d.ts"
 		],
 		"types": [
 			"vite/client",
@@ -43,5 +46,9 @@
 		".eslintrc.js",
 		"./**/*.ts",
 		"./**/*.vue"
+	],
+	"exclude": [
+		"node_modules",
+		"./src/scripts"
 	]
 }

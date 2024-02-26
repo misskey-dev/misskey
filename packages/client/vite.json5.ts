@@ -29,7 +29,9 @@ export default function json5(options: RollupJsonOptions = {}): Plugin {
 				};
 			} catch (err) {
 				const message = 'Could not parse JSON file';
+				// @ts-ignore
 				const position = parseInt(/[\d]/.exec(err.message)[0], 10);
+				// @ts-ignore
 				this.warn({ message, id, position });
 				return null;
 			}

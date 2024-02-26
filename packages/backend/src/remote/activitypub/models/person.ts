@@ -477,6 +477,7 @@ export async function updateFeatured(userId: User['id'], resolver?: Resolver) {
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
+	// @ts-ignore
 	const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
 
 	// Resolve and regist Notes

@@ -1,18 +1,17 @@
-import { AiScript, utils, values } from '@syuilo/aiscript';
-import { deserialize } from '@syuilo/aiscript/built/serializer';
-import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
+// @ts-ignore
+import { Interpreter, utils, values, Parser } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { inputText } from '@/os';
 import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@/store';
 
-const pluginContexts = new Map<string, AiScript>();
+const pluginContexts = new Map<string, Interpreter>();
 
 export function install(plugin) {
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 
-	const aiscript = new AiScript(createPluginEnv({
+	const aiscript = new Interpreter(createPluginEnv({
 		plugin: plugin,
-		storageKey: 'plugins:' + plugin.id
+		storageKey: 'plugins:' + plugin.id,
 	}), {
 		in: (q) => {
 			return new Promise(ok => {
@@ -32,13 +31,16 @@ export function install(plugin) {
 
 	initPlugin({ plugin, aiscript });
 
-	aiscript.exec(deserialize(plugin.ast));
+	const parser = new Parser();
+
+	aiscript.exec(parser(plugin.ast));
 }
 
 function createPluginEnv(opts) {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
-		config.set(k, jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
+		// @ts-ignore
+		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
 	return {
@@ -81,43 +83,57 @@ function initPlugin({ plugin, aiscript }) {
 }
 
 function registerPostFormAction({ pluginId, title, handler }) {
+	// @ts-ignore
 	postFormActions.push({
+		// @ts-ignore
 		title, handler: (form, update) => {
+			// @ts-ignore
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
+				// @ts-ignore
 				update(key.value, value.value);
 			})]);
-		}
+		},
 	});
 }
 
 function registerUserAction({ pluginId, title, handler }) {
+	// @ts-ignore
 	userActions.push({
+		// @ts-ignore
 		title, handler: (user) => {
+			// @ts-ignore
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
-		}
+		},
 	});
 }
 
 function registerNoteAction({ pluginId, title, handler }) {
+	// @ts-ignore
 	noteActions.push({
 		title, handler: (note) => {
+			// @ts-ignore
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
-		}
+		},
 	});
 }
 
 function registerNoteViewInterruptor({ pluginId, handler }) {
+	// @ts-ignore
 	noteViewInterruptors.push({
+		// @ts-ignore
 		handler: async (note) => {
+			// @ts-ignore
 			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
-		}
+		},
 	});
 }
 
 function registerNotePostInterruptor({ pluginId, handler }) {
+	// @ts-ignore
 	notePostInterruptors.push({
+		// @ts-ignore
 		handler: async (note) => {
 			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
-		}
+		},
 	});
 }

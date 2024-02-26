@@ -6,29 +6,31 @@ import { lang } from '@/config';
 export async function initializeSw() {
 	if (!('serviceWorker' in navigator)) return;
 
-	navigator.serviceWorker.register(`/sw.js`, { scope: '/', type: 'classic' });
+	navigator.serviceWorker.register('/sw.js', { scope: '/', type: 'classic' });
 	navigator.serviceWorker.ready.then(registration => {
 		registration.active?.postMessage({
 			msg: 'initialize',
 			lang,
 		});
 
+		// @ts-ignore
 		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
 			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			registration.pushManager.subscribe({
 				userVisibleOnly: true,
-				applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
+				applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
 			})
 			.then(subscription => {
 				function encode(buffer: ArrayBuffer | null) {
+					// @ts-ignore
 					return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
 				}
-		
+
 				// Register
 				api('sw/register', {
 					endpoint: subscription.endpoint,
 					auth: encode(subscription.getKey('auth')),
-					publickey: encode(subscription.getKey('p256dh'))
+					publickey: encode(subscription.getKey('p256dh')),
 				});
 			})
 			// When subscribe failed
@@ -37,7 +39,7 @@ export async function initializeSw() {
 				if (err.name === 'NotAllowedError') {
 					return;
 				}
-		
+
 				// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
 				// 既に存在していることが原因でエラーになった可能性があるので、
 				// そのサブスクリプションを解除しておく

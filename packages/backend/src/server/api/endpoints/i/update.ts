@@ -122,6 +122,7 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
+// @ts-ignore
 export default define(meta, paramDef, async (ps, _user, token) => {
 	const user = await Users.findOneByOrFail({ id: _user.id });
 	const isSecure = token == null;
@@ -141,6 +142,7 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (ps.mutedWords !== undefined) {
 		// validate regular expression syntax
+		// @ts-ignore
 		ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
 			const regexp = x.match(/^\/(.+)\/(.*)$/);
 			if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
@@ -199,7 +201,9 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 
 	if (ps.fields) {
 		profileUpdates.fields = ps.fields
+			// @ts-ignore
 			.filter(x => typeof x.name === 'string' && x.name !== '' && typeof x.value === 'string' && x.value !== '')
+			// @ts-ignore
 			.map(x => {
 				return { name: x.name, value: x.value };
 			});
@@ -241,6 +245,7 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 
 	// Publish meUpdated event
 	publishMainStream(user.id, 'meUpdated', iObj);
+	// @ts-ignore
 	publishUserEvent(user.id, 'updateUserProfile', await UserProfiles.findOneBy({ userId: user.id }));
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認

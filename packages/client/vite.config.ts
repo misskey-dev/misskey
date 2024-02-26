@@ -1,13 +1,17 @@
 import * as fs from 'fs';
-import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
+import pluginVue from '@vitejs/plugin-vue';
+// @ts-ignore
+import VueMacros from 'unplugin-vue-macros/vite';
+// @ts-ignore
+import Inspect from 'vite-plugin-inspect';
 import locales from '../../locales';
 import meta from '../../package.json';
 import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
-
+// @ts-ignore
 export default defineConfig(({ command, mode }) => {
 	fs.mkdirSync(__dirname + '/../../built', { recursive: true });
 	fs.writeFileSync(__dirname + '/../../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
@@ -16,9 +20,13 @@ export default defineConfig(({ command, mode }) => {
 		base: '/assets/',
 
 		plugins: [
-			pluginVue({
-				reactivityTransform: true,
+			VueMacros({
+				plugins: {
+					vue: pluginVue(),
+				},
 			}),
+
+			Inspect(),
 			pluginJson5(),
 		],
 

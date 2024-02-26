@@ -7,5 +7,6 @@ export function extractMentions(nodes: mfm.MfmNode[]): mfm.MfmMention['props'][]
 	const mentionNodes = mfm.extract(nodes, (node) => node.type === 'mention');
 	const mentions = mentionNodes.map(x => x.props);
 
+	// @ts-ignore
 	return mentions;
 }

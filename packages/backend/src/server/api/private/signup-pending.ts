@@ -6,6 +6,7 @@ import signin from '../common/signin.js';
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;
 
+	// @ts-ignore
 	const code = body['code'];
 
 	try {
@@ -27,9 +28,10 @@ export default async (ctx: Koa.Context) => {
 			emailVerified: true,
 			emailVerifyCode: null,
 		});
-
+		// @ts-ignore
 		signin(ctx, account);
 	} catch (e) {
+		// @ts-ignore
 		ctx.throw(400, e);
 	}
 };

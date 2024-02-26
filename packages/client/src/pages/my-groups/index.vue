@@ -40,13 +40,14 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkAvatars from '@/components/avatars.vue';
-import MkTab from '@/components/tab.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkTab from '@/components/MkTab.vue';
+import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+
 
 export default defineComponent({
 	components: {

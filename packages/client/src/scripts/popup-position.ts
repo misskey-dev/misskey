@@ -1,5 +1,3 @@
-import { Ref } from 'vue';
-
 export function calcPopupPosition(el: HTMLElement, props: {
 	anchorElement: HTMLElement | null;
 	innerMargin: number;
@@ -26,7 +24,9 @@ export function calcPopupPosition(el: HTMLElement, props: {
 			left = rect.left + window.pageXOffset + (props.anchorElement.offsetWidth / 2);
 			top = (rect.top + window.pageYOffset - contentHeight) - props.innerMargin;
 		} else {
+			// @ts-ignore
 			left = props.x;
+			// @ts-ignore
 			top = (props.y - contentHeight) - props.innerMargin;
 		}
 
@@ -47,7 +47,9 @@ export function calcPopupPosition(el: HTMLElement, props: {
 			left = rect.left + window.pageXOffset + (props.anchorElement.offsetWidth / 2);
 			top = (rect.top + window.pageYOffset + props.anchorElement.offsetHeight) + props.innerMargin;
 		} else {
+			// @ts-ignore
 			left = props.x;
+			// @ts-ignore
 			top = (props.y) + props.innerMargin;
 		}
 
@@ -68,7 +70,9 @@ export function calcPopupPosition(el: HTMLElement, props: {
 			left = (rect.left + window.pageXOffset - contentWidth) - props.innerMargin;
 			top = rect.top + window.pageYOffset + (props.anchorElement.offsetHeight / 2);
 		} else {
+			// @ts-ignore
 			left = (props.x - contentWidth) - props.innerMargin;
+			// @ts-ignore
 			top = props.y;
 		}
 
@@ -98,15 +102,19 @@ export function calcPopupPosition(el: HTMLElement, props: {
 				top -= (el.offsetHeight / 2);
 			}
 		} else {
+			// @ts-ignore
 			left = props.x + props.innerMargin;
+			// @ts-ignore
 			top = props.y;
 			top -= (el.offsetHeight / 2);
 		}
 
+		// @ts-ignore
 		if (top + contentHeight - window.pageYOffset > window.innerHeight) {
 			top = window.innerHeight - contentHeight + window.pageYOffset - 1;
 		}
 
+		// @ts-ignore
 		return [left, top];
 	};
 

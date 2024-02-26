@@ -1,13 +1,13 @@
 import autobind from 'autobind-decorator';
-import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
-import { version } from '@/config';
-import { AiScript, utils, values } from '@syuilo/aiscript';
+import { Interpreter, utils, values } from '@syuilo/aiscript';
+import { markRaw, ref, Ref, unref } from 'vue';
 import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
 import { initHpmlLib, initAiLib } from './lib';
-import * as os from '@/os';
-import { markRaw, ref, Ref, unref } from 'vue';
 import { Expr, isLiteralValue, Variable } from './expr';
+import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
+import { version } from '@/config';
+import * as os from '@/os';
 
 /**
  * Hpml evaluator
@@ -34,8 +34,8 @@ export class Hpml {
 		this.opts = opts;
 
 		if (this.opts.enableAiScript) {
-			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
-				storageKey: 'pages:' + this.page.id
+			this.aiscript = markRaw(new Interpreter({ ...createAiScriptEnv({
+				storageKey: 'pages:' + this.page.id,
 			}), ...initAiLib(this) }, {
 				in: (q) => {
 					return new Promise(ok => {
@@ -75,7 +75,7 @@ export class Hpml {
 			SEED: opts.randomSeed ? opts.randomSeed : '',
 			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
 			AISCRIPT_DISABLED: !this.opts.enableAiScript,
-			NULL: null
+			NULL: null,
 		};
 
 		this.eval();
@@ -198,7 +198,7 @@ export class Hpml {
 					slots: expr.value.slots.map(x => x.name),
 					exec: (slotArg: Record<string, any>) => {
 						return this.evaluate(expr.value.expression, scope.createChildScope(slotArg, expr.id));
-					}
+					},
 				} as Fn;
 			}
 			return;

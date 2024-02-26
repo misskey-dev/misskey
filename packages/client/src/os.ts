@@ -16,6 +16,7 @@ const apiClient = new Misskey.api.APIClient({
 	origin: url,
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const api = ((endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) => {
 	pendingApiRequestsCount.value++;
 
@@ -25,7 +26,10 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
+		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		if ($i) (data as any).i = $i.token;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		if (token !== undefined) (data as any).i = token;
 
 		// Send request
@@ -40,6 +44,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 			if (res.status === 200) {
 				resolve(body);
 			} else if (res.status === 204) {
+				// @ts-ignore
 				resolve();
 			} else {
 				reject(body.error);
@@ -52,6 +57,8 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 	return promise;
 }) as typeof apiClient.request;
 
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
 	pendingApiRequestsCount.value++;
 
@@ -73,6 +80,7 @@ export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
 			if (res.status === 200) {
 				resolve(body);
 			} else if (res.status === 204) {
+				// @ts-ignore
 				resolve();
 			} else {
 				reject(body.error);
@@ -87,13 +95,18 @@ export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
 
 export const apiWithDialog = ((
 	endpoint: string,
+	// @ts-ignore
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data: Record<string, any> = {},
 	token?: string | null | undefined,
 ) => {
+	// @ts-ignore
 	const promise = api(endpoint, data, token);
 	promiseDialog(promise, null, (err) => {
 		alert({
 			type: 'error',
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			text: err.message + '\n' + (err as any).id,
 		});
 	});
@@ -101,8 +114,12 @@ export const apiWithDialog = ((
 	return promise;
 }) as typeof api;
 
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
+	// @ts-ignore
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	onSuccess?: ((res: any) => void) | null,
 	onFailure?: ((err: Error) => void) | null,
 	text?: string,
@@ -144,8 +161,11 @@ export function promiseDialog<T extends Promise<any>>(
 
 let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	id: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	component: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	props: Record<string, any>;
 }[]>;
 
@@ -159,6 +179,7 @@ export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number
 	return zIndexes[priority];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	markRaw(component);
 
@@ -305,12 +326,14 @@ export function inputDate(props: {
 			},
 		}, {
 			done: result => {
+				// @ts-ignore
 				resolve(result ? { result: new Date(result.result), canceled: false } : { canceled: true });
 			},
 		}, 'closed');
 	});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function select<C = any>(props: {
 	title?: string | null;
 	text?: string | null;
@@ -336,7 +359,9 @@ export function select<C = any>(props: {
 			title: props.title,
 			text: props.text,
 			select: {
+				// @ts-ignore
 				items: props.items,
+				// @ts-ignore
 				groupedItems: props.groupedItems,
 				default: props.default,
 			},
@@ -358,6 +383,7 @@ export function success() {
 			success: true,
 			showing: showing,
 		}, {
+			// @ts-ignore
 			done: () => resolve(),
 		}, 'closed');
 	});
@@ -370,6 +396,7 @@ export function waiting() {
 			success: false,
 			showing: showing,
 		}, {
+			// @ts-ignore
 			done: () => resolve(),
 		}, 'closed');
 	});
@@ -455,10 +482,13 @@ export async function cropImage(image: Misskey.entities.DriveFile, options: {
 
 type AwaitType<T> =
 	T extends Promise<infer U> ? U :
+		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends (...args: any[]) => Promise<infer V> ? V :
 	T;
 let openingEmojiPicker: AwaitType<ReturnType<typeof popup>> | null = null;
 let activeTextarea: HTMLTextAreaElement | HTMLInputElement | null = null;
+// @ts-ignore
 export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: typeof activeTextarea) {
 	if (openingEmojiPicker) return;
 
@@ -467,6 +497,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	const textareas = document.querySelectorAll('textarea, input');
 	for (const textarea of Array.from(textareas)) {
 		textarea.addEventListener('focus', () => {
+			// @ts-ignore
 			activeTextarea = textarea;
 		});
 	}
@@ -522,6 +553,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 			viaKeyboard: options?.viaKeyboard,
 		}, {
 			closed: () => {
+				// @ts-ignore
 				resolve();
 				dispose();
 			},
@@ -540,6 +572,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 			ev,
 		}, {
 			closed: () => {
+				// @ts-ignore
 				resolve();
 				dispose();
 			},
@@ -549,6 +582,8 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	});
 }
 
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function post(props: Record<string, any> = {}) {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
@@ -559,6 +594,7 @@ export function post(props: Record<string, any> = {}) {
 		let dispose;
 		popup(MkPostFormDialog, props, {
 			closed: () => {
+				// @ts-ignore
 				resolve();
 				dispose();
 			},

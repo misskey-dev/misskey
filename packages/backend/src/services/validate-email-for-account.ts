@@ -20,7 +20,7 @@ export async function validateEmailForAccount(emailAddress: string): Promise<{
 		validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
 		validateDisposable: true, // 捨てアドかどうかチェック
 		validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
-	}) : { valid: true };
+	}) : { valid: true, reason: undefined };
 
 	const available = exist === 0 && validated.valid;
 

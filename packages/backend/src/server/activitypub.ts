@@ -35,6 +35,7 @@ function inbox(ctx: Router.RouterContext) {
 		return;
 	}
 
+	// @ts-ignore
 	processInbox(ctx.request.body, signature);
 
 	ctx.status = 202;

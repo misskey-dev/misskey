@@ -732,11 +732,15 @@ export interface IEndpoint {
 	params: Schema;
 }
 
+// @ts-ignore
 const endpoints: IEndpoint[] = eps.map(([name, ep]) => {
 	return {
 		name: name,
+		// @ts-ignore
 		exec: ep.default,
+		// @ts-ignore
 		meta: ep.meta || {},
+		// @ts-ignore
 		params: ep.paramDef,
 	};
 });

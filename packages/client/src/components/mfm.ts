@@ -47,6 +47,7 @@ export default defineComponent({
 	render() {
 		if (this.text == null || this.text === '') return;
 
+		// @ts-ignore
 		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
 
 		const validTime = (t: string | null | undefined) => {
@@ -62,12 +63,15 @@ export default defineComponent({
 					if (!this.plain) {
 						const res = [];
 						for (const t of text.split('\n')) {
+							// @ts-ignore
 							res.push(h('br'));
+							// @ts-ignore
 							res.push(t);
 						}
 						res.shift();
 						return res;
 					} else {
+						// @ts-ignore
 						return [text.replace(/\n/g, ' ')];
 					}
 				}
@@ -81,6 +85,7 @@ export default defineComponent({
 				}
 
 				case 'italic': {
+					// @ts-ignore
 					return h('i', {
 						style: 'font-style: oblique;',
 					}, genEl(token.children));
@@ -91,21 +96,25 @@ export default defineComponent({
 					let style;
 					switch (token.props.name) {
 						case 'tada': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '1s';
 							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '1s';
 							style = (this.$store.state.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'twitch': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '0.5s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'shake': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '0.5s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
 							break;
@@ -119,16 +128,19 @@ export default defineComponent({
 								token.props.args.x ? 'mfm-spinX' :
 								token.props.args.y ? 'mfm-spinY' :
 								'mfm-spin';
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '1.5s';
 							style = this.$store.state.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
 							break;
 						}
 						case 'jump': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '0.75s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '0.75s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
@@ -142,16 +154,19 @@ export default defineComponent({
 							break;
 						}
 						case 'x2': {
+							// @ts-ignore
 							return h('span', {
 								class: 'mfm-x2',
 							}, genEl(token.children));
 						}
 						case 'x3': {
+							// @ts-ignore
 							return h('span', {
 								class: 'mfm-x3',
 							}, genEl(token.children));
 						}
 						case 'x4': {
+							// @ts-ignore
 							return h('span', {
 								class: 'mfm-x4',
 							}, genEl(token.children));
@@ -169,11 +184,13 @@ export default defineComponent({
 							break;
 						}
 						case 'blur': {
+							// @ts-ignore
 							return h('span', {
 								class: '_mfm_blur_',
 							}, genEl(token.children));
 						}
 						case 'rainbow': {
+							// @ts-ignore
 							const speed = validTime(token.props.args.speed) || '1s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
@@ -182,17 +199,21 @@ export default defineComponent({
 							if (!this.$store.state.animatedMfm) {
 								return genEl(token.children);
 							}
+							// @ts-ignore
 							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
+							// @ts-ignore
 							const degrees = parseInt(token.props.args.deg) || '90';
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 							break;
 						}
 					}
 					if (style == null) {
+						// @ts-ignore
 						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children), ']']);
 					} else {
+						// @ts-ignore
 						return h('span', {
 							style: 'display: inline-block;' + style,
 						}, genEl(token.children));
@@ -317,6 +338,7 @@ export default defineComponent({
 				}
 
 				default: {
+					// @ts-ignore
 					console.error('unrecognized ast type:', token.type);
 
 					return [];

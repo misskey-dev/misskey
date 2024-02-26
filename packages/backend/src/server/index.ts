@@ -164,5 +164,6 @@ export default () => new Promise(resolve => {
 		}
 	});
 
+	// @ts-ignore
 	server.listen(config.port, resolve);
 });

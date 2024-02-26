@@ -1,4 +1,4 @@
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 
@@ -19,7 +19,7 @@ export async function lookupUser() {
 		if (_notFound) {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.noSuchUser
+				text: i18n.ts.noSuchUser,
 			});
 		} else {
 			_notFound = true;

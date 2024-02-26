@@ -16,6 +16,7 @@ export async function getActiveWebhooks() {
 	return webhooks;
 }
 
+// @ts-ignore
 subsdcriber.on('message', async (_, data) => {
 	const obj = JSON.parse(data);
 

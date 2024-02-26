@@ -53,7 +53,24 @@ export async function uploadFromUrl({
 		// write content at URL to temp file
 		await downloadUrl(url, path);
 
-		const driveFile = await addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
+		if (!user) {
+			throw new Error('User is required');
+		}
+
+		const driveFile = await addFile({
+			user: {id: user.id, host: user?.host, driveCapacityOverrideMb: null},
+			path,
+			name,
+			comment,
+			folderId,
+			force,
+			isLink,
+			url,
+			uri,
+			sensitive,
+			requestIp,
+			requestHeaders
+		});
 		logger.succ(`Got: ${driveFile.id}`);
 		return driveFile!;
 	} catch (e) {

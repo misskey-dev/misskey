@@ -71,6 +71,7 @@ export function uploadFile(
 			}
 
 			const formData = new FormData();
+			// @ts-ignore
 			formData.append('i', $i.token);
 			formData.append('force', 'true');
 			formData.append('file', resizedImage || file);
@@ -80,11 +81,14 @@ export function uploadFile(
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
 			xhr.onload = (ev) => {
+				// @ts-ignore
 				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 					// TODO: 消すのではなくて(ネットワーク的なエラーなら)再送できるようにしたい
 					uploads.value = uploads.value.filter(x => x.id !== id);
 
+					// @ts-ignore
 					if (ev.target?.response) {
+						// @ts-ignore
 						const res = JSON.parse(ev.target.response);
 						if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
 							alert({
@@ -109,6 +113,7 @@ export function uploadFile(
 						alert({
 							type: 'error',
 							title: 'Failed to upload',
+							// @ts-ignore
 							text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`,
 						});
 					}
@@ -117,6 +122,7 @@ export function uploadFile(
 					return;
 				}
 
+				// @ts-ignore
 				const driveFile = JSON.parse(ev.target.response);
 
 				resolve(driveFile);

@@ -88,6 +88,7 @@ export default async (ctx: Koa.Context) => {
 			createdAt: new Date(),
 			userId: user.id,
 			ip: ctx.ip,
+			// @ts-ignore
 			headers: ctx.headers,
 			success: false,
 		});

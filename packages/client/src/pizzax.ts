@@ -71,19 +71,23 @@ export class Storage<T extends StateDef> {
 							}
 						}
 					}
+					// @ts-ignore
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				});
 			}, 1);
 			// streamingのuser storage updateイベントを監視して更新
+			// @ts-ignore
 			connection?.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 				if (scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 
 				this.state[key] = value;
 				this.reactiveState[key].value = value;
 
+				// @ts-ignore
 				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
 				if (cache[key] !== value) {
 					cache[key] = value;
+					// @ts-ignore
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				}
 			});
@@ -115,6 +119,7 @@ export class Storage<T extends StateDef> {
 				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
 				cache[key] = value;
 				localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+				// @ts-ignore
 				api('i/registry/set', {
 					scope: ['client', this.key],
 					key: key,
@@ -162,6 +167,7 @@ export class Storage<T extends StateDef> {
 			set: (value: unknown) => {
 				const val = setter ? setter(value) : value;
 				this.set(key, val);
+				// @ts-ignore
 				valueRef.value = val;
 			},
 		};

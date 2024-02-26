@@ -8,6 +8,7 @@ import '@/style.scss';
 import { set } from '@/scripts/idb-proxy';
 
 if (localStorage.getItem('accounts') != null) {
+	// @ts-ignore
 	set('accounts', JSON.parse(localStorage.getItem('accounts')));
 	localStorage.removeItem('accounts');
 }
@@ -20,7 +21,7 @@ import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, host } from '@/config';
+import { version, ui, lang } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
@@ -101,6 +102,7 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 
 	//#region Set lang attr
 	const html = document.documentElement;
+	// @ts-ignore
 	html.setAttribute('lang', lang);
 	//#endregion
 
@@ -124,6 +126,7 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 	//#endregion
 
 	//#region Fetch user
+	// @ts-ignore
 	if ($i && $i.token) {
 		if (_DEV_) {
 			console.log('account cache found. refreshing...');
@@ -398,10 +401,12 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 			updateAccount({ hasUnreadSpecifiedNotes: false });
 		});
 
+		// @ts-ignore
 		main.on('readAllMessagingMessages', () => {
 			updateAccount({ hasUnreadMessagingMessage: false });
 		});
 
+		// @ts-ignore
 		main.on('unreadMessagingMessage', () => {
 			updateAccount({ hasUnreadMessagingMessage: true });
 			sound.play('chatBg');
@@ -420,10 +425,12 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 			updateAccount({ hasUnreadAnnouncement: false });
 		});
 
+		// @ts-ignore
 		main.on('readAllChannels', () => {
 			updateAccount({ hasUnreadChannel: false });
 		});
 
+		// @ts-ignore
 		main.on('unreadChannel', () => {
 			updateAccount({ hasUnreadChannel: true });
 			sound.play('channel');

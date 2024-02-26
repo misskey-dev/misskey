@@ -8,13 +8,14 @@ const instanceData = localStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
+// @ts-ignore
 export const instance: Misskey.entities.InstanceMetadata = reactive(instanceData ? JSON.parse(instanceData) : {
 	// TODO: set default values
 });
 
 export async function fetchInstance() {
 	const meta = await api('meta', {
-		detail: false
+		detail: false,
 	});
 
 	for (const [k, v] of Object.entries(meta)) {

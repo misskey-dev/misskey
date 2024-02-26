@@ -53,6 +53,7 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	document.documentElement.classList.add('_themeChanging_');
 
+	// @ts-ignore
 	timeout = window.setTimeout(() => {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
@@ -69,6 +70,7 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	const props = compile(_theme);
 
+	// @ts-ignore
 	for (const tag of document.head.children) {
 		if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
 			tag.setAttribute('content', props['htmlThemeColor']);
@@ -106,7 +108,9 @@ function compile(theme: Theme): Record<string, string> {
 		// func
 		else if (val[0] === ':') {
 			const parts = val.split('<');
+			// @ts-ignore
 			const func = parts.shift().substr(1);
+			// @ts-ignore
 			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
 

@@ -144,9 +144,11 @@ router.get('/dc/cb', async ctx => {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
-
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+			// @ts-ignore
 			redisClient.get(sessid, async (_, state) => {
+				// @ts-ignore
 				res(JSON.parse(state));
 			});
 		});
@@ -196,6 +198,7 @@ router.get('/dc/cb', async ctx => {
 		await UserProfiles.update(profile.userId, {
 			integrations: {
 				...profile.integrations,
+				// @ts-ignore
 				discord: {
 					id: id,
 					accessToken: accessToken,
@@ -216,8 +219,11 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+			// @ts-ignore
 			redisClient.get(userToken, async (_, state) => {
+				// @ts-ignore
 				res(JSON.parse(state));
 			});
 		});
@@ -263,6 +269,7 @@ router.get('/dc/cb', async ctx => {
 		await UserProfiles.update(user.id, {
 			integrations: {
 				...profile.integrations,
+				// @ts-ignore
 				discord: {
 					accessToken: accessToken,
 					refreshToken: refreshToken,

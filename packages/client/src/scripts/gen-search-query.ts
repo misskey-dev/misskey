@@ -1,4 +1,4 @@
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import { host as localHost } from '@/config';
 
 export async function genSearchQuery(v: any, q: string) {
@@ -25,6 +25,6 @@ export async function genSearchQuery(v: any, q: string) {
 	return {
 		query: q.split(' ').filter(x => !x.startsWith('/') && !x.startsWith('@')).join(' '),
 		host: host,
-		userId: userId
+		userId: userId,
 	};
 }

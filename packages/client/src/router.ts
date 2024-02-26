@@ -3,9 +3,8 @@ import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import { ui } from '@/config';
 
-const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
+const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	loader: loader,
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
@@ -426,6 +425,10 @@ export const routes = [{
 	component: page(() => import('./pages/my-groups/index.vue')),
 	loginRequired: true,
 }, {
+	path: '/my/groups/:groupId',
+	component: page(() => import('./pages/my-groups/group.vue')),
+	loginRequired: true,
+}, {
 	path: '/my/clips',
 	component: page(() => import('./pages/my-clips/index.vue')),
 	loginRequired: true,
@@ -459,6 +462,7 @@ export const routes = [{
 	component: page(() => import('./pages/not-found.vue')),
 }];
 
+// @ts-ignore
 export const mainRouter = new Router(routes, location.pathname + location.search + location.hash);
 
 window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);

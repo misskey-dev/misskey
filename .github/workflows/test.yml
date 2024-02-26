@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     services:
       postgres:
@@ -36,20 +36,20 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
+        cache: 'npm'
         cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
+          packages/backend/package-lock.json
+          packages/client/package-lock.json
     - name: Install dependencies
-      run: yarn install
-    - name: Check yarn.lock
-      run: git diff --exit-code yarn.lock
+      run: npm install
+    - name: Check package-lock.json
+      run: git diff --exit-code package-lock.json
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config
     - name: Build
-      run: yarn build
+      run: npm run build
     - name: Test
-      run: yarn mocha
+      run: npm run mocha
 
   e2e:
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
         browser: [chrome]
 
     services:
@@ -87,18 +87,18 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
+        cache: 'npm'
         cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
+          packages/backend/package-lock.json
+          packages/client/package-lock.json
     - name: Install dependencies
-      run: yarn install
-    - name: Check yarn.lock
-      run: git diff --exit-code yarn.lock
+      run: npm install
+    - name: Check package-lock.json
+      run: git diff --exit-code package-lock.json
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config
     - name: Build
-      run: yarn build
+      run: npm run build
     # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
     - name: ALSA Env
       run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
