@@ -1,5 +1,5 @@
-import * as config from '@/config';
 import { appendQuery } from './url';
+import * as config from '@/config';
 
 export function popout(path: string, w?: HTMLElement) {
 	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;
@@ -15,7 +15,9 @@ export function popout(path: string, w?: HTMLElement) {
 	} else {
 		const width = 400;
 		const height = 500;
+		// @ts-ignore
 		const x = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
+		// @ts-ignore
 		const y = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
 		window.open(url, url,
 			`width=${width}, height=${height}, top=${x}, left=${y}`);

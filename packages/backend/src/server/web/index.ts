@@ -26,7 +26,7 @@ import { queues } from '@/queue/queues.js';
 import { genOpenapiSpec } from '../api/openapi/gen-spec.js';
 import { urlPreviewHandler } from './url-preview.js';
 import { manifestHandler } from './manifest.js';
-import packFeed from './feed.js';
+import packFeed from './web-feed.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -185,8 +185,8 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 });
 
 // ServiceWorker
-router.get(`/sw.js`, async ctx => {
-	await send(ctx as any, `/sw.js`, {
+router.get('/sw.js', async ctx => {
+	await send(ctx as any, '/sw.js', {
 		root: swAssets,
 		maxage: ms('10 minutes'),
 	});

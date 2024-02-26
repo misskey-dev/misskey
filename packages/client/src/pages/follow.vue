@@ -5,7 +5,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
@@ -20,7 +20,7 @@ async function follow(user): Promise<void> {
 		window.close();
 		return;
 	}
-	
+
 	os.apiWithDialog('following/create', {
 		userId: user.id,
 	});

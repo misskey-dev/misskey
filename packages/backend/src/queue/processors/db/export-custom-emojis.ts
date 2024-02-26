@@ -1,23 +1,22 @@
-import Bull from 'bull';
 import * as fs from 'node:fs';
+import Bull from 'bull';
 
-import { ulid } from 'ulid';
 import mime from 'mime-types';
 import archiver from 'archiver';
-import { queueLogger } from '../../logger.js';
-import { addFile } from '@/services/drive/add-file.js';
 import { format as dateFormat } from 'date-fns';
+import { IsNull } from 'typeorm';
+import { addFile } from '@/services/drive/add-file.js';
 import { Users, Emojis } from '@/models/index.js';
 import { } from '@/queue/types.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import config from '@/config/index.js';
-import { IsNull } from 'typeorm';
+import { queueLogger } from '../../logger.js';
 
 const logger = queueLogger.createSubLogger('export-custom-emojis');
 
 export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promise<void> {
-	logger.info(`Exporting custom emojis ...`);
+	logger.info('Exporting custom emojis ...');
 
 	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
@@ -60,6 +59,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	});
 
 	for (const emoji of customEmojis) {
+		// @ts-ignore
 		const ext = mime.extension(emoji.type);
 		const fileName = emoji.name + (ext ? '.' + ext : '');
 		const emojiPath = path + '/' + fileName;

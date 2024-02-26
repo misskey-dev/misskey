@@ -45,6 +45,7 @@ function postReadAllNotifications(userId: User['id']) {
 }
 
 function postReadNotifications(userId: User['id'], notificationIds: Notification['id'][]) {
+	// @ts-ignore
 	publishMainStream(userId, 'readNotifications', notificationIds);
 	return pushNotification(userId, 'readNotifications', { notificationIds });
 }

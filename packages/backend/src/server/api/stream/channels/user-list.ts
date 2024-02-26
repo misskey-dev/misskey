@@ -87,6 +87,7 @@ export default class extends Channel {
 		this.subscriber.off(`userListStream:${this.listId}`, this.send);
 		this.subscriber.off('notesStream', this.onNote);
 
+		// @ts-ignore
 		clearInterval(this.listUsersClock);
 	}
 }

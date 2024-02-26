@@ -45,6 +45,8 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		const limit = Object.assign({}, ep.meta.limit);
 
 		if (!limit.key) {
+			// @ts-ignore
+			// noinspection JSConstantReassignment
 			limit.key = ep.name;
 		}
 

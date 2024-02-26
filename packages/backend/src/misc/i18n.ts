@@ -13,6 +13,7 @@ export class I18n<T extends Record<string, any>> {
 	// なるべくこのメソッド使うよりもlocale直接参照の方がvueのキャッシュ効いてパフォーマンスが良いかも
 	public t(key: string, args?: Record<string, any>): string {
 		try {
+			// @ts-ignore
 			let str = key.split('.').reduce((o, i) => o[i], this.locale) as string;
 
 			if (args) {

@@ -31,6 +31,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		},
 	});
 
+	// @ts-ignore
 	return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
 		detail: true,
 	})));

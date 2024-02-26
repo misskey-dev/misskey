@@ -69,9 +69,12 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
+// @ts-ignore
 export default define(meta, paramDef, async (ps, user) => {
+	// @ts-ignore
 	if (ps.userId != null) {
 		// Fetch recipient (user)
+		// @ts-ignore
 		const recipient = await getUser(ps.userId).catch(e => {
 			if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 			throw e;
@@ -106,8 +109,10 @@ export default define(meta, paramDef, async (ps, user) => {
 		return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
 			populateRecipient: false,
 		})));
+		// @ts-ignore
 	} else if (ps.groupId != null) {
 		// Fetch recipient (group)
+		// @ts-ignore
 		const recipientGroup = await UserGroups.findOneBy({ id: ps.groupId });
 
 		if (recipientGroup == null) {

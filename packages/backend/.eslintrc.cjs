@@ -29,4 +29,8 @@ module.exports = {
 			}
 	]
 	},
+	ignorePatterns: [
+		'node_modules',
+		'*.d.ts'
+	]
 };

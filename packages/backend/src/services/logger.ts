@@ -2,10 +2,10 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
-import { envOption } from '../env.js';
-import config from '@/config/index.js';
-
 import * as SyslogPro from 'syslog-pro';
+import { KEYWORD } from 'color-convert/conversions';
+import { envOption } from '@/env.js';
+import config from '@/config/index.js';
 
 type Domain = {
 	name: string;
@@ -29,9 +29,9 @@ export default class Logger {
 
 		if (config.syslog) {
 			this.syslogClient = new SyslogPro.RFC5424({
-				applacationName: 'Misskey',
+				applicationName: 'Oranski',
 				timestamp: true,
-				encludeStructuredData: true,
+				includeStructuredData: true,
 				color: true,
 				extendedColor: true,
 				server: {
@@ -59,7 +59,7 @@ export default class Logger {
 		}
 
 		const time = dateFormat(new Date(), 'HH:mm:ss');
-		const worker = cluster.isPrimary ? '*' : cluster.worker.id;
+		const worker = cluster.isPrimary ? '*' : cluster.worker?.id;
 		const l =
 			level === 'error' ? important ? chalk.bgRed.white('ERR ') : chalk.red('ERR ') :
 			level === 'warning' ? chalk.yellow('WARN') :
@@ -67,7 +67,7 @@ export default class Logger {
 			level === 'debug' ? chalk.gray('VERB') :
 			level === 'info' ? chalk.blue('INFO') :
 			null;
-		const domains = [this.domain].concat(subDomains).map(d => d.color ? chalk.rgb(...convertColor.keyword.rgb(d.color))(d.name) : chalk.white(d.name));
+		const domains = [this.domain].concat(subDomains).map(d => d.color ? chalk.rgb(...convertColor.keyword.rgb(d.color as KEYWORD))(d.name) : chalk.white(d.name));
 		const m =
 			level === 'error' ? chalk.red(message) :
 			level === 'warning' ? chalk.yellow(message) :

@@ -67,7 +67,7 @@ module.exports = {
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],
 		'@typescript-eslint/no-non-null-assertion': ['warn'],
-		'@typescript-eslint/explicit-function-return-type': ['warn'],
+		'@typescript-eslint/explicit-function-return-type': 0,
 		'@typescript-eslint/no-misused-promises': ['error', {
 			'checksVoidReturn': false,
 		}],
@@ -75,6 +75,14 @@ module.exports = {
 		'import/no-default-export': ['warn'],
 		'import/order': ['warn', {
 			'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-		}]
+		}],
+		'@typescript-eslint/ban-ts-comment': 0,
+		'JSUnusedLocalSymbols': 0,
+		'ES6UnusedImports': 0,
+		'@typescript-eslint/no-unused-vars': 0,
 	},
+	ignorePatterns: [
+		'node_modules/',
+		'*.d.ts'
+	]
 };

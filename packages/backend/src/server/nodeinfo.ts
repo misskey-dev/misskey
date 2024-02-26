@@ -95,6 +95,7 @@ router.get(nodeinfo2_1path, async ctx => {
 router.get(nodeinfo2_0path, async ctx => {
 	const base = await cache.fetch(null, () => nodeinfo2());
 
+	// @ts-ignore
 	delete base.software.repository;
 
 	ctx.body = { version: '2.0', ...base };

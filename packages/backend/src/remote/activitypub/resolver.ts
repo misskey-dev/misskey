@@ -104,9 +104,11 @@ export default class Resolver {
 		switch (parsed.type) {
 			case 'notes':
 				return Notes.findOneByOrFail({ id: parsed.id })
+					// @ts-ignore
 				.then(note => {
 					if (parsed.rest === 'activity') {
 						// this refers to the create activity and not the note itself
+						// @ts-ignore
 						return renderActivity(renderCreate(renderNote(note)));
 					} else {
 						return renderNote(note);
@@ -117,22 +119,26 @@ export default class Resolver {
 				.then(user => renderPerson(user as ILocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
+				// @ts-ignore
 				return Promise.all([
 					Notes.findOneByOrFail({ id: parsed.id }),
 					Polls.findOneByOrFail({ noteId: parsed.id }),
 				])
 				.then(([note, poll]) => renderQuestion({ id: note.userId }, note, poll));
 			case 'likes':
+				// @ts-ignore
 				return NoteReactions.findOneByOrFail({ id: parsed.id }).then(reaction => renderActivity(renderLike(reaction, { uri: null })));
 			case 'follows':
 				// rest should be <followee id>
 				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
 
+				// @ts-ignore
 				return Promise.all(
 					[parsed.id, parsed.rest].map(id => Users.findOneByOrFail({ id })),
 				)
 				.then(([follower, followee]) => renderActivity(renderFollow(follower, followee, url)));
 			default:
+				// @ts-ignore
 				throw new Error(`resolveLocal: type ${type} unhandled`);
 		}
 	}

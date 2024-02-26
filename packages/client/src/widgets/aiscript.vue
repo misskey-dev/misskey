@@ -13,8 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { AiScript, parse, utils } from '@syuilo/aiscript';
+import { ref } from 'vue';
+// @ts-ignore
+import { Interpreter, Parser, utils } from '@syuilo/aiscript';
+// @ts-ignore
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
@@ -60,8 +62,9 @@ const logs = ref<{
 
 const run = async () => {
 	logs.value = [];
-	const aiscript = new AiScript(createAiScriptEnv({
+	const aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'widget',
+		// @ts-ignore
 		token: $i?.token,
 	}), {
 		in: (q) => {
@@ -94,7 +97,8 @@ const run = async () => {
 
 	let ast;
 	try {
-		ast = parse(widgetProps.script);
+		const parser = new Parser();
+		ast = parser(widgetProps.script);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -107,6 +111,7 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
+			// @ts-ignore
 			text: err,
 		});
 	}

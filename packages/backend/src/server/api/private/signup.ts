@@ -19,22 +19,29 @@ export default async (ctx: Koa.Context) => {
 	// ただしテスト時はこの機構は障害となるため無効にする
 	if (process.env.NODE_ENV !== 'test') {
 		if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
+			// @ts-ignore
 			await verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
 				ctx.throw(400, e);
 			});
 		}
 
 		if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
+			// @ts-ignore
 			await verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
 				ctx.throw(400, e);
 			});
 		}
 	}
 
+	// @ts-ignore
 	const username = body['username'];
+	// @ts-ignore
 	const password = body['password'];
+	// @ts-ignore
 	const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] || null) : null;
+	// @ts-ignore
 	const invitationCode = body['invitationCode'];
+	// @ts-ignore
 	const emailAddress = body['emailAddress'];
 
 	if (instance.emailRequiredForSignup) {
@@ -106,6 +113,7 @@ export default async (ctx: Koa.Context) => {
 
 			ctx.body = res;
 		} catch (e) {
+			// @ts-ignore
 			ctx.throw(400, e);
 		}
 	}

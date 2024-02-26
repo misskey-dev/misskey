@@ -124,7 +124,9 @@ router.get('/tw/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const get = new Promise<any>((res, rej) => {
+			// @ts-ignore
 			redisClient.get(sessid, async (_, twCtx) => {
 				res(twCtx);
 			});
@@ -159,7 +161,9 @@ router.get('/tw/cb', async ctx => {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const get = new Promise<any>((res, rej) => {
+			// @ts-ignore
 			redisClient.get(userToken, async (_, twCtx) => {
 				res(twCtx);
 			});
@@ -179,6 +183,7 @@ router.get('/tw/cb', async ctx => {
 		await UserProfiles.update(user.id, {
 			integrations: {
 				...profile.integrations,
+				// @ts-ignore
 				twitter: {
 					accessToken: result.accessToken,
 					accessTokenSecret: result.accessTokenSecret,

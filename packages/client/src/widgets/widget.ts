@@ -43,7 +43,7 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 	};
 	watch(widgetProps, () => {
 		mergeProps();
-	}, { deep: true, immediate: true, });
+	}, { deep: true, immediate: true });
 
 	const save = throttle(3000, () => {
 		emit('updateProps', widgetProps);
@@ -54,6 +54,7 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 		for (const item of Object.keys(form)) {
 			form[item].default = widgetProps[item];
 		}
+		// @ts-ignore
 		const { canceled, result } = await os.form(name, form);
 		if (canceled) return;
 

@@ -22,7 +22,9 @@ export function useNoteCapture(props: {
 
 				if (body.emoji) {
 					const emojis = note.value.emojis || [];
+					// @ts-ignore
 					if (!emojis.includes(body.emoji)) {
+						// @ts-ignore
 						note.value.emojis = [...emojis, body.emoji];
 					}
 				}
@@ -55,15 +57,17 @@ export function useNoteCapture(props: {
 			case 'pollVoted': {
 				const choice = body.choice;
 
+				// @ts-ignore
 				const choices = [...note.value.poll.choices];
 				choices[choice] = {
 					...choices[choice],
 					votes: choices[choice].votes + 1,
 					...($i && (body.userId === $i.id) ? {
-						isVoted: true
-					} : {})
+						isVoted: true,
+					} : {}),
 				};
 
+				// @ts-ignore
 				note.value.poll.choices = choices;
 				break;
 			}
@@ -95,12 +99,12 @@ export function useNoteCapture(props: {
 	function onStreamConnected() {
 		capture(false);
 	}
-	
+
 	capture(true);
 	if (connection) {
 		connection.on('_connected_', onStreamConnected);
 	}
-	
+
 	onUnmounted(() => {
 		decapture(true);
 		if (connection) {

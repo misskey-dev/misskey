@@ -5,6 +5,7 @@ const cache = new Map<string, HTMLAudioElement>();
 export function getAudio(file: string, useCache = true): HTMLAudioElement {
 	let audio: HTMLAudioElement;
 	if (useCache && cache.has(file)) {
+		// @ts-ignore
 		audio = cache.get(file);
 	} else {
 		audio = new Audio(`/client-assets/sounds/${file}.mp3`);

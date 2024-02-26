@@ -42,13 +42,16 @@ const sideN = Math.floor(n / 2);
  */
 export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	const rand = gen.create(seed);
+	// @ts-ignore
 	const canvas = p.make(size, size, undefined);
 	const ctx = canvas.getContext('2d');
 
 	const bgColors = colors[rand(colors.length)];
 
 	const bg = ctx.createLinearGradient(0, 0, size, size);
+	// @ts-ignore
 	bg.addColorStop(0, bgColors[0]);
+	// @ts-ignore
 	bg.addColorStop(1, bgColors[1]);
 
 	ctx.fillStyle = bg;

@@ -91,13 +91,16 @@ export default define(meta, paramDef, async (ps, user) => {
 	let recipientUser: User | null;
 	let recipientGroup: UserGroup | null;
 
+	// @ts-ignore
 	if (ps.userId != null) {
 		// Myself
+		// @ts-ignore
 		if (ps.userId === user.id) {
 			throw new ApiError(meta.errors.recipientIsYourself);
 		}
 
 		// Fetch recipient (user)
+		// @ts-ignore
 		recipientUser = await getUser(ps.userId).catch(e => {
 			if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 			throw e;
@@ -111,8 +114,10 @@ export default define(meta, paramDef, async (ps, user) => {
 		if (block) {
 			throw new ApiError(meta.errors.youHaveBeenBlocked);
 		}
+		// @ts-ignore
 	} else if (ps.groupId != null) {
 		// Fetch recipient (group)
+		// @ts-ignore
 		recipientGroup = await UserGroups.findOneBy({ id: ps.groupId! });
 
 		if (recipientGroup == null) {
@@ -147,5 +152,6 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
+	// @ts-ignore
 	return await createMessage(user, recipientUser, recipientGroup, ps.text, file);
 });

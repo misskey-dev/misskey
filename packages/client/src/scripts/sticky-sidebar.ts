@@ -7,7 +7,7 @@ export class StickySidebar {
 	private isTop = false;
 	private isBottom = false;
 	private offsetTop: number;
-	private globalHeaderHeight: number = 59;
+	private globalHeaderHeight = 59;
 
 	constructor(container: StickySidebar['container'], marginTop = 0, globalHeaderHeight = 0) {
 		this.container = container;
@@ -23,6 +23,7 @@ export class StickySidebar {
 	public calc(scrollTop: number) {
 		if (scrollTop > this.lastScrollTop) { // downscroll
 			const overflow = Math.max(0, this.globalHeaderHeight + (this.el.clientHeight + this.marginTop) - window.innerHeight);
+			// @ts-ignore
 			this.el.style.bottom = null;
 			this.el.style.top = `${-overflow + this.marginTop + this.globalHeaderHeight}px`;
 
@@ -34,6 +35,7 @@ export class StickySidebar {
 			}
 		} else { // upscroll
 			const overflow = this.globalHeaderHeight + (this.el.clientHeight + this.marginTop) - window.innerHeight;
+			// @ts-ignore
 			this.el.style.top = null;
 			this.el.style.bottom = `${-overflow}px`;
 

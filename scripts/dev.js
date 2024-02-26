@@ -1,4 +1,6 @@
-const execa = require('execa');
+import { execa } from "execa";
+
+const __dirname = new URL('.', import.meta.url).pathname;
 
 (async () => {
 	await execa('npm', ['run', 'clean'], {

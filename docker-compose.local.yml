@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    restart: always
+    links:
+      - db
+      - redis
+#      - es
+    ports:
+      - "3000:3000"
+    networks:
+      - internal_network
+      - external_network
+    volumes:
+      - ./files:/misskey/files
+      - ./.config:/misskey/.config:ro
+
+  redis:
+    restart: always
+    image: redis:4.0-alpine
+    networks:
+      - internal_network
+      - external_network
+    volumes:
+      - ./redis:/data
+    ports:
+      - "6379:6379"
+
+  db:
+    restart: always
+    image: postgres:12.2-alpine
+    networks:
+      - internal_network
+      - external_network
+    env_file:
+      - .config/docker.env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+#  es:
+#    restart: always
+#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
+#    environment:
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - "TAKE_FILE_OWNERSHIP=111"
+#    networks:
+#      - internal_network
+#    volumes:
+#      - ./elasticsearch:/usr/share/elasticsearch/data
+
+networks:
+  internal_network:
+    internal: true
+  external_network:

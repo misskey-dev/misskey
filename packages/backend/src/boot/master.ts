@@ -10,10 +10,9 @@ import semver from 'semver';
 import Logger from '@/services/logger.js';
 import loadConfig from '@/config/load.js';
 import { Config } from '@/config/types.js';
-import { lessThan } from '@/prelude/array.js';
-import { envOption } from '../env.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { db, initDb } from '../db/postgre.js';
+import { envOption } from '@/env.js';
+import { db, initDb } from '@/db/postgre.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -115,6 +114,7 @@ function loadConfigBoot(): Config {
 			configLogger.error(exception);
 			process.exit(1);
 		}
+		// @ts-ignore
 		if (exception.code === 'ENOENT') {
 			configLogger.error('Configuration file not found', null, true);
 			process.exit(1);
@@ -138,12 +138,13 @@ async function connectDb(): Promise<void> {
 		dbLogger.succ(`Connected: v${v}`);
 	} catch (e) {
 		dbLogger.error('Cannot connect', null, true);
+		// @ts-ignore
 		dbLogger.error(e);
 		process.exit(1);
 	}
 }
 
-async function spawnWorkers(limit: number = 1) {
+async function spawnWorkers(limit = 1) {
 	const workers = Math.min(limit, os.cpus().length);
 	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
 	await Promise.all([...Array(workers)].map(spawnWorker));
@@ -155,7 +156,7 @@ function spawnWorker(): Promise<void> {
 		const worker = cluster.fork();
 		worker.on('message', message => {
 			if (message === 'listenFailed') {
-				bootLogger.error(`The server Listen failed due to the previous error.`);
+				bootLogger.error('The server Listen failed due to the previous error.');
 				process.exit(1);
 			}
 			if (message !== 'ready') return;

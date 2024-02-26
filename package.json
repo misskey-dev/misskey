@@ -8,7 +8,7 @@
 	},
 	"private": true,
 	"scripts": {
-		"postinstall": "node --experimental-default-type=module ./scripts/install-packages.js",
+		"postinstall": "node --experimental-default-type=module  ./scripts/install-packages.js",
 		"build": "node ./scripts/build.js",
 		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
@@ -17,7 +17,7 @@
 		"migrateandstart": "npm run migrate && npm run start",
 		"gulp": "gulp build",
 		"watch": "npm run dev",
-		"dev": "node ./scripts/dev.js",
+		"dev": "node --experimental-default-type=module ./scripts/dev.js",
 		"lint": "node ./scripts/lint.js",
 		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "cypress run",
@@ -43,10 +43,13 @@
 	"devDependencies": {
 		"@types/gulp": "^4.0.17",
 		"@types/gulp-rename": "^2.0.6",
-		"@typescript-eslint/parser": "^7.0.2",
+		"@typescript-eslint/eslint-plugin": "7.0.2",
+		"@typescript-eslint/parser": "7.0.2",
 		"cross-env": "7.0.3",
 		"cypress": "^13.6.6",
+		"eslint": "8.57.0",
 		"start-server-and-test": "^2.0.3",
-		"typescript": "^5.3.3"
+		"typescript": "5.3.3",
+		"typescript-eslint": "7.0.2"
 	}
 }

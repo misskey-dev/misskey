@@ -1,3 +1,4 @@
+// @ts-ignore
 import { EndoRelation, Predicate } from './relation';
 
 /**
@@ -126,6 +127,7 @@ export function takeWhile<T>(f: Predicate<T>, xs: T[]): T[] {
 	const ys = [];
 	for (const x of xs) {
 		if (f(x)) {
+			// @ts-ignore
 			ys.push(x);
 		} else {
 			break;

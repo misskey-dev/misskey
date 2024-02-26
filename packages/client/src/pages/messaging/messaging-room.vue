@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
@@ -99,7 +99,7 @@ async function fetch() {
 		const acct = Acct.parse(props.userAcct);
 		user = await os.api('users/show', { username: acct.username, host: acct.host || undefined });
 		group = null;
-		
+
 		pagination = {
 			endpoint: 'messaging/messages',
 			limit: 20,

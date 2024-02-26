@@ -63,6 +63,7 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
+// @ts-ignore
 export default define(meta, paramDef, async (ps) => {
 	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
 		.andWhere(`emoji.host IS NULL`);

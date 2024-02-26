@@ -23,6 +23,7 @@ export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
 
+	// @ts-ignore
 	await removeAccount($i.id);
 
 	const accounts = await getAccounts();
@@ -36,6 +37,7 @@ export async function signout() {
 				await fetch(`${apiUrl}/sw/unregister`, {
 					method: 'POST',
 					body: JSON.stringify({
+						// @ts-ignore
 						i: $i.token,
 						endpoint: push.endpoint,
 					}),
@@ -58,10 +60,12 @@ export async function signout() {
 	else unisonReload('/');
 }
 
+// @ts-ignore
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
 	return (await get('accounts')) || [];
 }
 
+// @ts-ignore
 export async function addAccount(id: Account['id'], token: Account['token']) {
 	const accounts = await getAccounts();
 	if (!accounts.some(x => x.id === id)) {
@@ -111,15 +115,18 @@ function fetchAccount(token: string): Promise<Account> {
 
 export function updateAccount(accountData) {
 	for (const [key, value] of Object.entries(accountData)) {
+		// @ts-ignore
 		$i[key] = value;
 	}
 	localStorage.setItem('account', JSON.stringify($i));
 }
 
 export function refreshAccount() {
+	// @ts-ignore
 	return fetchAccount($i.token).then(updateAccount);
 }
 
+// @ts-ignore
 export async function login(token: Account['token'], redirect?: string) {
 	waiting();
 	if (_DEV_) console.log('logging as token ', token);
@@ -165,6 +172,7 @@ export async function openAccountMenu(opts: {
 
 	async function switchAccount(account: misskey.entities.UserDetailed) {
 		const storedAccounts = await getAccounts();
+		// @ts-ignore
 		const token = storedAccounts.find(x => x.id === account.id).token;
 		switchAccountWithToken(token);
 	}
@@ -173,6 +181,7 @@ export async function openAccountMenu(opts: {
 		login(token);
 	}
 
+	// @ts-ignore
 	const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id));
 	const accountsPromise = api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
@@ -200,11 +209,14 @@ export async function openAccountMenu(opts: {
 	}));
 
 	if (opts.withExtraOperation) {
+		// @ts-ignore
 		popupMenu([...[{
 			type: 'link',
 			text: i18n.ts.profile,
+			// @ts-ignore
 			to: `/@${ $i.username }`,
 			avatar: $i,
+			// @ts-ignore
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent',
 			icon: 'fas fa-plus',
@@ -225,6 +237,7 @@ export async function openAccountMenu(opts: {
 			align: 'left',
 		});
 	} else {
+		// @ts-ignore
 		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
 			align: 'left',
 		});

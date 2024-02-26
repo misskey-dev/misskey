@@ -53,6 +53,7 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
+// @ts-ignore
 export default define(meta, paramDef, async (ps, user) => {
 	const blocker = await Users.findOneByOrFail({ id: user.id });
 

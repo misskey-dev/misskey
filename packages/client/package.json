@@ -1,6 +1,9 @@
 {
 	"private": true,
 	"scripts": {
+		"dev": "vite dev",
+		"type-check": "tsc --noEmit",
+		"type-check:watch": "tsc --noEmit --watch",
 		"watch": "vite build --watch --mode development",
 		"build": "vite build",
 		"lint": "eslint --quiet \"src/**/*.{ts,vue}\"",

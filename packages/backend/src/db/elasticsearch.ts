@@ -44,9 +44,11 @@ if (client) {
 	client.indices.exists({
 		index: config.elasticsearch.index || 'misskey_note',
 	}).then(exist => {
+		// @ts-ignore
 		if (!exist.body) {
 			client.indices.create({
 				index: config.elasticsearch.index || 'misskey_note',
+				// @ts-ignore
 				body: index,
 			});
 		}

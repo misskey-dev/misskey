@@ -169,6 +169,7 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
+// @ts-ignore
 export default define(meta, paramDef, async (ps, me) => {
 	const file = ps.fileId ? await DriveFiles.findOneBy({ id: ps.fileId }) : await DriveFiles.findOne({
 		where: [{
@@ -185,7 +186,9 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	if (!me.isAdmin) {
+		// @ts-ignore
 		delete file.requestIp;
+		// @ts-ignore
 		delete file.requestHeaders;
 	}
 

@@ -6,7 +6,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, nextTick, onUnmounted, PropType } from 'vue';
-import { parse } from '@syuilo/aiscript';
+// @ts-ignore
+import { Parser } from '@syuilo/aiscript';
 import XBlock from './page.block.vue';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { url } from '@/config';
@@ -15,20 +16,23 @@ import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
-		XBlock
+		XBlock,
 	},
 	props: {
 		page: {
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			type: Object as PropType<Record<string, any>>,
-			required: true
+			required: true,
 		},
 	},
 	setup(props, ctx) {
 		const hpml = new Hpml(props.page, {
+			// @ts-ignore
 			randomSeed: Math.random(),
 			visitor: $i,
 			url: url,
-			enableAiScript: !defaultStore.state.disablePagesScript
+			enableAiScript: !defaultStore.state.disablePagesScript,
 		});
 
 		onMounted(() => {
@@ -36,7 +40,9 @@ export default defineComponent({
 				if (props.page.script && hpml.aiscript) {
 					let ast;
 					try {
-						ast = parse(props.page.script);
+						// @ts-ignore
+						const parser = new Parser();
+						ast = parser(props.page.script);
 					} catch (err) {
 						console.error(err);
 						/*os.alert({

@@ -43,7 +43,7 @@
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
+		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
@@ -69,7 +69,7 @@ import * as misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode/';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import { throttle } from 'throttle-debounce';
 import XNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
@@ -482,9 +482,9 @@ function onDragover(ev) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -761,7 +761,7 @@ onMounted(() => {
 					margin-left: 0 !important;
 				}
 			}
-			
+
 			> .local-only {
 				margin: 0 0 0 12px;
 				opacity: 0.7;

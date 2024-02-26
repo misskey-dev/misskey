@@ -1,5 +1,5 @@
 import * as misskey from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import { url } from '@/config';
 
 export const acct = (user: misskey.Acct) => {

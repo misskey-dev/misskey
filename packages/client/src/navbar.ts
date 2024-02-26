@@ -1,4 +1,4 @@
-import { computed, ref, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -18,6 +18,7 @@ export const navbarItemDef = reactive({
 		title: 'messaging',
 		icon: 'fas fa-comments',
 		show: computed(() => $i != null),
+		// @ts-ignore
 		indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
 		to: '/my/messaging',
 	},

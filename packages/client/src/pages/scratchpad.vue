@@ -27,7 +27,8 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { AiScript, parse, utils } from '@syuilo/aiscript';
+// @ts-ignore
+import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
@@ -37,6 +38,8 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const code = ref('');
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const logs = ref<any[]>([]);
 
 const saved = localStorage.getItem('scratchpad');
@@ -50,8 +53,9 @@ watch(code, () => {
 
 async function run() {
 	logs.value = [];
-	const aiscript = new AiScript(createAiScriptEnv({
+	const aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'scratchpad',
+		// @ts-ignore
 		token: $i?.token,
 	}), {
 		in: (q) => {
@@ -84,7 +88,8 @@ async function run() {
 
 	let ast;
 	try {
-		ast = parse(code.value);
+		const parser = new Parser();
+		ast = parser(code.value);
 	} catch (error) {
 		os.alert({
 			type: 'error',
@@ -94,6 +99,7 @@ async function run() {
 	}
 	try {
 		await aiscript.exec(ast);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		os.alert({
 			type: 'error',
@@ -106,8 +112,10 @@ function highlighter(code) {
 	return highlight(code, languages.js, 'javascript');
 }
 
+// @ts-ignore
 const headerActions = $computed(() => []);
 
+// @ts-ignore
 const headerTabs = $computed(() => []);
 
 definePageMetadata({

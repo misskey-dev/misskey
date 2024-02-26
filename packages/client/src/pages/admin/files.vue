@@ -34,7 +34,7 @@
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import { acct as Acct } from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';

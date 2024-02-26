@@ -6,6 +6,8 @@
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
 		"noUnusedLocals": false,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true,
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": false,
@@ -42,7 +44,17 @@
 		]
 	},
 	"compileOnSave": false,
+//	"tsc-alias": {
+//		"resolveFullPaths": true,
+//		"verbose": false
+//	},
 	"include": [
 		"./src/**/*.ts"
+	],
+	"exclude": [
+		"node_module",
+		"./node_modules",
+		"./node_modules/**",
+		"./built"
 	],
 }

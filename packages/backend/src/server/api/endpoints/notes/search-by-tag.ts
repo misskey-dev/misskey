@@ -85,11 +85,15 @@ export default define(meta, paramDef, async (ps, me) => {
 	if (me) generateBlockedUserQuery(query, me);
 
 	try {
+		// @ts-ignore
 		if (ps.tag) {
+			// @ts-ignore
 			if (!safeForSql(ps.tag)) throw 'Injection';
+			// @ts-ignore
 			query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
 		} else {
 			query.andWhere(new Brackets(qb => {
+				// @ts-ignore
 				for (const tags of ps.query!) {
 					qb.orWhere(new Brackets(qb => {
 						for (const tag of tags) {

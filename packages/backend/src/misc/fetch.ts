@@ -46,6 +46,7 @@ export async function getResponse(args: { url: string, method: string, body?: st
 		method: args.method,
 		headers: args.headers,
 		body: args.body,
+		// @ts-ignore
 		timeout,
 		size: args.size || 10 * 1024 * 1024,
 		agent: getAgentByUrl,

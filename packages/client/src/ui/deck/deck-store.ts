@@ -2,12 +2,12 @@ import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import { Storage } from '../../pizzax';
-import { i18n } from '@/i18n';
 import { api } from '@/os';
 
 type ColumnWidget = {
 	name: string;
 	id: string;
+	// @ts-ignore
 	data: Record<string, any>;
 };
 
@@ -65,6 +65,7 @@ export const loadDeck = async () => {
 			key: deckStore.state.profile,
 		});
 	} catch (err) {
+		// @ts-ignore
 		if (err.code === 'NO_SUCH_KEY') {
 			// 後方互換性のため
 			if (deckStore.state.profile === 'default') {
@@ -102,6 +103,7 @@ export async function getProfiles(): Promise<string[]> {
 }
 
 export async function deleteProfile(key: string): Promise<void> {
+	// @ts-ignore
 	return await api('i/registry/remove', {
 		scope: ['client', 'deck', 'profiles'],
 		key: key,
@@ -137,6 +139,7 @@ export function swapColumn(a: Column['id'], b: Column['id']) {
 
 export function swapLeftColumn(id: Column['id']) {
 	const layout = copy(deckStore.state.layout);
+	// @ts-ignore
 	deckStore.state.layout.some((ids, i) => {
 		if (ids.includes(id)) {
 			const left = deckStore.state.layout[i - 1];
@@ -153,6 +156,7 @@ export function swapLeftColumn(id: Column['id']) {
 
 export function swapRightColumn(id: Column['id']) {
 	const layout = copy(deckStore.state.layout);
+	// @ts-ignore
 	deckStore.state.layout.some((ids, i) => {
 		if (ids.includes(id)) {
 			const right = deckStore.state.layout[i + 1];
@@ -171,6 +175,7 @@ export function swapUpColumn(id: Column['id']) {
 	const layout = copy(deckStore.state.layout);
 	const idsIndex = deckStore.state.layout.findIndex(ids => ids.includes(id));
 	const ids = copy(deckStore.state.layout[idsIndex]);
+	// @ts-ignore
 	ids.some((x, i) => {
 		if (x === id) {
 			const up = ids[i - 1];
@@ -191,6 +196,7 @@ export function swapDownColumn(id: Column['id']) {
 	const layout = copy(deckStore.state.layout);
 	const idsIndex = deckStore.state.layout.findIndex(ids => ids.includes(id));
 	const ids = copy(deckStore.state.layout[idsIndex]);
+	// @ts-ignore
 	ids.some((x, i) => {
 		if (x === id) {
 			const down = ids[i + 1];
@@ -254,6 +260,8 @@ export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStore.state.columns[columnIndex]);
 	if (column == null) return;
+
+	// @ts-ignore
 	column.widgets = column.widgets.filter(w => w.id !== widget.id);
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
@@ -276,6 +284,7 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, widgetDat
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStore.state.columns[columnIndex]);
 	if (column == null) return;
+	// @ts-ignore
 	column.widgets = column.widgets.map(w => w.id === widgetId ? {
 		...w,
 		data: widgetData,

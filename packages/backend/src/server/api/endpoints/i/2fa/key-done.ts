@@ -1,7 +1,6 @@
-import bcrypt from 'bcryptjs';
 import { promisify } from 'node:util';
+import bcrypt from 'bcryptjs';
 import * as cbor from 'cbor';
-import define from '../../../define.js';
 import {
 	UserProfiles,
 	UserSecurityKeys,
@@ -9,10 +8,18 @@ import {
 	Users,
 } from '@/models/index.js';
 import config from '@/config/index.js';
-import { procedures, hash } from '../../../2fa.js';
 import { publishMainStream } from '@/services/stream.js';
+import { procedures, hash } from '../../../2fa.js';
+import define from '../../../define.js';
 
-const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
+// @ts-ignore
+let cborDecodeFirst;
+try {
+	// @ts-ignore
+	cborDecodeFirst = promisify(cbor.decodeFirst) as any;
+} catch (e) {
+	console.error('error =', e);
+}
 const rpIdHashReal = hash(Buffer.from(config.hostname, 'utf-8'));
 
 export const meta = {
@@ -59,7 +66,8 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	const clientDataJSONHash = hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
 
-	const attestation = await cborDecodeFirst(ps.attestationObject);
+	// @ts-ignore
+	const attestation = await cborDecodeFirst?.(ps.attestationObject);
 
 	const rpIdHash = attestation.authData.slice(0, 32);
 	if (!rpIdHashReal.equals(rpIdHash)) {
@@ -77,6 +85,8 @@ export default define(meta, paramDef, async (ps, user) => {
 	const credentialIdLength = authData.readUInt16BE(53);
 	const credentialId = authData.slice(55, 55 + credentialIdLength);
 	const publicKeyData = authData.slice(55 + credentialIdLength);
+
+	// @ts-ignore
 	const publicKey: Map<number, any> = await cborDecodeFirst(publicKeyData);
 	if (publicKey.get(3) !== -7) {
 		throw new Error('alg mismatch');

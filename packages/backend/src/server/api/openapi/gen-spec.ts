@@ -63,11 +63,13 @@ export function genOpenapiSpec() {
 		const schema = endpoint.params;
 
 		if (endpoint.meta.requireFile) {
+			// @ts-ignore
 			schema.properties.file = {
 				type: 'string',
 				format: 'binary',
 				description: 'The file contents.',
 			};
+			// @ts-ignore
 			schema.required.push('file');
 		}
 

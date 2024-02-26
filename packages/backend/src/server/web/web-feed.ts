@@ -1,4 +1,4 @@
-import { Feed } from 'feed';
+import { Feed } from 'feed/lib/feed.js';
 import { In, IsNull } from 'typeorm';
 import config from '@/config/index.js';
 import { User } from '@/models/entities/user.js';

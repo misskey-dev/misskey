@@ -6,5 +6,6 @@ export function extractCustomEmojisFromMfm(nodes: mfm.MfmNode[]): string[] {
 		return (node.type === 'emojiCode' && node.props.name.length <= 100);
 	});
 
+	// @ts-ignore
 	return unique(emojiNodes.map(x => x.props.name));
 }

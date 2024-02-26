@@ -1,6 +1,7 @@
-import { redisClient } from '../db/redis.js';
 import { promisify } from 'node:util';
+// @ts-ignore
 import redisLock from 'redis-lock';
+import { redisClient } from '@/db/redis.js';
 
 /**
  * Retry delay (ms) for lock acquisition
@@ -9,8 +10,8 @@ const retryDelay = 100;
 
 const lock: (key: string, timeout?: number) => Promise<() => void>
 	= redisClient
-	? promisify(redisLock(redisClient, retryDelay))
-	: async () => () => { };
+		? promisify(redisLock(redisClient, retryDelay))
+		: async () => () => { };
 
 /**
  * Get AP Object lock

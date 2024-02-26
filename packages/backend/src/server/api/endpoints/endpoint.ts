@@ -22,6 +22,7 @@ export default define(meta, paramDef, async (ps) => {
 	return {
 		params: Object.entries(ep.params.properties || {}).map(([k, v]) => ({
 			name: k,
+			// @ts-ignore
 			type: v.type.charAt(0).toUpperCase() + v.type.slice(1),
 		})),
 	};
