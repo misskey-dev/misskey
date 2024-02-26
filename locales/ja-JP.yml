@@ -1687,6 +1687,7 @@ _role:
     canUseTranslator: "翻訳機能の利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
   _condition:
+    roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
     createdLessThan: "アカウント作成から～以内"

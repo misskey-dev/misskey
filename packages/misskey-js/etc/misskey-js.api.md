@@ -1712,6 +1712,7 @@ declare namespace entities {
         RoleCondFormulaLogics,
         RoleCondFormulaValueNot,
         RoleCondFormulaValueIsLocalOrRemote,
+        RoleCondFormulaValueAssignedRole,
         RoleCondFormulaValueCreated,
         RoleCondFormulaFollowersOrFollowingOrNotes,
         RoleCondFormulaValue,
@@ -2730,6 +2731,9 @@ type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
 
 // @public (undocumented)
 type RoleCondFormulaValue = components['schemas']['RoleCondFormulaValue'];
+
+// @public (undocumented)
+type RoleCondFormulaValueAssignedRole = components['schemas']['RoleCondFormulaValueAssignedRole'];
 
 // @public (undocumented)
 type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
