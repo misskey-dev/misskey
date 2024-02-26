@@ -203,7 +203,7 @@ function next() {
 function prev() {
 	if (page.value === 5 && !props.withSetup) {
 		page.value -= 2;
-	} else if (page.value === 8 && !props.withSetup) {
+	} else if (page.value === 9 && !props.withSetup) {
 		page.value -= 3;
 	} else {
 		page.value--;
