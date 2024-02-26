@@ -14,7 +14,7 @@
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div v-if="text" class="body"><Mfm :text="text"/></div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
+		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined">
 			<template v-if="input.type === 'password'" #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
@@ -124,14 +124,6 @@ function onBgClick() {
 */
 function onKeydown(evt: KeyboardEvent) {
 	if (evt.key === 'Escape') cancel();
-}
-
-function onInputKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Enter') {
-		evt.preventDefault();
-		evt.stopPropagation();
-		ok();
-	}
 }
 
 onMounted(() => {
