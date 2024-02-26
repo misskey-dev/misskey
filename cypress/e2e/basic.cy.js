@@ -124,47 +124,6 @@ describe('After user signup', () => {
 		cy.wait('@signin');
 	});
 
-	it('suspend', function() {
-		cy.request('POST', '/api/admin/suspend-user', {
-			i: this.admin.token,
-			userId: this.alice.id,
-		});
-
-		cy.visitHome();
-
-		cy.get('[data-cy-signin]').click();
-		cy.get('[data-cy-signin-username] input').type('alice');
-		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
-
-		// TODO: cypressにブラウザの言語指定できる機能が実装され次第英語のみテストするようにする
-		cy.contains(/アカウントが凍結されています|This account has been suspended due to/gi);
-	});
-});
-
-describe('After user signed in', () => {
-	beforeEach(() => {
-		cy.resetState();
-
-		// インスタンス初期セットアップ
-		cy.registerUser('admin', 'pass', true);
-
-		// ユーザー作成
-		cy.registerUser('alice', 'alice1234');
-
-		cy.login('alice', 'alice1234');
-	});
-
-	afterEach(() => {
-		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
-		// waitを入れることでそれを防止できる
-		cy.wait(1000);
-	});
-
-  it('successfully loads', () => {
-		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-		cy.get('[data-cy-user-setup-continue]', { timeout: 30000 }).should('be.visible');
-  });
-
 	it('account setup wizard', () => {
 		cy.visit('/onboarding');
 
@@ -197,6 +156,22 @@ describe('After user signed in', () => {
 
 		// 9 -完了画面（トップページに遷移する）
 		cy.get('[data-cy-user-setup-complete]').click();
+	});
+
+	it('suspend', function() {
+		cy.request('POST', '/api/admin/suspend-user', {
+			i: this.admin.token,
+			userId: this.alice.id,
+		});
+
+		cy.visitHome();
+
+		cy.get('[data-cy-signin]').click();
+		cy.get('[data-cy-signin-username] input').type('alice');
+		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
+
+		// TODO: cypressにブラウザの言語指定できる機能が実装され次第英語のみテストするようにする
+		cy.contains(/アカウントが凍結されています|This account has been suspended due to/gi);
 	});
 });
 
