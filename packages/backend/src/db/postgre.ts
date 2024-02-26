@@ -72,12 +72,13 @@ import { Webhook } from '@/models/entities/webhook.js';
 import { UserIp } from '@/models/entities/user-ip.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
+import { NoLogger } from '@/db/no-logger.js';
 import { dbLogger } from './logger.js';
 import { redisClient } from './redis.js';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
-class MyCustomLogger implements Logger {
+export class MyCustomLogger implements Logger {
 	private highlight(sql: string) {
 		return highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
@@ -204,8 +205,8 @@ export const db = new DataSource({
 		},
 	} : false,
 	logNotifications: false,
-	logging: false,
-	logger: log ? new MyCustomLogger() : undefined,
+	logging: true,
+	logger: new NoLogger(),
 	maxQueryExecutionTime: 300,
 	entities: entities,
 	migrations: ['../../migration/*.js'],
