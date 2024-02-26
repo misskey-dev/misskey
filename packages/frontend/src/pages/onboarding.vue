@@ -7,10 +7,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.onboardingRoot, { [$style.ready]: animationPhase >= 1 }]">
 	<MkAnimBg :class="$style.onboardingBg"/>
 	<div :class="[$style.onboardingContainer]">
+		<div :class="[$style.tutorialTitle, { [$style.showing]: (page !== 0) }]">
+			<div :class="$style.text">
+				<span v-if="page === 1"><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</span>
+				<span v-else-if="page === 2"><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</span>
+				<span v-else-if="page === 3"><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</span>
+				<span v-else-if="page === 4"><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</span>
+				<span v-else-if="page === 5"><i class="ti ti-pencil-plus"></i> {{ i18n.ts._initialTutorial._postNote.title }}</span>
+				<span v-else-if="page === 6"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</span>
+				<span v-else-if="page === 7"><i class="ti ti-bell"></i> {{ i18n.ts.pushNotification }}</span>
+				<span v-else-if="page === 8"><i class="ti ti-lock"></i> {{ i18n.ts.privacy }}</span>
+				<span v-else-if="page === MAX_PAGE"><!-- なんもなし --></span>
+				<span v-else>{{ i18n.ts._initialTutorial.title }}</span>
+			</div>
+			<div v-if="instance.canSkipInitialTutorial" :class="$style.closeButton">
+				<button class="_button" @click="cancel"><i class="ti ti-x"></i></button>
+			</div>
+		</div>
 		<MkTutorial
+			:class="$style.tutorialRoot"
 			:showProgressbar="true"
 			:skippable="false"
 			:withSetup="true"
+			@pageChanged="pageChangeHandler"
 		>
 			<template #welcome="{ next }">
 				<!-- Tips for large-scale server admins: you should customize this slide for better branding -->
@@ -36,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 								<div>{{ i18n.tsx._initialTutorial._onboardingLanding.description({ name: instance.name ?? host }) }}</div>
 								<MkButton large primary rounded gradate style="margin: 16px auto 0;" @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
-								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" @click="cancel">{{ i18n.ts.later }}</MkButton>
 								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 3 }) }}</MkInfo>
 							</div>
 						</MkSpacer>
@@ -111,15 +130,41 @@ import { confirm as osConfirm } from '@/os.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkTutorial from '@/components/MkTutorial.vue';
+import MkTutorial, { MAX_PAGE } from '@/components/MkTutorial.vue';
 
 import FormLink from '@/components/form/link.vue';
 
+const page = ref(0);
+
+function pageChangeHandler(to: number) {
+	page.value = to;
+}
+
+// See: @/_boot_/common.ts L123 for details
+const query = new URLSearchParams(location.search);
+const originalPath = query.get('redirected_from');
+
+async function cancel() {
+	const confirm = await osConfirm({
+		type: 'question',
+		title: i18n.ts._initialTutorial.skipAreYouSure,
+		text: i18n.ts._initialTutorial._done.youCanReferTutorialBy,
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
+	});
+
+	if (confirm.canceled) return;
+
+	location.href = '/';
+}
+
+// #region デフォルトオープニング画面のアニメーション
 const confettiEl = shallowRef<HTMLCanvasElement | null>(null);
 const welcomePageRootEl = shallowRef<HTMLDivElement | null>(null);
 const instanceIconEl = shallowRef<HTMLImageElement | null>(null);
 const instanceIconY = ref(0);
-const instanceIconYPx = computed(() => `${instanceIconY.value - 30}px`);
+// 30pxは文字が上がってくる距離、40pxは上部ヘッダの高さ
+const instanceIconYPx = computed(() => `${instanceIconY.value - 30 + 40}px`);
 
 /**
  * 0 … なにもしない
@@ -129,23 +174,6 @@ const instanceIconYPx = computed(() => `${instanceIconY.value - 30}px`);
  * 4 … 完了（オープニング用ロゴ消滅）
  */
 const animationPhase = ref(0);
-
-// See: @/_boot_/common.ts L123 for details
-const query = new URLSearchParams(location.search);
-const originalPath = query.get('redirected_from');
-
-async function cancel() {
-	const confirm = await osConfirm({
-		type: 'question',
-		text: i18n.ts._initialTutorial.skipAreYouSure,
-		okText: i18n.ts.yes,
-		cancelText: i18n.ts.no,
-	});
-
-	if (confirm.canceled) return;
-
-	location.href = '/';
-}
 
 // 画面上部に表示されるアイコンの中心Y座標を取得
 function getIconY(instanceIconEl: HTMLImageElement, welcomePageRootEl: HTMLDivElement) {
@@ -201,6 +229,8 @@ onMounted(() => {
 	});
 });
 
+// #endregion
+
 definePageMetadata(() => ({
 	title: 'Onboarding',
 	description: 'Welcome to Misskey!',
@@ -238,6 +268,43 @@ definePageMetadata(() => ({
 	height: 100svh;
 
 	container-type: inline-size;
+}
+
+.tutorialTitle {
+	position: absolute;
+	box-sizing: border-box;
+	top: 0;
+	left: 0;
+	width: 100%;
+	font-size: 14px;
+	line-height: 40px;
+	height: 40px;
+	padding: 0 var(--margin);
+	background: var(--panelHighlight);
+	display: flex;
+	transition: transform 0.5s ease;
+	transform: translateY(-100%);
+
+	&.showing {
+		transform: translateY(0);
+	}
+
+	.text {
+		font-weight: 700;
+	}
+
+	.closeButton {
+		margin-left: auto;
+
+		>._button {
+			padding: 8px;
+		}
+	}
+}
+
+.tutorialRoot {
+	margin-top: 40px;
+	height: calc(100% - 40px);
 }
 
 .ready {

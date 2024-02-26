@@ -131,6 +131,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
+<script lang="ts">
+
+// チュートリアルの枚数を増やしたら必ず変更すること！！
+export const MAX_PAGE = 9;
+
+</script>
+
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
@@ -161,9 +168,6 @@ const emit = defineEmits<{
 
 // eslint-disable-next-line vue/no-setup-props-destructure
 const page = ref(props.initialPage ?? 0);
-
-// チュートリアルの枚数を増やしたら必ず変更すること！！
-const MAX_PAGE = 9;
 
 watch(page, (to) => {
 	if (to === MAX_PAGE) {
@@ -211,6 +215,7 @@ function prev() {
 
 <style lang="scss" module>
 .tutorialRoot {
+	position: relative;
 	box-sizing: border-box;
 	overflow: hidden;
 	width: 100%;
