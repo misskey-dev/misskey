@@ -12,7 +12,7 @@ import { version, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n } from '@/i18n.js';
-import { $i, refreshAccount, login } from '@/account.js';
+import { $i, iAmModerator, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
@@ -119,8 +119,8 @@ export async function common(createVue: () => App<Element>) {
 	await defaultStore.ready;
 	await deckStore.ready;
 
-	// 2024年3月1日JST以降に作成されたアカウントで、チュートリアル完了していない場合、チュートリアルにリダイレクト
-	if (!instance.canSkipInitialTutorial && $i && new Date($i.createdAt).getTime() >= 1709218800000 && !claimedAchievements.includes('tutorialCompleted') && !location.pathname.startsWith('/onboarding') && !location.pathname.startsWith('/signup-complete')) {
+	// 2024年3月1日JST以降に作成されたアカウントで、チュートリアルを完了していない通常ユーザーの場合、チュートリアルにリダイレクト
+	if (!instance.canSkipInitialTutorial && $i && !iAmModerator && new Date($i.createdAt).getTime() >= 1709218800000 && !claimedAchievements.includes('tutorialCompleted') && !location.pathname.startsWith('/onboarding') && !location.pathname.startsWith('/signup-complete')) {
 		const param = new URLSearchParams();
 		param.set('redirected_from', location.pathname + location.search + location.hash);
 		location.replace('/onboarding?' + param.toString());
