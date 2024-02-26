@@ -171,10 +171,12 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			keys.find(x => {
 				try {
 					const url = new URL(x.keyId);
-					if (
-						url.hash.toLowerCase().includes('main') ||
-						url.pathname.split('/').pop()?.toLowerCase().includes('main')
-					) {
+					const path = url.pathname.split('/').pop()?.toLowerCase();
+					if (url.hash) {
+						if (url.hash.toLowerCase().includes('main')) {
+							return true;
+						}
+					} else if (path?.includes('main') || path === 'publickey') {
 						return true;
 					}
 				} catch { /* noop */ }
