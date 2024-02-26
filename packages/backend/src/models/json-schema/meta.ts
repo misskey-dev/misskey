@@ -79,6 +79,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canSkipInitialTutorial: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		enableHcaptcha: {
 			type: 'boolean',
 			optional: false, nullable: false,

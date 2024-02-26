@@ -1217,8 +1217,8 @@ hemisphere: "お住まいの地域"
 withSensitive: "センシティブなファイルを含むノートを表示"
 userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
-prohibitSkippingTutorial: "チュートリアルをスキップできないようにする"
-prohibitSkippingTutorialDescription: "新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了せずチュートリアルページを回避した場合でも、強制的にリダイレクトされます。"
+prohibitSkippingInitialTutorial: "チュートリアルをスキップできないようにする"
+prohibitSkippingInitialTutorialDescription: "新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。"
 
 _bubbleGame:
   howToPlay: "遊び方"

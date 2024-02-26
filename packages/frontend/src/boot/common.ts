@@ -120,7 +120,7 @@ export async function common(createVue: () => App<Element>) {
 	await deckStore.ready;
 
 	// 2024年3月1日JST以降に作成されたアカウントで、チュートリアル完了していない場合、チュートリアルにリダイレクト
-	if ($i && new Date($i.createdAt).getTime() >= 1709218800000 && !claimedAchievements.includes('tutorialCompleted') && !location.pathname.startsWith('/onboarding') && !location.pathname.startsWith('/signup-complete')) {
+	if (!instance.canSkipInitialTutorial && $i && new Date($i.createdAt).getTime() >= 1709218800000 && !claimedAchievements.includes('tutorialCompleted') && !location.pathname.startsWith('/onboarding') && !location.pathname.startsWith('/signup-complete')) {
 		const param = new URLSearchParams();
 		param.set('redirected_from', location.pathname + location.search + location.hash);
 		location.replace('/onboarding?' + param.toString());

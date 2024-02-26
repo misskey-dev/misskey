@@ -4887,11 +4887,11 @@ export interface Locale extends ILocale {
     /**
      * チュートリアルをスキップできないようにする
      */
-    "prohibitSkippingTutorial": string;
+    "prohibitSkippingInitialTutorial": string;
     /**
-     * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了せずチュートリアルページを回避した場合でも、強制的にリダイレクトされます。
+     * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。
      */
-    "prohibitSkippingTutorialDescription": string;
+    "prohibitSkippingInitialTutorialDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方

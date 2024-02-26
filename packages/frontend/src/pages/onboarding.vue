@@ -35,8 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<div>{{ i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }) }}</div>
 								</div>
 								<div>{{ i18n.tsx._initialTutorial._onboardingLanding.description({ name: instance.name ?? host }) }}</div>
-								<MkButton large primary rounded gradate style="margin: 16px auto;" @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
-								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 5 }) }}</MkInfo>
+								<MkButton large primary rounded gradate style="margin: 16px auto 0;" @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
+								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 3 }) }}</MkInfo>
 							</div>
 						</MkSpacer>
 					</div>
@@ -105,6 +106,7 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { host } from '@/config.js';
+import { confirm as osConfirm } from '@/os.js';
 
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -131,6 +133,19 @@ const animationPhase = ref(0);
 // See: @/_boot_/common.ts L123 for details
 const query = new URLSearchParams(location.search);
 const originalPath = query.get('redirected_from');
+
+async function cancel() {
+	const confirm = await osConfirm({
+		type: 'question',
+		text: i18n.ts._initialTutorial.skipAreYouSure,
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
+	});
+
+	if (confirm.canceled) return;
+
+	location.href = '/';
+}
 
 // 画面上部に表示されるアイコンの中心Y座標を取得
 function getIconY(instanceIconEl: HTMLImageElement, welcomePageRootEl: HTMLDivElement) {
