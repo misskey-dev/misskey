@@ -125,6 +125,9 @@ type AdminEmojiAddAliasesBulkRequest = operations['admin/emoji/add-aliases-bulk'
 type AdminEmojiAddRequest = operations['admin/emoji/add']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiAddResponse = operations['admin/emoji/add']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminEmojiCopyRequest = operations['admin/emoji/copy']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1154,6 +1157,7 @@ declare namespace entities {
         AdminDriveShowFileResponse,
         AdminEmojiAddAliasesBulkRequest,
         AdminEmojiAddRequest,
+        AdminEmojiAddResponse,
         AdminEmojiCopyRequest,
         AdminEmojiCopyResponse,
         AdminEmojiDeleteBulkRequest,
