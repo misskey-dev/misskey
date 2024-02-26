@@ -47,7 +47,7 @@ export const meta = {
 				properties: {
 					id: {
 						type: 'string',
-						nullable: true,
+						optional: true,
 					},
 				},
 			},
