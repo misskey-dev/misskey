@@ -194,6 +194,37 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
+		if (x.additionalPublicKeys) {
+			if (!x.publicKey) {
+				throw new Error('invalid Actor: additionalPublicKeys is set but publicKey is not');
+			}
+
+			if (!Array.isArray(x.additionalPublicKeys)) {
+				throw new Error('invalid Actor: additionalPublicKeys is not an array');
+			}
+
+			for (const key of x.additionalPublicKeys) {
+				if (typeof key.id !== 'string') {
+					throw new Error('invalid Actor: additionalPublicKeys.id is not a string');
+				}
+
+				const keyIdHost = this.punyHost(key.id);
+				if (keyIdHost !== expectHost) {
+					throw new Error('invalid Actor: additionalPublicKeys.id has different host');
+				}
+
+				if (!key.signature) {
+					throw new Error('invalid Actor: additionalPublicKeys.signature is not set');
+				}
+				if (typeof key.signature.type !== 'string') {
+					throw new Error('invalid Actor: additionalPublicKeys.signature.type is not a string');
+				}
+				if (typeof key.signature.signatureValue !== 'string') {
+					throw new Error('invalid Actor: additionalPublicKeys.signature.signatureValue is not a string');
+				}
+			}
+		}
+
 		return x;
 	}
 

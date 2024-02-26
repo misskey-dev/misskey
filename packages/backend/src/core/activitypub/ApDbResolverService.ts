@@ -152,7 +152,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
 		user: MiRemoteUser;
-		key: MiUserPublickey | null;
+		key: MiUserPublickey[] | null;
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
 		if (user.isDeleted) return null;
