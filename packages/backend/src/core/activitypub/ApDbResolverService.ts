@@ -150,7 +150,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Actor id => Misskey User and Key
 	 */
 	@bindThis
-	public async getAuthUserFromApId(uri: string): Promise<{
+	public async getAuthUserFromApId(uri: string, keyId?: string): Promise<{
 		user: MiRemoteUser;
 		key: MiUserPublickey | null;
 	} | null> {
@@ -170,6 +170,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			keys[0] :
 			keys.find(x => {
 				try {
+					if (x.keyId === keyId) return true;
 					const url = new URL(x.keyId);
 					const path = url.pathname.split('/').pop()?.toLowerCase();
 					if (url.hash) {

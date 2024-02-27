@@ -82,7 +82,7 @@ export class InboxProcessorService {
 		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 		if (authUser == null) {
 			try {
-				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
+				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
 			} catch (err) {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
