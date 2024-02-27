@@ -95,11 +95,11 @@ export class NodeinfoServerService {
 				},
 				metadata: {
 					/**
-					 * 00: Draft, RSA only
-					 * 01: Draft, Ed25519 suported
-					 * 11: RFC 9421, Ed25519 supported
+					 * '00': Draft, RSA only
+					 * '01': Draft, Ed25519 suported
+					 * '11': RFC 9421, Ed25519 supported
 					 */
-					httpMessageSignaturesImplementationLevel: 1,
+					httpMessageSignaturesImplementationLevel: '01',
 
 					nodeName: meta.name,
 					nodeDescription: meta.description,
