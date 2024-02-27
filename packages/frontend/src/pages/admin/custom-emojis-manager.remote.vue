@@ -52,26 +52,7 @@
 					</MkInput>
 				</div>
 
-				<MkFolder :spacerMax="8" :spacerMin="8">
-					<template #icon><i class="ti ti-arrows-sort"></i></template>
-					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
-					<div :class="$style.sortOrderArea">
-						<div :class="$style.sortOrderAreaTags">
-							<MkTagItem
-								v-for="order in sortOrders"
-								:key="order.key"
-								:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
-								:exButtonIconClass="'ti ti-x'"
-								:content="order.key"
-								@click="onToggleSortOrderButtonClicked(order)"
-								@exButtonClick="onRemoveSortOrderButtonClicked(order.key)"
-							/>
-						</div>
-						<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
-							<span class="ti ti-plus"/>
-						</MkButton>
-					</div>
-				</MkFolder>
+				<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderChanged"/>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 					<MkButton primary @click="onSearchRequest">
@@ -84,15 +65,7 @@
 			</div>
 		</MkFolder>
 
-		<MkFolder>
-			<template #icon><i class="ti ti-notes"></i></template>
-			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
-			<template #caption>
-				{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
-			</template>
-
-			<XRegisterLogs :logs="requestLogs"/>
-		</MkFolder>
+		<XRegisterLogsFolder :logs="requestLogs"/>
 
 		<div v-if="gridItems.length > 0" :class="$style.gridArea">
 			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
@@ -115,15 +88,14 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { emptyStrToUndefined, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import { emptyStrToUndefined, GridSortOrder, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import MkFolder from '@/components/MkFolder.vue';
-import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
+import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
+import XSortOrderFolder from '@/pages/admin/custom-emojis-manager.sort-order-folder.vue';
 import * as os from '@/os.js';
 import { GridSetting } from '@/components/grid/grid.js';
-import MkTagItem from '@/components/MkTagItem.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { MenuItem } from '@/types/menu.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 
 type GridItem = {
@@ -132,19 +104,6 @@ type GridItem = {
 	url: string;
 	name: string;
 	host: string;
-}
-
-const gridSortOrderKeys = [
-	'name',
-	'host',
-	'uri',
-	'publicUrl',
-];
-type GridSortOrderKey = typeof gridSortOrderKeys[number];
-
-type GridSortOrder = {
-	key: GridSortOrderKey;
-	direction: 'ASC' | 'DESC';
 }
 
 function setupGrid(): GridSetting {
@@ -206,33 +165,8 @@ const gridItems = ref<GridItem[]>([]);
 
 const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
 
-function onToggleSortOrderButtonClicked(order: GridSortOrder) {
-	switch (order.direction) {
-		case 'ASC':
-			order.direction = 'DESC';
-			break;
-		case 'DESC':
-			order.direction = 'ASC';
-			break;
-	}
-}
-
-function onRemoveSortOrderButtonClicked(key: GridSortOrderKey) {
-	sortOrders.value = sortOrders.value.filter(it => it.key !== key);
-}
-
-function onAddSortOrderButtonClicked(ev: MouseEvent) {
-	const menuItems: MenuItem[] = gridSortOrderKeys
-		.filter(key => !sortOrders.value.map(it => it.key).includes(key))
-		.map(it => {
-			return {
-				text: it,
-				action: () => {
-					sortOrders.value.push({ key: it, direction: 'ASC' });
-				},
-			};
-		});
-	os.contextMenu(menuItems, ev);
+function onSortOrderChanged(_sortOrders: GridSortOrder[]) {
+	sortOrders.value = _sortOrders;
 }
 
 async function onSearchRequest() {
@@ -410,37 +344,6 @@ onMounted(async () => {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-}
-
-.sortOrderArea {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: flex-start;
-}
-
-.sortOrderAreaTags {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
-.sortOrderAddButton {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	box-sizing: border-box;
-	min-width: 2.0em;
-	min-height: 2.0em;
-	max-width: 2.0em;
-	max-height: 2.0em;
-	padding: 8px;
-	margin-left: auto;
-	border-radius: 9999px;
-	background-color: var(--buttonBg);
 }
 
 .gridArea {

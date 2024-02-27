@@ -1,25 +1,33 @@
 <template>
-<div>
-	<div v-if="logs.length > 0" style="display:flex; flex-direction: column; overflow-y: scroll; gap: 16px;">
-		<MkSwitch v-model="showingSuccessLogs">
-			<template #label>{{ i18n.ts._customEmojisManager._logs.showSuccessLogSwitch }}</template>
-		</MkSwitch>
-		<div>
-			<div v-if="filteredLogs.length > 0">
-				<MkGrid
-					:data="filteredLogs"
-					:settings="setupGrid()"
-				/>
-			</div>
-			<div v-else>
-				{{ i18n.ts._customEmojisManager._logs.failureLogNothing }}
+<MkFolder>
+	<template #icon><i class="ti ti-notes"></i></template>
+	<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
+	<template #caption>
+		{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
+	</template>
+
+	<div>
+		<div v-if="logs.length > 0" style="display:flex; flex-direction: column; overflow-y: scroll; gap: 16px;">
+			<MkSwitch v-model="showingSuccessLogs">
+				<template #label>{{ i18n.ts._customEmojisManager._logs.showSuccessLogSwitch }}</template>
+			</MkSwitch>
+			<div>
+				<div v-if="filteredLogs.length > 0">
+					<MkGrid
+						:data="filteredLogs"
+						:settings="setupGrid()"
+					/>
+				</div>
+				<div v-else>
+					{{ i18n.ts._customEmojisManager._logs.failureLogNothing }}
+				</div>
 			</div>
 		</div>
+		<div v-else>
+			{{ i18n.ts._customEmojisManager._logs.logNothing }}
+		</div>
 	</div>
-	<div v-else>
-		{{ i18n.ts._customEmojisManager._logs.logNothing }}
-	</div>
-</div>
+</MkFolder>
 </template>
 
 <script setup lang="ts">
@@ -31,6 +39,7 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { GridSetting } from '@/components/grid/grid.js';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import MkFolder from '@/components/MkFolder.vue';
 
 function setupGrid(): GridSetting {
 	return {

@@ -118,26 +118,7 @@
 					</MkInput>
 				</div>
 
-				<MkFolder :spacerMax="8" :spacerMin="8">
-					<template #icon><i class="ti ti-arrows-sort"></i></template>
-					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
-					<div :class="$style.sortOrderArea">
-						<div :class="$style.sortOrderAreaTags">
-							<MkTagItem
-								v-for="order in sortOrders"
-								:key="order.key"
-								:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
-								:exButtonIconClass="'ti ti-x'"
-								:content="order.key"
-								@click="onToggleSortOrderButtonClicked(order)"
-								@exButtonClick="onRemoveSortOrderButtonClicked(order.key)"
-							/>
-						</div>
-						<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
-							<span class="ti ti-plus"/>
-						</MkButton>
-					</div>
-				</MkFolder>
+				<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 					<MkButton primary @click="onSearchRequest">
@@ -150,15 +131,7 @@
 			</div>
 		</MkFolder>
 
-		<MkFolder>
-			<template #icon><i class="ti ti-notes"></i></template>
-			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
-			<template #caption>
-				{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
-			</template>
-
-			<XRegisterLogs :logs="requestLogs"/>
-		</MkFolder>
+		<XRegisterLogsFolder :logs="requestLogs"/>
 
 		<div :class="$style.gridArea">
 			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
@@ -188,7 +161,7 @@ import * as os from '@/os.js';
 import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
-	emptyStrToUndefined,
+	emptyStrToUndefined, GridSortOrder,
 	RequestLogItem,
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
@@ -200,13 +173,12 @@ import { validators } from '@/components/grid/cell-validators.js';
 import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
+import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
+import XSortOrderFolder from '@/pages/admin/custom-emojis-manager.sort-order-folder.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
-import MkTagItem from '@/components/MkTagItem.vue';
-import { MenuItem } from '@/types/menu.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
 
@@ -226,23 +198,6 @@ type GridItem = {
 	updatedAt: string | null;
 	publicUrl?: string | null;
 	originalUrl?: string | null;
-}
-
-const gridSortOrderKeys = [
-	'name',
-	'category',
-	'aliases',
-	'type',
-	'license',
-	'isSensitive',
-	'localOnly',
-	'updatedAt',
-];
-type GridSortOrderKey = typeof gridSortOrderKeys[number];
-
-type GridSortOrder = {
-	key: GridSortOrderKey;
-	direction: 'ASC' | 'DESC';
 }
 
 function setupGrid(): GridSetting {
@@ -538,33 +493,8 @@ async function onQueryRolesEditClicked() {
 	queryRoles.value = result.result;
 }
 
-function onToggleSortOrderButtonClicked(order: GridSortOrder) {
-	switch (order.direction) {
-		case 'ASC':
-			order.direction = 'DESC';
-			break;
-		case 'DESC':
-			order.direction = 'ASC';
-			break;
-	}
-}
-
-function onRemoveSortOrderButtonClicked(key: GridSortOrderKey) {
-	sortOrders.value = sortOrders.value.filter(it => it.key !== key);
-}
-
-function onAddSortOrderButtonClicked(ev: MouseEvent) {
-	const menuItems: MenuItem[] = gridSortOrderKeys
-		.filter(key => !sortOrders.value.map(it => it.key).includes(key))
-		.map(it => {
-			return {
-				text: it,
-				action: () => {
-					sortOrders.value.push({ key: it, direction: 'ASC' });
-				},
-			};
-		});
-	os.contextMenu(menuItems, ev);
+function onSortOrderUpdate(_sortOrders: GridSortOrder[]) {
+	sortOrders.value = _sortOrders;
 }
 
 async function onSearchRequest() {
@@ -749,37 +679,6 @@ onMounted(async () => {
 	justify-content: center;
 	align-items: center;
 	gap: 8px;
-}
-
-.sortOrderArea {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: flex-start;
-}
-
-.sortOrderAreaTags {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
-.sortOrderAddButton {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	box-sizing: border-box;
-	min-width: 2.0em;
-	min-height: 2.0em;
-	max-width: 2.0em;
-	max-height: 2.0em;
-	padding: 8px;
-	margin-left: auto;
-	border-radius: 9999px;
-	background-color: var(--buttonBg);
 }
 
 .gridArea {

@@ -25,15 +25,7 @@
 		</div>
 	</MkFolder>
 
-	<MkFolder>
-		<template #icon><i class="ti ti-notes"></i></template>
-		<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
-		<template #caption>
-			{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
-		</template>
-
-		<XRegisterLogs :logs="requestLogs"/>
-	</MkFolder>
+	<XRegisterLogsFolder :logs="requestLogs"/>
 
 	<div
 		:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
@@ -94,7 +86,7 @@ import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js'
 import { uploadFile } from '@/scripts/upload.js';
 import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
-import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
+import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
 import { GridSetting } from '@/components/grid/grid.js';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 import { GridRow } from '@/components/grid/row.js';
