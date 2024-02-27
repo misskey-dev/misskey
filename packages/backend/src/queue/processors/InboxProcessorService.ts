@@ -77,20 +77,18 @@ export class InboxProcessorService {
 		let authUser: {
 			user: MiRemoteUser;
 			key: MiUserPublickey | null;
-		} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+		} | null = null;
 
 		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
-		if (authUser == null) {
-			try {
-				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
-			} catch (err) {
-				// 対象が4xxならスキップ
-				if (err instanceof StatusError) {
-					if (!err.isRetryable) {
-						throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
-					}
-					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
+		try {
+			authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
+		} catch (err) {
+			// 対象が4xxならスキップ
+			if (err instanceof StatusError) {
+				if (!err.isRetryable) {
+					throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
 				}
+				throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
 			}
 		}
 
