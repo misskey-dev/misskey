@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkCustomEmoji v-if="typeof emoji !== 'string' && !Object.hasOwn(emoji, 'char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkCustomEmoji v-if="typeof emoji !== 'string' && !Object.hasOwn(emoji, 'char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
