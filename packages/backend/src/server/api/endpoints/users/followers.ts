@@ -40,9 +40,6 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		userId: { type: 'string', format: 'misskey:id', nullable: true },
-		username: { type: 'string', nullable: true },
-		host: { type: 'string', format: 'hostname', nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
@@ -69,8 +66,11 @@ export const paramDef = {
 } as const;
 
 export default define(meta, paramDef, async (ps, me) => {
+	// @ts-ignore
 	const user = await Users.findOneBy(ps.userId != null
+		// @ts-ignore
 		? { id: ps.userId }
+		// @ts-ignore
 		: { usernameLower: ps.username?.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
 
 	if (user == null) {
