@@ -267,13 +267,28 @@ export const packedMetaDetailedOnlySchema = {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
+				hcaptcha: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					description: 'Alias of hCaptcha',
+				},
 				mCaptcha: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
+				mcaptcha: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					description: 'Alias of mCaptcha',
+				},
 				reCaptcha: {
 					type: 'boolean',
 					optional: false, nullable: false,
+				},
+				recaptcha: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					description: 'Alias of reCaptcha',
 				},
 				turnstile: {
 					type: 'boolean',

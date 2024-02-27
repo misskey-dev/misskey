@@ -4958,8 +4958,14 @@ export type components = {
         localTimeline: boolean;
         globalTimeline: boolean;
         hCaptcha: boolean;
+        /** @description Alias of hCaptcha */
+        hcaptcha: boolean;
         mCaptcha: boolean;
+        /** @description Alias of mCaptcha */
+        mcaptcha: boolean;
         reCaptcha: boolean;
+        /** @description Alias of reCaptcha */
+        recaptcha: boolean;
         turnstile: boolean;
         objectStorage: boolean;
         serviceWorker: boolean;
