@@ -6533,6 +6533,10 @@ export interface Locale extends ILocale {
         };
         "_condition": {
             /**
+             * マニュアルロールにアサイン済み
+             */
+            "roleAssignedTo": string;
+            /**
              * ローカルユーザー
              */
             "isLocal": string;
