@@ -250,7 +250,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: MiLocalUser, publicKey: string, postfix?: string, signature?: IKey['signature']): IKey {
+	public renderKey(user: MiLocalUser, publicKey: string, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
@@ -259,7 +259,6 @@ export class ApRendererService {
 				type: 'spki',
 				format: 'pem',
 			}) as string,
-			signature,
 		};
 	}
 
@@ -501,7 +500,7 @@ export class ApRendererService {
 			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair.publicKey, '#main-key'),
 			additionalPublicKeys: [
-				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key', { signatureAlgorithm: keypair.ed25519SignatureAlgorithm!, signatureValue: keypair.ed25519PublicKeySignature! })] : []),
+				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key')] : []),
 			],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,

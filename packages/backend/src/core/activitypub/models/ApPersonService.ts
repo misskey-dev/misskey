@@ -212,16 +212,6 @@ export class ApPersonService implements OnModuleInit {
 				if (keyIdHost !== expectHost) {
 					throw new Error('invalid Actor: additionalPublicKeys.id has different host');
 				}
-
-				if (!key.signature) {
-					throw new Error('invalid Actor: additionalPublicKeys.signature is not set');
-				}
-				if (typeof key.signature.signatureAlgorithm !== 'string') {
-					throw new Error('invalid Actor: additionalPublicKeys.signature.signatureAlgorithm is not a string');
-				}
-				if (typeof key.signature.signatureValue !== 'string') {
-					throw new Error('invalid Actor: additionalPublicKeys.signature.signatureValue is not a string');
-				}
 			}
 		}
 
@@ -396,16 +386,11 @@ export class ApPersonService implements OnModuleInit {
 
 					if (person.additionalPublicKeys) {
 						for (const key of person.additionalPublicKeys) {
-							if (
-								key.signature && key.signature.signatureAlgorithm && key.signature.signatureValue &&
-								verify(key.signature.signatureAlgorithm, Buffer.from(key.publicKeyPem), person.publicKey.publicKeyPem, Buffer.from(key.signature.signatureValue, 'base64'))
-							) {
-								await transactionalEntityManager.save(new MiUserPublickey({
-									keyId: key.id,
-									userId: user.id,
-									keyPem: key.publicKeyPem,
-								}));
-							}
+							await transactionalEntityManager.save(new MiUserPublickey({
+								keyId: key.id,
+								userId: user.id,
+								keyPem: key.publicKeyPem,
+							}));
 						}
 					}
 				}
@@ -563,16 +548,11 @@ export class ApPersonService implements OnModuleInit {
 
 			if (person.additionalPublicKeys) {
 				for (const key of person.additionalPublicKeys) {
-					if (
-						key.signature && key.signature.signatureAlgorithm && key.signature.signatureValue &&
-						verify(key.signature.signatureAlgorithm, Buffer.from(key.publicKeyPem), person.publicKey.publicKeyPem, Buffer.from(key.signature.signatureValue, 'base64'))
-					) {
-						await this.userPublickeysRepository.update({ keyId: key.id }, {
-							userId: exist.id,
-							keyPem: key.publicKeyPem,
-						});
-						availablePublicKeys.add(key.id);
-					}
+					await this.userPublickeysRepository.update({ keyId: key.id }, {
+						userId: exist.id,
+						keyPem: key.publicKeyPem,
+					});
+					availablePublicKeys.add(key.id);
 				}
 			}
 		}

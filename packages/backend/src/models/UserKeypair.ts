@@ -48,26 +48,6 @@ export class MiUserKeypair {
 	})
 	public ed25519PrivateKey: string | null;
 
-	/**
-	 * Signature of ed25519PublicKey, signed by privateKey. (base64)
-	 */
-	@Column('varchar', {
-		length: 720,
-		nullable: true,
-		default: null,
-	})
-	public ed25519PublicKeySignature: string | null;
-
-	/**
-	 * Signature algorithm of ed25519PublicKeySignature.
-	 */
-	@Column('varchar', {
-		length: 32,
-		nullable: true,
-		default: null,
-	})
-	public ed25519SignatureAlgorithm: string | null;
-
 	constructor(data: Partial<MiUserKeypair>) {
 		if (data == null) return;
 

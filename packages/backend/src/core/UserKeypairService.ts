@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { sign } from 'node:crypto';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { MiUser } from '@/models/User.js';
@@ -12,7 +11,7 @@ import { RedisKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { ED25519_PUBLIC_KEY_SIGNATURE_ALGORITHM, genEd25519KeyPair } from '@/misc/gen-key-pair.js';
+import { genEd25519KeyPair } from '@/misc/gen-key-pair.js';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 
 @Injectable()
@@ -56,12 +55,9 @@ export class UserKeypairService implements OnApplicationShutdown {
 		const keypair = await this.cache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) return;
 		const ed25519 = await genEd25519KeyPair();
-		const ed25519PublicKeySignature = sign(ED25519_PUBLIC_KEY_SIGNATURE_ALGORITHM, Buffer.from(ed25519.publicKey), keypair.privateKey).toString('base64');
 		await this.userKeypairsRepository.update({ userId }, {
 			ed25519PublicKey: ed25519.publicKey,
 			ed25519PrivateKey: ed25519.privateKey,
-			ed25519PublicKeySignature,
-			ed25519SignatureAlgorithm: `rsa-${ED25519_PUBLIC_KEY_SIGNATURE_ALGORITHM}`,
 		});
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
 	}

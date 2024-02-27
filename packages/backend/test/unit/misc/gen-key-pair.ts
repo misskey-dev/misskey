@@ -29,12 +29,6 @@ describe(genRSAAndEd25519KeyPair, () => {
 		expect(keyPair.ed25519PrivateKey).toMatch(/^-----BEGIN PRIVATE KEY-----/);
 		expect(keyPair.ed25519PrivateKey).toMatch(/-----END PRIVATE KEY-----\n$/);
 		expect(keyPair.ed25519PrivateKey).not.toBe(keyPair2.ed25519PrivateKey);
-		expect(keyPair.ed25519PublicKeySignature).toBe(
-			crypto.sign(keyPair.ed25519SignatureAlgorithm.split('-').pop(), Buffer.from(keyPair.ed25519PublicKey), keyPair.privateKey).toString('base64'),
-		);
-		expect(crypto.verify(keyPair.ed25519SignatureAlgorithm, Buffer.from(keyPair.ed25519PublicKey), keyPair.publicKey, Buffer.from(keyPair.ed25519PublicKeySignature, 'base64'))).toBe(true);
-		expect(keyPair.ed25519PublicKeySignature).not.toBe(keyPair2.ed25519PublicKeySignature);
-
 		//const imported = await webCrypto.subtle.importKey('spki', Buffer.from(keyPair.publicKey).buffer, { name: 'rsa-pss', hash: 'sha-256' }, false, ['verify']);
 	});
 });

@@ -236,14 +236,6 @@ export interface IKey extends IObject {
 	id: string;
 	owner: string;
 	publicKeyPem: string;
-
-	/**
-	 * Signature of publicKeyPem, signed by root privateKey (for additionalPublicKey)
-	 */
-	signature?: {
-		signatureAlgorithm: string;
-		signatureValue: string
-	};
 }
 
 export interface IApDocument extends IObject {
