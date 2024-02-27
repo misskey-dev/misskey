@@ -94,44 +94,12 @@ export class NodeinfoServerService {
 					localComments: 0,
 				},
 				metadata: {
-					httpMessageSignaturesSupported: [
-						{
-							version: 'draft-ietf-httpbis-message-signatures-02',
-							/**
-							 * https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-02#name-initial-contents
-							 */
-							algorithms: [
-								'hs2019',
-								// 'rsa-sha1', [Deprecated]
-								'rsa-sha256',
-								'hmac-sha256',
-								'ecdsa-sha256',
-							],
-							/**
-							 * https://datatracker.ietf.org/doc/html/rfc9421#section-6.2
-							 */
-							hs2019: [
-								'ecdsa-p384-sha384',
-								'ed25519',
-							],
-						},
-						/**
-						 * rfc9421 algorithms:
-						 * https://datatracker.ietf.org/doc/html/rfc9421#section-6.2
-						 * Misskeyはnode:crypto.verifyに食わせるだけなので、だいたいなんでもいけるはず
-						 */
-						/*{
-							version: 'rfc9421',
-							algorithms: [
-								'rsa-pss-sha512',
-								'rsa-v1_5-sha256',
-								'hmac-sha256',
-								'ecdsa-p256-sha256',
-								'ecdsa-p384-sha384',
-								'ed25519',
-							],
-						},*/
-					],
+					/**
+					 * 00: Draft, RSA only
+					 * 01: Draft, Ed25519 suported
+					 * 11: RFC 9421, Ed25519 supported
+					 */
+					httpMessageSignaturesImplementationLevel: 1,
 
 					nodeName: meta.name,
 					nodeDescription: meta.description,
