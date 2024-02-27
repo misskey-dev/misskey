@@ -1677,6 +1677,7 @@ _role:
     canUseTranslator: "使用翻譯功能"
     avatarDecorationLimit: "頭像裝飾的最大設置量"
   _condition:
+    roleAssignedTo: "手動指派角色完成"
     isLocal: "本地使用者"
     isRemote: "遠端使用者"
     createdLessThan: "帳戶加入時間不超過"
