@@ -1624,7 +1624,7 @@ _role:
   assignTarget: "มอบหมาย"
   descriptionOfAssignTarget: "แบบ<b>ปรับเอง</b> เพิ่มถอนบทบาทนี้แก่ผู้ใช้ด้วยตัวเอง\nแบบ<b>มีเงื่อนไข</b> เพิ่มถอนบทบาทนี้แก่ผู้ใช้โดยอัตโนมัติหากเข้าเงื่อนไขใดต่อไปนี้"
   manual: "ปรับเอง"
-  manualRoles: "บทบาทแบบทำเอง"
+  manualRoles: "บทบาทแบบทำมือ"
   conditional: "มีเงื่อนไข"
   conditionalRoles: "บทบาทแบบมีเงื่อนไข"
   condition: "เงื่อนไข"
@@ -1677,6 +1677,7 @@ _role:
     canUseTranslator: "การใช้งานแปล"
     avatarDecorationLimit: "จำนวนการตกแต่งไอคอนสูงสุดที่สามารถติดตั้งได้"
   _condition:
+    roleAssignedTo: "มอบหมายให้มีบทบาทแบบทำมือ"
     isLocal: "ผู้ใช้ในพื้นที่"
     isRemote: "ผู้ใช้ระยะไกล"
     createdLessThan: "สร้างน้อยกว่า"
