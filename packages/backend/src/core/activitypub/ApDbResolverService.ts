@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -188,6 +188,16 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			user,
 			key,
 		};
+	}
+
+	@bindThis
+	public refreshCacheByUserId(userId: MiUser['id']): void {
+		this.publicKeyByUserIdCache.delete(userId);
+		for (const [k, v] of this.publicKeyCache.cache.entries()) {
+			if (v.value?.userId === userId) {
+				this.publicKeyCache.delete(k);
+			}
+		}
 	}
 
 	@bindThis

@@ -119,7 +119,8 @@ export class InboxProcessorService {
 				// みたいになっててUserを引っ張れば公開キーも入ることを期待する
 				if (activity.signature.creator) {
 					const candicate = activity.signature.creator.replace(/#.*/, '');
-					await this.apPersonService.resolvePerson(candicate).catch(() => null);
+					const user = await this.apPersonService.resolvePerson(candicate).catch(() => null);
+					if (user) this.apDbResolverService.refreshCacheByUserId(user.id);
 				}
 
 				// keyIdからLD-Signatureのユーザーを取得
