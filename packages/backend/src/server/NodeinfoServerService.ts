@@ -94,7 +94,7 @@ export class NodeinfoServerService {
 					localComments: 0,
 				},
 				metadata: {
-					httpMessageSignatureAcceptable: [
+					httpMessageSignaturesSupported: [
 						{
 							version: 'draft-ietf-httpbis-message-signatures-02',
 							/**
