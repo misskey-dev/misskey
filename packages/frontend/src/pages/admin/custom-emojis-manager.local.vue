@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps" :class="$style.root">
 	<MkTab v-model="modeTab" style="margin-bottom: var(--margin);">

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { EventEmitter } from 'eventemitter3';
 import { CellValue, GridCellSetting } from '@/components/grid/cell.js';
 import { GridColumnSetting } from '@/components/grid/column.js';

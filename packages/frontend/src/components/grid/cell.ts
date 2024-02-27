@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { ValidateViolation } from '@/components/grid/cell-validators.js';
 import { Size } from '@/components/grid/grid.js';
 import { GridColumn } from '@/components/grid/column.js';

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkFolder :spacerMax="8" :spacerMin="8">
 	<template #icon><i class="ti ti-arrows-sort"></i></template>

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { GridColumn } from '@/components/grid/column.js';
 import { GridRow } from '@/components/grid/row.js';
