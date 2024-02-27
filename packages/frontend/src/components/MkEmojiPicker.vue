@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="!emoji?.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
-						<MkCustomEmoji v-if="!emoji?.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
 				</div>
@@ -108,7 +108,6 @@ import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
 	emojilist,
-	unicodeEmojisMap,
 	emojiCharByCategory,
 	UnicodeEmojiDef,
 	unicodeEmojiCategories as categories,
@@ -357,8 +356,8 @@ watch(q, () => {
 	searchResultUnicode.value = Array.from(searchUnicode());
 });
 
-function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef): boolean {
-	return !props.targetNote || checkReactionPermissions($i!, props.targetNote, emoji);
+function canReact(emoji: string | UnicodeEmojiDef | Misskey.entities.EmojiSimple): boolean {
+	return !props.targetNote || typeof emoji === 'string' || Object.hasOwn(emoji, 'char') || checkReactionPermissions($i!, props.targetNote, emoji);
 }
 
 function filterCategory(emoji: Misskey.entities.EmojiSimple, category: string): boolean {
@@ -378,15 +377,21 @@ function reset() {
 	q.value = '';
 }
 
-function getKey(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef): string {
-	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
+function getKey(emoji: string | UnicodeEmojiDef | Misskey.entities.EmojiSimple): string {
+	if (typeof emoji === 'string') {
+		return emoji;
+	} else if (Object.hasOwn(emoji, 'char')) {
+		return (emoji as UnicodeEmojiDef).char;
+	} else {
+		return `:${emoji.name}:`;
+	}
 }
 
 function getDef(emoji: string) {
 	if (emoji.includes(':')) {
 		return customEmojisMap.get(emoji.replace(/:/g, '')) ?? null;
 	} else {
-		return unicodeEmojisMap.get(emoji) ?? null;
+		return emoji;
 	}
 }
 

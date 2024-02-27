@@ -34,7 +34,6 @@ import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-import { unicodeEmojisMap } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -45,19 +44,24 @@ const props = defineProps<{
 
 const mock = inject<boolean>('mock', false);
 
-const emit = defineEmits<{
-	(ev: 'reactionToggled', emoji: string, newCount: number): void;
-}>();
+const emit = defineEmits<
+	(ev: 'reactionToggled', emoji: string, newCount: number) => void
+>();
 
 const buttonEl = shallowRef<HTMLElement>();
+const remoteReactionRegExp = /@\w/;
 
+const isCustomEmoji = computed(() => props.reaction.includes(':'));
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? unicodeEmojisMap.get(props.reaction));
+const emoji = computed(() => isCustomEmoji.value ? customEmojisMap.get(emojiName.value) : null);
 
 const canToggle = computed(() => {
-	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
+	return !RegExp(remoteReactionRegExp).exec(props.reaction) && $i && (
+		!isCustomEmoji.value
+	|| (emoji.value && checkReactionPermissions($i, props.note, emoji.value))
+	);
 });
-const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
+const canGetInfo = computed(() => !RegExp(remoteReactionRegExp).exec(props.reaction) && props.reaction.includes(':'));
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
