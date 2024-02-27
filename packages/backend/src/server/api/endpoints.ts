@@ -727,7 +727,7 @@ export interface IEndpointMeta {
 
 export interface IEndpoint {
 	name: string;
-	exec: any;
+	exec: unknown;
 	meta: IEndpointMeta;
 	params: Schema;
 }

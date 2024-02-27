@@ -72,7 +72,7 @@ module.exports = {
 			'checksVoidReturn': false,
 		}],
 		'import/no-unresolved': ['off'],
-		'import/no-default-export': ['warn'],
+		'import/no-default-export': 0,
 		'import/order': ['warn', {
 			'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
 		}],

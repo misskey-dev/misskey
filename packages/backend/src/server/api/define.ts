@@ -1,16 +1,16 @@
 import * as fs from 'node:fs';
 import Ajv from 'ajv';
-import { CacheableLocalUser, ILocalUser } from '@/models/entities/user.js';
+import { CacheableLocalUser } from '@/models/entities/user.js';
 import { Schema, SchemaType } from '@/misc/schema.js';
 import { AccessToken } from '@/models/entities/access-token.js';
 import { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 
-export type Response = Record<string, any> | void;
+export type Response = Record<string, unknown> | void;
 
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
 type executor<T extends IEndpointMeta, Ps extends Schema> =
-	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
+	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: unknown, cleanup?: () => unknown, ip?: string | null, headers?: Record<string, string> | null) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 const ajv = new Ajv({
@@ -20,15 +20,17 @@ const ajv = new Ajv({
 ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 
 export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
-		: (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, ip?: string | null, headers?: Record<string, string> | null) => Promise<any> {
+	: (params: unknown, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: unknown, ip?: string | null, headers?: Record<string, string> | null) => Promise<unknown> {
 	const validate = ajv.compile(paramDef);
 
-	return (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, ip?: string | null, headers?: Record<string, string> | null) => {
+	return (params: unknown, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: unknown, ip?: string | null, headers?: Record<string, string> | null) => {
 		let cleanup: undefined | (() => void) = undefined;
 
 		if (meta.requireFile) {
 			cleanup = () => {
-				fs.unlink(file.path, () => {});
+				// @ts-ignore
+				fs.unlink(file.path, () => {
+				});
 			};
 
 			if (file == null) return Promise.reject(new ApiError({
@@ -40,16 +42,16 @@ export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, pa
 
 		const valid = validate(params);
 		if (!valid) {
-			if (file) cleanup!();
+			if (file) cleanup?.();
 
-			const errors = validate.errors!;
+			const errors = validate.errors;
 			const err = new ApiError({
 				message: 'Invalid param.',
 				code: 'INVALID_PARAM',
 				id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 			}, {
-				param: errors[0].schemaPath,
-				reason: errors[0].message,
+				param: errors?.[0].schemaPath,
+				reason: errors?.[0].message,
 			});
 			return Promise.reject(err);
 		}

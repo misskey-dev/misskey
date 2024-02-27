@@ -40,6 +40,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		userId: { type: 'string', format: 'misskey:id', optional: true, nullable: true },
+		username: { type: 'string', optional: true, nullable: true },
+		host: { type: 'string', optional: true, nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
@@ -65,15 +68,10 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	console.debug('ps =', ps);
-	// @ts-ignore
 	const user = await Users.findOneBy(ps.userId != null
-		// @ts-ignore
 		? { id: ps.userId }
-		// @ts-ignore
-		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
+		: { usernameLower: ps.username?.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
