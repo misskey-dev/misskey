@@ -216,8 +216,8 @@ export class ApPersonService implements OnModuleInit {
 				if (!key.signature) {
 					throw new Error('invalid Actor: additionalPublicKeys.signature is not set');
 				}
-				if (typeof key.signature.type !== 'string') {
-					throw new Error('invalid Actor: additionalPublicKeys.signature.type is not a string');
+				if (typeof key.signature.signatureAlgorithm !== 'string') {
+					throw new Error('invalid Actor: additionalPublicKeys.signature.signatureAlgorithm is not a string');
 				}
 				if (typeof key.signature.signatureValue !== 'string') {
 					throw new Error('invalid Actor: additionalPublicKeys.signature.signatureValue is not a string');
@@ -397,8 +397,8 @@ export class ApPersonService implements OnModuleInit {
 					if (person.additionalPublicKeys) {
 						for (const key of person.additionalPublicKeys) {
 							if (
-								key.signature && key.signature.type && key.signature.signatureValue &&
-								verify(key.signature.type, Buffer.from(key.publicKeyPem), person.publicKey.publicKeyPem, Buffer.from(key.signature.signatureValue, 'base64'))
+								key.signature && key.signature.signatureAlgorithm && key.signature.signatureValue &&
+								verify(key.signature.signatureAlgorithm, Buffer.from(key.publicKeyPem), person.publicKey.publicKeyPem, Buffer.from(key.signature.signatureValue, 'base64'))
 							) {
 								await transactionalEntityManager.save(new MiUserPublickey({
 									keyId: key.id,
@@ -564,8 +564,8 @@ export class ApPersonService implements OnModuleInit {
 			if (person.additionalPublicKeys) {
 				for (const key of person.additionalPublicKeys) {
 					if (
-						key.signature && key.signature.type && key.signature.signatureValue &&
-						verify(key.signature.type, Buffer.from(key.publicKeyPem), person.publicKey.publicKeyPem, Buffer.from(key.signature.signatureValue, 'base64'))
+						key.signature && key.signature.signatureAlgorithm && key.signature.signatureValue &&
+						verify(key.signature.signatureAlgorithm, Buffer.from(key.publicKeyPem), person.publicKey.publicKeyPem, Buffer.from(key.signature.signatureValue, 'base64'))
 					) {
 						await this.userPublickeysRepository.update({ keyId: key.id }, {
 							userId: exist.id,

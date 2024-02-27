@@ -241,7 +241,7 @@ export interface IKey extends IObject {
 	 * Signature of publicKeyPem, signed by root privateKey (for additionalPublicKey)
 	 */
 	signature?: {
-		type: string;
+		signatureAlgorithm: string;
 		signatureValue: string
 	};
 }

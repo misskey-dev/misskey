@@ -501,7 +501,7 @@ export class ApRendererService {
 			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair.publicKey, '#main-key'),
 			additionalPublicKeys: [
-				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key', { type: keypair.ed25519SignatureAlgorithm!, signatureValue: keypair.ed25519PublicKeySignature! })] : []),
+				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key', { signatureAlgorithm: keypair.ed25519SignatureAlgorithm!, signatureValue: keypair.ed25519PublicKeySignature! })] : []),
 			],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
@@ -649,6 +649,7 @@ export class ApRendererService {
 					'_misskey_votes': 'misskey:_misskey_votes',
 					'_misskey_summary': 'misskey:_misskey_summary',
 					'isCat': 'misskey:isCat',
+					additionalPublicKeys: 'misskey:additionalPublicKeys',
 					// vcard
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
