@@ -12,7 +12,7 @@ import { RedisKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { ED25519_SIGN_ALGORITHM, genEd25519KeyPair } from '@/misc/gen-key-pair.js';
+import { ED25519_SIGNED_ALGORITHM, genEd25519KeyPair } from '@/misc/gen-key-pair.js';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 
 @Injectable()
@@ -56,12 +56,12 @@ export class UserKeypairService implements OnApplicationShutdown {
 		const keypair = await this.cache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) return;
 		const ed25519 = await genEd25519KeyPair();
-		const ed25519PublicKeySignature = sign(ED25519_SIGN_ALGORITHM, Buffer.from(ed25519.publicKey), keypair.privateKey).toString('base64');
+		const ed25519PublicKeySignature = sign(ED25519_SIGNED_ALGORITHM, Buffer.from(ed25519.publicKey), keypair.privateKey).toString('base64');
 		await this.userKeypairsRepository.update({ userId }, {
 			ed25519PublicKey: ed25519.publicKey,
 			ed25519PrivateKey: ed25519.privateKey,
 			ed25519PublicKeySignature,
-			ed25519SignatureAlgorithm: `rsa-${ED25519_SIGN_ALGORITHM}`,
+			ed25519SignatureAlgorithm: `rsa-${ED25519_SIGNED_ALGORITHM}`,
 		});
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
 	}
