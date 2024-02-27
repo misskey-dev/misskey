@@ -129,6 +129,14 @@ export class NotificationService implements OnApplicationShutdown {
 				if (!isFollowing && !isFollower) {
 					return null;
 				}
+			} else if (recieveConfig?.type === 'followingOrFollower') {
+				const [isFollowing, isFollower] = await Promise.all([
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
+				]);
+				if (!isFollowing && !isFollower) {
+					return null;
+				}
 			} else if (recieveConfig?.type === 'list') {
 				const isMember = await this.userListService.membersCache.fetch(recieveConfig.userListId).then(members => members.has(notifierId));
 				if (!isMember) {
