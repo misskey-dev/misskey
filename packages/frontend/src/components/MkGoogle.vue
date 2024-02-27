@@ -37,11 +37,11 @@ const search = () => {
 	flex-shrink: 1;
 	padding: 10px;
 	width: 100%;
-	height: 40px;
+	height: 18px;
 	font-size: 16px;
 	border: solid 1px var(--divider);
 	border-radius: 4px 0 0 4px;
-	-webkit-appearance: textfield;
+	--webkit-appearance: textfield;
 }
 
 .button {
