@@ -57,6 +57,23 @@ export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 	},
 } as const;
 
+export const packedRoleCondFormulaValueAssignedRoleSchema = {
+	type: 'object',
+	properties: {
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['roleAssignedTo'],
+		},
+		roleId: {
+			type: 'string',
+			nullable: false, optional: false,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+	},
+} as const;
+
 export const packedRoleCondFormulaValueCreatedSchema = {
 	type: 'object',
 	properties: {
@@ -114,6 +131,9 @@ export const packedRoleCondFormulaValueSchema = {
 		},
 		{
 			ref: 'RoleCondFormulaValueIsLocalOrRemote',
+		},
+		{
+			ref: 'RoleCondFormulaValueAssignedRole',
 		},
 		{
 			ref: 'RoleCondFormulaValueCreated',

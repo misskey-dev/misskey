@@ -143,7 +143,7 @@ function save() {
 		objectStorageSetPublicRead: objectStorageSetPublicRead.value,
 		objectStorageS3ForcePathStyle: objectStorageS3ForcePathStyle.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 
