@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="following">{{ i18n.ts.following }}</option>
 		<option value="follower">{{ i18n.ts.followers }}</option>
 		<option value="mutualFollow">{{ i18n.ts.mutualFollow }}</option>
+		<option value="followingOrFollower">{{ i18n.ts.followingOrFollower }}</option>
 		<option value="list">{{ i18n.ts.userList }}</option>
 		<option value="never">{{ i18n.ts.none }}</option>
 	</MkSelect>
@@ -26,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -41,10 +42,10 @@ const emit = defineEmits<{
 	(ev: 'update', result: any): void;
 }>();
 
-let type = $ref(props.value.type);
-let userListId = $ref(props.value.userListId);
+const type = ref(props.value.type);
+const userListId = ref(props.value.userListId);
 
 function save() {
-	emit('update', { type, userListId });
+	emit('update', { type: type.value, userListId: userListId.value });
 }
 </script>

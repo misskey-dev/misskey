@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -80,17 +80,18 @@ import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
-import { selectFile, selectFiles } from '@/scripts/select-file.js';
+import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const tab = ref('local');
-const query = ref(null);
-const queryRemote = ref(null);
-const host = ref(null);
+const query = ref<string | null>(null);
+const queryRemote = ref<string | null>(null);
+const host = ref<string | null>(null);
 const selectMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 
@@ -155,7 +156,7 @@ const edit = (emoji) => {
 	}, 'closed');
 };
 
-const im = (emoji) => {
+const importEmoji = (emoji) => {
 	os.apiWithDialog('admin/emoji/copy', {
 		emojiId: emoji.id,
 	});
@@ -168,7 +169,7 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	}, {
 		text: i18n.ts.import,
 		icon: 'ti ti-plus',
-		action: () => { im(emoji); },
+		action: () => { importEmoji(emoji); },
 	}], ev.currentTarget ?? ev.target);
 };
 
@@ -177,7 +178,7 @@ const menu = (ev: MouseEvent) => {
 		icon: 'ti ti-download',
 		text: i18n.ts.export,
 		action: async () => {
-			os.api('export-custom-emojis', {
+			misskeyApi('export-custom-emojis', {
 			})
 				.then(() => {
 					os.alert({
@@ -196,7 +197,7 @@ const menu = (ev: MouseEvent) => {
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
-			os.api('admin/emoji/import-zip', {
+			misskeyApi('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
 				.then(() => {
@@ -286,7 +287,7 @@ const delBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
@@ -296,7 +297,7 @@ const headerActions = $computed(() => [{
 	handler: menu,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'local',
 	title: i18n.ts.local,
 }, {
@@ -304,10 +305,10 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.remote,
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
-})));
+}));
 </script>
 
 <style lang="scss" scoped>

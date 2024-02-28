@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,33 +16,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<template v-if="pageMetadata?.value">
-			<i v-if="pageMetadata.value.icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
-			<span>{{ pageMetadata.value.title }}</span>
+		<template v-if="pageMetadata">
+			<i v-if="pageMetadata.icon" :class="pageMetadata.icon" style="margin-right: 0.5em;"></i>
+			<span>{{ pageMetadata.title }}</span>
 		</template>
 	</template>
 
 	<div ref="contents" :class="$style.root" style="container-type: inline-size;">
-		<RouterView :key="reloadCount" :router="router"/>
+		<RouterView :key="reloadCount" :router="windowRouter"/>
 	</div>
 </MkWindow>
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, onUnmounted, provide, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
-import { mainRouter, routes, page } from '@/router.js';
-import { $i } from '@/account.js';
-import { Router, useScrollPositionManager } from '@/nirax';
+import { useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
+import { useRouterFactory } from '@/router/supplier.js';
+import { mainRouter } from '@/router/main.js';
 
 const props = defineProps<{
 	initialPath: string;
@@ -52,19 +52,20 @@ defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
+const routerFactory = useRouterFactory();
+const windowRouter = routerFactory(props.initialPath);
 
-const contents = shallowRef<HTMLElement>();
-let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-let windowEl = $shallowRef<InstanceType<typeof MkWindow>>();
-const history = $ref<{ path: string; key: any; }[]>([{
-	path: router.getCurrentPath(),
-	key: router.getCurrentKey(),
+const contents = shallowRef<HTMLElement | null>(null);
+const pageMetadata = ref<null | PageMetadata>(null);
+const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
+const history = ref<{ path: string; key: any; }[]>([{
+	path: windowRouter.getCurrentPath(),
+	key: windowRouter.getCurrentKey(),
 }]);
-const buttonsLeft = $computed(() => {
-	const buttons = [];
+const buttonsLeft = computed(() => {
+	const buttons: Record<string, unknown>[] = [];
 
-	if (history.length > 1) {
+	if (history.value.length > 1) {
 		buttons.push({
 			icon: 'ti ti-arrow-left',
 			onClick: back,
@@ -73,7 +74,7 @@ const buttonsLeft = $computed(() => {
 
 	return buttons;
 });
-const buttonsRight = $computed(() => {
+const buttonsRight = computed(() => {
 	const buttons = [{
 		icon: 'ti ti-reload',
 		title: i18n.ts.reload,
@@ -86,21 +87,30 @@ const buttonsRight = $computed(() => {
 
 	return buttons;
 });
-let reloadCount = $ref(0);
+const reloadCount = ref(0);
 
-router.addListener('push', ctx => {
-	history.push({ path: ctx.path, key: ctx.key });
+windowRouter.addListener('push', ctx => {
+	history.value.push({ path: ctx.path, key: ctx.key });
 });
 
-provide('router', router);
-provideMetadataReceiver((info) => {
-	pageMetadata = info;
+windowRouter.addListener('replace', ctx => {
+	history.value.pop();
+	history.value.push({ path: ctx.path, key: ctx.key });
 });
+
+windowRouter.init();
+
+provide('router', windowRouter);
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+	pageMetadata.value = info;
+});
+provideReactiveMetadata(pageMetadata);
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 provide('forceSpacerMin', true);
 
-const contextmenu = $computed(() => ([{
+const contextmenu = computed(() => ([{
 	icon: 'ti ti-player-eject',
 	text: i18n.ts.showInPage,
 	action: expand,
@@ -112,41 +122,41 @@ const contextmenu = $computed(() => ([{
 	icon: 'ti ti-external-link',
 	text: i18n.ts.openInNewTab,
 	action: () => {
-		window.open(url + router.getCurrentPath(), '_blank');
-		windowEl.close();
+		window.open(url + windowRouter.getCurrentPath(), '_blank', 'noopener');
+		windowEl.value?.close();
 	},
 }, {
 	icon: 'ti ti-link',
 	text: i18n.ts.copyLink,
 	action: () => {
-		copyToClipboard(url + router.getCurrentPath());
+		copyToClipboard(url + windowRouter.getCurrentPath());
 	},
 }]));
 
 function back() {
-	history.pop();
-	router.replace(history.at(-1)!.path, history.at(-1)!.key);
+	history.value.pop();
+	windowRouter.replace(history.value.at(-1)!.path, history.value.at(-1)!.key);
 }
 
 function reload() {
-	reloadCount++;
+	reloadCount.value++;
 }
 
 function close() {
-	windowEl.close();
+	windowEl.value?.close();
 }
 
 function expand() {
-	mainRouter.push(router.getCurrentPath(), 'forcePage');
-	windowEl.close();
+	mainRouter.push(windowRouter.getCurrentPath(), 'forcePage');
+	windowEl.value?.close();
 }
 
 function popout() {
-	_popout(router.getCurrentPath(), windowEl.$el);
-	windowEl.close();
+	_popout(windowRouter.getCurrentPath(), windowEl.value?.$el);
+	windowEl.value?.close();
 }
 
-useScrollPositionManager(() => getScrollContainer(contents.value), router);
+useScrollPositionManager(() => getScrollContainer(contents.value), windowRouter);
 
 onMounted(() => {
 	openingWindowsCount.value++;

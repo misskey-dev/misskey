@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 
-		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null, overflow: maxHeight ? `auto` : null }" :aria-hidden="!opened">
+		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
 			<Transition
 				:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
 				:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted } from 'vue';
+import { nextTick, onMounted, shallowRef, ref } from 'vue';
 import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
@@ -70,10 +70,10 @@ const getBgColor = (el: HTMLElement) => {
 	}
 };
 
-let rootEl = $shallowRef<HTMLElement>();
-let bgSame = $ref(false);
-let opened = $ref(props.defaultOpen);
-let openedAtLeastOnce = $ref(props.defaultOpen);
+const rootEl = shallowRef<HTMLElement>();
+const bgSame = ref(false);
+const opened = ref(props.defaultOpen);
+const openedAtLeastOnce = ref(props.defaultOpen);
 
 function enter(el) {
 	const elementHeight = el.getBoundingClientRect().height;
@@ -98,20 +98,20 @@ function afterLeave(el) {
 }
 
 function toggle() {
-	if (!opened) {
-		openedAtLeastOnce = true;
+	if (!opened.value) {
+		openedAtLeastOnce.value = true;
 	}
 
 	nextTick(() => {
-		opened = !opened;
+		opened.value = !opened.value;
 	});
 }
 
 onMounted(() => {
 	const computedStyle = getComputedStyle(document.documentElement);
-	const parentBg = getBgColor(rootEl.parentElement);
+	const parentBg = getBgColor(rootEl.value!.parentElement!);
 	const myBg = computedStyle.getPropertyValue('--panel');
-	bgSame = parentBg === myBg;
+	bgSame.value = parentBg === myBg;
 });
 </script>
 

@@ -1,7 +1,41 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+export const notificationRecieveConfig = {
+	type: 'object',
+	oneOf: [
+		{
+			type: 'object',
+			nullable: false,
+			properties: {
+				type: {
+					type: 'string',
+					nullable: false,
+					enum: ['all', 'following', 'follower', 'mutualFollow', 'followingOrFollower', 'never'],
+				},
+			},
+			required: ['type'],
+		},
+		{
+			type: 'object',
+			nullable: false,
+			properties: {
+				type: {
+					type: 'string',
+					nullable: false,
+					enum: ['list'],
+				},
+				userListId: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+			},
+			required: ['type', 'userListId'],
+		},
+	],
+} as const;
 
 export const packedUserLiteSchema = {
 	type: 'object',
@@ -62,6 +96,14 @@ export const packedUserLiteSchema = {
 						format: 'url',
 						nullable: false, optional: false,
 					},
+					offsetX: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
+					offsetY: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
 				},
 			},
 		},
@@ -106,6 +148,9 @@ export const packedUserLiteSchema = {
 		emojis: {
 			type: 'object',
 			nullable: false, optional: false,
+			additionalProperties: {
+				type: 'string',
+			},
 		},
 		onlineStatus: {
 			type: 'string',
@@ -291,7 +336,12 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		ffVisibility: {
+		followingVisibility: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['public', 'followers', 'private'],
+		},
+		followersVisibility: {
 			type: 'string',
 			nullable: false, optional: false,
 			enum: ['public', 'followers', 'private'],
@@ -317,41 +367,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
-				properties: {
-					id: {
-						type: 'string',
-						nullable: false, optional: false,
-						format: 'id',
-					},
-					name: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					color: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					iconUrl: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					description: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					isModerator: {
-						type: 'boolean',
-						nullable: false, optional: false,
-					},
-					isAdministrator: {
-						type: 'boolean',
-						nullable: false, optional: false,
-					},
-					displayOrder: {
-						type: 'number',
-						nullable: false, optional: false,
-					},
-				},
+				ref: 'RoleLite',
 			},
 		},
 		memo: {
@@ -398,6 +414,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 		notify: {
 			type: 'string',
 			nullable: false, optional: true,
+			enum: ['normal', 'none'],
 		},
 		withReplies: {
 			type: 'boolean',
@@ -553,6 +570,22 @@ export const packedMeDetailedOnlySchema = {
 		notificationRecieveConfig: {
 			type: 'object',
 			nullable: false, optional: false,
+			properties: {
+				note: { optional: true, ...notificationRecieveConfig },
+				follow: { optional: true, ...notificationRecieveConfig },
+				mention: { optional: true, ...notificationRecieveConfig },
+				reply: { optional: true, ...notificationRecieveConfig },
+				renote: { optional: true, ...notificationRecieveConfig },
+				quote: { optional: true, ...notificationRecieveConfig },
+				reaction: { optional: true, ...notificationRecieveConfig },
+				pollEnded: { optional: true, ...notificationRecieveConfig },
+				receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
+				followRequestAccepted: { optional: true, ...notificationRecieveConfig },
+				roleAssigned: { optional: true, ...notificationRecieveConfig },
+				achievementEarned: { optional: true, ...notificationRecieveConfig },
+				app: { optional: true, ...notificationRecieveConfig },
+				test: { optional: true, ...notificationRecieveConfig },
+			},
 		},
 		emailNotificationTypes: {
 			type: 'array',
@@ -587,100 +620,7 @@ export const packedMeDetailedOnlySchema = {
 		policies: {
 			type: 'object',
 			nullable: false, optional: false,
-			properties: {
-				gtlAvailable: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				ltlAvailable: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				canPublicNote: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				canInvite: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				inviteLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				inviteLimitCycle: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				inviteExpirationTime: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				canManageCustomEmojis: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				canManageAvatarDecorations: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				canSearchNotes: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				canUseTranslator: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				canHideAds: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				driveCapacityMb: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				alwaysMarkNsfw: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				pinLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				antennaLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				wordMuteLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				webhookLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				clipLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				noteEachClipsLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				userListLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				userEachUserListsLimit: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-				rateLimitFactor: {
-					type: 'number',
-					nullable: false, optional: false,
-				},
-			},
+			ref: 'RolePolicies',
 		},
 		//#region secrets
 		email: {
@@ -697,6 +637,23 @@ export const packedMeDetailedOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
+				properties: {
+					id: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'id',
+						example: 'xxxxxxxxxx',
+					},
+					name: {
+						type: 'string',
+						nullable: false, optional: false,
+					},
+					lastUsed: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'date-time',
+					},
+				},
 			},
 		},
 		//#endregion
@@ -757,14 +714,6 @@ export const packedUserSchema = {
 		{
 			type: 'object',
 			ref: 'UserDetailed',
-		},
-		{
-			type: 'object',
-			ref: 'UserDetailedNotMe',
-		},
-		{
-			type: 'object',
-			ref: 'MeDetailed',
 		},
 	],
 } as const;

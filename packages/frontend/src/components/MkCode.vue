@@ -1,39 +1,102 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<div :class="$style.codeBlockRoot">
+	<button :class="$style.codeBlockCopyButton" class="_button" @click="copy">
+		<i class="ti ti-copy"></i>
+	</button>
 	<Suspense>
 		<template #fallback>
-			<MkLoading v-if="!inline ?? true" />
+			<MkLoading />
 		</template>
-		<code v-if="inline" :class="$style.codeInlineRoot">{{ code }}</code>
-		<XCode v-else :code="code" :lang="lang"/>
+		<XCode v-if="show && lang" :code="code" :lang="lang"/>
+		<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
+		<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
+			<div :class="$style.codePlaceholderContainer">
+				<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
+				<div>{{ i18n.ts.clickToShow }}</div>
+			</div>
+		</button>
 	</Suspense>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
+import * as os from '@/os.js';
 import MkLoading from '@/components/global/MkLoading.vue';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
-defineProps<{
+const props = defineProps<{
 	code: string;
 	lang?: string;
-	inline?: boolean;
 }>();
 
+const show = ref(!defaultStore.state.dataSaver.code);
+
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
+
+function copy() {
+	copyToClipboard(props.code);
+	os.success();
+}
 </script>
 
 <style module lang="scss">
-.codeInlineRoot {
-	display: inline-block;
-	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+.codeBlockRoot {
+	position: relative;
+}
+
+.codeBlockCopyButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	opacity: 0.5;
+
+	&:hover {
+		opacity: 0.8;
+	}
+}
+
+.codeBlockFallbackRoot {
+	display: block;
 	overflow-wrap: anywhere;
-	color: #D4D4D4;
-	background: #1E1E1E;
-	padding: .1em;
-	border-radius: .3em;
+	background: var(--bg);
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 8px;
+}
+
+.codeBlockFallbackCode {
+	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+}
+
+.codePlaceholderRoot {
+	display: block;
+	width: 100%;
+	background: none;
+	border: none;
+	outline: none;
+  font: inherit;
+  color: inherit;
+	cursor: pointer;
+
+	box-sizing: border-box;
+	border-radius: 8px;
+	padding: 24px;
+	margin-top: 4px;
+	color: var(--fg);
+	background: var(--bg);
+}
+
+.codePlaceholderContainer {
+	text-align: center;
+	font-size: 0.8em;
 }
 </style>

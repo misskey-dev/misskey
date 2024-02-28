@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -44,22 +44,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { instance } from '@/instance.js';
+import { ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
-let isLocked = ref(false);
-let hideOnlineStatus = ref(false);
-let noCrawle = ref(false);
-let preventAiLearning = ref(true);
+const isLocked = ref(false);
+const hideOnlineStatus = ref(false);
+const noCrawle = ref(false);
+const preventAiLearning = ref(true);
 
 watch([isLocked, hideOnlineStatus, noCrawle, preventAiLearning], () => {
-	os.api('i/update', {
+	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		noCrawle: !!noCrawle.value,

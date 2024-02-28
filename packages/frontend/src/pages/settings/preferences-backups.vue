@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -37,12 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { useStream } from '@/stream.js';
@@ -71,7 +72,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'advancedMfm',
 	'loadRawImages',
 	'imageNewTab',
-	'enableDataSaverMode',
+	'dataSaver',
 	'disableShowingAnimatedImages',
 	'emojiStyle',
 	'disableDrawer',
@@ -83,10 +84,10 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'useReactionPickerForContextMenu',
 	'showGapBetweenNotesInTimeline',
 	'instanceTicker',
-	'reactionPickerSize',
-	'reactionPickerWidth',
-	'reactionPickerHeight',
-	'reactionPickerUseDrawerForMobile',
+	'emojiPickerScale',
+	'emojiPickerWidth',
+	'emojiPickerHeight',
+	'emojiPickerUseDrawerForMobile',
 	'defaultSideView',
 	'menuDisplay',
 	'reportError',
@@ -144,7 +145,7 @@ const connection = $i && useStream().useChannel('main');
 
 const profiles = ref<Record<string, Profile> | null>(null);
 
-os.api('i/registry/get-all', { scope })
+misskeyApi('i/registry/get-all', { scope })
 	.then(res => {
 		profiles.value = res || {};
 	});
@@ -406,7 +407,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles.value[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles.value[profileId].name}.json`,
-	}, null, {
+	}, { type: 'divider' }, {
 		text: ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(profileId),
@@ -414,7 +415,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		text: ts._preferencesBackups.save,
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
-	}, null, {
+	}, { type: 'divider' }, {
 		text: ts.delete,
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
@@ -436,10 +437,10 @@ onUnmounted(() => {
 	connection?.off('registryUpdated');
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
-})));
+}));
 </script>
 
 <style lang="scss" module>

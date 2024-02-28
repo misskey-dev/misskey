@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -67,7 +67,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
@@ -78,23 +79,24 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { iAmAdmin, iAmModerator } from '@/account.js';
 
-let tab = $ref('overview');
-let file: any = $ref(null);
-let info: any = $ref(null);
-let isSensitive: boolean = $ref(false);
+const tab = ref('overview');
+const file = ref<Misskey.entities.DriveFile | null>(null);
+const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
+const isSensitive = ref<boolean>(false);
 
 const props = defineProps<{
 	fileId: string,
 }>();
 
 async function fetch() {
-	file = await os.api('drive/files/show', { fileId: props.fileId });
-	info = await os.api('admin/drive/show-file', { fileId: props.fileId });
-	isSensitive = file.isSensitive;
+	file.value = await misskeyApi('drive/files/show', { fileId: props.fileId });
+	info.value = await misskeyApi('admin/drive/show-file', { fileId: props.fileId });
+	isSensitive.value = file.value.isSensitive;
 }
 
 fetch();
@@ -102,29 +104,29 @@ fetch();
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: file.name }),
+		text: i18n.tsx.removeAreYouSure({ x: file.value.name }),
 	});
 	if (canceled) return;
 
 	os.apiWithDialog('drive/files/delete', {
-		fileId: file.id,
+		fileId: file.value.id,
 	});
 }
 
 async function toggleIsSensitive(v) {
-	await os.api('drive/files/update', { fileId: props.fileId, isSensitive: v });
-	isSensitive = v;
+	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v });
+	isSensitive.value = v;
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	text: i18n.ts.openInNewTab,
 	icon: 'ti ti-external-link',
 	handler: () => {
-		window.open(file.url, '_blank');
+		window.open(file.value.url, '_blank', 'noopener');
 	},
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
@@ -138,10 +140,10 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(computed(() => ({
-	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
+definePageMetadata(() => ({
+	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,
 	icon: 'ti ti-file',
-})));
+}));
 </script>
 
 <style lang="scss" scoped>

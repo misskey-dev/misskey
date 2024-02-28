@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkMediaList :mediaList="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<MkPoll :note="note" :readOnly="true"/>
+					<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="true"/>
 				</div>
 			</div>
 			<MkReactionsViewer ref="reactionsViewer" :note="note"/>
@@ -28,28 +28,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { onUpdated } from 'vue';
+import { onUpdated, ref, shallowRef } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
-import { $i } from '@/account.js';
 
-let notes = $ref<Misskey.entities.Note[]>([]);
-let isScrolling = $ref(false);
-let scrollEl = $shallowRef<HTMLElement>();
+const notes = ref<Misskey.entities.Note[]>([]);
+const isScrolling = ref(false);
+const scrollEl = shallowRef<HTMLElement>();
 
-os.apiGet('notes/featured').then(_notes => {
-	notes = _notes;
+misskeyApiGet('notes/featured').then(_notes => {
+	notes.value = _notes;
 });
 
 onUpdated(() => {
-	if (!scrollEl) return;
-	const container = getScrollContainer(scrollEl);
+	if (!scrollEl.value) return;
+	const container = getScrollContainer(scrollEl.value);
 	const containerHeight = container ? container.clientHeight : window.innerHeight;
-	if (scrollEl.offsetHeight > containerHeight) {
-		isScrolling = true;
+	if (scrollEl.value.offsetHeight > containerHeight) {
+		isScrolling.value = true;
 	}
 });
 </script>

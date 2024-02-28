@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
@@ -35,22 +36,22 @@ const props = defineProps<{
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
-let fetching = $ref(true);
-let title = $ref<string | null>(null);
-let player = $ref({
-	url: null,
+const fetching = ref(true);
+const title = ref<string | null>(null);
+const player = ref({
+	url: null as string | null,
 	width: null,
 	height: null,
 });
 
 const ytFetch = (): void => {
-	fetching = true;
+	fetching.value = true;
 	window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
 		res.json().then(info => {
 			if (info.url == null) return;
-			title = info.title;
-			fetching = false;
-			player = info.player;
+			title.value = info.title;
+			fetching.value = false;
+			player.value = info.player;
 		});
 	});
 };

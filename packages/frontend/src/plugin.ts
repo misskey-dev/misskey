@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import { inputText } from '@/os.js';
 import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
 
@@ -19,19 +19,7 @@ export async function install(plugin: Plugin): Promise<void> {
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.id,
 	}), {
-		in: (q): Promise<string> => {
-			return new Promise(ok => {
-				inputText({
-					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value): void => {
 			console.log(value);
 		},
@@ -96,7 +84,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			utils.assertString(url);
-			window.open(url.value, '_blank');
+			window.open(url.value, '_blank', 'noopener');
 		}),
 		'Plugin:config': values.OBJ(config),
 	};

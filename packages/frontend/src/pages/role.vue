@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,8 +36,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import * as os from '@/os.js';
+import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -52,29 +53,29 @@ const props = withDefaults(defineProps<{
 	initialTab: 'users',
 });
 
-let tab = $ref(props.initialTab);
-let role = $ref();
-let error = $ref();
-let visible = $ref(false);
+const tab = ref(props.initialTab);
+const role = ref<Misskey.entities.Role>();
+const error = ref();
+const visible = ref(false);
 
 watch(() => props.role, () => {
-	os.api('roles/show', {
+	misskeyApi('roles/show', {
 		roleId: props.role,
 	}).then(res => {
-		role = res;
-		document.title = `${role?.name} | ${instanceName}`;
-		visible = res.isExplorable && res.isPublic;
+		role.value = res;
+		document.title = `${role.value.name} | ${instanceName}`;
+		visible.value = res.isExplorable && res.isPublic;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
-			error = i18n.ts.noRole;
+			error.value = i18n.ts.noRole;
 		} else {
-			error = i18n.ts.somethingHappened;
+			error.value = i18n.ts.somethingHappened;
 		}
-		document.title = `${error} | ${instanceName}`;
+		document.title = `${error.value} | ${instanceName}`;
 	});
 }, { immediate: true });
 
-const users = $computed(() => ({
+const users = computed(() => ({
 	endpoint: 'roles/users' as const,
 	limit: 30,
 	params: {
@@ -82,7 +83,7 @@ const users = $computed(() => ({
 	},
 }));
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'users',
 	icon: 'ti ti-users',
 	title: i18n.ts.users,
@@ -92,10 +93,10 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.timeline,
 }]);
 
-definePageMetadata(computed(() => ({
-	title: role?.name,
+definePageMetadata(() => ({
+	title: role.value ? role.value.name : i18n.ts.role,
 	icon: 'ti ti-badge',
-})));
+}));
 </script>
 
 <style lang="scss" module>

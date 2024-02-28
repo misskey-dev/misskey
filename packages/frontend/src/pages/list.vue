@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,8 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, computed } from 'vue';
+import { watch, computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -47,41 +49,41 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-let list = $ref(null);
-let error = $ref();
-let users = $ref([]);
+const list = ref<Misskey.entities.UserList | null>(null);
+const error = ref();
+const users = ref<Misskey.entities.UserDetailed[]>([]);
 
 function fetchList(): void {
-	os.api('users/lists/show', {
+	misskeyApi('users/lists/show', {
 		listId: props.listId,
 		forPublic: true,
 	}).then(_list => {
-		list = _list;
-		os.api('users/show', {
-			userIds: list.userIds,
+		list.value = _list;
+		misskeyApi('users/show', {
+			userIds: list.value.userIds,
 		}).then(_users => {
-			users = _users;
+			users.value = _users;
 		});
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
 function like() {
 	os.apiWithDialog('users/lists/favorite', {
-		listId: list.id,
+		listId: list.value.id,
 	}).then(() => {
-		list.isLiked = true;
-		list.likedCount++;
+		list.value.isLiked = true;
+		list.value.likedCount++;
 	});
 }
 
 function unlike() {
 	os.apiWithDialog('users/lists/unfavorite', {
-		listId: list.id,
+		listId: list.value.id,
 	}).then(() => {
-		list.isLiked = false;
-		list.likedCount--;
+		list.value.isLiked = false;
+		list.value.likedCount--;
 	});
 }
 
@@ -90,19 +92,19 @@ async function create() {
 		title: i18n.ts.enterListName,
 	});
 	if (canceled) return;
-	await os.apiWithDialog('users/lists/create-from-public', { name: name, listId: list.id });
+	await os.apiWithDialog('users/lists/create-from-public', { name: name, listId: list.value.id });
 }
 
 watch(() => props.listId, fetchList, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => list ? {
-	title: list.name,
+definePageMetadata(() => ({
+	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
-} : null));
+}));
 </script>
 <style lang="scss" module>
 .main {

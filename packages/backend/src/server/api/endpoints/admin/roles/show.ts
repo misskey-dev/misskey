@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:roles',
 
 	errors: {
 		noSuchRole: {
@@ -22,6 +23,12 @@ export const meta = {
 			code: 'NO_SUCH_ROLE',
 			id: '07dc7d34-c0d8-49b7-96c6-db3ce64ee0b3',
 		},
+	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Role',
 	},
 } as const;
 

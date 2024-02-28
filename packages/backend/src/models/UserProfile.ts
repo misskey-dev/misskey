@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { obsoleteNotificationTypes, ffVisibility, notificationTypes } from '@/types.js';
+import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiPage } from './Page.js';
@@ -29,6 +29,7 @@ export class MiUserProfile {
 	})
 	public location: string | null;
 
+	@Index()
 	@Column('char', {
 		length: 10, nullable: true,
 		comment: 'The birthday (YYYY-MM-DD) of the User.',
@@ -93,10 +94,16 @@ export class MiUserProfile {
 	public publicReactions: boolean;
 
 	@Column('enum', {
-		enum: ffVisibility,
+		enum: followingVisibilities,
 		default: 'public',
 	})
-	public ffVisibility: typeof ffVisibility[number];
+	public followingVisibility: typeof followingVisibilities[number];
+
+	@Column('enum', {
+		enum: followersVisibilities,
+		default: 'public',
+	})
+	public followersVisibility: typeof followersVisibilities[number];
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -242,6 +249,8 @@ export class MiUserProfile {
 			type: 'follower';
 		} | {
 			type: 'mutualFollow';
+		} | {
+			type: 'followingOrFollower';
 		} | {
 			type: 'list';
 			userListId: MiUserList['id'];

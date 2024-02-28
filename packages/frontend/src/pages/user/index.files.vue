@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,11 +33,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { notePage } from '@/filters/note.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
@@ -47,12 +47,12 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-let fetching = $ref(true);
-let files = $ref<{
+const fetching = ref(true);
+const files = ref<{
 	note: Misskey.entities.Note;
 	file: Misskey.entities.DriveFile;
 }[]>([]);
-let showingFiles = $ref<string[]>([]);
+const showingFiles = ref<string[]>([]);
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
@@ -61,21 +61,20 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 }
 
 onMounted(() => {
-	os.api('users/notes', {
+	misskeyApi('users/notes', {
 		userId: props.user.id,
 		withFiles: true,
-		excludeNsfw: defaultStore.state.nsfw !== 'ignore',
 		limit: 15,
 	}).then(notes => {
 		for (const note of notes) {
 			for (const file of note.files) {
-				files.push({
+				files.value.push({
 					note,
 					file,
 				});
 			}
 		}
-		fetching = false;
+		fetching.value = false;
 	});
 });
 </script>

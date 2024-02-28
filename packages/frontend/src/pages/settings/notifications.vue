@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,13 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 		<div class="_gaps_s">
 			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
-				<template #label>{{ i18n.t('_notification._types.' + type) }}</template>
+				<template #label>{{ i18n.ts._notification._types[type] }}</template>
 				<template #suffix>
 					{{
 						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
 						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
 						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
 						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
 						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
 						i18n.ts.all
 					}}
@@ -55,25 +56,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { shallowRef, computed } from 'vue';
 import XNotificationConfig from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const.js';
 
-const nonConfigurableNotificationTypes = ['note'];
+const $i = signinRequired();
 
-let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
-let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
-let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage || false);
-const userLists = await os.api('users/lists/list');
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'achievementEarned'];
+
+const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
+const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
+const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
+const userLists = await misskeyApi('users/lists/list');
 
 async function readAllUnreadNotes() {
 	await os.apiWithDialog('i/read-all-unread-notes');
@@ -86,36 +90,36 @@ async function readAllNotifications() {
 async function updateReceiveConfig(type, value) {
 	await os.apiWithDialog('i/update', {
 		notificationRecieveConfig: {
-			...$i!.notificationRecieveConfig,
+			...$i.notificationRecieveConfig,
 			[type]: value,
 		},
 	}).then(i => {
-		$i!.notificationRecieveConfig = i.notificationRecieveConfig;
+		$i.notificationRecieveConfig = i.notificationRecieveConfig;
 	});
 }
 
 function onChangeSendReadMessage(v: boolean) {
-	if (!pushRegistrationInServer) return;
+	if (!pushRegistrationInServer.value) return;
 
 	os.apiWithDialog('sw/update-registration', {
-		endpoint: pushRegistrationInServer.endpoint,
+		endpoint: pushRegistrationInServer.value.endpoint,
 		sendReadMessage: v,
 	}).then(res => {
-		if (!allowButton)	return;
-		allowButton.pushRegistrationInServer = res;
+		if (!allowButton.value)	return;
+		allowButton.value.pushRegistrationInServer = res;
 	});
 }
 
 function testNotification(): void {
-	os.api('notifications/test-notification');
+	misskeyApi('notifications/test-notification');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
-});
+}));
 </script>

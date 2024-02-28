@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { summaly } from 'summaly';
+import { summaly } from '@misskey-dev/summaly';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';

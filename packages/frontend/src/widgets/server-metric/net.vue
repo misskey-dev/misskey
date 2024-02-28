@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -49,33 +49,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
-let viewBoxX: number = $ref(50);
-let viewBoxY: number = $ref(30);
-let stats: any[] = $ref([]);
-let inPolylinePoints: string = $ref('');
-let outPolylinePoints: string = $ref('');
-let inPolygonPoints: string = $ref('');
-let outPolygonPoints: string = $ref('');
-let inHeadX: any = $ref(null);
-let inHeadY: any = $ref(null);
-let outHeadX: any = $ref(null);
-let outHeadY: any = $ref(null);
-let inRecent: number = $ref(0);
-let outRecent: number = $ref(0);
+const viewBoxX = ref<number>(50);
+const viewBoxY = ref<number>(30);
+const stats = ref<Misskey.entities.ServerStats[]>([]);
+const inPolylinePoints = ref<string>('');
+const outPolylinePoints = ref<string>('');
+const inPolygonPoints = ref<string>('');
+const outPolygonPoints = ref<string>('');
+const inHeadX = ref<number>();
+const inHeadY = ref<number>();
+const outHeadX = ref<number>();
+const outHeadY = ref<number>();
+const inRecent = ref<number>(0);
+const outRecent = ref<number>(0);
 
 onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
 		id: Math.random().toString().substring(2, 10),
+		length: 50,
 	});
 });
 
@@ -84,32 +86,32 @@ onBeforeUnmount(() => {
 	props.connection.off('statsLog', onStatsLog);
 });
 
-function onStats(connStats) {
-	stats.push(connStats);
-	if (stats.length > 50) stats.shift();
+function onStats(connStats: Misskey.entities.ServerStats) {
+	stats.value.push(connStats);
+	if (stats.value.length > 50) stats.value.shift();
 
-	const inPeak = Math.max(1024 * 64, Math.max(...stats.map(s => s.net.rx)));
-	const outPeak = Math.max(1024 * 64, Math.max(...stats.map(s => s.net.tx)));
+	const inPeak = Math.max(1024 * 64, Math.max(...stats.value.map(s => s.net.rx)));
+	const outPeak = Math.max(1024 * 64, Math.max(...stats.value.map(s => s.net.tx)));
 
-	let inPolylinePointsStats = stats.map((s, i) => [viewBoxX - ((stats.length - 1) - i), (1 - (s.net.rx / inPeak)) * viewBoxY]);
-	let outPolylinePointsStats = stats.map((s, i) => [viewBoxX - ((stats.length - 1) - i), (1 - (s.net.tx / outPeak)) * viewBoxY]);
-	inPolylinePoints = inPolylinePointsStats.map(xy => `${xy[0]},${xy[1]}`).join(' ');
-	outPolylinePoints = outPolylinePointsStats.map(xy => `${xy[0]},${xy[1]}`).join(' ');
+	let inPolylinePointsStats = stats.value.map((s, i) => [viewBoxX.value - ((stats.value.length - 1) - i), (1 - (s.net.rx / inPeak)) * viewBoxY.value]);
+	let outPolylinePointsStats = stats.value.map((s, i) => [viewBoxX.value - ((stats.value.length - 1) - i), (1 - (s.net.tx / outPeak)) * viewBoxY.value]);
+	inPolylinePoints.value = inPolylinePointsStats.map(xy => `${xy[0]},${xy[1]}`).join(' ');
+	outPolylinePoints.value = outPolylinePointsStats.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
-	inPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${inPolylinePoints} ${viewBoxX},${viewBoxY}`;
-	outPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${outPolylinePoints} ${viewBoxX},${viewBoxY}`;
+	inPolygonPoints.value = `${viewBoxX.value - (stats.value.length - 1)},${viewBoxY.value} ${inPolylinePoints.value} ${viewBoxX.value},${viewBoxY.value}`;
+	outPolygonPoints.value = `${viewBoxX.value - (stats.value.length - 1)},${viewBoxY.value} ${outPolylinePoints.value} ${viewBoxX.value},${viewBoxY.value}`;
 
-	inHeadX = inPolylinePointsStats.at(-1)![0];
-	inHeadY = inPolylinePointsStats.at(-1)![1];
-	outHeadX = outPolylinePointsStats.at(-1)![0];
-	outHeadY = outPolylinePointsStats.at(-1)![1];
+	inHeadX.value = inPolylinePointsStats.at(-1)![0];
+	inHeadY.value = inPolylinePointsStats.at(-1)![1];
+	outHeadX.value = outPolylinePointsStats.at(-1)![0];
+	outHeadY.value = outPolylinePointsStats.at(-1)![1];
 
-	inRecent = connStats.net.rx;
-	outRecent = connStats.net.tx;
+	inRecent.value = connStats.net.rx;
+	outRecent.value = connStats.net.tx;
 }
 
-function onStatsLog(statsLog) {
-	for (const revStats of [...statsLog].reverse()) {
+function onStatsLog(statsLog: Misskey.entities.ServerStatsLog) {
+	for (const revStats of statsLog.reverse()) {
 		onStats(revStats);
 	}
 }

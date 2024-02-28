@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,18 @@ export const meta = {
 	requireCredential: false,
 	allowGet: true,
 	cacheSec: 60 * 3,
+
+	res: {
+		type: 'object',
+		properties: {
+			items: {
+				type: 'array',
+				items: {
+					type: 'object',
+				},
+			}
+		}
+	},
 } as const;
 
 export const paramDef = {

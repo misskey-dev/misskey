@@ -104,7 +104,6 @@ clickToShow: "Κάντε κλικ για εμφάνιση"
 add: "Προσθέστε"
 reaction: "Αντιδράσεις"
 reactions: "Αντιδράσεις"
-reactionSetting: "Αντιδράσεις για εμφάνιση στην επιλογή αντίδρασης"
 reactionSettingDescription2: "Σύρετε για να αλλάξετε τη σειρά, κάντε κλικ για να διαγράψετε, πατήστε \"+\" για να προσθέσετε."
 rememberNoteVisibility: "Θυμήσου τις ρυθμίσεις ορατότητας σημειώματος"
 attachCancel: "Διαγραφή αρχείου"
@@ -228,7 +227,6 @@ userList: "Λίστες"
 about: "Πληροφορίες"
 moderator: "Συντονιστής"
 moderation: "Συντονισμός"
-cacheClear: "Εκκαθάριση προσωρινής μνήμης"
 markAsReadAllNotifications: "Όλες οι ειδοποιήσεις διαβάστηκαν"
 members: "Μέλη"
 transfer: "Μεταφορά"
@@ -358,6 +356,7 @@ _profile:
   username: "Όνομα μέλους"
 _exportOrImport:
   allNotes: "Όλα τα σημειώματα"
+  clips: "Κλιπ"
   followingList: "Ακολουθεί"
   muteList: "Μέλη σε σίγαση"
   blockingList: "Μπλοκαρισμένα μέλη"
@@ -397,3 +396,6 @@ _webhookSettings:
   name: "Όνομα"
 _moderationLogTypes:
   suspend: "Αποβολή"
+_reversi:
+  total: "Σύνολο"
+

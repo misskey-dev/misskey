@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
 import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
+import { ExportClipsProcessorService } from './processors/ExportClipsProcessorService.js';
 import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
 import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
@@ -91,6 +92,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
 		private exportCustomEmojisProcessorService: ExportCustomEmojisProcessorService,
 		private exportNotesProcessorService: ExportNotesProcessorService,
+		private exportClipsProcessorService: ExportClipsProcessorService,
 		private exportFavoritesProcessorService: ExportFavoritesProcessorService,
 		private exportFollowingProcessorService: ExportFollowingProcessorService,
 		private exportMutingProcessorService: ExportMutingProcessorService,
@@ -153,8 +155,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.systemQueueWorker
 			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => systemLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => systemLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => systemLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => systemLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -164,6 +166,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				case 'deleteDriveFiles': return this.deleteDriveFilesProcessorService.process(job);
 				case 'exportCustomEmojis': return this.exportCustomEmojisProcessorService.process(job);
 				case 'exportNotes': return this.exportNotesProcessorService.process(job);
+				case 'exportClips': return this.exportClipsProcessorService.process(job);
 				case 'exportFavorites': return this.exportFavoritesProcessorService.process(job);
 				case 'exportFollowing': return this.exportFollowingProcessorService.process(job);
 				case 'exportMuting': return this.exportMutingProcessorService.process(job);
@@ -191,8 +194,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.dbQueueWorker
 			.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => dbLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => dbLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => dbLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => dbLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => dbLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -215,8 +218,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.deliverQueueWorker
 			.on('active', (job) => deliverLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-			.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
-			.on('error', (err: Error) => deliverLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => deliverLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
+			.on('error', (err: Error) => deliverLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => deliverLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -226,7 +229,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			autorun: false,
 			concurrency: this.config.inboxJobConcurrency ?? 16,
 			limiter: {
-				max: this.config.inboxJobPerSec ?? 16,
+				max: this.config.inboxJobPerSec ?? 32,
 				duration: 1000,
 			},
 			settings: {
@@ -239,8 +242,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.inboxQueueWorker
 			.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
-			.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => inboxLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => inboxLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => inboxLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -263,8 +266,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.webhookDeliverQueueWorker
 			.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-			.on('failed', (job, err) => webhookLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
-			.on('error', (err: Error) => webhookLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => webhookLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
+			.on('error', (err: Error) => webhookLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => webhookLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -280,9 +283,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		}, {
 			...baseQueueOptions(this.config, QUEUE.RELATIONSHIP),
 			autorun: false,
-			concurrency: this.config.relashionshipJobConcurrency ?? 16,
+			concurrency: this.config.relationshipJobConcurrency ?? 16,
 			limiter: {
-				max: this.config.relashionshipJobPerSec ?? 64,
+				max: this.config.relationshipJobPerSec ?? 64,
 				duration: 1000,
 			},
 		});
@@ -292,8 +295,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.relationshipQueueWorker
 			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => relationshipLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => relationshipLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -315,8 +318,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.objectStorageQueueWorker
 			.on('active', (job) => objectStorageLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => objectStorageLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => objectStorageLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => objectStorageLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => objectStorageLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 

@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { parse } from 'acorn';
 import { generate } from 'astring';
 import { describe, expect, it } from 'vitest';
-import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name';
+import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name.js';
 import type * as estree from 'estree';
 
 function parseExpression(code: string): estree.Expression {
@@ -89,7 +89,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       api("users/notes", {
         userId: props.user.id,
         fileType: image,
-        excludeNsfw: defaultStore.state.nsfw !== "ignore",
         limit: 10
       }).then((notes) => {
         for (const note of notes) {
@@ -181,7 +180,7 @@ import './photoswipe-!~{003}~.js';
 const _hoisted_1 = createBaseVNode("i", {
   class: "ti ti-photo"
 }, null, -1);
-const _sfc_main = defineComponent({
+const index_photos = defineComponent({
   __name: "index.photos",
   props: {
     user: {}
@@ -198,7 +197,6 @@ const _sfc_main = defineComponent({
       api("users/notes", {
         userId: props.user.id,
         fileType: image,
-        excludeNsfw: defaultStore.state.nsfw !== "ignore",
         limit: 10
       }).then(notes => {
         for (const note of notes) {
@@ -263,7 +261,6 @@ const style0 = {
 const cssModules = {
   "$style": style0
 };
-const index_photos = _sfc_main;
 export {index_photos as default};
 `.slice(1));
 });

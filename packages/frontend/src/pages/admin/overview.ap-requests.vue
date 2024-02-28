@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,10 +20,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { chartVLine } from '@/scripts/chart-vline.js';
 import { defaultStore } from '@/store.js';
@@ -33,9 +33,9 @@ import { initChart } from '@/scripts/init-chart.js';
 initChart();
 
 const chartLimit = 50;
-const chartEl = $shallowRef<HTMLCanvasElement>();
-const chartEl2 = $shallowRef<HTMLCanvasElement>();
-let fetching = $ref(true);
+const chartEl = shallowRef<HTMLCanvasElement>();
+const chartEl2 = shallowRef<HTMLCanvasElement>();
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
@@ -65,7 +65,7 @@ onMounted(async () => {
 		}));
 	};
 
-	const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+	const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	const succColor = '#87e000';
@@ -74,7 +74,7 @@ onMounted(async () => {
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
 
-	new Chart(chartEl, {
+	new Chart(chartEl.value, {
 		type: 'line',
 		data: {
 			datasets: [{
@@ -178,7 +178,7 @@ onMounted(async () => {
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	new Chart(chartEl2, {
+	new Chart(chartEl2.value, {
 		type: 'bar',
 		data: {
 			datasets: [{
@@ -265,7 +265,7 @@ onMounted(async () => {
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	fetching = false;
+	fetching.value = false;
 });
 </script>
 

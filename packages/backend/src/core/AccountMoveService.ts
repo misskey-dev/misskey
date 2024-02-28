@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,7 +20,6 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { CacheService } from '@/core/CacheService.js';
 import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -60,7 +59,6 @@ export class AccountMoveService {
 		private instanceChart: InstanceChart,
 		private metaService: MetaService,
 		private relayService: RelayService,
-		private cacheService: CacheService,
 		private queueService: QueueService,
 	) {
 	}
@@ -84,7 +82,7 @@ export class AccountMoveService {
 		Object.assign(src, update);
 
 		// Update cache
-		this.cacheService.uriPersonCache.set(srcUri, src);
+		this.globalEventService.publishInternalEvent('localUserUpdated', src);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
 		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
@@ -96,7 +94,7 @@ export class AccountMoveService {
 		await this.apDeliverManagerService.deliverToFollowers(src, moveAct);
 
 		// Publish meUpdated event
-		const iObj = await this.userEntityService.pack<true, true>(src.id, src, { detail: true, includeSecrets: true });
+		const iObj = await this.userEntityService.pack(src.id, src, { schema: 'MeDetailed', includeSecrets: true });
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
 		// Unfollow after 24 hours

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -419,6 +419,10 @@ export class MfmService {
 			},
 
 			text: (node) => {
+				if (!node.props.text.match(/[\r\n]/)) {
+					return doc.createTextNode(node.props.text);
+				}
+
 				const el = doc.createElement('span');
 				const nodes = node.props.text.split(/\r\n|\r|\n/).map(x => doc.createTextNode(x));
 

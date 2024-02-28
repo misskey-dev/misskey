@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,6 +19,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canInvite',
+	kind: 'write:invite-codes',
 
 	errors: {
 		exceededCreateLimit: {
@@ -31,13 +32,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		properties: {
-			code: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: 'GR6S02ERUA5VR',
-			},
-		},
+		ref: 'InviteCode',
 	},
 } as const;
 

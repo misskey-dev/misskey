@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -47,6 +47,7 @@ export type AsUiMfm = AsUiComponentBase & {
 	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
+	onClickEv?: (evId: string) => void
 };
 
 export type AsUiButton = AsUiComponentBase & {
@@ -121,6 +122,7 @@ export type AsUiPostFormButton = AsUiComponentBase & {
 	rounded?: boolean;
 	form?: {
 		text: string;
+		cw?: string;
 	};
 };
 
@@ -128,6 +130,7 @@ export type AsUiPostForm = AsUiComponentBase & {
 	type: 'postForm';
 	form?: {
 		text: string;
+		cw?: string;
 	};
 };
 
@@ -215,7 +218,7 @@ function getTextOptions(def: values.Value | undefined): Omit<AsUiText, 'id' | 't
 	};
 }
 
-function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'type'> {
+function getMfmOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiMfm, 'id' | 'type'> {
 	utils.assertObject(def);
 
 	const text = def.value.get('text');
@@ -228,6 +231,8 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	if (color) utils.assertString(color);
 	const font = def.value.get('font');
 	if (font) utils.assertString(font);
+	const onClickEv = def.value.get('onClickEv');
+	if (onClickEv) utils.assertFunction(onClickEv);
 
 	return {
 		text: text?.value,
@@ -235,6 +240,9 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 		bold: bold?.value,
 		color: color?.value,
 		font: font?.value,
+		onClickEv: (evId: string) => {
+			if (onClickEv) call(onClickEv, [values.STR(evId)]);
+		},
 	};
 }
 
@@ -454,8 +462,11 @@ function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: valu
 	const getForm = () => {
 		const text = form!.value.get('text');
 		utils.assertString(text);
+		const cw = form!.value.get('cw');
+		if (cw) utils.assertString(cw);
 		return {
 			text: text.value,
+			cw: cw?.value,
 		};
 	};
 
@@ -478,8 +489,11 @@ function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn
 	const getForm = () => {
 		const text = form!.value.get('text');
 		utils.assertString(text);
+		const cw = form!.value.get('cw');
+		if (cw) utils.assertString(cw);
 		return {
 			text: text.value,
+			cw: cw?.value,
 		};
 	};
 

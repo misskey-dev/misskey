@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -39,12 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
+import { onDeactivated, onUnmounted, Ref, ref, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -59,8 +59,8 @@ let aiscript: Interpreter;
 const code = ref('');
 const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
-let components: Ref<AsUiComponent>[] = $ref([]);
-let uiKey = $ref(0);
+const components = ref<Ref<AsUiComponent>[]>([]);
+const uiKey = ref(0);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
@@ -74,31 +74,19 @@ watch(code, () => {
 async function run() {
 	if (aiscript) aiscript.abort();
 	root.value = undefined;
-	components = [];
-	uiKey++;
+	components.value = [];
+	uiKey.value++;
 	logs.value = [];
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
 			storageKey: 'widget',
 			token: $i?.token,
 		}),
-		...registerAsUiLib(components, (_root) => {
+		...registerAsUiLib(components.value, (_root) => {
 			root.value = _root.value;
 		}),
 	}), {
-		in: (q) => {
-			return new Promise(ok => {
-				os.inputText({
-					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value) => {
 			if (value.type === 'str' && value.value.toLowerCase().replace(',', '').includes('hello world')) {
 				claimAchievement('outputHelloWorldOnScratchpad');
@@ -160,14 +148,14 @@ onUnmounted(() => {
 	if (aiscript) aiscript.abort();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
-});
+}));
 </script>
 
 <style lang="scss" module>

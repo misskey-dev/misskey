@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,10 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, Ref, ref, watch } from 'vue';
 import { Interpreter, Parser } from '@syuilo/aiscript';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import { $i } from '@/account.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
@@ -52,7 +52,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 const parser = new Parser();
 
 const root = ref<AsUiRoot>();
-const components: Ref<AsUiComponent>[] = $ref([]);
+const components = ref<Ref<AsUiComponent>[]>([]);
 
 async function run() {
 	const aiscript = new Interpreter({
@@ -60,23 +60,11 @@ async function run() {
 			storageKey: 'widget',
 			token: $i?.token,
 		}),
-		...registerAsUiLib(components, (_root) => {
+		...registerAsUiLib(components.value, (_root) => {
 			root.value = _root.value;
 		}),
 	}, {
-		in: (q) => {
-			return new Promise(ok => {
-				os.inputText({
-					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value) => {
 			// nop
 		},

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,4 +37,8 @@ export function parseMeid(id: string): { date: Date; } {
 	return {
 		date: new Date(parseInt(id.slice(0, 12), 16) - 0x800000000000),
 	};
+}
+
+export function isSafeMeidT(t: number): boolean {
+	return t > 0;
 }

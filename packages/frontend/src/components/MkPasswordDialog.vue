@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,12 +36,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const emit = defineEmits<{
 	(ev: 'done', v: { password: string; token: string | null; }): void;
@@ -49,22 +51,22 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
-const passwordInput = $shallowRef<InstanceType<typeof MkInput>>();
-const password = $ref('');
-const token = $ref(null);
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const passwordInput = shallowRef<InstanceType<typeof MkInput>>();
+const password = ref('');
+const token = ref<string | null>(null);
 
 function onClose() {
 	emit('cancelled');
-	if (dialog) dialog.close();
+	if (dialog.value) dialog.value.close();
 }
 
 function done(res) {
-	emit('done', { password, token });
-	if (dialog) dialog.close();
+	emit('done', { password: password.value, token: token.value });
+	if (dialog.value) dialog.value.close();
 }
 
 onMounted(() => {
-	if (passwordInput) passwordInput.focus();
+	if (passwordInput.value) passwordInput.value.focus();
 });
 </script>

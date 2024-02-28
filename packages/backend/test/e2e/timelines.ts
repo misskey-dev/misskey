@@ -1,18 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
-process.env.NODE_ENV = 'test';
-process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING = 'true';
-
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl, randomString } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
-import type * as misskey from 'misskey-js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, sleep, uploadUrl } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -21,16 +16,6 @@ function genHost() {
 function waitForPushToTl() {
 	return sleep(500);
 }
-
-let app: INestApplicationContext;
-
-beforeAll(async () => {
-	app = await startServer();
-}, 1000 * 60 * 2);
-
-afterAll(async () => {
-	await app.close();
-});
 
 describe('Timelines', () => {
 	describe('Home TL', () => {
@@ -335,8 +320,9 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+
 			const bobNote = await post(bob, { text: 'hi' });
 
 			await waitForPushToTl();
@@ -349,8 +335,9 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();
@@ -366,8 +353,8 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			await sleep(1000);
 			const [bobFile, carolFile] = await Promise.all([
-				uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
-				uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
+				uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
+				uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
 			]);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [bobFile.id] });
@@ -666,7 +653,7 @@ describe('Timelines', () => {
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
-			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png');
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
@@ -763,8 +750,9 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+
 			const bobNote = await post(bob, { text: 'hi' });
 
 			await waitForPushToTl();
@@ -777,8 +765,9 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();
@@ -804,7 +793,7 @@ describe('Timelines', () => {
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
-			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png');
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
@@ -999,7 +988,7 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png');
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
@@ -1158,7 +1147,7 @@ describe('Timelines', () => {
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
-			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png');
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 

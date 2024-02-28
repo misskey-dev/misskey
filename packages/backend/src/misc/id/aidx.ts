@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -40,4 +40,8 @@ export function genAidx(t: number): string {
 export function parseAidx(id: string): { date: Date; } {
 	const time = parseInt(id.slice(0, TIME_LENGTH), 36) + TIME2000;
 	return { date: new Date(time) };
+}
+
+export function isSafeAidxT(t: number): boolean {
+	return t > TIME2000;
 }

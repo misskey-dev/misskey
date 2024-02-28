@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,13 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
-import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -38,41 +39,41 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-let list = $ref(null);
-let queue = $ref(0);
-let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
-let rootEl = $shallowRef<HTMLElement>();
+const list = ref<Misskey.entities.UserList | null>(null);
+const queue = ref(0);
+const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+const rootEl = shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {
-	list = await os.api('users/lists/show', {
+	list.value = await misskeyApi('users/lists/show', {
 		listId: props.listId,
 	});
 }, { immediate: true });
 
 function queueUpdated(q) {
-	queue = q;
+	queue.value = q;
 }
 
 function top() {
-	scroll(rootEl, { top: 0 });
+	scroll(rootEl.value, { top: 0 });
 }
 
 function settings() {
 	router.push(`/my/lists/${props.listId}`);
 }
 
-const headerActions = $computed(() => list ? [{
+const headerActions = computed(() => list.value ? [{
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => list ? {
-	title: list.name,
+definePageMetadata(() => ({
+	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

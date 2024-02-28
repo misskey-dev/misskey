@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,13 +9,13 @@ import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
 	requireRolePolicy: 'canInvite',
+	kind: 'read:invite-codes',
 
 	res: {
 		type: 'array',
@@ -23,6 +23,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
+			ref: 'InviteCode',
 		},
 	},
 } as const;

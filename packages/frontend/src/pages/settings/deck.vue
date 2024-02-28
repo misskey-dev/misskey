@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,12 +32,12 @@ const useSimpleUiForNonRootPages = computed(deckStore.makeGetterSetter('useSimpl
 const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
 const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.deck,
 	icon: 'ti ti-columns',
-});
+}));
 </script>

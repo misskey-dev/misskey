@@ -1,23 +1,28 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="_gaps_m">
-	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+	<div class="_panel">
+		<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+			<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+		</div>
 		<div :class="$style.avatarContainer">
 			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
-			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+			<div class="_buttonsCenter">
+				<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+				<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+			</div>
 		</div>
-		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave>
+	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
@@ -84,24 +89,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSlot>
 
 	<MkFolder>
-		<template #icon><i class="ti ti-sparkles"></i></template>
-		<template #label>{{ i18n.ts.avatarDecorations }}</template>
-
-		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-gap: 12px;">
-			<div
-				v-for="avatarDecoration in avatarDecorations"
-				:key="avatarDecoration.id"
-				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
-				@click="openDecoration(avatarDecoration)"
-			>
-				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
-				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
-				<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
-			</div>
-		</div>
-	</MkFolder>
-
-	<MkFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
 
 		<div class="_gaps_m">
@@ -122,10 +109,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -134,17 +120,20 @@ import FormSlot from '@/components/form/slot.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { langmap } from '@/scripts/langmap.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
+import { globalEvents } from '@/events.js';
 import MkInfo from '@/components/MkInfo.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+
+const $i = signinRequired();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
-let avatarDecorations: any[] = $ref([]);
 
 const profile = reactive({
 	name: $i.name,
@@ -152,8 +141,8 @@ const profile = reactive({
 	location: $i.location,
 	birthday: $i.birthday,
 	lang: $i.lang,
-	isBot: $i.isBot,
-	isCat: $i.isCat,
+	isBot: $i.isBot ?? false,
+	isCat: $i.isCat ?? false,
 });
 
 watch(() => profile, () => {
@@ -162,12 +151,8 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
+const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
-
-os.api('get-avatar-decorations').then(_avatarDecorations => {
-	avatarDecorations = _avatarDecorations;
-});
 
 function addField() {
 	fields.value.push({
@@ -189,6 +174,7 @@ function saveFields() {
 	os.apiWithDialog('i/update', {
 		fields: fields.value.filter(field => field.name !== '' && field.value !== '').map(field => ({ name: field.name, value: field.value })),
 	});
+	globalEvents.emit('requestClearPageCache');
 }
 
 function save() {
@@ -207,6 +193,7 @@ function save() {
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
 	});
+	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
 		claimAchievement('setNameToSyuilo');
@@ -222,7 +209,7 @@ function changeAvatar(ev) {
 
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.t('cropImageAsk'),
+			text: i18n.ts.cropImageAsk,
 			okText: i18n.ts.cropYes,
 			cancelText: i18n.ts.cropNo,
 		});
@@ -238,6 +225,7 @@ function changeAvatar(ev) {
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
+		globalEvents.emit('requestClearPageCache');
 		claimAchievement('profileFilled');
 	});
 }
@@ -248,7 +236,7 @@ function changeBanner(ev) {
 
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.t('cropImageAsk'),
+			text: i18n.ts.cropImageAsk,
 			okText: i18n.ts.cropYes,
 			cancelText: i18n.ts.cropNo,
 		});
@@ -264,39 +252,34 @@ function changeBanner(ev) {
 		});
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;
+		globalEvents.emit('requestClearPageCache');
 	});
 }
 
-function openDecoration(avatarDecoration) {
-	os.popup(defineAsyncComponent(() => import('./profile.avatar-decoration-dialog.vue')), {
-		decoration: avatarDecoration,
-	}, {}, 'closed');
-}
+const headerActions = computed(() => []);
 
-const headerActions = $computed(() => []);
+const headerTabs = computed(() => []);
 
-const headerTabs = $computed(() => []);
-
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.profile,
 	icon: 'ti ti-user',
-});
+}));
 </script>
 
 <style lang="scss" module>
-.avatarAndBanner {
+.banner {
 	position: relative;
+	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border: solid 1px var(--divider);
-	border-radius: 10px;
+	border-bottom: solid 1px var(--divider);
 	overflow: clip;
 }
 
 .avatarContainer {
-	display: inline-block;
+	margin-top: -50px;
+	padding-bottom: 16px;
 	text-align: center;
-	padding: 16px;
 }
 
 .avatar {
@@ -366,34 +349,5 @@ definePageMetadata({
 
 .dragItemForm {
 	flex-grow: 1;
-}
-
-.avatarDecoration {
-	cursor: pointer;
-	padding: 16px 16px 28px 16px;
-	border: solid 2px var(--divider);
-	border-radius: 8px;
-	text-align: center;
-	font-size: 90%;
-	overflow: clip;
-	contain: content;
-}
-
-.avatarDecorationActive {
-	background-color: var(--accentedBg);
-	border-color: var(--accent);
-}
-
-.avatarDecorationName {
-	position: relative;
-	z-index: 10;
-	font-weight: bold;
-	margin-bottom: 20px;
-}
-
-.avatarDecorationLock {
-	position: absolute;
-	bottom: 12px;
-	right: 12px;
 }
 </style>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTime :time="log.createdAt"/>
 	</template>
 
-	<div :class="$style.root">
+	<div>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 			<div style="flex: 1;">{{ i18n.ts.moderator }}: <MkA :to="`/admin/user/${log.userId}`" class="_link">@{{ log.user?.username }}</MkA></div>
 			<div style="flex: 1;">{{ i18n.ts.dateAndTime }}: <MkTime :time="log.createdAt" mode="detail"/></div>
@@ -110,6 +110,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
+		<template v-else-if="log.type === 'updateRemoteInstanceNote'">
+			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
+			</div>
+		</template>
 
 		<details>
 			<summary>raw</summary>
@@ -123,9 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { CodeDiff } from 'v-code-diff';
 import JSON5 from 'json5';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { dateString } from '@/filters/date.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
@@ -134,9 +138,6 @@ const props = defineProps<{
 </script>
 
 <style lang="scss" module>
-.root {
-}
-
 .avatar {
 	width: 18px;
 	height: 18px;
@@ -150,7 +151,7 @@ const props = defineProps<{
 }
 
 .logYellow {
-	color: var(--warning);
+	color: var(--warn);
 }
 
 .logRed {

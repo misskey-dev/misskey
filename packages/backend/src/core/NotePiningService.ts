@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -77,7 +77,7 @@ export class NotePiningService {
 		} as MiUserNotePining);
 
 		// Deliver to remote followers
-		if (this.userEntityService.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user) && !note.localOnly && ['public', 'home'].includes(note.visibility)) {
 			this.deliverPinnedChange(user.id, note.id, true);
 		}
 	}
@@ -105,7 +105,7 @@ export class NotePiningService {
 		});
 
 		// Deliver to remote followers
-		if (this.userEntityService.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user) && !note.localOnly && ['public', 'home'].includes(note.visibility)) {
 			this.deliverPinnedChange(user.id, noteId, false);
 		}
 	}

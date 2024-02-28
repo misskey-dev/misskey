@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,10 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -57,12 +60,12 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-let list = $ref();
-let users = $ref([]);
-let fetching = $ref(true);
+const list = ref<Misskey.entities.UserList>();
+const users = ref<Misskey.entities.UserDetailed[]>([]);
+const fetching = ref(true);
 
 async function chooseList() {
-	const lists = await os.api('users/lists/list');
+	const lists = await misskeyApi('users/lists/list');
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
@@ -79,19 +82,19 @@ async function chooseList() {
 
 const fetch = () => {
 	if (widgetProps.listId == null) {
-		fetching = false;
+		fetching.value = false;
 		return;
 	}
 
-	os.api('users/lists/show', {
+	misskeyApi('users/lists/show', {
 		listId: widgetProps.listId,
 	}).then(_list => {
-		list = _list;
-		os.api('users/show', {
-			userIds: list.userIds,
+		list.value = _list;
+		misskeyApi('users/show', {
+			userIds: list.value.userIds,
 		}).then(_users => {
-			users = _users;
-			fetching = false;
+			users.value = _users;
+			fetching.value = false;
 		});
 	});
 };

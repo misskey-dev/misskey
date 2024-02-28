@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'write:account',
 	errors: {
 		noSuchList: {
 			message: 'No such user list.',
@@ -44,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListFavoritesRepository: UserListFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userListExist = await this.userListsRepository.exist({
+			const userListExist = await this.userListsRepository.exists({
 				where: {
 					id: ps.listId,
 					isPublic: true,

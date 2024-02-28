@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,28 +36,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let origin = $ref('local');
-let type = $ref(null);
-let searchHost = $ref('');
-let userId = $ref('');
-let viewMode = $ref('grid');
+const origin = ref('local');
+const type = ref<string | null>(null);
+const searchHost = ref('');
+const userId = ref('');
+const viewMode = ref('grid');
 const pagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
 	params: computed(() => ({
-		type: (type && type !== '') ? type : null,
-		userId: (userId && userId !== '') ? userId : null,
-		origin: origin,
-		hostname: (searchHost && searchHost !== '') ? searchHost : null,
+		type: (type.value && type.value !== '') ? type.value : null,
+		userId: (userId.value && userId.value !== '') ? userId.value : null,
+		origin: origin.value,
+		hostname: (searchHost.value && searchHost.value !== '') ? searchHost.value : null,
 	})),
 };
 
@@ -79,11 +80,11 @@ function show(file) {
 async function find() {
 	const { canceled, result: q } = await os.inputText({
 		title: i18n.ts.fileIdOrUrl,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 
-	os.api('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
+	misskeyApi('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
 		show(file);
 	}).catch(err => {
 		if (err.code === 'NO_SUCH_FILE') {
@@ -95,7 +96,7 @@ async function find() {
 	});
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	text: i18n.ts.lookup,
 	icon: 'ti ti-search',
 	handler: find,
@@ -105,10 +106,10 @@ const headerActions = $computed(() => [{
 	handler: clear,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.files,
 	icon: 'ti ti-cloud',
-})));
+}));
 </script>

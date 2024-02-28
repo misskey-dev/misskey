@@ -1,15 +1,26 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { utils, values } from '@syuilo/aiscript';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
+
+export function aiScriptReadline(q: string): Promise<string> {
+	return new Promise(ok => {
+		os.inputText({
+			title: q,
+		}).then(({ result: a }) => {
+			ok(a ?? '');
+		});
+	});
+}
 
 export function createAiScriptEnv(opts) {
 	return {
@@ -44,12 +55,13 @@ export function createAiScriptEnv(opts) {
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
 			const actualToken: string|null = token?.value ?? opts.token ?? null;
-			return os.api(ep.value, utils.valToJs(param), actualToken).then(res => {
+			return misskeyApi(ep.value, utils.valToJs(param), actualToken).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		/* セキュリティ上の問題があるため無効化
 		'Mk:apiExternal': values.FN_NATIVE(async ([host, ep, param, token]) => {
 			utils.assertString(host);
 			utils.assertString(ep);
@@ -60,6 +72,7 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		*/
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
 			utils.assertString(key);
 			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));

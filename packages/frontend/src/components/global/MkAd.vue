@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -96,7 +96,7 @@ const choseAd = (): Ad | null => {
 };
 
 const chosen = ref(choseAd());
-const shouldHide = $ref(!defaultStore.state.forceShowAds && $i && $i.policies.canHideAds && (props.specify == null));
+const shouldHide = ref(!defaultStore.state.forceShowAds && $i && $i.policies.canHideAds && (props.specify == null));
 
 function reduceFrequency(): void {
 	if (chosen.value == null) return;

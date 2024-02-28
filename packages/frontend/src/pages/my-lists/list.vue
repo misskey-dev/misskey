@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
-				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
+				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -57,7 +57,7 @@ import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { userPage } from '@/filters/user.js';
@@ -66,9 +66,12 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import { mainRouter } from '@/router/main.js';
+
+const $i = signinRequired();
 
 const {
 	enableInfiniteScroll,
@@ -79,7 +82,7 @@ const props = defineProps<{
 }>();
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
-let list = $ref<Misskey.entities.UserList | null>(null);
+const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
 const membershipsPagination = {
@@ -91,20 +94,20 @@ const membershipsPagination = {
 };
 
 function fetchList() {
-	os.api('users/lists/show', {
+	misskeyApi('users/lists/show', {
 		listId: props.listId,
 	}).then(_list => {
-		list = _list;
-		name.value = list.name;
-		isPublic.value = list.isPublic;
+		list.value = _list;
+		name.value = list.value.name;
+		isPublic.value = list.value.isPublic;
 	});
 }
 
 function addUser() {
 	os.selectUser().then(user => {
-		if (!list) return;
+		if (!list.value) return;
 		os.apiWithDialog('users/lists/push', {
-			listId: list.id,
+			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
 			paginationEl.value.reload();
@@ -118,9 +121,9 @@ async function removeUser(item, ev) {
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
-			if (!list) return;
-			os.api('users/lists/pull', {
-				listId: list.id,
+			if (!list.value) return;
+			misskeyApi('users/lists/pull', {
+				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
 				paginationEl.value.removeItem(item.id);
@@ -134,8 +137,8 @@ async function showMembershipMenu(item, ev) {
 		text: item.withReplies ? i18n.ts.hideRepliesToOthersInTimeline : i18n.ts.showRepliesToOthersInTimeline,
 		icon: item.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
 		action: async () => {
-			os.api('users/lists/update-membership', {
-				listId: list.id,
+			misskeyApi('users/lists/update-membership', {
+				listId: list.value.id,
 				userId: item.userId,
 				withReplies: !item.withReplies,
 			}).then(() => {
@@ -149,44 +152,44 @@ async function showMembershipMenu(item, ev) {
 }
 
 async function deleteList() {
-	if (!list) return;
+	if (!list.value) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: list.name }),
+		text: i18n.tsx.removeAreYouSure({ x: list.value.name }),
 	});
 	if (canceled) return;
 
 	await os.apiWithDialog('users/lists/delete', {
-		listId: list.id,
+		listId: list.value.id,
 	});
 	userListsCache.delete();
 	mainRouter.push('/my/lists');
 }
 
 async function updateSettings() {
-	if (!list) return;
+	if (!list.value) return;
 	await os.apiWithDialog('users/lists/update', {
-		listId: list.id,
+		listId: list.value.id,
 		name: name.value,
 		isPublic: isPublic.value,
 	});
 
 	userListsCache.delete();
 
-	list.name = name.value;
-	list.isPublic = isPublic.value;
+	list.value.name = name.value;
+	list.value.isPublic = isPublic.value;
 }
 
 watch(() => props.listId, fetchList, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => list ? {
-	title: list.name,
+definePageMetadata(() => ({
+	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

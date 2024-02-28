@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -88,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Check not blocking
-			const exist = await this.blockingsRepository.exist({
+			const exist = await this.blockingsRepository.exists({
 				where: {
 					blockerId: blocker.id,
 					blockeeId: blockee.id,
@@ -103,7 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.userBlockingService.unblock(blocker, blockee);
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			});
 		});
 	}

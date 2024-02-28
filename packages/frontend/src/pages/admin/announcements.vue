@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
-					<MkTextarea v-model="announcement.text">
+					<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
 					<MkInput v-model="announcement.imageUrl" type="url">
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
 					</MkSwitch>
-					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
+					<p v-if="announcement.reads">{{ i18n.tsx.nUsersRead({ n: announcement.reads }) }}</p>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 						<MkButton v-if="announcement.id != null" class="button" inline @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
@@ -71,27 +71,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
-let announcements: any[] = $ref([]);
+const announcements = ref<any[]>([]);
 
-os.api('admin/announcements/list').then(announcementResponse => {
-	announcements = announcementResponse;
+misskeyApi('admin/announcements/list').then(announcementResponse => {
+	announcements.value = announcementResponse;
 });
 
 function add() {
-	announcements.unshift({
+	announcements.value.unshift({
 		_id: Math.random().toString(36),
 		id: null,
 		title: 'New announcement',
@@ -108,11 +109,11 @@ function add() {
 function del(announcement) {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
+		text: i18n.tsx.deleteAreYouSure({ x: announcement.title }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		announcements = announcements.filter(x => x !== announcement);
-		os.api('admin/announcements/delete', announcement);
+		announcements.value = announcements.value.filter(x => x !== announcement);
+		misskeyApi('admin/announcements/delete', announcement);
 	});
 }
 
@@ -134,30 +135,30 @@ async function save(announcement) {
 }
 
 function more() {
-	os.api('admin/announcements/list', { untilId: announcements.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
-		announcements = announcements.concat(announcementResponse);
+	misskeyApi('admin/announcements/list', { untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
+		announcements.value = announcements.value.concat(announcementResponse);
 	});
 }
 
 function refresh() {
-	os.api('admin/announcements/list').then(announcementResponse => {
-		announcements = announcementResponse;
+	misskeyApi('admin/announcements/list').then(announcementResponse => {
+		announcements.value = announcementResponse;
 	});
 }
 
 refresh();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
-});
+}));
 </script>

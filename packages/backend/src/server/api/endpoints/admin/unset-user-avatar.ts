@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:unset-user-avatar',
 } as const;
 
 export const paramDef = {
@@ -39,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (user == null) {
 				throw new Error('user not found');
 			}
-	
+
 			if (user.avatarId == null) return;
 
 			await this.usersRepository.update(user.id, {

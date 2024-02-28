@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description">
+			<MkTextarea v-model="description" mfmAutocomplete :mfmPreview="true">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
@@ -70,17 +70,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch, defineAsyncComponent } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import { useRouter } from '@/router/supplier.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -90,22 +92,22 @@ const props = defineProps<{
 	channelId?: string;
 }>();
 
-let channel = $ref(null);
-let name = $ref(null);
-let description = $ref(null);
-let bannerUrl = $ref<string | null>(null);
-let bannerId = $ref<string | null>(null);
-let color = $ref('#000');
-let isSensitive = $ref(false);
-let allowRenoteToExternal = $ref(true);
-const pinnedNotes = ref([]);
+const channel = ref<Misskey.entities.Channel | null>(null);
+const name = ref<string | null>(null);
+const description = ref<string | null>(null);
+const bannerUrl = ref<string | null>(null);
+const bannerId = ref<string | null>(null);
+const color = ref('#000');
+const isSensitive = ref(false);
+const allowRenoteToExternal = ref(true);
+const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
 
-watch(() => bannerId, async () => {
-	if (bannerId == null) {
-		bannerUrl = null;
+watch(() => bannerId.value, async () => {
+	if (bannerId.value == null) {
+		bannerUrl.value = null;
 	} else {
-		bannerUrl = (await os.api('drive/files/show', {
-			fileId: bannerId,
+		bannerUrl.value = (await misskeyApi('drive/files/show', {
+			fileId: bannerId.value,
 		})).url;
 	}
 });
@@ -113,20 +115,20 @@ watch(() => bannerId, async () => {
 async function fetchChannel() {
 	if (props.channelId == null) return;
 
-	channel = await os.api('channels/show', {
+	channel.value = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 
-	name = channel.name;
-	description = channel.description;
-	bannerId = channel.bannerId;
-	bannerUrl = channel.bannerUrl;
-	isSensitive = channel.isSensitive;
-	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
+	name.value = channel.value.name;
+	description.value = channel.value.description;
+	bannerId.value = channel.value.bannerId;
+	bannerUrl.value = channel.value.bannerUrl;
+	isSensitive.value = channel.value.isSensitive;
+	pinnedNotes.value = channel.value.pinnedNoteIds.map(id => ({
 		id,
 	}));
-	color = channel.color;
-	allowRenoteToExternal = channel.allowRenoteToExternal;
+	color.value = channel.value.color;
+	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
 }
 
 fetchChannel();
@@ -150,13 +152,13 @@ function removePinnedNote(index: number) {
 
 function save() {
 	const params = {
-		name: name,
-		description: description,
-		bannerId: bannerId,
+		name: name.value,
+		description: description.value,
+		bannerId: bannerId.value,
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
-		color: color,
-		isSensitive: isSensitive,
-		allowRenoteToExternal: allowRenoteToExternal,
+		color: color.value,
+		isSensitive: isSensitive.value,
+		allowRenoteToExternal: allowRenoteToExternal.value,
 	};
 
 	if (props.channelId) {
@@ -172,13 +174,13 @@ function save() {
 async function archive() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.t('channelArchiveConfirmTitle', { name: name }),
+		title: i18n.tsx.channelArchiveConfirmTitle({ name: name.value }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
 
 	if (canceled) return;
 
-	os.api('channels/update', {
+	misskeyApi('channels/update', {
 		channelId: props.channelId,
 		isArchived: true,
 	}).then(() => {
@@ -188,23 +190,20 @@ async function archive() {
 
 function setBannerImage(evt) {
 	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
-		bannerId = file.id;
+		bannerId.value = file.id;
 	});
 }
 
 function removeBannerImage() {
-	bannerId = null;
+	bannerId.value = null;
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => props.channelId ? {
-	title: i18n.ts._channel.edit,
-	icon: 'ti ti-device-tv',
-} : {
-	title: i18n.ts._channel.create,
+definePageMetadata(() => ({
+	title: props.channelId ? i18n.ts._channel.edit : i18n.ts._channel.create,
 	icon: 'ti ti-device-tv',
 }));
 </script>

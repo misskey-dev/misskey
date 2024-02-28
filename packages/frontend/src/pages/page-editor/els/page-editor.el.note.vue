@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,13 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -40,19 +41,19 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let id: any = $ref(props.modelValue.note);
-let note: any = $ref(null);
+const id = ref<any>(props.modelValue.note);
+const note = ref<Misskey.entities.Note | null>(null);
 
-watch($$(id), async () => {
-	if (id && (id.startsWith('http://') || id.startsWith('https://'))) {
-		id = (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop();
+watch(id, async () => {
+	if (id.value && (id.value.startsWith('http://') || id.value.startsWith('https://'))) {
+		id.value = (id.value.endsWith('/') ? id.value.slice(0, -1) : id.value).split('/').pop();
 	}
 
 	emit('update:modelValue', {
 		...props.modelValue,
-		note: id,
+		note: id.value,
 	});
-	note = await os.api('notes/show', { noteId: id });
+	note.value = await misskeyApi('notes/show', { noteId: id.value });
 }, {
 	immediate: true,
 });

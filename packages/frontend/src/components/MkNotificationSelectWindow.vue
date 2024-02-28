@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,14 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
-			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
+			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.ts._notification._types[ntype] }}</MkSwitch>
 		</div>
 	</MkSpacer>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref } from 'vue';
+import { ref, Ref, shallowRef } from 'vue';
 import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 	excludeTypes: () => [],
 });
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const typesMap: TypesMap = notificationTypes.reduce((p, t) => ({ ...p, [t]: ref<boolean>(!props.excludeTypes.includes(t)) }), {} as any);
 
@@ -61,7 +61,7 @@ function ok() {
 			.filter(type => !typesMap[type].value),
 	});
 
-	if (dialog) dialog.close();
+	if (dialog.value) dialog.value.close();
 }
 
 function disableAll() {

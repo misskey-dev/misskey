@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -39,6 +39,11 @@ export const meta = {
 			code: 'UNAVAILABLE',
 			id: 'a2defefb-f220-8849-0af6-17f816099323',
 		},
+	},
+
+	res: {
+		type: 'object',
+		ref: 'MeDetailed',
 	},
 } as const;
 
@@ -101,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			const iObj = await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			});
 

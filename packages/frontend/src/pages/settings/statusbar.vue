@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,23 +15,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const statusbars = defaultStore.reactiveState.statusbars;
 
-let userLists = $ref();
+const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 onMounted(() => {
-	os.api('users/lists/list').then(res => {
-		userLists = res;
+	misskeyApi('users/lists/list').then(res => {
+		userLists.value = res;
 	});
 });
 
@@ -45,12 +46,12 @@ async function add() {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.statusbar,
 	icon: 'ti ti-list',
-});
+}));
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
@@ -56,25 +56,32 @@ const props = defineProps<{
 }>();
 
 const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
-let dialogEl = $shallowRef<InstanceType<typeof MkModalWindow>>();
-let imgEl = $shallowRef<HTMLImageElement>();
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const imgEl = shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
-let loading = $ref(true);
+const loading = ref(true);
 
 const ok = async () => {
 	const promise = new Promise<Misskey.entities.DriveFile>(async (res) => {
-		const croppedCanvas = await cropper?.getCropperSelection()?.$toCanvas();
+		const croppedImage = await cropper?.getCropperImage();
+		const croppedSection = await cropper?.getCropperSelection();
+
+		// 拡大率を計算し、(ほぼ)元の大きさに戻す
+		const zoomedRate = croppedImage.getBoundingClientRect().width / croppedImage.clientWidth;
+		const widthToRender = croppedSection.getBoundingClientRect().width / zoomedRate;
+
+		const croppedCanvas = await croppedSection?.$toCanvas({ width: widthToRender });
 		croppedCanvas?.toBlob(blob => {
 			if (!blob) return;
 			const formData = new FormData();
 			formData.append('file', blob);
 			formData.append('name', `cropped_${props.file.name}`);
 			formData.append('isSensitive', props.file.isSensitive ? 'true' : 'false');
-			formData.append('comment', props.file.comment ?? 'null');
+			if (props.file.comment) { formData.append('comment', props.file.comment);}
 			formData.append('i', $i!.token);
-			if (props.uploadFolder || props.uploadFolder === null) {
-				formData.append('folderId', props.uploadFolder ?? 'null');
-			} else if (defaultStore.state.uploadFolder) {
+			if (props.uploadFolder) {
+				formData.append('folderId', props.uploadFolder);
+			} else if (props.uploadFolder !== null && defaultStore.state.uploadFolder) {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
 
@@ -94,16 +101,16 @@ const ok = async () => {
 	const f = await promise;
 
 	emit('ok', f);
-	dialogEl!.close();
+	dialogEl.value!.close();
 };
 
 const cancel = () => {
 	emit('cancel');
-	dialogEl!.close();
+	dialogEl.value!.close();
 };
 
 const onImageLoad = () => {
-	loading = false;
+	loading.value = false;
 
 	if (cropper) {
 		cropper.getCropperImage()!.$center('contain');
@@ -112,7 +119,7 @@ const onImageLoad = () => {
 };
 
 onMounted(() => {
-	cropper = new Cropper(imgEl!, {
+	cropper = new Cropper(imgEl.value!, {
 	});
 
 	const computedStyle = getComputedStyle(document.documentElement);

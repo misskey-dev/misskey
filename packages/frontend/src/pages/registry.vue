@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,19 +22,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 
-let scopesWithDomain = $ref(null);
+const scopesWithDomain = ref<Misskey.entities.IRegistryScopesWithDomainResponse | null>(null);
 
 function fetchScopes() {
-	os.api('i/registry/scopes-with-domain').then(res => {
-		scopesWithDomain = res;
+	misskeyApi('i/registry/scopes-with-domain').then(res => {
+		scopesWithDomain.value = res;
 	});
 }
 
@@ -66,12 +69,12 @@ async function createKey() {
 
 fetchScopes();
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.registry,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>

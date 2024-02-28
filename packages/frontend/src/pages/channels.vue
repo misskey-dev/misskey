@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -7,50 +7,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
-		<div v-if="tab === 'search'">
-			<div class="_gaps">
-				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
-					<template #prefix><i class="ti ti-search"></i></template>
-				</MkInput>
-				<MkRadios v-model="searchType" @update:modelValue="search()">
-					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
-					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
-				</MkRadios>
-				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
-			</div>
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+			<div v-if="tab === 'search'" key="search">
+				<div class="_gaps">
+					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
+						<template #prefix><i class="ti ti-search"></i></template>
+					</MkInput>
+					<MkRadios v-model="searchType" @update:modelValue="search()">
+						<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
+						<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
+					</MkRadios>
+					<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+				</div>
 
-			<MkFoldableSection v-if="channelPagination">
-				<template #header>{{ i18n.ts.searchResult }}</template>
-				<MkChannelList :key="key" :pagination="channelPagination"/>
-			</MkFoldableSection>
-		</div>
-		<div v-if="tab === 'featured'">
-			<MkPagination v-slot="{items}" :pagination="featuredPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
-			</MkPagination>
-		</div>
-		<div v-else-if="tab === 'favorites'">
-			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
-			</MkPagination>
-		</div>
-		<div v-else-if="tab === 'following'">
-			<MkPagination v-slot="{items}" :pagination="followingPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
-			</MkPagination>
-		</div>
-		<div v-else-if="tab === 'owned'">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-			<MkPagination v-slot="{items}" :pagination="ownedPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
-			</MkPagination>
-		</div>
+				<MkFoldableSection v-if="channelPagination">
+					<template #header>{{ i18n.ts.searchResult }}</template>
+					<MkChannelList :key="key" :pagination="channelPagination"/>
+				</MkFoldableSection>
+			</div>
+			<div v-if="tab === 'featured'" key="featured">
+				<MkPagination v-slot="{items}" :pagination="featuredPagination">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				</MkPagination>
+			</div>
+			<div v-else-if="tab === 'favorites'" key="favorites">
+				<MkPagination v-slot="{items}" :pagination="favoritesPagination">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				</MkPagination>
+			</div>
+			<div v-else-if="tab === 'following'" key="following">
+				<MkPagination v-slot="{items}" :pagination="followingPagination">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				</MkPagination>
+			</div>
+			<div v-else-if="tab === 'owned'" key="owned">
+				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+				<MkPagination v-slot="{items}" :pagination="ownedPagination">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				</MkPagination>
+			</div>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -58,9 +60,10 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { useRouter } from '@/router.js';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -69,15 +72,15 @@ const props = defineProps<{
 	type?: string;
 }>();
 
-let key = $ref('');
-let tab = $ref('featured');
-let searchQuery = $ref('');
-let searchType = $ref('nameAndDescription');
-let channelPagination = $ref();
+const key = ref('');
+const tab = ref('featured');
+const searchQuery = ref('');
+const searchType = ref('nameAndDescription');
+const channelPagination = ref();
 
 onMounted(() => {
-	searchQuery = props.query ?? '';
-	searchType = props.type ?? 'nameAndDescription';
+	searchQuery.value = props.query ?? '';
+	searchType.value = props.type ?? 'nameAndDescription';
 });
 
 const featuredPagination = {
@@ -99,35 +102,35 @@ const ownedPagination = {
 };
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	const query = searchQuery.value.toString().trim();
 
 	if (query == null) return;
 
-	const type = searchType.toString().trim();
+	const type = searchType.value.toString().trim();
 
-	channelPagination = {
+	channelPagination.value = {
 		endpoint: 'channels/search',
 		limit: 10,
 		params: {
-			query: searchQuery,
+			query: searchQuery.value,
 			type: type,
 		},
 	};
 
-	key = query + type;
+	key.value = query + type;
 }
 
 function create() {
 	router.push('/channels/new');
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'search',
 	title: i18n.ts.search,
 	icon: 'ti ti-search',
@@ -149,8 +152,8 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-edit',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.channel,
 	icon: 'ti ti-device-tv',
-})));
+}));
 </script>

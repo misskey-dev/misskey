@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal?.close()" @closed="emit('closed')">
 	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts.visibility }}
@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick } from 'vue';
+import { nextTick, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
@@ -62,13 +62,13 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let v = $ref(props.currentVisibility);
+const v = ref(props.currentVisibility);
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
-	v = visibility;
+	v.value = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {
-		if (modal) modal.close();
+		if (modal.value) modal.value.close();
 	});
 }
 </script>

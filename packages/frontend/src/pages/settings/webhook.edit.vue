@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -42,15 +42,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -58,47 +59,47 @@ const props = defineProps<{
 	webhookId: string;
 }>();
 
-const webhook = await os.api('i/webhooks/show', {
+const webhook = await misskeyApi('i/webhooks/show', {
 	webhookId: props.webhookId,
 });
 
-let name = $ref(webhook.name);
-let url = $ref(webhook.url);
-let secret = $ref(webhook.secret);
-let active = $ref(webhook.active);
+const name = ref(webhook.name);
+const url = ref(webhook.url);
+const secret = ref(webhook.secret);
+const active = ref(webhook.active);
 
-let event_follow = $ref(webhook.on.includes('follow'));
-let event_followed = $ref(webhook.on.includes('followed'));
-let event_note = $ref(webhook.on.includes('note'));
-let event_reply = $ref(webhook.on.includes('reply'));
-let event_renote = $ref(webhook.on.includes('renote'));
-let event_reaction = $ref(webhook.on.includes('reaction'));
-let event_mention = $ref(webhook.on.includes('mention'));
+const event_follow = ref(webhook.on.includes('follow'));
+const event_followed = ref(webhook.on.includes('followed'));
+const event_note = ref(webhook.on.includes('note'));
+const event_reply = ref(webhook.on.includes('reply'));
+const event_renote = ref(webhook.on.includes('renote'));
+const event_reaction = ref(webhook.on.includes('reaction'));
+const event_mention = ref(webhook.on.includes('mention'));
 
 async function save(): Promise<void> {
 	const events = [];
-	if (event_follow) events.push('follow');
-	if (event_followed) events.push('followed');
-	if (event_note) events.push('note');
-	if (event_reply) events.push('reply');
-	if (event_renote) events.push('renote');
-	if (event_reaction) events.push('reaction');
-	if (event_mention) events.push('mention');
+	if (event_follow.value) events.push('follow');
+	if (event_followed.value) events.push('followed');
+	if (event_note.value) events.push('note');
+	if (event_reply.value) events.push('reply');
+	if (event_renote.value) events.push('renote');
+	if (event_reaction.value) events.push('reaction');
+	if (event_mention.value) events.push('mention');
 
 	os.apiWithDialog('i/webhooks/update', {
-		name,
-		url,
-		secret,
+		name: name.value,
+		url: url.value,
+		secret: secret.value,
 		webhookId: props.webhookId,
 		on: events,
-		active,
+		active: active.value,
 	});
 }
 
 async function del(): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: webhook.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: webhook.name }),
 	});
 	if (canceled) return;
 
@@ -109,12 +110,12 @@ async function del(): Promise<void> {
 	router.push('/settings/webhook');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'Edit webhook',
 	icon: 'ti ti-webhook',
-});
+}));
 </script>

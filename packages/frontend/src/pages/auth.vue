@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<h1>{{ i18n.ts._auth.denied }}</h1>
 			</div>
 			<div v-if="state == 'accepted' && session">
-				<h1>{{ session.app.isAuthorized ? i18n.t('already-authorized') : i18n.ts.allowed }}</h1>
+				<h1>{{ session.app.isAuthorized ? i18n.ts['already-authorized'] : i18n.ts.allowed }}</h1>
 				<p v-if="session.app.callbackUrl">
 					{{ i18n.ts._auth.callback }}
 					<MkEllipsis/>
@@ -42,11 +42,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i, login } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -55,15 +55,15 @@ const props = defineProps<{
 	token: string;
 }>();
 
-let state = $ref<'waiting' | 'accepted' | 'fetch-session-error' | 'denied' | null>(null);
-let session = $ref<Misskey.entities.AuthSession | null>(null);
+const state = ref<'waiting' | 'accepted' | 'fetch-session-error' | 'denied' | null>(null);
+const session = ref<Misskey.entities.AuthSessionShowResponse | null>(null);
 
 function accepted() {
-	state = 'accepted';
-	if (session && session.app.callbackUrl) {
-		const url = new URL(session.app.callbackUrl);
+	state.value = 'accepted';
+	if (session.value && session.value.app.callbackUrl) {
+		const url = new URL(session.value.app.callbackUrl);
 		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(url.protocol)) throw new Error('invalid url');
-		location.href = `${session.app.callbackUrl}?token=${session.token}`;
+		location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;
 	}
 }
 
@@ -75,32 +75,32 @@ onMounted(async () => {
 	if (!$i) return;
 
 	try {
-		session = await os.api('auth/session/show', {
+		session.value = await misskeyApi('auth/session/show', {
 			token: props.token,
 		});
 
 		// 既に連携していた場合
-		if (session.app.isAuthorized) {
-			await os.api('auth/accept', {
-				token: session.token,
+		if (session.value.app.isAuthorized) {
+			await misskeyApi('auth/accept', {
+				token: session.value.token,
 			});
 			accepted();
 		} else {
-			state = 'waiting';
+			state.value = 'waiting';
 		}
 	} catch (err) {
-		state = 'fetch-session-error';
+		state.value = 'fetch-session-error';
 	}
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts._auth.shareAccessTitle,
 	icon: 'ti ti-apps',
-});
+}));
 </script>
 
 <style lang="scss" module>

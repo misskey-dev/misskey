@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-else>
 				<div v-if="_permissions.length > 0">
-					<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
+					<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
 					<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 					<ul>
-						<li v-for="p in _permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+						<li v-for="p in _permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
 					</ul>
 				</div>
-				<div v-if="name">{{ i18n.t('_auth.shareAccess', { name }) }}</div>
+				<div v-if="name">{{ i18n.tsx._auth.shareAccess({ name }) }}</div>
 				<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 				<div :class="$style.buttons">
 					<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>
@@ -43,10 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i, login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -61,18 +61,18 @@ const props = defineProps<{
 
 const _permissions = props.permission ? props.permission.split(',') : [];
 
-let state = $ref<string | null>(null);
+const state = ref<string | null>(null);
 
 async function accept(): Promise<void> {
-	state = 'waiting';
-	await os.api('miauth/gen-token', {
+	state.value = 'waiting';
+	await misskeyApi('miauth/gen-token', {
 		session: props.session,
 		name: props.name,
 		iconUrl: props.icon,
 		permission: _permissions,
 	});
 
-	state = 'accepted';
+	state.value = 'accepted';
 	if (props.callback) {
 		const cbUrl = new URL(props.callback);
 		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(cbUrl.protocol)) throw new Error('invalid url');
@@ -82,21 +82,21 @@ async function accept(): Promise<void> {
 }
 
 function deny(): void {
-	state = 'denied';
+	state.value = 'denied';
 }
 
 function onLogin(res): void {
 	login(res.i);
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'MiAuth',
 	icon: 'ti ti-apps',
-});
+}));
 </script>
 
 <style lang="scss" module>

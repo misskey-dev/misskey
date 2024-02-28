@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,16 +22,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
-import { rolesCache } from '@/cache';
+import { rolesCache } from '@/cache.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -39,17 +41,17 @@ const props = defineProps<{
 	id?: string;
 }>();
 
-let role = $ref(null);
-let data = $ref(null);
+const role = ref<Misskey.entities.Role | null>(null);
+const data = ref<any>(null);
 
 if (props.id) {
-	role = await os.api('admin/roles/show', {
+	role.value = await misskeyApi('admin/roles/show', {
 		roleId: props.id,
 	});
 
-	data = role;
+	data.value = role.value;
 } else {
-	data = {
+	data.value = {
 		name: 'New Role',
 		description: '',
 		isAdministrator: false,
@@ -69,27 +71,24 @@ if (props.id) {
 
 async function save() {
 	rolesCache.delete();
-	if (role) {
+	if (role.value) {
 		os.apiWithDialog('admin/roles/update', {
-			roleId: role.id,
-			...data,
+			roleId: role.value.id,
+			...data.value,
 		});
-		router.push('/admin/roles/' + role.id);
+		router.push('/admin/roles/' + role.value.id);
 	} else {
 		const created = await os.apiWithDialog('admin/roles/create', {
-			...data,
+			...data.value,
 		});
 		router.push('/admin/roles/' + created.id);
 	}
 }
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => role ? {
-	title: i18n.ts._role.edit + ': ' + role.name,
-	icon: 'ti ti-badge',
-} : {
-	title: i18n.ts._role.new,
+definePageMetadata(() => ({
+	title: role.value ? `${i18n.ts._role.edit}: ${role.value.name}` : i18n.ts._role.new,
 	icon: 'ti ti-badge',
 }));
 </script>

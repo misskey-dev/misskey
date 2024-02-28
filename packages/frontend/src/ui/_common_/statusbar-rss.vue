@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -44,7 +44,7 @@ const props = defineProps<{
 
 const items = ref([]);
 const fetching = ref(true);
-let key = $ref(0);
+const key = ref(0);
 
 const tick = () => {
 	window.fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
@@ -54,7 +54,7 @@ const tick = () => {
 			}
 			items.value = feed.items;
 			fetching.value = false;
-			key++;
+			key.value++;
 		});
 	});
 };

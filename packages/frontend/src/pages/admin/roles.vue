@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -192,6 +192,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.avatarDecorationLimit, 'avatarDecorationLimit'])">
+							<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
+							<template #suffix>{{ policies.avatarDecorationLimit }}</template>
+							<MkInput v-model="policies.avatarDecorationLimit" type="number" :min="0">
+							</MkInput>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -226,17 +233,18 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
-import { useRouter } from '@/router.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { ROLE_POLICIES } from '@/const';
+import { ROLE_POLICIES } from '@/const.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');
 
-const roles = await os.api('admin/roles/list');
+const roles = await misskeyApi('admin/roles/list');
 
 const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
 for (const ROLE_POLICY of ROLE_POLICIES) {
@@ -258,14 +266,14 @@ function create() {
 	router.push('/admin/roles/new');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.roles,
 	icon: 'ti ti-badges',
-})));
+}));
 </script>
 
 <style lang="scss" module>

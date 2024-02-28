@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import { MiMeta } from '@/models/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -25,6 +26,7 @@ export class MetaService implements OnApplicationShutdown {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
@@ -49,7 +51,10 @@ export class MetaService implements OnApplicationShutdown {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'metaUpdated': {
-					this.cache = body;
+					this.cache = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+						...body,
+						proxyAccount: null, // joinなカラムは通常取ってこないので
+					};
 					break;
 				}
 				default:
@@ -95,6 +100,8 @@ export class MetaService implements OnApplicationShutdown {
 
 	@bindThis
 	public async update(data: Partial<MiMeta>): Promise<MiMeta> {
+		let before: MiMeta | undefined;
+
 		const updated = await this.db.transaction(async transactionalEntityManager => {
 			const metas = await transactionalEntityManager.find(MiMeta, {
 				order: {
@@ -102,10 +109,10 @@ export class MetaService implements OnApplicationShutdown {
 				},
 			});
 
-			const meta = metas[0];
+			before = metas[0];
 
-			if (meta) {
-				await transactionalEntityManager.update(MiMeta, meta.id, data);
+			if (before) {
+				await transactionalEntityManager.update(MiMeta, before.id, data);
 
 				const metas = await transactionalEntityManager.find(MiMeta, {
 					order: {
@@ -118,6 +125,21 @@ export class MetaService implements OnApplicationShutdown {
 				return await transactionalEntityManager.save(MiMeta, data);
 			}
 		});
+
+		if (data.hiddenTags) {
+			process.nextTick(() => {
+				const hiddenTags = new Set<string>(data.hiddenTags);
+				if (before) {
+					for (const previousHiddenTag of before.hiddenTags) {
+						hiddenTags.delete(previousHiddenTag);
+					}
+				}
+
+				for (const hiddenTag of hiddenTags) {
+					this.featuredService.removeHashtagsFromRanking(hiddenTag);
+				}
+			});
+		}
 
 		this.globalEventService.publishInternalEvent('metaUpdated', updated);
 

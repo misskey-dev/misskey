@@ -1,16 +1,19 @@
 {
 	"name": "misskey",
-	"version": "2023.12.0-beta.1",
+	"version": "2024.2.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@8.10.5",
+	"packageManager": "pnpm@8.15.1",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
-		"packages/sw"
+		"packages/sw",
+		"packages/misskey-js",
+		"packages/misskey-reversi",
+		"packages/misskey-bubble-game"
 	],
 	"private": true,
 	"scripts": {
@@ -18,6 +21,7 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
@@ -26,7 +30,7 @@
 		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
-		"dev": "node ./scripts/dev.mjs",
+		"dev": "node scripts/dev.mjs",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
@@ -44,19 +48,23 @@
 		"lodash": "4.17.21"
 	},
 	"dependencies": {
+		"cssnano": "6.0.3",
 		"execa": "8.0.1",
-		"cssnano": "6.0.1",
+		"fast-glob": "3.3.2",
+		"ignore-walk": "6.0.4",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.31",
-		"terser": "5.24.0",
-		"typescript": "5.3.2"
+		"postcss": "8.4.33",
+		"tar": "6.2.0",
+		"terser": "5.27.0",
+		"typescript": "5.3.3"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.12.0",
-		"@typescript-eslint/parser": "6.12.0",
+		"@typescript-eslint/eslint-plugin": "6.18.1",
+		"@typescript-eslint/parser": "6.18.1",
 		"cross-env": "7.0.3",
-		"cypress": "13.6.0",
-		"eslint": "8.54.0",
+		"cypress": "13.6.3",
+		"eslint": "8.56.0",
+		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.3"
 	},
 	"optionalDependencies": {

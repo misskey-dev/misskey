@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,12 +9,12 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class HashtagChannel extends Channel {
 	public readonly chName = 'hashtag';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private q: string[][];
 
 	constructor(
@@ -70,9 +70,10 @@ class HashtagChannel extends Channel {
 }
 
 @Injectable()
-export class HashtagChannelService {
+export class HashtagChannelService implements MiChannelService<false> {
 	public readonly shouldShare = HashtagChannel.shouldShare;
 	public readonly requireCredential = HashtagChannel.requireCredential;
+	public readonly kind = HashtagChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,

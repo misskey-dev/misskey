@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,6 +20,10 @@ export const emojilist: UnicodeEmojiDef[] = _emojilist.map(x => ({
 	category: unicodeEmojiCategories[x[2]],
 }));
 
+export const unicodeEmojisMap = new Map<string, UnicodeEmojiDef>(
+	emojilist.map(x => [x.char, x])
+);
+
 const _indexByChar = new Map<string, number>();
 const _charGroupByCategory = new Map<string, string[]>();
 for (let i = 0; i < emojilist.length; i++) {
@@ -36,10 +40,21 @@ for (let i = 0; i < emojilist.length; i++) {
 export const emojiCharByCategory = _charGroupByCategory;
 
 export function getEmojiName(char: string): string | null {
-	const idx = _indexByChar.get(char);
+	// Colorize it because emojilist.json assumes that
+	const idx = _indexByChar.get(colorizeEmoji(char));
 	if (idx == null) {
 		return null;
 	} else {
 		return emojilist[idx].name;
 	}
+}
+
+export function colorizeEmoji(char: string) {
+	return char.length === 1 ? `${char}\uFE0F` : char;
+}
+
+export interface CustomEmojiFolderTree {
+	value: string;
+	category: string;
+	children: CustomEmojiFolderTree[];
 }

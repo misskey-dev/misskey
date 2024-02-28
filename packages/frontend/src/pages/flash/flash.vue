@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -18,13 +18,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" asLike class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
 							<MkButton v-else v-tooltip="i18n.ts.like" asLike class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
 							<MkButton v-tooltip="i18n.ts.shareWithNote" class="button" rounded @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></MkButton>
-							<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
+							<MkButton v-tooltip="i18n.ts.copyLink" class="button" rounded @click="copyLink"><i class="ti ti-link ti-fw"></i></MkButton>
+							<MkButton v-if="isSupportShare()" v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
 						</div>
 					</div>
 					<div v-else :class="$style.ready">
 						<div class="_panel main">
 							<div class="title">{{ flash.title }}</div>
-							<div class="summary">{{ flash.summary }}</div>
+							<div class="summary"><Mfm :text="flash.summary"/></div>
 							<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
 							<div class="info">
 								<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
@@ -36,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
-					<MkCode :code="flash.script" lang="is" :inline="false" class="_monospace"/>
+					<MkCode :code="flash.script" lang="is" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
@@ -56,59 +57,68 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
+import { computed, onDeactivated, onUnmounted, Ref, ref, watch, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	id: string;
 }>();
 
-let flash = $ref(null);
-let error = $ref(null);
+const flash = ref<Misskey.entities.Flash | null>(null);
+const error = ref<any>(null);
 
 function fetchFlash() {
-	flash = null;
-	os.api('flash/show', {
+	flash.value = null;
+	misskeyApi('flash/show', {
 		flashId: props.id,
 	}).then(_flash => {
-		flash = _flash;
+		flash.value = _flash;
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
+}
+
+function copyLink() {
+	copyToClipboard(`${url}/play/${flash.value.id}`);
+	os.success();
 }
 
 function share() {
 	navigator.share({
-		title: flash.title,
-		text: flash.summary,
-		url: `${url}/play/${flash.id}`,
+		title: flash.value.title,
+		text: flash.value.summary,
+		url: `${url}/play/${flash.value.id}`,
 	});
 }
 
 function shareWithNote() {
 	os.post({
-		initialText: `${flash.title} ${url}/play/${flash.id}`,
+		initialText: `${flash.value.title} ${url}/play/${flash.value.id}`,
 	});
 }
 
 function like() {
 	os.apiWithDialog('flash/like', {
-		flashId: flash.id,
+		flashId: flash.value.id,
 	}).then(() => {
-		flash.isLiked = true;
-		flash.likedCount++;
+		flash.value.isLiked = true;
+		flash.value.likedCount++;
 	});
 }
 
@@ -119,10 +129,10 @@ async function unlike() {
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('flash/unlike', {
-		flashId: flash.id,
+		flashId: flash.value.id,
 	}).then(() => {
-		flash.isLiked = false;
-		flash.likedCount--;
+		flash.value.isLiked = false;
+		flash.value.likedCount--;
 	});
 }
 
@@ -130,42 +140,30 @@ watch(() => props.id, fetchFlash, { immediate: true });
 
 const parser = new Parser();
 
-let started = $ref(false);
-let aiscript = $shallowRef<Interpreter | null>(null);
+const started = ref(false);
+const aiscript = shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
-const components: Ref<AsUiComponent>[] = $ref([]);
+const components = ref<Ref<AsUiComponent>[]>([]);
 
 function start() {
-	started = true;
+	started.value = true;
 	run();
 }
 
 async function run() {
-	if (aiscript) aiscript.abort();
+	if (aiscript.value) aiscript.value.abort();
 
-	aiscript = new Interpreter({
+	aiscript.value = new Interpreter({
 		...createAiScriptEnv({
-			storageKey: 'flash:' + flash.id,
+			storageKey: 'flash:' + flash.value.id,
 		}),
-		...registerAsUiLib(components, (_root) => {
+		...registerAsUiLib(components.value, (_root) => {
 			root.value = _root.value;
 		}),
-		THIS_ID: values.STR(flash.id),
-		THIS_URL: values.STR(`${url}/play/${flash.id}`),
+		THIS_ID: values.STR(flash.value.id),
+		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
-		in: (q) => {
-			return new Promise(ok => {
-				os.inputText({
-					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value) => {
 			// nop
 		},
@@ -176,7 +174,7 @@ async function run() {
 
 	let ast;
 	try {
-		ast = parser.parse(flash.script);
+		ast = parser.parse(flash.value.script);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -185,7 +183,7 @@ async function run() {
 		return;
 	}
 	try {
-		await aiscript.exec(ast);
+		await aiscript.value.exec(ast);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -196,26 +194,28 @@ async function run() {
 }
 
 onDeactivated(() => {
-	if (aiscript) aiscript.abort();
+	if (aiscript.value) aiscript.value.abort();
 });
 
 onUnmounted(() => {
-	if (aiscript) aiscript.abort();
+	if (aiscript.value) aiscript.value.abort();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash ? {
-	title: flash.title,
-	avatar: flash.user,
-	path: `/play/${flash.id}`,
-	share: {
-		title: flash.title,
-		text: flash.summary,
-	},
-} : null));
+definePageMetadata(() => ({
+	title: flash.value ? flash.value.title : 'Play',
+	...flash.value ? {
+		avatar: flash.value.user,
+		path: `/play/${flash.value.id}`,
+		share: {
+			title: flash.value.title,
+			text: flash.value.summary,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" module>

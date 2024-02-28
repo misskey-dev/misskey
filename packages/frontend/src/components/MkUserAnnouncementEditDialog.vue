@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
@@ -50,12 +50,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -63,15 +64,15 @@ import MkRadios from '@/components/MkRadios.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User,
-	announcement?: any,
+	announcement?: Misskey.entities.Announcement,
 }>();
 
-let dialog = $ref(null);
-let title: string = $ref(props.announcement ? props.announcement.title : '');
-let text: string = $ref(props.announcement ? props.announcement.text : '');
-let icon: string = $ref(props.announcement ? props.announcement.icon : 'info');
-let display: string = $ref(props.announcement ? props.announcement.display : 'dialog');
-let needConfirmationToRead = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
+const title = ref(props.announcement ? props.announcement.title : '');
+const text = ref(props.announcement ? props.announcement.text : '');
+const icon = ref(props.announcement ? props.announcement.icon : 'info');
+const display = ref(props.announcement ? props.announcement.display : 'dialog');
+const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
@@ -80,29 +81,29 @@ const emit = defineEmits<{
 
 async function done() {
 	const params = {
-		title: title,
-		text: text,
-		icon: icon,
+		title: title.value,
+		text: text.value,
+		icon: icon.value,
 		imageUrl: null,
-		display: display,
-		needConfirmationToRead: needConfirmationToRead,
+		display: display.value,
+		needConfirmationToRead: needConfirmationToRead.value,
 		userId: props.user.id,
 	};
 
 	if (props.announcement) {
 		await os.apiWithDialog('admin/announcements/update', {
-			id: props.announcement.id,
 			...params,
+			id: props.announcement.id,
 		});
 
 		emit('done', {
 			updated: {
-				id: props.announcement.id,
 				...params,
+				id: props.announcement.id,
 			},
 		});
 
-		dialog.close();
+		dialog.value?.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -110,25 +111,27 @@ async function done() {
 			created: created,
 		});
 
-		dialog.close();
+		dialog.value?.close();
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title }),
+		text: i18n.tsx.removeAreYouSure({ x: title.value }),
 	});
 	if (canceled) return;
 
-	os.api('admin/announcements/delete', {
-		id: props.announcement.id,
-	}).then(() => {
-		emit('done', {
-			deleted: true,
+	if (props.announcement) {
+		await misskeyApi('admin/announcements/delete', {
+			id: props.announcement.id,
 		});
-		dialog.close();
+	}
+
+	emit('done', {
+		deleted: true,
 	});
+	dialog.value?.close();
 }
 </script>
 

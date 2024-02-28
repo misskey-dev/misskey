@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,12 +8,13 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class AntennaChannel extends Channel {
 	public readonly chName = 'antenna';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = true as const;
+	public static kind = 'read:account';
 	private antennaId: string;
 
 	constructor(
@@ -62,9 +63,10 @@ class AntennaChannel extends Channel {
 }
 
 @Injectable()
-export class AntennaChannelService {
+export class AntennaChannelService implements MiChannelService<true> {
 	public readonly shouldShare = AntennaChannel.shouldShare;
 	public readonly requireCredential = AntennaChannel.requireCredential;
+	public readonly kind = AntennaChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,

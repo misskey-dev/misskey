@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="1400">
-		<div class="_root">
-			<div v-if="tab === 'explore'">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+			<div v-if="tab === 'explore'" key="explore">
 				<MkFoldableSection class="_margin">
 					<template #header><i class="ti ti-clock"></i>{{ i18n.ts.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disableAutoLoad="true">
@@ -26,14 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkPagination>
 				</MkFoldableSection>
 			</div>
-			<div v-else-if="tab === 'liked'">
+			<div v-else-if="tab === 'liked'" key="liked">
 				<MkPagination v-slot="{items}" :pagination="likedPostsPagination">
 					<div :class="$style.items">
 						<MkGalleryPostPreview v-for="like in items" :key="like.id" :post="like.post" class="post"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'my'">
+			<div v-else-if="tab === 'my'" key="my">
 				<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="ti ti-plus"></i> {{ i18n.ts.postToGallery }}</MkA>
 				<MkPagination v-slot="{items}" :pagination="myPostsPagination">
 					<div :class="$style.items">
@@ -41,19 +41,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkPagination>
 			</div>
-		</div>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref, computed } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -61,9 +62,9 @@ const props = defineProps<{
 	tag?: string;
 }>();
 
-let tab = $ref('explore');
-let tags = $ref([]);
-let tagsRef = $ref();
+const tab = ref('explore');
+const tags = ref([]);
+const tagsRef = ref();
 
 const recentPostsPagination = {
 	endpoint: 'gallery/posts' as const,
@@ -82,7 +83,7 @@ const likedPostsPagination = {
 	limit: 5,
 };
 
-const tagUsersPagination = $computed(() => ({
+const tagUsersPagination = computed(() => ({
 	endpoint: 'hashtags/users' as const,
 	limit: 30,
 	params: {
@@ -93,10 +94,10 @@ const tagUsersPagination = $computed(() => ({
 }));
 
 watch(() => props.tag, () => {
-	if (tagsRef) tagsRef.tags.toggleContent(props.tag == null);
+	if (tagsRef.value) tagsRef.value.tags.toggleContent(props.tag == null);
 });
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: () => {
@@ -104,7 +105,7 @@ const headerActions = $computed(() => [{
 	},
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'explore',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
@@ -118,10 +119,10 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-edit',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
-});
+}));
 </script>
 
 <style lang="scss" module>

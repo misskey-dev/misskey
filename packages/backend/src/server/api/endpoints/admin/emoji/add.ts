@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 
 	errors: {
 		noSuchFile: {
@@ -28,6 +29,11 @@ export const meta = {
 			code: 'DUPLICATE_NAME',
 			id: 'f7a3462c-4e6e-4069-8421-b9bd4f4c3975',
 		},
+	},
+
+	res: {
+		type: 'object',
+		ref: 'EmojiDetailed',
 	},
 } as const;
 

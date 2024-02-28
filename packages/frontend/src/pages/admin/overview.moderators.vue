@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,21 +17,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as os from '@/os.js';
+import { onMounted, ref } from 'vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 
-let moderators: any = $ref(null);
-let fetching = $ref(true);
+const moderators = ref<Misskey.entities.UserDetailed[] | null>(null);
+const fetching = ref(true);
 
 onMounted(async () => {
-	moderators = await os.api('admin/show-users', {
+	moderators.value = await misskeyApi('admin/show-users', {
 		sort: '+lastActiveDate',
 		state: 'adminOrModerator',
 		limit: 30,
 	});
 
-	fetching = false;
+	fetching.value = false;
 });
 </script>
 

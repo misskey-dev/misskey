@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,14 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.wordMute }}</template>
 
-		<XWordMute :muted="$i!.mutedWords" @save="saveMutedWords"/>
+		<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
 	</MkFolder>
 
 	<MkFolder>
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.hardWordMute }}</template>
 
-		<XWordMute :muted="$i!.hardMutedWords" @save="saveHardMutedWords"/>
+		<XWordMute :muted="$i.hardMutedWords" @save="saveHardMutedWords"/>
 	</MkFolder>
 
 	<MkFolder>
@@ -126,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -135,9 +135,12 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
+
+const $i = signinRequired();
 
 const renoteMutingPagination = {
 	endpoint: 'renote-mute/list' as const,
@@ -154,9 +157,9 @@ const blockingPagination = {
 	limit: 10,
 };
 
-let expandedRenoteMuteItems = $ref([]);
-let expandedMuteItems = $ref([]);
-let expandedBlockItems = $ref([]);
+const expandedRenoteMuteItems = ref([]);
+const expandedMuteItems = ref([]);
+const expandedBlockItems = ref([]);
 
 async function unrenoteMute(user, ev) {
 	os.popupMenu([{
@@ -192,45 +195,45 @@ async function unblock(user, ev) {
 }
 
 async function toggleRenoteMuteItem(item) {
-	if (expandedRenoteMuteItems.includes(item.id)) {
-		expandedRenoteMuteItems = expandedRenoteMuteItems.filter(x => x !== item.id);
+	if (expandedRenoteMuteItems.value.includes(item.id)) {
+		expandedRenoteMuteItems.value = expandedRenoteMuteItems.value.filter(x => x !== item.id);
 	} else {
-		expandedRenoteMuteItems.push(item.id);
+		expandedRenoteMuteItems.value.push(item.id);
 	}
 }
 
 async function toggleMuteItem(item) {
-	if (expandedMuteItems.includes(item.id)) {
-		expandedMuteItems = expandedMuteItems.filter(x => x !== item.id);
+	if (expandedMuteItems.value.includes(item.id)) {
+		expandedMuteItems.value = expandedMuteItems.value.filter(x => x !== item.id);
 	} else {
-		expandedMuteItems.push(item.id);
+		expandedMuteItems.value.push(item.id);
 	}
 }
 
 async function toggleBlockItem(item) {
-	if (expandedBlockItems.includes(item.id)) {
-		expandedBlockItems = expandedBlockItems.filter(x => x !== item.id);
+	if (expandedBlockItems.value.includes(item.id)) {
+		expandedBlockItems.value = expandedBlockItems.value.filter(x => x !== item.id);
 	} else {
-		expandedBlockItems.push(item.id);
+		expandedBlockItems.value.push(item.id);
 	}
 }
 
 async function saveMutedWords(mutedWords: (string | string[])[]) {
-	await os.api('i/update', { mutedWords });
+	await misskeyApi('i/update', { mutedWords });
 }
 
 async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
-	await os.api('i/update', { hardMutedWords });
+	await misskeyApi('i/update', { hardMutedWords });
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.muteAndBlock,
 	icon: 'ti ti-ban',
-});
+}));
 </script>
 
 <style lang="scss" module>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -40,12 +40,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -91,20 +93,20 @@ async function regenerateToken() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	os.api('i/regenerate-token', {
+	misskeyApi('i/regenerate-token', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
-});
+}));
 </script>
 
 <style lang="scss" scoped>

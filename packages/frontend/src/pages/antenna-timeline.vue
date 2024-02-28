@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,13 +24,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -38,20 +40,20 @@ const props = defineProps<{
 	antennaId: string;
 }>();
 
-let antenna = $ref(null);
-let queue = $ref(0);
-let rootEl = $shallowRef<HTMLElement>();
-let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
-const keymap = $computed(() => ({
+const antenna = ref<Misskey.entities.Antenna | null>(null);
+const queue = ref(0);
+const rootEl = shallowRef<HTMLElement>();
+const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+const keymap = computed(() => ({
 	't': focus,
 }));
 
 function queueUpdated(q) {
-	queue = q;
+	queue.value = q;
 }
 
 function top() {
-	scroll(rootEl, { top: 0 });
+	scroll(rootEl.value, { top: 0 });
 }
 
 async function timetravel() {
@@ -60,7 +62,7 @@ async function timetravel() {
 	});
 	if (canceled) return;
 
-	tlEl.timetravel(date);
+	tlEl.value.timetravel(date);
 }
 
 function settings() {
@@ -68,16 +70,16 @@ function settings() {
 }
 
 function focus() {
-	tlEl.focus();
+	tlEl.value.focus();
 }
 
 watch(() => props.antennaId, async () => {
-	antenna = await os.api('antennas/show', {
+	antenna.value = await misskeyApi('antennas/show', {
 		antennaId: props.antennaId,
 	});
 }, { immediate: true });
 
-const headerActions = $computed(() => antenna ? [{
+const headerActions = computed(() => antenna.value ? [{
 	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
@@ -87,12 +89,12 @@ const headerActions = $computed(() => antenna ? [{
 	handler: settings,
 }] : []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => antenna ? {
-	title: antenna.name,
+definePageMetadata(() => ({
+	title: antenna.value ? antenna.value.name : i18n.ts.antennas,
 	icon: 'ti ti-antenna',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

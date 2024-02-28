@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -57,10 +57,11 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	antenna: any
+	antenna: Misskey.entities.Antenna
 }>();
 
 const emit = defineEmits<{
@@ -69,46 +70,45 @@ const emit = defineEmits<{
 	(ev: 'deleted'): void,
 }>();
 
-let name: string = $ref(props.antenna.name);
-let src: string = $ref(props.antenna.src);
-let userListId: any = $ref(props.antenna.userListId);
-let users: string = $ref(props.antenna.users.join('\n'));
-let keywords: string = $ref(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
-let excludeKeywords: string = $ref(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
-let caseSensitive: boolean = $ref(props.antenna.caseSensitive);
-let localOnly: boolean = $ref(props.antenna.localOnly);
-let withReplies: boolean = $ref(props.antenna.withReplies);
-let withFile: boolean = $ref(props.antenna.withFile);
-let notify: boolean = $ref(props.antenna.notify);
-let userLists: any = $ref(null);
+const name = ref<string>(props.antenna.name);
+const src = ref<Misskey.entities.AntennasCreateRequest['src']>(props.antenna.src);
+const userListId = ref<string | null>(props.antenna.userListId);
+const users = ref<string>(props.antenna.users.join('\n'));
+const keywords = ref<string>(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
+const excludeKeywords = ref<string>(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
+const caseSensitive = ref<boolean>(props.antenna.caseSensitive);
+const localOnly = ref<boolean>(props.antenna.localOnly);
+const withReplies = ref<boolean>(props.antenna.withReplies);
+const withFile = ref<boolean>(props.antenna.withFile);
+const notify = ref<boolean>(props.antenna.notify);
+const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
-watch(() => src, async () => {
-	if (src === 'list' && userLists === null) {
-		userLists = await os.api('users/lists/list');
+watch(() => src.value, async () => {
+	if (src.value === 'list' && userLists.value === null) {
+		userLists.value = await misskeyApi('users/lists/list');
 	}
 });
 
 async function saveAntenna() {
 	const antennaData = {
-		name,
-		src,
-		userListId,
-		withReplies,
-		withFile,
-		notify,
-		caseSensitive,
-		localOnly,
-		users: users.trim().split('\n').map(x => x.trim()),
-		keywords: keywords.trim().split('\n').map(x => x.trim().split(' ')),
-		excludeKeywords: excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
+		name: name.value,
+		src: src.value,
+		userListId: userListId.value,
+		withReplies: withReplies.value,
+		withFile: withFile.value,
+		notify: notify.value,
+		caseSensitive: caseSensitive.value,
+		localOnly: localOnly.value,
+		users: users.value.trim().split('\n').map(x => x.trim()),
+		keywords: keywords.value.trim().split('\n').map(x => x.trim().split(' ')),
+		excludeKeywords: excludeKeywords.value.trim().split('\n').map(x => x.trim().split(' ')),
 	};
 
 	if (props.antenna.id == null) {
 		await os.apiWithDialog('antennas/create', antennaData);
 		emit('created');
 	} else {
-		antennaData['antennaId'] = props.antenna.id;
-		await os.apiWithDialog('antennas/update', antennaData);
+		await os.apiWithDialog('antennas/update', { ...antennaData, antennaId: props.antenna.id });
 		emit('updated');
 	}
 }
@@ -116,11 +116,11 @@ async function saveAntenna() {
 async function deleteAntenna() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: props.antenna.name }),
+		text: i18n.tsx.removeAreYouSure({ x: props.antenna.name }),
 	});
 	if (canceled) return;
 
-	await os.api('antennas/delete', {
+	await misskeyApi('antennas/delete', {
 		antennaId: props.antenna.id,
 	});
 
@@ -129,10 +129,10 @@ async function deleteAntenna() {
 }
 
 function addUser() {
-	os.selectUser().then(user => {
-		users = users.trim();
-		users += '\n@' + Misskey.acct.toString(user as any);
-		users = users.trim();
+	os.selectUser({ includeSelf: true }).then(user => {
+		users.value = users.value.trim();
+		users.value += '\n@' + Misskey.acct.toString(user as any);
+		users.value = users.value.trim();
 	});
 }
 </script>

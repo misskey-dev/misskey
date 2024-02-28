@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :preferType="preferedModalType" :anchor="anchor" :transparentBg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :preferType="preferedModalType" :anchor="anchor" :transparentBg="true" :src="src" @click="modal?.close()" @closed="emit('closed')">
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items" :key="item.text">
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar.js';
 import { defaultStore } from '@/store.js';
@@ -48,7 +48,7 @@ const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'pop
 	deviceKind === 'smartphone' ? 'drawer' :
 	'dialog';
 
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
@@ -63,7 +63,7 @@ const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k =>
 }));
 
 function close() {
-	modal.close();
+	modal.value?.close();
 }
 </script>
 
@@ -101,6 +101,8 @@ function close() {
 			vertical-align: bottom;
 			height: 100px;
 			border-radius: 10px;
+			padding: 10px;
+			box-sizing: border-box;
 
 			&:hover {
 				color: var(--accent);
@@ -117,6 +119,7 @@ function close() {
 				margin-top: 12px;
 				font-size: 0.8em;
 				line-height: 1.5em;
+				text-align: center;
 			}
 
 			> .indicatorWithValue {
@@ -136,7 +139,7 @@ function close() {
 				left: 32px;
 				color: var(--indicator);
 				font-size: 8px;
-				animation: blink 1s infinite;
+				animation: global-blink 1s infinite;
 
 				@media (max-width: 500px) {
 					top: 16px;

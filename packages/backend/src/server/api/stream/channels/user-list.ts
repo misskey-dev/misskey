@@ -1,26 +1,27 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class UserListChannel extends Channel {
 	public readonly chName = 'userList';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private listId: string;
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
 	private withFiles: boolean;
+	private withRenotes: boolean;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
@@ -39,9 +40,10 @@ class UserListChannel extends Channel {
 	public async init(params: any) {
 		this.listId = params.listId as string;
 		this.withFiles = params.withFiles ?? false;
+		this.withRenotes = params.withRenotes ?? true;
 
 		// Check existence and owner
-		const listExist = await this.userListsRepository.exist({
+		const listExist = await this.userListsRepository.exists({
 			where: {
 				id: this.listId,
 				userId: this.user!.id,
@@ -80,6 +82,9 @@ class UserListChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		const isMe = this.user!.id === note.userId;
 
+		// チャンネル投稿は無視する
+		if (note.channelId) return;
+
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
@@ -101,6 +106,8 @@ class UserListChannel extends Channel {
 			}
 		}
 
+		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
+
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
@@ -114,6 +121,9 @@ class UserListChannel extends Channel {
 				note.renote.myReaction = myRenoteReaction;
 			}
 		}
+
+		// 流れてきたNoteがミュートしているインスタンスに関わるものだったら無視する
+		if (isInstanceMuted(note, this.userMutedInstances)) return;
 
 		this.connection.cacheNote(note);
 
@@ -131,9 +141,10 @@ class UserListChannel extends Channel {
 }
 
 @Injectable()
-export class UserListChannelService {
+export class UserListChannelService implements MiChannelService<false> {
 	public readonly shouldShare = UserListChannel.shouldShare;
 	public readonly requireCredential = UserListChannel.requireCredential;
+	public readonly kind = UserListChannel.kind;
 
 	constructor(
 		@Inject(DI.userListsRepository)

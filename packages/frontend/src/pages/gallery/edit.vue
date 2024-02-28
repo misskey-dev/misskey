@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -38,7 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -46,9 +47,10 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -56,38 +58,38 @@ const props = defineProps<{
 	postId?: string;
 }>();
 
-let init = $ref(null);
-let files = $ref([]);
-let description = $ref(null);
-let title = $ref(null);
-let isSensitive = $ref(false);
+const init = ref<(() => Promise<any>) | null>(null);
+const files = ref<Misskey.entities.DriveFile[]>([]);
+const description = ref<string | null>(null);
+const title = ref<string | null>(null);
+const isSensitive = ref(false);
 
 function selectFile(evt) {
 	selectFiles(evt.currentTarget ?? evt.target, null).then(selected => {
-		files = files.concat(selected);
+		files.value = files.value.concat(selected);
 	});
 }
 
 function remove(file) {
-	files = files.filter(f => f.id !== file.id);
+	files.value = files.value.filter(f => f.id !== file.id);
 }
 
 async function save() {
 	if (props.postId) {
 		await os.apiWithDialog('gallery/posts/update', {
 			postId: props.postId,
-			title: title,
-			description: description,
-			fileIds: files.map(file => file.id),
-			isSensitive: isSensitive,
+			title: title.value,
+			description: description.value,
+			fileIds: files.value.map(file => file.id),
+			isSensitive: isSensitive.value,
 		});
 		router.push(`/gallery/${props.postId}`);
 	} else {
 		const created = await os.apiWithDialog('gallery/posts/create', {
-			title: title,
-			description: description,
-			fileIds: files.map(file => file.id),
-			isSensitive: isSensitive,
+			title: title.value,
+			description: description.value,
+			fileIds: files.value.map(file => file.id),
+			isSensitive: isSensitive.value,
 		});
 		router.push(`/gallery/${created.id}`);
 	}
@@ -106,25 +108,22 @@ async function del() {
 }
 
 watch(() => props.postId, () => {
-	init = () => props.postId ? os.api('gallery/posts/show', {
+	init.value = () => props.postId ? misskeyApi('gallery/posts/show', {
 		postId: props.postId,
 	}).then(post => {
-		files = post.files;
-		title = post.title;
-		description = post.description;
-		isSensitive = post.isSensitive;
+		files.value = post.files ?? [];
+		title.value = post.title;
+		description.value = post.description;
+		isSensitive.value = post.isSensitive;
 	}) : Promise.resolve(null);
 }, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => props.postId ? {
-	title: i18n.ts.edit,
-	icon: 'ti ti-pencil',
-} : {
-	title: i18n.ts.postToGallery,
+definePageMetadata(() => ({
+	title: props.postId ? i18n.ts.edit : i18n.ts.postToGallery,
 	icon: 'ti ti-pencil',
 }));
 </script>

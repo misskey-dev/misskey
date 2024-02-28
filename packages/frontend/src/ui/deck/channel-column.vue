@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template v-if="column.channelId">
 		<div style="padding: 8px; text-align: center;">
-			<MkButton primary gradate rounded inline @click="post"><i class="ti ti-pencil"></i></MkButton>
+			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
 		<MkTimeline ref="timeline" src="channel" :channel="column.channelId"/>
 	</template>
@@ -19,12 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -32,15 +34,15 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
-let channel = $shallowRef<Misskey.entities.Channel>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const channel = shallowRef<Misskey.entities.Channel>();
 
 if (props.column.channelId == null) {
 	setChannel();
 }
 
 async function setChannel() {
-	const channels = await os.api('channels/my-favorites', {
+	const channels = await misskeyApi('channels/my-favorites', {
 		limit: 100,
 	});
 	const { canceled, result: channel } = await os.select({
@@ -58,14 +60,14 @@ async function setChannel() {
 }
 
 async function post() {
-	if (!channel || channel.id !== props.column.channelId) {
-		channel = await os.api('channels/show', {
+	if (!channel.value || channel.value.id !== props.column.channelId) {
+		channel.value = await misskeyApi('channels/show', {
 			channelId: props.column.channelId,
 		});
 	}
 
 	os.post({
-		channel,
+		channel: channel.value,
 	});
 }
 

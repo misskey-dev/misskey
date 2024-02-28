@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -21,10 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -35,14 +37,14 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let file: any = $ref(null);
+const file = ref<Misskey.entities.DriveFile | null>(null);
 
 async function choose() {
 	os.selectDriveFile(false).then((fileResponse) => {
-		file = fileResponse[0];
+		file.value = fileResponse[0];
 		emit('update:modelValue', {
 			...props.modelValue,
-			fileId: file.id,
+			fileId: file.value.id,
 		});
 	});
 }
@@ -51,10 +53,10 @@ onMounted(async () => {
 	if (props.modelValue.fileId == null) {
 		await choose();
 	} else {
-		os.api('drive/files/show', {
+		misskeyApi('drive/files/show', {
 			fileId: props.modelValue.fileId,
 		}).then(fileResponse => {
-			file = fileResponse;
+			file.value = fileResponse;
 		});
 	}
 });

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,8 +11,12 @@ export function useChartTooltip(opts: { position: 'top' | 'middle' } = { positio
 	const tooltipShowing = ref(false);
 	const tooltipX = ref(0);
 	const tooltipY = ref(0);
-	const tooltipTitle = ref(null);
-	const tooltipSeries = ref(null);
+	const tooltipTitle = ref<string | null>(null);
+	const tooltipSeries = ref<{
+		backgroundColor: string;
+		borderColor: string;
+		text: string;
+	}[] | null>(null);
 	let disposeTooltipComponent;
 
 	os.popup(MkChartTooltip, {

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -36,6 +36,7 @@ export default class Connection {
 	public userIdsWhoMeMuting: Set<string> = new Set();
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
+	public userMutedInstances: Set<string> = new Set();
 	private fetchIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
@@ -69,6 +70,7 @@ export default class Connection {
 		this.userIdsWhoMeMuting = userIdsWhoMeMuting;
 		this.userIdsWhoBlockingMe = userIdsWhoBlockingMe;
 		this.userIdsWhoMeMutingRenotes = userIdsWhoMeMutingRenotes;
+		this.userMutedInstances = new Set(userProfile.mutedInstances);
 	}
 
 	@bindThis
@@ -243,6 +245,11 @@ export default class Connection {
 		const channelService = this.channelsService.getChannelService(channel);
 
 		if (channelService.requireCredential && this.user == null) {
+			return;
+		}
+
+		if (this.token && ((channelService.kind && !this.token.permission.some(p => p === channelService.kind))
+			|| (!channelService.kind && channelService.requireCredential))) {
 			return;
 		}
 

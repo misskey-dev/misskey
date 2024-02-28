@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -63,6 +63,10 @@ export const meta = {
 			code: 'ALREADY_MOVED',
 			id: 'b234a14e-9ebe-4581-8000-074b3c215962',
 		},
+	},
+
+	res: {
+		type: 'object',
 	},
 } as const;
 

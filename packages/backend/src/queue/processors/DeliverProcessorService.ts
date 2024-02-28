@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -72,7 +72,7 @@ export class DeliverProcessorService {
 		}
 
 		try {
-			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content);
+			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, job.data.digest);
 
 			// Update stats
 			this.federatedInstanceService.fetch(host).then(i => {
@@ -111,7 +111,7 @@ export class DeliverProcessorService {
 
 			if (res instanceof StatusError) {
 				// 4xx
-				if (res.isClientError) {
+				if (!res.isRetryable) {
 					// 相手が閉鎖していることを明示しているため、配送停止する
 					if (job.data.isSharedInbox && res.statusCode === 410) {
 						this.federatedInstanceService.fetch(host).then(i => {

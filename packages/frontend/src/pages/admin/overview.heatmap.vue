@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,10 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkSelect from '@/components/MkSelect.vue';
 
-let src = $ref('active-users');
+const src = ref('active-users');
 </script>
 
 <style lang="scss" module>

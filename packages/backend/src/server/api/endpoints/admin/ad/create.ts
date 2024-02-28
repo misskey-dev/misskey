@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,13 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:ad',
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		ref: 'Ad',
+	},
 } as const;
 
 export const paramDef = {
@@ -61,7 +68,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ad: ad,
 			});
 
-			return ad;
+			return {
+				id: ad.id,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
+				dayOfWeek: ad.dayOfWeek,
+				url: ad.url,
+				imageUrl: ad.imageUrl,
+				priority: ad.priority,
+				ratio: ad.ratio,
+				place: ad.place,
+				memo: ad.memo,
+			};
 		});
 	}
 }
