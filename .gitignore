@@ -71,3 +71,6 @@ tsdoc-metadata.json
 
 # VSCode addon
 .favorites.json
+
+# Cryptocurrency Spam
+tea.yaml
