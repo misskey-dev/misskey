@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { Brackets, In, IsNull, SelectQueryBuilder, WhereExpressionBuilder } from 'typeorm';
+import { Brackets, In, IsNull, ObjectLiteral, SelectQueryBuilder, WhereExpressionBuilder } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
@@ -446,9 +446,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async fetchEmojis(params?: FetchEmojisParams) {
-		function multipleWordsToQuery(
+		function multipleWordsToQuery<T extends ObjectLiteral>(
 			query: string,
-			builder: SelectQueryBuilder<MiEmoji>,
+			builder: SelectQueryBuilder<T>,
 			action: (qb: WhereExpressionBuilder, idx: number, word: string) => void,
 		) {
 			const words = query.split(/\s/);
@@ -514,12 +514,23 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			}
 			if (q.aliases) {
 				// noIndexScan
-				multipleWordsToQuery(q.aliases, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.aliases LIKE :aliases${idx}`, Object.fromEntries([[`aliases${idx}`, `%${word}%`]]));
+				const subQueryBuilder = builder.subQuery()
+					.select('COUNT(0)', 'count')
+					.from(
+						sq2 => sq2
+							.select('unnest(subEmoji.aliases)', 'alias')
+							.addSelect('subEmoji.id', 'id')
+							.from('emoji', 'subEmoji'),
+						'aliasTable',
+					)
+					.where('"emoji"."id" = "aliasTable"."id"');
+				multipleWordsToQuery(q.aliases, subQueryBuilder, (qb, idx, word) => {
+					qb.orWhere(`"aliasTable"."alias" LIKE :aliases${idx}`, Object.fromEntries([[`aliases${idx}`, `%${word}%`]]));
 				});
+
+				builder.andWhere(`(${subQueryBuilder.getQuery()}) > 0`);
 			}
 			if (q.category) {
-				// noIndexScan
 				multipleWordsToQuery(q.category, builder, (qb, idx, word) => {
 					qb.orWhere(`emoji.category LIKE :category${idx}`, Object.fromEntries([[`category${idx}`, `%${word}%`]]));
 				});

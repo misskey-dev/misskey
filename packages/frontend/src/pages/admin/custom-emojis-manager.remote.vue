@@ -17,7 +17,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
 					<MkInput
 						v-model="queryName"
-						:debounce="true"
 						type="search"
 						autocapitalize="off"
 						class="col1 row1"
@@ -27,7 +26,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkInput
 						v-model="queryHost"
-						:debounce="true"
 						type="search"
 						autocapitalize="off"
 						class="col2 row1"
@@ -37,7 +35,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkInput
 						v-model="queryUri"
-						:debounce="true"
 						type="search"
 						autocapitalize="off"
 						class="col1 row2"
@@ -47,7 +44,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkInput
 						v-model="queryPublicUrl"
-						:debounce="true"
 						type="search"
 						autocapitalize="off"
 						class="col2 row2"

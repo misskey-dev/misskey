@@ -4,140 +4,132 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_gaps">
+	<MkFolder>
+		<template #icon><i class="ti ti-search"></i></template>
+		<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
+		<template #caption>
+			{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
+		</template>
+
+		<div class="_gaps">
+			<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
+				<MkInput
+					v-model="queryName"
+					type="search"
+					autocapitalize="off"
+					class="col1 row1"
+					@enter="onSearchRequest"
+				>
+					<template #label>name</template>
+				</MkInput>
+				<MkInput
+					v-model="queryCategory"
+					type="search"
+					autocapitalize="off"
+					class="col2 row1"
+					@enter="onSearchRequest"
+				>
+					<template #label>category</template>
+				</MkInput>
+				<MkInput
+					v-model="queryAliases"
+					type="search"
+					autocapitalize="off"
+					class="col3 row1"
+					@enter="onSearchRequest"
+				>
+					<template #label>aliases</template>
+				</MkInput>
+
+				<MkInput
+					v-model="queryType"
+					type="search"
+					autocapitalize="off"
+					class="col1 row2"
+					@enter="onSearchRequest"
+				>
+					<template #label>type</template>
+				</MkInput>
+				<MkInput
+					v-model="queryLicense"
+					type="search"
+					autocapitalize="off"
+					class="col2 row2"
+					@enter="onSearchRequest"
+				>
+					<template #label>license</template>
+				</MkInput>
+				<MkSelect
+					v-model="querySensitive"
+					class="col3 row2"
+				>
+					<template #label>sensitive</template>
+					<option :value="null">-</option>
+					<option :value="true">true</option>
+					<option :value="false">false</option>
+				</MkSelect>
+
+				<MkSelect
+					v-model="queryLocalOnly"
+					class="col1 row3"
+				>
+					<template #label>localOnly</template>
+					<option :value="null">-</option>
+					<option :value="true">true</option>
+					<option :value="false">false</option>
+				</MkSelect>
+				<MkInput
+					v-model="queryUpdatedAtFrom"
+					type="date"
+					autocapitalize="off"
+					class="col2 row3"
+					@enter="onSearchRequest"
+				>
+					<template #label>updatedAt(from)</template>
+				</MkInput>
+				<MkInput
+					v-model="queryUpdatedAtTo"
+					type="date"
+					autocapitalize="off"
+					class="col3 row3"
+					@enter="onSearchRequest"
+				>
+					<template #label>updatedAt(to)</template>
+				</MkInput>
+
+				<MkInput
+					v-model="queryRolesText"
+					type="text"
+					readonly
+					autocapitalize="off"
+					class="col1 row4"
+					@click="onQueryRolesEditClicked"
+				>
+					<template #label>role</template>
+					<template #suffix><span class="ti ti-pencil"/></template>
+				</MkInput>
+			</div>
+
+			<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
+
+			<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
+				<MkButton primary @click="onSearchRequest">
+					{{ i18n.ts.search }}
+				</MkButton>
+				<MkButton @click="onQueryResetButtonClicked">
+					{{ i18n.ts.reset }}
+				</MkButton>
+			</div>
+		</div>
+	</MkFolder>
+
+	<XRegisterLogsFolder :logs="requestLogs"/>
+
 	<div v-if="gridItems.length === 0" style="text-align: center">
 		{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 	</div>
-	<div v-else class="_gaps">
-		<MkFolder>
-			<template #icon><i class="ti ti-search"></i></template>
-			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
-			<template #caption>
-				{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
-			</template>
-
-			<div class="_gaps">
-				<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
-					<MkInput
-						v-model="queryName"
-						:debounce="true"
-						type="search"
-						autocapitalize="off"
-						class="col1 row1"
-						@enter="onSearchRequest"
-					>
-						<template #label>name</template>
-					</MkInput>
-					<MkInput
-						v-model="queryCategory"
-						:debounce="true"
-						type="search"
-						autocapitalize="off"
-						class="col2 row1"
-						@enter="onSearchRequest"
-					>
-						<template #label>category</template>
-					</MkInput>
-					<MkInput
-						v-model="queryAlias"
-						:debounce="true"
-						type="search"
-						autocapitalize="off"
-						class="col3 row1"
-						@enter="onSearchRequest"
-					>
-						<template #label>alias</template>
-					</MkInput>
-
-					<MkInput
-						v-model="queryType"
-						:debounce="true"
-						type="search"
-						autocapitalize="off"
-						class="col1 row2"
-						@enter="onSearchRequest"
-					>
-						<template #label>type</template>
-					</MkInput>
-					<MkInput
-						v-model="queryLicense"
-						:debounce="true"
-						type="search"
-						autocapitalize="off"
-						class="col2 row2"
-						@enter="onSearchRequest"
-					>
-						<template #label>license</template>
-					</MkInput>
-					<MkSelect
-						v-model="querySensitive"
-						class="col3 row2"
-					>
-						<template #label>sensitive</template>
-						<option :value="null">-</option>
-						<option :value="true">true</option>
-						<option :value="false">false</option>
-					</MkSelect>
-
-					<MkSelect
-						v-model="queryLocalOnly"
-						class="col1 row3"
-					>
-						<template #label>localOnly</template>
-						<option :value="null">-</option>
-						<option :value="true">true</option>
-						<option :value="false">false</option>
-					</MkSelect>
-					<MkInput
-						v-model="queryUpdatedAtFrom"
-						:debounce="true"
-						type="date"
-						autocapitalize="off"
-						class="col2 row3"
-						@enter="onSearchRequest"
-					>
-						<template #label>updatedAt(from)</template>
-					</MkInput>
-					<MkInput
-						v-model="queryUpdatedAtTo"
-						:debounce="true"
-						type="date"
-						autocapitalize="off"
-						class="col3 row3"
-						@enter="onSearchRequest"
-					>
-						<template #label>updatedAt(to)</template>
-					</MkInput>
-
-					<MkInput
-						v-model="queryRolesText"
-						:debounce="true"
-						type="text"
-						readonly
-						autocapitalize="off"
-						class="col1 row4"
-						@click="onQueryRolesEditClicked"
-					>
-						<template #label>role</template>
-						<template #suffix><span class="ti ti-pencil"/></template>
-					</MkInput>
-				</div>
-
-				<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
-
-				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
-					<MkButton primary @click="onSearchRequest">
-						{{ i18n.ts.search }}
-					</MkButton>
-					<MkButton @click="onQueryResetButtonClicked">
-						{{ i18n.ts.reset }}
-					</MkButton>
-				</div>
-			</div>
-		</MkFolder>
-
-		<XRegisterLogsFolder :logs="requestLogs"/>
-
+	<template v-else>
 		<div :class="$style.gridArea">
 			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 		</div>
@@ -155,7 +147,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
 			</div>
 		</div>
-	</div>
+	</template>
 </div>
 </template>
 
@@ -360,7 +352,7 @@ const currentPage = ref<number>(0);
 
 const queryName = ref<string | null>(null);
 const queryCategory = ref<string | null>(null);
-const queryAlias = ref<string | null>(null);
+const queryAliases = ref<string | null>(null);
 const queryType = ref<string | null>(null);
 const queryLicense = ref<string | null>(null);
 const queryUpdatedAtFrom = ref<string | null>(null);
@@ -509,7 +501,7 @@ async function onSearchRequest() {
 function onQueryResetButtonClicked() {
 	queryName.value = null;
 	queryCategory.value = null;
-	queryAlias.value = null;
+	queryAliases.value = null;
 	queryType.value = null;
 	queryLicense.value = null;
 	queryUpdatedAtFrom.value = null;
@@ -552,7 +544,7 @@ async function refreshCustomEmojis() {
 	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
 		name: emptyStrToUndefined(queryName.value),
 		type: emptyStrToUndefined(queryType.value),
-		aliases: emptyStrToUndefined(queryAlias.value),
+		aliases: emptyStrToUndefined(queryAliases.value),
 		category: emptyStrToUndefined(queryCategory.value),
 		license: emptyStrToUndefined(queryLicense.value),
 		isSensitive: querySensitive.value ? Boolean(querySensitive.value).valueOf() : undefined,
