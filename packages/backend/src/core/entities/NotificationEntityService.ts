@@ -272,7 +272,7 @@ export class NotificationEntityService implements OnModuleInit {
 
 		const notifier = notifiers.find(x => x.id === notification.notifierId) ?? null;
 
-		if (notifier === null) return false;
+		if (notifier == null) return false;
 		if (notifier.host && userMutedInstances.has(notifier.host)) return false;
 
 		if (notifier.isSuspended) return false;
