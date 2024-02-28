@@ -464,11 +464,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			const q = params.query;
 			if (q.updatedAtFrom) {
 				// noIndexScan
-				builder.andWhere('emoji.updatedAt >= :updateAtFrom', { updateAtFrom: q.updatedAtFrom });
+				builder.andWhere('CAST(emoji.updatedAt AS DATE) >= :updateAtFrom', { updateAtFrom: q.updatedAtFrom });
 			}
 			if (q.updatedAtTo) {
 				// noIndexScan
-				builder.andWhere('emoji.updatedAt <= :updateAtTo', { updateAtTo: q.updatedAtTo });
+				builder.andWhere('CAST(emoji.updatedAt AS DATE) <= :updateAtTo', { updateAtTo: q.updatedAtTo });
 			}
 			if (q.name) {
 				multipleWordsToQuery(q.name, builder, (qb, idx, word) => {

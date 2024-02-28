@@ -148,7 +148,9 @@ export async function pasteToGridFromClipboard(
 		// 単独文字列の場合は選択範囲全体に同じテキストを貼り付ける
 		const ranges = context.rangedCells;
 		for (const cell of ranges) {
-			callback(cell.row, cell.column, parseValue(lines[0][0], cell.column.setting));
+			if (cell.column.setting.editable) {
+				callback(cell.row, cell.column, parseValue(lines[0][0], cell.column.setting));
+			}
 		}
 	} else {
 		// 表形式文字列の場合は表形式にパースし、選択範囲に合うように貼り付ける
@@ -170,7 +172,9 @@ export async function pasteToGridFromClipboard(
 					break;
 				}
 
-				callback(rows[row], columns[col], parseValue(items[colIdx], columns[col].setting));
+				if (columns[col].setting.editable) {
+					callback(rows[row], columns[col], parseValue(items[colIdx], columns[col].setting));
+				}
 			}
 		}
 	}
