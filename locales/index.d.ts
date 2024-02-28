@@ -4657,6 +4657,10 @@ export interface Locale extends ILocale {
      */
     "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     "fileAttachedOnly": string;
@@ -6528,6 +6532,10 @@ export interface Locale extends ILocale {
             "avatarDecorationLimit": string;
         };
         "_condition": {
+            /**
+             * マニュアルロールにアサイン済み
+             */
+            "roleAssignedTo": string;
             /**
              * ローカルユーザー
              */

@@ -18,6 +18,7 @@
  * achievementEarned - 実績を獲得
  * app - アプリ通知
  * test - テスト通知（サーバー側）
+ *
  */
 export const notificationTypes = [
 	'note',
@@ -33,7 +34,15 @@ export const notificationTypes = [
 	'roleAssigned',
 	'achievementEarned',
 	'app',
-	'test'] as const;
+	'test',
+] as const;
+
+export const groupedNotificationTypes = [
+	...notificationTypes,
+	'reaction:grouped',
+	'renote:grouped',
+] as const;
+
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;

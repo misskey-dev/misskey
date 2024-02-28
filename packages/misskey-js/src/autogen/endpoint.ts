@@ -35,6 +35,7 @@ import type {
 	AdminDriveShowFileResponse,
 	AdminEmojiAddAliasesBulkRequest,
 	AdminEmojiAddRequest,
+	AdminEmojiAddResponse,
 	AdminEmojiCopyRequest,
 	AdminEmojiCopyResponse,
 	AdminEmojiDeleteBulkRequest,
@@ -578,7 +579,7 @@ export type Endpoints = {
 	'admin/drive/files': { req: AdminDriveFilesRequest; res: AdminDriveFilesResponse };
 	'admin/drive/show-file': { req: AdminDriveShowFileRequest; res: AdminDriveShowFileResponse };
 	'admin/emoji/add-aliases-bulk': { req: AdminEmojiAddAliasesBulkRequest; res: EmptyResponse };
-	'admin/emoji/add': { req: AdminEmojiAddRequest; res: EmptyResponse };
+	'admin/emoji/add': { req: AdminEmojiAddRequest; res: AdminEmojiAddResponse };
 	'admin/emoji/copy': { req: AdminEmojiCopyRequest; res: AdminEmojiCopyResponse };
 	'admin/emoji/delete-bulk': { req: AdminEmojiDeleteBulkRequest; res: EmptyResponse };
 	'admin/emoji/delete': { req: AdminEmojiDeleteRequest; res: EmptyResponse };

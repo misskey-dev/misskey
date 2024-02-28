@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
 						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
 						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
 						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
 						i18n.ts.all
 					}}
