@@ -697,6 +697,24 @@ export type paths = {
      */
     post: operations['admin/roles/users'];
   };
+  '/admin/oauth-client/create-server': {
+    /**
+     * admin/oauth-client/create-server
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['admin/oauth-client/create-server'];
+  };
+  '/admin/oauth-client/update-server': {
+    /**
+     * admin/oauth-client/update-server
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['admin/oauth-client/update-server'];
+  };
   '/announcements': {
     /**
      * announcements
@@ -2788,6 +2806,54 @@ export type paths = {
      */
     post: operations['notifications/test-notification'];
   };
+  '/oauth-client/list': {
+    /**
+     * oauth-client/list
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    get: operations['oauth-client/list'];
+    /**
+     * oauth-client/list
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['oauth-client/list'];
+  };
+  '/oauth-client/authorize': {
+    /**
+     * oauth-client/authorize
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    get: operations['oauth-client/authorize'];
+    /**
+     * oauth-client/authorize
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['oauth-client/authorize'];
+  };
+  '/oauth-client/callback': {
+    /**
+     * oauth-client/callback
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    get: operations['oauth-client/callback'];
+    /**
+     * oauth-client/callback
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['oauth-client/callback'];
+  };
   '/page-push': {
     /**
      * page-push
@@ -4825,6 +4891,17 @@ export type components = {
       cacheRemoteSensitiveFiles: boolean;
     };
     MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+    OAuth2Server: {
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      id: string;
+      name: string;
+      description?: string | null;
+      iconUrl?: string | null;
+      allowSignUp: boolean;
+    };
   };
   responses: never;
   parameters: never;
@@ -9529,6 +9606,124 @@ export type operations = {
               expiresAt: string | null;
             })[];
         };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/oauth-client/create-server
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'admin/oauth-client/create-server': {
+    requestBody: {
+      content: {
+        'application/json': {
+          name: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/oauth-client/update-server
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'admin/oauth-client/update-server': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          id: string;
+          name: string;
+          description?: string;
+          clientId?: string;
+          clientSecret?: string;
+          authorizeUrl?: string;
+          tokenUrl?: string;
+          signUpUrl?: string;
+          scope?: string;
+          profileUrl?: string;
+          idPath?: string;
+          namePath?: string;
+          emailPath?: string;
+          markEmailAsVerified?: boolean;
+          usernamePath?: string;
+          allowSignUp?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {
@@ -22138,6 +22333,169 @@ export type operations = {
       };
       /** @description To many requests */
       429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * oauth-client/list
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'oauth-client/list': {
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['OAuth2Server'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * oauth-client/authorize
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'oauth-client/authorize': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          serverId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            authorizeUrl: string;
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * oauth-client/callback
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'oauth-client/callback': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          serverId: string;
+          code: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            type: string;
+            signIn?: {
+              id: string;
+              i: string;
+            };
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
         content: {
           'application/json': components['schemas']['Error'];
         };

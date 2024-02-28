@@ -44,6 +44,7 @@ import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
 import { MiNoteThreadMuting } from '@/models/NoteThreadMuting.js';
 import { MiNoteUnread } from '@/models/NoteUnread.js';
+import { MiOAuth2Server } from '@/models/OAuth2Server.js';
 import { MiPage } from '@/models/Page.js';
 import { MiPageLike } from '@/models/PageLike.js';
 import { MiPasswordResetRequest } from '@/models/PasswordResetRequest.js';
@@ -82,6 +83,7 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { MiUserIntegration } from './models/UserIntegration.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -155,6 +157,8 @@ export const entities = [
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiNoteUnread,
+	MiOAuth2Server,
+	MiUserIntegration,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,

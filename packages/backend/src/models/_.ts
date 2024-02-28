@@ -36,6 +36,7 @@ import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
 import { MiNoteThreadMuting } from '@/models/NoteThreadMuting.js';
 import { MiNoteUnread } from '@/models/NoteUnread.js';
+import { MiOAuth2Server } from '@/models/OAuth2Server.js';
 import { MiPage } from '@/models/Page.js';
 import { MiPageLike } from '@/models/PageLike.js';
 import { MiPasswordResetRequest } from '@/models/PasswordResetRequest.js';
@@ -72,6 +73,7 @@ import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
 
 import type { Repository } from 'typeorm';
+import { MiUserIntegration } from './UserIntegration.js';
 
 export {
 	MiAbuseUserReport,
@@ -107,6 +109,8 @@ export {
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiNoteUnread,
+	MiOAuth2Server,
+	MiUserIntegration,
 	MiPage,
 	MiPageLike,
 	MiPasswordResetRequest,
@@ -176,6 +180,8 @@ export type NoteFavoritesRepository = Repository<MiNoteFavorite>;
 export type NoteReactionsRepository = Repository<MiNoteReaction>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<MiNoteUnread>;
+export type MiOAuth2ServersRepository = Repository<MiOAuth2Server>;
+export type MiUserIntegrationRepository = Repository<MiUserIntegration>;
 export type PagesRepository = Repository<MiPage>;
 export type PageLikesRepository = Repository<MiPageLike>;
 export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest>;
