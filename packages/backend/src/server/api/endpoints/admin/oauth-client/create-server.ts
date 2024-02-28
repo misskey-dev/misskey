@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiOAuth2ServersRepository } from '@/models/_.js';
-import { titleSchema } from '@/models/OAuth2Server.js';
+import { nameSchema } from '@/models/OAuth2Server.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -21,9 +21,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		title: titleSchema,
+		name: nameSchema,
 	},
-	required: ['title'],
+	required: ['name'],
 } as const;
 
 @Injectable()
@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const res = await this.oauth2ServersRepository.insert({
 				id: this.idService.gen(),
 				updatedAt: new Date(),
-				title: ps.title,
+				name: ps.name,
 			}).then(r => this.oauth2ServersRepository.findOneByOrFail({ id: r.identifiers[0].id }));
 
 			this.moderationLogService.log(me, 'createOAuth2Server', {

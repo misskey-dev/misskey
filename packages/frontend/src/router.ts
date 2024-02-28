@@ -255,13 +255,6 @@ export const routes = [{
 	path: '/oauth/authorize',
 	component: page(() => import('./pages/oauth.vue')),
 }, {
-	path: '/oauth-client/callback/:serverId',
-	component: page(() => import('./pages/oauth-callback.vue')),
-	query: {
-		code: 'code',
-		state: 'state',
-	},
-}, {
 	path: '/tags/:tag',
 	component: page(() => import('./pages/tag.vue')),
 }, {
@@ -538,6 +531,13 @@ export const routes = [{
 	path: '/',
 	component: $i ? page(() => import('./pages/timeline.vue')) : page(() => import('./pages/welcome.vue')),
 	globalCacheKey: 'index',
+}, {
+	path: '/oauth-client/callback/:serverId',
+	component: page(() => import('./pages/oauth-callback.vue')),
+	query: {
+		code: 'code',
+		state: 'state',
+	},
 }, {
 	path: '/:(*)',
 	component: page(() => import('./pages/not-found.vue')),

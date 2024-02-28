@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit, AdminInstanceMetadata,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit, AdminInstanceMetadata, OAuth2Server,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -643,8 +643,9 @@ export type Endpoints = {
 	}; };
 
 	// oauth
-	'oauth/authorize': { req: TODO; res: TODO; };
-	'oauth/callback': { req: TODO; res: TODO; };
+	'oauth-client/list': { req: NoParams; res: OAuth2Server[]; };
+	'oauth-client/authorize': { req: { serverId: string; }; res: { authorizeUrl: string; }; };
+	'oauth-client/callback': { req: TODO; res: TODO; };
 
 	// fetching external data
 	'fetch-rss': { req: { url: string; }; res: TODO; };

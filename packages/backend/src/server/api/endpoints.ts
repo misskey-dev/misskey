@@ -82,8 +82,8 @@ import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
-import * as ep___admin_oauth_createServer from './endpoints/admin/oauth/create-server.js';
-import * as ep___admin_oauth_updateServer from './endpoints/admin/oauth/update-server.js';
+import * as ep___admin_oauthClient_createServer from './endpoints/admin/oauth-client/create-server.js';
+import * as ep___admin_oauthClient_updateServer from './endpoints/admin/oauth-client/update-server.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -296,9 +296,9 @@ import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeli
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
 import * as ep___notifications_testNotification from './endpoints/notifications/test-notification.js';
-import * as ep___oauth_list from './endpoints/oauth/list.js';
-import * as ep___oauth_authorize from './endpoints/oauth/authorize.js';
-import * as ep___oauth_callback from './endpoints/oauth/callback.js';
+import * as ep___oauthClient_list from './endpoints/oauth-client/list.js';
+import * as ep___oauthClient_authorize from './endpoints/oauth-client/authorize.js';
+import * as ep___oauthClient_callback from './endpoints/oauth-client/callback.js';
 import * as ep___pagePush from './endpoints/page-push.js';
 import * as ep___pages_create from './endpoints/pages/create.js';
 import * as ep___pages_delete from './endpoints/pages/delete.js';
@@ -446,8 +446,8 @@ const eps = [
 	['admin/roles/unassign', ep___admin_roles_unassign],
 	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['admin/roles/users', ep___admin_roles_users],
-	['admin/oauth-client/create-server', ep___admin_oauth_createServer],
-	['admin/oauth-client/update-server', ep___admin_oauth_updateServer],
+	['admin/oauth-client/create-server', ep___admin_oauthClient_createServer],
+	['admin/oauth-client/update-server', ep___admin_oauthClient_updateServer],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -660,9 +660,9 @@ const eps = [
 	['notifications/create', ep___notifications_create],
 	['notifications/mark-all-as-read', ep___notifications_markAllAsRead],
 	['notifications/test-notification', ep___notifications_testNotification],
-	['oauth/list', ep___oauth_list],
-	['oauth/authorize', ep___oauth_authorize],
-	['oauth/callback', ep___oauth_callback],
+	['oauth-client/list', ep___oauthClient_list],
+	['oauth-client/authorize', ep___oauthClient_authorize],
+	['oauth-client/callback', ep___oauthClient_callback],
 	['page-push', ep___pagePush],
 	['pages/create', ep___pages_create],
 	['pages/delete', ep___pages_delete],

@@ -30,7 +30,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		id: { type: 'string', format: 'misskey:id' },
-		title: { type: 'string' },
+		name: { type: 'string' },
 		description: { type: 'string' },
 		clientId: { type: 'string' },
 		clientSecret: { type: 'string' },
@@ -46,7 +46,7 @@ export const paramDef = {
 		usernamePath: { type: 'string' },
 		allowSignUp: { type: 'boolean' },
 	},
-	required: ['id', 'title'],
+	required: ['id', 'name'],
 } as const;
 
 @Injectable()
@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.oauth2ServersRepository.update(ps.id, {
 				updatedAt: new Date(),
-				title: ps.title,
+				name: ps.name,
 				description: ps.description,
 				clientId: ps.clientId,
 				clientSecret: ps.clientSecret,

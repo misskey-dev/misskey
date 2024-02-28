@@ -8,7 +8,7 @@ import { OAuth2 } from 'oauth';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import type { MiOAuth2ServersRepository, MiUserIntegrationRepository, SigninsRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiOAuth2Server, MiOAuth2ServersRepository, MiUserIntegrationRepository, SigninsRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -156,7 +156,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const userIntegration = await this.userIntegrationRepository.findOneBy({ serverUserId, serverId: oauth2Server.id });
 			if (userIntegration) {
-				const signIn = this.signIn(headers, ip, userIntegration.user as MiLocalUser);
+				const user = await this.usersRepository.findOneByOrFail({ id: userIntegration.userId });
+
+				try {
+					const email = await this.getEmail(oauth2Server, profile);
+					await this.makeEmailVerified(user.id, email);
+				} catch {
+					// ignore
+				}
+
+				if (oauth2Server.namePath && profile[oauth2Server.namePath] && user.name !== profile[oauth2Server.namePath]) {
+					await this.usersRepository.update({ id: user.id }, {
+						name: profile[oauth2Server.namePath],
+					});
+				}
+
+				const signIn = this.signIn(headers, ip, user as MiLocalUser);
 				return {
 					type: 'token',
 					...signIn,
@@ -178,12 +193,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const user = await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() }) as MiLocalUser | null;
 			if (user !== null) {
-				await this.userIntegrationRepository.insert({
-					id: this.idService.gen(),
-					userId: user.id,
-					serverId: oauth2Server.id,
-					serverUserId,
-				});
+				await this.makeIntegration(oauth2Server.id, serverUserId, user.id);
 
 				const signIn = this.signIn(headers, ip, user);
 				return {
@@ -198,6 +208,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					username,
 				});
 
+				try {
+					const email = await this.getEmail(oauth2Server, profile);
+					await this.makeEmailVerified(account.id, email);
+				} catch {
+					// ignore
+				}
+
 				const res = await this.userEntityService.pack(account, account, {
 					detail: true,
 					includeSecrets: true,
@@ -210,26 +227,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				};
 			}
 
-			if (!oauth2Server.emailPath) {
-				throw new ApiError(meta.errors.emailPathRequiredForSignup);
-			}
-
-			const email = profile[oauth2Server.emailPath];
-			if (!email) {
-				throw new ApiError(meta.errors.emailRequiredForSignup);
-			}
+			const email = await this.getEmail(oauth2Server, profile);
 
 			if (oauth2Server.markEmailAsVerified) {
 				const { account, secret } = await this.signupService.signup({
 					username,
 				});
-
-				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: account.id }); // is this correct?
-				await this.userProfilesRepository.update({ userId: profile.userId }, {
-					email,
-					emailVerified: true,
-					emailVerifyCode: null,
-				});
+				await this.makeIntegration(oauth2Server.id, serverUserId, account.id);
+				await this.makeEmailVerified(account.id, email);
 
 				const res = await this.userEntityService.pack(account, account, {
 					detail: true,
@@ -283,5 +288,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			id: user.id,
 			i: user.token,
 		};
+	}
+
+	private async makeIntegration(serverId: string, serverUserId: string, userId: MiLocalUser['id']): Promise<void> {
+		await this.userIntegrationRepository.insert({
+			id: this.idService.gen(),
+			updatedAt: new Date(),
+			userId: userId,
+			serverId,
+			serverUserId,
+		});
+
+		return;
+	}
+
+	private async getEmail(oauth2Server: MiOAuth2Server, profile: any): Promise<string> {
+		if (!oauth2Server.emailPath) {
+			throw new ApiError(meta.errors.emailPathRequiredForSignup);
+		}
+
+		const email = profile[oauth2Server.emailPath];
+		if (!email) {
+			throw new ApiError(meta.errors.emailRequiredForSignup);
+		}
+
+		return email;
+	}
+
+	private async makeEmailVerified(userId: MiLocalUser['id'], email: string): Promise<void> {
+		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: userId });
+		await this.userProfilesRepository.update({ userId: profile.userId }, {
+			email,
+			emailVerified: true,
+			emailVerifyCode: null,
+		});
 	}
 }

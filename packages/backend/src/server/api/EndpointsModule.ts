@@ -82,8 +82,8 @@ import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
-import * as ep___admin_oauth_createServer from './endpoints/admin/oauth/create-server.js';
-import * as ep___admin_oauth_updateServer from './endpoints/admin/oauth/update-server.js';
+import * as ep___admin_oauthClient_createServer from './endpoints/admin/oauth-client/create-server.js';
+import * as ep___admin_oauthClient_updateServer from './endpoints/admin/oauth-client/update-server.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -296,9 +296,9 @@ import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeli
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
 import * as ep___notifications_testNotification from './endpoints/notifications/test-notification.js';
-import * as ep___oauth_list from './endpoints/oauth/list.js';
-import * as ep___oauth_authorize from './endpoints/oauth/authorize.js';
-import * as ep___oauth_callback from './endpoints/oauth/callback.js';
+import * as ep___oauthClient_list from './endpoints/oauth-client/list.js';
+import * as ep___oauthClient_authorize from './endpoints/oauth-client/authorize.js';
+import * as ep___oauthClient_callback from './endpoints/oauth-client/callback.js';
 import * as ep___pagePush from './endpoints/page-push.js';
 import * as ep___pages_create from './endpoints/pages/create.js';
 import * as ep___pages_delete from './endpoints/pages/delete.js';
@@ -448,8 +448,8 @@ const $admin_roles_assign: Provider = { provide: 'ep:admin/roles/assign', useCla
 const $admin_roles_unassign: Provider = { provide: 'ep:admin/roles/unassign', useClass: ep___admin_roles_unassign.default };
 const $admin_roles_updateDefaultPolicies: Provider = { provide: 'ep:admin/roles/update-default-policies', useClass: ep___admin_roles_updateDefaultPolicies.default };
 const $admin_roles_users: Provider = { provide: 'ep:admin/roles/users', useClass: ep___admin_roles_users.default };
-const $admin_oauth_createServer: Provider = { provide: 'ep:admin/oauth-client/create-server', useClass: ep___admin_oauth_createServer.default };
-const $admin_oauth_updateServer: Provider = { provide: 'ep:admin/oauth-client/update-server', useClass: ep___admin_oauth_updateServer.default };
+const $admin_oauthClient_createServer: Provider = { provide: 'ep:admin/oauth-client/create-server', useClass: ep___admin_oauthClient_createServer.default };
+const $admin_oauthClient_updateServer: Provider = { provide: 'ep:admin/oauth-client/update-server', useClass: ep___admin_oauthClient_updateServer.default };
 const $announcements: Provider = { provide: 'ep:announcements', useClass: ep___announcements.default };
 const $antennas_create: Provider = { provide: 'ep:antennas/create', useClass: ep___antennas_create.default };
 const $antennas_delete: Provider = { provide: 'ep:antennas/delete', useClass: ep___antennas_delete.default };
@@ -662,9 +662,9 @@ const $notes_userListTimeline: Provider = { provide: 'ep:notes/user-list-timelin
 const $notifications_create: Provider = { provide: 'ep:notifications/create', useClass: ep___notifications_create.default };
 const $notifications_markAllAsRead: Provider = { provide: 'ep:notifications/mark-all-as-read', useClass: ep___notifications_markAllAsRead.default };
 const $notifications_testNotification: Provider = { provide: 'ep:notifications/test-notification', useClass: ep___notifications_testNotification.default };
-const $oauth_list: Provider = { provide: 'ep:oauth/list', useClass: ep___oauth_list.default };
-const $oauth_authorize: Provider = { provide: 'ep:oauth/authorize', useClass: ep___oauth_authorize.default };
-const $oauth_callback: Provider = { provide: 'ep:oauth/callback', useClass: ep___oauth_callback.default };
+const $oauthClient_list: Provider = { provide: 'ep:oauth-client/list', useClass: ep___oauthClient_list.default };
+const $oauthClient_authorize: Provider = { provide: 'ep:oauth-client/authorize', useClass: ep___oauthClient_authorize.default };
+const $oauthClient_callback: Provider = { provide: 'ep:oauth-client/callback', useClass: ep___oauthClient_callback.default };
 const $pagePush: Provider = { provide: 'ep:page-push', useClass: ep___pagePush.default };
 const $pages_create: Provider = { provide: 'ep:pages/create', useClass: ep___pages_create.default };
 const $pages_delete: Provider = { provide: 'ep:pages/delete', useClass: ep___pages_delete.default };
@@ -818,8 +818,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_unassign,
 		$admin_roles_updateDefaultPolicies,
 		$admin_roles_users,
-		$admin_oauth_createServer,
-		$admin_oauth_updateServer,
+		$admin_oauthClient_createServer,
+		$admin_oauthClient_updateServer,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1032,9 +1032,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notifications_create,
 		$notifications_markAllAsRead,
 		$notifications_testNotification,
-		$oauth_list,
-		$oauth_authorize,
-		$oauth_callback,
+		$oauthClient_list,
+		$oauthClient_authorize,
+		$oauthClient_callback,
 		$pagePush,
 		$pages_create,
 		$pages_delete,
@@ -1182,8 +1182,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_unassign,
 		$admin_roles_updateDefaultPolicies,
 		$admin_roles_users,
-		$admin_oauth_createServer,
-		$admin_oauth_updateServer,
+		$admin_oauthClient_createServer,
+		$admin_oauthClient_updateServer,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1395,9 +1395,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_userListTimeline,
 		$notifications_create,
 		$notifications_markAllAsRead,
-		$oauth_list,
-		$oauth_authorize,
-		$oauth_callback,
+		$oauthClient_list,
+		$oauthClient_authorize,
+		$oauthClient_callback,
 		$pagePush,
 		$pages_create,
 		$pages_delete,

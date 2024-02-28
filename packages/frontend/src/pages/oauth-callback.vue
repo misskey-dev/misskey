@@ -30,18 +30,27 @@ function submit() {
 	if (submitting) return;
 	submitting = true;
 
-	os.api('oauth/callback', {
+	os.api('oauth-client/callback', {
 		serverId: props.serverId,
 		code: props.code,
 	}).then(res => {
-		if (res!.type === 'verificationEmailSent') {
+		console.log(res);
+
+		if (!res || !res.type) {
+			return os.alert({
+				type: 'error',
+				text: i18n.ts.somethingHappened,
+			});
+		}
+
+		if (res.type === 'verificationEmailSent') {
 			return os.alert({
 				type: 'info',
 				text: i18n.ts.verificationEmailSent,
 			});
 		}
 
-		return login(res!.token);
+		return login(res.token ?? res.i, '/');
 	}).catch(() => {
 		submitting = false;
 

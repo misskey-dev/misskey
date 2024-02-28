@@ -28,7 +28,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return res.map(e => ({
 				id: e.id,
-				title: e.title,
+				name: e.name,
+				iconUrl: e.iconUrl,
 			}));
 		});
 	}

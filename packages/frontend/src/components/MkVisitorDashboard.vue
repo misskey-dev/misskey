@@ -54,7 +54,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import XTimeline from './welcome.timeline.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -64,12 +63,12 @@ import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
 let meta = $ref<Misskey.entities.Instance>();
 let stats = $ref(null);
+let oauth2Servers = $ref<Misskey.entities.OAuth2Server[]>([]);
 
 os.api('meta', { detail: true }).then(_meta => {
 	meta = _meta;
@@ -78,6 +77,10 @@ os.api('meta', { detail: true }).then(_meta => {
 os.api('stats', {
 }).then((res) => {
 	stats = res;
+});
+
+os.api('oauth-client/list').then((res) => {
+	oauth2Servers = res;
 });
 
 function signin() {
@@ -93,12 +96,18 @@ function signup() {
 }
 
 function oauth() {
-	os.api('oauth/authorize', {
-		'serverId': '9q2hif5p0pe20003',
-	}).then((res) => {
-		console.log(res);
+	os.api('oauth-client/list').then((res) => {
+		const id = res?.shift()?.id;
 
-		window.location.href = res!.authorizeUrl;
+		if (id) {
+			os.api('oauth-client/authorize', {
+				'serverId': id,
+			}).then((res) => {
+				console.log(res);
+
+				window.location.href = res!.authorizeUrl;
+			});
+		}
 	});
 }
 

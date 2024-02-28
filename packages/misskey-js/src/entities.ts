@@ -735,3 +735,8 @@ export type ModerationLog = {
 	type: 'unsetUserBanner';
 	info: ModerationLogPayloads['unsetUserBanner'];
 });
+export type OAuth2Server = {
+	id: ID;
+	name: string;
+	iconUrl?: string;
+};

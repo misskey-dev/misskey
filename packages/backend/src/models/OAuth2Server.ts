@@ -19,7 +19,12 @@ export class MiOAuth2Server {
 	@Column('varchar', {
 		length: 256,
 	})
-	public title: string;
+	public name: string;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public iconUrl?: string;
 
 	@Column('varchar', {
 		length: 1024, nullable: true,
@@ -92,4 +97,4 @@ export class MiOAuth2Server {
 	public allowSignUp: boolean;
 }
 
-export const titleSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;
+export const nameSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;
