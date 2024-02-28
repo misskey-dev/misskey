@@ -261,12 +261,12 @@ export class NotificationEntityService implements OnModuleInit {
 	/**
 	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを確認するvalidator
 	 */
-	async #validateNotifier <T extends MiNotification | MiGroupedNotification> (
+	#validateNotifier <T extends MiNotification | MiGroupedNotification> (
 		notification: T,
 		userIdsWhoMeMuting: Set<MiUser['id']>,
 		userMutedInstances: Set<string>,
 		notifiers: MiUser[],
-	): Promise<boolean> {
+	): boolean {
 		if (!('notifierId' in notification)) return true;
 		if (userIdsWhoMeMuting.has(notification.notifierId)) return false;
 
@@ -311,7 +311,7 @@ export class NotificationEntityService implements OnModuleInit {
 		}) : [];
 
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
-			const isValid = await this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
+			const isValid = this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
 			return isValid ? notification : null;
 		}))) as [T | null] ).filter(isNotNull);
 
