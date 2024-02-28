@@ -6800,7 +6800,16 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['EmojiDetailed'][];
+          'application/json': ({
+              /** Format: id */
+              id: string;
+              aliases: string[];
+              name: string;
+              category: string | null;
+              /** @description The local host is represented with `null`. */
+              host: string | null;
+              url: string;
+            })[];
         };
       };
       /** @description Client error */
@@ -6860,7 +6869,16 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['EmojiDetailed'][];
+          'application/json': ({
+              /** Format: id */
+              id: string;
+              aliases: string[];
+              name: string;
+              category: string | null;
+              /** @description The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files. */
+              host: string | null;
+              url: string;
+            })[];
         };
       };
       /** @description Client error */
