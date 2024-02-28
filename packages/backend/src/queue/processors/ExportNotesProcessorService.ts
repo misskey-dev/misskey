@@ -132,7 +132,7 @@ export class ExportNotesProcessorService {
 
 		try {
 			// メモリが足りなくならないようにストリームで処理する
-			new NoteStream(
+			await new NoteStream(
 				job,
 				this.notesRepository,
 				this.pollsRepository,
