@@ -114,6 +114,7 @@ type GridItem = {
 	isSensitive: boolean;
 	localOnly: boolean;
 	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string, name: string }[];
+	type: string | null;
 }
 
 function setupGrid(): GridSetting {
@@ -206,6 +207,7 @@ function setupGrid(): GridSetting {
 					},
 				},
 			},
+			{ bindTo: 'type', type: 'text', editable: false, width: 90 },
 		],
 		cells: {
 			// セルのコンテキストメニュー設定
@@ -411,6 +413,7 @@ function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 		isSensitive: it.isSensitive,
 		localOnly: false,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+		type: it.type,
 	};
 }
 

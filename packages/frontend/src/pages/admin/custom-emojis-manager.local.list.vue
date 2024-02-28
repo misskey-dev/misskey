@@ -195,6 +195,7 @@ type GridItem = {
 	updatedAt: string | null;
 	publicUrl?: string | null;
 	originalUrl?: string | null;
+	type: string | null;
 }
 
 function setupGrid(): GridSetting {
@@ -304,6 +305,7 @@ function setupGrid(): GridSetting {
 					},
 				},
 			},
+			{ bindTo: 'type', type: 'text', editable: false, width: 90 },
 			{ bindTo: 'updatedAt', type: 'text', editable: false, width: 'auto' },
 			{ bindTo: 'publicUrl', type: 'text', editable: false, width: 180 },
 			{ bindTo: 'originalUrl', type: 'text', editable: false, width: 180 },
@@ -597,6 +599,7 @@ function refreshGridItems() {
 		updatedAt: it.updatedAt,
 		publicUrl: it.publicUrl,
 		originalUrl: it.originalUrl,
+		type: it.type,
 	}));
 	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
 }
