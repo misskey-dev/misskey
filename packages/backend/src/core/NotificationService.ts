@@ -163,7 +163,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
 
-		if (packed === null) return null;
+		if (packed == null) return null;
 
 		// Publish notification event
 		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
