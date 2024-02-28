@@ -35,7 +35,6 @@ export type UriParseResult = {
 
 @Injectable()
 export class ApDbResolverService implements OnApplicationShutdown {
-	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
 	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey[] | null>;
 
 	constructor(
@@ -54,7 +53,6 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(1e3 * 60 * 20); // 20分
 		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(1e3 * 60 * 20); // 20分
 	}
 
@@ -117,40 +115,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	}
 
 	/**
-	 * AP KeyId => Misskey User and Key
-	 */
-	@bindThis
-	public async getAuthUserFromKeyId(keyId: string): Promise<{
-		user: MiRemoteUser;
-		key: MiUserPublickey;
-	} | null> {
-		const key = await this.publicKeyCache.fetch(keyId, async () => {
-			const key = await this.userPublickeysRepository.findOneBy({
-				keyId,
-			});
-
-			if (key == null) return null;
-
-			return key;
-		}, key => key != null);
-
-		if (key == null) return null;
-
-		const user = await this.cacheService.findUserById(key.userId).catch(() => null) as MiRemoteUser | null;
-		if (user == null) return null;
-		if (user.isDeleted) return null;
-
-		return {
-			user,
-			key,
-		};
-	}
-
-	/**
 	 * AP Actor id => Misskey User and Key
 	 */
 	@bindThis
-	public async getAuthUserFromApId(uri: string): Promise<{
+	public async getAuthUserFromApId(uri: string, keyId?: string): Promise<{
 		user: MiRemoteUser;
 		key: MiUserPublickey | null;
 	} | null> {
@@ -170,6 +138,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			keys[0] :
 			keys.find(x => {
 				try {
+					if (x.keyId === keyId) return true;
 					const url = new URL(x.keyId);
 					const path = url.pathname.split('/').pop()?.toLowerCase();
 					if (url.hash) {
@@ -193,16 +162,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	@bindThis
 	public refreshCacheByUserId(userId: MiUser['id']): void {
 		this.publicKeyByUserIdCache.delete(userId);
-		for (const [k, v] of this.publicKeyCache.cache.entries()) {
-			if (v.value?.userId === userId) {
-				this.publicKeyCache.delete(k);
-			}
-		}
 	}
 
 	@bindThis
 	public dispose(): void {
-		this.publicKeyCache.dispose();
 		this.publicKeyByUserIdCache.dispose();
 	}
 

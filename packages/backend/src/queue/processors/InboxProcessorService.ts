@@ -77,20 +77,18 @@ export class InboxProcessorService {
 		let authUser: {
 			user: MiRemoteUser;
 			key: MiUserPublickey | null;
-		} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+		} | null = null;
 
 		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
-		if (authUser == null) {
-			try {
-				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
-			} catch (err) {
-				// 対象が4xxならスキップ
-				if (err instanceof StatusError) {
-					if (!err.isRetryable) {
-						throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
-					}
-					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
+		try {
+			authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
+		} catch (err) {
+			// 対象が4xxならスキップ
+			if (err instanceof StatusError) {
+				if (!err.isRetryable) {
+					throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
 				}
+				throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
 			}
 		}
 
@@ -110,21 +108,13 @@ export class InboxProcessorService {
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
-			if (activity.signature) {
+			if (activity.signature?.creator) {
 				if (activity.signature.type !== 'RsaSignature2017') {
 					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${activity.signature.type}`);
 				}
 
-				// activity.signature.creator: https://example.oom/users/user#main-key
-				// みたいになっててUserを引っ張れば公開キーも入ることを期待する
-				if (activity.signature.creator) {
-					const candicate = activity.signature.creator.replace(/#.*/, '');
-					const user = await this.apPersonService.resolvePerson(candicate).catch(() => null);
-					if (user) this.apDbResolverService.refreshCacheByUserId(user.id);
-				}
+				authUser = await this.apDbResolverService.getAuthUserFromApId(activity.signature.creator.replace(/#.*/, ''));
 
-				// keyIdからLD-Signatureのユーザーを取得
-				authUser = await this.apDbResolverService.getAuthUserFromKeyId(activity.signature.creator);
 				if (authUser == null) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureのユーザーが取得できませんでした');
 				}
