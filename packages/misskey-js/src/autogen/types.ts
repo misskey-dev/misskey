@@ -4891,6 +4891,17 @@ export type components = {
       cacheRemoteSensitiveFiles: boolean;
     };
     MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+    OAuth2Server: {
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      id: string;
+      name: string;
+      description?: string | null;
+      iconUrl?: string | null;
+      allowSignUp: boolean;
+    };
   };
   responses: never;
   parameters: never;
@@ -22342,9 +22353,11 @@ export type operations = {
    */
   'oauth-client/list': {
     responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['OAuth2Server'][];
+        };
       };
       /** @description Client error */
       400: {
@@ -22394,9 +22407,13 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            authorizeUrl: string;
+          };
+        };
       };
       /** @description Client error */
       400: {
@@ -22447,9 +22464,17 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            type: string;
+            signIn?: {
+              id: string;
+              i: string;
+            };
+          };
+        };
       };
       /** @description Client error */
       400: {

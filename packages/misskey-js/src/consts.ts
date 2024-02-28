@@ -71,6 +71,8 @@ export const permissions = [
 	'read:admin:relays',
 	'write:admin:invite-codes',
 	'read:admin:invite-codes',
+	'write:admin:oauth2-servers',
+	'read:admin:oauth2-servers',
 	'write:admin:announcements',
 	'read:admin:announcements',
 	'write:admin:avatar-decorations',

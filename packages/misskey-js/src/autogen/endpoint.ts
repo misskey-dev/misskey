@@ -432,8 +432,11 @@ import type {
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
 	NotificationsCreateRequest,
+	OauthClientListResponse,
 	OauthClientAuthorizeRequest,
+	OauthClientAuthorizeResponse,
 	OauthClientCallbackRequest,
+	OauthClientCallbackResponse,
 	PagePushRequest,
 	PagesCreateRequest,
 	PagesCreateResponse,
@@ -849,9 +852,9 @@ export type Endpoints = {
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
 	'notifications/mark-all-as-read': { req: EmptyRequest; res: EmptyResponse };
 	'notifications/test-notification': { req: EmptyRequest; res: EmptyResponse };
-	'oauth-client/list': { req: EmptyRequest; res: EmptyResponse };
-	'oauth-client/authorize': { req: OauthClientAuthorizeRequest; res: EmptyResponse };
-	'oauth-client/callback': { req: OauthClientCallbackRequest; res: EmptyResponse };
+	'oauth-client/list': { req: EmptyRequest; res: OauthClientListResponse };
+	'oauth-client/authorize': { req: OauthClientAuthorizeRequest; res: OauthClientAuthorizeResponse };
+	'oauth-client/callback': { req: OauthClientCallbackRequest; res: OauthClientCallbackResponse };
 	'page-push': { req: PagePushRequest; res: EmptyResponse };
 	'pages/create': { req: PagesCreateRequest; res: PagesCreateResponse };
 	'pages/delete': { req: PagesDeleteRequest; res: EmptyResponse };

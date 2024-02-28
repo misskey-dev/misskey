@@ -56,6 +56,7 @@ import {
 	packedMetaDetailedOnlySchema,
 	packedMetaDetailedSchema,
 } from '@/models/json-schema/meta.js';
+import { packedOAuth2ServerSchema } from '@/models/json-schema/oauth2-server.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -109,6 +110,7 @@ export const refs = {
 	MetaLite: packedMetaLiteSchema,
 	MetaDetailedOnly: packedMetaDetailedOnlySchema,
 	MetaDetailed: packedMetaDetailedSchema,
+	OAuth2Server: packedOAuth2ServerSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;

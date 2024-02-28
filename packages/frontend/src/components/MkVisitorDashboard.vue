@@ -91,14 +91,14 @@ function signup() {
 }
 
 function oauth() {
-	misskeyApi('oauth-client/list').then((res: any) => {
-		const id = res?.shift()?.id;
+	misskeyApi('oauth-client/list').then(servers => {
+		const id = servers?.shift()?.id;
 
 		if (id) {
 			misskeyApi('oauth-client/authorize', {
 				'serverId': id,
-			}).then((res: any) => {
-				window.location.href = res!.authorizeUrl;
+			}).then(authorize => {
+				window.location.href = authorize.authorizeUrl;
 			});
 		}
 	});

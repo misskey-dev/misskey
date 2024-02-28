@@ -13,6 +13,16 @@ export const meta = {
 	allowGet: true,
 
 	tags: ['oauth2'],
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'OAuth2Server',
+		},
+	},
 } as const;
 
 export const paramDef = {} as const;
@@ -29,7 +39,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return res.map(e => ({
 				id: e.id,
 				name: e.name,
+				description: e.description,
 				iconUrl: e.iconUrl,
+				allowSignUp: e.allowSignUp,
 			}));
 		});
 	}

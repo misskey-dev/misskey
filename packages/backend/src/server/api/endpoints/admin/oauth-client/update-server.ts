@@ -13,9 +13,10 @@ import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['admin'],
+	kind: 'write:admin:oauth2-servers',
 
-	requireCredential: true,
 	requireAdmin: true,
+	secure: true,
 
 	errors: {
 		noSuchOAuth2Server: {
@@ -59,6 +60,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (!me || !me.isRoot) throw new Error('access denied');
+
 			const oauth2Server = await this.oauth2ServersRepository.findOneBy({ id: ps.id });
 
 			if (oauth2Server == null) throw new ApiError(meta.errors.noSuchOAuth2Server);

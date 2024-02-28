@@ -29,6 +29,17 @@ export const meta = {
 			id: 'change this',
 		},
 	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			authorizeUrl: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

@@ -12,13 +12,14 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as os from '@/os.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 
-let submitting = $ref(false);
+let submitting = ref(false);
 
 const props = defineProps<{
 	serverId: string;
@@ -27,32 +28,42 @@ const props = defineProps<{
 }>();
 
 function submit() {
-	if (submitting) return;
-	submitting = true;
+	if (submitting.value) return;
+	submitting.value = true;
 
-	os.api('oauth-client/callback', {
+	misskeyApi('oauth-client/callback', {
 		serverId: props.serverId,
 		code: props.code,
 	}).then(res => {
-		console.log(res);
-
 		if (!res || !res.type) {
-			return os.alert({
+			os.alert({
 				type: 'error',
 				text: i18n.ts.somethingHappened,
 			});
+
+			return;
 		}
 
 		if (res.type === 'verificationEmailSent') {
-			return os.alert({
+			os.alert({
 				type: 'info',
 				text: i18n.ts.verificationEmailSent,
 			});
+
+			return;
 		}
 
-		return login(res.token ?? res.i, '/');
+		if (res.type === 'token') {
+			if (!res.signIn) {
+				throw new Error('No signIn');
+			}
+
+			login(res.signIn.i, '/');
+
+			return;
+		}
 	}).catch(() => {
-		submitting = false;
+		submitting.value = false;
 
 		os.alert({
 			type: 'error',

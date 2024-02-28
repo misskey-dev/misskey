@@ -19,7 +19,6 @@ import { MiLocalUser } from '@/models/User.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
-import { SigninService } from '../../SigninService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -68,6 +67,31 @@ export const meta = {
 			message: 'Email is required for signup.',
 			code: 'EMAIL_REQUIRED_FOR_SIGNUP',
 			id: 'change this',
+		},
+	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			signIn: {
+				type: 'object',
+				optional: true, nullable: false,
+				properties: {
+					id: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					i: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+				},
+			},
 		},
 	},
 } as const;
@@ -174,7 +198,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const signIn = this.signIn(headers, ip, user as MiLocalUser);
 				return {
 					type: 'token',
-					...signIn,
+					signIn,
 				};
 			}
 
@@ -198,13 +222,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const signIn = this.signIn(headers, ip, user);
 				return {
 					type: 'token',
-					...signIn,
+					signIn,
 				};
 			}
 
 			const instance = await this.metaService.fetch(true);
 			if (!instance.emailRequiredForSignup) {
-				const { account, secret } = await this.signupService.signup({
+				const { account } = await this.signupService.signup({
 					username,
 				});
 
@@ -215,36 +239,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// ignore
 				}
 
-				const res = await this.userEntityService.pack(account, account, {
-					detail: true,
-					includeSecrets: true,
-				});
+				const signIn = this.signIn(headers, ip, account as MiLocalUser);
 
 				return {
 					type: 'token',
-					...res,
-					token: secret,
+					signIn,
 				};
 			}
 
 			const email = await this.getEmail(oauth2Server, profile);
 
 			if (oauth2Server.markEmailAsVerified) {
-				const { account, secret } = await this.signupService.signup({
+				const { account } = await this.signupService.signup({
 					username,
 				});
 				await this.makeIntegration(oauth2Server.id, serverUserId, account.id);
 				await this.makeEmailVerified(account.id, email);
 
-				const res = await this.userEntityService.pack(account, account, {
-					detail: true,
-					includeSecrets: true,
-				});
+				const signIn = this.signIn(headers, ip, account as MiLocalUser);
 
 				return {
 					type: 'token',
-					...res,
-					token: secret,
+					signIn,
 				};
 			} else {
 				const code = secureRndstr(16, { chars: L_CHARS });
@@ -286,7 +302,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		return {
 			id: user.id,
-			i: user.token,
+			i: user.token!,
 		};
 	}
 

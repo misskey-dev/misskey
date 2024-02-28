@@ -13,9 +13,10 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
+	kind: 'write:admin:oauth2-servers',
 
-	requireCredential: true,
 	requireAdmin: true,
+	secure: true,
 } as const;
 
 export const paramDef = {
@@ -36,7 +37,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (!me.isRoot) throw new Error('access denied');
+			if (!me || !me.isRoot) throw new Error('access denied');
 
 			const res = await this.oauth2ServersRepository.insert({
 				id: this.idService.gen(),

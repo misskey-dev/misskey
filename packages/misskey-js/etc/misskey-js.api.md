@@ -1560,8 +1560,11 @@ declare namespace entities {
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
         NotificationsCreateRequest,
+        OauthClientListResponse,
         OauthClientAuthorizeRequest,
+        OauthClientAuthorizeResponse,
         OauthClientCallbackRequest,
+        OauthClientCallbackResponse,
         PagePushRequest,
         PagesCreateRequest,
         PagesCreateResponse,
@@ -1733,7 +1736,8 @@ declare namespace entities {
         ReversiGameDetailed,
         MetaLite,
         MetaDetailedOnly,
-        MetaDetailed
+        MetaDetailed,
+        OAuth2Server
     }
 }
 export { entities }
@@ -2586,10 +2590,22 @@ type NotificationsCreateRequest = operations['notifications/create']['requestBod
 export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
 
 // @public (undocumented)
+type OAuth2Server = components['schemas']['OAuth2Server'];
+
+// @public (undocumented)
 type OauthClientAuthorizeRequest = operations['oauth-client/authorize']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type OauthClientAuthorizeResponse = operations['oauth-client/authorize']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type OauthClientCallbackRequest = operations['oauth-client/callback']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type OauthClientCallbackResponse = operations['oauth-client/callback']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type OauthClientListResponse = operations['oauth-client/list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Page = components['schemas']['Page'];
