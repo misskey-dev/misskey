@@ -99,6 +99,8 @@ import type {
 	AdminRolesUpdateDefaultPoliciesRequest,
 	AdminRolesUsersRequest,
 	AdminRolesUsersResponse,
+	AdminOauthClientCreateServerRequest,
+	AdminOauthClientUpdateServerRequest,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AntennasCreateRequest,
@@ -430,6 +432,8 @@ import type {
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
 	NotificationsCreateRequest,
+	OauthClientAuthorizeRequest,
+	OauthClientCallbackRequest,
 	PagePushRequest,
 	PagesCreateRequest,
 	PagesCreateResponse,
@@ -630,6 +634,8 @@ export type Endpoints = {
 	'admin/roles/unassign': { req: AdminRolesUnassignRequest; res: EmptyResponse };
 	'admin/roles/update-default-policies': { req: AdminRolesUpdateDefaultPoliciesRequest; res: EmptyResponse };
 	'admin/roles/users': { req: AdminRolesUsersRequest; res: AdminRolesUsersResponse };
+	'admin/oauth-client/create-server': { req: AdminOauthClientCreateServerRequest; res: EmptyResponse };
+	'admin/oauth-client/update-server': { req: AdminOauthClientUpdateServerRequest; res: EmptyResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };
@@ -843,6 +849,9 @@ export type Endpoints = {
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
 	'notifications/mark-all-as-read': { req: EmptyRequest; res: EmptyResponse };
 	'notifications/test-notification': { req: EmptyRequest; res: EmptyResponse };
+	'oauth-client/list': { req: EmptyRequest; res: EmptyResponse };
+	'oauth-client/authorize': { req: OauthClientAuthorizeRequest; res: EmptyResponse };
+	'oauth-client/callback': { req: OauthClientCallbackRequest; res: EmptyResponse };
 	'page-push': { req: PagePushRequest; res: EmptyResponse };
 	'pages/create': { req: PagesCreateRequest; res: PagesCreateResponse };
 	'pages/delete': { req: PagesDeleteRequest; res: EmptyResponse };

@@ -563,6 +563,13 @@ const routes: RouteDef[] = [{
 	redirect: $i ? `@${$i.username}` : '/',
 	loginRequired: true,
 }, {
+	path: '/oauth-client/callback/:serverId',
+	component: page(() => import('./pages/oauth-callback.vue')),
+	query: {
+		code: 'code',
+		state: 'state',
+	}
+}, {
 	path: '/:(*)',
 	component: page(() => import('@/pages/not-found.vue')),
 }];
