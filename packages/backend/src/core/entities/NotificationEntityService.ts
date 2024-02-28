@@ -105,7 +105,7 @@ export class NotificationEntityService implements OnModuleInit {
 				};
 			}))).filter(r => isNotNull(r.user));
 			// if all users have been deleted, don't show this notification
-			if (!reactions.length) {
+			if (reactions.length === 0) {
 				return null;
 			}
 
