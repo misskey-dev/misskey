@@ -69,6 +69,7 @@ export interface MainEventTypes {
 		file: Packed<'DriveFile'>;
 	};
 	readAllNotifications: undefined;
+	notificationFlushed: undefined;
 	unreadNotification: Packed<'Notification'>;
 	unreadMention: MiNote['id'];
 	readAllUnreadMentions: undefined;

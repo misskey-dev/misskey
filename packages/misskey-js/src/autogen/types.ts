@@ -2770,6 +2770,15 @@ export type paths = {
      */
     post: operations['notifications/create'];
   };
+  '/notifications/flush': {
+    /**
+     * notifications/flush
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:notifications*
+     */
+    post: operations['notifications/flush'];
+  };
   '/notifications/mark-all-as-read': {
     /**
      * notifications/mark-all-as-read
@@ -4643,6 +4652,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      mentionLimit: number;
       canInvite: boolean;
       inviteLimit: number;
       inviteLimitCycle: number;
@@ -22044,6 +22054,50 @@ export type operations = {
       };
       /** @description To many requests */
       429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notifications/flush
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:notifications*
+   */
+  'notifications/flush': {
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
         content: {
           'application/json': components['schemas']['Error'];
         };

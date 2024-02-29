@@ -6443,6 +6443,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -8913,6 +8917,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        "flushNotification": string;
         "_types": {
             /**
              * すべて

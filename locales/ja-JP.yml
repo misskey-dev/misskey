@@ -1665,6 +1665,7 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
+    mentionMax: "ノート内の最大メンション数"
     canInvite: "サーバー招待コードの発行"
     inviteLimit: "招待コードの作成可能数"
     inviteLimitCycle: "招待コードの発行間隔"
@@ -2356,6 +2357,7 @@ _notification:
   reactedBySomeUsers: "{n}人がリアクションしました"
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
+  flushNotification: "通知の履歴をリセットする"
 
   _types:
     all: "すべて"
