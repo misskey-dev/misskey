@@ -12,7 +12,6 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
-import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type * as Bull from 'bullmq';
@@ -76,14 +75,12 @@ export class QueueService {
 		if (to == null) return null;
 
 		const contentBody = JSON.stringify(content);
-		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const data: DeliverJobData = {
 			user: {
 				id: user.id,
 			},
 			content: contentBody,
-			digest,
 			to,
 			isSharedInbox,
 		};
@@ -109,7 +106,6 @@ export class QueueService {
 	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
-		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -125,7 +121,6 @@ export class QueueService {
 			data: {
 				user,
 				content: contentBody,
-				digest,
 				to: d[0],
 				isSharedInbox: d[1],
 			} as DeliverJobData,

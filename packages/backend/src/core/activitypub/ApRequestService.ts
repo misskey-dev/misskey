@@ -28,7 +28,7 @@ type PrivateKey = {
 	keyId: string;
 };
 
-export function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string; additionalHeaders: Record<string, string> }) {
+export function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
 	const request: RequestLike = {
 		url: u.href,
@@ -42,7 +42,7 @@ export function createSignedPost(args: { level: string; key: PrivateKey; url: st
 	};
 
 	// TODO: levelによって処理を分ける
-	const digestHeader = args.digest ?? genRFC3230DigestHeader(args.body);
+	const digestHeader = genRFC3230DigestHeader(args.body);
 	request.headers['Digest'] = digestHeader;
 
 	const result = signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
@@ -105,7 +105,7 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string): Promise<void> {
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
 
 		const req = createSignedPost({
@@ -113,7 +113,6 @@ export class ApRequestService {
 			key: await this.getPrivateKey(user.id, level),
 			url,
 			body,
-			digest,
 			additionalHeaders: {
 			},
 		});
