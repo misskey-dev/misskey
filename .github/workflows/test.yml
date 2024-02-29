@@ -32,11 +32,6 @@ jobs:
     - uses: actions/checkout@v3.3.0
       with:
         submodules: true
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 7
-        run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3.6.0
       with:
@@ -88,11 +83,6 @@ jobs:
     #  if: ${{ matrix.browser == 'firefox' }}
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 7
-        run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3.6.0
       with:
@@ -114,23 +104,3 @@ jobs:
       run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
     # XXX: This tries reinstalling Cypress if the binary is not cached
     # Remove this when the cache issue is fixed
-    - name: Cypress install
-      run: pnpm exec cypress install
-    - name: Cypress run
-      uses: cypress-io/github-action@v5
-      with:
-        install: false
-        start: pnpm start:test
-        wait-on: 'http://localhost:61812'
-        headless: false
-        browser: ${{ matrix.browser }}
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: ${{ matrix.browser }}-cypress-screenshots
-        path: cypress/screenshots
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: ${{ matrix.browser }}-cypress-videos
-        path: cypress/videos

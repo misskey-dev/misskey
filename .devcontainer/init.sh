@@ -3,7 +3,7 @@
 set -xe
 
 git submodule update --init
-pnpm install --frozen-lockfile
+npm ci
 cp .devcontainer/devcontainer.yml .config/default.yml
-pnpm build
-pnpm migrate
+npm run build
+npm run migrate
