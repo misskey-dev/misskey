@@ -44,7 +44,7 @@ Thank you for your PR! Before creating a PR, please check the following:
 - Check if there are any documents that need to be created or updated due to this change.
 - If you have added a feature or fixed a bug, please add a test case if possible.
 - Please make sure that tests and Lint are passed in advance.
-  - You can run it with `pnpm test` and `pnpm lint`. [See more info](#testing)
+  - You can run it with `npm run test` and `npm run lint`. [See more info](#testing)
 - If this PR includes UI changes, please attach a screenshot in the text.
 
 Thanks for your cooperation 🤗
@@ -104,7 +104,7 @@ If your language is not listed in Crowdin, please open an issue.
 During development, it is useful to use the 
 
 ```
-pnpm dev
+npm run dev
 ```
 
 command.
@@ -114,22 +114,22 @@ command.
 - Service Worker is watched by esbuild.
 
 ### Dev Container
-Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
+Instead of running `npm` locally, you can use Dev Container to set up your development environment.
 To use Dev Container, open the project directory on VSCode with Dev Containers installed.
 
 It will run the following command automatically inside the container.
 ``` bash
 git submodule update --init
-pnpm install --frozen-lockfile
+npm ci
 cp .devcontainer/devcontainer.yml .config/default.yml
-pnpm build
-pnpm migrate
+npm run build
+npm run migrate
 ```
 
-After finishing the migration, run the `pnpm dev` command to start the development server.
+After finishing the migration, run the `npm run dev` command to start the development server.
 
 ``` bash
-pnpm dev
+npm run dev
 ```
 
 ## Testing
@@ -148,12 +148,12 @@ Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.y
 
 Run all test.
 ```
-pnpm test
+npm run test
 ```
 
 #### Run specify test
 ```
-pnpm jest -- foo.ts
+npm run jest -- foo.ts
 ```
 
 ### e2e tests
@@ -286,7 +286,7 @@ MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`�
 ### Migration作成方法
 packages/backendで:
 ```sh
-pnpm dlx typeorm migration:generate -d ormconfig.js -o <migration name>
+npm run dlx typeorm migration:generate -d ormconfig.js -o <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください
