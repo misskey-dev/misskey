@@ -24,7 +24,7 @@
     "jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
     "jest-and-coverage": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
     "jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
-    "test-and-coverage": "pnpm jest-and-coverage"
+    "test-and-coverage": "npm run jest-and-coverage"
 	},
 	"resolutions": {
 		"chokidar": "^3.3.1",
