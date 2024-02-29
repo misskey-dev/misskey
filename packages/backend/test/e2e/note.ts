@@ -176,6 +176,87 @@ describe('Note', () => {
 		assert.strictEqual(deleteRes.status, 204);
 	});
 
+	test('visibility: followersなノートに対してフォロワーはリプライできる', async () => {
+		await api('/following/create', {
+			userId: alice.id,
+		}, bob);
+
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'followers',
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const replyId = aliceNote.body.createdNote.id;
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note',
+			replyId,
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 200);
+		assert.strictEqual(bobReply.body.createdNote.replyId, replyId);
+
+		await api('/following/delete', {
+			userId: alice.id,
+		}, bob);
+	});
+
+	test('visibility: followersなノートに対してフォロワーでないユーザーがリプライしようとすると怒られる', async () => {
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'followers',
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note',
+			replyId: aliceNote.body.createdNote.id,
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 400);
+		assert.strictEqual(bobReply.body.error.code, 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE');
+	});
+
+	test('visibility: specifiedなノートに対してvisibility: specifiedで返信できる', async () => {
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'specified',
+			visibleUserIds: [bob.id],
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note',
+			replyId: aliceNote.body.createdNote.id,
+			visibility: 'specified',
+			visibleUserIds: [alice.id],
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 200);
+	});
+
+	test('visibility: specifiedなノートに対してvisibility: follwersで返信しようとすると怒られる', async () => {
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'specified',
+			visibleUserIds: [bob.id],
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note with visibility: followers',
+			replyId: aliceNote.body.createdNote.id,
+			visibility: 'followers',
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 400);
+		assert.strictEqual(bobReply.body.error.code, 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY');
+	});
+
 	test('文字数ぎりぎりで怒られない', async () => {
 		const post = {
 			text: '!'.repeat(MAX_NOTE_TEXT_LENGTH), // 3000文字
