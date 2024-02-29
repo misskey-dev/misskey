@@ -21075,8 +21075,6 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
-          /** @default false */
-          withBelowPublic?: boolean;
           /** @default 10 */
           limit?: number;
           /** Format: misskey:id */

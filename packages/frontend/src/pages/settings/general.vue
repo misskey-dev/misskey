@@ -36,7 +36,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-			<MkSwitch v-model="showLocalTimelineBelowPublic">{{ i18n.ts.flagShowLocalTimelineBelowPublic }} <span class="_beta">{{ i18n.ts.originalFeature }}</span> <template #caption>{{ i18n.ts.flagShowLocalTimelineBelowPublicDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
@@ -303,7 +302,6 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
-const showLocalTimelineBelowPublic = computed(defaultStore.makeGetterSetter('showLocalTimelineBelowPublic'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));

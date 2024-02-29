@@ -57,7 +57,6 @@ type TimelineQueryType = {
 	withRenotes?: boolean,
 	withReplies?: boolean,
 	withFiles?: boolean,
-	withBelowPublic?: boolean,
 	visibility?: string,
 	listId?: string,
 	channelId?: string,
@@ -110,7 +109,6 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBelowPublic: defaultStore.state.showLocalTimelineBelowPublic,
 		});
 	} else if (props.src === 'social') {
 		connection = stream.useChannel('hybridTimeline', {
@@ -181,7 +179,6 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBelowPublic: defaultStore.state.showLocalTimelineBelowPublic,
 		};
 	} else if (props.src === 'social') {
 		endpoint = 'notes/hybrid-timeline';
