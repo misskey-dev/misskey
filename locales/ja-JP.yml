@@ -2357,6 +2357,7 @@ _notification:
   reactedBySomeUsers: "{n}人がリアクションしました"
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
+  flushNotification: "通知の履歴をリセットする"
 
   _types:
     all: "すべて"

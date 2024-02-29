@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
+			<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -112,6 +113,17 @@ function onChangeSendReadMessage(v: boolean) {
 
 function testNotification(): void {
 	misskeyApi('notifications/test-notification');
+}
+
+async function flushNotification() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.resetAreYouSure,
+	});
+
+	if (canceled) return;
+
+	os.apiWithDialog('notifications/flush');
 }
 
 const headerActions = computed(() => []);
