@@ -2297,6 +2297,7 @@ _notification:
   reactedBySomeUsers: "{n} 人回应了"
   renotedBySomeUsers: "{n} 人转发了"
   followedBySomeUsers: "被 {n} 人关注"
+  flushNotification: "重置通知历史"
   _types:
     all: "全部"
     note: "用户的新帖子"
