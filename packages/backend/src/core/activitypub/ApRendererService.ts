@@ -61,7 +61,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: any, user: { id: User['id']; host: null }) {
+	public renderAccept(object: unknown, user: { id: User['id']; host: null }) {
 		return {
 			type: 'Accept',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -70,7 +70,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: ILocalUser, target: any, object: any) {
+	public renderAdd(user: ILocalUser, target: unknown, object: unknown) {
 		return {
 			type: 'Add',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -80,7 +80,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAnnounce(object: any, note: Note) {
+	public renderAnnounce(object: unknown, note: Note) {
 		const attributedTo = `${this.config.url}/users/${note.userId}`;
 
 		let to: string[] = [];
@@ -117,7 +117,7 @@ export class ApRendererService {
 		if (block.blockee?.uri == null) {
 			throw new Error('renderBlock: missing blockee uri');
 		}
-	
+
 		return {
 			type: 'Block',
 			id: `${this.config.url}/blocks/${block.id}`,
@@ -127,23 +127,25 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderCreate(object: any, note: Note) {
+	public renderCreate(object: unknown, note: Note) {
 		const activity = {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: `${this.config.url}/users/${note.userId}`,
 			type: 'Create',
 			published: note.createdAt.toISOString(),
 			object,
-		} as any;
-	
+		} as unknown;
+
+		// @ts-ignore
 		if (object.to) activity.to = object.to;
+		// @ts-ignore
 		if (object.cc) activity.cc = object.cc;
-	
+
 		return activity;
 	}
 
 	@bindThis
-	public renderDelete(object: any, user: { id: User['id']; host: null }) {
+	public renderDelete(object: unknown, user: { id: User['id']; host: null }) {
 		return {
 			type: 'Delete',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -198,7 +200,7 @@ export class ApRendererService {
 			actor: `${this.config.url}/users/${relayActor.id}`,
 			object: 'https://www.w3.org/ns/activitystreams#Public',
 		};
-	
+
 		return follow;
 	}
 
@@ -223,8 +225,8 @@ export class ApRendererService {
 			type: 'Follow',
 			actor: this.userEntityService.isLocalUser(follower) ? `${this.config.url}/users/${follower.id}` : follower.uri,
 			object: this.userEntityService.isLocalUser(followee) ? `${this.config.url}/users/${followee.id}` : followee.uri,
-		} as any;
-	
+		} as unknown;
+
 		return follow;
 	}
 
@@ -271,7 +273,7 @@ export class ApRendererService {
 			object: note.uri ? note.uri : `${this.config.url}/notes/${noteReaction.noteId}`,
 			content: reaction,
 			_misskey_reaction: reaction,
-		} as any;
+		} as unknown;
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
@@ -280,6 +282,7 @@ export class ApRendererService {
 				host: IsNull(),
 			});
 
+			// @ts-ignore
 			if (emoji) object.tag = [this.renderEmoji(emoji)];
 		}
 
@@ -302,16 +305,16 @@ export class ApRendererService {
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
 			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
 		};
-	
+
 		let inReplyTo;
 		let inReplyToNote: Note | null;
-	
+
 		if (note.replyId) {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
-	
+
 			if (inReplyToNote != null) {
 				const inReplyToUser = await this.usersRepository.findOneBy({ id: inReplyToNote.userId });
-	
+
 				if (inReplyToUser != null) {
 					if (inReplyToNote.uri) {
 						inReplyTo = inReplyToNote.uri;
@@ -327,24 +330,24 @@ export class ApRendererService {
 		} else {
 			inReplyTo = null;
 		}
-	
+
 		let quote;
-	
+
 		if (note.renoteId) {
 			const renote = await this.notesRepository.findOneBy({ id: note.renoteId });
-	
+
 			if (renote) {
 				quote = renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`;
 			}
 		}
-	
+
 		const attributedTo = `${this.config.url}/users/${note.userId}`;
-	
+
 		const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
-	
+
 		let to: string[] = [];
 		let cc: string[] = [];
-	
+
 		if (note.visibility === 'public') {
 			to = ['https://www.w3.org/ns/activitystreams#Public'];
 			cc = [`${attributedTo}/followers`].concat(mentions);
@@ -357,44 +360,44 @@ export class ApRendererService {
 		} else {
 			to = mentions;
 		}
-	
+
 		const mentionedUsers = note.mentions.length > 0 ? await this.usersRepository.findBy({
 			id: In(note.mentions),
 		}) : [];
-	
+
 		const hashtagTags = (note.tags ?? []).map(tag => this.renderHashtag(tag));
 		const mentionTags = mentionedUsers.map(u => this.renderMention(u));
-	
+
 		const files = await getPromisedFiles(note.fileIds);
-	
+
 		const text = note.text ?? '';
 		let poll: Poll | null = null;
-	
+
 		if (note.hasPoll) {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
-	
+
 		let apText = text;
-	
+
 		if (quote) {
 			apText += `\n\nRE: ${quote}`;
 		}
-	
+
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
-	
+
 		const content = this.apMfmService.getNoteHtml(Object.assign({}, note, {
 			text: apText,
 		}));
-	
+
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
-	
+
 		const tag = [
 			...hashtagTags,
 			...mentionTags,
 			...apemojis,
 		];
-	
+
 		const asPoll = poll ? {
 			type: 'Question',
 			content: this.apMfmService.getNoteHtml(Object.assign({}, note, {
@@ -410,16 +413,17 @@ export class ApRendererService {
 				},
 			})),
 		} : {};
-	
+
 		const asTalk = isTalk ? {
 			_misskey_talk: true,
 		} : {};
-	
+
 		return {
 			id: `${this.config.url}/notes/${note.id}`,
 			type: 'Note',
 			attributedTo,
 			summary: summary ?? undefined,
+			// @ts-ignore
 			content: content ?? undefined,
 			_misskey_content: text,
 			source: {
@@ -434,6 +438,7 @@ export class ApRendererService {
 			inReplyTo,
 			attachment: files.map(x => this.renderDocument(x)),
 			sensitive: note.cw != null || files.some(file => file.isSensitive),
+			// @ts-ignore
 			tag,
 			...asPoll,
 			...asTalk,
@@ -504,13 +509,15 @@ export class ApRendererService {
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
-		} as any;
+		} as unknown;
 
 		if (profile.birthday) {
+			// @ts-ignore
 			person['vcard:bday'] = profile.birthday;
 		}
 
 		if (profile.location) {
+			// @ts-ignore
 			person['vcard:Address'] = profile.location;
 		}
 
@@ -533,7 +540,7 @@ export class ApRendererService {
 				},
 			})),
 		};
-	
+
 		return question;
 	}
 
@@ -547,7 +554,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderReject(object: any, user: { id: User['id'] }) {
+	public renderReject(object: unknown, user: { id: User['id'] }) {
 		return {
 			type: 'Reject',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -556,7 +563,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderRemove(user: { id: User['id'] }, target: any, object: any) {
+	public renderRemove(user: { id: User['id'] }, target: unknown, object: unknown) {
 		return {
 			type: 'Remove',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -574,8 +581,9 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUndo(object: any, user: { id: User['id'] }) {
+	public renderUndo(object: unknown, user: { id: User['id'] }) {
 		if (object == null) return null;
+		// @ts-ignore
 		const id = typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
 
 		return {
@@ -588,7 +596,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUpdate(object: any, user: { id: User['id'] }) {
+	public renderUpdate(object: unknown, user: { id: User['id'] }) {
 		const activity = {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: `${this.config.url}/users/${user.id}`,
@@ -596,8 +604,8 @@ export class ApRendererService {
 			to: ['https://www.w3.org/ns/activitystreams#Public'],
 			object,
 			published: new Date().toISOString(),
-		} as any;
-	
+		} as unknown;
+
 		return activity;
 	}
 
@@ -621,13 +629,16 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderActivity(x: any): IActivity | null {
+	public renderActivity(x: unknown): IActivity | null {
 		if (x == null) return null;
-	
+
+		// @ts-ignore
 		if (typeof x === 'object' && x.id == null) {
+			// @ts-ignore
 			x.id = `${this.config.url}/${uuid()}`;
 		}
-	
+
+		// @ts-ignore
 		return Object.assign({
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
@@ -661,18 +672,19 @@ export class ApRendererService {
 			],
 		}, x);
 	}
-	
+
 	@bindThis
-	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
+	public async attachLdSignature(activity: unknown, user: { id: User['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
-	
+
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
 		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
-	
+
+		// @ts-ignore
 		return activity;
 	}
-	
+
 	/**
 	 * Render OrderedCollectionPage
 	 * @param id URL of self
@@ -683,16 +695,18 @@ export class ApRendererService {
 	 * @param next URL of next page (optional)
 	 */
 	@bindThis
-	public renderOrderedCollectionPage(id: string, totalItems: any, orderedItems: any, partOf: string, prev?: string, next?: string) {
+	public renderOrderedCollectionPage(id: string, totalItems: unknown, orderedItems: unknown, partOf: string, prev?: string, next?: string) {
 		const page = {
 			id,
 			partOf,
 			type: 'OrderedCollectionPage',
 			totalItems,
 			orderedItems,
-		} as any;
+		} as unknown;
 
+		// @ts-ignore
 		if (prev) page.prev = prev;
+		// @ts-ignore
 		if (next) page.next = next;
 
 		return page;
@@ -707,17 +721,20 @@ export class ApRendererService {
 	 * @param orderedItems attached objects (optional)
 	 */
 	@bindThis
-	public renderOrderedCollection(id: string | null, totalItems: any, first?: string, last?: string, orderedItems?: IObject[]) {
-		const page: any = {
+	public renderOrderedCollection(id: string | null, totalItems: unknown, first?: string, last?: string, orderedItems?: IObject[]) {
+		const page: unknown = {
 			id,
 			type: 'OrderedCollection',
 			totalItems,
 		};
-	
+
+		// @ts-ignore
 		if (first) page.first = first;
+		// @ts-ignore
 		if (last) page.last = last;
+		// @ts-ignore
 		if (orderedItems) page.orderedItems = orderedItems;
-	
+
 		return page;
 	}
 

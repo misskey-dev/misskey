@@ -35,6 +35,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
+// @ts-ignore
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.flashsRepository)

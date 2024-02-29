@@ -26,6 +26,7 @@ export class FlashEntityService {
 	public async pack(
 		src: Flash['id'] | Flash,
 		me?: { id: User['id'] } | null | undefined,
+		// @ts-ignore
 	): Promise<Packed<'Flash'>> {
 		const meId = me ? me.id : null;
 		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });

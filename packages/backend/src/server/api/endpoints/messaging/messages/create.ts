@@ -98,48 +98,48 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.userGroupsRepository)
-		private userGroupsRepository: UserGroupsRepository,
+    @Inject(DI.userGroupsRepository)
+    private userGroupsRepository: UserGroupsRepository,
 
-		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+    @Inject(DI.userGroupJoiningsRepository)
+    private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+    @Inject(DI.blockingsRepository)
+    private blockingsRepository: BlockingsRepository,
 
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+    @Inject(DI.driveFilesRepository)
+    private driveFilesRepository: DriveFilesRepository,
 
-		private getterService: GetterService,
-		private messagingService: MessagingService,
+    private getterService: GetterService,
+    private messagingService: MessagingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let recipientUser: User | null;
 			let recipientGroup: UserGroup | null;
 
-	if (ps.userId != null) {
-		// Myself
-		if (ps.userId === user.id) {
-			throw new ApiError(meta.errors.recipientIsYourself);
-		}
+			if (ps.userId != null) {
+				// Myself
+				if (ps.userId === me.id) {
+					throw new ApiError(meta.errors.recipientIsYourself);
+				}
 
-		// Fetch recipient (user)
-		recipientUser = await getUser(ps.userId).catch(e => {
-			if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-			throw e;
-		});
+				// Fetch recipient (user)
+				recipientUser = await this.getterService.getUser(ps.userId).catch(err => {
+					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+					throw err;
+				});
 
-		// Check blocking
-		const block = await Blockings.findOneBy({
-			blockerId: recipientUser.id,
-			blockeeId: user.id,
-		});
-		if (block) {
-			throw new ApiError(meta.errors.youHaveBeenBlocked);
-		}
-	} else if (ps.groupId != null) {
-		// Fetch recipient (group)
-		recipientGroup = await UserGroups.findOneBy({ id: ps.groupId! });
+				// Check blocking
+				const block = await this.blockingsRepository.findOneBy({
+					blockerId: recipientUser.id,
+					blockeeId: me.id,
+				});
+				if (block) {
+					throw new ApiError(meta.errors.youHaveBeenBlocked);
+				}
+			} else if (ps.groupId != null) {
+				// Fetch recipient (group)
+				recipientGroup = await this.userGroupsRepository.findOneBy({ id: ps.groupId! });
 
 				if (recipientGroup == null) {
 					throw new ApiError(meta.errors.noSuchGroup);
@@ -173,5 +173,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.contentRequired);
 			}
 
-	return await createMessage(user, recipientUser, recipientGroup, ps.text, file);
-});
+			// @ts-ignore
+			return await this.messagingService.createMessage(me, recipientUser, recipientGroup, ps.text, file);
+		});
+	}
+}

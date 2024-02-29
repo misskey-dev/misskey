@@ -5,6 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
 import chalk from 'chalk';
+// @ts-ignore
 import got, * as Got from 'got';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -88,6 +89,7 @@ export class DownloadService {
 			await pipeline(req, fs.createWriteStream(path));
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
+				// @ts-ignore
 				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
 			} else {
 				throw e;
@@ -101,15 +103,15 @@ export class DownloadService {
 	public async downloadTextFile(url: string): Promise<string> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		this.logger.info(`text file: Temp file is ${path}`);
-	
+
 		try {
 			// write content at URL to temp file
 			await this.downloadUrl(url, path);
-	
+
 			const text = await util.promisify(fs.readFile)(path, 'utf8');
-	
+
 			return text;
 		} finally {
 			cleanup();

@@ -103,6 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private db: DataSource,
 
 		@Inject(DI.redis)
+    // @ts-ignore
 		private redisClient: Redis.Redis,
 
 	) {

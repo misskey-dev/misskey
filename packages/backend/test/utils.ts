@@ -10,8 +10,8 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { DataSource } from 'typeorm';
 import got, { RequestError } from 'got';
-import loadConfig from '../src/config/load.js';
 import { entities } from '@/postgres.js';
+import loadConfig from '../src/config/load.js';
 import type * as misskey from 'misskey-js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -282,7 +282,7 @@ export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProc
 			rej('timeout to start');
 		}, timeout);
 
-		const p = childProcess.spawn('node', [_dirname + '/../built/index.js'], {
+		const p = childProcess.spawn('node', [_dirname + '/../built/boot/index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
 			env: { NODE_ENV: 'test', PATH: process.env.PATH },
 		});

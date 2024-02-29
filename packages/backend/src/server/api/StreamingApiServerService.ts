@@ -8,12 +8,12 @@ import type { Config } from '@/config.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { bindThis } from '@/decorators.js';
 import { AuthenticateService } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type { ParsedUrlQuery } from 'querystring';
 import type * as http from 'node:http';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class StreamingApiServerService {
@@ -22,6 +22,7 @@ export class StreamingApiServerService {
 		private config: Config,
 
 		@Inject(DI.redisSubscriber)
+    // @ts-ignore
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.usersRepository)
@@ -41,7 +42,7 @@ export class StreamingApiServerService {
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
-	
+
 		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,
 		private authenticateService: AuthenticateService,

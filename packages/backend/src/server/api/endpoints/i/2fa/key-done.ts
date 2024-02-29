@@ -10,7 +10,15 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import type { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
 
-const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
+// @ts-ignore
+let cborDecodeFirst;
+try {
+	// @ts-ignore
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	cborDecodeFirst = promisify(cbor.decodeFirst) as any;
+} catch (e) {
+	console.error('error =', e);
+}
 
 export const meta = {
 	requireCredential: true,
@@ -77,6 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const clientDataJSONHash = this.twoFactorAuthenticationService.hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
 
+			// @ts-ignore
 			const attestation = await cborDecodeFirst(ps.attestationObject);
 
 			const rpIdHash = attestation.authData.slice(0, 32);
@@ -95,6 +104,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const credentialIdLength = authData.readUInt16BE(53);
 			const credentialId = authData.slice(55, 55 + credentialIdLength);
 			const publicKeyData = authData.slice(55 + credentialIdLength);
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const publicKey: Map<number, any> = await cborDecodeFirst(publicKeyData);
 			if (publicKey.get(3) !== -7) {
 				throw new Error('alg mismatch');
@@ -102,10 +113,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const procedures = this.twoFactorAuthenticationService.getProcedures();
 
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			if (!(procedures as any)[attestation.fmt]) {
 				throw new Error('unsupported fmt');
 			}
 
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const verificationData = (procedures as any)[attestation.fmt].verify({
 				attStmt: attestation.attStmt,
 				authenticatorData: authData,

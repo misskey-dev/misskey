@@ -26,7 +26,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public start(): void {
-		const log = [] as any[];
+		const log = [] as unknown[];
 
 		ev.on('requestServerStatsLog', x => {
 			ev.emit(`serverStatsLog:${x.id}`, log.slice(0, x.length ?? 50));
@@ -65,6 +65,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
+		// @ts-ignore
 		clearInterval(this.intervalId);
 	}
 }

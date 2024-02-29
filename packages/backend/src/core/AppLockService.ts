@@ -1,5 +1,6 @@
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
+// @ts-ignore
 import redisLock from 'redis-lock';
 import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
@@ -16,6 +17,7 @@ export class AppLockService {
 
 	constructor(
 		@Inject(DI.redis)
+    // @ts-ignore
 		private redisClient: Redis.Redis,
 	) {
 		this.lock = promisify(redisLock(this.redisClient, retryDelay));

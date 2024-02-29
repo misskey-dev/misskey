@@ -25,6 +25,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.redisSubscriber)
+    // @ts-ignore
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.mutingsRepository)
@@ -95,16 +96,16 @@ export class AntennaService implements OnApplicationShutdown {
 	public async addNoteToAntenna(antenna: Antenna, note: Note, noteUser: { id: User['id']; }): Promise<void> {
 		// 通知しない設定になっているか、自分自身の投稿なら既読にする
 		const read = !antenna.notify || (antenna.userId === noteUser.id);
-	
+
 		this.antennaNotesRepository.insert({
 			id: this.idService.genId(),
 			antennaId: antenna.id,
 			noteId: note.id,
 			read: read,
 		});
-	
+
 		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
-	
+
 		if (!read) {
 			const mutings = await this.mutingsRepository.find({
 				where: {
@@ -112,23 +113,23 @@ export class AntennaService implements OnApplicationShutdown {
 				},
 				select: ['muteeId'],
 			});
-	
+
 			// Copy
 			const _note: Note = {
 				...note,
 			};
-	
+
 			if (note.replyId != null) {
 				_note.reply = await this.notesRepository.findOneByOrFail({ id: note.replyId });
 			}
 			if (note.renoteId != null) {
 				_note.renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
 			}
-	
+
 			if (isUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
 				return;
 			}
-	
+
 			// 2秒経っても既読にならなかったら通知
 			setTimeout(async () => {
 				const unread = await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false });
@@ -149,24 +150,24 @@ export class AntennaService implements OnApplicationShutdown {
 	public async checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
-	
+
 		if (!antenna.withReplies && note.replyId != null) return false;
-	
+
 		if (antenna.src === 'home') {
 			// TODO
 		} else if (antenna.src === 'list') {
 			const listUsers = (await this.userListJoiningsRepository.findBy({
 				userListId: antenna.userListId!,
 			})).map(x => x.userId);
-	
+
 			if (!listUsers.includes(note.userId)) return false;
 		} else if (antenna.src === 'group') {
 			const joining = await this.userGroupJoiningsRepository.findOneByOrFail({ id: antenna.userGroupJoiningId! });
-	
+
 			const groupUsers = (await this.userGroupJoiningsRepository.findBy({
 				userGroupId: joining.userGroupId,
 			})).map(x => x.userId);
-	
+
 			if (!groupUsers.includes(note.userId)) return false;
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
@@ -175,49 +176,49 @@ export class AntennaService implements OnApplicationShutdown {
 			});
 			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 		}
-	
+
 		const keywords = antenna.keywords
 			// Clean up
 			.map(xs => xs.filter(x => x !== ''))
 			.filter(xs => xs.length > 0);
-	
+
 		if (keywords.length > 0) {
 			if (note.text == null) return false;
-	
+
 			const matched = keywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
 						? note.text!.includes(keyword)
 						: note.text!.toLowerCase().includes(keyword.toLowerCase()),
 				));
-	
+
 			if (!matched) return false;
 		}
-	
+
 		const excludeKeywords = antenna.excludeKeywords
 			// Clean up
 			.map(xs => xs.filter(x => x !== ''))
 			.filter(xs => xs.length > 0);
-	
+
 		if (excludeKeywords.length > 0) {
 			if (note.text == null) return false;
-	
+
 			const matched = excludeKeywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
 						? note.text!.includes(keyword)
 						: note.text!.toLowerCase().includes(keyword.toLowerCase()),
 				));
-	
+
 			if (matched) return false;
 		}
-	
+
 		if (antenna.withFile) {
 			if (note.fileIds && note.fileIds.length === 0) return false;
 		}
-	
+
 		// TODO: eval expression
-	
+
 		return true;
 	}
 
@@ -227,7 +228,7 @@ export class AntennaService implements OnApplicationShutdown {
 			this.antennas = await this.antennasRepository.find();
 			this.antennasFetched = true;
 		}
-	
+
 		return this.antennas;
 	}
 }

@@ -24,20 +24,6 @@ export default class Logger {
 			color: color,
 		};
 		this.store = store;
-
-		if (config.syslog) {
-			this.syslogClient = new SyslogPro.RFC5424({
-				applacationName: 'Misskey',
-				timestamp: true,
-				encludeStructuredData: true,
-				color: true,
-				extendedColor: true,
-				server: {
-					target: config.syslog.host,
-					port: config.syslog.port,
-				},
-			});
-		}
 	}
 
 	@bindThis
@@ -48,7 +34,7 @@ export default class Logger {
 	}
 
 	@bindThis
-	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subContexts: Context[] = [], store = true): void {
+	private log(level: Level, message: string, data?: Record<string, unknown> | null, important = false, subContexts: Context[] = [], store = true): void {
 		if (envOption.quiet) return;
 		if (!this.store) store = false;
 		if (level === 'debug') store = false;
@@ -84,12 +70,13 @@ export default class Logger {
 	}
 
 	@bindThis
-	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
+	public error(x: string | Error, data?: Record<string, unknown> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
 			data = data ?? {};
 			data.e = x;
 			this.log('error', x.toString(), data, important);
 		} else if (typeof x === 'object') {
+			// eslint-disable-next-line
 			this.log('error', `${(x as any).message ?? (x as any).name ?? x}`, data, important);
 		} else {
 			this.log('error', `${x}`, data, important);
@@ -97,24 +84,24 @@ export default class Logger {
 	}
 
 	@bindThis
-	public warn(message: string, data?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
+	public warn(message: string, data?: Record<string, unknown> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
 		this.log('warning', message, data, important);
 	}
 
 	@bindThis
-	public succ(message: string, data?: Record<string, any> | null, important = false): void { // 何かに成功した状況で使う
+	public succ(message: string, data?: Record<string, unknown> | null, important = false): void { // 何かに成功した状況で使う
 		this.log('success', message, data, important);
 	}
 
 	@bindThis
-	public debug(message: string, data?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
+	public debug(message: string, data?: Record<string, unknown> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
 		if (process.env.NODE_ENV !== 'production' || envOption.verbose) {
 			this.log('debug', message, data, important);
 		}
 	}
 
 	@bindThis
-	public info(message: string, data?: Record<string, any> | null, important = false): void { // それ以外
+	public info(message: string, data?: Record<string, unknown> | null, important = false): void { // それ以外
 		this.log('info', message, data, important);
 	}
 }

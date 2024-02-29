@@ -54,7 +54,7 @@ const camelToSnake = (str: string): string => {
 	return str.replace(/([A-Z])/g, s => '_' + s.charAt(0).toLowerCase());
 };
 
-const removeDuplicates = (array: any[]) => Array.from(new Set(array));
+const removeDuplicates = (array: unknown[]) => Array.from(new Set(array));
 
 type Commit<S extends Schema> = {
 	[K in keyof S]?: S[K]['uniqueIncrement'] extends true ? string[] : number;
@@ -68,13 +68,13 @@ type ChartResult<T extends Schema> = {
 	[P in keyof T]: number[];
 };
 
-type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never;
+type UnionToIntersection<T> = (T extends unknown ? (x: T) => unknown : never) extends (x: infer R) => unknown ? R : never;
 
 type UnflattenSingleton<K extends string, V> = K extends `${infer A}.${infer B}`
 	? { [_ in A]: UnflattenSingleton<B, V>; }
 	: { [_ in K]: V; };
 
-type Unflatten<T extends Record<string, any>> = UnionToIntersection<
+type Unflatten<T extends Record<string, unknown>> = UnionToIntersection<
 	{
 		[K in Extract<keyof T, string>]: UnflattenSingleton<K, T[K]>;
 	}[Extract<keyof T, string>]
@@ -135,8 +135,8 @@ export default abstract class Chart<T extends Schema> {
 	 */
 	protected abstract tickMinor(group: string | null): Promise<Partial<KVs<T>>>;
 
-	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: any; }> {
-		const columns = {} as Record<string, { type: string; array?: boolean; default?: any; }>;
+	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: unknown; }> {
+		const columns = {} as Record<string, { type: string; array?: boolean; default?: unknown; }>;
 		for (const [k, v] of Object.entries(schema)) {
 			const name = k.replaceAll('.', COLUMN_DELIMITER);
 			const type = v.range === 'big' ? 'bigint' : v.range === 'small' ? 'smallint' : 'integer';
@@ -253,8 +253,8 @@ export default abstract class Chart<T extends Schema> {
 	@bindThis
 	private convertRawRecord(x: RawRecord<T>): KVs<T> {
 		const kvs = {} as Record<string, number>;
-		for (const k of Object.keys(x).filter((k) => k.startsWith(columnPrefix)) as (keyof Columns<T>)[]) {
-			kvs[(k as string).substr(columnPrefix.length).split(columnDot).join('.')] = x[k];
+		for (const k of Object.keys(x).filter((k) => k.startsWith(COLUMN_PREFIX)) as (keyof Columns<T>)[]) {
+			kvs[(k as string).substr(COLUMN_PREFIX.length).split(COLUMN_DELIMITER).join('.')] = x[k] as unknown as number;
 		}
 		return kvs as KVs<T>;
 	}
@@ -415,20 +415,25 @@ export default abstract class Chart<T extends Schema> {
 				}
 			}
 
-			const queryForHour: Record<keyof RawRecord<T>, number | (() => string)> = {} as any;
-			const queryForDay: Record<keyof RawRecord<T>, number | (() => string)> = {} as any;
+			// @ts-ignore
+			const queryForHour: Record<keyof RawRecord<T>, number | (() => string)> = {} as unknown;
+			// @ts-ignore
+			const queryForDay: Record<keyof RawRecord<T>, number | (() => string)> = {} as unknown;
 			for (const [k, v] of Object.entries(finalDiffs)) {
 				if (typeof v === 'number') {
-					const name = columnPrefix + k.replaceAll('.', columnDot) as keyof Columns<T>;
+					const name = COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof Columns<T>;
 					if (v > 0) queryForHour[name] = () => `"${name}" + ${v}`;
+					// @ts-ignore
 					if (v < 0) queryForHour[name] = () => `"${name}" - ${Math.abs(v)}`;
+					// @ts-ignore
 					if (v > 0) queryForDay[name] = () => `"${name}" + ${v}`;
+					// @ts-ignore
 					if (v < 0) queryForDay[name] = () => `"${name}" - ${Math.abs(v)}`;
 				} else if (Array.isArray(v) && v.length > 0) { // ユニークインクリメント
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof TempColumnsForUnique<T>;
 					// TODO: item をSQLエスケープ
-					const itemsForHour = v.filter(item => !logHour[tempColumnName].includes(item)).map(item => `"${item}"`);
-					const itemsForDay = v.filter(item => !logDay[tempColumnName].includes(item)).map(item => `"${item}"`);
+					const itemsForHour = v.filter(item => !(logHour[tempColumnName] as unknown as string[]).includes(item)).map(item => `"${item}"`);
+					const itemsForDay = v.filter(item => !(logDay[tempColumnName] as unknown as string[]).includes(item)).map(item => `"${item}"`);
 					if (itemsForHour.length > 0) queryForHour[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForHour.join(',')}}'::varchar[])`;
 					if (itemsForDay.length > 0) queryForDay[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForDay.join(',')}}'::varchar[])`;
 				}
@@ -437,10 +442,10 @@ export default abstract class Chart<T extends Schema> {
 			// bake unique count
 			for (const [k, v] of Object.entries(finalDiffs)) {
 				if (this.schema[k].uniqueIncrement) {
-					const name = columnPrefix + k.replaceAll('.', columnDot) as keyof Columns<T>;
-					const tempColumnName = uniqueTempColumnPrefix + k.replaceAll('.', columnDot) as keyof TempColumnsForUnique<T>;
-					queryForHour[name] = new Set([...(v as string[]), ...logHour[tempColumnName]]).size;
-					queryForDay[name] = new Set([...(v as string[]), ...logDay[tempColumnName]]).size;
+					const name = COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof Columns<T>;
+					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
+					queryForHour[name] = new Set([...(v as string[]), ...(logHour[tempColumnName] as unknown as string[])]).size;
+					queryForDay[name] = new Set([...(v as string[]), ...(logDay[tempColumnName] as unknown as string[])]).size;
 				}
 			}
 
@@ -453,14 +458,14 @@ export default abstract class Chart<T extends Schema> {
 					const firstKey = intersection[0];
 					const firstTempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + firstKey.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
 					const firstValues = finalDiffs[firstKey] as string[] | undefined;
-					const currentValuesForHour = new Set([...(firstValues ?? []), ...logHour[firstTempColumnName]]);
-					const currentValuesForDay = new Set([...(firstValues ?? []), ...logDay[firstTempColumnName]]);
+					const currentValuesForHour = new Set([...(firstValues ?? []), ...(logHour[firstTempColumnName] as unknown as string[])]);
+					const currentValuesForDay = new Set([...(firstValues ?? []), ...(logDay[firstTempColumnName] as unknown as string[])]);
 					for (let i = 1; i < intersection.length; i++) {
 						const targetKey = intersection[i];
 						const targetTempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + targetKey.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
 						const targetValues = finalDiffs[targetKey] as string[] | undefined;
-						const targetValuesForHour = new Set([...(targetValues ?? []), ...logHour[targetTempColumnName]]);
-						const targetValuesForDay = new Set([...(targetValues ?? []), ...logDay[targetTempColumnName]]);
+						const targetValuesForHour = new Set([...(targetValues ?? []), ...(logHour[targetTempColumnName] as unknown as string[])]);
+						const targetValuesForDay = new Set([...(targetValues ?? []), ...(logDay[targetTempColumnName] as unknown as string[])]);
 						currentValuesForHour.forEach(v => {
 							if (!targetValuesForHour.has(v)) currentValuesForHour.delete(v);
 						});
@@ -477,12 +482,14 @@ export default abstract class Chart<T extends Schema> {
 			await Promise.all([
 				this.repositoryForHour.createQueryBuilder()
 					.update()
-					.set(queryForHour as any)
+				// @ts-ignore
+					.set(queryForHour as unknown)
 					.where('id = :id', { id: logHour.id })
 					.execute(),
 				this.repositoryForDay.createQueryBuilder()
 					.update()
-					.set(queryForDay as any)
+				// @ts-ignore
+					.set(queryForDay as unknown)
 					.where('id = :id', { id: logDay.id })
 					.execute(),
 			]);
@@ -498,7 +505,9 @@ export default abstract class Chart<T extends Schema> {
 		await Promise.all(
 			groups.map(group =>
 				Promise.all([
+					// @ts-ignore
 					this.claimCurrentLog(group, 'hour'),
+					// @ts-ignore
 					this.claimCurrentLog(group, 'day'),
 				]).then(([logHour, logDay]) =>
 					update(logHour, logDay))));

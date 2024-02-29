@@ -51,43 +51,45 @@ export class UrlPreviewService {
 			reply.code(400);
 			return;
 		}
-	
+
 		const lang = request.query.lang;
 		if (Array.isArray(lang)) {
 			reply.code(400);
 			return;
 		}
-	
+
 		const meta = await this.metaService.fetch();
-	
+
 		this.logger.info(meta.summalyProxy
 			? `(Proxy) Getting preview of ${url}@${lang} ...`
 			: `Getting preview of ${url}@${lang} ...`);
 		try {
-			const summary = meta.summalyProxy ? await this.httpRequestService.getJson<ReturnType<typeof summaly.default>>(`${meta.summalyProxy}?${query({
+			const summary = meta.summalyProxy ? await this.httpRequestService.getJson<ReturnType<typeof summaly>>(`${meta.summalyProxy}?${query({
 				url: url,
 				lang: lang ?? 'ja-JP',
-			})}`) : await summaly.default(url, {
+			})}`) : await summaly(url, {
 				followRedirects: false,
 				lang: lang ?? 'ja-JP',
 			});
-	
+
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
 
 			if (summary.url && !(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
 				throw new Error('unsupported schema included');
 			}
 
-			if (summary.player?.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
+			if (summary.player.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
 				throw new Error('unsupported schema included');
 			}
-	
+
+			// @ts-ignore
 			summary.icon = this.wrap(summary.icon);
+			// @ts-ignore
 			summary.thumbnail = this.wrap(summary.thumbnail);
-	
+
 			// Cache 7days
 			reply.header('Cache-Control', 'max-age=604800, immutable');
-	
+
 			return summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);

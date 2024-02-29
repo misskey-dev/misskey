@@ -55,7 +55,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public handleRequest(
-		endpoint: IEndpoint & { exec: any },
+		endpoint: IEndpoint & { exec: unknown },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
@@ -96,7 +96,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public async handleMultipartRequest(
-		endpoint: IEndpoint & { exec: any },
+		endpoint: IEndpoint & { exec: unknown },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
@@ -111,6 +111,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		const fields = {} as Record<string, string | undefined>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
+			// @ts-ignore
 			fields[k] = v.value;
 		}
 
@@ -146,7 +147,8 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private send(reply: FastifyReply, x?: any, y?: ApiError) {
+	// @ts-ignore
+	private send(reply: FastifyReply, x?: unknown, y?: ApiError) {
 		if (x == null) {
 			reply.code(204);
 			reply.send();
@@ -193,10 +195,10 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	private async call(
-		ep: IEndpoint & { exec: any },
+		ep: IEndpoint & { exec: unknown },
 		user: CacheableLocalUser | null | undefined,
 		token: AccessToken | null | undefined,
-		data: any,
+		data: unknown,
 		file: {
 			name: string;
 			path: string;
@@ -221,6 +223,8 @@ export class ApiCallService implements OnApplicationShutdown {
 			const limit = Object.assign({}, ep.meta.limit);
 
 			if (!limit.key) {
+				// @ts-ignore
+				// noinspection JSConstantReassignment
 				limit.key = ep.name;
 			}
 
@@ -240,6 +244,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
+		// @ts-ignore
 		if (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin) {
 			if (user == null) {
 				throw new ApiError({
@@ -278,6 +283,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
 			const policies = await this.roleService.getUserPolicies(user!.id);
+			// @ts-ignore
 			if (!policies[ep.meta.requireRolePolicy]) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
@@ -299,8 +305,10 @@ export class ApiCallService implements OnApplicationShutdown {
 		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
 				const param = ep.params.properties![k];
+				// @ts-ignore
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
 					try {
+						// @ts-ignore
 						data[k] = JSON.parse(data[k]);
 					} catch (e) {
 						throw	new ApiError({
@@ -317,6 +325,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
+		// @ts-ignore
 		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
 			if (err instanceof ApiError) {
 				throw err;
@@ -344,6 +353,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
+		// @ts-ignore
 		clearInterval(this.userIpHistoriesClearIntervalId);
 	}
 }

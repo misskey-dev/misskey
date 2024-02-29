@@ -61,11 +61,11 @@ export class MessagingService {
 			reads: [] as any[],
 			uri,
 		} as MessagingMessage;
-	
+
 		await this.messagingMessagesRepository.insert(message);
-	
+
 		const messageObj = await this.messagingMessageEntityService.pack(message);
-	
+
 		if (recipientUser) {
 			if (this.userEntityService.isLocalUser(user)) {
 				// 自分のストリーム
@@ -73,7 +73,7 @@ export class MessagingService {
 				this.globalEventService.publishMessagingIndexStream(message.userId, 'message', messageObj);
 				this.globalEventService.publishMainStream(message.userId, 'messagingMessage', messageObj);
 			}
-	
+
 			if (this.userEntityService.isLocalUser(recipientUser)) {
 				// 相手のストリーム
 				this.globalEventService.publishMessagingStream(recipientUser.id, message.userId, 'message', messageObj);
@@ -83,7 +83,7 @@ export class MessagingService {
 		} else if (recipientGroup) {
 			// グループのストリーム
 			this.globalEventService.publishGroupMessagingStream(recipientGroup.id, 'message', messageObj);
-	
+
 			// メンバーのストリーム
 			const joinings = await this.userGroupJoiningsRepository.findBy({ userGroupId: recipientGroup.id });
 			for (const joining of joinings) {
@@ -91,22 +91,22 @@ export class MessagingService {
 				this.globalEventService.publishMainStream(joining.userId, 'messagingMessage', messageObj);
 			}
 		}
-	
+
 		// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 		setTimeout(async () => {
 			const freshMessage = await this.messagingMessagesRepository.findOneBy({ id: message.id });
 			if (freshMessage == null) return; // メッセージが削除されている場合もある
-	
+
 			if (recipientUser && this.userEntityService.isLocalUser(recipientUser)) {
 				if (freshMessage.isRead) return; // 既読
-	
+
 				//#region ただしミュートされているなら発行しない
 				const mute = await this.mutingsRepository.findBy({
 					muterId: recipientUser.id,
 				});
 				if (mute.map(m => m.muteeId).includes(user.id)) return;
 				//#endregion
-	
+
 				this.globalEventService.publishMainStream(recipientUser.id, 'unreadMessagingMessage', messageObj);
 				this.pushNotificationService.pushNotification(recipientUser.id, 'unreadMessagingMessage', messageObj);
 			} else if (recipientGroup) {
@@ -118,7 +118,7 @@ export class MessagingService {
 				}
 			}
 		}, 2000);
-	
+
 		if (recipientUser && this.userEntityService.isLocalUser(user) && this.userEntityService.isRemoteUser(recipientUser)) {
 			const note = {
 				id: message.id,
@@ -134,9 +134,9 @@ export class MessagingService {
 					host: u.host,
 				}))),
 			} as Note;
-	
+
 			const activity = this.apRendererService.renderActivity(this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false, true), note));
-	
+
 			this.queueService.deliver(user, activity, recipientUser.inbox);
 		}
 		return messageObj;
@@ -147,16 +147,16 @@ export class MessagingService {
 		await this.messagingMessagesRepository.delete(message.id);
 		this.postDeleteMessage(message);
 	}
-	
+
 	@bindThis
 	private async postDeleteMessage(message: MessagingMessage) {
 		if (message.recipientId) {
 			const user = await this.usersRepository.findOneByOrFail({ id: message.userId });
 			const recipient = await this.usersRepository.findOneByOrFail({ id: message.recipientId });
-	
+
 			if (this.userEntityService.isLocalUser(user)) this.globalEventService.publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
 			if (this.userEntityService.isLocalUser(recipient)) this.globalEventService.publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
-	
+
 			if (this.userEntityService.isLocalUser(user) && this.userEntityService.isRemoteUser(recipient)) {
 				const activity = this.apRendererService.renderActivity(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), user));
 				this.queueService.deliver(user, activity, recipient.inbox);
@@ -296,6 +296,7 @@ export class MessagingService {
 		const contents = messages.map(x => this.apRendererService.renderRead(user, x));
 
 		if (contents.length > 1) {
+			// @ts-ignore
 			const collection = this.apRendererService.renderOrderedCollection(null, contents.length, undefined, undefined, contents);
 			this.queueService.deliver(user, this.apRendererService.renderActivity(collection), recipient.inbox);
 		} else {

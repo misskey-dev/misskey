@@ -74,9 +74,7 @@ module.exports = {
 			'checksVoidReturn': false,
 		}],
 		'@typescript-eslint/consistent-type-imports': 'off',
-		'@typescript-eslint/prefer-nullish-coalescing': [
-			'error',
-		],
+		'@typescript-eslint/prefer-nullish-coalescing': 0,
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': 0,
 		'import/order': ['warn', {

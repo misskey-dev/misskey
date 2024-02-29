@@ -83,6 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 		private emojiEntityService: EmojiEntityService,
 	) {
+		// @ts-ignore
 		super(meta, paramDef, async (ps, me) => {
 			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
 

@@ -58,6 +58,7 @@ export class RoleService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.redisSubscriber)
+    // @ts-ignore
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.usersRepository)

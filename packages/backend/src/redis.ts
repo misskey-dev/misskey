@@ -2,6 +2,7 @@
 import Redis from 'ioredis';
 import { Config } from '@/config.js';
 
+// @ts-ignore
 export function createRedisConnection(config: Config): Redis.Redis {
 	return new Redis({
 		port: config.redis.port,

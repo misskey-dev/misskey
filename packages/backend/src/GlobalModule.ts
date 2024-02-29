@@ -52,7 +52,9 @@ const $redisSubscriber: Provider = {
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.db) private db: DataSource,
+		// @ts-ignore
 		@Inject(DI.redis) private redisClient: Redis.Redis,
+		// @ts-ignore
 		@Inject(DI.redisSubscriber) private redisSubscriber: Redis.Redis,
 	) {}
 

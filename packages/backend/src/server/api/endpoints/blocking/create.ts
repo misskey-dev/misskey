@@ -56,8 +56,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const blocker = await Users.findOneByOrFail({ id: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.blockingsRepository)
+		private blockingsRepository: BlockingsRepository,
+
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private userBlockingService: UserBlockingService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
 
 			// 自分自身
 			if (me.id === ps.userId) {

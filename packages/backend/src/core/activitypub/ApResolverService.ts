@@ -123,6 +123,7 @@ export class Resolver {
 
 		switch (parsed.type) {
 			case 'notes':
+				// @ts-ignore
 				return this.notesRepository.findOneByOrFail({ id: parsed.id })
 					.then(note => {
 						if (parsed.rest === 'activity') {
@@ -133,10 +134,12 @@ export class Resolver {
 						}
 					});
 			case 'users':
+				// @ts-ignore
 				return this.usersRepository.findOneByOrFail({ id: parsed.id })
 					.then(user => this.apRendererService.renderPerson(user as ILocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
+				// @ts-ignore
 				return Promise.all([
 					this.notesRepository.findOneByOrFail({ id: parsed.id }),
 					this.pollsRepository.findOneByOrFail({ noteId: parsed.id }),
@@ -149,6 +152,7 @@ export class Resolver {
 				// rest should be <followee id>
 				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
 
+				// @ts-ignore
 				return Promise.all(
 					[parsed.id, parsed.rest].map(id => this.usersRepository.findOneByOrFail({ id })),
 				)
@@ -189,6 +193,7 @@ export class ApResolverService {
 
 	@bindThis
 	public createResolver(): Resolver {
+		// @ts-ignore
 		return new Resolver(
 			this.config,
 			this.usersRepository,

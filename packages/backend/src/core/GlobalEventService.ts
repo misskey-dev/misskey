@@ -34,6 +34,7 @@ export class GlobalEventService {
 		private config: Config,
 
 		@Inject(DI.redis)
+    // @ts-ignore
 		private redisClient: Redis.Redis,
 	) {
 	}

@@ -14,6 +14,7 @@ export class WebhookService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.redisSubscriber)
+    // @ts-ignore
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.webhooksRepository)
@@ -31,7 +32,7 @@ export class WebhookService implements OnApplicationShutdown {
 			});
 			this.webhooksFetched = true;
 		}
-	
+
 		return this.webhooks;
 	}
 

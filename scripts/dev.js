@@ -1,4 +1,3 @@
-const execa = require('execa');
 import { execa } from "execa";
 
 const __dirname = new URL('.', import.meta.url).pathname;
@@ -36,10 +35,6 @@ const __dirname = new URL('.', import.meta.url).pathname;
 
 	const start = async () => {
 		try {
-
-      const exist = fs.existsSync(__dirname + '/../packages/backend/built/boot/index.js')
-			if (!exist) throw new Error('not exist yet');
-
 			await execa('npm', ['run', 'start'], {
 				cwd: __dirname + '/../',
 				stdout: process.stdout,

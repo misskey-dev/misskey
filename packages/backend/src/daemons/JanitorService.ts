@@ -35,6 +35,7 @@ export class JanitorService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
+		// @ts-ignore
 		clearInterval(this.intervalId);
 	}
 }

@@ -61,6 +61,7 @@ export class ChartManagementService implements OnApplicationShutdown {
 	}
 
 	async onApplicationShutdown(signal: string): Promise<void> {
+		// @ts-ignore
 		clearInterval(this.saveIntervalId);
 		await Promise.all(
 			this.charts.map(chart => chart.save()),

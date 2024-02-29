@@ -255,7 +255,7 @@ export class DriveService {
 				return {
 					webpublic: null,
 					thumbnail: null,
-				}
+				};
 			}
 
 			try {
@@ -328,6 +328,7 @@ export class DriveService {
 					this.registerLogger.debug('web image not created (not an required image)');
 				}
 			} catch (err) {
+				// @ts-ignore
 				this.registerLogger.warn('web image not created (an error occured)', err as Error);
 			}
 		} else {
@@ -346,6 +347,7 @@ export class DriveService {
 				this.registerLogger.debug('thumbnail not created (not an required file)');
 			}
 		} catch (err) {
+			// @ts-ignore
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
 		}
 		// #endregion thumbnail
@@ -740,20 +742,20 @@ export class DriveService {
 		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
 			name = null;
 		}
-	
+
 		// If the comment is same as the name, skip comment
 		// (image.name is passed in when receiving attachment)
 		if (comment !== null && name === comment) {
 			comment = null;
 		}
-	
+
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
 			await this.downloadService.downloadUrl(url, path);
-	
+
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
 			this.downloaderLogger.succ(`Got: ${driveFile.id}`);
 			return driveFile!;

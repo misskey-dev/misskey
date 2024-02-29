@@ -7,8 +7,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MessagingMessageEntityService } from '@/core/entities/MessagingMessageEntityService.js';
 import { MessagingService } from '@/core/MessagingService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['messaging'],
@@ -91,6 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 		private getterService: GetterService,
 	) {
+		// @ts-ignore
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.userId != null) {
 				// Fetch recipient (user)

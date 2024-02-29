@@ -15,6 +15,7 @@ export class MetaService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.redisSubscriber)
+    // @ts-ignore
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.db)
@@ -56,7 +57,7 @@ export class MetaService implements OnApplicationShutdown {
 	@bindThis
 	public async fetch(noCache = false): Promise<Meta> {
 		if (!noCache && this.cache) return this.cache;
-	
+
 		return await this.db.transaction(async transactionalEntityManager => {
 			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 			const metas = await transactionalEntityManager.find(Meta, {
@@ -64,9 +65,9 @@ export class MetaService implements OnApplicationShutdown {
 					id: 'DESC',
 				},
 			});
-	
+
 			const meta = metas[0];
-	
+
 			if (meta) {
 				this.cache = meta;
 				return meta;
@@ -81,7 +82,7 @@ export class MetaService implements OnApplicationShutdown {
 						['id'],
 					)
 					.then((x) => transactionalEntityManager.findOneByOrFail(Meta, x.identifiers[0]));
-	
+
 				this.cache = saved;
 				return saved;
 			}
@@ -121,6 +122,7 @@ export class MetaService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
+		// @ts-ignore
 		clearInterval(this.intervalId);
 		this.redisSubscriber.off('message', this.onMessage);
 	}

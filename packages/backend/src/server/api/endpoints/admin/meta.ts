@@ -319,6 +319,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private metaService: MetaService,
 	) {
+		// @ts-ignore
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 

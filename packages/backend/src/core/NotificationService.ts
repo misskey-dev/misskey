@@ -1,14 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotificationsRepository } from '@/models/index.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { NotificationsRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import { GlobalEventService } from './GlobalEventService.js';
 import { PushNotificationService } from './PushNotificationService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NotificationService {
@@ -66,6 +65,7 @@ export class NotificationService {
 
 	@bindThis
 	private postReadNotifications(userId: User['id'], notificationIds: Notification['id'][]) {
+		// @ts-ignore
 		this.globalEventService.publishMainStream(userId, 'readNotifications', notificationIds);
 		return this.pushNotificationService.pushNotification(userId, 'readNotifications', { notificationIds });
 	}
