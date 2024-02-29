@@ -213,7 +213,7 @@ async function pickEmoji(itemsRef: Ref<string[]>, ev: MouseEvent) {
 	os.pickEmoji(getHTMLElement(ev), {
 		showPinned: false,
 	}).then(it => {
-		const emoji = it as string;
+		const emoji = it;
 		if (!itemsRef.value.includes(emoji)) {
 			itemsRef.value.push(emoji);
 		}
