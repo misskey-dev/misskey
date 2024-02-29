@@ -65,15 +65,13 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	console.debug('ps =', ps);
 	// @ts-ignore
 	const user = await Users.findOneBy(ps.userId != null
 		// @ts-ignore
 		? { id: ps.userId }
 		// @ts-ignore
-		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
+		: { usernameLower: ps.username?.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
