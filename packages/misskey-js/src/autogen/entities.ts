@@ -37,6 +37,7 @@ export type AdminDriveShowFileRequest = operations['admin/drive/show-file']['req
 export type AdminDriveShowFileResponse = operations['admin/drive/show-file']['responses']['200']['content']['application/json'];
 export type AdminEmojiAddAliasesBulkRequest = operations['admin/emoji/add-aliases-bulk']['requestBody']['content']['application/json'];
 export type AdminEmojiAddRequest = operations['admin/emoji/add']['requestBody']['content']['application/json'];
+export type AdminEmojiAddResponse = operations['admin/emoji/add']['responses']['200']['content']['application/json'];
 export type AdminEmojiCopyRequest = operations['admin/emoji/copy']['requestBody']['content']['application/json'];
 export type AdminEmojiCopyResponse = operations['admin/emoji/copy']['responses']['200']['content']['application/json'];
 export type AdminEmojiDeleteBulkRequest = operations['admin/emoji/delete-bulk']['requestBody']['content']['application/json'];

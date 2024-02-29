@@ -38,8 +38,8 @@
 		"@microsoft/api-extractor": "7.39.1",
 		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@swc/jest": "0.2.31",
-		"@types/jest": "29.5.11",
-		"@types/node": "20.11.17",
+		"@types/jest": "29.5.12",
+		"@types/node": "20.11.22",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
 		"eslint": "8.56.0",
@@ -48,8 +48,8 @@
 		"jest-websocket-mock": "2.5.0",
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
-		"nodemon": "3.0.3",
-		"tsd": "0.30.4",
+		"nodemon": "3.1.0",
+		"tsd": "0.30.7",
 		"typescript": "5.3.3"
 	},
 	"files": [
