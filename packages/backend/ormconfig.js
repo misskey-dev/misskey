@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { loadConfig } from './built/config.js';
 import { entities } from './built/postgres.js';
+import {NoLogger} from "./built/no-logger.js";
 
 const config = loadConfig();
 
