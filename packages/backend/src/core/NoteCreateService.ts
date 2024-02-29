@@ -379,6 +379,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
+		if (mentionedUsers.length > 0 && mentionedUsers.length > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
+			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'Note contains too many mentions');
+		}
+
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
