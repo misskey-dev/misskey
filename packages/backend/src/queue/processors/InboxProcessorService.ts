@@ -5,8 +5,8 @@
 
 import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
-import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
+import { verifyDraftSignature } from '@misskey-dev/node-http-message-signatures';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -51,7 +51,7 @@ export class InboxProcessorService {
 
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
-		const signature = job.data.signature;	// HTTP-signature
+		const signature = 'version' in job.data.signature ? job.data.signature.value : job.data.signature;
 		const activity = job.data.activity;
 
 		//#region Log
@@ -103,7 +103,7 @@ export class InboxProcessorService {
 		}
 
 		// HTTP-Signatureの検証
-		const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
+		const httpSignatureValidated = verifyDraftSignature(signature, authUser.key.keyPem);
 
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {

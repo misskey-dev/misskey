@@ -7,7 +7,7 @@ import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
-import httpSignature from '@peertube/http-signature';
+import { verifyDigestHeader, parseRequestSignature } from '@misskey-dev/node-http-message-signatures';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
@@ -103,63 +103,29 @@ export class ActivityPubServerService {
 	private inbox(request: FastifyRequest, reply: FastifyReply) {
 		let signature;
 
+		const verifyDigest = verifyDigestHeader(request.raw, request.rawBody || '', true);
+		if (!verifyDigest) {
+			reply.code(401);
+			return;
+		}
+
 		try {
-			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
+			signature = parseRequestSignature(request.raw);
 		} catch (e) {
 			reply.code(401);
 			return;
 		}
 
-		if (signature.params.headers.indexOf('host') === -1
-			|| request.headers.host !== this.config.host) {
-			// Host not specified or not match.
+		if (!signature) {
 			reply.code(401);
 			return;
 		}
 
-		if (signature.params.headers.indexOf('digest') === -1) {
-			// Digest not found.
+		if (signature.value.params.headers.indexOf('host') === -1
+			|| request.headers.host !== this.config.host) {
+			// Host not specified or not match.
 			reply.code(401);
-		} else {
-			const digest = request.headers.digest;
-
-			if (typeof digest !== 'string') {
-				// Huh?
-				reply.code(401);
-				return;
-			}
-
-			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
-			const match = digest.match(re);
-
-			if (match == null) {
-				// Invalid digest
-				reply.code(401);
-				return;
-			}
-
-			const algo = match[1].toUpperCase();
-			const digestValue = match[2];
-
-			if (algo !== 'SHA-256') {
-				// Unsupported digest algorithm
-				reply.code(401);
-				return;
-			}
-
-			if (request.rawBody == null) {
-				// Bad request
-				reply.code(400);
-				return;
-			}
-
-			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
-
-			if (hash !== digestValue) {
-				// Invalid digest
-				reply.code(401);
-				return;
-			}
+			return;
 		}
 
 		this.queueService.inbox(request.body as IActivity, signature);

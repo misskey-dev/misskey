@@ -110,6 +110,9 @@ importers:
       '@fastify/view':
         specifier: 8.2.0
         version: 8.2.0
+      '@misskey-dev/node-http-message-signatures':
+        specifier: 0.0.0-alpha.7
+        version: 0.0.0-alpha.7
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.2.0
         version: 1.2.0
@@ -125,9 +128,6 @@ importers:
       '@nestjs/testing':
         specifier: 10.2.10
         version: 10.2.10(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(@nestjs/platform-express@10.3.3)
-      '@peertube/http-signature':
-        specifier: 1.7.0
-        version: 1.7.0
       '@simplewebauthn/server':
         specifier: 9.0.3
         version: 9.0.3
@@ -4735,6 +4735,10 @@ packages:
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)
     dev: true
 
+  /@misskey-dev/node-http-message-signatures@0.0.0-alpha.7:
+    resolution: {integrity: sha512-iM1nZ3YT+G4AEhbUnsK7PqnMY9MjBP5JomQAgi2OyxDtZ/wBpgLP6MCVz3ElCqZ8NQS1f+c4E1m6/dSN8MtU9Q==}
+    dev: false
+
   /@misskey-dev/sharp-read-bmp@1.2.0:
     resolution: {integrity: sha512-er4pRakXzHYfEgOFAFfQagqDouG+wLm+kwNq1I30oSdIHDa0wM3KjFpfIGQ25Fks4GcmOl1s7Zh6xoQu5dNjTw==}
     dependencies:
@@ -5055,15 +5059,6 @@ packages:
       ipaddr.js: 2.1.0
       pvtsutils: 1.3.5
       tslib: 2.6.2
-    dev: false
-
-  /@peertube/http-signature@1.7.0:
-    resolution: {integrity: sha512-aGQIwo6/sWtyyqhVK4e1MtxYz4N1X8CNt6SOtCc+Wnczs5S5ONaLHDDR8LYaGn0MgOwvGgXyuZ5sJIfd7iyoUw==}
-    engines: {node: '>=0.10'}
-    dependencies:
-      assert-plus: 1.0.0
-      jsprim: 1.4.2
-      sshpk: 1.17.0
     dev: false
 
   /@pkgjs/parseargs@0.11.0:

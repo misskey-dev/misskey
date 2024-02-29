@@ -9,7 +9,23 @@ import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
-import type httpSignature from '@peertube/http-signature';
+import type { ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+
+/**
+ * @peertube/http-signature 時代の古いデータにも対応しておく
+ */
+export interface OldParsedSignature {
+	scheme: 'Signature';
+	params: {
+		keyId: string;
+		algorithm: string;
+		headers: string[];
+		signature: string;
+	};
+	signingString: string;
+	algorithm: string;
+	keyId: string;
+}
 
 export type DeliverJobData = {
 	/** Actor */
@@ -26,7 +42,7 @@ export type DeliverJobData = {
 
 export type InboxJobData = {
 	activity: IActivity;
-	signature: httpSignature.IParsedSignature;
+	signature: ParsedSignature | OldParsedSignature;
 };
 
 export type RelationshipJobData = {
