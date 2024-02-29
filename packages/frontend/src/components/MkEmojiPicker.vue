@@ -108,7 +108,6 @@ import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
 	emojilist,
-	unicodeEmojisMap,
 	emojiCharByCategory,
 	UnicodeEmojiDef,
 	unicodeEmojiCategories as categories,
