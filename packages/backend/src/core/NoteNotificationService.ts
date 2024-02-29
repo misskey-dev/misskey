@@ -43,10 +43,8 @@ export class NoteNotificationService implements OnApplicationShutdown {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'noteNotificationCreated':
-					this.targetUsers.push({
-						...body,
-						createdAt: new Date(body.createdAt),
-					});
+					// TODO: typecheck回避（WIP）、きれいに書く
+					this.targetUsers.push({ ...body, targetUser: body.targetUser as MiUser, user: body.user as MiUser });
 					break;
 				case 'noteNotificationDeleted':
 					this.targetUsers = this.targetUsers.filter(a => a.id !== body.id);

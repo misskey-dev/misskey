@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,7 +17,7 @@ export const meta = {
 	tags: ['admin', 'role', 'users'],
 
 	requireCredential: false,
-	requireAdmin: true,
+	requireModerator: true,
 	kind: 'read:admin:roles',
 
 	errors: {

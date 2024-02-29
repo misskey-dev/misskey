@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -46,7 +46,7 @@ export class ClipEntityService {
 			description: clip.description,
 			isPublic: clip.isPublic,
 			favoritedCount: await this.clipFavoritesRepository.countBy({ clipId: clip.id }),
-			isFavorited: meId ? await this.clipFavoritesRepository.exist({ where: { clipId: clip.id, userId: meId } }) : undefined,
+			isFavorited: meId ? await this.clipFavoritesRepository.exists({ where: { clipId: clip.id, userId: meId } }) : undefined,
 		});
 	}
 

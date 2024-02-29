@@ -8,6 +8,15 @@
 
 ### Server
 -->
+
+## nade 1.4.7
+### General
+- 2024.2.0の適用に伴いフォークに関するコードも微修正しました
+- [メンションの最大数をロールごとに設定可能にする misskey-dev/misskey#13343](https://github.com/misskey-dev/misskey/pull/13343) を導入
+
+### Client
+### Server
+
 ## nade 1.4.7
 ### General
 - 2023.12.2の適用に伴いフォークに関するコードも微修正しました
