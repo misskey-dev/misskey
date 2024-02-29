@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import { genRFC3230DigestHeader, RequestLike, signAsDraftToRequest } from '@misskey-dev/node-http-message-signatures';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -15,12 +15,6 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-
-type Request = {
-	url: string;
-	method: string;
-	headers: Record<string, string>;
-};
 
 type Signed = {
 	request: Request;
@@ -34,103 +28,51 @@ type PrivateKey = {
 	keyId: string;
 };
 
-export class ApRequestCreator {
-	static createSignedPost(args: { key: PrivateKey, url: string, body: string, digest?: string, additionalHeaders: Record<string, string> }): Signed {
-		const u = new URL(args.url);
-		const digestHeader = args.digest ?? this.createDigest(args.body);
+export function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string; additionalHeaders: Record<string, string> }) {
+	const u = new URL(args.url);
+	const request: RequestLike = {
+		url: u.href,
+		method: 'POST',
+		headers: {
+			'Date': new Date().toUTCString(),
+			'Host': u.host,
+			'Content-Type': 'application/activity+json',
+			...args.additionalHeaders,
+		},
+	};
 
-		const request: Request = {
-			url: u.href,
-			method: 'POST',
-			headers: this.#objectAssignWithLcKey({
-				'Date': new Date().toUTCString(),
-				'Host': u.host,
-				'Content-Type': 'application/activity+json',
-				'Digest': digestHeader,
-			}, args.additionalHeaders),
-		};
+	// TODO: levelによって処理を分ける
+	const digestHeader = args.digest ?? genRFC3230DigestHeader(args.body);
+	request.headers['Digest'] = digestHeader;
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
+	const result = signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
 
-		return {
-			request,
-			signingString: result.signingString,
-			signature: result.signature,
-			signatureHeader: result.signatureHeader,
-		};
-	}
+	return {
+		request,
+		...result,
+	};
+}
 
-	static createDigest(body: string) {
-		return `SHA-256=${crypto.createHash('sha256').update(body).digest('base64')}`;
-	}
+export function createSignedGet(args: { level: string; key: PrivateKey; url: string; additionalHeaders: Record<string, string> }) {
+	const u = new URL(args.url);
+	const request: RequestLike = {
+		url: u.href,
+		method: 'GET',
+		headers: {
+			'Accept': 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+			'Date': new Date().toUTCString(),
+			'Host': new URL(args.url).host,
+			...args.additionalHeaders,
+		},
+	};
 
-	static createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
-		const u = new URL(args.url);
+	// TODO: levelによって処理を分ける
+	const result = signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
 
-		const request: Request = {
-			url: u.href,
-			method: 'GET',
-			headers: this.#objectAssignWithLcKey({
-				'Accept': 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-				'Date': new Date().toUTCString(),
-				'Host': new URL(args.url).host,
-			}, args.additionalHeaders),
-		};
-
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
-
-		return {
-			request,
-			signingString: result.signingString,
-			signature: result.signature,
-			signatureHeader: result.signatureHeader,
-		};
-	}
-
-	static #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Signed {
-		const signingString = this.#genSigningString(request, includeHeaders);
-		const signature = crypto.sign('sha256', Buffer.from(signingString), key.privateKeyPem).toString('base64');
-		const signatureHeader = `keyId="${key.keyId}",algorithm="rsa-sha256",headers="${includeHeaders.join(' ')}",signature="${signature}"`;
-
-		request.headers = this.#objectAssignWithLcKey(request.headers, {
-			Signature: signatureHeader,
-		});
-		// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
-		delete request.headers['host'];
-
-		return {
-			request,
-			signingString,
-			signature,
-			signatureHeader,
-		};
-	}
-
-	static #genSigningString(request: Request, includeHeaders: string[]): string {
-		request.headers = this.#lcObjectKey(request.headers);
-
-		const results: string[] = [];
-
-		for (const key of includeHeaders.map(x => x.toLowerCase())) {
-			if (key === '(request-target)') {
-				results.push(`(request-target): ${request.method.toLowerCase()} ${new URL(request.url).pathname}`);
-			} else {
-				results.push(`${key}: ${request.headers[key]}`);
-			}
-		}
-
-		return results.join('\n');
-	}
-
-	static #lcObjectKey(src: Record<string, string>): Record<string, string> {
-		const dst: Record<string, string> = {};
-		for (const key of Object.keys(src).filter(x => x !== '__proto__' && typeof src[x] === 'string')) dst[key.toLowerCase()] = src[key];
-		return dst;
-	}
-
-	static #objectAssignWithLcKey(a: Record<string, string>, b: Record<string, string>): Record<string, string> {
-		return Object.assign(this.#lcObjectKey(a), this.#lcObjectKey(b));
-	}
+	return {
+		request,
+		...result,
+	};
 }
 
 @Injectable()
@@ -150,16 +92,25 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, digest?: string): Promise<void> {
+	private async getPrivateKey(userId: MiUser['id'], level: string): Promise<PrivateKey> {
+		const keypair = await this.userKeypairService.getUserKeypair(userId);
+
+		return (level !== '00' && keypair.ed25519PrivateKey) ? {
+			privateKeyPem: keypair.ed25519PrivateKey,
+			keyId: `${this.config.url}/users/${userId}#ed25519-key`,
+		} : {
+			privateKeyPem: keypair.privateKey,
+			keyId: `${this.config.url}/users/${userId}#main-key`,
+		};
+	}
+
+	@bindThis
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
 
-		const keypair = await this.userKeypairService.getUserKeypair(user.id);
-
-		const req = ApRequestCreator.createSignedPost({
-			key: {
-				privateKeyPem: keypair.privateKey,
-				keyId: `${this.config.url}/users/${user.id}#main-key`,
-			},
+		const req = createSignedPost({
+			level,
+			key: await this.getPrivateKey(user.id, level),
 			url,
 			body,
 			digest,
@@ -180,14 +131,10 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }): Promise<unknown> {
-		const keypair = await this.userKeypairService.getUserKeypair(user.id);
-
-		const req = ApRequestCreator.createSignedGet({
-			key: {
-				privateKeyPem: keypair.privateKey,
-				keyId: `${this.config.url}/users/${user.id}#main-key`,
-			},
+	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
+		const req = createSignedGet({
+			level,
+			key: await this.getPrivateKey(user.id, level),
 			url,
 			additionalHeaders: {
 			},

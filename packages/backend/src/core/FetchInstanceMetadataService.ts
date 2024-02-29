@@ -24,6 +24,7 @@ type NodeInfo = {
 		version?: unknown;
 	};
 	metadata?: {
+		httpMessageSignaturesImplementationLevel?: unknown,
 		name?: unknown;
 		nodeName?: unknown;
 		nodeDescription?: unknown;
@@ -70,7 +71,7 @@ export class FetchInstanceMetadataService {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
-				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
+				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 3)) {
 					// unlock at the finally caluse
 					return;
 				}
@@ -104,6 +105,9 @@ export class FetchInstanceMetadataService {
 				updates.openRegistrations = info.openRegistrations;
 				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
 				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email ?? null) : null : null;
+				if (info.metadata && info.metadata.httpMessageSignaturesImplementationLevel) {
+					updates.httpMessageSignaturesImplementationLevel = info.metadata.httpMessageSignaturesImplementationLevel.toString() ?? '00';
+				}
 			}
 
 			if (name) updates.name = name;
