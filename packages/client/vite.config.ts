@@ -9,7 +9,6 @@ import VueMacros from 'unplugin-vue-macros/vite';
 import Inspect from 'vite-plugin-inspect';
 import locales from '../../locales';
 import meta from '../../package.json';
-import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 // @ts-ignore
@@ -27,8 +26,7 @@ export default defineConfig(({ command, mode }) => {
 				},
 			}),
 
-			Inspect(),
-			pluginJson5(),
+			Inspect()
 		],
 
 		resolve: {
