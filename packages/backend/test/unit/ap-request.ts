@@ -33,39 +33,43 @@ async function getKeyPair(level: string) {
 }
 
 describe('ap-request', () => {
-	describe.each(['00', '01'])('createSignedPost with verify', async (level) => {
-		const keypair = await getKeyPair(level);
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/inbox';
-		const activity = { a: 1 };
-		const body = JSON.stringify(activity);
-		const headers = {
-			'User-Agent': 'UA',
-		};
+	describe.each(['00', '01'])('createSignedPost with verify', (level) => {
+		test('pass', async () => {
+			const keypair = await getKeyPair(level);
+			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+			const url = 'https://example.com/inbox';
+			const activity = { a: 1 };
+			const body = JSON.stringify(activity);
+			const headers = {
+				'User-Agent': 'UA',
+			};
 
-		const req = createSignedPost({ level, key, url, body, additionalHeaders: headers });
+			const req = createSignedPost({ level, key, url, body, additionalHeaders: headers });
 
-		const parsed = parseRequestSignature(req.request);
-		expect(parsed?.version).toBe('draft');
-		if (!parsed) return;
-		const verify = verifyDraftSignature(parsed?.value, keypair.publicKey);
-		assert.deepStrictEqual(verify, true);
+			const parsed = parseRequestSignature(req.request);
+			expect(parsed?.version).toBe('draft');
+			if (!parsed) return;
+			const verify = verifyDraftSignature(parsed?.value, keypair.publicKey);
+			assert.deepStrictEqual(verify, true);
+		});
 	});
 
-	describe.each(['00', '01'])('createSignedGet with verify', async (level) => {
-		const keypair = await getKeyPair(level);
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/outbox';
-		const headers = {
-			'User-Agent': 'UA',
-		};
+	describe.each(['00', '01'])('createSignedGet with verify', (level) => {
+		test('pass', async () => {
+			const keypair = await getKeyPair(level);
+			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+			const url = 'https://example.com/outbox';
+			const headers = {
+				'User-Agent': 'UA',
+			};
 
-		const req = createSignedGet({ level, key, url, additionalHeaders: headers });
+			const req = createSignedGet({ level, key, url, additionalHeaders: headers });
 
-		const parsed = parseRequestSignature(req.request);
-		expect(parsed?.version).toBe('draft');
-		if (!parsed) return;
-		const verify = verifyDraftSignature(parsed?.value, keypair.publicKey);
-		assert.deepStrictEqual(verify, true);
+			const parsed = parseRequestSignature(req.request);
+			expect(parsed?.version).toBe('draft');
+			if (!parsed) return;
+			const verify = verifyDraftSignature(parsed?.value, keypair.publicKey);
+			assert.deepStrictEqual(verify, true);
+		});
 	});
 });
