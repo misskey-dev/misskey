@@ -1,3 +1,7 @@
+import { bindThis } from '@/decorators.js';
+
+// TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
+
 export class Cache<T> {
 	public cache: Map<string | null, { date: number; value: T; }>;
 	private lifetime: number;
@@ -7,6 +11,7 @@ export class Cache<T> {
 		this.lifetime = lifetime;
 	}
 
+	@bindThis
 	public set(key: string | null, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),
@@ -14,6 +19,7 @@ export class Cache<T> {
 		});
 	}
 
+	@bindThis
 	public get(key: string | null): T | undefined {
 		const cached = this.cache.get(key);
 		if (cached == null) return undefined;
@@ -24,6 +30,7 @@ export class Cache<T> {
 		return cached.value;
 	}
 
+	@bindThis
 	public delete(key: string | null) {
 		this.cache.delete(key);
 	}
@@ -32,6 +39,7 @@ export class Cache<T> {
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
 	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
 	 */
+	@bindThis
 	public async fetch(key: string | null, fetcher: () => Promise<T>, validator?: (cachedValue: T) => boolean): Promise<T> {
 		const cachedValue = this.get(key);
 		if (cachedValue !== undefined) {
@@ -56,6 +64,7 @@ export class Cache<T> {
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
 	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
 	 */
+	@bindThis
 	public async fetchMaybe(key: string | null, fetcher: () => Promise<T | undefined>, validator?: (cachedValue: T) => boolean): Promise<T | undefined> {
 		const cachedValue = this.get(key);
 		if (cachedValue !== undefined) {

@@ -1,17 +1,17 @@
+import define from '../../../define.js';
 import { Emojis } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
+import { ApiError } from '../../../error.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
 import { publishBroadcastStream } from '@/services/stream.js';
 import { db } from '@/db/postgre.js';
-import { ApiError } from '../../../error.js';
-import define from '../../../define.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
 
 	errors: {
 		noSuchEmoji: {
@@ -42,54 +42,43 @@ export const paramDef = {
 	required: ['emojiId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
 	const emoji = await Emojis.findOneBy({ id: ps.emojiId });
-
-	console.debug('[copy.ts] emoji =', emoji);
 
 	if (emoji == null) {
 		throw new ApiError(meta.errors.noSuchEmoji);
 	}
 
-	let driveFile: DriveFile;
+			let driveFile: DriveFile;
 
 	try {
 		// Create file
-		console.debug('[copy.ts] emoji.originalUrl =', emoji.originalUrl);
 		driveFile = await uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
-	} catch (e: unknown) {
-		console.debug('[copy.ts] e =', e);
-		throw new ApiError({
-			message: e instanceof Error ? e.message : 'Failed to upload emoji.',
-			code: 'FAILED_TO_UPLOAD_EMOJI',
-			id:	'3c85c5a8-f98b-48ad-9f44-e70a685246ef',
-			kind: 'server',
-			httpStatusCode: 500,
-		});
+	} catch (e) {
+		throw new ApiError();
 	}
 
-	console.debug('driveFile =', driveFile);
+			const copied = await this.emojisRepository.insert({
+				id: this.idService.genId(),
+				updatedAt: new Date(),
+				name: emoji.name,
+				host: null,
+				aliases: [],
+				originalUrl: driveFile.url,
+				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+				type: driveFile.webpublicType ?? driveFile.type,
+			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
-	const copied = await Emojis.insert({
-		id: genId(),
-		updatedAt: new Date(),
-		name: emoji.name,
-		host: null,
-		aliases: [],
-		originalUrl: driveFile.url,
-		publicUrl: driveFile.webpublicUrl ?? driveFile.url,
-		type: driveFile.webpublicType ?? driveFile.type,
-	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+	await db.queryResultCache!.remove(['meta_emojis']);
 
-	console.debug('copied =', copied);
+			this.globalEventService.publishBroadcastStream('emojiAdded', {
+				emoji: await this.emojiEntityService.pack(copied.id),
+			});
 
-	await db.queryResultCache?.remove(['meta_emojis']);
-
-	publishBroadcastStream('emojiAdded', {
-		emoji: await Emojis.pack(copied.id),
-	});
-
-	return {
-		id: copied.id,
-	};
-});
+			return {
+				id: copied.id,
+			};
+		});
+	}
+}

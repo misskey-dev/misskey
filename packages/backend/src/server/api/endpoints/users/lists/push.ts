@@ -1,8 +1,11 @@
-import { pushUserToUserList } from '@/services/user-list/push.js';
-import { UserLists, UserListJoinings, Blockings } from '@/models/index.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
+import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { UserListService } from '@/core/UserListService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['lists', 'users'],
@@ -12,6 +15,11 @@ export const meta = {
 	kind: 'write:account',
 
 	description: 'Add a user to an existing list.',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 30,
+	},
 
 	errors: {
 		noSuchList: {
@@ -37,6 +45,12 @@ export const meta = {
 			code: 'YOU_HAVE_BEEN_BLOCKED',
 			id: '990232c5-3f9d-4d83-9f3f-ef27b6332a4b',
 		},
+
+		tooManyUsers: {
+			message: 'You can not push users any more.',
+			code: 'TOO_MANY_USERS',
+			id: '2dd9752e-a338-413d-8eec-41814430989b',
+		},
 	},
 } as const;
 
@@ -50,43 +64,67 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the list
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
-	}
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
-	// Fetch the user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+		@Inject(DI.blockingsRepository)
+		private blockingsRepository: BlockingsRepository,
 
-	// Check blocking
-	if (user.id !== me.id) {
-		const block = await Blockings.findOneBy({
-			blockerId: user.id,
-			blockeeId: me.id,
+		private getterService: GetterService,
+		private userListService: UserListService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the list
+			const userList = await this.userListsRepository.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
+
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			// Fetch the user
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
+
+			// Check blocking
+			if (user.id !== me.id) {
+				const block = await this.blockingsRepository.findOneBy({
+					blockerId: user.id,
+					blockeeId: me.id,
+				});
+				if (block) {
+					throw new ApiError(meta.errors.youHaveBeenBlocked);
+				}
+			}
+
+			const exist = await this.userListJoiningsRepository.findOneBy({
+				userListId: userList.id,
+				userId: user.id,
+			});
+
+			if (exist) {
+				throw new ApiError(meta.errors.alreadyAdded);
+			}
+
+			try {
+				await this.userListService.push(user, userList, me);
+			} catch (err) {
+				if (err instanceof UserListService.TooManyUsersError) {
+					throw new ApiError(meta.errors.tooManyUsers);
+				}
+
+				throw err;
+			}
 		});
-		if (block) {
-			throw new ApiError(meta.errors.youHaveBeenBlocked);
-		}
 	}
-
-	const exist = await UserListJoinings.findOneBy({
-		userListId: userList.id,
-		userId: user.id,
-	});
-
-	if (exist) {
-		throw new ApiError(meta.errors.alreadyAdded);
-	}
-
-	// Push the user
-	await pushUserToUserList(user, userList);
-});
+}

@@ -1,10 +1,13 @@
 import { IsNull, MoreThan } from 'typeorm';
-import config from '@/config/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Ads, Emojis, Users } from '@/models/index.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -26,7 +29,6 @@ export const meta = {
 			version: {
 				type: 'string',
 				optional: false, nullable: false,
-				example: config.version,
 			},
 			name: {
 				type: 'string',
@@ -76,22 +78,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			disableLocalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			disableGlobalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerLocalUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerRemoteUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			cacheRemoteFiles: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -113,6 +99,14 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			recaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableTurnstile: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			turnstileSiteKey: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -141,43 +135,6 @@ export const meta = {
 			maxNoteTextLength: {
 				type: 'number',
 				optional: false, nullable: false,
-			},
-			emojis: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						id: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'id',
-						},
-						aliases: {
-							type: 'array',
-							optional: false, nullable: false,
-							items: {
-								type: 'string',
-								optional: false, nullable: false,
-							},
-						},
-						category: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-						host: {
-							type: 'string',
-							optional: false, nullable: true,
-							description: 'The local host is represented with `null`.',
-						},
-						url: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-					},
-				},
 			},
 			ads: {
 				type: 'array',
@@ -212,18 +169,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			enableTwitterIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableGithubIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableDiscordIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
 			enableServiceWorker: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -235,6 +180,10 @@ export const meta = {
 			proxyAccountName: {
 				type: 'string',
 				optional: false, nullable: true,
+			},
+			mediaProxy: {
+				type: 'string',
+				optional: false, nullable: false,
 			},
 			features: {
 				type: 'object',
@@ -268,18 +217,6 @@ export const meta = {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					twitter: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					github: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					discord: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
 					serviceWorker: {
 						type: 'boolean',
 						optional: false, nullable: false,
@@ -304,111 +241,106 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const instance = await fetchMeta(true);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
+	
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	const emojis = await Emojis.find({
-		where: {
-			host: IsNull(),
-		},
-		order: {
-			category: 'ASC',
-			name: 'ASC',
-		},
-		cache: {
-			id: 'meta_emojis',
-			milliseconds: 3600000,	// 1 hour
-		},
-	});
+		@Inject(DI.adsRepository)
+		private adsRepository: AdsRepository,
 
-	const ads = await Ads.find({
-		where: {
-			expiresAt: MoreThan(new Date()),
-		},
-	});
+		private userEntityService: UserEntityService,
+		private metaService: MetaService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const instance = await this.metaService.fetch(true);
 
-	const response: any = {
-		maintainerName: instance.maintainerName,
-		maintainerEmail: instance.maintainerEmail,
+			const ads = await this.adsRepository.find({
+				where: {
+					expiresAt: MoreThan(new Date()),
+				},
+			});
 
-		version: config.version,
+			const response: any = {
+				maintainerName: instance.maintainerName,
+				maintainerEmail: instance.maintainerEmail,
 
-		name: instance.name,
-		uri: config.url,
-		description: instance.description,
-		langs: instance.langs,
-		tosUrl: instance.ToSUrl,
-		repositoryUrl: instance.repositoryUrl,
-		feedbackUrl: instance.feedbackUrl,
-		disableRegistration: instance.disableRegistration,
-		disableLocalTimeline: instance.disableLocalTimeline,
-		disableGlobalTimeline: instance.disableGlobalTimeline,
-		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		emailRequiredForSignup: instance.emailRequiredForSignup,
-		enableHcaptcha: instance.enableHcaptcha,
-		hcaptchaSiteKey: instance.hcaptchaSiteKey,
-		enableRecaptcha: instance.enableRecaptcha,
-		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: instance.swPublicKey,
-		themeColor: instance.themeColor,
-		mascotImageUrl: instance.mascotImageUrl,
-		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
-		iconUrl: instance.iconUrl,
-		backgroundImageUrl: instance.backgroundImageUrl,
-		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		emojis: await Emojis.packMany(emojis),
-		defaultLightTheme: instance.defaultLightTheme,
-		defaultDarkTheme: instance.defaultDarkTheme,
-		ads: ads.map(ad => ({
-			id: ad.id,
-			url: ad.url,
-			place: ad.place,
-			ratio: ad.ratio,
-			imageUrl: ad.imageUrl,
-		})),
-		enableEmail: instance.enableEmail,
+				version: this.config.version,
 
-		enableTwitterIntegration: instance.enableTwitterIntegration,
-		enableGithubIntegration: instance.enableGithubIntegration,
-		enableDiscordIntegration: instance.enableDiscordIntegration,
+				name: instance.name,
+				uri: this.config.url,
+				description: instance.description,
+				langs: instance.langs,
+				tosUrl: instance.ToSUrl,
+				repositoryUrl: instance.repositoryUrl,
+				feedbackUrl: instance.feedbackUrl,
+				disableRegistration: instance.disableRegistration,
+				emailRequiredForSignup: instance.emailRequiredForSignup,
+				enableHcaptcha: instance.enableHcaptcha,
+				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableRecaptcha: instance.enableRecaptcha,
+				recaptchaSiteKey: instance.recaptchaSiteKey,
+				enableTurnstile: instance.enableTurnstile,
+				turnstileSiteKey: instance.turnstileSiteKey,
+				swPublickey: instance.swPublicKey,
+				themeColor: instance.themeColor,
+				mascotImageUrl: instance.mascotImageUrl,
+				bannerUrl: instance.bannerUrl,
+				errorImageUrl: instance.errorImageUrl,
+				iconUrl: instance.iconUrl,
+				backgroundImageUrl: instance.backgroundImageUrl,
+				logoImageUrl: instance.logoImageUrl,
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
+				defaultLightTheme: instance.defaultLightTheme,
+				defaultDarkTheme: instance.defaultDarkTheme,
+				ads: ads.map(ad => ({
+					id: ad.id,
+					url: ad.url,
+					place: ad.place,
+					ratio: ad.ratio,
+					imageUrl: ad.imageUrl,
+				})),
+				enableEmail: instance.enableEmail,
+				enableServiceWorker: instance.enableServiceWorker,
 
-		enableServiceWorker: instance.enableServiceWorker,
+				translatorAvailable: instance.deeplAuthKey != null,
 
-		translatorAvailable: instance.deeplAuthKey != null,
+				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
-		...(ps.detail ? {
-			pinnedPages: instance.pinnedPages,
-			pinnedClipId: instance.pinnedClipId,
-			cacheRemoteFiles: instance.cacheRemoteFiles,
-			requireSetup: (await Users.countBy({
-				host: IsNull(),
-			})) === 0,
-		} : {}),
-	};
+				mediaProxy: this.config.mediaProxy,
 
-	if (ps.detail) {
-		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+				...(ps.detail ? {
+					pinnedPages: instance.pinnedPages,
+					pinnedClipId: instance.pinnedClipId,
+					cacheRemoteFiles: instance.cacheRemoteFiles,
+					requireSetup: (await this.usersRepository.countBy({
+						host: IsNull(),
+					})) === 0,
+				} : {}),
+			};
 
-		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
-		response.features = {
-			registration: !instance.disableRegistration,
-			localTimeLine: !instance.disableLocalTimeline,
-			globalTimeLine: !instance.disableGlobalTimeline,
-			emailRequiredForSignup: instance.emailRequiredForSignup,
-			elasticsearch: config.elasticsearch ? true : false,
-			hcaptcha: instance.enableHcaptcha,
-			recaptcha: instance.enableRecaptcha,
-			objectStorage: instance.useObjectStorage,
-			twitter: instance.enableTwitterIntegration,
-			github: instance.enableGithubIntegration,
-			discord: instance.enableDiscordIntegration,
-			serviceWorker: instance.enableServiceWorker,
-			miauth: true,
-		};
+			if (ps.detail) {
+				const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
+
+				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
+				response.features = {
+					registration: !instance.disableRegistration,
+					emailRequiredForSignup: instance.emailRequiredForSignup,
+					elasticsearch: this.config.elasticsearch ? true : false,
+					hcaptcha: instance.enableHcaptcha,
+					recaptcha: instance.enableRecaptcha,
+					turnstile: instance.enableTurnstile,
+					objectStorage: instance.useObjectStorage,
+					serviceWorker: instance.enableServiceWorker,
+					miauth: true,
+				};
+			}
+
+			return response;
+		});
 	}
-
-	return response;
-});
+}

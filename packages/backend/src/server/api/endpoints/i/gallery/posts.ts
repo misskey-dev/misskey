@@ -1,6 +1,9 @@
-import define from '../../../define.js';
-import { GalleryPosts } from '@/models/index.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GalleryPostsRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'gallery'],
@@ -31,13 +34,24 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
-		.andWhere(`post.userId = :meId`, { meId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.galleryPostsRepository)
+		private galleryPostsRepository: GalleryPostsRepository,
 
-	const posts = await query
-		.take(ps.limit)
-		.getMany();
+		private galleryPostEntityService: GalleryPostEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.galleryPostsRepository.createQueryBuilder('post'), ps.sinceId, ps.untilId)
+				.andWhere('post.userId = :meId', { meId: me.id });
 
-	return await GalleryPosts.packMany(posts, user);
-});
+			const posts = await query
+				.take(ps.limit)
+				.getMany();
+
+			return await this.galleryPostEntityService.packMany(posts, me);
+		});
+	}
+}

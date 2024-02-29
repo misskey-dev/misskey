@@ -1,5 +1,7 @@
-import { UserGroupInvitations } from '@/models/index.js';
-import define from '../../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupInvitationsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../../error.js';
 
 export const meta = {
@@ -29,19 +31,27 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch the invitation
-	const invitation = await UserGroupInvitations.findOneBy({
-		id: ps.invitationId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupInvitationsRepository)
+		private userGroupInvitationsRepository: UserGroupInvitationsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the invitation
+			const invitation = await this.userGroupInvitationsRepository.findOneBy({
+				id: ps.invitationId,
+			});
 
-	if (invitation == null) {
-		throw new ApiError(meta.errors.noSuchInvitation);
+			if (invitation == null) {
+				throw new ApiError(meta.errors.noSuchInvitation);
+			}
+
+			if (invitation.userId !== me.id) {
+				throw new ApiError(meta.errors.noSuchInvitation);
+			}
+
+			await this.userGroupInvitationsRepository.delete(invitation.id);
+		});
 	}
-
-	if (invitation.userId !== user.id) {
-		throw new ApiError(meta.errors.noSuchInvitation);
-	}
-
-	await UserGroupInvitations.delete(invitation.id);
-});
+}

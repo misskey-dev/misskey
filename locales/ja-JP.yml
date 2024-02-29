@@ -2,6 +2,7 @@ _lang_: "日本語"
 
 headlineMisskey: "ノートでつながるネットワーク"
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
+poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>を使ったサービス(Misskeyインスタンスと呼ばれます)のひとつです。"
 monthAndDay: "{month}月 {day}日"
 search: "検索"
 notifications: "通知"
@@ -12,6 +13,7 @@ fetchingAsApObject: "連合に照会中"
 ok: "OK"
 gotIt: "わかった"
 cancel: "キャンセル"
+noThankYou: "やめておく"
 enterUsername: "ユーザー名を入力"
 renotedBy: "{user}がRenote"
 noNotes: "ノートはありません"
@@ -47,6 +49,7 @@ deleteAndEdit: "削除して編集"
 deleteAndEditConfirm: "このノートを削除してもう一度編集しますか？このノートへのリアクション、Renote、返信も全て削除されます。"
 addToList: "リストに追加"
 sendMessage: "メッセージを送信"
+copyRSS: "RSSをコピー"
 copyUsername: "ユーザー名をコピー"
 searchUser: "ユーザーを検索"
 reply: "返信"
@@ -100,6 +103,8 @@ renoted: "Renoteしました。"
 cantRenote: "この投稿はRenoteできません。"
 cantReRenote: "RenoteをRenoteすることはできません。"
 quote: "引用"
+inChannelRenote: "チャンネル内Renote"
+inChannelQuote: "チャンネル内引用"
 pinnedNote: "ピン留めされたノート"
 pinned: "ピン留め"
 you: "あなた"
@@ -107,6 +112,7 @@ clickToShow: "クリックして表示"
 sensitive: "閲覧注意"
 add: "追加"
 reaction: "リアクション"
+reactions: "リアクション"
 reactionSetting: "ピッカーに表示するリアクション"
 reactionSettingDescription2: "ドラッグして並び替え、クリックして削除、＋を押して追加します。"
 rememberNoteVisibility: "公開範囲を記憶する"
@@ -125,6 +131,7 @@ unblockConfirm: "ブロック解除しますか？"
 suspendConfirm: "凍結しますか？"
 unsuspendConfirm: "解凍しますか？"
 selectList: "リストを選択"
+selectChannel: "チャンネルを選択"
 selectAntenna: "アンテナを選択"
 selectWidget: "ウィジェットを選択"
 editWidgets: "ウィジェットを編集"
@@ -140,8 +147,8 @@ cacheRemoteFiles: "リモートのファイルをキャッシュする"
 cacheRemoteFilesDescription: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。サーバーのストレージを節約できますが、サムネイルが生成されないので通信量が増加します。"
 flagAsBot: "Botとして設定"
 flagAsBotDescription: "このアカウントがプログラムによって運用される場合は、このフラグをオンにします。オンにすると、反応の連鎖を防ぐためのフラグとして他の開発者に役立ったり、Misskeyのシステム上での扱いがBotに合ったものになります。"
-flagAsCat: "Catとして設定"
-flagAsCatDescription: "このアカウントが猫であることを示す場合は、このフラグをオンにします。"
+flagAsCat: "にゃああああああああああああああ！！！！！！！！！！！！"
+flagAsCatDescription: "にゃにゃにゃ？？"
 flagShowTimelineReplies: "タイムラインにノートへの返信を表示する"
 flagShowTimelineRepliesDescription: "オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します。"
 autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自動承認"
@@ -164,7 +171,6 @@ annotation: "注釈"
 federation: "連合"
 instances: "インスタンス"
 registeredAt: "初観測"
-latestRequestSentAt: "直近のリクエスト送信"
 latestRequestReceivedAt: "直近のリクエスト受信"
 latestStatus: "直近のステータス"
 storageUsage: "ストレージ使用量"
@@ -191,7 +197,7 @@ clearQueueConfirmText: "未配達の投稿は配送されなくなります。�
 clearCachedFiles: "キャッシュをクリア"
 clearCachedFilesConfirm: "キャッシュされたリモートファイルをすべて削除しますか？"
 blockedInstances: "ブロックしたインスタンス"
-blockedInstancesDescription: "ブロックしたいインスタンスのホストを改行で区切って設定します。ブロックされたインスタンスは、このインスタンスとやり取りできなくなります。"
+blockedInstancesDescription: "ブロックしたいインスタンスのホストを改行で区切って設定します。ブロックされたインスタンスは、このインスタンスとやり取りできなくなります。サブドメインもブロックされます。"
 muteAndBlock: "ミュートとブロック"
 mutedUsers: "ミュートしたユーザー"
 blockedUsers: "ブロックしたユーザー"
@@ -253,6 +259,8 @@ noMoreHistory: "これより過去の履歴はありません"
 startMessaging: "チャットを開始"
 nUsersRead: "{n}人が読みました"
 agreeTo: "{0}に同意"
+agreeBelow: "下記に同意する"
+basicNotesBeforeCreateAccount: "基本的な注意事項"
 tos: "利用規約"
 start: "始める"
 home: "ホーム"
@@ -348,6 +356,10 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "reCAPTCHAを有効にする"
 recaptchaSiteKey: "サイトキー"
 recaptchaSecretKey: "シークレットキー"
+turnstile: "Turnstile"
+enableTurnstile: "Turnstileを有効にする"
+turnstileSiteKey: "サイトキー"
+turnstileSecretKey: "シークレットキー"
 avoidMultiCaptchaConfirm: "複数のCaptchaを使用すると干渉を起こす可能性があります。他のCaptchaを無効にしますか？キャンセルして複数のCaptchaを有効化したままにすることも可能です。"
 antennas: "アンテナ"
 manageAntennas: "アンテナの管理"
@@ -450,13 +462,15 @@ language: "言語"
 uiLanguage: "UIの表示言語"
 groupInvited: "グループに招待されました"
 aboutX: "{x}について"
-useOsNativeEmojis: "OSネイティブの絵文字を使用"
+emojiStyle: "絵文字のスタイル"
+native: "ネイティブ"
 disableDrawer: "メニューをドロワーで表示しない"
 youHaveNoGroups: "グループがありません"
 joinOrCreateGroup: "既存のグループに招待してもらうか、新しくグループを作成してください。"
 noHistory: "履歴はありません"
 signinHistory: "ログイン履歴"
-disableAnimatedMfm: "動きのあるMFMを無効にする"
+enableAdvancedMfm: "高度なMFMを有効にする"
+enableAnimatedMfm: "動きのあるMFMを有効にする"
 doing: "やっています"
 category: "カテゴリ"
 tags: "タグ"
@@ -503,6 +517,7 @@ deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
 newNoteRecived: "新しいノートがあります"
 sounds: "サウンド"
+sound: "サウンド"
 listen: "聴く"
 none: "なし"
 showInPage: "ページで表示"
@@ -708,6 +723,7 @@ accentColor: "アクセント"
 textColor: "文字"
 saveAs: "名前を付けて保存"
 advanced: "高度"
+advancedSettings: "高度な設定"
 value: "値"
 createdAt: "作成日時"
 updatedAt: "更新日時"
@@ -851,6 +867,8 @@ failedToFetchAccountInformation: "アカウント情報の取得に失敗しま�
 rateLimitExceeded: "レート制限を超えました"
 cropImage: "画像のクロップ"
 cropImageAsk: "画像をクロップしますか？"
+cropYes: "クロップする"
+cropNo: "そのまま使う"
 file: "ファイル"
 recentNHours: "直近{n}時間"
 recentNDays: "直近{n}日"
@@ -893,6 +911,350 @@ navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
 move: "移動"
+pushNotification: "プッシュ通知"
+subscribePushNotification: "プッシュ通知を有効化"
+unsubscribePushNotification: "プッシュ通知を停止する"
+pushNotificationAlreadySubscribed: "プッシュ通知は有効です"
+pushNotificationNotSupported: "ブラウザかインスタンスがプッシュ通知に非対応"
+sendPushNotificationReadMessage: "通知やメッセージが既読になったらプッシュ通知を削除する"
+sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」という通知が一瞬表示されるようになります。端末の電池消費量が増加する可能性があります。"
+windowMaximize: "最大化"
+windowRestore: "元に戻す"
+caption: "キャプション"
+loggedInAsBot: "Botアカウントでログイン中"
+tools: "ツール"
+cannotLoad: "読み込めません"
+numberOfProfileView: "プロフィール表示回数"
+like: "いいね！"
+unlike: "いいねを解除"
+numberOfLikes: "いいね数"
+show: "表示"
+neverShow: "今後表示しない"
+remindMeLater: "また後で"
+didYouLikeMisskey: "Misskeyを気に入っていただけましたか？"
+pleaseDonate: "Misskeyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！"
+roles: "ロール"
+role: "ロール"
+normalUser: "一般ユーザー"
+undefined: "未定義"
+assign: "アサイン"
+unassign: "アサインを解除"
+color: "色"
+manageCustomEmojis: "カスタム絵文字の管理"
+youCannotCreateAnymore: "これ以上作成することはできません。"
+cannotPerformTemporary: "一時的に利用できません"
+cannotPerformTemporaryDescription: "操作回数が制限を超過するため一時的に利用できません。しばらく時間を置いてから再度お試しください。"
+preset: "プリセット"
+selectFromPresets: "プリセットから選択"
+achievements: "実績"
+gotInvalidResponseError: "サーバーの応答が無効です"
+gotInvalidResponseErrorDescription: "サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
+thisPostMayBeAnnoying: "この投稿は迷惑になる可能性があります。"
+thisPostMayBeAnnoyingHome: "ホームに投稿"
+thisPostMayBeAnnoyingCancel: "やめる"
+thisPostMayBeAnnoyingIgnore: "このまま投稿"
+collapseRenotes: "見たことのあるRenoteを省略して表示"
+internalServerError: "サーバー内部エラー"
+internalServerErrorDescription: "サーバー内部で予期しないエラーが発生しました。"
+copyErrorInfo: "エラー情報をコピー"
+
+_achievements:
+  earnedAt: "獲得日時"
+  _types:
+    _notes1:
+      title: "just setting up my msky"
+      description: "初めてノートを投稿した"
+      flavor: "良いMisskeyライフを！"
+    _notes10:
+      title: "いくつかのノート"
+      description: "ノートを10回投稿した"
+    _notes100:
+      title: "たくさんのノート"
+      description: "ノートを100回投稿した"
+    _notes500:
+      title: "ノートまみれ"
+      description: "ノートを500回投稿した"
+    _notes1000:
+      title: "ノートの山"
+      description: "ノートを1,000回投稿した"
+    _notes5000:
+      title: "湧き出るノート"
+      description: "ノートを5,000回投稿した"
+    _notes10000:
+      title: "スーパーノート"
+      description: "ノートを10,000回投稿した"
+    _notes20000:
+      title: "ニードモアノート"
+      description: "ノートを20,000回投稿した"
+    _notes30000:
+      title: "ノートノートノート"
+      description: "ノートを30,000回投稿した"
+    _notes40000:
+      title: "ノート工場"
+      description: "ノートを40,000回投稿した"
+    _notes50000:
+      title: "ノートの惑星"
+      description: "ノートを50,000回投稿した"
+    _notes60000:
+      title: "ノートクエーサー"
+      description: "ノートを60,000回投稿した"
+    _notes70000:
+      title: "ブラックノートホール"
+      description: "ノートを70,000回投稿した"
+    _notes80000:
+      title: "ノートギャラクシー"
+      description: "ノートを80,000回投稿した"
+    _notes90000:
+      title: "ノートバース"
+      description: "ノートを90,000回投稿した"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "ノートを100,000回投稿した"
+      flavor: "そんなに書くことある？"
+    _login3:
+      title: "ビギナーⅠ"
+      description: "通算ログイン日数が3日"
+      flavor: "今日からね僕は ミスキストってことで"
+    _login7:
+      title: "ビギナーⅡ"
+      description: "通算ログイン日数が7日"
+      flavor: "慣れてきましたか？"
+    _login15:
+      title: "ビギナーⅢ"
+      description: "通算ログイン日数が15日"
+    _login30:
+      title: "ミスキストⅠ"
+      description: "通算ログイン日数が30日"
+    _login60:
+      title: "ミスキストⅡ"
+      description: "通算ログイン日数が60日"
+    _login100:
+      title: "ミスキストⅢ"
+      description: "通算ログイン日数が100日"
+      flavor: "そのユーザー、ミスキストにつき"
+    _login200:
+      title: "常連Ⅰ"
+      description: "通算ログイン日数が200日"
+    _login300:
+      title: "常連Ⅱ"
+      description: "通算ログイン日数が300日"
+    _login400:
+      title: "常連Ⅲ"
+      description: "通算ログイン日数が400日"
+    _login500:
+      title: "ベテランⅠ"
+      description: "通算ログイン日数が500日"
+      flavor: "諸君、私はノートが好きだ"
+    _login600:
+      title: "ベテランⅡ"
+      description: "通算ログイン日数が600日"
+    _login700:
+      title: "ベテランⅢ"
+      description: "通算ログイン日数が700日"
+    _login800:
+      title: "ノートマスターⅠ"
+      description: "通算ログイン日数が800日"
+    _login900:
+      title: "ノートマスターⅡ"
+      description: "通算ログイン日数が900日"
+    _login1000:
+      title: "ノートマスターⅢ"
+      description: "通算ログイン日数が1,000日"
+      flavor: "Misskeyを使ってくれてありがとう！"
+    _noteClipped1:
+      title: "クリップせずにはいられないな"
+      description: "初めてノートをクリップした"
+    _noteFavorited1:
+      title: "星をみるひと"
+      description: "初めてノートをお気に入りに登録した"
+    _myNoteFavorited1:
+      title: "星が欲しい"
+      description: "自分のノートが他の人からお気に入りに登録された"
+    _profileFilled:
+      title: "準備万端"
+      description: "プロフィール設定を行った"
+    _markedAsCat:
+      title: "吾輩は猫である"
+      description: "アカウントをCatとして設定した"
+      flavor: "名前はまだない。"
+    _following1:
+      title: "はじめてのフォロー"
+      description: "初めてフォローした"
+    _following10:
+      title: "ついてく、ついてく"
+      description: "フォローが10人を超した"
+    _following50:
+      title: "友達たくさん"
+      description: "フォローが50人を超した"
+    _following100:
+      title: "友達100人"
+      description: "フォローが100人を超した"
+    _following300:
+      title: "友達過多"
+      description: "フォローが300人を超した"
+    _followers1:
+      title: "はじめてのフォロワー"
+      description: "初めてフォローされた"
+    _followers10:
+      title: "フォローミー！"
+      description: "フォロワーが10人を超した"
+    _followers50:
+      title: "ぞろぞろ"
+      description: "フォロワーが50人を超した"
+    _followers100:
+      title: "人気者"
+      description: "フォロワーが100人を超した"
+    _followers300:
+      title: "一列でお並びください"
+      description: "フォロワーが300人を超した"
+    _followers500:
+      title: "基地局"
+      description: "フォロワーが500人を超した"
+    _followers1000:
+      title: "インフルエンサー"
+      description: "フォロワーが1,000人を超した"
+    _collectAchievements30:
+      title: "実績コレクター"
+      description: "実績を30個以上獲得した"
+    _viewAchievements3min:
+      title: "実績好き"
+      description: "実績一覧を3分以上眺め続けた"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "\"I ❤ #Misskey\"を投稿した"
+      flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
+    _foundTreasure:
+      title: "宝探し"
+      description: "隠されたお宝を発見した"
+    _client30min:
+      title: "ひとやすみ"
+      description: "クライアントを起動してから30分以上経過した"
+    _noteDeletedWithin1min:
+      title: "いまのなし"
+      description: "投稿してから1分以内にその投稿を削除した"
+    _postedAtLateNight:
+      title: "夜行性"
+      description: "深夜にノートを投稿した"
+      flavor: "そろそろ寝よう。"
+    _postedAt0min0sec:
+      title: "時報"
+      description: "0分0秒にノートを投稿した"
+      flavor: "ポッ ポッ ポッ ピーン"
+    _selfQuote:
+      title: "自己言及"
+      description: "自分のノートを引用した"
+    _htl20npm:
+      title: "流れるTL"
+      description: "ホームタイムラインの流速が20npmを越す"
+    _viewInstanceChart:
+      title: "アナリスト"
+      description: "インスタンスのチャートを表示した"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "スクラッチパッドで hello world を出力した"
+    _open3windows:
+      title: "マルチウィンドウ"
+      description: "ウィンドウを3つ以上開いた状態にした"
+    _driveFolderCircularReference:
+      title: "循環参照"
+      description: "ドライブのフォルダを再帰的な入れ子にしようとした"
+    _reactWithoutRead:
+      title: "ちゃんと読んだ？"
+      description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"
+    _clickedClickHere:
+      title: "ここをクリック"
+      description: "ここをクリックした"
+    _justPlainLucky:
+      title: "単なるラッキー"
+      description: "10秒ごとに0.005%の確率で獲得"
+    _setNameToSyuilo:
+      title: "神様コンプレックス"
+      description: "名前を syuilo に設定した"
+    _passedSinceAccountCreated1:
+      title: "一周年"
+      description: "アカウント作成から1年経過した"
+    _passedSinceAccountCreated2:
+      title: "二周年"
+      description: "アカウント作成から2年経過した"
+    _passedSinceAccountCreated3:
+      title: "三周年"
+      description: "アカウント作成から3年経過した"
+    _loggedInOnBirthday:
+      title: "ハッピーバースデー"
+      description: "誕生日にログインした"
+    _loggedInOnNewYearsDay:
+      title: "あけましておめでとうございます"
+      description: "元日にログインした"
+      flavor: "今年も弊インスタンスをよろしくお願いします"
+    _cookieClicked:
+      title: "クッキーをクリックするゲーム"
+      description: "クッキーをクリックした"
+      flavor: "ソフト間違ってない？"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Brain Diverへのリンクを投稿した"
+      flavor: "Misskey-Misskey La-Tu-Ma"
+
+_role:
+  new: "ロールの作成"
+  edit: "ロールの編集"
+  name: "ロール名"
+  description: "ロールの説明"
+  permission: "ロールの権限"
+  descriptionOfPermission: "<b>モデレーター</b>は基本的なモデレーションに関する操作を行えます。\n<b>管理者</b>はインスタンスの全ての設定を変更できます。"
+  assignTarget: "アサイン"
+  descriptionOfAssignTarget: "<b>マニュアル</b>は誰がこのロールに含まれるかを手動で管理します。\n<b>コンディショナル</b>は条件を設定し、それに合致するユーザーが自動で含まれるようになります。"
+  manual: "マニュアル"
+  conditional: "コンディショナル"
+  condition: "条件"
+  isConditionalRole: "これはコンディショナルロールです。"
+  isPublic: "ロールを公開"
+  descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
+  options: "オプション"
+  policies: "ポリシー"
+  baseRole: "ベースロール"
+  useBaseValue: "ベースロールの値を使用"
+  chooseRoleToAssign: "アサインするロールを選択"
+  iconUrl: "アイコン画像のURL"
+  asBadge: "バッジとして表示"
+  descriptionOfAsBadge: "オンにすると、ユーザー名の横にロールのアイコンが表示されます。"
+  canEditMembersByModerator: "モデレーターのメンバー編集を許可"
+  descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
+  priority: "優先度"
+  _priority:
+    low: "低"
+    middle: "中"
+    high: "高"
+  _options:
+    gtlAvailable: "グローバルタイムラインの閲覧"
+    ltlAvailable: "ローカルタイムラインの閲覧"
+    canPublicNote: "パブリック投稿の許可"
+    canInvite: "インスタンス招待コードの発行"
+    canManageCustomEmojis: "カスタム絵文字の管理"
+    driveCapacity: "ドライブ容量"
+    pinMax: "ノートのピン留めの最大数"
+    antennaMax: "アンテナの作成可能数"
+    wordMuteMax: "ワードミュートの最大文字数"
+    webhookMax: "Webhookの作成可能数"
+    clipMax: "クリップの作成可能数"
+    noteEachClipsMax: "クリップ内のノートの最大数"
+    userListMax: "ユーザーリストの作成可能数"
+    userEachUserListsMax: "ユーザーリスト内のユーザーの最大数"
+    rateLimitFactor: "レートリミット"
+    descriptionOfRateLimitFactor: "小さいほど制限が緩和され、大きいほど制限が強化されます。"
+    canHideAds: "広告の非表示"
+  _condition:
+    isLocal: "ローカルユーザー"
+    isRemote: "リモートユーザー"
+    createdLessThan: "アカウント作成から～以内"
+    createdMoreThan: "アカウント作成から～経過"
+    followersLessThanOrEq: "フォロワー数が～以下"
+    followersMoreThanOrEq: "フォロワー数が～以上"
+    followingLessThanOrEq: "フォロー数が～以下"
+    followingMoreThanOrEq: "フォロー数が～以上"
+    and: "～かつ～"
+    or: "～または～"
+    not: "～ではない"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -931,6 +1293,7 @@ _accountDelete:
 _ad:
   back: "戻る"
   reduceFrequencyOfThisAd: "この広告の表示頻度を下げる"
+  hide: "表示しない"
 
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"
@@ -994,73 +1357,6 @@ _nsfw:
   respect: "閲覧注意のメディアは隠す"
   ignore: "閲覧注意のメディアを隠さない"
   force: "常にメディアを隠す"
-
-_mfm:
-  cheatSheet: "MFMチートシート"
-  intro: "MFMは、Misskey内の様々な場所で使用できる専用のマークアップ言語です。ここでは、MFMで使用可能な構文一覧が確認できます。"
-  dummy: "MisskeyでFediverseの世界が広がります"
-  mention: "メンション"
-  mentionDescription: "アットマーク + ユーザー名で、特定のユーザーを示すことができます。"
-  hashtag: "ハッシュタグ"
-  hashtagDescription: "ナンバーサイン + タグで、ハッシュタグを示すことができます。"
-  url: "URL"
-  urlDescription: "URLを示すことができます。"
-  link: "リンク"
-  linkDescription: "文章の特定の範囲を、URLに紐づけることができます。"
-  bold: "太字"
-  boldDescription: "文字を太く表示して強調することができます。"
-  small: "目立たなく"
-  smallDescription: "内容を小さく・薄く表示させることができます。"
-  center: "中央寄せ"
-  centerDescription: "内容を中央寄せで表示させることができます。"
-  inlineCode: "コード(インライン)"
-  inlineCodeDescription: "プログラムなどのコードをインラインでシンタックスハイライトします。"
-  blockCode: "コード(ブロック)"
-  blockCodeDescription: "複数行のプログラムなどのコードをブロックでシンタックスハイライトします。"
-  inlineMath: "数式(インライン)"
-  inlineMathDescription: "数式(KaTeX)をインラインで表示します。"
-  blockMath: "数式(ブロック)"
-  blockMathDescription: "複数行の数式(KaTeX)をブロックで表示します。"
-  quote: "引用"
-  quoteDescription: "内容が引用であることを示すことができます。"
-  emoji: "カスタム絵文字"
-  emojiDescription: "コロンでカスタム絵文字名を囲むと、カスタム絵文字を表示させることができます。"
-  search: "検索"
-  searchDescription: "入力済み検索ボックスを表示させることができます。"
-  flip: "反転"
-  flipDescription: "内容を上下または左右に反転させます。"
-  jelly: "アニメーション(びよんびよん)"
-  jellyDescription: "びよんびよんするアニメーションを与えます。"
-  tada: "アニメーション(じゃーん)"
-  tadaDescription: "ジャーン！という感じのアニメーションを与えます。"
-  jump: "アニメーション(ジャンプ)"
-  jumpDescription: "飛び跳ねるようなアニメーションを与えます。"
-  bounce: "アニメーション(バウンド)"
-  bounceDescription: "ぽよんぽよん弾むようなアニメーションを与えます。"
-  shake: "アニメーション(ぶるぶる)"
-  shakeDescription: "ぶるぶる震えるアニメーションを与えます。"
-  twitch: "アニメーション(ブレ)"
-  twitchDescription: "激しくブレるアニメーションを与えます。"
-  spin: "アニメーション(回転)"
-  spinDescription: "回転するアニメーションを与えます。"
-  x2: "大きく"
-  x2Description: "内容を大きく表示します。"
-  x3: "とても大きく"
-  x3Description: "内容をとても大きく表示します。"
-  x4: "究極に大きく"
-  x4Description: "内容を究極に大きく表示します。"
-  blur: "ぼかし"
-  blurDescription: "内容をぼかすことができます。ポインターを上に乗せるとはっきり見えるようになります。"
-  font: "フォント"
-  fontDescription: "内容のフォントを指定することができます。"
-  rainbow: "レインボー"
-  rainbowDescription: "内容をレインボーにします。"
-  sparkle: "キラキラ"
-  sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
-  rotate: "回転"
-  rotateDescription: "指定した角度で回転させます。"
-  plain: "プレーン"
-  plainDescription: "内側の構文を全て無効にします。"
 
 _instanceTicker:
   none: "表示しない"
@@ -1230,6 +1526,9 @@ _tutorial:
   step7_1: "これで、Misskeyの基本的な使い方の説明は終わりました。お疲れ様でした。"
   step7_2: "もっとMisskeyについて知りたいときは、{help}を見てみてください。"
   step7_3: "では、Misskeyをお楽しみください🚀"
+  step8_1: "最後に、プッシュ通知を有効化してみませんか？"
+  step8_2: "プッシュ通知を受け取ることで、Misskeyを開いていない時にもリアクションやフォロー、メンションなどに気づけます。"
+  step8_3: "通知の設定は後から変更できます。"
 
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
@@ -1277,12 +1576,15 @@ _permissions:
   "write:gallery-likes": "ギャラリーのいいねを操作する"
 
 _auth:
+  shareAccessTitle: "アプリへのアクセス許可"
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
   shareAccessAsk: "アカウントへのアクセスを許可しますか？"
+  permission: "{name}は次の権限を要求しています"
   permissionAsk: "このアプリは次の権限を要求しています"
   pleaseGoBack: "アプリケーションに戻ってやっていってください"
   callback: "アプリケーションに戻っています"
   denied: "アクセスを拒否しました"
+  pleaseLogin: "アプリケーションにアクセス許可を与えるには、ログインが必要です。"
 
 _antennaSources:
   all: "全てのノート"
@@ -1301,6 +1603,8 @@ _weekday:
   saturday: "土曜日"
 
 _widgets:
+  profile: "プロフィール"
+  instanceInfo: "インスタンス情報"
   memo: "付箋"
   notifications: "通知"
   timeline: "タイムライン"
@@ -1322,7 +1626,12 @@ _widgets:
   jobQueue: "ジョブキュー"
   serverMetric: "サーバーメトリクス"
   aiscript: "AiScriptコンソール"
+  aiscriptApp: "AiScript App"
   aichan: "藍"
+  userList: "ユーザーリスト"
+  _userList:
+    chooseList: "リストを選択"
+  clicker: "クリッカー"
 
 _cw:
   hide: "隠す"
@@ -1392,6 +1701,7 @@ _profile:
 
 _exportOrImport:
   allNotes: "全てのノート"
+  favoritedNotes: "お気に入りにしたノート"
   followingList: "フォロー"
   muteList: "ミュート"
   blockingList: "ブロック"
@@ -1433,6 +1743,22 @@ _timelines:
   social: "ソーシャル"
   global: "グローバル"
 
+_play:
+  new: "Playの作成"
+  edit: "Playの編集"
+  created: "Playを作成しました"
+  updated: "Playを更新しました"
+  deleted: "Playを削除しました"
+  pageSetting: "Play設定"
+  editThisPage: "このPlayを編集"
+  viewSource: "ソースを表示"
+  my: "自分のPlay"
+  liked: "いいねしたPlay"
+  featured: "人気"
+  title: "タイトル"
+  script: "スクリプト"
+  summary: "説明"
+
 _pages:
   newPage: "ページの作成"
   editPage: "ページの編集"
@@ -1468,8 +1794,6 @@ _pages:
   eyeCatchingImageRemove: "アイキャッチ画像を削除"
   chooseBlock: "ブロックを追加"
   selectType: "種類を選択"
-  enterVariableName: "変数名を決めてください"
-  variableNameIsAlreadyUsed: "その変数名は既に使われています"
   contentBlocks: "コンテンツ"
   inputBlocks: "入力"
   specialBlocks: "特殊"
@@ -1480,260 +1804,11 @@ _pages:
     image: "画像"
     button: "ボタン"
 
-    if: "もし"
-    _if:
-      variable: "変数"
-
-    post: "投稿フォーム"
-    _post:
-      text: "内容"
-      attachCanvasImage: "キャンバスの画像を添付する"
-      canvasId: "キャンバスID"
-
-    textInput: "テキスト入力"
-    _textInput:
-      name: "変数名"
-      text: "タイトル"
-      default: "デフォルト値"
-
-    textareaInput: "複数行テキスト入力"
-    _textareaInput:
-      name: "変数名"
-      text: "タイトル"
-      default: "デフォルト値"
-
-    numberInput: "数値入力"
-    _numberInput:
-      name: "変数名"
-      text: "タイトル"
-      default: "デフォルト値"
-
-    canvas: "キャンバス"
-    _canvas:
-      id: "キャンバスID"
-      width: "幅"
-      height: "高さ"
-
     note: "ノート埋め込み"
     _note:
       id: "ノートID"
       idDescription: "ノートURLをペーストして設定することもできます。"
       detailed: "詳細な表示"
-
-    switch: "スイッチ"
-    _switch:
-      name: "変数名"
-      text: "タイトル"
-      default: "デフォルト値"
-
-    counter: "カウンター"
-    _counter:
-      name: "変数名"
-      text: "タイトル"
-      inc: "増加値"
-
-    _button:
-      text: "タイトル"
-      colored: "色付き"
-      action: "ボタンを押したときの動作"
-      _action:
-        dialog: "ダイアログを表示する"
-        _dialog:
-          content: "内容"
-        resetRandom: "乱数をリセット"
-        pushEvent: "イベントを送信させる"
-        _pushEvent:
-          event: "イベント名"
-          message: "押したときに表示するメッセージ"
-          variable: "送信する変数"
-          no-variable: "なし"
-        callAiScript: "AiScript呼び出し"
-        _callAiScript:
-          functionName: "関数名"
-
-    radioButton: "選択肢"
-    _radioButton:
-      name: "変数名"
-      title: "タイトル"
-      values: "改行で区切った選択肢"
-      default: "デフォルト値"
-
-  script:
-    categories:
-      flow: "制御"
-      logical: "論理演算"
-      operation: "計算"
-      comparison: "比較"
-      random: "ランダム"
-      value: "値"
-      fn: "関数"
-      text: "テキスト操作"
-      convert: "変換"
-      list: "リスト"
-    blocks:
-      text: "テキスト"
-      multiLineText: "テキスト(複数行)"
-      textList: "テキストのリスト"
-      _textList:
-        info: "ひとつひとつを改行で区切ってください"
-      strLen: "テキストの長さ"
-      _strLen:
-        arg1: "テキスト"
-      strPick: "文字取り出し"
-      _strPick:
-        arg1: "テキスト"
-        arg2: "文字の位置"
-      strReplace: "テキスト置き換え"
-      _strReplace:
-        arg1: "テキスト"
-        arg2: "置き換え前"
-        arg3: "置き換え後"
-      strReverse: "テキストを反転"
-      _strReverse:
-        arg1: "テキスト"
-      join: "テキストを連結"
-      _join:
-        arg1: "リスト"
-        arg2: "区切り"
-      add: "足す"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "引く"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "掛ける"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "割る"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "割った余り"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "小数を丸める"
-      _round:
-        arg1: "数値"
-      eq: "AとBが同じ"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "AとBが異なる"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "AかつB"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "AまたはB"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< AがBより小さい"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> AがBより大きい"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= AがBと同じか小さい"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= AがBと同じか大きい"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "分岐"
-      _if:
-        arg1: "もし"
-        arg2: "なら"
-        arg3: "そうでなければ"
-      not: "否定"
-      _not:
-        arg1: "否定"
-      random: "ランダム"
-      _random:
-        arg1: "確率"
-      rannum: "乱数"
-      _rannum:
-        arg1: "最小"
-        arg2: "最大"
-      randomPick: "リストからランダムに選択"
-      _randomPick:
-        arg1: "リスト"
-      dailyRandom: "ランダム (ユーザーごとに日替わり)"
-      _dailyRandom:
-        arg1: "確率"
-      dailyRannum: "乱数 (ユーザーごとに日替わり)"
-      _dailyRannum:
-        arg1: "最小"
-        arg2: "最大"
-      dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
-      _dailyRandomPick:
-        arg1: "リスト"
-      seedRandom: "ランダム (シード)"
-      _seedRandom:
-        arg1: "シード"
-        arg2: "確率"
-      seedRannum: "乱数 (シード)"
-      _seedRannum:
-        arg1: "シード"
-        arg2: "最小"
-        arg3: "最大"
-      seedRandomPick: "リストからランダムに選択 (シード)"
-      _seedRandomPick:
-        arg1: "シード"
-        arg2: "リスト"
-      DRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
-      _DRPWPM:
-        arg1: "テキストのリスト"
-      pick: "リストから選択"
-      _pick:
-        arg1: "リスト"
-        arg2: "位置"
-      listLen: "リストの長さを取得"
-      _listLen:
-        arg1: "リスト"
-      number: "数値"
-      stringToNumber: "テキストを数値に"
-      _stringToNumber:
-        arg1: "テキスト"
-      numberToString: "数値をテキストに"
-      _numberToString:
-        arg1: "数値"
-      splitStrByLine: "テキストを行で分割"
-      _splitStrByLine:
-        arg1: "テキスト"
-      ref: "変数"
-      aiScriptVar: "AiScript変数"
-      fn: "関数"
-      _fn:
-        slots: "スロット"
-        slots-info: "スロットひとつひとつを改行で区切ってください"
-        arg1: "出力"
-      for: "繰り返し"
-      _for:
-        arg1: "回数"
-        arg2: "処理"
-    typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
-    thereIsEmptySlot: "スロット{slot}が空です！"
-    types:
-      string: "テキスト"
-      number: "数値"
-      boolean: "フラグ"
-      array: "リスト"
-      stringArray: "テキストのリスト"
-    emptySlot: "空のスロット"
-    enviromentVariables: "環境変数"
-    pageVariables: "ページ要素"
-    argVariables: "入力スロット"
 
 _relayStatus:
   requesting: "承認待ち"
@@ -1746,7 +1821,6 @@ _notification:
   youGotReply: "{name}からのリプライ"
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がRenoteしました"
-  youGotPoll: "{name}が投票しました"
   youGotMessagingMessageFromUser: "{name}からのチャットがあります"
   youGotMessagingMessageFromGroup: "{name}のチャットがあります"
   youWereFollowed: "フォローされました"
@@ -1754,7 +1828,9 @@ _notification:
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
   pollEnded: "アンケートの結果が出ました"
+  unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
+  achievementEarned: "実績を獲得"
 
   _types:
     all: "すべて"
@@ -1764,7 +1840,6 @@ _notification:
     renote: "Renote"
     quote: "引用"
     reaction: "リアクション"
-    pollVote: "アンケートに投票された"
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
@@ -1785,7 +1860,7 @@ _deck:
   swapRight: "右に移動"
   swapUp: "上に移動"
   swapDown: "下に移動"
-  stackLeft: "左に重ねる"
+  stackLeft: "左にスタック"
   popRight: "右に出す"
   profile: "プロファイル"
   newProfile: "新規プロファイル"
@@ -1801,5 +1876,6 @@ _deck:
     tl: "タイムライン"
     antenna: "アンテナ"
     list: "リスト"
+    channel: "チャンネル"
     mentions: "あなた宛て"
     direct: "ダイレクト"

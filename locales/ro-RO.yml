@@ -107,6 +107,7 @@ clickToShow: "Click pentru a afișa"
 sensitive: "NSFW"
 add: "Adaugă"
 reaction: "Reacție"
+reactions: "Reacție"
 reactionSetting: "Reacții care să apară in selectorul de reacții"
 reactionSettingDescription2: "Trage pentru a rearanja, apasă pe \"+\" pentru a adăuga."
 rememberNoteVisibility: "Amintește setarea de vizibilitate a notelor"
@@ -164,7 +165,6 @@ annotation: "Adnotări"
 federation: "Federație"
 instances: "Instanțe"
 registeredAt: "Înregistrat în"
-latestRequestSentAt: "Ultima cerere trimisă"
 latestRequestReceivedAt: "Ultima cerere primită"
 latestStatus: "Ultimul status"
 storageUsage: "Utilizare stocare"
@@ -347,6 +347,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "Activează reCAPTCHA"
 recaptchaSiteKey: "Site key"
 recaptchaSecretKey: "Secret key"
+turnstileSiteKey: "Site key"
+turnstileSecretKey: "Secret key"
 avoidMultiCaptchaConfirm: "Folosirea mai multor sisteme Captcha poate cauza interferență între acestea. Ai dori să dezactivezi alte sisteme Captcha acum active? Dacă preferi să rămână activate, apasă Anulare."
 antennas: "Antene"
 manageAntennas: "Gestionează Antenele"
@@ -448,13 +450,11 @@ language: "Limbă"
 uiLanguage: "Limba interfeței"
 groupInvited: "Ai fost invitat într-un grup"
 aboutX: "Despre {x}"
-useOsNativeEmojis: "Folosește emojiuri native OS-ului"
 disableDrawer: "Nu folosi meniuri în stil sertar"
 youHaveNoGroups: "Nu ai niciun grup"
 joinOrCreateGroup: "Primește o invitație într-un grup sau creează unul nou."
 noHistory: "Nu există istoric"
 signinHistory: "Istoric autentificări"
-disableAnimatedMfm: "Dezactivează MFM cu animații"
 doing: "Se procesează..."
 category: "Categorie"
 tags: "Etichete"
@@ -501,6 +501,7 @@ deleteAll: "Șterge tot"
 showFixedPostForm: "Arată caseta de postare în vârful cronologie"
 newNoteRecived: "Sunt note noi"
 sounds: "Sunete"
+sound: "Sunete"
 listen: "Ascultă"
 none: "Nimic"
 showInPage: "Arată în pagină"
@@ -646,14 +647,13 @@ middle: "Mediu"
 sent: "Trimite"
 searchByGoogle: "Caută"
 file: "Fișiere"
+show: "Arată"
+_role:
+  _priority:
+    middle: "Mediu"
 _email:
   _follow:
     title: "te-a urmărit"
-_mfm:
-  mention: "Mențiune"
-  quote: "Citează"
-  emoji: "Emoji personalizat"
-  search: "Caută"
 _theme:
   description: "Descriere"
   keys:
@@ -665,11 +665,15 @@ _sfx:
   notification: "Notificări"
   chat: "Chat"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Informații despre instanță"
   notifications: "Notificări"
   timeline: "Cronologie"
   activity: "Activitate"
   federation: "Federație"
   jobQueue: "coada de job-uri"
+  _userList:
+    chooseList: "Selectează o listă"
 _cw:
   show: "Incarcă mai mult"
 _visibility:
@@ -687,27 +691,12 @@ _charts:
   federation: "Federație"
 _timelines:
   home: "Acasă"
+_play:
+  script: "Script"
+  summary: "Descriere"
 _pages:
   blocks:
     image: "Imagini"
-  script:
-    categories:
-      list: "Liste"
-    blocks:
-      _join:
-        arg1: "Liste"
-      _randomPick:
-        arg1: "Liste"
-      _dailyRandomPick:
-        arg1: "Liste"
-      _seedRandomPick:
-        arg2: "Liste"
-      _pick:
-        arg1: "Liste"
-      _listLen:
-        arg1: "Liste"
-    types:
-      array: "Liste"
 _notification:
   youWereFollowed: "te-a urmărit"
   youWereInvitedToGroup: "Ai fost invitat într-un grup"
@@ -726,4 +715,5 @@ _deck:
     tl: "Cronologie"
     antenna: "Antene"
     list: "Liste"
+    channel: "Canale"
     mentions: "Mențiuni"

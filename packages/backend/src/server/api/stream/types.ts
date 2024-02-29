@@ -1,40 +1,60 @@
-import { EventEmitter } from 'events';
-import Emitter from 'strict-event-emitter-types';
-import { Channel } from '@/models/entities/channel.js';
-import { User } from '@/models/entities/user.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
-import { Note } from '@/models/entities/note.js';
-import { Antenna } from '@/models/entities/antenna.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { DriveFolder } from '@/models/entities/drive-folder.js';
-import { Emoji } from '@/models/entities/emoji.js';
-import { UserList } from '@/models/entities/user-list.js';
-import { MessagingMessage } from '@/models/entities/messaging-message.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
-import { Signin } from '@/models/entities/signin.js';
-import { Page } from '@/models/entities/page.js';
-import { Packed } from '@/misc/schema.js';
-import { Webhook } from '@/models/entities/webhook';
+import type { Channel } from '@/models/entities/Channel.js';
+import type { User } from '@/models/entities/User.js';
+import type { UserProfile } from '@/models/entities/UserProfile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { Antenna } from '@/models/entities/Antenna.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { DriveFolder } from '@/models/entities/DriveFolder.js';
+import type { UserList } from '@/models/entities/UserList.js';
+import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
+import type { UserGroup } from '@/models/entities/UserGroup.js';
+import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
+import type { Signin } from '@/models/entities/Signin.js';
+import type { Page } from '@/models/entities/Page.js';
+import type { Packed } from '@/misc/schema.js';
+import type { Webhook } from '@/models/entities/Webhook.js';
+import type { Meta } from '@/models/entities/Meta.js';
+import { Following, Role, RoleAssignment } from '@/models';
+import type Emitter from 'strict-event-emitter-types';
+import type { EventEmitter } from 'events';
 
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
 	userChangeSuspendedState: { id: User['id']; isSuspended: User['isSuspended']; };
-	userChangeSilencedState: { id: User['id']; isSilenced: User['isSilenced']; };
-	userChangeModeratorState: { id: User['id']; isModerator: User['isModerator']; };
 	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
 	remoteUserUpdated: { id: User['id']; };
+	follow: { followerId: User['id']; followeeId: User['id']; };
+	unfollow: { followerId: User['id']; followeeId: User['id']; };
+	blockingCreated: { blockerId: User['id']; blockeeId: User['id']; };
+	blockingDeleted: { blockerId: User['id']; blockeeId: User['id']; };
+	policiesUpdated: Role['policies'];
+	roleCreated: Role;
+	roleDeleted: Role;
+	roleUpdated: Role;
+	userRoleAssigned: RoleAssignment;
+	userRoleUnassigned: RoleAssignment;
 	webhookCreated: Webhook;
 	webhookDeleted: Webhook;
 	webhookUpdated: Webhook;
 	antennaCreated: Antenna;
 	antennaDeleted: Antenna;
 	antennaUpdated: Antenna;
+	metaUpdated: Meta;
 }
 
 export interface BroadcastTypes {
 	emojiAdded: {
 		emoji: Packed<'Emoji'>;
+	};
+	emojiUpdated: {
+		emojis: Packed<'Emoji'>[];
+	};
+	emojiDeleted: {
+		emojis: {
+			id?: string;
+			name: string;
+			[other: string]: any;
+		}[];
 	};
 }
 
@@ -187,63 +207,72 @@ type EventUnionFromDictionary<
 	U = Events<T>
 > = U[keyof U];
 
+// redis通すとDateのインスタンスはstringに変換されるので
+type Serialized<T> = {
+	[K in keyof T]: T[K] extends Date ? string : T[K] extends Record<string, any> ? Serialized<T[K]> : T[K];
+};
+
+type SerializedAll<T> = {
+	[K in keyof T]: Serialized<T[K]>;
+};
+
 // name/messages(spec) pairs dictionary
 export type StreamMessages = {
 	internal: {
 		name: 'internal';
-		payload: EventUnionFromDictionary<InternalStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<InternalStreamTypes>>;
 	};
 	broadcast: {
 		name: 'broadcast';
-		payload: EventUnionFromDictionary<BroadcastTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<BroadcastTypes>>;
 	};
 	user: {
 		name: `user:${User['id']}`;
-		payload: EventUnionFromDictionary<UserStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<UserStreamTypes>>;
 	};
 	main: {
 		name: `mainStream:${User['id']}`;
-		payload: EventUnionFromDictionary<MainStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<MainStreamTypes>>;
 	};
 	drive: {
 		name: `driveStream:${User['id']}`;
-		payload: EventUnionFromDictionary<DriveStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<DriveStreamTypes>>;
 	};
 	note: {
 		name: `noteStream:${Note['id']}`;
-		payload: EventUnionFromDictionary<NoteStreamEventTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<NoteStreamEventTypes>>;
 	};
 	channel: {
 		name: `channelStream:${Channel['id']}`;
-		payload: EventUnionFromDictionary<ChannelStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<ChannelStreamTypes>>;
 	};
 	userList: {
 		name: `userListStream:${UserList['id']}`;
-		payload: EventUnionFromDictionary<UserListStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<UserListStreamTypes>>;
 	};
 	antenna: {
 		name: `antennaStream:${Antenna['id']}`;
-		payload: EventUnionFromDictionary<AntennaStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<AntennaStreamTypes>>;
 	};
 	messaging: {
 		name: `messagingStream:${User['id']}-${User['id']}`;
-		payload: EventUnionFromDictionary<MessagingStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<MessagingStreamTypes>>;
 	};
 	groupMessaging: {
 		name: `messagingStream:${UserGroup['id']}`;
-		payload: EventUnionFromDictionary<GroupMessagingStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<GroupMessagingStreamTypes>>;
 	};
 	messagingIndex: {
 		name: `messagingIndexStream:${User['id']}`;
-		payload: EventUnionFromDictionary<MessagingIndexStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<MessagingIndexStreamTypes>>;
 	};
 	admin: {
 		name: `adminStream:${User['id']}`;
-		payload: EventUnionFromDictionary<AdminStreamTypes>;
+		payload: EventUnionFromDictionary<SerializedAll<AdminStreamTypes>>;
 	};
 	notes: {
 		name: 'notesStream';
-		payload: Packed<'Note'>;
+		payload: Serialized<Packed<'Note'>>;
 	};
 };
 

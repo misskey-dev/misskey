@@ -1,11 +1,13 @@
 import ms from 'ms';
-import { addFile } from '@/services/drive/add-file.js';
-import { DriveFiles } from '@/models/index.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFilesRepository } from '@/models/index.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import define from '../../../define.js';
-import { apiLogger } from '../../../logger.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -74,14 +76,13 @@ export default define(meta, paramDef, async (ps, user, _, file, cleanup, ip, hea
 		} else if (name === 'blob') {
 			name = null;
 		} else if (!DriveFiles.validateFileName(name)) {
-			// @ts-ignore
 			throw new ApiError(meta.errors.invalidFileName);
 		}
 	} else {
 		name = null;
 	}
 
-	const meta = await fetchMeta();
+			const instance = await this.metaService.fetch();
 
 	try {
 		// Create file
@@ -102,9 +103,7 @@ export default define(meta, paramDef, async (ps, user, _, file, cleanup, ip, hea
 			apiLogger.error(e);
 		}
 		if (e instanceof IdentifiableError) {
-			// @ts-ignore
 			if (e.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
-			// @ts-ignore
 			if (e.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
 		}
 		throw new ApiError();

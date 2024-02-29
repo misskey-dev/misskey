@@ -9,6 +9,17 @@
 node_modules
 report.*.json
 
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+packages/frontend/.yarn/cache
+packages/backend/.yarn/cache
+packages/sw/.yarn/cache
+
 # Cypress
 cypress/screenshots
 cypress/videos
@@ -19,7 +30,10 @@ coverage
 # config
 /.config/*
 !/.config/example.yml
+!/.config/docker_example.yml
 !/.config/docker_example.env
+docker-compose.yml
+!/.devcontainer/docker-compose.yml
 
 # misskey
 /build

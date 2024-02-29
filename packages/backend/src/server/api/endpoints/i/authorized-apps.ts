@@ -1,5 +1,9 @@
-import define from '../../define.js';
-import { AccessTokens, Apps } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { IsNull, Not } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AccessTokensRepository } from '@/models/index.js';
+import { AppEntityService } from '@/core/entities/AppEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -18,21 +22,32 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Get tokens
-	const tokens = await AccessTokens.find({
-		where: {
-			userId: user.id,
-		},
-		take: ps.limit,
-		skip: ps.offset,
-		order: {
-			id: ps.sort === 'asc' ? 1 : -1,
-		},
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.accessTokensRepository)
+		private accessTokensRepository: AccessTokensRepository,
 
-	// @ts-ignore
-	return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
-		detail: true,
-	})));
-});
+		private appEntityService: AppEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Get tokens
+			const tokens = await this.accessTokensRepository.find({
+				where: {
+					userId: me.id,
+					appId: Not(IsNull()),
+				},
+				take: ps.limit,
+				skip: ps.offset,
+				order: {
+					id: ps.sort === 'asc' ? 1 : -1,
+				},
+			});
+
+      // @ts-ignore
+			return await Promise.all(tokens.map(token => this.appEntityService.pack(token.appId!, me, {
+				detail: true,
+			})));
+		});
+	}
+}

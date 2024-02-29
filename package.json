@@ -1,24 +1,23 @@
 {
 	"name": "misskey",
-	"version": "12.119.2",
-	"codename": "indigo",
+	"version": "13.6.1",
+	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nacika-ins/misskey.git"
 	},
 	"private": true,
 	"scripts": {
-		"postinstall": "node --experimental-default-type=module  ./scripts/install-packages.js",
-		"build": "node --experimental-default-type=module ./scripts/build.js",
+    "build-pre": "node ./scripts/build-pre.js",
+		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
 		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
 		"init": "npm run migrate",
-		"npm:update-lock": "npm install --package-lock-only",
 		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
 		"migrateandstart": "npm run migrate && npm run start",
 		"gulp": "gulp build",
 		"watch": "npm run dev",
-		"dev": "node --experimental-default-type=module ./scripts/dev.js",
+		"dev": "node ./scripts/dev.js",
 		"lint": "node ./scripts/lint.js",
 		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "cypress run",
@@ -28,9 +27,12 @@
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "npm run clean-all",
-		"upgrade-interactive": "npx npm-check --update"
+		"cleanall": "npm run clean-all"
 	},
+  "resolutions": {
+    "chokidar": "3.5.3",
+    "lodash": "4.17.21"
+  },
 	"dependencies": {
 		"execa": "^8.0.1",
 		"gulp": "4.0.2",
@@ -39,7 +41,8 @@
 		"gulp-replace": "^1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0",
-		"re2": "1.20.9"
+		"re2": "1.20.9",
+		"typescript": "5.3.3"
 	},
 	"devDependencies": {
 		"@types/gulp": "^4.0.17",
@@ -50,7 +53,10 @@
 		"cypress": "^13.6.6",
 		"eslint": "8.57.0",
 		"start-server-and-test": "^2.0.3",
-		"typescript": "5.3.3",
+
 		"typescript-eslint": "7.0.2"
-	}
+	},
+  "optionalDependencies": {
+    "@tensorflow/tfjs-core": "4.2.0"
+  }
 }

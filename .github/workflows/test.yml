@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  mocha:
+  jest:
     runs-on: ubuntu-latest
 
     strategy:
@@ -29,11 +29,16 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
         submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3.6.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -74,7 +79,7 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
         submodules: true
     # https://github.com/cypress-io/cypress-docker-images/issues/150
@@ -83,8 +88,13 @@ jobs:
     #  if: ${{ matrix.browser == 'firefox' }}
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3.6.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -102,11 +112,15 @@ jobs:
     # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
     - name: ALSA Env
       run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
+    # XXX: This tries reinstalling Cypress if the binary is not cached
+    # Remove this when the cache issue is fixed
+    - name: Cypress install
+      run: pnpm exec cypress install
     - name: Cypress run
-      uses: cypress-io/github-action@v4
+      uses: cypress-io/github-action@v5
       with:
         install: false
-        start: npm run start:test
+        start: pnpm start:test
         wait-on: 'http://localhost:61812'
         headless: false
         browser: ${{ matrix.browser }}

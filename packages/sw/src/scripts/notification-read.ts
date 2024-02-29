@@ -1,5 +1,3 @@
-declare var self: ServiceWorkerGlobalScope;
-
 import { get } from 'idb-keyval';
 import { pushNotificationDataMap } from '@/types';
 import { api } from '@/scripts/operations';

@@ -48,11 +48,10 @@ smtpUser: "Kullanıcı Adı"
 smtpPass: "Şifre"
 user: "Kullanıcı"
 searchByGoogle: "Arama"
-_mfm:
-  search: "Arama"
 _sfx:
   notification: "Bildirim"
 _widgets:
+  profile: "Profil"
   notifications: "Bildirim"
   timeline: "Zaman çizelgesi"
 _profile:

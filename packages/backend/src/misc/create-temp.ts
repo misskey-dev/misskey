@@ -4,7 +4,7 @@ export function createTemp(): Promise<[string, () => void]> {
 	return new Promise<[string, () => void]>((res, rej) => {
 		tmp.file((e, path, fd, cleanup) => {
 			if (e) return rej(e);
-			res([path, cleanup]);
+			res([path, process.env.NODE_ENV === 'production' ? cleanup : () => {}]);
 		});
 	});
 }
@@ -17,8 +17,8 @@ export function createTempDir(): Promise<[string, () => void]> {
 			},
 			(e, path, cleanup) => {
 				if (e) return rej(e);
-				res([path, cleanup]);
-			}
+				res([path, process.env.NODE_ENV === 'production' ? cleanup : () => {}]);
+			},
 		);
 	});
 }
