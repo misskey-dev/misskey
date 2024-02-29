@@ -114,6 +114,7 @@ import {
 	unicodeEmojiCategories as categories,
 	getEmojiName,
 	CustomEmojiFolderTree,
+	getUnicodeEmoji,
 } from '@/scripts/emojilist.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
@@ -382,7 +383,7 @@ function getDef(emoji: string) {
 	if (emoji.includes(':')) {
 		return customEmojisMap.get(emoji.replace(/:/g, ''))!;
 	} else {
-		return unicodeEmojisMap.get(emoji)!;
+		return getUnicodeEmoji(emoji)!;
 	}
 }
 
