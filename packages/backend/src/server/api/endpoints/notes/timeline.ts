@@ -88,6 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					includeLocalRenotes: ps.includeLocalRenotes,
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
+					onlyLocal: ps.onlyLocal,
 				}, me);
 
 				process.nextTick(() => {
@@ -133,6 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					includeLocalRenotes: ps.includeLocalRenotes,
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
+					onlyLocal: ps.onlyLocal,
 				}, me),
 			});
 
@@ -144,7 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		});
 	}
 
-	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser) {
+	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; onlyLocal: boolean; }, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
 		const followingChannels = await this.channelFollowingsRepository.find({
 			where: {
@@ -245,6 +247,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		if (ps.withRenotes === false) {
 			query.andWhere('note.renoteId IS NULL');
+		}
+
+		if (ps.onlyLocal) {
+			query.andWhere('note.userHost IS NULL');
 		}
 		//#endregion
 
