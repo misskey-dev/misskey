@@ -1,0 +1,38 @@
+import { execa } from "execa";
+const __dirname = new URL('.', import.meta.url).pathname;
+
+(async () => {
+
+  console.log('building packages/frontend ...');
+
+  await execa('npm', ['run', 'build'], {
+    cwd: __dirname + '/../packages/frontend',
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+
+  console.log('building packages/backend ...');
+
+  await execa('npm', ['run', 'build'], {
+    cwd: __dirname + '/../packages/backend',
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+
+  console.log('building packages/sw ...');
+
+  await execa('npm', ['run', 'build'], {
+    cwd: __dirname + '/../packages/sw',
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+
+  console.log('build finishing ...');
+
+  await execa('npm', ['run', 'gulp'], {
+    cwd: __dirname + '/../',
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+})();
+
