@@ -4,6 +4,7 @@
  */
 
 import { toArray } from '@/misc/prelude/array.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { isHashtag } from '../type.js';
 import type { IObject, IApHashtag } from '../type.js';
 
@@ -15,7 +16,7 @@ export function extractApHashtags(tags: IObject | IObject[] | null | undefined):
 	return hashtags.map(tag => {
 		const m = tag.name.match(/^#(.+)/);
 		return m ? m[1] : null;
-	}).filter((x): x is string => x != null);
+	}).filter(isNotNull);
 }
 
 export function extractApHashtagObjects(tags: IObject | IObject[] | null | undefined): IApHashtag[] {
