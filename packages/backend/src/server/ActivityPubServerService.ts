@@ -101,7 +101,7 @@ export class ActivityPubServerService {
 
 	@bindThis
 	private inbox(request: FastifyRequest, reply: FastifyReply) {
-		let signature;
+		let signature: ReturnType<typeof parseRequestSignature>;
 
 		const verifyDigest = verifyDigestHeader(request.raw, request.rawBody || '', true);
 		if (!verifyDigest) {
@@ -112,11 +112,6 @@ export class ActivityPubServerService {
 		try {
 			signature = parseRequestSignature(request.raw);
 		} catch (e) {
-			reply.code(401);
-			return;
-		}
-
-		if (!signature) {
 			reply.code(401);
 			return;
 		}
