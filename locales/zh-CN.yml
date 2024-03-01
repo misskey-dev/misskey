@@ -1653,6 +1653,7 @@ _role:
     gtlAvailable: "查看全局时间线"
     ltlAvailable: "查看本地时间线"
     canPublicNote: "允许公开发帖"
+    mentionMax: "帖子内最多提及数"
     canInvite: "发放服务器邀请码"
     inviteLimit: "可生成邀请码的数量"
     inviteLimitCycle: "邀请码的发行间隔"
@@ -2297,6 +2298,7 @@ _notification:
   reactedBySomeUsers: "{n} 人回应了"
   renotedBySomeUsers: "{n} 人转发了"
   followedBySomeUsers: "被 {n} 人关注"
+  flushNotification: "重置通知历史"
   _types:
     all: "全部"
     note: "用户的新帖子"
