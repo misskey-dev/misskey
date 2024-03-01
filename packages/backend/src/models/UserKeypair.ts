@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
+import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
@@ -12,7 +12,7 @@ export class MiUserKeypair {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];
 
-	@OneToOne(type => MiUser, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
