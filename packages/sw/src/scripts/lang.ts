@@ -3,9 +3,12 @@
  */
 import { get, set } from 'idb-keyval';
 import { I18n } from '@/scripts/i18n';
+// @ts-ignore
+import meta from '../../../../built/_vite_/meta.json';
+const buildHash: string = meta.buildHash;
 
 class SwLang {
-	public cacheName = `mk-cache-${_VERSION_}`;
+	public cacheName = `mk-cache-${buildHash}`;
 
 	public lang: Promise<string> = get('lang').then(async prelang => {
 		if (!prelang) return 'en-US';
@@ -26,7 +29,7 @@ class SwLang {
 
 	private async _fetch() {
 		// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
-		const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
+		const localeUrl = `/assets/locales/${await this.lang}.${buildHash}.json`;
 		let localeRes = await caches.match(localeUrl);
 
 		// _DEV_がtrueの場合は常に最新化

@@ -6,6 +6,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import * as yaml from 'js-yaml';
+import packageMeta from '../../../package.json' assert { type: 'json' };
 
 /**
  * ユーザーが設定する必要のある情報
@@ -77,6 +78,7 @@ export type Source = {
  */
 export type Mixin = {
 	version: string;
+  buildHash: string;
 	host: string;
 	hostname: string;
 	scheme: string;
@@ -126,7 +128,8 @@ export function loadConfig() {
 
 	config.port = config.port ?? parseInt(process.env.PORT ?? '', 10);
 
-	mixin.version = meta.buildHash;
+	mixin.version = packageMeta.version;
+	mixin.buildHash = meta.buildHash;
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
@@ -135,7 +138,7 @@ export function loadConfig() {
 	mixin.apiUrl = `${mixin.scheme}://${mixin.host}/api`;
 	mixin.authUrl = `${mixin.scheme}://${mixin.host}/auth`;
 	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
-	mixin.userAgent = `Misskey/${meta.buildHash} (${config.url})`;
+	mixin.userAgent = `Misskey/${packageMeta.version} (${config.url})`;
 	mixin.clientEntry = clientManifest['src/init.ts'];
 	mixin.clientManifestExists = clientManifestExists;
 

@@ -2,6 +2,16 @@ import { execa } from 'execa';
 
 const __dirname = new URL('.', import.meta.url).pathname;
 
+// 全てのプロセスを終了する
+process.on('SIGINT', () => {
+  global.ps1?.kill();
+  global.ps2?.kill();
+  global.ps3?.kill();
+  global.ps4?.kill();
+  global.ps5?.kill();
+  process.exit();
+});
+
 (async () => {
   await execa('npm', ['run', 'clean'], {
     cwd: __dirname + '/../',
@@ -56,13 +66,5 @@ const __dirname = new URL('.', import.meta.url).pathname;
   start();
 })();
 
-// 全てのプロセスを終了する
-process.on('SIGINT', () => {
-  global.ps1?.kill();
-  global.ps2?.kill();
-  global.ps3?.kill();
-  global.ps4?.kill();
-  global.ps5?.kill();
-  process.exit();
-});
+
 

@@ -11,6 +11,7 @@ import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { envOption } from '@/env.js';
+import packageMeta from '../../../../package.json' assert { type: 'json' };
 import { jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -26,7 +27,7 @@ const themeColor = chalk.hex('#86b300');
 function greet() {
 	if (!envOption.quiet) {
 		//#region Misskey logo
-		const v = `v${meta.buildHash}`;
+		const v = `v${packageMeta.version}`;
 		console.log(themeColor('  _____ _         _           '));
 		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
 		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
@@ -42,7 +43,7 @@ function greet() {
 	}
 
 	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey ${meta.buildHash}`, null, true);
+	bootLogger.info(`Misskey ${packageMeta.version}`, null, true);
 }
 
 /**

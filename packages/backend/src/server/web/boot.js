@@ -56,16 +56,16 @@
 			return;
 		}
 		const meta = await metaRes.json();
-		const v = meta.version;
-		if (v == null) {
+		const buildHash = meta.buildHash;
+		if (buildHash == null) {
 			renderError('META_FETCH_V');
 			return;
 		}
-		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
+		const localRes = await window.fetch(`/assets/locales/${lang}.${buildHash}.json`);
 		if (localRes.status === 200) {
 			localStorage.setItem('lang', lang);
 			localStorage.setItem('locale', await localRes.text());
-			localStorage.setItem('localeVersion', v);
+			localStorage.setItem('localeBuildHash', buildHash);
 		} else {
 			renderError('LOCALE_FETCH');
 			return;

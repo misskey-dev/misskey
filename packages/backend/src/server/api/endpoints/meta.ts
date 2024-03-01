@@ -246,7 +246,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-	
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -270,6 +270,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				maintainerEmail: instance.maintainerEmail,
 
 				version: this.config.version,
+				buildHash: this.config.buildHash,
 
 				name: instance.name,
 				uri: this.config.url,
