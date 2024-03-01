@@ -48,3 +48,10 @@ export const Missing = {
 		name: Default.args.name,
 	},
 } satisfies StoryObj<typeof MkCustomEmoji>;
+export const Error = {
+	...Default,
+	args: {
+		url: 'https://example.com/404',
+		name: Default.args.name,
+	},
+} satisfies StoryObj<typeof MkCustomEmoji>;
