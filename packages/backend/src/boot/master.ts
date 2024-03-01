@@ -16,7 +16,7 @@ import { jobQueue, server } from './common.js';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
+const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../meta.json`, 'utf-8'));
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);

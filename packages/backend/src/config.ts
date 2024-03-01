@@ -111,7 +111,7 @@ const path = process.env.NODE_ENV === 'test'
 	: `${dir}/default.yml`;
 
 export function loadConfig() {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
+	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../meta.json`, 'utf-8'));
 	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
 	const clientManifest = clientManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))

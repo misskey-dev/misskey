@@ -22,7 +22,7 @@ const __dirname = new URL('.', import.meta.url).pathname;
 	});
 
 	execa('npm', ['run', 'watch'], {
-		cwd: __dirname + '/../packages/client',
+		cwd: __dirname + '/../packages/frontend',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
