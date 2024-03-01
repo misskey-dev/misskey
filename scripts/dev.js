@@ -15,14 +15,14 @@ const __dirname = new URL('.', import.meta.url).pathname;
 		stderr: process.stderr,
 	});
 
-	execa('npm', ['run', 'watch'], {
-		cwd: __dirname + '/../packages/backend',
-		stdout: process.stdout,
-		stderr: process.stderr,
-	});
+  execa('npm', ['run', 'watch'], {
+    cwd: __dirname + '/../packages/frontend',
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
 
 	execa('npm', ['run', 'watch'], {
-		cwd: __dirname + '/../packages/frontend',
+		cwd: __dirname + '/../packages/backend',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
