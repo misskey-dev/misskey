@@ -79,17 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 				</div>
 			</div>
-			<div v-else-if="page === 7" key="tutorialPage_7" :class="$style.centerPage">
-				<MkSpacer :marginMin="20" :marginMax="28">
-					<div class="_gaps" style="text-align: center;">
-						<i class="ti ti-bell-ringing-2" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
-						<div style="font-size: 120%;">{{ i18n.ts.pushNotification }}</div>
-						<div style="word-break: auto-phrase; padding: 0 16px;">{{ i18n.tsx._initialTutorial._pushNotification.description({ name: instance.name ?? host }) }}</div>
-						<MkPushNotificationAllowButton primary showOnlyToRegister style="margin: 0 auto;"/>
-					</div>
-				</MkSpacer>
-			</div>
-			<div v-else-if="page === 8" key="tutorialPage_8" :class="$style.pageContainer">
+			<div v-else-if="page === 7" key="tutorialPage_7" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<div class="_gaps">
@@ -98,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 				</div>
 			</div>
-			<slot v-else-if="page === 9" key="tutorialPage_9" name="finish" :close="() => emit('close')" :prev="prev">
+			<slot v-else-if="page === 8" key="tutorialPage_8" name="finish" :close="() => emit('close')" :prev="prev">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :marginMin="20" :marginMax="28">
@@ -134,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 
 // チュートリアルの枚数を増やしたら必ず変更すること！！
-export const MAX_PAGE = 9;
+export const MAX_PAGE = 8;
 
 </script>
 
@@ -146,7 +136,6 @@ import XTimeline from '@/components/MkTutorial.Timeline.vue';
 import XFollowUsers from '@/components/MkTutorial.FollowUsers.vue';
 import XPostNote from '@/components/MkTutorial.PostNote.vue';
 import XSensitive from '@/components/MkTutorial.Sensitive.vue';
-import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import XPrivacySettings from '@/components/MkTutorial.PrivacySettings.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
@@ -195,7 +184,7 @@ function next() {
 	if (page.value === 3 && !props.withSetup) {
 		page.value += 2;
 	} else if (page.value === 6 && !props.withSetup) {
-		page.value += 3;
+		page.value += 2;
 	} else {
 		page.value++;
 	}
@@ -206,8 +195,8 @@ function next() {
 function prev() {
 	if (page.value === 5 && !props.withSetup) {
 		page.value -= 2;
-	} else if (page.value === 9 && !props.withSetup) {
-		page.value -= 3;
+	} else if (page.value === 8 && !props.withSetup) {
+		page.value -= 2;
 	} else {
 		page.value--;
 	}

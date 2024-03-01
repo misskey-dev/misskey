@@ -15,8 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else-if="page === 4"><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</span>
 				<span v-else-if="page === 5"><i class="ti ti-pencil-plus"></i> {{ i18n.ts._initialTutorial._postNote.title }}</span>
 				<span v-else-if="page === 6"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</span>
-				<span v-else-if="page === 7"><i class="ti ti-bell"></i> {{ i18n.ts.pushNotification }}</span>
-				<span v-else-if="page === 8"><i class="ti ti-lock"></i> {{ i18n.ts.privacy }}</span>
+				<span v-else-if="page === 7"><i class="ti ti-lock"></i> {{ i18n.ts.privacy }}</span>
 				<span v-else-if="page === MAX_PAGE"><!-- なんもなし --></span>
 				<span v-else>{{ i18n.ts._initialTutorial.title }}</span>
 			</div>
