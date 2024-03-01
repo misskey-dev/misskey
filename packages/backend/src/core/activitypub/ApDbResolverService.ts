@@ -131,31 +131,43 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			v => v != null,
 		);
 
-		if (keys == null || keys.length === 8) return null;
+		if (keys == null || !Array.isArray(keys)) return null;
+
+		if (keys.length === 0) {
+			return {
+				user,
+				key: keys[0],
+			};
+		}
+
+		const exactKey = keys.find(x => x.keyId === keyId);
+		if (exactKey) {
+			return {
+				user,
+				key: exactKey,
+			};
+		}
 
 		// 公開鍵は複数あるが、mainっぽいのを選ぶ
-		const key = keys.length === 1 ?
-			keys[0] :
-			keys.find(x => {
-				try {
-					if (x.keyId === keyId) return true;
-					const url = new URL(x.keyId);
-					const path = url.pathname.split('/').pop()?.toLowerCase();
-					if (url.hash) {
-						if (url.hash.toLowerCase().includes('main')) {
-							return true;
-						}
-					} else if (path?.includes('main') || path === 'publickey') {
+		const mainKey = keys.find(x => {
+			try {
+				if (x.keyId === keyId) return true;
+				const url = new URL(x.keyId);
+				const path = url.pathname.split('/').pop()?.toLowerCase();
+				if (url.hash) {
+					if (url.hash.toLowerCase().includes('main')) {
 						return true;
 					}
-				} catch { /* noop */ }
+				} else if (path?.includes('main') || path === 'publickey') {
+					return true;
+				}
+			} catch { /* noop */ }
 
-				return false;
-			}) ?? keys[0];
-
+			return false;
+		});
 		return {
 			user,
-			key,
+			key: mainKey ?? keys[0],
 		};
 	}
 
