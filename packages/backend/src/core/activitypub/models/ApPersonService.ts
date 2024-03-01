@@ -256,9 +256,11 @@ export class ApPersonService implements OnModuleInit {
 		// ついでにリモートユーザーの情報が古かったら更新しておく
 		if (this.userEntityService.isRemoteUser(exist)) {
 			if (exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > 1000 * 60 * 60 * 3) {
+				this.logger.debug('fetchPersonWithRenewal: renew', { uri, lastFetchedAt: exist.lastFetchedAt });
 				await this.updatePerson(exist.uri);
 				return await this.fetchPerson(uri);
 			}
+			this.logger.debug('fetchPersonWithRenewal: use cache', { uri, lastFetchedAt: exist.lastFetchedAt });
 		}
 
 		return exist;

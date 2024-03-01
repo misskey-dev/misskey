@@ -50,7 +50,7 @@ export class FetchInstanceMetadataService {
 		private redisClient: Redis.Redis,
 	) {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');
-		this.httpColon = 'http://';
+		this.httpColon = process.env.MISSKEY_USE_HTTP?.toLowerCase() === 'true' ? 'http://' : 'https://';
 	}
 
 	@bindThis
