@@ -250,18 +250,17 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	@bindThis
-	async fetchPersonWithRenewal(uri: string): Promise<MiLocalUser | MiRemoteUser | null> {
+	async fetchPersonWithRenewal(uri: string, TTL = REMOTE_USER_CACHE_TTL): Promise<MiLocalUser | MiRemoteUser | null> {
 		const exist = await this.fetchPerson(uri);
 		if (exist == null) return null;
 
-		// ついでにリモートユーザーの情報が古かったら更新しておく
 		if (this.userEntityService.isRemoteUser(exist)) {
-			if (exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > REMOTE_USER_CACHE_TTL) {
-				this.logger.debug('fetchPersonWithRenewal: renew', { uri, lastFetchedAt: exist.lastFetchedAt });
+			if (TTL === 0 || exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > TTL) {
+				this.logger.debug('fetchPersonWithRenewal: renew', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
 				await this.updatePerson(exist.uri);
 				return await this.fetchPerson(uri);
 			}
-			this.logger.debug('fetchPersonWithRenewal: use cache', { uri, lastFetchedAt: exist.lastFetchedAt });
+			this.logger.debug('fetchPersonWithRenewal: use cache', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
 		}
 
 		return exist;

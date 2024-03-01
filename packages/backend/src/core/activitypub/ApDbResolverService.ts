@@ -116,6 +116,8 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 	/**
 	 * AP Actor id => Misskey User and Key
+	 * @param uri AP Actor id
+	 * @param keyId Key id to find. If not specified, main key will be selected.
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string, keyId?: string): Promise<{
@@ -125,50 +127,56 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
 		if (user.isDeleted) return null;
 
-		const keys = await this.publicKeyByUserIdCache.fetch(
-			user.id,
-			() => this.userPublickeysRepository.find({ where: { userId: user.id } }),
-			v => v != null,
-		);
+		const keys = await this.getPublicKeyByUserId(user.id);
 
-		if (keys == null || !Array.isArray(keys)) return null;
+		if (keys == null || !Array.isArray(keys)) return { user, key: null };
 
-		if (keys.length === 0) {
-			return {
-				user,
-				key: keys[0],
-			};
+		if (!keyId) {
+			// mainっぽいのを選ぶ
+			const mainKey = keys.find(x => {
+				try {
+					const url = new URL(x.keyId);
+					const path = url.pathname.split('/').pop()?.toLowerCase();
+					if (url.hash) {
+						if (url.hash.toLowerCase().includes('main')) {
+							return true;
+						}
+					} else if (path?.includes('main') || path === 'publickey') {
+						return true;
+					}
+				} catch { /* noop */ }
+
+				return false;
+			});
+			return { user, key: mainKey ?? keys[0] };
 		}
 
 		const exactKey = keys.find(x => x.keyId === keyId);
-		if (exactKey) {
-			return {
-				user,
-				key: exactKey,
-			};
+		if (exactKey) return { user, key: exactKey };
+
+		// keyIdで見つからない場合、lastFetchedAtでの更新制限を弱めて再取得
+		if (user.lastFetchedAt == null || user.lastFetchedAt < new Date(Date.now() - 1000 * 60 * 12)) {
+			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
+			if (renewed == null || renewed.isDeleted) return null;
+
+			this.refreshCacheByUserId(user.id);
+			const keys = await this.getPublicKeyByUserId(user.id);
+			if (keys == null || !Array.isArray(keys)) return null;
+
+			const exactKey = keys.find(x => x.keyId === keyId);
+			if (exactKey) return { user, key: exactKey };
 		}
 
-		// 公開鍵は複数あるが、mainっぽいのを選ぶ
-		const mainKey = keys.find(x => {
-			try {
-				if (x.keyId === keyId) return true;
-				const url = new URL(x.keyId);
-				const path = url.pathname.split('/').pop()?.toLowerCase();
-				if (url.hash) {
-					if (url.hash.toLowerCase().includes('main')) {
-						return true;
-					}
-				} else if (path?.includes('main') || path === 'publickey') {
-					return true;
-				}
-			} catch { /* noop */ }
+		return { user, key: null };
+	}
 
-			return false;
-		});
-		return {
-			user,
-			key: mainKey ?? keys[0],
-		};
+	@bindThis
+	public async getPublicKeyByUserId(userId: MiUser['id']): Promise<MiUserPublickey[] | null> {
+		return await this.publicKeyByUserIdCache.fetch(
+			userId,
+			() => this.userPublickeysRepository.find({ where: { userId } }),
+			v => v != null,
+		);
 	}
 
 	@bindThis
