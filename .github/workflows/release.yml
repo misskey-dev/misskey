@@ -6,7 +6,11 @@ on:
       - develop
 
 permissions:
-  contents: read # for checkout
+  contents: write # to be able to publish a GitHub release
+  issues: write # to be able to comment on released issues
+  pull-requests: write # to be able to comment on released pull requests
+  id-token: write # to enable use of OIDC for npm provenance
+
 
 jobs:
   release:
@@ -30,6 +34,8 @@ jobs:
         run: npm clean-install
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
+      - name: Install @semantic-release/npm
+        run: npm install @semantic-release/npm -D
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
