@@ -41,7 +41,7 @@ export const emojiCharByCategory = _charGroupByCategory;
 
 export function getUnicodeEmoji(char: string): UnicodeEmojiDef | null {
 	// Colorize it because emojilist.json assumes that
-	return unicodeEmojisMap.get(colorizeEmoji(char)) ?? null;
+	return unicodeEmojisMap.get(colorizeEmoji(char)) ?? unicodeEmojisMap.get(char) ?? null;
 }
 
 export function getEmojiName(char: string): string | null {
