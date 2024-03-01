@@ -11,7 +11,7 @@ import { RedisKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { genEd25519KeyPair } from '@/misc/gen-key-pair.js';
+import { genEd25519KeyPair } from '@misskey-dev/node-http-message-signatures';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 
 @Injectable()

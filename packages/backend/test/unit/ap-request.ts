@@ -4,8 +4,7 @@
  */
 
 import * as assert from 'assert';
-import { verifyDraftSignature, parseRequestSignature } from '@misskey-dev/node-http-message-signatures';
-import { genEd25519KeyPair, genRsaKeyPair } from '@/misc/gen-key-pair.js';
+import { verifyDraftSignature, parseRequestSignature, genEd25519KeyPair, genRsaKeyPair } from '@misskey-dev/node-http-message-signatures';
 import { createSignedGet, createSignedPost } from '@/core/activitypub/ApRequestService.js';
 
 export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
@@ -49,7 +48,7 @@ describe('ap-request', () => {
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed?.version).toBe('draft');
 			if (!parsed) return;
-			const verify = verifyDraftSignature(parsed?.value, keypair.publicKey);
+			const verify = verifyDraftSignature(parsed.value, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});
@@ -68,7 +67,7 @@ describe('ap-request', () => {
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed?.version).toBe('draft');
 			if (!parsed) return;
-			const verify = verifyDraftSignature(parsed?.value, keypair.publicKey);
+			const verify = verifyDraftSignature(parsed.value, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});
