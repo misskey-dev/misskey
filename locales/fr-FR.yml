@@ -1164,7 +1164,11 @@ remainingN: "Restants : {n}"
 overwriteContentConfirm: "Voulez-vous remplacer le contenu actuel ?"
 seasonalScreenEffect: "Effet d'écran saisonnier"
 decorate: "Décorer"
+sfx: "Effets sonores"
+showReplay: "Voir le replay"
+ranking: "Classement"
 lastNDays: "Derniers {n} jours"
+surrender: "Annuler"
 _announcement:
   forExistingUsers: "Pour les utilisateurs existants seulement"
   readConfirmTitle: "Marquer comme lu ?"
@@ -1302,10 +1306,13 @@ _achievements:
       title: "Régulier III"
       description: "Se connecter pour un total de 400 jours"
     _login500:
+      title: "Expert I"
       description: "Se connecter pour un total de 500 jours"
     _login600:
+      title: "Expert II"
       description: "Se connecter pour un total de 600 jours"
     _login700:
+      title: "Expert III"
       description: "Se connecter pour un total de 700 jours"
     _login800:
       description: "Se connecter pour un total de 800 jours"
@@ -1400,9 +1407,12 @@ _role:
   description: "Description du rôle"
   permission: "Rôle et autorisations"
   assignTarget: "Attribuer"
+  manual: "Manuel"
   manualRoles: "Rôles manuels"
+  conditional: "Conditionnel"
   conditionalRoles: "Rôles conditionnels"
   condition: "Condition"
+  isConditionalRole: "Ceci est un rôle conditionnel."
   isPublic: "Rôle public"
   options: "Options"
   policies: "Stratégies"

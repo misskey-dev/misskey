@@ -108,12 +108,12 @@ import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
 	emojilist,
-	unicodeEmojisMap,
 	emojiCharByCategory,
 	UnicodeEmojiDef,
 	unicodeEmojiCategories as categories,
 	getEmojiName,
 	CustomEmojiFolderTree,
+	getUnicodeEmoji,
 } from '@/scripts/emojilist.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
@@ -385,7 +385,7 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 		const name = emoji.replaceAll(':', '');
 		return customEmojisMap.has(name) ? customEmojisMap.get(name)! : emoji;
 	} else {
-		return unicodeEmojisMap.get(emoji)!;
+		return getUnicodeEmoji(emoji)!;
 	}
 }
 
