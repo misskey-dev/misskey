@@ -49,6 +49,7 @@ export const paramDef = {
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		onlyLocal: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -115,6 +116,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				noteFilter: note => {
 					if (note.reply && note.reply.visibility === 'followers') {
 						if (!Object.hasOwn(followings, note.reply.userId)) return false;
+					}
+
+					if (ps.onlyLocal && note.user && note.user.host !== null ) {
+						return false;
 					}
 
 					return true;

@@ -901,9 +901,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 
 				this.fanoutTimelineService.push(`homeTimeline:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax, r);
-				if (note.userHost == null) {
-					this.fanoutTimelineService.push(`localHomeTimeline:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax, r);
-				}
 				if (note.fileIds.length > 0) {
 					this.fanoutTimelineService.push(`homeTimelineWithFiles:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax / 2, r);
 				}

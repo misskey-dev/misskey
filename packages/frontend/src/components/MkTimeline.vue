@@ -38,10 +38,12 @@ const props = withDefaults(defineProps<{
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
+	onlyLocal?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
 	onlyFiles: false,
+	onlyLocal: false,
 });
 
 const emit = defineEmits<{
@@ -57,11 +59,11 @@ type TimelineQueryType = {
 	withRenotes?: boolean,
 	withReplies?: boolean,
 	withFiles?: boolean,
-	withBelowPublic?: boolean,
 	visibility?: string,
 	listId?: string,
 	channelId?: string,
 	roleId?: string
+	onlyLocal?: boolean,
 }
 
 const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
@@ -71,6 +73,8 @@ let tlNotesCount = 0;
 
 function prepend(note) {
 	if (tlComponent.value == null) return;
+
+	if (props.onlyLocal === true && note.user.host !== null) return;
 
 	tlNotesCount++;
 
@@ -110,7 +114,6 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBelowPublic: defaultStore.state.showLocalTimelineBelowPublic,
 		});
 	} else if (props.src === 'social') {
 		connection = stream.useChannel('hybridTimeline', {
@@ -174,6 +177,7 @@ function updatePaginationQuery() {
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+			onlyLocal: props.onlyLocal ? true : undefined,
 		};
 	} else if (props.src === 'local') {
 		endpoint = 'notes/local-timeline';
@@ -181,7 +185,6 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
-			withBelowPublic: defaultStore.state.showLocalTimelineBelowPublic,
 		};
 	} else if (props.src === 'social') {
 		endpoint = 'notes/hybrid-timeline';
@@ -189,6 +192,7 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
+			onlyLocal: props.onlyLocal ? true : undefined,
 		};
 	} else if (props.src === 'global') {
 		endpoint = 'notes/global-timeline';
@@ -248,7 +252,7 @@ function refreshEndpointAndChannel() {
 
 // デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
 // IDが切り替わったら切り替え先のTLを表示させたい
-watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
+watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes, props.onlyLocal], refreshEndpointAndChannel);
 
 // 初回表示用
 refreshEndpointAndChannel();
