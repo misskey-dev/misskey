@@ -25,7 +25,7 @@ import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { buildHash, ui, lang, updateLocale } from '@/config';
+import { version, ui, lang, updateLocale } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, updateI18n } from '@/i18n';
@@ -48,7 +48,7 @@ import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
 import { fetchCustomEmojis } from './custom-emojis';
 
-console.info(`Misskey v${buildHash}`);
+console.info(`Misskey v${version}`);
 
 if (_DEV_) {
   console.warn('Development mode!!!');
@@ -86,15 +86,15 @@ if (_DEV_) {
 }
 
 //#region Detect language & fetch translations
-const localeBuildHash = miLocalStorage.getItem('localeBuildHash');
-const localeOutdated = localeBuildHash == null || localeBuildHash !== buildHash;
+const localeVersion = miLocalStorage.getItem('localeVersion');
+const localeOutdated = localeVersion == null || localeVersion !== version;
 if (localeOutdated) {
-  const res = await window.fetch(`/assets/locales/${lang}.${buildHash}.json`);
+  const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
   if (res.status === 200) {
     const newLocale = await res.text();
     const parsedNewLocale = JSON.parse(newLocale);
     miLocalStorage.setItem('locale', newLocale);
-    miLocalStorage.setItem('localeBuildHash', buildHash);
+    miLocalStorage.setItem('localeVersion', version);
     updateLocale(parsedNewLocale);
     updateI18n(parsedNewLocale);
   }
@@ -266,15 +266,15 @@ if (splash) {
 
 // クライアントが更新されたか？
 const lastVersion = miLocalStorage.getItem('lastVersion');
-if (lastVersion !== buildHash) {
-  miLocalStorage.setItem('lastVersion', buildHash);
+if (lastVersion !== version) {
+  miLocalStorage.setItem('lastVersion', version);
 
   // テーマリビルドするため
   miLocalStorage.removeItem('theme');
 
   try {
     // 変なバージョン文字列来るとcompareVersionsでエラーになるため
-    if (lastVersion != null && compareVersions(buildHash, lastVersion) === 1) {
+    if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
       // ログインしてる場合だけ
       if ($i) {
         popup(

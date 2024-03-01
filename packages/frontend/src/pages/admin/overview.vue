@@ -72,7 +72,7 @@ import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
-import { buildHash, url } from '@/config';
+import { version, url } from '@/config';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';

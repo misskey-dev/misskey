@@ -21,7 +21,7 @@ type Keys =
   | 'ui_temp'
   | 'locale'
   | 'localeBuildHash'
-  | 'theme'
+  | 'localeVersion'
   | 'customCss'
   | 'message_drafts'
   | 'scratchpad'

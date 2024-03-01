@@ -4,7 +4,7 @@
       <div :class="$style.title">
         <MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle>
       </div>
-      <div :class="$style.version">✨{{ buildHash }}🚀</div>
+      <div :class="$style.version">✨{{ version }}🚀</div>
       <MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
       <MkButton :class="$style.gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
     </div>
@@ -16,7 +16,7 @@ import { onMounted, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
-import { buildHash } from '@/config';
+import { version } from '@/config';
 import { i18n } from '@/i18n';
 import { confetti } from '@/scripts/confetti';
 
@@ -24,7 +24,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
   modal.value.close();
-  window.open(`https://misskey-hub.net/docs/releases.html#_${buildHash.replace(/\./g, '-')}`, '_blank');
+  window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
 };
 
 onMounted(() => {

@@ -57,7 +57,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { buildHash, host } from '@/config';
+import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
 const { t, ts } = i18n;
@@ -212,7 +212,7 @@ async function saveNew(): Promise<void> {
     name,
     createdAt: new Date().toISOString(),
     updatedAt: null,
-    misskeyVersion: buildHash,
+    misskeyVersion: version,
     host,
     settings: getSettings(),
   };
@@ -353,7 +353,7 @@ async function save(id: string): Promise<void> {
     name,
     createdAt,
     updatedAt: new Date().toISOString(),
-    misskeyVersion: buildHash,
+    misskeyVersion: version,
     host,
     settings: getSettings(),
   };

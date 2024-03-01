@@ -19,9 +19,9 @@
 
         <FormSection>
           <div class="_gaps_m">
-            <MkKeyValue :copy="buildHash">
+            <MkKeyValue :copy="version">
               <template #key>Misskey</template>
-              <template #value>{{ buildHash }}</template>
+              <template #value>{{ version }}</template>
             </MkKeyValue>
             <div v-html="i18n.t('poweredByMisskeyDescription', { name: $instance.name ?? host })"></div>
             <FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
@@ -88,7 +88,7 @@
 import { ref, computed, watch } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { buildHash, instanceName, host } from '@/config';
+import { version, instanceName, host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';

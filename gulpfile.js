@@ -10,6 +10,7 @@ const cssnano = require('gulp-cssnano');
 
 const locales = require('./locales');
 const meta = require('./built/_vite_/meta.json');
+const packageMeta = require('./package.json');
 
 gulp.task('copy:backend:views', () =>
 	gulp.src('./packages/backend/src/server/web/views/**/*').pipe(gulp.dest('./packages/backend/built/server/web/views'))
@@ -30,6 +31,7 @@ gulp.task('copy:frontend:locales', cb => {
 
 	for (const [lang, locale] of Object.entries(locales)) {
 		fs.writeFileSync(`./built/_frontend_dist_/locales/${lang}.${meta.buildHash}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
+    fs.writeFileSync(`./built/_frontend_dist_/locales/${lang}.${packageMeta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
 	}
 
 	cb();

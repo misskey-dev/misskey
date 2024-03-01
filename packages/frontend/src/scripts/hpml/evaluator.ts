@@ -4,7 +4,7 @@ import { collectPageVars } from '../collect-page-vars';
 import { initHpmlLib, initAiLib } from './lib';
 import { Expr, isLiteralValue, Variable } from './expr';
 import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
-import { buildHash } from '@/config';
+import { version } from '@/config';
 import * as os from '@/os';
 
 /**
@@ -35,7 +35,7 @@ export class Hpml {
 
     this.envVars = {
       AI: 'kawaii',
-      VERSION: buildHash,
+      VERSION: version,
       URL: this.page ? `${opts.url}/@${this.page.user.username}/pages/${this.page.name}` : '',
       LOGIN: opts.visitor != null,
       NAME: opts.visitor ? opts.visitor.name || opts.visitor.username : '',

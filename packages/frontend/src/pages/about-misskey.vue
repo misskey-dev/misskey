@@ -15,7 +15,7 @@
                 @click="gravity"
               />
               <div class="misskey">Misskey</div>
-              <div class="version">v{{ buildHash }}</div>
+              <div class="version">v{{ version }}</div>
               <span
                 v-for="emoji in easterEggEmojis"
                 :key="emoji.id"
@@ -96,11 +96,11 @@
                 <span :class="$style.contributorUsername">@robflop</span>
               </a>
             </div>
-            <template #caption
-              ><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{
-                i18n.ts._aboutMisskey.allContributors
-              }}</MkLink></template
-            >
+            <template #caption>
+              <MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">
+                {{ i18n.ts._aboutMisskey.allContributors }}
+              </MkLink>
+            </template>
           </FormSection>
           <FormSection>
             <template #label><Mfm text="$[jelly ❤]" /> {{ i18n.ts._aboutMisskey.patrons }}</template>
@@ -130,7 +130,7 @@
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount } from 'vue';
-import { buildHash } from '@/config';
+import { version } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
