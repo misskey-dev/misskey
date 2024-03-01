@@ -705,14 +705,6 @@ export interface Locale extends ILocale {
      */
     "flagShowTimelineRepliesDescription": string;
     /**
-     * ローカルタイムラインにローカルのパブリック未満のノートを表示する
-     */
-    "flagShowLocalTimelineBelowPublic": string;
-    /**
-     * オンにすると、ローカルタイムラインにもフォロー済みローカルユーザの公開範囲がパブリック未満のノートを表示します。
-     */
-    "flagShowLocalTimelineBelowPublicDescription": string;
-    /**
      * フォロー中ユーザーからのフォロリクを自動承認
      */
     "autoAcceptFollowed": string;
