@@ -34,7 +34,7 @@ import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-import { unicodeEmojisMap } from '@/scripts/emojilist.js';
+import { getUnicodeEmoji } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -52,7 +52,7 @@ const emit = defineEmits<{
 const buttonEl = shallowRef<HTMLElement>();
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? unicodeEmojisMap.get(props.reaction));
+const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
