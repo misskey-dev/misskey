@@ -248,6 +248,22 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
+	@bindThis
+	async fetchPersonWithRenewal(uri: string): Promise<MiLocalUser | MiRemoteUser | null> {
+		const exist = await this.fetchPerson(uri);
+		if (exist == null) return null;
+
+		// ついでにリモートユーザーの情報が古かったら更新しておく
+		if (this.userEntityService.isRemoteUser(exist)) {
+			if (exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > 1000 * 60 * 60 * 3) {
+				await this.updatePerson(exist.uri);
+				return await this.fetchPerson(uri);
+			}
+		}
+
+		return exist;
+	}
+
 	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>>> {
 		if (user == null) throw new Error('failed to create user: user is null');
 
@@ -624,9 +640,9 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<MiLocalUser | MiRemoteUser> {
+	public async resolvePerson(uri: string, resolver?: Resolver, withRenewal = false): Promise<MiLocalUser | MiRemoteUser> {
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.fetchPerson(uri);
+		const exist = withRenewal ? await this.fetchPersonWithRenewal(uri) : await this.fetchPerson(uri);
 		if (exist) return exist;
 		//#endregion
 

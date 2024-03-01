@@ -107,14 +107,22 @@ export class ApRequestService {
 	@bindThis
 	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
-
+		const key = await this.getPrivateKey(user.id, level);
 		const req = createSignedPost({
 			level,
-			key: await this.getPrivateKey(user.id, level),
+			key,
 			url,
 			body,
 			additionalHeaders: {
+				'User-Agent': this.config.userAgent,
 			},
+		});
+
+		this.logger.debug('create signed post', {
+			version: 'draft',
+			level,
+			url,
+			keyId: key.keyId,
 		});
 
 		await this.httpRequestService.send(url, {
@@ -131,12 +139,21 @@ export class ApRequestService {
 	 */
 	@bindThis
 	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
+		const key = await this.getPrivateKey(user.id, level);
 		const req = createSignedGet({
 			level,
-			key: await this.getPrivateKey(user.id, level),
+			key,
 			url,
 			additionalHeaders: {
+				'User-Agent': this.config.userAgent,
 			},
+		});
+
+		this.logger.debug('create signed get', {
+			version: 'draft',
+			level,
+			url,
+			keyId: key.keyId,
 		});
 
 		const res = await this.httpRequestService.send(url, {

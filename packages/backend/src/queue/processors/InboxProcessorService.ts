@@ -19,6 +19,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
+import * as Acct from '@/misc/acct.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
@@ -79,7 +80,6 @@ export class InboxProcessorService {
 			key: MiUserPublickey | null;
 		} | null = null;
 
-		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 		try {
 			authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
 		} catch (err) {
@@ -103,7 +103,15 @@ export class InboxProcessorService {
 		}
 
 		// HTTP-Signatureの検証
-		const httpSignatureValidated = verifyDraftSignature(signature, authUser.key.keyPem);
+		const errorLogger = (ms: any) => this.logger.error(ms);
+		const httpSignatureValidated = verifyDraftSignature(signature, authUser.key.keyPem, errorLogger);
+		this.logger.debug('Inbox message validation: ', {
+			userId: authUser.user.id,
+			userAcct: Acct.toString(authUser.user),
+			parsedKeyId: signature.keyId,
+			foundKeyId: authUser.key.keyId,
+			httpSignatureValidated,
+		});
 
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
