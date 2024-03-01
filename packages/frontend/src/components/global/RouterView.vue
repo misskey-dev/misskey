@@ -80,7 +80,7 @@ router.addListener('change', onChange);
  * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
  * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
  */
-const pageCacheController = computed(() => clearCacheRequested.value ? /.*/ : undefined);
+const pageCacheController = computed(() => clearCacheRequested.value ? /.*/ : ['flash']);
 const clearCacheRequested = ref(false);
 
 globalEvents.on('requestClearPageCache', () => {
