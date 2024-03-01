@@ -2,8 +2,6 @@ ARG NODE_VERSION=21.6.2-bullseye
 
 FROM node:${NODE_VERSION} AS builder
 
-ARG NODE_ENV=production
-
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
 	rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -17,6 +15,8 @@ RUN corepack enable
 WORKDIR /misskey
 
 COPY . ./
+
+ARG NODE_ENV=production
 
 RUN apt-get update
 RUN apt-get install -y build-essential
@@ -46,15 +46,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 USER misskey
 WORKDIR /misskey
 
-RUN apt-get update
-RUN apt-get install -y ffmpeg tini
-
-COPY --from=builder /misskey/node_modules ./node_modules
-COPY --from=builder /misskey/built ./built
-COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
-COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
-COPY --from=builder /misskey/packages/client/node_modules ./packages/client/node_modules
-COPY . ./
+COPY --chown=misskey:misskey --from=builder /misskey/node_modules ./node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/built ./built
+COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./packages/backend/built
+COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
+COPY --chown=misskey:misskey . ./
 
 ENV NODE_ENV=production
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
