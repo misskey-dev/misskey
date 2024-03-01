@@ -16,7 +16,7 @@ import { jobQueue, server } from './common.js';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../meta.json`, 'utf-8'));
+const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/_vite_/meta.json`, 'utf-8'));
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -42,7 +42,7 @@ function greet() {
 	}
 
 	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${meta.version}`, null, true);
+	bootLogger.info(`Misskey ${meta.buildHash}`, null, true);
 }
 
 /**

@@ -111,7 +111,7 @@ const path = process.env.NODE_ENV === 'test'
 	: `${dir}/default.yml`;
 
 export function loadConfig() {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../meta.json`, 'utf-8'));
+	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/meta.json`, 'utf-8'));
 	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
 	const clientManifest = clientManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
@@ -126,7 +126,7 @@ export function loadConfig() {
 
 	config.port = config.port ?? parseInt(process.env.PORT ?? '', 10);
 
-	mixin.version = meta.version;
+	mixin.version = meta.buildHash;
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
@@ -135,7 +135,7 @@ export function loadConfig() {
 	mixin.apiUrl = `${mixin.scheme}://${mixin.host}/api`;
 	mixin.authUrl = `${mixin.scheme}://${mixin.host}/auth`;
 	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
-	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
+	mixin.userAgent = `Misskey/${meta.buildHash} (${config.url})`;
 	mixin.clientEntry = clientManifest['src/init.ts'];
 	mixin.clientManifestExists = clientManifestExists;
 
