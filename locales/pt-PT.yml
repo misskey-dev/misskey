@@ -1011,6 +1011,7 @@ renotes: "Repostar"
 keepScreenOn: "Manter a tela do dispositivo sempre ligada"
 flip: "Inversão"
 lastNDays: "Últimos {n} dias"
+surrender: "Cancelar"
 _initialAccountSetting:
   followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _serverSettings:

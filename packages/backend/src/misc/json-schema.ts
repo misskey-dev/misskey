@@ -44,12 +44,18 @@ import {
 	packedRoleCondFormulaLogicsSchema,
 	packedRoleCondFormulaValueNot,
 	packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	packedRoleCondFormulaValueAssignedRoleSchema,
 	packedRoleCondFormulaValueCreatedSchema,
 	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
 	packedRoleCondFormulaValueSchema,
 } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
 import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
+import {
+	packedMetaLiteSchema,
+	packedMetaDetailedOnlySchema,
+	packedMetaDetailedSchema,
+} from '@/models/json-schema/meta.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -91,6 +97,7 @@ export const refs = {
 	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
 	RoleCondFormulaValueNot: packedRoleCondFormulaValueNot,
 	RoleCondFormulaValueIsLocalOrRemote: packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	RoleCondFormulaValueAssignedRole: packedRoleCondFormulaValueAssignedRoleSchema,
 	RoleCondFormulaValueCreated: packedRoleCondFormulaValueCreatedSchema,
 	RoleCondFormulaFollowersOrFollowingOrNotes: packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
 	RoleCondFormulaValue: packedRoleCondFormulaValueSchema,
@@ -99,6 +106,9 @@ export const refs = {
 	RolePolicies: packedRolePoliciesSchema,
 	ReversiGameLite: packedReversiGameLiteSchema,
 	ReversiGameDetailed: packedReversiGameDetailedSchema,
+	MetaLite: packedMetaLiteSchema,
+	MetaDetailedOnly: packedMetaDetailedOnlySchema,
+	MetaDetailed: packedMetaDetailedSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
