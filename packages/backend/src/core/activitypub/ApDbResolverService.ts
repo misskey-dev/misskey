@@ -53,7 +53,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(1e3 * 60 * 20); // 20分
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(Infinity);
 	}
 
 	@bindThis
@@ -154,7 +154,19 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const exactKey = keys.find(x => x.keyId === keyId);
 		if (exactKey) return { user, key: exactKey };
 
-		// keyIdで見つからない場合、lastFetchedAtでの更新制限を弱めて再取得
+		// keyIdで見つからない場合
+		// まずはキャッシュを更新して再取得
+		const cacheRaw = this.publicKeyByUserIdCache.cache.get(user.id);
+		if (cacheRaw && cacheRaw.date > Date.now() - 1000 * 60 * 12) {
+			this.refreshCacheByUserId(user.id);
+			const keys = await this.getPublicKeyByUserId(user.id);
+			if (keys == null || !Array.isArray(keys)) return null;
+
+			const exactKey = keys.find(x => x.keyId === keyId);
+			if (exactKey) return { user, key: exactKey };
+		}
+
+		// lastFetchedAtでの更新制限を弱めて再取得
 		if (user.lastFetchedAt == null || user.lastFetchedAt < new Date(Date.now() - 1000 * 60 * 12)) {
 			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
 			if (renewed == null || renewed.isDeleted) return null;
