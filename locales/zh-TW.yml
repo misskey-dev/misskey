@@ -1655,6 +1655,7 @@ _role:
     gtlAvailable: "瀏覽全域時間軸"
     ltlAvailable: "瀏覽本地時間軸"
     canPublicNote: "允許公開貼文"
+    mentionMax: "貼文內的最大提及數"
     canInvite: "發行伺服器邀請碼"
     inviteLimit: "可建立邀請碼的數量"
     inviteLimitCycle: "邀請碼的發放間隔"
@@ -2299,6 +2300,7 @@ _notification:
   reactedBySomeUsers: "{n}人做出了反應"
   renotedBySomeUsers: "{n}人做了轉發"
   followedBySomeUsers: "被{n}人追隨了"
+  flushNotification: "重置通知歷史紀錄"
   _types:
     all: "全部 "
     note: "使用者的最新貼文"
