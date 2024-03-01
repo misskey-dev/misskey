@@ -78,6 +78,7 @@ import { FlashLike } from '@/models/entities/FlashLike.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { NoLogger } from '@/no-logger.js';
 import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
@@ -222,8 +223,8 @@ export function createPostgresDataSource(config: Config) {
 				db: config.redis.db ?? 0,
 			},
 		} : false,
-		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logging: true,
+		logger: new NoLogger(),
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],

@@ -15,6 +15,7 @@ import { entity as TestIntersectionChartEntity } from '@/core/chart/charts/entit
 import { loadConfig } from '@/config.js';
 import type { AppLockService } from '@/core/AppLockService';
 import Logger from '@/logger.js';
+import { NoLogger } from '@/no-logger.js';
 
 describe('Chart', () => {
 	const config = loadConfig();
@@ -54,6 +55,8 @@ describe('Chart', () => {
 				TestIntersectionChartEntity.hour, TestIntersectionChartEntity.day,
 			],
 			migrations: ['../../migration/*.js'],
+			logging: true,
+			logger: NoLogger(),
 		});
 
 		await db.initialize();
@@ -475,16 +478,16 @@ describe('Chart', () => {
 				await testIntersectionChart.addA('bob');
 				await testIntersectionChart.addB('carol');
 				await testIntersectionChart.save();
-	
+
 				const chartHours = await testIntersectionChart.getChart('hour', 3, null);
 				const chartDays = await testIntersectionChart.getChart('day', 3, null);
-	
+
 				assert.deepStrictEqual(chartHours, {
 					a: [2, 0, 0],
 					b: [1, 0, 0],
 					aAndB: [0, 0, 0],
 				});
-	
+
 				assert.deepStrictEqual(chartDays, {
 					a: [2, 0, 0],
 					b: [1, 0, 0],
@@ -498,16 +501,16 @@ describe('Chart', () => {
 				await testIntersectionChart.addB('carol');
 				await testIntersectionChart.addB('alice');
 				await testIntersectionChart.save();
-	
+
 				const chartHours = await testIntersectionChart.getChart('hour', 3, null);
 				const chartDays = await testIntersectionChart.getChart('day', 3, null);
-	
+
 				assert.deepStrictEqual(chartHours, {
 					a: [2, 0, 0],
 					b: [2, 0, 0],
 					aAndB: [1, 0, 0],
 				});
-	
+
 				assert.deepStrictEqual(chartDays, {
 					a: [2, 0, 0],
 					b: [2, 0, 0],

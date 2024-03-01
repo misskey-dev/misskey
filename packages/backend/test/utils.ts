@@ -11,6 +11,7 @@ import FormData from 'form-data';
 import { DataSource } from 'typeorm';
 import got, { RequestError } from 'got';
 import { entities } from '@/postgres.js';
+import { NoLogger } from '@/no-logger.js';
 import loadConfig from '../src/config/load.js';
 import type * as misskey from 'misskey-js';
 
@@ -268,6 +269,8 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
 		entities: initEntities || entities,
+		logging: true,
+		logger: new NoLogger(),
 	});
 
 	await db.initialize();
