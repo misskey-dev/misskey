@@ -296,6 +296,13 @@ export class ApNoteService {
 
 		const apEmojis = emojis.map(emoji => emoji.name);
 
+		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
+
+		// block spam
+		if ((actor.host != null) && (actor.followersCount == 0) && (1 < noteAudience.mentionedUsers.length)) {
+			throw new Error(`Spam blocked: followersCount:${actor.followersCount} mentionedUsers:${noteAudience.mentionedUsers.length}`);
+		}
+
 		try {
 			return await this.noteCreateService.create(actor, {
 				createdAt: note.published ? new Date(note.published) : null,
