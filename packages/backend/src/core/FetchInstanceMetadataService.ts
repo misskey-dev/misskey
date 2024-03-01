@@ -15,7 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { REMOTE_SERVER_CACHE_TTL } from '@/const';
+import { REMOTE_SERVER_CACHE_TTL } from '@/const.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
