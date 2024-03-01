@@ -73,8 +73,9 @@
 		"vue-plyr": "7.0.0",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "4.1.0",
-    "@tabler/icons-webfont": "2.2.0"
-	},
+    "@tabler/icons-webfont": "2.2.0",
+    "vite-plugin-build-metadata": "0.4.0"
+  },
 	"devDependencies": {
 		"@types/escape-regexp": "0.0.3",
 		"@types/glob": "8.1.0",
@@ -101,7 +102,6 @@
 		"eslint-plugin-vue": "9.22.0",
 		"rollup": "4.12.0",
 		"start-server-and-test": "2.0.3",
-		"vite-plugin-build-metadata": "0.4.0",
 		"vite-plugin-inspect": "0.8.3",
 		"vue-eslint-parser": "9.4.2",
 		"vue-tsc": "1.8.27"
