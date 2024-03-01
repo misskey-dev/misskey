@@ -9,25 +9,25 @@ const __dirname = new URL('.', import.meta.url).pathname;
 		stderr: process.stderr,
 	});
 
-	execa('npx', ['gulp', 'watch'], {
+	global.ps1 = execa('npx', ['gulp', 'watch'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
-  execa('npm', ['run', 'watch'], {
+  global.ps2 = execa('npm', ['run', 'watch'], {
     cwd: __dirname + '/../packages/frontend',
     stdout: process.stdout,
     stderr: process.stderr,
   });
 
-	execa('npm', ['run', 'watch'], {
+	global.ps3 = execa('npm', ['run', 'watch'], {
 		cwd: __dirname + '/../packages/backend',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
-	execa('npm', ['run', 'watch'], {
+	global.ps4 = execa('npm', ['run', 'watch'], {
 		cwd: __dirname + '/../packages/sw',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -35,7 +35,7 @@ const __dirname = new URL('.', import.meta.url).pathname;
 
 	const start = async () => {
 		try {
-			await execa('npm', ['run', 'start'], {
+			global.ps5 = await execa('npm', ['run', 'start'], {
 				cwd: __dirname + '/../',
 				stdout: process.stdout,
 				stderr: process.stderr,
@@ -48,3 +48,14 @@ const __dirname = new URL('.', import.meta.url).pathname;
 
 	start();
 })();
+
+// 全てのプロセスを終了する
+process.on('SIGINT', () => {
+  global.ps1.kill();
+  global.ps2.kill();
+  global.ps3.kill();
+  global.ps4.kill();
+  global.ps5.kill();
+  process.exit();
+});
+
