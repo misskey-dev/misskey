@@ -394,6 +394,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public getEmojiByName(name: string): Promise<MiEmoji | null> {
+		return this.emojisRepository.findOneBy({ name, host: IsNull() });
+	}
+
+	@bindThis
 	public dispose(): void {
 		this.cache.dispose();
 	}
