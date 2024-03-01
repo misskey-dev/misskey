@@ -40,6 +40,7 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { REMOTE_USER_CACHE_TTL, REMOTE_USER_MOVE_COOLDOWN } from '@/const.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -255,7 +256,7 @@ export class ApPersonService implements OnModuleInit {
 
 		// ついでにリモートユーザーの情報が古かったら更新しておく
 		if (this.userEntityService.isRemoteUser(exist)) {
-			if (exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > 1000 * 60 * 60 * 3) {
+			if (exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > REMOTE_USER_CACHE_TTL) {
 				this.logger.debug('fetchPersonWithRenewal: renew', { uri, lastFetchedAt: exist.lastFetchedAt });
 				await this.updatePerson(exist.uri);
 				return await this.fetchPerson(uri);
@@ -619,7 +620,7 @@ export class ApPersonService implements OnModuleInit {
 			exist.movedAt == null ||
 			// 以前のmovingから14日以上経過した場合のみ移行処理を許可
 			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
-			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
+			exist.movedAt.getTime() + REMOTE_USER_MOVE_COOLDOWN < updated.movedAt.getTime()
 		)) {
 			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
 			return this.processRemoteMove(updated, movePreventUris)

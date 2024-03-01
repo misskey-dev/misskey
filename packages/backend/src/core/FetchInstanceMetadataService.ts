@@ -15,6 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { REMOTE_SERVER_CACHE_TTL } from '@/const';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
@@ -73,7 +74,7 @@ export class FetchInstanceMetadataService {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
-				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 3)) {
+				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
 					throw new Error('Skip because updated recently');
 				}
 			}
