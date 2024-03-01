@@ -117,6 +117,7 @@ describe('Mute', () => {
 			assert.strictEqual(res.body.some((notification: any) => notification.userId === bob.id), true);
 			assert.strictEqual(res.body.some((notification: any) => notification.userId === carol.id), false);
 		});
+
 		test('通知にミュートしているユーザーからのリプライが含まれない', async () => {
 			const aliceNote = await post(alice, { text: 'hi' });
 			await post(bob, { text: '@alice hi', replyId: aliceNote.id });
