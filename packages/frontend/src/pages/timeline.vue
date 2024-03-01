@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
+						:onlyLocal="onlyLocal"
 						:sound="true"
 						@queue="queueUpdated"
 					/>
@@ -114,6 +115,11 @@ watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
 const withSensitive = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
 	set: (x) => saveTlFilter('withSensitive', x),
+});
+
+const onlyLocal = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.onlyLocal,
+	set: (x) => saveTlFilter('onlyLocal', x),
 });
 
 watch(src, () => {
@@ -264,7 +270,11 @@ const headerActions = computed(() => {
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
-				}], ev.currentTarget ?? ev.target);
+				}, src.value === 'home' || src.value === 'social' ? {
+					type: 'switch',
+					text: i18n.ts.localOnly,
+					ref: onlyLocal,
+				} : undefined,], ev.currentTarget ?? ev.target);
 			},
 		},
 	];

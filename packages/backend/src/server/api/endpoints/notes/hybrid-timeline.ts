@@ -67,6 +67,7 @@ export const paramDef = {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 		withReplies: { type: 'boolean', default: false },
+		onlyLocal: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -152,6 +153,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
+				noteFilter: (note) => {
+					if (ps.onlyLocal && note.user && note.user.host !== null ) {
+						return false;
+					}
+					return true;
+				},
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
 					sinceId,

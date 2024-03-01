@@ -21017,6 +21017,8 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
+          /** @default false */
+          onlyLocal?: boolean;
         };
       };
     };
@@ -21075,8 +21077,6 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
-          /** @default false */
-          withBelowPublic?: boolean;
           /** @default 10 */
           limit?: number;
           /** Format: misskey:id */
@@ -21987,6 +21987,8 @@ export type operations = {
           withFiles?: boolean;
           /** @default true */
           withRenotes?: boolean;
+          /** @default false */
+          onlyLocal?: boolean;
         };
       };
     };

@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkTimeline
 		v-else-if="column.tl"
 		ref="timeline"
-		:key="column.tl + withRenotes + withReplies + onlyFiles"
+		:key="column.tl + withRenotes + withReplies + onlyFiles + onlyLocal"
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
@@ -55,6 +55,7 @@ const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
+const onlyLocal = ref(props.column.onlyLocal ?? false);
 
 watch(withRenotes, v => {
 	updateColumn(props.column.id, {
@@ -71,6 +72,12 @@ watch(withReplies, v => {
 watch(onlyFiles, v => {
 	updateColumn(props.column.id, {
 		onlyFiles: v,
+	});
+});
+
+watch(onlyLocal, v => {
+	updateColumn(props.column.id, {
+		onlyLocal: v,
 	});
 });
 
@@ -126,7 +133,11 @@ const menu = [{
 	text: i18n.ts.fileAttachedOnly,
 	ref: onlyFiles,
 	disabled: props.column.tl === 'local' || props.column.tl === 'social' ? withReplies : false,
-}];
+}, props.column.tl === 'home' || props.column.tl === 'social' ? {
+	type: 'switch',
+	text: i18n.ts.localOnly,
+	ref: onlyLocal,
+} : undefined];
 </script>
 
 <style lang="scss" module>

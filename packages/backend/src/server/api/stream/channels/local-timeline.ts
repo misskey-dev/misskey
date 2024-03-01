@@ -18,7 +18,6 @@ class LocalTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
-	private withBelowPublic: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
 
@@ -40,7 +39,6 @@ class LocalTimelineChannel extends Channel {
 		if (!policies.ltlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
-		this.withBelowPublic = params.withBelowPublic ?? false;
 		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
 
@@ -53,44 +51,14 @@ class LocalTimelineChannel extends Channel {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (note.user.host !== null) return;
-		if (!this.withBelowPublic && note.visibility !== 'public') return;
-
-		if (note.channelId) {
-			if (!this.withBelowPublic && !this.followingChannels.has(note.channelId)) return;
-		} else {
-			// パブリックでないかつその投稿のユーザーをフォローしていなかったら弾く
-			if (note.visibility !== 'public' && (this.user!.id !== note.userId) && !Object.hasOwn(this.following, note.userId)) return;
-		}
-
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.noteEntityService.pack(note.id, this.user!, {
-				detail: true,
-			});
-
-			if (note.isHidden) {
-				return;
-			}
-		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
-					detail: true,
-				});
-			}
-		}
+		if (note.visibility !== 'public') return;
+		if (note.channelId != null) return;
 
 		// 関係ない返信は除外
 		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
 			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
-			if (reply.user.host !== null) return;
 		}
 
 		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
