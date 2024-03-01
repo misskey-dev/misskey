@@ -317,7 +317,7 @@ export class UserEntityService implements OnModuleInit {
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
-		if (user.isSuspended && !iAmModerator) throw new IdentifiableError('8ca4f428-b32e-4f83-ac43-406ed7cd0452', 'This user is suspended.');
+		if (user.isSuspended && !iAmModerator) throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', `User ${user.id} has been suspended.`);
 
 		const relation = meId && !isMe && isDetailed ? await this.getRelation(meId, user.id) : null;
 		const pins = isDetailed ? await this.userNotePiningsRepository.createQueryBuilder('pin')

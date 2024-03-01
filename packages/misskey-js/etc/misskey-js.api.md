@@ -569,6 +569,7 @@ export type Channels = {
             unreadNotification: (payload: Notification_2) => void;
             unreadMention: (payload: Note['id']) => void;
             readAllUnreadMentions: () => void;
+            notificationFlushed: () => void;
             unreadSpecifiedNote: (payload: Note['id']) => void;
             readAllUnreadSpecifiedNotes: () => void;
             readAllAntennas: () => void;
@@ -1774,6 +1775,7 @@ declare namespace entities {
         RoleCondFormulaLogics,
         RoleCondFormulaValueNot,
         RoleCondFormulaValueIsLocalOrRemote,
+        RoleCondFormulaValueAssignedRole,
         RoleCondFormulaValueCreated,
         RoleCondFormulaFollowersOrFollowingOrNotes,
         RoleCondFormulaValue,
@@ -2814,6 +2816,9 @@ type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
 
 // @public (undocumented)
 type RoleCondFormulaValue = components['schemas']['RoleCondFormulaValue'];
+
+// @public (undocumented)
+type RoleCondFormulaValueAssignedRole = components['schemas']['RoleCondFormulaValueAssignedRole'];
 
 // @public (undocumented)
 type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];

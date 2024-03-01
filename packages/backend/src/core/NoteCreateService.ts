@@ -271,9 +271,18 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+		const hasProhibitedWords = await this.checkProhibitedWordsContain(
+			meta.prohibitedWords,
+			{
+				cw: data.cw,
+				text: data.text,
+				pollChoices: data.poll?.choices,
+			},
+		);
+
+		if (hasProhibitedWords) {
 			this.logger.error('Request rejected because prohibited words are included', { user: user.id, note: data });
-			throw new IdentifiableError('057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30', 'Notes including prohibited words are not allowed.');
+			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Notes including prohibited words are not allowed.');
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
@@ -410,6 +419,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
 				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
+		}
+
+		if (mentionedUsers.length > 0 && mentionedUsers.length > policies.mentionLimit) {
+			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', `Notes including mentions are limited to ${policies.mentionLimit} users.`);
 		}
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
@@ -1059,6 +1072,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 				isFollowerHibernated: true,
 			});
 		}
+	}
+
+	public async checkProhibitedWordsContain(prohibitedWords: string[], content: Parameters<UtilityService['concatNoteContentsForKeyWordCheck']>[0]) {
+		return this.utilityService.isKeyWordIncluded(
+			this.utilityService.concatNoteContentsForKeyWordCheck(content),
+			prohibitedWords,
+		);
 	}
 
 	@bindThis

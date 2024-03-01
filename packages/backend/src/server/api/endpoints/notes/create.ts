@@ -94,6 +94,12 @@ export const meta = {
 			id: '3ac74a84-8fd5-4bb0-870f-01804f82ce15',
 		},
 
+		cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility: {
+			message: 'You cannot reply to a specified visibility note with extended visibility.',
+			code: 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY',
+			id: 'ed940410-535c-4d5e-bfa3-af798671e93c',
+		},
+
 		cannotCreateAlreadyExpiredPoll: {
 			message: 'Poll is already expired.',
 			code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL',
@@ -128,6 +134,12 @@ export const meta = {
 			message: 'Cannot post because it contains prohibited words.',
 			code: 'CONTAINS_PROHIBITED_WORDS',
 			id: 'aa6e01d3-a85c-669d-758a-76aab43af334',
+		},
+
+		containsTooManyMentions: {
+			message: 'Cannot post because it exceeds the allowed number of mentions.',
+			code: 'CONTAINS_TOO_MANY_MENTIONS',
+			id: '4de0363a-3046-481b-9b0f-feff3e211025',
 		},
 	},
 } as const;
@@ -361,6 +373,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
 					logger.error('Cannot reply to an invisible Note.', { replyId: ps.replyId });
 					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
+				} else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
+					throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
 				}
 
 				// Check blocking
@@ -437,7 +451,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				logger.error('Failed to create a note.', { error: err });
 
 				if (err instanceof IdentifiableError) {
-					if (err.id === '057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30') throw new ApiError(meta.errors.containsProhibitedWords);
+					if (err.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') throw new ApiError(meta.errors.containsProhibitedWords);
+					if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') throw new ApiError(meta.errors.containsTooManyMentions);
 				}
 
 				throw err;
