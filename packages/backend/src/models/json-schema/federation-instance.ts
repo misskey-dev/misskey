@@ -111,5 +111,9 @@ export const packedFederationInstanceSchema = {
 			type: 'string',
 			optional: true, nullable: true,
 		},
+		httpMessageSignaturesImplementationLevel: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
