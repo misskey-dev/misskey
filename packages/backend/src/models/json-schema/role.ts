@@ -140,6 +140,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canInitiateConversation: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canCreateContent: {
 			type: 'boolean',
 			optional: false, nullable: false,

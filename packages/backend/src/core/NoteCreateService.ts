@@ -383,7 +383,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (policies.canInitiateConversation === false) {
 			if (
 				mentionedUsers.some(u => u.id !== user.id)
-				|| (data.reply && data.reply.replyUserId !== user.id)
+				|| (data.reply && data.reply.userId !== user.id)
 				|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.id !== user.id))
 				|| (this.isQuote(data) && data.renote.userId !== user.id)
 			) {

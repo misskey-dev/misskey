@@ -4784,6 +4784,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      canInitiateConversation: boolean;
       canCreateContent: boolean;
       canUpdateContent: boolean;
       canDeleteContent: boolean;
