@@ -54,6 +54,9 @@ COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modu
 COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
 
+# ファイル所在チェック(/misskey/packages/backend/builtd/boot/index.js)
+RUN if [ ! -f /misskey/packages/backend/built/boot/index.js ]; then echo "Error: /misskey/packages/backend/built/boot/index.js not found" && exit 1;
+
 ENV NODE_ENV=production
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
