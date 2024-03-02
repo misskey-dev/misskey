@@ -51,7 +51,7 @@
           </div>
           <FormSection>
             <div class="_formLinks">
-              <FormLink to="https://github.com/misskey-dev/misskey" external>
+              <FormLink to="https://github.com/nacika-ins/misskey" external>
                 <template #icon><i class="ti ti-code"></i></template>
                 {{ i18n.ts._aboutMisskey.source }}
                 <template #suffix>GitHub</template>
