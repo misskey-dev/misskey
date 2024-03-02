@@ -239,6 +239,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		skipNsfwDetection: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		pinLimit: {
 			type: 'integer',
 			optional: false, nullable: false,

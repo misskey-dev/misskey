@@ -1698,6 +1698,7 @@ _role:
     canManageAvatarDecorations: "Manage avatar decorations"
     driveCapacity: "Drive capacity"
     alwaysMarkNsfw: "Always mark files as NSFW"
+    skipNsfwDetection: "Skip NSFW detection by AI"
     pinMax: "Maximum number of pinned notes"
     antennaMax: "Maximum number of antennas"
     antennaNotesMax: "Maximum number of notes stored in antennas"

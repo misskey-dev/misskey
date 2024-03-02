@@ -94,6 +94,7 @@ export const ROLE_POLICIES = [
 	'canHideAds',
 	'driveCapacityMb',
 	'alwaysMarkNsfw',
+	'skipNsfwDetection',
 	'pinLimit',
 	'antennaLimit',
 	'antennaNotesLimit',

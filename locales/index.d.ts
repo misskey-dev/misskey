@@ -6623,6 +6623,10 @@ export interface Locale extends ILocale {
              */
             "alwaysMarkNsfw": string;
             /**
+             * AIによるNSFW検出を無視
+             */
+            "skipNsfwDetection": string;
+            /**
              * ノートのピン留めの最大数
              */
             "pinMax": string;

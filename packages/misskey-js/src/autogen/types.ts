@@ -4822,6 +4822,7 @@ export type components = {
       canHideAds: boolean;
       driveCapacityMb: number;
       alwaysMarkNsfw: boolean;
+      skipNsfwDetection: boolean;
       pinLimit: number;
       antennaLimit: number;
       antennaNotesLimit: number;

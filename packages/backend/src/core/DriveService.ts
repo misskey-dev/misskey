@@ -459,15 +459,14 @@ export class DriveService {
 	}: AddFileArgs): Promise<MiDriveFile> {
 		let skipNsfwCheck = false;
 		const instance = await this.metaService.fetch();
-		const userRoleNSFW = user && (await this.roleService.getUserPolicies(user.id)).alwaysMarkNsfw;
-		if (user == null) {
-			skipNsfwCheck = true;
-		} else if (userRoleNSFW) {
-			skipNsfwCheck = true;
-		}
-		if (instance.sensitiveMediaDetection === 'none') skipNsfwCheck = true;
-		if (user && instance.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user)) skipNsfwCheck = true;
-		if (user && instance.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
+		const policies = user && await this.roleService.getUserPolicies(user.id);
+		const userRoleNSFW = policies?.alwaysMarkNsfw;
+		skipNsfwCheck ||= user == null;
+		skipNsfwCheck ||= !!userRoleNSFW;
+		skipNsfwCheck ||= !!policies?.skipNsfwDetection;
+		skipNsfwCheck ||= instance.sensitiveMediaDetection === 'none';
+		skipNsfwCheck ||= !!(user && instance.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user));
+		skipNsfwCheck ||= !!(user && instance.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user));
 
 		const info = await this.fileInfoService.getFileInfo(path, {
 			skipSensitiveDetection: skipNsfwCheck,
@@ -511,11 +510,10 @@ export class DriveService {
 		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
 
 		//#region Check drive usage
-		if (user && !isLink) {
+		if (user && policies && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
 			const isLocalUser = this.userEntityService.isLocalUser(user);
 
-			const policies = await this.roleService.getUserPolicies(user.id);
 			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
 			this.registerLogger.debug('drive capacity override applied');
 			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
