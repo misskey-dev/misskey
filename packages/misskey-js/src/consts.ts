@@ -9,6 +9,7 @@ export const followingVisibilities = ['public', 'followers', 'private'] as const
 export const followersVisibilities = ['public', 'followers', 'private'] as const;
 
 export const permissions = [
+	'read:admin:nirila-delete-user-log-access',
 	'read:account',
 	'write:account',
 	'read:blocks',
@@ -121,6 +122,7 @@ export const moderationLogTypes = [
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
+	'updateRemoteInstanceNote',
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
@@ -133,6 +135,7 @@ export const moderationLogTypes = [
 	'deleteAvatarDecoration',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'makeNoteHome',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -261,6 +264,12 @@ export type ModerationLogPayloads = {
 		id: string;
 		host: string;
 	};
+	updateRemoteInstanceNote: {
+		id: string;
+		host: string;
+		before: string | null;
+		after: string | null;
+	};
 	markSensitiveDriveFile: {
 		fileId: string;
 		fileUserId: string | null;
@@ -318,5 +327,12 @@ export type ModerationLogPayloads = {
 		userUsername: string;
 		userHost: string | null;
 		fileId: string;
+	};
+	makeNoteHome: {
+		noteId: string;
+		noteUserId: string;
+		noteUserUsername: string;
+		noteUserHost: string | null;
+		note: any;
 	};
 };

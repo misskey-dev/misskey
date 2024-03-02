@@ -25,6 +25,7 @@ import { IdService } from '@/core/IdService.js';
 import type { AnnouncementService } from '@/core/AnnouncementService.js';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
@@ -302,11 +303,13 @@ export class UserEntityService implements OnModuleInit {
 			schema?: S,
 			includeSecrets?: boolean,
 			userProfile?: MiUserProfile,
+			asModerator?: boolean,
 		},
 	): Promise<Packed<S>> {
 		const opts = Object.assign({
 			schema: 'UserLite',
 			includeSecrets: false,
+			asModerator: undefined as boolean | undefined,
 		}, options);
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
@@ -314,7 +317,7 @@ export class UserEntityService implements OnModuleInit {
 		const isDetailed = opts.schema !== 'UserLite';
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
-		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
+		const iAmModerator = opts.asModerator ?? (me ? await this.roleService.isModerator(me as MiUser) : false);
 
 		const relation = meId && !isMe && isDetailed ? await this.getRelation(meId, user.id) : null;
 		const pins = isDetailed ? await this.userNotePiningsRepository.createQueryBuilder('pin')
@@ -384,7 +387,7 @@ export class UserEntityService implements OnModuleInit {
 				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
 				alsoKnownAs: user.alsoKnownAs
 					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
-						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
+						.then(xs => xs.length === 0 ? null : xs.filter(isNotNull))
 					: null,
 				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,

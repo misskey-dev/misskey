@@ -10,7 +10,7 @@ import { i18n } from '@/i18n.js';
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-export const getNoteSummary = (note?: Misskey.entities.Note | null): string => {
+export const getNoteSummary = (note?: Misskey.entities.Note | null, sensitiveChannelCW?: boolean): string => {
 	if (note == null) {
 		return '';
 	}
@@ -21,6 +21,10 @@ export const getNoteSummary = (note?: Misskey.entities.Note | null): string => {
 
 	if (note.isHidden) {
 		return `(${i18n.ts.invisibleNote})`;
+	}
+
+	if (sensitiveChannelCW) {
+		return i18n.ts.sensitiveChannelAutoCW;
 	}
 
 	let summary = '';

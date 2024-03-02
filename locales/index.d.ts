@@ -213,6 +213,10 @@ export interface Locale extends ILocale {
      */
     "deleteAndEditConfirm": string;
     /**
+     * ホーム投稿にする
+     */
+    "makeNoteHome": string;
+    /**
      * リストに追加
      */
     "addToList": string;
@@ -488,6 +492,10 @@ export interface Locale extends ILocale {
      * センシティブ
      */
     "sensitive": string;
+    /**
+     * センシティブチャンネル自動CW
+     */
+    "sensitiveChannelAutoCW": string;
     /**
      * 追加
      */
@@ -932,6 +940,10 @@ export interface Locale extends ILocale {
      * このノートを削除しますか？
      */
     "noteDeleteConfirm": string;
+    /**
+     * 本当にホーム投稿にしますか？
+     */
+    "makeNoteHomeConfirm": string;
     /**
      * これ以上ピン留めできません
      */
@@ -3201,6 +3213,10 @@ export interface Locale extends ILocale {
      */
     "useReactionPickerForContextMenu": string;
     /**
+     * ユーザページでセンシティブチャンネルの投稿を閉じる
+     */
+    "collapseSensitiveChannel": string;
+    /**
      * {users}が入力中
      */
     "typingUsers": ParameterizedString<"users">;
@@ -4657,6 +4673,10 @@ export interface Locale extends ILocale {
      */
     "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     "fileAttachedOnly": string;
@@ -4857,6 +4877,14 @@ export interface Locale extends ILocale {
      */
     "replaying": string;
     /**
+     * リプレイを終了
+     */
+    "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    "copyReplayData": string;
+    /**
      * ランキング
      */
     "ranking": string;
@@ -4881,14 +4909,64 @@ export interface Locale extends ILocale {
      */
     "userSaysSomethingSensitive": ParameterizedString<"name">;
     /**
+     * {name}のセンシティブチャンネルでの投稿
+     */
+    "userSaysSomethingInSensitiveChannel": ParameterizedString<"name">;
+    /**
      * スワイプしてタブを切り替える
      */
     "enableHorizontalSwipe": string;
+    /**
+     * 読み込み中
+     */
+    "loading": string;
+    /**
+     * やめる
+     */
+    "surrender": string;
+    /**
+     * リトライ
+     */
+    "gameRetry": string;
     "_bubbleGame": {
         /**
          * 遊び方
          */
         "howToPlay": string;
+        /**
+         * ホールド
+         */
+        "hold": string;
+        "_score": {
+            /**
+             * スコア
+             */
+            "score": string;
+            /**
+             * 稼いだ金額
+             */
+            "scoreYen": string;
+            /**
+             * ハイスコア
+             */
+            "highScore": string;
+            /**
+             * 最大チェーン数
+             */
+            "maxChain": string;
+            /**
+             * {yen}円
+             */
+            "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
         "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -6385,6 +6463,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -6474,6 +6556,10 @@ export interface Locale extends ILocale {
             "avatarDecorationLimit": string;
         };
         "_condition": {
+            /**
+             * マニュアルロールにアサイン済み
+             */
+            "roleAssignedTo": string;
             /**
              * ローカルユーザー
              */
@@ -6873,6 +6959,14 @@ export interface Locale extends ILocale {
          * プロジェクトメンバー
          */
         "projectMembers": string;
+        /**
+         * このサーバーで使用しているforkの主要な開発者
+         */
+        "forkContributors": string;
+        /**
+         * このサーバーで使用しているforkの全てのコントリビューター
+         */
+        "allForkContributors": string;
     };
     "_displayOfSensitiveMedia": {
         /**
@@ -8851,6 +8945,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        "flushNotification": string;
         "_types": {
             /**
              * すべて
@@ -9124,7 +9222,41 @@ export interface Locale extends ILocale {
              * メンションされたとき
              */
             "mention": string;
+            /**
+             * 以下のユーザがnoteしたとき
+             */
+            "usersLabel": string;
+            /**
+             * このサーバーのユーザの@に挟まれた部分を改行で区切って指定します
+             */
+            "usersCaption": string;
         };
+    };
+    "_imageCompressionMode": {
+        /**
+         * 画像の圧縮形式
+         */
+        "title": string;
+        /**
+         * オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。縮小する場合は2048x2048より小さくなるように縮小されます。非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。
+         */
+        "description": string;
+        /**
+         * 縮小して再圧縮する
+         */
+        "resizeCompress": string;
+        /**
+         * 縮小せず再圧縮する
+         */
+        "noResizeCompress": string;
+        /**
+         * 縮小して非可逆圧縮する
+         */
+        "resizeCompressLossy": string;
+        /**
+         * 縮小せず非可逆圧縮する
+         */
+        "noResizeCompressLossy": string;
     };
     "_moderationLogTypes": {
         /**
@@ -9172,7 +9304,7 @@ export interface Locale extends ILocale {
          */
         "updateServerSettings": string;
         /**
-         * モデレーションノート更新
+         * ユーザーのモデレーションノート更新
          */
         "updateUserNote": string;
         /**
@@ -9219,6 +9351,10 @@ export interface Locale extends ILocale {
          * リモートサーバーを再開
          */
         "unsuspendRemoteInstance": string;
+        /**
+         * リモートサーバーのモデレーションノート更新
+         */
+        "updateRemoteInstanceNote": string;
         /**
          * ファイルをセンシティブ付与
          */
@@ -9267,6 +9403,10 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         "unsetUserBanner": string;
+        /**
+         * ノートをホーム投稿に変更
+         */
+        "makeNoteHome": string;
     };
     "_fileViewer": {
         /**
@@ -9655,6 +9795,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        "useAvatarAsStone": string;
     };
     "_offlineScreen": {
         /**

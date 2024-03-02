@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { NirilaDeleteUserLog } from '@/models/NirilaDeleteUserLog.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -74,6 +75,8 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { Repository } from 'typeorm';
 
 export {
+	NirilaDeleteUserLog,
+
 	MiAbuseUserReport,
 	MiAccessToken,
 	MiAd,
@@ -143,6 +146,7 @@ export {
 	MiReversiGame,
 };
 
+export type NirilaDeleteUserLogRepository = Repository<NirilaDeleteUserLog>;
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport>;
 export type AccessTokensRepository = Repository<MiAccessToken>;
 export type AdsRepository = Repository<MiAd>;
