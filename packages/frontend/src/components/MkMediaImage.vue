@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="showHiddenContent">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<ImgWithBlurhash
 			:hash="image.blurhash"
-			:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
+			:src="(props.image.isSensitive && !$i) || (defaultStore.state.dataSaver.media && hide) ? null : url"
 			:forceBlurhash="hide"
 			:cover="hide || cover"
 			:alt="image.comment || image.name"
@@ -44,8 +44,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
-		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
-		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
+		<button :class="$style.menu" class="_button" @click.prevent.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<i class="ti ti-eye-off" :class="$style.hide" @click.prevent.stop="hide = true"></i>
 	</template>
 </div>
 </template>
@@ -59,7 +59,8 @@ import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { iAmModerator } from '@/account.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { $i, iAmModerator } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -83,11 +84,21 @@ const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 		: props.image.thumbnailUrl,
 );
 
-function onclick() {
+function showHiddenContent(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
 	}
+
+	if (props.image.isSensitive && !$i) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		pleaseLogin();
+		return;
+	}
+
 	if (hide.value) {
+		ev.preventDefault();
+		ev.stopPropagation();
 		hide.value = false;
 	}
 }

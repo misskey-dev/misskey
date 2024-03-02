@@ -251,7 +251,7 @@ const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filte
 const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
-const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
+const muted = ref(checkMute(appearNote.value, $i?.mutedWords ?? []));
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
@@ -260,24 +260,16 @@ const renoteCollapsed = ref(
 	defaultStore.state.collapseRenotes && isRenote && (
 		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
 		(appearNote.value.myReaction != null)
-	)
+	),
 );
-const hideMutedNotes = defaultStore.state.hideMutedNotes;
+const hideMutedNotes = $i ? defaultStore.state.hideMutedNotes : true;
 
-/* Overload FunctionにLintが対応していないのでコメントアウト
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
-*/
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' {
-	if (mutedWords == null) return false;
-
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]>): boolean | 'sensitiveMute' {
 	if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
 	if (noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords)) return true;
 	if (noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords)) return true;
 
-	if (checkOnly) return false;
-
-	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
+	if (inTimeline && ($i ? !defaultStore.state.tl.filter.withSensitive : true) && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
 	return false;
 }
 

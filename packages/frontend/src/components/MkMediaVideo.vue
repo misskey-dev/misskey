@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@mouseleave="onMouseLeave"
 	@contextmenu.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="hide = false">
+	<button v-if="hide" :class="$style.hidden" @click="showHiddenContent">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
 			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
@@ -38,30 +38,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="!isActuallyPlaying" :class="$style.videoLoading">
 			<MkLoading/>
 		</div>
-		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
 			<div v-if="video.comment" :class="$style.indicator">ALT</div>
 			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
-		<div :class="$style.videoControls" @click.self="togglePlayPause">
+		<button v-if="!videoControls" :class="$style.menu" class="_button" @click.prevent.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<i class="ti ti-eye-off" :class="$style.hide" @click.prevent.stop="hide = true"></i>
+		<div v-if="videoControls" :class="$style.videoControls" @click.self="togglePlayPause">
 			<div :class="[$style.controlsChild, $style.controlsLeft]">
-				<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
+				<button class="_button" :class="$style.controlButton" @click.prevent.stop="togglePlayPause">
 					<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
 					<i v-else class="ti ti-player-play-filled"></i>
 				</button>
 			</div>
 			<div :class="[$style.controlsChild, $style.controlsRight]">
-				<button class="_button" :class="$style.controlButton" @click="showMenu">
+				<button class="_button" :class="$style.controlButton" @click.prevent.stop="showMenu">
 					<i class="ti ti-settings"></i>
 				</button>
-				<button class="_button" :class="$style.controlButton" @click="toggleFullscreen">
+				<button class="_button" :class="$style.controlButton" @click.prevent.stop="toggleFullscreen">
 					<i v-if="isFullscreen" class="ti ti-arrows-minimize"></i>
 					<i v-else class="ti ti-arrows-maximize"></i>
 				</button>
 			</div>
 			<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
 			<div :class="[$style.controlsChild, $style.controlsVolume]">
-				<button class="_button" :class="$style.controlButton" @click="toggleMute">
+				<button class="_button" :class="$style.controlButton" @click.prevent.stop="toggleMute">
 					<i v-if="volume === 0" class="ti ti-volume-3"></i>
 					<i v-else class="ti ti-volume"></i>
 				</button>
@@ -94,11 +95,15 @@ import * as os from '@/os.js';
 import { isFullscreenNotSupported } from '@/scripts/device-kind.js';
 import hasAudio from '@/scripts/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { iAmModerator } from '@/account.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { $i, iAmModerator } from '@/account.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	video: Misskey.entities.DriveFile;
-}>();
+	videoControls?: boolean;
+}>(), {
+	videoControls: true,
+});
 
 // eslint-disable-next-line vue/no-setup-props-destructure
 const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
@@ -138,6 +143,21 @@ function showMenu(ev: MouseEvent) {
 			menuShowing.value = false;
 		},
 	});
+}
+
+function showHiddenContent(ev: MouseEvent) {
+	if (props.video.isSensitive && !$i) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		pleaseLogin();
+		return;
+	}
+
+	if (hide.value) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		hide.value = false;
+	}
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {
@@ -403,7 +423,6 @@ onDeactivated(() => {
 	font: inherit;
 	color: inherit;
 	cursor: pointer;
-	padding: 120px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -413,6 +432,22 @@ onDeactivated(() => {
 	text-align: center;
 	font-size: 0.8em;
 	color: #fff;
+}
+
+.menu {
+	display: block;
+	position: absolute;
+	border-radius: 999px;
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	color: #fff;
+	font-size: 0.8em;
+	width: 28px;
+	height: 28px;
+	text-align: center;
+	bottom: 10px;
+	right: 10px;
 }
 
 .videoRoot {

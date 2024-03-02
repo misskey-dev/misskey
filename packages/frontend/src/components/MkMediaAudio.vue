@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	]"
 	@contextmenu.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="hide = false">
+	<button v-if="hide" :class="$style.hidden" @click="showHiddenContent">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
 			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ defaultStore.state.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
@@ -26,19 +26,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<source :src="audio.url">
 		</audio>
 		<div :class="[$style.controlsChild, $style.controlsLeft]">
-			<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
+			<button class="_button" :class="$style.controlButton" @click.prevent.stop="togglePlayPause">
 				<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
 				<i v-else class="ti ti-player-play-filled"></i>
 			</button>
 		</div>
 		<div :class="[$style.controlsChild, $style.controlsRight]">
-			<button class="_button" :class="$style.controlButton" @click="showMenu">
+			<button class="_button" :class="$style.controlButton" @click.prevent.stop="showMenu">
 				<i class="ti ti-settings"></i>
 			</button>
 		</div>
 		<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
 		<div :class="[$style.controlsChild, $style.controlsVolume]">
-			<button class="_button" :class="$style.controlButton" @click="toggleMute">
+			<button class="_button" :class="$style.controlButton" @click.prevent.stop="toggleMute">
 				<i v-if="volume === 0" class="ti ti-volume-3"></i>
 				<i v-else class="ti ti-volume"></i>
 			</button>
@@ -66,7 +66,8 @@ import * as os from '@/os.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { iAmModerator } from '@/account.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { $i, iAmModerator } from '@/account.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -112,6 +113,21 @@ function showMenu(ev: MouseEvent) {
 			menuShowing.value = false;
 		},
 	});
+}
+
+function showHiddenContent(ev: MouseEvent) {
+	if (props.audio.isSensitive && !$i) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		pleaseLogin();
+		return;
+	}
+
+	if (hide.value) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		hide.value = false;
+	}
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {

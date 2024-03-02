@@ -40,7 +40,7 @@ const isScrolling = ref(false);
 const scrollEl = shallowRef<HTMLElement>();
 
 misskeyApiGet('notes/featured').then(_notes => {
-	notes.value = _notes;
+	notes.value = _notes.filter(note => !note.cw && !note.files?.some(file => file.isSensitive));
 });
 
 onUpdated(() => {
