@@ -458,6 +458,7 @@ export const ACHIEVEMENT_BADGES = {
   }
 >;
 
+// @ts-ignore
 export const claimedAchievements: (typeof ACHIEVEMENT_TYPES)[number][] =
   $i && $i.achievements ? $i.achievements.map((x) => x.name) : [];
 
@@ -476,9 +477,25 @@ export async function claimAchievement(type: (typeof ACHIEVEMENT_TYPES)[number])
 }
 
 if (_DEV_) {
-  (window as any).unlockAllAchievements = () => {
+  // @ts-ignore
+  (window as unknown).unlockAllAchievements = () => {
     for (const t of ACHIEVEMENT_TYPES) {
       claimAchievement(t);
     }
   };
 }
+
+export const hasPrincess = (reaction: string | null | undefined) => {
+  return (
+    reaction?.includes('suwa') ||
+    reaction?.includes('wayo') ||
+    reaction?.includes('zako') ||
+    reaction?.includes('yowa') ||
+    reaction?.includes('princess') ||
+    reaction?.includes('nasatte') ||
+    reaction?.includes('senkoto') ||
+    reaction?.includes('sharu') ||
+    reaction?.includes('kotoyo') ||
+    reaction?.includes('za-ko')
+  );
+};

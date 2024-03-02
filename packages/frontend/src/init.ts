@@ -191,7 +191,7 @@ fetchInstanceMetaPromise.then(() => {
 });
 
 try {
-  await fetchCustomEmojis();
+  await fetchCustomEmojis(true);
 } catch (err) {}
 
 const app = createApp(

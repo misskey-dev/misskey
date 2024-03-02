@@ -24,7 +24,7 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { claimAchievement } from '@/scripts/achievements';
+import { claimAchievement, hasPrincess } from '@/scripts/achievements';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
@@ -47,8 +47,7 @@ const toggleReaction = () => {
       noteId: props.note.id,
     }).then(() => {
       if (oldReaction !== props.reaction) {
-        console.debug('props.reaction =', props.reaction);
-
+        if (hasPrincess(props.reaction)) claimAchievement('princess');
         os.api('notes/reactions/create', {
           noteId: props.note.id,
           reaction: props.reaction,
@@ -56,7 +55,7 @@ const toggleReaction = () => {
       }
     });
   } else {
-    console.debug('props.reaction =', props.reaction);
+    if (hasPrincess(props.reaction)) claimAchievement('princess');
     os.api('notes/reactions/create', {
       noteId: props.note.id,
       reaction: props.reaction,

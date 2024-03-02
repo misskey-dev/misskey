@@ -188,7 +188,7 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
-import { claimAchievement } from '@/scripts/achievements';
+import { claimAchievement, hasPrincess } from '@/scripts/achievements';
 import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
@@ -346,9 +346,10 @@ function react(viaKeyboard = false): void {
   blur();
 
   reactionPicker.show(
+    // @ts-ignore
     reactButton.value,
     (reaction) => {
-      console.debug('reaction =', reaction);
+      if (hasPrincess(reaction)) claimAchievement('princess');
 
       os.api('notes/reactions/create', {
         noteId: appearNote.id,

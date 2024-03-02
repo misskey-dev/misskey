@@ -70,9 +70,9 @@
           <div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
             <div :class="$style.text">
               <span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-              <MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"
-                ><i class="ti ti-arrow-back-up"></i
-              ></MkA>
+              <MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`">
+                <i class="ti ti-arrow-back-up"></i>
+              </MkA>
               <Mfm
                 v-if="appearNote.text"
                 :text="appearNote.text"
@@ -114,8 +114,9 @@
             v-if="appearNote.channel && !inChannel"
             :class="$style.channel"
             :to="`/channels/${appearNote.channel.id}`"
-            ><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA
           >
+            <i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}
+          </MkA>
         </div>
         <footer :class="$style.footer">
           <MkReactionsViewer :note="appearNote" :max-number="16">
@@ -206,7 +207,7 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
-import { claimAchievement } from '@/scripts/achievements';
+import { claimAchievement, hasPrincess } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { shownNoteIds } from '@/os';
 import { MenuItem } from '@/types/menu';
@@ -368,6 +369,7 @@ function reply(viaKeyboard = false): void {
       reply: appearNote,
       animation: !viaKeyboard,
     },
+    // @ts-ignore
     () => {
       focus();
     },
@@ -378,9 +380,10 @@ function react(viaKeyboard = false): void {
   pleaseLogin();
   blur();
   reactionPicker.show(
+    // @ts-ignore
     reactButton.value,
     (reaction) => {
-      console.debug('reaction =', reaction);
+      if (hasPrincess(reaction)) claimAchievement('princess');
 
       os.api('notes/reactions/create', {
         noteId: appearNote.id,
