@@ -2,6 +2,7 @@
 	"name": "sw",
 	"private": true,
 	"scripts": {
+    "dev": "npm run watch",
 		"watch": "node build.js watch",
 		"build": "node build.js",
 		"lint": "tsc --noEmit && eslint --quiet src/**/*.ts"

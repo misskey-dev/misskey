@@ -10,6 +10,8 @@ import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
+const isWatch = process.argv.includes('--watch');
+
 const hash = (str: string, seed = 0): number => {
   let h1 = 0xdeadbeef ^ seed,
     h2 = 0x41c6ce57 ^ seed;
@@ -93,6 +95,13 @@ export default defineConfig(({ command, mode }) => {
     },
 
     build: {
+      ...(isWatch
+        ? {
+            watch: {
+              include: ['src/**'],
+            },
+          }
+        : {}),
       target: ['chrome108', 'firefox109', 'safari16'],
       manifest: 'manifest.json',
       rollupOptions: {

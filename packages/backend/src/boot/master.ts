@@ -24,6 +24,11 @@ const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 
 const themeColor = chalk.hex('#86b300');
 
+// 終了コマンドで強制終了させる
+process.on('SIGINT', () => {
+	process.exit(0);
+});
+
 function greet() {
 	if (!envOption.quiet) {
 		//#region Misskey logo
