@@ -110,6 +110,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
+		<template v-else-if="log.type === 'updateRemoteInstanceNote'">
+			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
+			</div>
+		</template>
 
 		<details>
 			<summary>raw</summary>

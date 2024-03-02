@@ -1048,6 +1048,7 @@ verifiedLink: "Chúng tôi đã xác nhận bạn là chủ sở hữu của đ�
 sourceCode: "Mã nguồn"
 flip: "Lật"
 lastNDays: "{n} ngày trước"
+surrender: "Từ chối"
 _announcement:
   forExistingUsers: "Chỉ những người dùng đã tồn tại"
   forExistingUsersDescription: "Nếu được bật, thông báo này sẽ chỉ hiển thị với những người dùng đã tồn tại vào lúc thông báo được tạo. Nếu tắt đi, những tài khoản mới đăng ký sau khi thông báo được đăng lên cũng sẽ thấy nó."
