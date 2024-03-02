@@ -63,5 +63,6 @@ gulp.task('default', gulp.task('build'));
 gulp.task('watch', () => {
 	gulp.watch([
 		'./packages/*/src/**/*',
+    './built/_vite_/meta.json',
 	], { ignoreInitial: false }, gulp.task('build'));
 });

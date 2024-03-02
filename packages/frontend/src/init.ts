@@ -25,7 +25,7 @@ import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, updateLocale } from '@/config';
+import { version, ui, lang, updateLocale, buildHash } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, updateI18n } from '@/i18n';
@@ -86,15 +86,15 @@ if (_DEV_) {
 }
 
 //#region Detect language & fetch translations
-const localeVersion = miLocalStorage.getItem('localeVersion');
-const localeOutdated = localeVersion == null || localeVersion !== version;
+const localeBuildHash = miLocalStorage.getItem('localeBuildHash');
+const localeOutdated = localeBuildHash == null || localeBuildHash !== buildHash;
 if (localeOutdated) {
-  const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+  const res = await window.fetch(`/assets/locales/${lang}.${buildHash}.json`);
   if (res.status === 200) {
     const newLocale = await res.text();
     const parsedNewLocale = JSON.parse(newLocale);
     miLocalStorage.setItem('locale', newLocale);
-    miLocalStorage.setItem('localeVersion', version);
+    miLocalStorage.setItem('localeBuildHash', buildHash);
     updateLocale(parsedNewLocale);
     updateI18n(parsedNewLocale);
   }

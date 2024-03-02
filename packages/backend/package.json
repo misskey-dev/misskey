@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "npx nodemon --watch src --watch ../../built/_vite_ --exec 'npm run build:start'",
+		"dev": "npx nodemon --watch src --watch ../../built/_vite_ --exec 'npx kill-port 3000 && npm run build:start'",
 		"build:start": "npm run build && npm run start",
 		"start": "node --experimental-json-modules --experimental-specifier-resolution=node ./built/boot/index.js",
     "clean": "rm -rf built",

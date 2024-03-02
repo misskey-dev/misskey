@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { miLocalStorage } from './local-storage';
 // @ts-ignore
 
@@ -15,6 +16,22 @@ export const langs = _LANGS_;
 export let locale = JSON.parse(miLocalStorage.getItem('locale'));
 
 export const version = _VERSION_;
+
+// metaAPIを叩いてbuildHashを取得する
+const response: { buildHash: string } = await window
+  .fetch(`${apiUrl}/meta`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .catch(() => {
+    console.error('Failed to fetch meta');
+  })
+  .then((res) => res.json());
+
+export const buildHash = response.buildHash || _VERSION_;
 
 export const instanceName = siteName === 'Misskey' ? host : siteName;
 export const ui = miLocalStorage.getItem('ui');
