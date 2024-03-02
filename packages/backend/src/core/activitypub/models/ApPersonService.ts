@@ -231,7 +231,9 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		if (uri.startsWith(this.config.url)) {
-			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
+			throw new StatusError(
+				`url = ${this.config.url}, error = cannot resolve local user`, 400, 'cannot resolve local user',
+			);
 		}
 
 		if (resolver == null) resolver = this.apResolverService.createResolver();

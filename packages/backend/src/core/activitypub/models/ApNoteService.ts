@@ -57,7 +57,7 @@ export class ApNoteService {
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => ApPersonService))
 		private apPersonService: ApPersonService,
-	
+
 		private utilityService: UtilityService,
 		private apAudienceService: ApAudienceService,
 		private apMentionService: ApMentionService,
@@ -77,26 +77,26 @@ export class ApNoteService {
 	@bindThis
 	public validateNote(object: any, uri: string) {
 		const expectHost = this.utilityService.extractDbHost(uri);
-	
+
 		if (object == null) {
 			return new Error('invalid Note: object is null');
 		}
-	
+
 		if (!validPost.includes(getApType(object))) {
 			return new Error(`invalid Note: invalid object type ${getApType(object)}`);
 		}
-	
+
 		if (object.id && this.utilityService.extractDbHost(object.id) !== expectHost) {
 			return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
 		}
-	
+
 		if (object.attributedTo && this.utilityService.extractDbHost(getOneApId(object.attributedTo)) !== expectHost) {
 			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.attributedTo)}`);
 		}
-	
+
 		return null;
 	}
-	
+
 	/**
 	 * Noteをフェッチします。
 	 *
@@ -106,16 +106,16 @@ export class ApNoteService {
 	public async fetchNote(object: string | IObject): Promise<Note | null> {
 		return await this.apDbResolverService.getNoteFromApId(object);
 	}
-	
+
 	/**
 	 * Noteを作成します。
 	 */
 	@bindThis
 	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
-	
+
 		const object: any = await resolver.resolve(value);
-	
+
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
 		if (err) {
@@ -128,9 +128,9 @@ export class ApNoteService {
 			});
 			throw new Error('invalid note');
 		}
-	
+
 		const note: IPost = object;
-	
+
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
 		if (note.id && !note.id.startsWith('https://')) {
@@ -142,21 +142,21 @@ export class ApNoteService {
 		if (url && !url.startsWith('https://')) {
 			throw new Error('unexpected shcema of note url: ' + url);
 		}
-	
+
 		this.logger.info(`Creating the Note: ${note.id}`);
-	
+
 		// 投稿者をフェッチ
 		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
-	
+
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
 			throw new Error('actor has been suspended');
 		}
-	
+
 		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
 		let visibility = noteAudience.visibility;
 		const visibleUsers = noteAudience.visibleUsers;
-	
+
 		// Audience (to, cc) が指定されてなかった場合
 		if (visibility === 'specified' && visibleUsers.length === 0) {
 			if (typeof value === 'string') {	// 入力がstringならばresolverでGETが発生している
@@ -164,25 +164,25 @@ export class ApNoteService {
 				visibility = 'public';
 			}
 		}
-	
+
 		let isMessaging = note._misskey_talk && visibility === 'specified';
-	
+
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const apHashtags = await extractApHashtags(note.tag);
-	
+
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
 		// Noteがsensitiveなら添付もsensitiveにする
 		const limit = promiseLimit(2);
-	
+
 		note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
 		const files = note.attachment
 			.map(attach => attach.sensitive = note.sensitive)
 			? (await Promise.all(note.attachment.map(x => limit(() => this.apImageService.resolveImage(actor, x)) as Promise<DriveFile>)))
 				.filter(image => image != null)
 			: [];
-	
+
 		// リプライ
 		const reply: Note | null = note.inReplyTo
 			? await this.resolveNote(note.inReplyTo, resolver).then(x => {
@@ -203,15 +203,15 @@ export class ApNoteService {
 						return null;
 					}
 				}
-	
+
 				this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
 				throw err;
 			})
 			: null;
-	
+
 		// 引用
 		let quote: Note | undefined | null;
-	
+
 		if (note._misskey_quote || note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<{
 				status: 'ok';
@@ -238,10 +238,10 @@ export class ApNoteService {
 					};
 				}
 			};
-	
+
 			const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
 			const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
-	
+
 			quote = results.filter((x): x is { status: 'ok', res: Note | null } => x.status === 'ok').map(x => x.res).find(x => x);
 			if (!quote) {
 				if (results.some(x => x.status === 'temperror')) {
@@ -249,9 +249,9 @@ export class ApNoteService {
 				}
 			}
 		}
-	
+
 		const cw = note.summary === '' ? null : note.summary;
-	
+
 		// テキストのパース
 		let text: string | null = null;
 		if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source.content === 'string') {
@@ -261,45 +261,45 @@ export class ApNoteService {
 		} else if (typeof note.content === 'string') {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
-	
+
 		// vote
 		if (reply && reply.hasPoll) {
 			const poll = await this.pollsRepository.findOneByOrFail({ noteId: reply.id });
-	
+
 			const tryCreateVote = async (name: string, index: number): Promise<null> => {
 				if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
 					this.logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				} else if (index >= 0) {
 					this.logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 					await this.pollService.vote(actor, reply, index);
-	
+
 					// リモートフォロワーにUpdate配信
 					this.pollService.deliverQuestionUpdate(reply.id);
 				}
 				return null;
 			};
-	
+
 			if (note.name) {
 				return await tryCreateVote(note.name, poll.choices.findIndex(x => x === note.name));
 			}
 		}
-	
+
 		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
-	
+
 		const apEmojis = emojis.map(emoji => emoji.name);
-	
+
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
-	
+
 		if (isMessaging) {
 			for (const recipient of visibleUsers) {
 				await this.messagingService.createMessage(actor, recipient, undefined, text ?? undefined, (files && files.length > 0) ? files[0] : null, object.id);
 				return null;
 			}
 		}
-	
+
 		return await this.noteCreateService.create(actor, {
 			createdAt: note.published ? new Date(note.published) : null,
 			files,
@@ -319,7 +319,7 @@ export class ApNoteService {
 			url: url,
 		}, silent);
 	}
-	
+
 	/**
 	 * Noteを解決します。
 	 *
@@ -330,26 +330,27 @@ export class ApNoteService {
 	public async resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('missing uri');
-	
+
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
 		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) throw { statusCode: 451 };
-	
+
 		const unlock = await this.appLockService.getApLock(uri);
-	
+
 		try {
 			//#region このサーバーに既に登録されていたらそれを返す
 			const exist = await this.fetchNote(uri);
-	
+
 			if (exist) {
 				return exist;
 			}
 			//#endregion
-	
+
 			if (uri.startsWith(this.config.url)) {
-				throw new StatusError('cannot resolve local note', 400, 'cannot resolve local note');
+				throw new StatusError(`url = ${this.config.url}, error = cannot resolve local note`,
+					400, 'cannot resolve local note');
 			}
-	
+
 			// リモートサーバーからフェッチしてきて登録
 			// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
 			// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
@@ -358,24 +359,24 @@ export class ApNoteService {
 			unlock();
 		}
 	}
-	
+
 	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<Emoji[]> {
 		host = this.utilityService.toPuny(host);
-	
+
 		if (!tags) return [];
-	
+
 		const eomjiTags = toArray(tags).filter(isEmoji);
-	
+
 		return await Promise.all(eomjiTags.map(async tag => {
 			const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
 			tag.icon = toSingle(tag.icon);
-	
+
 			const exists = await this.emojisRepository.findOneBy({
 				host,
 				name,
 			});
-	
+
 			if (exists) {
 				if ((tag.updated != null && exists.updatedAt == null)
 					|| (tag.id != null && exists.uri == null)
@@ -391,18 +392,18 @@ export class ApNoteService {
 						publicUrl: tag.icon!.url,
 						updatedAt: new Date(),
 					});
-	
+
 					return await this.emojisRepository.findOneBy({
 						host,
 						name,
 					}) as Emoji;
 				}
-	
+
 				return exists;
 			}
-	
+
 			this.logger.info(`register emoji host=${host}, name=${name}`);
-	
+
 			return await this.emojisRepository.insert({
 				id: this.idService.genId(),
 				host,

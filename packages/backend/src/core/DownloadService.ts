@@ -90,7 +90,7 @@ export class DownloadService {
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
 				// @ts-ignore
-				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
+				throw new StatusError(`url = ${req.url}, code = ${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
 			} else {
 				throw e;
 			}

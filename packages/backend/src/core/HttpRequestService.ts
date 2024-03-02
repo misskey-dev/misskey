@@ -42,21 +42,21 @@ export class HttpRequestService {
 			errorTtl: 30,	// 30secs
 			lookup: false,	// nativeのdns.lookupにfallbackしない
 		});
-		
+
 		this.http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup,
 		} as http.AgentOptions);
-		
+
 		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup,
 		} as https.AgentOptions);
-		
+
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
-		
+
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
 				keepAlive: true,
@@ -152,7 +152,7 @@ export class HttpRequestService {
 		});
 
 		if (!res.ok && extra.throwErrorWhenResponseNotOk) {
-			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
+			throw new StatusError(`url = ${url}, status = ${res.status} ${res.statusText}`, res.status, res.statusText);
 		}
 
 		return res;
