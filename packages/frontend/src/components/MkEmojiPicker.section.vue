@@ -87,7 +87,7 @@ const shown = ref(!!props.initialShown);
 function computeButtonTitle(ev: MouseEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
-	elm.title = getEmojiName(emoji) ?? emoji;
+	elm.title = getEmojiName(emoji);
 }
 
 function nestedChosen(emoji: any, ev: MouseEvent) {
