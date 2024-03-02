@@ -10,6 +10,13 @@ const exitFunc = () => {
   global.ps3?.kill();
   global.ps4?.kill();
   global.ps5?.kill();
+
+  // PORT3000をキルする
+  execa('npx', ['kill-port', '3000'], {
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+
 };
 process.on('SIGINT', () => {
   exitFunc();
@@ -30,6 +37,13 @@ process.on('SIGTERM', () => {
 });
 
 (async () => {
+
+  // PORT3000をキルする
+  await execa('npx', ['kill-port', '3000'], {
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+
   await execa('npm', ['run', 'clean'], {
     cwd: __dirname + '/../',
     stdout: process.stdout,
