@@ -1194,6 +1194,10 @@ _achievements:
       title: "Brain Diver"
       description: "Brain Diverへのリンクを投稿した"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を100回使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 
 _role:
   new: "ロールの作成"

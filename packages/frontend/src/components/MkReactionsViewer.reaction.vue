@@ -1,14 +1,18 @@
 <template>
-<button
-	ref="buttonEl"
-	v-ripple="canToggle"
-	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle }]"
-	@click="toggleReaction()"
->
-	<MkReactionIcon :class="$style.icon" :reaction="reaction" :emoji-url="note.reactionEmojis[reaction.substr(1, reaction.length - 2)]"/>
-	<span :class="$style.count">{{ count }}</span>
-</button>
+  <button
+    ref="buttonEl"
+    v-ripple="canToggle"
+    class="_button"
+    :class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle }]"
+    @click="toggleReaction()"
+  >
+    <MkReactionIcon
+      :class="$style.icon"
+      :reaction="reaction"
+      :emoji-url="note.reactionEmojis[reaction.substr(1, reaction.length - 2)]"
+    />
+    <span :class="$style.count">{{ count }}</span>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -24,10 +28,10 @@ import { claimAchievement } from '@/scripts/achievements';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
-	reaction: string;
-	count: number;
-	isInitial: boolean;
-	note: misskey.entities.Note;
+  reaction: string;
+  count: number;
+  isInitial: boolean;
+  note: misskey.entities.Note;
 }>();
 
 const buttonEl = shallowRef<HTMLElement>();
@@ -35,109 +39,128 @@ const buttonEl = shallowRef<HTMLElement>();
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
 const toggleReaction = () => {
-	if (!canToggle.value) return;
+  if (!canToggle.value) return;
 
-	const oldReaction = props.note.myReaction;
-	if (oldReaction) {
-		os.api('notes/reactions/delete', {
-			noteId: props.note.id,
-		}).then(() => {
-			if (oldReaction !== props.reaction) {
-				os.api('notes/reactions/create', {
-					noteId: props.note.id,
-					reaction: props.reaction,
-				});
-			}
-		});
-	} else {
-		os.api('notes/reactions/create', {
-			noteId: props.note.id,
-			reaction: props.reaction,
-		});
-		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
-		}
-	}
+  const oldReaction = props.note.myReaction;
+  if (oldReaction) {
+    os.api('notes/reactions/delete', {
+      noteId: props.note.id,
+    }).then(() => {
+      if (oldReaction !== props.reaction) {
+        console.debug('props.reaction =', props.reaction);
+
+        os.api('notes/reactions/create', {
+          noteId: props.note.id,
+          reaction: props.reaction,
+        });
+      }
+    });
+  } else {
+    console.debug('props.reaction =', props.reaction);
+    os.api('notes/reactions/create', {
+      noteId: props.note.id,
+      reaction: props.reaction,
+    });
+    if (
+      props.note.text &&
+      props.note.text.length > 100 &&
+      Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3
+    ) {
+      claimAchievement('reactWithoutRead');
+    }
+  }
 };
 
 const anime = () => {
-	if (document.hidden) return;
-	if (!defaultStore.state.animation) return;
+  if (document.hidden) return;
+  if (!defaultStore.state.animation) return;
 
-	const rect = buttonEl.value.getBoundingClientRect();
-	const x = rect.left + 16;
-	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+  const rect = buttonEl.value.getBoundingClientRect();
+  const x = rect.left + 16;
+  const y = rect.top + buttonEl.value.offsetHeight / 2;
+  os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
 };
 
-watch(() => props.count, (newCount, oldCount) => {
-	if (oldCount < newCount) anime();
-});
+watch(
+  () => props.count,
+  (newCount, oldCount) => {
+    if (oldCount < newCount) anime();
+  },
+);
 
 onMounted(() => {
-	if (!props.isInitial) anime();
+  if (!props.isInitial) anime();
 });
 
-useTooltip(buttonEl, async (showing) => {
-	const reactions = await os.apiGet('notes/reactions', {
-		noteId: props.note.id,
-		type: props.reaction,
-		limit: 11,
-		_cacheKey_: props.count,
-	});
+useTooltip(
+  buttonEl,
+  async (showing) => {
+    const reactions = await os.apiGet('notes/reactions', {
+      noteId: props.note.id,
+      type: props.reaction,
+      limit: 11,
+      _cacheKey_: props.count,
+    });
 
-	const users = reactions.map(x => x.user);
+    const users = reactions.map((x) => x.user);
 
-	os.popup(XDetails, {
-		showing,
-		reaction: props.reaction,
-		users,
-		count: props.count,
-		targetElement: buttonEl.value,
-	}, {}, 'closed');
-}, 100);
+    os.popup(
+      XDetails,
+      {
+        showing,
+        reaction: props.reaction,
+        users,
+        count: props.count,
+        targetElement: buttonEl.value,
+      },
+      {},
+      'closed',
+    );
+  },
+  100,
+);
 </script>
 
 <style lang="scss" module>
 .root {
-	display: inline-block;
-	height: 32px;
-	margin: 2px;
-	padding: 0 6px;
-	border-radius: 4px;
+  display: inline-block;
+  height: 32px;
+  margin: 2px;
+  padding: 0 6px;
+  border-radius: 4px;
 
-	&.canToggle {
-		background: var(--buttonBg);
+  &.canToggle {
+    background: var(--buttonBg);
 
-		&:hover {
-			background: rgba(0, 0, 0, 0.1);
-		}
-	}
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
 
-	&:not(.canToggle) {
-		cursor: default;
-	}
+  &:not(.canToggle) {
+    cursor: default;
+  }
 
-	&.reacted {
-		background: var(--accent);
+  &.reacted {
+    background: var(--accent);
 
-		&:hover {
-			background: var(--accent);
-		}
+    &:hover {
+      background: var(--accent);
+    }
 
-		> .count {
-			color: var(--fgOnAccent);
-		}
+    > .count {
+      color: var(--fgOnAccent);
+    }
 
-		> .icon {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
-		}
-	}
+    > .icon {
+      filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+    }
+  }
 }
 
 .count {
-	font-size: 0.9em;
-	line-height: 32px;
-	margin: 0 0 0 4px;
+  font-size: 0.9em;
+  line-height: 32px;
+  margin: 0 0 0 4px;
 }
 </style>
