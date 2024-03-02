@@ -383,9 +383,9 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 		// カスタム絵文字が存在する場合はその情報を持つオブジェクトを返し、
 		// サーバの管理画面から削除された等で情報が見つからない場合は名前の文字列をそのまま返しておく（undefinedを返すとエラーになるため）
 		const name = emoji.replaceAll(':', '');
-		return customEmojisMap.has(name) ? customEmojisMap.get(name)! : emoji;
+		return customEmojisMap.get(name) ?? emoji;
 	} else {
-		return getUnicodeEmoji(emoji)!;
+		return getUnicodeEmoji(emoji);
 	}
 }
 
