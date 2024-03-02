@@ -393,7 +393,7 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 function computeButtonTitle(ev: MouseEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
-	elm.title = getEmojiName(emoji) ?? emoji;
+	elm.title = getEmojiName(emoji);
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {
