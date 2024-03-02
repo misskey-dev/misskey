@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
 		:onlyFiles="onlyFiles"
+		:onlyLocal="onlyLocal"
 	/>
 </XColumn>
 </template>
