@@ -3,7 +3,7 @@
   <img
     v-else
     :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
-    :src="url"
+    :src="_url"
     :alt="alt"
     :title="alt"
     decoding="async"
@@ -30,33 +30,27 @@ const customEmojiName = computed(() =>
   (props.name[0] === ':' ? props.name.substr(1, props.name.length - 2) : props.name).replace('@.', ''),
 );
 
-console.debug('customEmojiName =', customEmojiName);
-console.debug('props.url =', props.url);
-console.debug('props.host =', props.host);
-console.debug('customEmojis =', customEmojis);
-
 const rawUrl = computed(() => {
   if (props.url) {
     return props.url;
   }
   if (props.host == null && !customEmojiName.value.includes('@')) {
-    return customEmojis.value.find((x) => x.name === customEmojiName.value)?.url || null;
+    const url = customEmojis.value.find((x) => x.name === customEmojiName.value)?.url || null;
+    if (url) {
+      return url;
+    }
   }
   return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });
 
-console.debug('rawUrl.value =', rawUrl.value);
-
-const url = computed(() =>
+const _url = computed(() =>
   defaultStore.reactiveState.disableShowingAnimatedImages.value && rawUrl.value
     ? getStaticImageUrl(rawUrl.value)
     : rawUrl.value,
 );
 
-console.debug('url =', url);
-
 const alt = computed(() => `:${customEmojiName.value}:`);
-let errored = $ref(url.value == null);
+let errored = $ref(_url.value == null);
 </script>
 
 <style lang="scss" module>
