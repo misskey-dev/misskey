@@ -1187,6 +1187,10 @@ _achievements:
       title: "Brain Diver"
       description: "发布了包含Brain Diver链接的帖子"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 _role:
   new: "创建角色"
   edit: "编辑角色"

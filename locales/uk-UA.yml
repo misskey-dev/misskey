@@ -1117,6 +1117,10 @@ _achievements:
       title: "Brain Diver"
       description: "Відправити посилання на \"Brain Diver\""
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 _role:
   priority: "Пріоритет"
   _priority:

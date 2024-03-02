@@ -1181,6 +1181,10 @@ _achievements:
       title: "Brain Diver"
       description: "Sende den Link zu Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 _role:
   new: "Rolle erstellen"
   edit: "Rolle bearbeiten"

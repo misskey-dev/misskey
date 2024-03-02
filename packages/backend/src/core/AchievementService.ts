@@ -79,6 +79,7 @@ export const ACHIEVEMENT_TYPES = [
 	'setNameToSyuilo',
 	'cookieClicked',
 	'brainDiver',
+	'princess',
 ] as const;
 
 @Injectable()

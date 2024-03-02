@@ -447,7 +447,7 @@ export const ACHIEVEMENT_BADGES = {
   princess: {
     img: '/fluent-emoji/1f478.png',
     bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
-    frame: 'gold',
+    frame: 'bronze',
   },
 } as const satisfies Record<
   (typeof ACHIEVEMENT_TYPES)[number],

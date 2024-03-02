@@ -1174,6 +1174,10 @@ _achievements:
       title: "Brain Diver"
       description: "Pubblica un link a Brain Diver"
       flavor: "Sulle note di Brain Diver"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"

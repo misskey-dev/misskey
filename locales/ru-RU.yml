@@ -1169,6 +1169,10 @@ _achievements:
       title: "Brain Diver"
       description: "Опубликована ссылка на песню «Brain Diver»"
       flavor: "Мисски-Мисски Ла-Ту-Ма"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 _role:
   new: "Новая роль"
   edit: "Изменить роль"

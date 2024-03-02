@@ -1188,6 +1188,10 @@ _achievements:
       title: "Brain Driver"
       description: "發佈了Brain Driver的連結"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _princess:
+      title: "お嬢様"
+      description: "お嬢様の絵文字を使用した"
+      flavor: "あら、まだまだいけるかしらね？"
 _role:
   new: "建立角色"
   edit: "編輯角色"
