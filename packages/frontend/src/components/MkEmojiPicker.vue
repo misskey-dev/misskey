@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<MkCustomEmoji class="emoji" :name="emoji.name"/>
+					<MkCustomEmoji class="emoji" :name="emoji.name" :fallbackToImage="true"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
@@ -353,7 +353,7 @@ watch(q, () => {
 	searchResultUnicode.value = Array.from(searchUnicode());
 });
 
-function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef): boolean {
+function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef | string): boolean {
 	return !props.targetNote || checkReactionPermissions($i!, props.targetNote, emoji);
 }
 
@@ -378,11 +378,14 @@ function getKey(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef):
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 }
 
-function getDef(emoji: string) {
+function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeEmojiDef {
 	if (emoji.includes(':')) {
-		return customEmojisMap.get(emoji.replace(/:/g, ''))!;
+		// カスタム絵文字が存在する場合はその情報を持つオブジェクトを返し、
+		// サーバの管理画面から削除された等で情報が見つからない場合は名前の文字列をそのまま返しておく（undefinedを返すとエラーになるため）
+		const name = emoji.replaceAll(':', '');
+		return customEmojisMap.get(name) ?? emoji;
 	} else {
-		return getUnicodeEmoji(emoji)!;
+		return getUnicodeEmoji(emoji);
 	}
 }
 
@@ -390,7 +393,7 @@ function getDef(emoji: string) {
 function computeButtonTitle(ev: MouseEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
-	elm.title = getEmojiName(emoji) ?? emoji;
+	elm.title = getEmojiName(emoji);
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {
