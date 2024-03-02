@@ -46,13 +46,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 USER misskey
 WORKDIR /misskey
 
+COPY --chown=misskey:misskey . ./
 COPY --chown=misskey:misskey --from=builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=builder /misskey/built ./built
 COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
 COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
 COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
-COPY --chown=misskey:misskey . ./
+
 
 # ファイル所在チェック(/misskey/packages/backend/builtd/boot/index.js)
 RUN if [ ! -f /misskey/packages/backend/built/boot/index.js ]; then echo "Error: /misskey/packages/backend/built/boot/index.js not found" && exit 1;
