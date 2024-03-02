@@ -4,6 +4,7 @@ import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyStatic from '@fastify/static';
 import rename from 'rename';
+import sharp from 'sharp';
 import type { Config } from '@/config.js';
 import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -19,9 +20,8 @@ import { contentDisposition } from '@/misc/content-disposition.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import sharp from 'sharp';
+import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -270,7 +270,7 @@ export class FileServerService {
 			) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
-					throw new StatusError('Unexpected mime', 404);
+					throw new StatusError(`Unexpected mime url = ${request.url}`, 404);
 				}
 			}
 
@@ -283,18 +283,27 @@ export class FileServerService {
 						type: file.mime,
 					};
 				} else {
-					const data = sharp(file.path, { animated: !('static' in request.query) })
+					try {
+						const data = sharp(file.path, { animated: !('static' in request.query) })
 							.resize({
 								height: 'emoji' in request.query ? 128 : 320,
 								withoutEnlargement: true,
 							})
 							.webp(webpDefault);
 
-					image = {
-						data,
-						ext: 'webp',
-						type: 'image/webp',
-					};
+						image = {
+							data,
+							ext: 'webp',
+							type: 'image/webp',
+						};
+					} catch (e) {
+						// sharpの変換に失敗した場合は通常の画像として返す
+						image = {
+							data: fs.createReadStream(file.path),
+							ext: file.ext,
+							type: file.mime,
+						};
+					}
 				}
 			} else if ('static' in request.query) {
 				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
@@ -311,20 +320,20 @@ export class FileServerService {
 					.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 					.flatten({ background: '#000' })
 					.toColorspace('b-w');
-	
+
 				const stats = await mask.clone().stats();
-	
+
 				if (stats.entropy < 0.1) {
 					// エントロピーがあまりない場合は404にする
-					throw new StatusError('Skip to provide badge', 404);
+					throw new StatusError(`Skip to provide badge url = ${url}`, 404);
 				}
-	
+
 				const data = sharp({
 					create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
 				})
 					.pipelineColorspace('b-w')
 					.boolean(await mask.png().toBuffer(), 'eor');
-	
+
 				image = {
 					data: await data.png().toBuffer(),
 					ext: 'png',
@@ -333,7 +342,7 @@ export class FileServerService {
 			} else if (file.mime === 'image/svg+xml') {
 				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
-				throw new StatusError('Rejected type', 403, 'Rejected type');
+				throw new StatusError(`Rejected type url = ${url}`, 403, 'Rejected type');
 			}
 
 			if (!image) {
@@ -373,7 +382,7 @@ export class FileServerService {
 	> {
 		if (url.startsWith(`${this.config.url}/files/`)) {
 			const key = url.replace(`${this.config.url}/files/`, '').split('/').shift();
-			if (!key) throw new StatusError('Invalid File Key', 400, 'Invalid File Key');
+			if (!key) throw new StatusError(`Invalid File Key key = ${key}`, 400, 'Invalid File Key');
 
 			return await this.getFileFromKey(key);
 		}
@@ -390,12 +399,12 @@ export class FileServerService {
 			await this.downloadService.downloadUrl(url, path);
 
 			const { mime, ext } = await this.fileInfoService.detectType(path);
-	
+
 			return {
 				state: 'remote',
 				mime, ext,
 				path, cleanup,
-			}
+			};
 		} catch (e) {
 			cleanup();
 			throw e;
@@ -429,7 +438,7 @@ export class FileServerService {
 				url: file.uri,
 				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 				file,
-			}
+			};
 		}
 
 		const path = this.internalStorageService.resolvePath(key);
@@ -452,6 +461,6 @@ export class FileServerService {
 			mime: file.type,
 			ext: null,
 			path,
-		}
+		};
 	}
 }
