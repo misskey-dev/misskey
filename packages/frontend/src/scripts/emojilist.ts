@@ -39,21 +39,29 @@ for (let i = 0; i < emojilist.length; i++) {
 
 export const emojiCharByCategory = _charGroupByCategory;
 
-export function getUnicodeEmoji(char: string): UnicodeEmojiDef | null {
+export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
 	// Colorize it because emojilist.json assumes that
-	return unicodeEmojisMap.get(colorizeEmoji(char)) ?? null;
+	return unicodeEmojisMap.get(colorizeEmoji(char))
+		// カラースタイル絵文字がjsonに無い場合はテキストスタイル絵文字にフォールバックする
+		?? unicodeEmojisMap.get(char)
+		// それでも見つからない場合はそのまま返す（絵文字情報がjsonに無い場合、このフォールバックが無いとレンダリングに失敗する）
+		?? char;
 }
 
-export function getEmojiName(char: string): string | null {
+export function getEmojiName(char: string): string {
 	// Colorize it because emojilist.json assumes that
-	const idx = _indexByChar.get(colorizeEmoji(char));
-	if (idx == null) {
-		return null;
+	const idx = _indexByChar.get(colorizeEmoji(char)) ?? _indexByChar.get(char);
+	if (idx === undefined) {
+		// 絵文字情報がjsonに無い場合は名前の取得が出来ないのでそのまま返すしか無い
+		return char;
 	} else {
 		return emojilist[idx].name;
 	}
 }
 
+/**
+ * テキストスタイル絵文字（U+260Eなどの1文字で表現される絵文字）をカラースタイル絵文字に変換します（VS16:U+FE0Fを付与）。
+ */
 export function colorizeEmoji(char: string) {
 	return char.length === 1 ? `${char}\uFE0F` : char;
 }
