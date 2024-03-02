@@ -1700,6 +1700,7 @@ _role:
     alwaysMarkNsfw: "Always mark files as NSFW"
     pinMax: "Maximum number of pinned notes"
     antennaMax: "Maximum number of antennas"
+    antennaNotesMax: "Maximum number of notes stored in antennas"
     wordMuteMax: "Maximum number of characters allowed in word mutes"
     webhookMax: "Maximum number of Webhooks"
     clipMax: "Maximum number of Clips"

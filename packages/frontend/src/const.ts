@@ -96,6 +96,7 @@ export const ROLE_POLICIES = [
 	'alwaysMarkNsfw',
 	'pinLimit',
 	'antennaLimit',
+	'antennaNotesLimit',
 	'wordMuteLimit',
 	'webhookLimit',
 	'clipLimit',

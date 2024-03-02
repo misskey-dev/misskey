@@ -57,6 +57,7 @@ export type RolePolicies = {
 	alwaysMarkNsfw: boolean;
 	pinLimit: number;
 	antennaLimit: number;
+	antennaNotesLimit: number;
 	wordMuteLimit: number;
 	webhookLimit: number;
 	clipLimit: number;
@@ -92,6 +93,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	alwaysMarkNsfw: false,
 	pinLimit: 5,
 	antennaLimit: 5,
+	antennaNotesLimit: 200,
 	wordMuteLimit: 200,
 	webhookLimit: 3,
 	clipLimit: 10,
@@ -366,6 +368,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
 			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
 			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
+			antennaNotesLimit: calc('antennaNotesLimit', vs => Math.max(...vs)),
 			wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
 			webhookLimit: calc('webhookLimit', vs => Math.max(...vs)),
 			clipLimit: calc('clipLimit', vs => Math.max(...vs)),

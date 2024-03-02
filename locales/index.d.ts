@@ -6631,6 +6631,10 @@ export interface Locale extends ILocale {
              */
             "antennaMax": string;
             /**
+             * アンテナに保持する最大ノート数
+             */
+            "antennaNotesMax": string;
+            /**
              * ワードミュートの最大文字数
              */
             "wordMuteMax": string;

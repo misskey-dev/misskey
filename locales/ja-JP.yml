@@ -1715,6 +1715,7 @@ _role:
     alwaysMarkNsfw: "ファイルにNSFWを常に付与"
     pinMax: "ノートのピン留めの最大数"
     antennaMax: "アンテナの作成可能数"
+    antennaNotesMax: "アンテナに保持する最大ノート数"
     wordMuteMax: "ワードミュートの最大文字数"
     webhookMax: "Webhookの作成可能数"
     clipMax: "クリップの作成可能数"

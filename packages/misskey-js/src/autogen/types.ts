@@ -4824,6 +4824,7 @@ export type components = {
       alwaysMarkNsfw: boolean;
       pinLimit: number;
       antennaLimit: number;
+      antennaNotesLimit: number;
       wordMuteLimit: number;
       webhookLimit: number;
       clipLimit: number;

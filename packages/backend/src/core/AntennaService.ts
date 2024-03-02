@@ -17,6 +17,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { RoleService } from '@/core/RoleService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -40,6 +41,7 @@ export class AntennaService implements OnApplicationShutdown {
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
 		private fanoutTimelineService: FanoutTimelineService,
+		private roleService: RoleService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -102,8 +104,10 @@ export class AntennaService implements OnApplicationShutdown {
 
 		const redisPipeline = this.redisForTimelines.pipeline();
 
+		const { antennaNotesLimit } = await this.roleService.getUserPolicies(noteUser.id);
+
 		for (const antenna of matchedAntennas) {
-			this.fanoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
+			this.fanoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, antennaNotesLimit, redisPipeline);
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
 
