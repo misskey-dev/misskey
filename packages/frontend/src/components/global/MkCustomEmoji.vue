@@ -4,7 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<span v-if="errored">:{{ customEmojiName }}:</span>
+<img
+	v-if="errored"
+	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
+	src="/client-assets/dummy.png"
+	:title="alt"
+/>
 <img
 	v-else
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
