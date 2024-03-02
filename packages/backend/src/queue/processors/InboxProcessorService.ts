@@ -185,8 +185,12 @@ export class InboxProcessorService {
 			await this.apInboxService.performActivity(authUser.user, activity, job.data.user?.id);
 		} catch (e) {
 			if (e instanceof IdentifiableError) {
-				if (e.id === 'e11b3a16-f543-4885-8eb1-66cad131dbfd') return 'blocked mentions from unfamiliar user';
-				if (e.id === '057d8d3e-b7ca-4f8b-b38c-dcdcbf34dc30') return 'blocked notes with prohibited words';
+				if ([
+					'e11b3a16-f543-4885-8eb1-66cad131dbfd',
+					'689ee33f-f97c-479a-ac49-1b9f8140af99',
+					'9f466dab-c856-48cd-9e65-ff90ff750580',
+					'85ab9bd7-3a41-4530-959d-f07073900109',
+				].includes(e.id)) return e.message;
 			}
 			throw e;
 		}

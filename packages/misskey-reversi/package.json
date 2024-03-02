@@ -25,11 +25,11 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@types/node": "20.11.19",
-		"@typescript-eslint/eslint-plugin": "7.0.2",
-		"@typescript-eslint/parser": "7.0.2",
-		"eslint": "8.56.0",
-		"nodemon": "3.0.3",
+		"@types/node": "20.11.24",
+		"@typescript-eslint/eslint-plugin": "7.1.0",
+		"@typescript-eslint/parser": "7.1.0",
+		"eslint": "8.57.0",
+		"nodemon": "3.1.0",
 		"typescript": "5.3.3"
 	},
 	"dependencies": {

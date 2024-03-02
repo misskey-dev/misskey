@@ -579,7 +579,7 @@ export class ClientServerService {
 						...await this.generateCommonPugData(meta),
 					});
 				} catch (err) {
-					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+					if ((err as IdentifiableError).id === '85ab9bd7-3a41-4530-959d-f07073900109') {
 						return await renderBase(reply);
 					}
 					throw err;
@@ -625,7 +625,7 @@ export class ClientServerService {
 						...await this.generateCommonPugData(meta),
 					});
 				} catch (err) {
-					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+					if ((err as IdentifiableError).id === '85ab9bd7-3a41-4530-959d-f07073900109') {
 						return await renderBase(reply);
 					}
 					throw err;
@@ -658,7 +658,7 @@ export class ClientServerService {
 						...await this.generateCommonPugData(meta),
 					});
 				} catch (err) {
-					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+					if ((err as IdentifiableError).id === '85ab9bd7-3a41-4530-959d-f07073900109') {
 						return await renderBase(reply);
 					}
 					throw err;
@@ -691,7 +691,7 @@ export class ClientServerService {
 						...await this.generateCommonPugData(meta),
 					});
 				} catch (err) {
-					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+					if ((err as IdentifiableError).id === '85ab9bd7-3a41-4530-959d-f07073900109') {
 						return await renderBase(reply);
 					}
 					throw err;
@@ -722,7 +722,7 @@ export class ClientServerService {
 						...await this.generateCommonPugData(meta),
 					});
 				} catch (err) {
-					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+					if ((err as IdentifiableError).id === '85ab9bd7-3a41-4530-959d-f07073900109') {
 						return await renderBase(reply);
 					}
 					throw err;

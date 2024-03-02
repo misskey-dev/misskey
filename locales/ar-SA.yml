@@ -1014,6 +1014,7 @@ renotes: "أعد النشر"
 sourceCode: "الشفرة المصدرية"
 flip: "اقلب"
 lastNDays: "آخر {n} أيام"
+surrender: "ألغِ"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
   letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."

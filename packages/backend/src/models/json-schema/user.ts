@@ -13,7 +13,7 @@ export const notificationRecieveConfig = {
 				type: {
 					type: 'string',
 					nullable: false,
-					enum: ['all', 'following', 'follower', 'mutualFollow', 'never'],
+					enum: ['all', 'following', 'follower', 'mutualFollow', 'followingOrFollower', 'never'],
 				},
 			},
 			required: ['type'],
