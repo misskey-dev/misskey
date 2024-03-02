@@ -10,7 +10,7 @@ import { GridRow } from '@/components/grid/row.js';
 import { MenuItem } from '@/types/menu.js';
 import { GridContext } from '@/components/grid/grid-event.js';
 
-export type CellValue = string | boolean | number | undefined | null | Array<unknown> | Object;
+export type CellValue = string | boolean | number | undefined | null | Array<unknown> | NonNullable<unknown>;
 
 export type CellAddress = {
 	row: number;
@@ -64,6 +64,7 @@ export function createCell(
 				column,
 				row,
 				value,
+				allCells: [],
 			},
 			violations: [],
 		},
@@ -80,6 +81,7 @@ export function resetCell(cell: GridCell): void {
 			column: cell.column,
 			row: cell.row,
 			value: cell.value,
+			allCells: [],
 		},
 		violations: [],
 	};

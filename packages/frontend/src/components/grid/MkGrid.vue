@@ -275,9 +275,6 @@ function onKeyDown(ev: KeyboardEvent) {
 
 			handleKeyEvent(ev, [
 				{
-					code: 'any', handler: () => emitGridEvent({ type: 'keydown', event: ev }),
-				},
-				{
 					code: 'Delete', handler: () => {
 						if (rangedRows.value.length > 0) {
 							if (rowSetting.events.delete) {

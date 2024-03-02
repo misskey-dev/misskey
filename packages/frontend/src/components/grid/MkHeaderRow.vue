@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<tr :class="$style.header">
+<tr>
 	<MkNumberCell
 		v-if="gridSetting.showNumber"
 		content="#"
@@ -46,9 +46,3 @@ defineProps<{
 }>();
 
 </script>
-
-<style module lang="scss">
-.header {
-
-}
-</style>
