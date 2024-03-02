@@ -44,7 +44,7 @@ function getReactionName(reaction: string): string {
 	if (trimLocal.startsWith(':')) {
 		return trimLocal;
 	}
-	return getEmojiName(reaction) ?? reaction;
+	return getEmojiName(reaction);
 }
 </script>
 
