@@ -110,7 +110,11 @@ export class ActivityPubServerService {
 		}
 
 		try {
-			signature = parseRequestSignature(request.raw);
+			signature = parseRequestSignature(request.raw, {
+				requiredInputs: {
+					draft: ['(request-target)', 'digest', 'host', 'date'],
+				},
+			});
 		} catch (e) {
 			reply.code(401);
 			return;
