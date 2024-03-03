@@ -18,7 +18,6 @@
  * achievementEarned - 実績を獲得
  * app - アプリ通知
  * test - テスト通知（サーバー側）
- *
  */
 export const notificationTypes = [
 	'note',
