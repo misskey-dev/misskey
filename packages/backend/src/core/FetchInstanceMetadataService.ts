@@ -74,6 +74,7 @@ export class FetchInstanceMetadataService {
 		const host = instance.host;
 
 		// finallyでunlockされてしまうのでtry内でロックチェックをしない
+		// （returnであってもfinallyは実行される）
 		if (!force && await this.tryLock(host) === '1') {
 			// 1が返ってきていたらロックされているという意味なので、何もしない
 			return;
