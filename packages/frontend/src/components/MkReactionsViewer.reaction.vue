@@ -33,7 +33,8 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
-import { customEmojis } from '@/custom-emojis.js';
+import { customEmojisMap } from '@/custom-emojis.js';
+import { getUnicodeEmoji } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -50,13 +51,11 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
-const isCustomEmoji = computed(() => props.reaction.includes(':'));
-const emoji = computed(() => isCustomEmoji.value ? customEmojis.value.find(emoji => emoji.name === props.reaction.replace(/:/g, '').replace(/@\./, '')) : null);
+const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
+const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
-	return !props.reaction.match(/@\w/) && $i
-			&& (emoji.value && checkReactionPermissions($i, props.note, emoji.value))
-			|| !isCustomEmoji.value;
+	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
