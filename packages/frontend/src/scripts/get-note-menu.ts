@@ -150,7 +150,7 @@ export function getNoteMenu(props: {
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
-			os.api('admin/note-public-to-home', { noteId: appearNote.id });
+			misskeyApi('admin/note-public-to-home', { noteId: appearNote.id });
 		});
 	}
 
