@@ -30,6 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</span>
 		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
+		<span v-if="note.deleteAt" style="margin-left: 0.5em;" :title="i18n.tsx.noteDeletationAt({ time: dateTimeFormat.format(new Date(note.deleteAt)) })"><i class="ti ti-bomb"></i></span>
 	</div>
 </header>
 </template>
@@ -40,6 +41,7 @@ import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
+import { dateTimeFormat } from '@/scripts/intl-const.js';
 
 defineProps<{
 	note: Misskey.entities.Note;
