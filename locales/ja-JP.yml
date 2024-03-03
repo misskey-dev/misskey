@@ -1228,6 +1228,8 @@ gameRetry: "リトライ"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
+scheduledNoteDelete: "すぐ消す"
+noteDeletationAt: "このノートは{time}に削除されます"
 
 _bubbleGame:
   howToPlay: "遊び方"

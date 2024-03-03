@@ -38,6 +38,7 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
+import { ScheduledNoteDeleteProcessorService } from './processors/ScheduledNoteDeleteProcessorService.js';
 
 @Module({
 	imports: [
@@ -73,6 +74,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		RelationshipProcessorService,
 		WebhookDeliverProcessorService,
 		EndedPollNotificationProcessorService,
+		ScheduledNoteDeleteProcessorService,
 		DeliverProcessorService,
 		InboxProcessorService,
 		AggregateRetentionProcessorService,
