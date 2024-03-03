@@ -8,8 +8,7 @@
 	},
 	"private": true,
 	"scripts": {
-
-    "gulp:watch": "gulp watch",
+    "dev": "gulp watch",
     "postinstall": "node --experimental-default-type=module  ./scripts/install-packages.js",
     "build": "node --experimental-default-type=module ./scripts/build.js",
     "build-pre": "node ./scripts/build-pre.js",
