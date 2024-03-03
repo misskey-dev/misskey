@@ -3904,7 +3904,7 @@ export type components = {
       /** @enum {string} */
       icon: 'info' | 'warning' | 'error' | 'success';
       /** @enum {string} */
-      display: 'dialog' | 'normal' | 'banner';
+      display: 'dialog' | 'normal' | 'banner' | 'emergency';
       needConfirmationToRead: boolean;
       silence: boolean;
       forYou: boolean;
@@ -3963,6 +3963,8 @@ export type components = {
             votes: number;
           }[];
       }) | null;
+      /** Format: date-time */
+      deleteAt?: string | null;
       emojis?: {
         [key: string]: string;
       };
@@ -20455,6 +20457,10 @@ export type operations = {
             multiple?: boolean;
             expiresAt?: number | null;
             expiredAfter?: number | null;
+          }) | null;
+          scheduledDelete?: ({
+            deleteAt?: number | null;
+            deleteAfter?: number | null;
           }) | null;
         };
       };
