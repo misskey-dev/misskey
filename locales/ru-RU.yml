@@ -1171,7 +1171,7 @@ _achievements:
       flavor: "Мисски-Мисски Ла-Ту-Ма"
     _princess:
       title: "お嬢様"
-      description: "お嬢様の絵文字を使用した"
+      description: "お嬢様のリアクションをした"
       flavor: "あら、まだまだいけるかしらね？"
 _role:
   new: "Новая роль"

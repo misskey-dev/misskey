@@ -1119,7 +1119,7 @@ _achievements:
       flavor: "Misskey-Misskey La-Tu-Ma"
     _princess:
       title: "お嬢様"
-      description: "お嬢様の絵文字を使用した"
+      description: "お嬢様のリアクションをした"
       flavor: "あら、まだまだいけるかしらね？"
 _role:
   priority: "Пріоритет"
