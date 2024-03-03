@@ -1,8 +1,4 @@
 <div align="center">
-<a href="https://misskey-hub.net">
-	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
-</a>
-
 ふじさんすきー版のコードです。<br>
 小規模サーバーで、かつ、鯖缶が適当（さぼってる）な場合に有効じゃないかと思います。<br>
 <br>
@@ -12,9 +8,6 @@
  姉妹サーバーを歓迎しますので（多少は）構築のお手伝いもさせて頂く（かもしれません）！<br>
 <br>
 <br>
-
-
-**🌎 **Misskey** is an open source, federated social media platform that's free forever! 🚀**
 
 [Learn more](https://misskey-hub.net/)
 
