@@ -3,11 +3,3 @@ branches:
   - master
 repositoryUrl: https://github.com/nacika-ins/misskey
 tagFormat: 13.6.1-nacika-v${version}
-
-plugins:
-  - "@semantic-release/npm"
-  - "@semantic-release/commit-analyzer",
-  - "@semantic-release/release-notes-generator",
-  - "@semantic-release/changelog",
-  - "@semantic-release/github",
-  - "@semantic-release/git"
