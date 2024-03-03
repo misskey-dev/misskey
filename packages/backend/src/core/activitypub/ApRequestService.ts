@@ -28,7 +28,7 @@ type PrivateKey = {
 	keyId: string;
 };
 
-export function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; additionalHeaders: Record<string, string> }) {
+export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
 	const request: RequestLike = {
 		url: u.href,
@@ -42,10 +42,10 @@ export function createSignedPost(args: { level: string; key: PrivateKey; url: st
 	};
 
 	// TODO: levelによって処理を分ける
-	const digestHeader = genRFC3230DigestHeader(args.body);
+	const digestHeader = await genRFC3230DigestHeader(args.body, 'SHA-256');
 	request.headers['Digest'] = digestHeader;
 
-	const result = signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
+	const result = await signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
 
 	return {
 		request,
@@ -53,7 +53,7 @@ export function createSignedPost(args: { level: string; key: PrivateKey; url: st
 	};
 }
 
-export function createSignedGet(args: { level: string; key: PrivateKey; url: string; additionalHeaders: Record<string, string> }) {
+export async function createSignedGet(args: { level: string; key: PrivateKey; url: string; additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
 	const request: RequestLike = {
 		url: u.href,
@@ -67,7 +67,7 @@ export function createSignedGet(args: { level: string; key: PrivateKey; url: str
 	};
 
 	// TODO: levelによって処理を分ける
-	const result = signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
+	const result = await signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
 
 	return {
 		request,
@@ -108,7 +108,7 @@ export class ApRequestService {
 	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
 		const key = await this.getPrivateKey(user.id, level);
-		const req = createSignedPost({
+		const req = await createSignedPost({
 			level,
 			key,
 			url,
@@ -140,7 +140,7 @@ export class ApRequestService {
 	@bindThis
 	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
 		const key = await this.getPrivateKey(user.id, level);
-		const req = createSignedGet({
+		const req = await createSignedGet({
 			level,
 			key,
 			url,

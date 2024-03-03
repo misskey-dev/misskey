@@ -104,7 +104,7 @@ export class InboxProcessorService {
 
 		// HTTP-Signatureの検証
 		const errorLogger = (ms: any) => this.logger.error(ms);
-		const httpSignatureValidated = verifyDraftSignature(signature, authUser.key.keyPem, errorLogger);
+		const httpSignatureValidated = await verifyDraftSignature(signature, authUser.key.keyPem, errorLogger);
 		this.logger.debug('Inbox message validation: ', {
 			userId: authUser.user.id,
 			userAcct: Acct.toString(authUser.user),

@@ -43,12 +43,12 @@ describe('ap-request', () => {
 				'User-Agent': 'UA',
 			};
 
-			const req = createSignedPost({ level, key, url, body, additionalHeaders: headers });
+			const req = await createSignedPost({ level, key, url, body, additionalHeaders: headers });
 
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed?.version).toBe('draft');
 			if (!parsed) return;
-			const verify = verifyDraftSignature(parsed.value, keypair.publicKey);
+			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});
@@ -62,12 +62,12 @@ describe('ap-request', () => {
 				'User-Agent': 'UA',
 			};
 
-			const req = createSignedGet({ level, key, url, additionalHeaders: headers });
+			const req = await createSignedGet({ level, key, url, additionalHeaders: headers });
 
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed?.version).toBe('draft');
 			if (!parsed) return;
-			const verify = verifyDraftSignature(parsed.value, keypair.publicKey);
+			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});

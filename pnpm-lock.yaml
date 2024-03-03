@@ -111,8 +111,8 @@ importers:
         specifier: 8.2.0
         version: 8.2.0
       '@misskey-dev/node-http-message-signatures':
-        specifier: 0.0.0-alpha.11
-        version: 0.0.0-alpha.11
+        specifier: 0.0.1
+        version: 0.0.1
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.2.0
         version: 1.2.0
@@ -4621,6 +4621,10 @@ packages:
     resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
     dev: false
 
+  /@lapo/asn1js@1.2.4:
+    resolution: {integrity: sha512-mdInpQZaYUWu5QbKIB2+Vd+j6Y7cc6xQYNwYBPC9jri2rwy3tbxom0IhhT4G5WOKWO7Iht10SxYpKq+AfuH6dw==}
+    dev: false
+
   /@levischuck/tiny-cbor@0.2.2:
     resolution: {integrity: sha512-f5CnPw997Y2GQ8FAvtuVVC19FX8mwNNC+1XJcIi16n/LTJifKO6QBgGLgN3YEmqtGMk17SKSuoWES3imJVxAVw==}
     dev: false
@@ -4750,8 +4754,10 @@ packages:
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)
     dev: true
 
-  /@misskey-dev/node-http-message-signatures@0.0.0-alpha.11:
-    resolution: {integrity: sha512-DeLzSIquddDQp+hqD9/zS/IkpJg8Zs1h/4viavCFe37CW2W4ABFumXhYJPB07n775QEihZNuvdipoMNXl83jzw==}
+  /@misskey-dev/node-http-message-signatures@0.0.1:
+    resolution: {integrity: sha512-BaMYEOSBwBtDW0NJcljE4S39gFpgNigVzbVFlVsKzu4+k7snL72mXEaAoMCHWCw7XmdY3+fKADbQoqc4SFrpLw==}
+    dependencies:
+      '@lapo/asn1js': 1.2.4
     dev: false
 
   /@misskey-dev/sharp-read-bmp@1.2.0:
@@ -6641,7 +6647,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.21(typescript@5.3.3)
-      vue-component-type-helpers: 1.8.27
+      vue-component-type-helpers: 2.0.3
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -19438,6 +19444,10 @@ packages:
 
   /vue-component-type-helpers@1.8.4:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
+    dev: true
+
+  /vue-component-type-helpers@2.0.3:
+    resolution: {integrity: sha512-dVPXmrwul+lLt2ErNqwfIGTWkZoPQjlarFx5pwXnCwdJ80ZaJ2nmqtt3KcUgVaKBwBQBpJqOlJPaMxICBay+Cg==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):

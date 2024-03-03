@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
@@ -100,10 +99,10 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private inbox(request: FastifyRequest, reply: FastifyReply) {
+	private async inbox(request: FastifyRequest, reply: FastifyReply) {
 		let signature: ReturnType<typeof parseRequestSignature>;
 
-		const verifyDigest = verifyDigestHeader(request.raw, request.rawBody || '', true);
+		const verifyDigest = await verifyDigestHeader(request.raw, request.rawBody || '', true);
 		if (!verifyDigest) {
 			reply.code(401);
 			return;
@@ -116,13 +115,6 @@ export class ActivityPubServerService {
 				},
 			});
 		} catch (e) {
-			reply.code(401);
-			return;
-		}
-
-		if (signature.value.params.headers.indexOf('host') === -1
-			|| request.headers.host !== this.config.host) {
-			// Host not specified or not match.
 			reply.code(401);
 			return;
 		}
