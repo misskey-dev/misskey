@@ -75,7 +75,7 @@ export class FetchInstanceMetadataService {
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
 				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
-					throw new Error('Skip because updated recently');
+					throw new Error(`Skip because updated recently ${_instance.infoUpdatedAt.toJSON()}`);
 				}
 			}
 
