@@ -17,6 +17,7 @@ import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { REMOTE_SERVER_CACHE_TTL } from '@/const.js';
 import type { DOMWindow } from 'jsdom';
+import { el } from 'date-fns/locale';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -107,8 +108,13 @@ export class FetchInstanceMetadataService {
 				updates.openRegistrations = info.openRegistrations;
 				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
 				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email ?? null) : null : null;
-				if (info.metadata && info.metadata.httpMessageSignaturesImplementationLevel) {
-					updates.httpMessageSignaturesImplementationLevel = info.metadata.httpMessageSignaturesImplementationLevel.toString() ?? '00';
+				if (info.metadata && info.metadata.httpMessageSignaturesImplementationLevel && (
+					info.metadata.httpMessageSignaturesImplementationLevel === '01' ||
+					info.metadata.httpMessageSignaturesImplementationLevel === '11'
+				)) {
+					updates.httpMessageSignaturesImplementationLevel = info.metadata.httpMessageSignaturesImplementationLevel;
+				} else {
+					updates.httpMessageSignaturesImplementationLevel = '00';
 				}
 			}
 
