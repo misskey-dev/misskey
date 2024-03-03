@@ -13,15 +13,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ avatarDecoration.description }}</template>
 
 				<div class="_gaps_m">
-					<MkInput v-model="avatarDecoration.name">
-						<template #label>{{ i18n.ts.name }}</template>
-					</MkInput>
+                                	<div v-if="avatarDecoration.id == null" >
+						<MkInput v-model="avatarDecoration.name">
+							<template #label>{{ i18n.ts.name }}</template>
+						</MkInput>
+					</div>
 					<MkTextarea v-model="avatarDecoration.description">
 						<template #label>{{ i18n.ts.description }}</template>
 					</MkTextarea>
-					<MkInput v-model="avatarDecoration.url">
+                               		<div v-if="avatarDecoration.url != ''" :class="$style.imgs">
+                                       		<div style="background: #fff;" :class="$style.imgContainer">
+                                                	<img :src="avatarDecoration.url" :class="$style.img"/>
+                                        	</div>
+                                	</div>
+                               		<MkButton rounded style="margin: 0 auto;" @click="changeImage($event,avatarDecoration)">{{ i18n.ts.selectFile }}</MkButton>
+<!--------				<MkInput v-model="avatarDecoration.url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
-					</MkInput>
+					</MkInput>-------------->
+
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(avatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 						<MkButton v-if="avatarDecoration.id != null" class="button" inline danger @click="del(avatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -44,8 +53,12 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
+import { selectFile } from '@/scripts/select-file.js';
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
+let file     = ref<Misskey.entities.DriveFile>();
+let file_old = ref<Misskey.entities.DriveFile>();
+
 
 function add() {
 	avatarDecorations.value.unshift({
@@ -66,6 +79,26 @@ function del(avatarDecoration) {
 		avatarDecorations.value = avatarDecorations.value.filter(x => x !== avatarDecoration);
 		misskeyApi('admin/avatar-decorations/delete', avatarDecoration);
 	});
+}
+
+async function changeImage(ev,avatarDecoration) {
+	file_old.value = file.value;
+        file.value = await selectFile(ev.currentTarget ?? ev.target, "decoration");
+	console.log("file = " + file.value.id + " " + file.value.name + " " + file.value.url);
+	if( file.value != null && file.value.id != null ){
+		if ( file_old.value != null  && file_old.value.id != null ){
+        		await os.apiWithDialog('drive/files/delete', {
+                		fileId: file_old.value.id,
+        		});
+		}
+		avatarDecoration.url = file.value.url;
+        	const candidate = file.value.name.replace(/\.(.+)$/, '');
+        	if (candidate.match(/^[a-z0-9_]+$/)) {
+			if ( avatarDecoration.name == '' ){
+                		avatarDecoration.name = candidate;
+			}
+		}
+	}
 }
 
 async function save(avatarDecoration) {
@@ -99,3 +132,24 @@ definePageMetadata(() => ({
 	icon: 'ti ti-sparkles',
 }));
 </script>
+
+<style lang="scss" module>
+.imgs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+}
+
+.imgContainer {
+        padding: 8px;
+        border-radius: 6px;
+}
+
+.img {
+        display: block;
+        height: 64px;
+        width: 64px;
+        object-fit: contain;
+}
+</style>

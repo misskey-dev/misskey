@@ -1678,6 +1678,9 @@ _role:
     canSearchNotes: "Usage of note search"
     canUseTranslator: "Translator usage"
     avatarDecorationLimit: "Maximum number of avatar decorations that can be applied"
+    publicMinimumInterval: "Minimum time interval for public notes"
+    mentionMinimumInterval: "Minimum time interval for mentions"
+    canCreateEmoji: "Permission to create custom emojis (create only)"
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"

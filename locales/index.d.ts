@@ -6534,6 +6534,18 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
+            /**
+             * パブリック投稿の最低時間間隔
+             */
+            "publicMinimumInterval": string;
+            /**
+             * メンションの最低時間間隔
+             */
+            "mentionMinimumInterval": string;
+            /**
+             * カスタム絵文字の作成権限（作成のみ）
+             */
+            "canCreateEmoji": string;
         };
         "_condition": {
             /**
@@ -6984,7 +6996,7 @@ export interface Locale extends ILocale {
     };
     "_channel": {
         /**
-         * チャンネルを作成
+         * チャンネルを作成(制限中。鯖缶に相談してください)
          */
         "create": string;
         /**

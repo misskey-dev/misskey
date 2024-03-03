@@ -84,7 +84,7 @@ export class MiUserProfile {
 	public emailVerified: boolean;
 
 	@Column('jsonb', {
-		default: ['follow', 'receiveFollowRequest'],
+                default: ['mention', 'reply', 'quote', 'follow', 'receiveFollowRequest'],
 	})
 	public emailNotificationTypes: string[];
 

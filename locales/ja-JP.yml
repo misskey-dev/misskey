@@ -1688,6 +1688,9 @@ _role:
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
+    publicMinimumInterval: "パブリック投稿の最低時間間隔"
+    mentionMinimumInterval: "メンションの最低時間間隔"
+    canCreateEmoji: "カスタム絵文字の作成権限（作成のみ）"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -1827,7 +1830,7 @@ _serverDisconnectedBehavior:
   quiet: "控えめに警告"
 
 _channel:
-  create: "チャンネルを作成"
+  create: "チャンネルを作成(制限中。鯖缶に相談してください)"
   edit: "チャンネルを編集"
   setBanner: "バナーを設定"
   removeBanner: "バナーを削除"

@@ -119,7 +119,15 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactions: {
 		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+//		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮',':fuji3:'],
+		default: ['👍', '❤️', '🎉',
+			':fuji3:', ':ablobcatheadbangfastultra:', ':ablobcatattention:', ':ablobcatfloofpat:', 
+			':ablobcry:', ':ablobcatdrool:', ':blobcatfearful:', ':blobcat_ofton:', 
+			':Shiropuyo_hayai_Resonance:', ':Shiropuyo_ohayou:',
+			':Shiropuyo_oyasumi:', ':igyo:', ':ajiwai_bukai:', ':iihanashi:', ':google_hart:',
+			':ablobcat_uruuru:', ':meow_bongo_keyboard:', ':ablobcat_kyaa:',
+			':cat_thumbsup_84:', ':frog_happy_84:', ':dog_thinking_84:'
+			],
 	},
 	pinnedEmojis: {
 		where: 'account',
@@ -289,15 +297,18 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	emojiPickerScale: {
 		where: 'device',
-		default: 1,
+//		default: 1,
+		default: 2,
 	},
 	emojiPickerWidth: {
 		where: 'device',
-		default: 1,
+//		default: 1,
+		default: 4,
 	},
 	emojiPickerHeight: {
 		where: 'device',
-		default: 2,
+//		default: 2,
+		default: 3,
 	},
 	emojiPickerUseDrawerForMobile: {
 		where: 'device',
@@ -357,11 +368,13 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionsDisplaySize: {
 		where: 'device',
-		default: 'medium' as 'small' | 'medium' | 'large',
+//		default: 'medium' as 'small' | 'medium' | 'large',
+		default: 'large' as 'small' | 'medium' | 'large',
 	},
 	limitWidthOfReaction: {
 		where: 'device',
-		default: true,
+//		default: true,
+		default: false,
 	},
 	forceShowAds: {
 		where: 'device',

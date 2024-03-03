@@ -57,6 +57,9 @@ export type RolePolicies = {
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
+	publicMinimumInterval: number;
+	memtionMinimumInterval: number;
+	canCreateEmoji: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -85,6 +88,9 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
+	publicMinimumInterval: 0,
+	mentionMinimumInterval: 0,
+	canCreateEmoji: false,
 };
 
 @Injectable()
@@ -352,6 +358,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+			publicMinimumInterval: calc('publicMinimumInterval', vs => Math.max(...vs)),
+			mentionMinimumInterval: calc('mentionMinimumInterval', vs => Math.max(...vs)),
+			canCreateEmoji: calc('canCreateEmoji', vs => vs.some(v => v === true)),
 		};
 	}
 

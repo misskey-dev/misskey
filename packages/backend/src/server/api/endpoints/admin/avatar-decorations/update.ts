@@ -39,13 +39,37 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private avatarDecorationService: AvatarDecorationService,
 	) {
+
 		super(meta, paramDef, async (ps, me) => {
-			await this.avatarDecorationService.update(ps.id, {
-				name: ps.name,
-				description: ps.description,
-				url: ps.url,
-				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
-			}, me);
+
+			const decoration = await  this.avatarDecorationService.getAvatarDecorationById(ps.id);
+			if ( decoration != null ){
+				let old_id = '';
+				let sh_i = decoration.description.indexOf('#')
+				if ( sh_i >=8 && sh_i < 16 ){
+					old_id = decoration.description.substr( 0, sh_i );
+				}
+				let new_description = ps.description;
+				let sh_in = new_description.indexOf('# ')
+				if ( sh_in >=8 && sh_in < 16 ){
+					new_description = new_description.substr( sh_in + 2 );
+				} else{
+					sh_in = new_description.indexOf('#')
+					if ( sh_in >=8 && sh_in < 16 ){
+						new_description = new_description.substr( sh_in + 1 );
+					}
+				}
+				if ( old_id != '' ){
+					new_description = old_id + '# ' + new_description;
+				}
+
+				await this.avatarDecorationService.update(ps.id, {
+					name: decoration.name,
+					description: new_description,
+					url: ps.url,
+					roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
+				}, me);
+			}
 		});
 	}
 }

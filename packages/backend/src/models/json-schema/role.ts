@@ -251,6 +251,18 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
+		publicMinimumInterval: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		mentionMinimumInterval: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		canCreateEmoji: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 

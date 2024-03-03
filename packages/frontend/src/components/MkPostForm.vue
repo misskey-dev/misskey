@@ -849,10 +849,17 @@ async function post(ev?: MouseEvent) {
 		});
 	}).catch(err => {
 		posting.value = false;
-		os.alert({
+                if ( (err as any).id == 'a817376a-4bcc-11ee-8fd9-15e99585d2ed' ){
+                        os.alert({
+                               type: 'error',
+                               text: '頻繁に投稿し過ぎです。少し待ってから投稿するか パブリック以外で投稿してください。\n' + (err as any).id,
+                        });
+                } else {
+		    os.alert({
 			type: 'error',
 			text: err.message + '\n' + (err as any).id,
-		});
+		    });
+		}
 	});
 }
 

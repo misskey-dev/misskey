@@ -62,12 +62,12 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 
 		this.globalEventService.publishInternalEvent('avatarDecorationCreated', created);
 
-		if (moderator) {
+//		if (moderator) {
 			this.moderationLogService.log(moderator, 'createAvatarDecoration', {
 				avatarDecorationId: created.id,
 				avatarDecoration: created,
 			});
-		}
+//		}
 
 		return created;
 	}
@@ -85,13 +85,13 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		const updated = await this.avatarDecorationsRepository.findOneByOrFail({ id: avatarDecoration.id });
 		this.globalEventService.publishInternalEvent('avatarDecorationUpdated', updated);
 
-		if (moderator) {
+//		if (moderator) {
 			this.moderationLogService.log(moderator, 'updateAvatarDecoration', {
 				avatarDecorationId: avatarDecoration.id,
 				before: avatarDecoration,
 				after: updated,
 			});
-		}
+//		}
 	}
 
 	@bindThis
@@ -101,12 +101,12 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		await this.avatarDecorationsRepository.delete({ id: avatarDecoration.id });
 		this.globalEventService.publishInternalEvent('avatarDecorationDeleted', avatarDecoration);
 
-		if (moderator) {
+//		if (moderator) {
 			this.moderationLogService.log(moderator, 'deleteAvatarDecoration', {
 				avatarDecorationId: avatarDecoration.id,
 				avatarDecoration: avatarDecoration,
 			});
-		}
+//		}
 	}
 
 	@bindThis
@@ -126,4 +126,15 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 	public onApplicationShutdown(signal?: string | undefined): void {
 		this.dispose();
 	}
+
+        @bindThis
+        public checkDuplicate(name: string): Promise<boolean> {
+                return this.avatarDecorationsRepository.exist({ where: { name } });
+        }
+
+	@bindThis
+        public getAvatarDecorationById(id: string): Promise<MiAvatarDecoration | null> {
+                return this.avatarDecorationsRepository.findOneBy({ id });
+        }
+
 }

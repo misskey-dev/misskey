@@ -570,6 +570,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.publicMinimumInterval, 'publicMinimumInterval'])">
+				<template #label>{{ i18n.ts._role._options.publicMinimumInterval }}</template>
+				<template #suffix>
+					<span v-if="role.policies.publicMinimumInterval.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.publicMinimumInterval.value + i18n.ts._time.minute }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.publicMinimumInterval)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.publicMinimumInterval.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="role.policies.publicMinimumInterval.value" :disabled="role.policies.publicMinimumInterval.useDefault" type="number" :readonly="readonly">
+						<template #suffix>{{ i18n.ts._time.minute }}</template>
+					</MkInput>
+					<MkRange v-model="role.policies.publicMinimumInterval.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMinimumInterval, 'mentionMinimumInterval'])">
+				<template #label>{{ i18n.ts._role._options.mentionMinimumInterval }}</template>
+				<template #suffix>
+					<span v-if="role.policies.mentionMinimumInterval.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.mentionMinimumInterval.value + i18n.ts._time.minute }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.mentionMinimumInterval)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.mentionMinimumInterval.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="role.policies.mentionMinimumInterval.value" :disabled="role.policies.mentionMinimumInterval.useDefault" type="number" :readonly="readonly">
+						<template #suffix>{{ i18n.ts._time.minute }}</template>
+					</MkInput>
+					<MkRange v-model="role.policies.mentionMinimumInterval.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canCreateEmoji, 'canCreateEmoji'])">
+				<template #label>{{ i18n.ts._role._options.canCreateEmoji }}</template>
+				<template #suffix>
+					<span v-if="role.policies.canCreateEmoji.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canCreateEmoji.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canCreateEmoji)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.canCreateEmoji.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.canCreateEmoji.value" :disabled="role.policies.canCreateEmoji.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.canCreateEmoji.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 </div>

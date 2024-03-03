@@ -206,6 +206,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.publicMinimumInterval, 'publicMinimumInterval'])">
+							<template #label>{{ i18n.ts._role._options.publicMinimumInterval }}</template>
+							<template #suffix>{{ policies.publicMinimumInterval + i18n.ts._time.minute }}</template>
+							<MkInput v-model="policies.publicMinimumInterval" type="number">
+								<template #suffix>{{ i18n.ts._time.minute }}</template>
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMinimumInterval, 'mentionMinimumInterval'])">
+							<template #label>{{ i18n.ts._role._options.mentionMinimumInterval }}</template>
+							<template #suffix>{{ policies.mentionMinimumInterval + i18n.ts._time.minute }}</template>
+							<MkInput v-model="policies.mentionMinimumInterval" type="number">
+								<template #suffix>{{ i18n.ts._time.minute }}</template>
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canCreateEmoji, 'canCreateEmoji'])">
+							<template #label>{{ i18n.ts._role._options.canCreateEmoji }}</template>
+							<template #suffix>{{ policies.canCreateEmoji ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canCreateEmoji">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>

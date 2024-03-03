@@ -37,9 +37,16 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public isUnBlockedHost(blockedHosts: string[], host: string | null): boolean {
+		if (host == null) return true;
+		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
 	public isSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
-		if (!silencedHosts || host == null) return false;
-		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+		return false;
+//		if (!silencedHosts || host == null) return false;
+//		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
 	@bindThis

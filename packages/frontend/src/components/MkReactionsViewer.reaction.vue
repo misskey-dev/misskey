@@ -8,9 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
-	@click="toggleReaction()"
-	@contextmenu.prevent.stop="menu"
+        :class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle || true, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+        @click="toggleReaction($event)"
+        @contextmenu.prevent.stop="menu"
 >
 	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, shallowRef, watch, ComputedRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
@@ -51,6 +51,13 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
+const reactionName = computed(() => {
+       const r = props.reaction.replace(':', '');
+       return r.slice(0, r.indexOf('@'));
+});
+
+const alternative: ComputedRef<string | null> = computed(() => customEmojis.value.find(it => it.name === reactionName.value)?.name ?? null );
+
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
@@ -59,8 +66,12 @@ const canToggle = computed(() => {
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
-async function toggleReaction() {
-	if (!canToggle.value) return;
+async function toggleReaction(ev?:MouseEvent) {
+       console.log('MkReactionsViewer.reaction toggleReaction');
+       if (!canToggle.value) {
+               chooseAlternative(ev);
+               return;
+       }
 
 	const oldReaction = props.note.myReaction;
 	if (oldReaction) {
@@ -131,6 +142,43 @@ function anime() {
 	const y = rect.top + (buttonEl.value.offsetHeight / 2);
 	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
 }
+
+
+const im = (emoji) => {
+        console.log('@@im-emoji :' + emoji);
+        os.apiWithDialog('admin/emoji/copy', {
+                emojiId: emoji,
+        });
+};
+
+
+const remoteMenu = (emoji, ev: MouseEvent) => {
+        console.log('@@remoteMenu :' + emoji);
+        os.popupMenu([{
+                type: 'label',
+                text: ':' + emoji + ':',
+        }, {
+//                text: i18n.ts.import,
+//                text: '著作権等を考慮した上で、ふじさんすきーにインポートする',
+                text: 'ふじさんすきーにインポートする',
+                icon: 'ti ti-plus',
+                action: () => { im(emoji); },
+        }], ev.currentTarget ?? ev.target);
+};
+
+const chooseAlternative = (ev) => {
+       // メニュー表示にして、モデレーター以上の場合は登録もできるように
+       if (!alternative.value) {
+              console.log('@@chooseAlternative :' + props.reaction);
+              remoteMenu(props.reaction,ev)
+              return;
+       }
+       console.log(alternative.value);
+       misskeyApi('notes/reactions/create', {
+               noteId: props.note.id,
+               reaction: `:${alternative.value}:`,
+       });
+};
 
 watch(() => props.count, (newCount, oldCount) => {
 	if (oldCount < newCount) anime();

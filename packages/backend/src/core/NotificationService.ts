@@ -18,6 +18,7 @@ import { NotificationEntityService } from '@/core/entities/NotificationEntitySer
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
+import { EmailService } from '@/core/EmailService.js';
 import { UserListService } from '@/core/UserListService.js';
 import type { FilterUnionByProperty } from '@/types.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
@@ -41,6 +42,7 @@ export class NotificationService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
 		private cacheService: CacheService,
+		private emailService: EmailService,
 		private userListService: UserListService,
 	) {
 	}
@@ -178,9 +180,28 @@ export class NotificationService implements OnApplicationShutdown {
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 
-			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
-			if (type === 'receiveFollowRequest') this.emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
 		}, () => { /* aborted, ignore it */ });
+                if( profile.email ){
+                        const follower = await this.usersRepository.findOneByOrFail({ id: notifierId! });
+                        switch(type){
+                                case 'mention':
+                                        this.emailNotificationMention(profile, follower);
+                                break;
+                                case 'reply':
+                                        this.emailNotificationReply(profile, follower);
+                                break;
+                                case 'quote' :
+                                case 'renote':
+                                        this.emailNotificationQuote(profile, follower);
+                                break;
+                                case 'follow':
+                                        this.emailNotificationFollow(profile, follower);
+                                break;
+                                case 'receiveFollowRequest':
+                                        this.emailNotificationReceiveFollowRequest(profile, follower);
+                                break;
+                        }
+                }
 
 		return notification;
 	}
@@ -191,28 +212,68 @@ export class NotificationService implements OnApplicationShutdown {
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
 	@bindThis
-	private async emailNotificationFollow(userId: MiUser['id'], follower: MiUser) {
-		/*
-		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
-		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('follow')) return;
-		const locale = locales[userProfile.lang ?? 'ja-JP'];
-		const i18n = new I18n(locale);
-		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
-		*/
-	}
+       	private async emailNotificationMention(profile: UserProfile, follower: MiUser) {
+               console.log('-------emailNotificationMention-------');
+               if ( !profile.emailNotificationTypes.includes('mention')) return;
+               this.emailNotificationEtc( profile.email , follower,
+                       'メンション/ダイレクトメッセージが来ています',
+                       'からメンション/ダイレクトメッセージが来ています');
+       	}
 
-	@bindThis
-	private async emailNotificationReceiveFollowRequest(userId: MiUser['id'], follower: MiUser) {
-		/*
-		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
-		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('receiveFollowRequest')) return;
-		const locale = locales[userProfile.lang ?? 'ja-JP'];
-		const i18n = new I18n(locale);
-		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
-		*/
-	}
+       	@bindThis
+       	private async emailNotificationReply(profile: UserProfile, follower: MiUser) {
+               console.log('-------emailNotificationRelpy-------');
+               if ( !profile.emailNotificationTypes.includes('reply')) return;
+               this.emailNotificationEtc( profile.email , follower,
+                       'リプライされました',
+                       'にリプライされました');
+       	}
+
+       	@bindThis
+       	private async emailNotificationQuote(profile: UserProfile, follower: MiUser) {
+               console.log('-------emailNotificationMention-------');
+               if (!profile.emailNotificationTypes.includes('quote')) return;
+               this.emailNotificationEtc( profile.email , follower,
+                       '引用、リノートされました',
+                       'に引用、又は、リノートされました');
+        }
+
+       	@bindThis
+	private async emailNotificationFollow(profile: UserProfile, follower: MiUser) {
+               console.log('-------emailNotificationFollow-------');
+               if ( !profile.emailNotificationTypes.includes('follow')) return;
+               this.emailNotificationEtc( profile.email , follower,
+                       'フォローされました',
+                       'にフォローされました');
+       }
+
+       @bindThis
+       private async emailNotificationReceiveFollowRequest(profile: UserProfile, follower: MiUser) {
+               console.log('-------emailNotificationReceiveFollowRequest-------');
+               if ( !profile.emailNotificationTypes.includes('receiveFollowRequest')) return;
+               this.emailNotificationEtc( profile.email , follower,
+                       'フォローリクエストが届いています',
+                       'からフォローリクエストが届いています');
+       }
+
+       @bindThis
+       private async emailNotificationEtc(mailAddr: string , follower: MiUser, title:String, message:String) {
+               let messageText = title;
+               let htmlText    = title;
+               if ( follower ){
+                       let nameText = follower.name;
+                       if ( !nameText ) nameText = follower.username;
+                       let hostName = follower.host;
+                       if ( !hostName ) hostName = this.config.host;
+                       let addressText = `<i>@${follower.username}@${hostName}</i>`;
+                       messageText = `<font size=+3>${nameText} さん</font><br>${addressText}<br><p align="right">${message}</p>`;
+                       htmlText  = messageText;
+                       if( follower.avatarUrl ){
+                               htmlText = `<img src="${follower.avatarUrl}"  width="48" height="48">${messageText}`;
+                       }
+               }
+               this.emailService.sendEmail(mailAddr, title , htmlText,messageText);
+        }
 
 	@bindThis
 	public async flushAllNotifications(userId: MiUser['id']) {

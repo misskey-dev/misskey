@@ -46,6 +46,7 @@ export class EmailService {
 		const emailSettingUrl = `${this.config.url}/settings/email`;
 
 		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
+		const subjectPlus = `[${this.config.host}]${subject}`;
 
 		const transporter = nodemailer.createTransport({
 			host: meta.smtpHost,
@@ -64,7 +65,7 @@ export class EmailService {
 			const info = await transporter.sendMail({
 				from: meta.email!,
 				to: to,
-				subject: subject,
+				subject: subjectPlus,
 				text: text,
 				html: `<!doctype html>
 <html>
@@ -99,7 +100,7 @@ export class EmailService {
 			}
 				main > header {
 					padding: 32px;
-					background: #86b300;
+					background: #40ffff;
 				}
 					main > header > img {
 						max-width: 128px;

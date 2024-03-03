@@ -17,7 +17,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
+	requireRolePolicy: 'canCreateEmoji',
 	kind: 'write:admin:emoji',
 
 	errors: {
@@ -49,7 +49,8 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		emojiId: { type: 'string', format: 'misskey:id' },
+//		emojiId: { type: 'string', format: 'misskey:id' },
+		emojiId: { type: 'string', nullable: false },
 	},
 	required: ['emojiId'],
 } as const;
@@ -66,7 +67,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
+
+                       let emoji = null;
+
+                       const atmark = ps.emojiId.indexOf('@');
+                       const colonmark = ps.emojiId.indexOf(':');
+                       if( (colonmark == 0) && (atmark > 0) ){
+                               const namePart = ps.emojiId.slice(1,atmark);
+                               const hostPart = ps.emojiId.slice(atmark+1).replace(':', '');
+                               emoji = await this.emojisRepository.findOneBy({ name: namePart , host:hostPart });
+                       }else{
+                               emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
+                       }
+
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}

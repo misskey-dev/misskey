@@ -97,6 +97,9 @@ export const ROLE_POLICIES = [
 	'userEachUserListsLimit',
 	'rateLimitFactor',
 	'avatarDecorationLimit',
+	'publicMinimumInterval',
+	'mentionMinimumInterval',
+	'canCreateEmoji',
 ] as const;
 
 // なんか動かない
