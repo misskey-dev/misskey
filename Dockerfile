@@ -55,7 +55,7 @@ COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modu
 COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
 
 
-# ファイル所在チェック(/misskey/packages/backend/builtd/boot/index.js)
+# ファイル所在チェック(/misskey/packages/backend/built/boot/index.js)
 RUN if [ ! -f /misskey/packages/backend/built/boot/index.js ]; then echo "Error: /misskey/packages/backend/built/boot/index.js not found" && exit 1;
 
 # ファイル所在チェック(/misskey/built/_vite_/meta.json)
