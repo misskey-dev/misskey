@@ -51,23 +51,33 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	public async tryLock(host: string): Promise<boolean> {
-		const mutex = await this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
-		return mutex !== '1';
+	private async tryLock(host: string): Promise<string | null> {
+		// TODO: マイグレーションなのであとで消す (2024.3.1)
+		this.redisClient.del(`fetchInstanceMetadata:mutex:${host}`);
+
+		return await this.redisClient.set(
+			`fetchInstanceMetadata:mutex:v2:${host}`, '1',
+			'EX', 30, // 30秒したら自動でロック解除 https://github.com/misskey-dev/misskey/issues/13506#issuecomment-1975375395
+			'GET' // 古い値を返す（なかったらnull）
+		);
 	}
 
 	@bindThis
-	public unlock(host: string): Promise<'OK'> {
-		return this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
+	private unlock(host: string): Promise<number> {
+		return this.redisClient.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 
 	@bindThis
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
-		// Acquire mutex to ensure no parallel runs
-		if (!await this.tryLock(host)) return;
+
 		try {
 			if (!force) {
+				if (await this.tryLock(host) === '1') {
+					// 1が返ってきていたらロックされている = 何もしない
+					return;
+				}
+
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
 				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
