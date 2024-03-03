@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REGISTRY_IMAGE: misskey/misskey
+  REGISTRY_IMAGE: ${{ github.repository }}
   TAGS: |
     type=edge
     type=ref,event=pr
