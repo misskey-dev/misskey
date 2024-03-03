@@ -54,15 +54,21 @@ COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./pa
 COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
 COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
 
-
 # ファイル所在チェック(/misskey/packages/backend/built/boot/index.js)
-RUN if [ ! -f /misskey/packages/backend/built/boot/index.js ]; then echo "Error: /misskey/packages/backend/built/boot/index.js not found" && exit 1;
+RUN if [ ! -f /misskey/packages/backend/built/boot/index.js ]; then \
+    echo "Error: /misskey/packages/backend/built/boot/index.js not found" && exit 1; \
+    fi
+
 
 # ファイル所在チェック(/misskey/built/_vite_/meta.json)
-RUN if [ ! -f /misskey/built/_vite_/meta.json ]; then echo "Error: /misskey/built/_vite_/meta.json not found" && exit 1;
+RUN if [ ! -f /misskey/built/_vite_/meta.json ]; then \
+    echo "Error: /misskey/built/_vite_/meta.json not found" && exit 1; \
+    fi
 
 # ファイル所在チェック(/misskey/built/_sw_dist_/sw.js)
-RUN if [ ! -f /misskey/built/_sw_dist_/sw.js ]; then echo "Error: /misskey/built/_sw_dist_/sw.js not found" && exit 1;
+RUN if [ ! -f /misskey/built/_sw_dist_/sw.js ]; then \
+    echo "Error: /misskey/built/_sw_dist_/sw.js not found" && exit 1; \
+    fi
 
 ENV NODE_ENV=production
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
