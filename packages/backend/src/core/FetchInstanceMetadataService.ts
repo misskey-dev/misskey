@@ -56,7 +56,8 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async tryLock(host: string): Promise<string | null> {
+	// public for test
+	public async tryLock(host: string): Promise<string | null> {
 		// TODO: マイグレーションなのであとで消す (2024.3.1)
 		this.redisClient.del(`fetchInstanceMetadata:mutex:${host}`);
 
@@ -68,7 +69,8 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private unlock(host: string): Promise<number> {
+	// public for test
+	public unlock(host: string): Promise<number> {
 		return this.redisClient.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 
@@ -76,13 +78,15 @@ export class FetchInstanceMetadataService {
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
 
+		// finallyでunlockされてしまうのでtry内でロックチェックをしない
+		// （returnであってもfinallyは実行される）
+		if (!force && await this.tryLock(host) === '1') {
+			// 1が返ってきていたらロックされているという意味なので、何もしない
+			return;
+		}
+
 		try {
 			if (!force) {
-				if (await this.tryLock(host) === '1') {
-					// 1が返ってきていたらロックされている = 何もしない
-					return;
-				}
-
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
 				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
