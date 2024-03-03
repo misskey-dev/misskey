@@ -17,7 +17,6 @@ import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { REMOTE_SERVER_CACHE_TTL } from '@/const.js';
 import type { DOMWindow } from 'jsdom';
-import { el } from 'date-fns/locale';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
