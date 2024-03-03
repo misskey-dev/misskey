@@ -52,11 +52,11 @@ const emit = defineEmits<{
 const buttonEl = shallowRef<HTMLElement>();
 
 const reactionName = computed(() => {
-       const r = props.reaction.replace(':', '');
+       const r = props.reaction.replace(/:/g, '');
        return r.slice(0, r.indexOf('@'));
 });
 
-const alternative: ComputedRef<string | null> = computed(() => customEmojis.value.find(it => it.name === reactionName.value)?.name ?? null );
+const alternative = computed(() => customEmojisMap.get(reactionName.value) );
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
@@ -167,16 +167,17 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 };
 
 const chooseAlternative = (ev) => {
-       // メニュー表示にして、モデレーター以上の場合は登録もできるように
+       console.log('@@chooseAlternative start');
        if (!alternative.value) {
-              console.log('@@chooseAlternative :' + props.reaction);
+//              console.log('@@chooseAlternative :' + props.reaction);
               remoteMenu(props.reaction,ev)
               return;
        }
-       console.log(alternative.value);
+//       console.log(alternative.value);
+//       console.log(alternative.value.name);
        misskeyApi('notes/reactions/create', {
                noteId: props.note.id,
-               reaction: `:${alternative.value}:`,
+               reaction: `:${alternative.value.name}:`,
        });
 };
 
