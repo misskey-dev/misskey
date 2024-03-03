@@ -73,13 +73,14 @@ export class FetchInstanceMetadataService {
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
 
+		// unlockされてしまうのでtry内でロックチェックをしない
+		if (!force && await this.tryLock(host) === '1') {
+			// 1が返ってきていたらロックされているという意味なので、何もしない
+			return;
+		}
+
 		try {
 			if (!force) {
-				if (await this.tryLock(host) === '1') {
-					// 1が返ってきていたらロックされている = 何もしない
-					return;
-				}
-
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
 				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
