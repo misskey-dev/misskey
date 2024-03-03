@@ -5,12 +5,17 @@
 -
 
 ### Client
-- 
+-
 
 ### Server
 -
 
 -->
+
+## 202x.x.x-kinel.x (unreleased)
+
+### Client
+- Fix: パブリック投稿をホーム投稿に変更するモデレーション操作がUI上で行えなくなっていた問題を修正
 
 ## 2024.3.1-kinel.1
 
