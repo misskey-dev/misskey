@@ -51,7 +51,8 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async tryLock(host: string): Promise<string | null> {
+	// public for test
+	public async tryLock(host: string): Promise<string | null> {
 		// TODO: マイグレーションなのであとで消す (2024.3.1)
 		this.redisClient.del(`fetchInstanceMetadata:mutex:${host}`);
 
@@ -63,7 +64,8 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private unlock(host: string): Promise<number> {
+	// public for test
+	public unlock(host: string): Promise<number> {
 		return this.redisClient.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 
