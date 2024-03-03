@@ -4,7 +4,7 @@
  */
 
 import ms from 'ms';
-import { In } from 'typeorm';
+import { In, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUser } from '@/models/User.js';
 import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
@@ -19,8 +19,11 @@ import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { IdService } from '@/core/IdService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
+import { exec } from 'child_process';
 
 export const meta = {
 	tags: ['notes'],
@@ -132,6 +135,21 @@ export const meta = {
 			code: 'CONTAINS_TOO_MANY_MENTIONS',
 			id: '4de0363a-3046-481b-9b0f-feff3e211025',
 		},
+		tooManyPublicNote: {
+			message: 'Interval is too short. Please note after few minutes.',
+			code: 'TOO_MANY_PUBLIC_NOTE',
+			id: 'a817376a-4bcc-11ee-8fd9-15e99585d2ed',
+		},
+		tooManyDestinations: {
+			message: 'Too many destinations for this mention.',
+			code: 'TOO_MANY_DESTINATIONS',
+			id: '4653904a-2567-5f3a-2cad-d061dc38e676',
+		},
+		tooManyMentions: {
+			message: 'Interval is too short. Please mention after few minutes.',
+			code: 'TOO_MANY_MENTIONS',
+			id: 'd5f820ab-13d3-7e50-dad9-74225cd190d0',
+		},
 	},
 } as const;
 
@@ -242,6 +260,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
+
+		private roleService: RoleService,
+                private idService: IdService,
+
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: MiUser[] = [];
@@ -359,6 +381,67 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (channel == null) {
 					throw new ApiError(meta.errors.noSuchChannel);
+				}
+			}
+               		if (ps.visibility === 'public' && channel == null) {
+//                        	if ((await this.roleService.getUserPolicies(me.id)).canPublicNote === false) {
+					console.log('-----------------too many public note-----------');
+					const cycle = (await this.roleService.getUserPolicies(me.id)).publicMinimumInterval;
+					console.log(cycle);
+					if ( ( cycle > 0 ) && ( cycle < 10000) ){
+					    const last_date = new Date(Date.now() - (cycle * 1000 * 60));
+					    const last_id = this.idService.gen( last_date.getTime() );
+					    console.log(last_id);
+				            const count = await this.notesRepository.countBy({
+	                                        id: MoreThan(last_id),
+                                        	userId: me.id,
+						visibility: 'public',
+//						visibility: 'home', // for debug
+                                	    });
+					    console.log(count);
+					    if ( count > 0 ){
+						throw new ApiError(meta.errors.tooManyPublicNote);
+					    }
+					}
+ //                       	}
+                	}
+
+			if (ps.visibility === 'specified'){
+				console.log('-----------------mention -----------');
+				console.log(visibleUsers.length);
+				if ( visibleUsers.length > 3 ){
+					throw new ApiError(meta.errors.tooManyDestinations);
+				}
+				const cycle = (await this.roleService.getUserPolicies(me.id)).mentionMinimumInterval;
+				console.log(cycle);
+//				if ( cycle == 110 ){
+//					console.log('no mention');
+//					throw new ApiError(meta.errors.tooManyMentions);
+//				}
+				if ( ( cycle > 0 ) && ( cycle < 10000) ){
+//					if ( visibleUsers.length > 1 ){
+//						exec('echo "meny destination:'+me.id+'"|mailx -r misskey@jay.misskey.day -s \"mentionError\" sabakan432108794321@misskey.day', (err, stdout, stderr) => {
+// 							if (err) { console.log(err); }
+//							console.log(stdout);
+//						});
+//						throw new ApiError(meta.errors.tooManyDestinations);
+//					}
+					const last_date = new Date(Date.now() - (cycle * 1000 * 60));
+					const last_id = this.idService.gen( last_date.getTime() );
+					console.log(last_id);
+				        const count = await this.notesRepository.countBy({
+	                                    id: MoreThan(last_id),
+                                        	userId: me.id,
+						visibility: 'specified',
+                                	});
+					console.log(count);
+					if ( count > 0 ){
+						exec('echo "quicky mention:'+me.id+'"|mailx -r misskey@jay.misskey.day -s \"mentionError\" sabakan432108794321@misskey.day', (err, stdout, stderr) => {
+  							if (err) { console.log(err); }
+  							console.log(stdout);
+						});
+						throw new ApiError(meta.errors.tooManyMentions);
+					}
 				}
 			}
 

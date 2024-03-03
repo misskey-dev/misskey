@@ -194,8 +194,11 @@ export class SignupApiService {
 			const link = `${this.config.url}/signup-complete/${code}`;
 
 			this.emailService.sendEmail(emailAddress!, 'Signup',
-				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-				`To complete signup, please click this link: ${link}`);
+//				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+//				`To complete signup, please click this link: ${link}`);
+                               `入会を完了させるために次のリンクをクリックして>ください/To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+                               `入会を完了させるために次のリンクをクリックして>ください/To complete signup, please click this link: ${link}`);
+
 
 			if (ticket) {
 				await this.registrationTicketsRepository.update(ticket.id, {
