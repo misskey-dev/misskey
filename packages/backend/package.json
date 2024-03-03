@@ -11,7 +11,6 @@
 		"start:test": "NODE_ENV=test node ./built/boot/index.js",
 		"migrate": "typeorm migration:run -d ormconfig.js",
 		"build:swc": "swc src -d built -D",
-		"watch:swc": "swc src -d built -D -w",
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
 		"type-check": "tsc --noEmit",
