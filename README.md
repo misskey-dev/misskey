@@ -1,9 +1,13 @@
 <div align="center">
-<a href="https://misskey-hub.net">
-	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
-</a>
-
-**🌎 **Misskey** is an open source, federated social media platform that's free forever! 🚀**
+Misskeyの　ふじさんすきー版のコードです。<br>
+小規模サーバーで、かつ、鯖缶が適当（さぼってる）な場合に有効じゃないかと思います。<br>
+<br>
+インストール方法は、misskey公式と同じ。<br>
+<br>
+　時間のある時に説明を作ってみますが、取り合えずソース公開という事で。<br>
+ あまり無いと思いますが、姉妹サーバーを歓迎します。<br>
+<br>
+<br>
 
 [Learn more](https://misskey-hub.net/)
 
