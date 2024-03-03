@@ -7,8 +7,8 @@ body:
     attributes:
       value: |
         バグ報告を検討していただきありがとうございます!
-        重複を避けるために、同様の問題が既に報告されていないか[にりらみすきー部のIssue](https://github.com/niri-la/misskey.niri.la/issues)を確認してみてください。
-        また、にりらみすきー部で再現したバグのみを報告してください。
+        重複を避けるために、同様の問題が既に報告されていないか[にりらみすきー部のIssue](https://github.com/huideyeren/misskey/issues)を確認してみてください。
+        また、Інокашираськийで再現したバグのみを報告してください。
 
   - type: textarea
     attributes:
