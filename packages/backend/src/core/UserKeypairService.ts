@@ -5,13 +5,13 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { genEd25519KeyPair } from '@misskey-dev/node-http-message-signatures';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { genEd25519KeyPair } from '@misskey-dev/node-http-message-signatures';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async prepareEd25519KeyPair(userId: MiUser['id']): Promise<void> {
+	public async refreshAndprepareEd25519KeyPair(userId: MiUser['id']): Promise<void> {
 		await this.refresh(userId);
 		const keypair = await this.cache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) return;

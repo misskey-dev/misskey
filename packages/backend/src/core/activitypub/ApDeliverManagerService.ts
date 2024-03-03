@@ -109,7 +109,7 @@ class DeliverManager {
 		/**
 		 * ed25519の署名がなければ追加する
 		 */
-		await this.userKeypairService.prepareEd25519KeyPair(this.actor.id);
+		await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
 		//#endregion
 
 		// The value flags whether it is shared or not.
