@@ -60,8 +60,8 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.roles,
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.explore,
 	icon: 'ti ti-hash',
-})));
+}));
 </script>

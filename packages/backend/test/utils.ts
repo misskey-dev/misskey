@@ -13,10 +13,11 @@ import fetch, { File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
 import { JSDOM } from 'jsdom';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { Packed } from '@/misc/json-schema.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
-import { Packed } from '@/misc/json-schema.js';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -123,9 +124,9 @@ export function randomString(chars = 'abcdefghijklmnopqrstuvwxyz0123456789', len
 function timeoutPromise<T>(p: Promise<T>, timeout: number): Promise<T> {
 	return Promise.race([
 		p,
-		new Promise((reject) =>{
-			setTimeout(() => { reject(new Error('timed out')); }, timeout)
-		}) as never
+		new Promise((reject) => {
+			setTimeout(() => { reject(new Error('timed out')); }, timeout);
+		}) as never,
 	]);
 }
 
@@ -327,7 +328,6 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	});
 
 	const body = res.status !== 204 ? await res.json() as misskey.Endpoints['drive/files/create']['res'] : null;
-
 	return {
 		status: res.status,
 		headers: res.headers,
@@ -343,7 +343,7 @@ export const uploadUrl = async (user: UserToken, url: string): Promise<Packed<'D
 		'main',
 		(msg) => msg.type === 'urlUploadFinished' && msg.body.marker === marker,
 		(msg) => msg.body.file as Packed<'DriveFile'>,
-		60 * 1000
+		60 * 1000,
 	);
 
 	await api('drive/files/upload-from-url', {
@@ -355,7 +355,7 @@ export const uploadUrl = async (user: UserToken, url: string): Promise<Packed<'D
 	return catcher;
 };
 
-export function connectStream(user: UserToken, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
+export function connectStream<C extends keyof misskey.Channels>(user: UserToken, channel: C, listener: (message: Record<string, any>) => any, params?: misskey.Channels[C]['params']): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const url = new URL(`ws://127.0.0.1:${port}/streaming`);
 		const options: ClientOptions = {};
@@ -390,7 +390,7 @@ export function connectStream(user: UserToken, channel: string, listener: (messa
 	});
 }
 
-export const waitFire = async (user: UserToken, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
+export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken, channel: C, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: misskey.Channels[C]['params']) => {
 	return new Promise<boolean>(async (res, rej) => {
 		let timer: NodeJS.Timeout | null = null;
 
@@ -434,20 +434,20 @@ export const waitFire = async (user: UserToken, channel: string, trgr: () => any
  * @returns 時間内に正常に処理できた場合に通知からextractorを通した値を得る
  */
 export function makeStreamCatcher<T>(
-		user: UserToken,
-		channel: string,
-		cond: (message: Record<string, any>) => boolean,
-		extractor: (message: Record<string, any>) => T,
-		timeout = 60 * 1000): Promise<T> {
-	let ws: WebSocket
+	user: UserToken,
+	channel: keyof misskey.Channels,
+	cond: (message: Record<string, any>) => boolean,
+	extractor: (message: Record<string, any>) => T,
+	timeout = 60 * 1000): Promise<T> {
+	let ws: WebSocket;
 	const p = new Promise<T>(async (resolve) => {
 		ws = await connectStream(user, channel, (msg) => {
 			if (cond(msg)) {
-				resolve(extractor(msg))
+				resolve(extractor(msg));
 			}
 		});
 	}).finally(() => {
-		ws?.close();
+		ws.close();
 	});
 
 	return timeoutPromise(p, timeout);
@@ -475,6 +475,14 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	const htmlTypes = [
 		'text/html; charset=utf-8',
 	];
+
+	if (res.ok && (
+		accept.startsWith('application/activity+json') ||
+		(accept.startsWith('application/ld+json') && accept.includes('https://www.w3.org/ns/activitystreams'))
+	)) {
+		// validateContentTypeSetAsActivityPubのテストを兼ねる
+		validateContentTypeSetAsActivityPub(res);
+	}
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :

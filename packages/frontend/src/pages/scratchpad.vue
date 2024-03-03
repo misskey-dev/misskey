@@ -152,10 +152,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
-});
+}));
 </script>
 
 <style lang="scss" module>

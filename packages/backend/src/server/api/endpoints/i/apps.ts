@@ -21,26 +21,31 @@ export const meta = {
 			properties: {
 				id: {
 					type: 'string',
+					optional: false,
 					format: 'misskey:id',
 				},
 				name: {
 					type: 'string',
+					optional: true,
 				},
 				createdAt: {
 					type: 'string',
+					optional: false,
 					format: 'date-time',
 				},
 				lastUsedAt: {
 					type: 'string',
+					optional: true,
 					format: 'date-time',
 				},
 				permission: {
 					type: 'array',
+					optional: false,
 					uniqueItems: true,
 					items: {
-						type: 'string'
+						type: 'string',
 					},
-				}
+				},
 			},
 		},
 	},

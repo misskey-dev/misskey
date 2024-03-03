@@ -640,6 +640,7 @@ icon: "아바타"
 replies: "답하기"
 renotes: "리노트"
 attach: "옇기"
+surrender: "아이예"
 _initialAccountSetting:
   startTutorial: "길라잡이 하기"
 _initialTutorial:

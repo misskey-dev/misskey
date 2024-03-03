@@ -20,7 +20,7 @@ jobs:
         node-version: [20.10.0]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: true
       - name: Install pnpm
@@ -29,7 +29,7 @@ jobs:
           version: 8
           run_install: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'

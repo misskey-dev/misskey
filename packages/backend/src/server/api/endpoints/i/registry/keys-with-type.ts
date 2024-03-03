@@ -13,6 +13,9 @@ export const meta = {
 
 	res: {
 		type: 'object',
+		additionalProperties: {
+			type: 'string',
+		},
 	},
 } as const;
 
