@@ -47,6 +47,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.panel">
 		<XActiveUsersChart/>
 	</div>
+	<div :class="[$style.footer, $style.panel]">
+		<div :class="$style.sponsors">
+			<div><Mfm text="$[jelly ❤]"/> Sponsored by</div>
+			<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.com/misskey-io/sponsors/skeb.png" alt="Skeb" width="140"></a>
+		</div>
+		<div :class="$style.legalNotice">
+			<div>© {{ new Date().getFullYear() }} MisskeyHQ Inc.</div>
+			<a href="https://go.misskey.io/legal-notice" target="_blank" rel="noopener"><u>特定商取引法に基づく表記</u></a>
+		</div>
+		<div :class="$style.links">
+			<a href="#" @click="os.pageWindow('/about')"><u>{{ instanceName }}</u></a>
+			<a href="#" @click="os.pageWindow('/about-misskey')"><u>{{ i18n.ts.aboutMisskey }}</u></a>
+			<a v-if="instance.tosUrl" :href="instance.tosUrl" target="_blank" rel="noopener"><u>{{ i18n.ts.termsOfService }}</u></a>
+			<a v-if="instance.privacyPolicyUrl" :href="instance.privacyPolicyUrl" target="_blank" rel="noopener"><u>{{ i18n.ts.privacyPolicy }}</u></a>
+			<a v-if="instance.impressumUrl" :href="instance.impressumUrl" target="_blank" rel="noopener"><u>{{ i18n.ts.impressum }}</u></a>
+			<a v-if="instance.feedbackUrl" :href="instance.feedbackUrl" target="_blank" rel="noopener"><u>{{ i18n.ts.support }}</u></a>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -239,5 +257,37 @@ function exploreOtherServers() {
 .tlBody {
 	height: 350px;
 	overflow: auto;
+}
+
+.footer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 16px;
+	gap: 8px 8px;
+}
+
+.legalNotice {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.sponsors {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px 8px;
+}
+
+.links {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px 8px;
 }
 </style>

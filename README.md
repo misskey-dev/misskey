@@ -53,10 +53,14 @@ With Misskey's built in drive, you get cloud storage right in your social media,
 
 Misskey Documentation can be found at [Misskey Hub](https://misskey-hub.net/docs/), some of the links and graphics above also lead to specific portions of it.
 
-## Sponsors
+## Sponsors of Misskey
 
-<div align="center">
-	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank"><img src="https://rss3.mypinata.cloud/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" alt="RSS3" height="60"></a>
+List of sponsors of Misskey can be found at [Misskey Hub](https://misskey-hub.net/).
+
+## Sponsors of Misskey.io
+
+<div style="display:flex;flex-direction:column;gap:8px 8px;align-items:center;justify-content:center;">
+	<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.com/misskey-io/sponsors/skeb.svg" alt="Skeb" width="140"></a>
 </div>
 
 ## Thanks

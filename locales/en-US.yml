@@ -1185,6 +1185,7 @@ repositoryUrlDescription: "If you are using Misskey as is (without any changes t
 repositoryUrlOrTarballRequired: "If you have not published a repository, you must provide a tarball instead. See .config/example.yml for more information."
 feedback: "Feedback"
 feedbackUrl: "Feedback URL"
+support: "Helpdesk"
 supportThisInstance: "Support {name}"
 impressum: "Impressum"
 impressumUrl: "Impressum URL"

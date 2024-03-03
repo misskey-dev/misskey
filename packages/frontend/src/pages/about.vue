@@ -23,6 +23,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #value><div v-html="instance.description"></div></template>
 				</MkKeyValue>
 
+				<div style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+					<div>© {{ new Date().getFullYear() }} MisskeyHQ Inc.</div>
+					<a href="https://go.misskey.io/legal-notice" target="_blank" rel="noopener"><u>特定商取引法に基づく表記</u></a>
+				</div>
+
+				<FormSection>
+					<template #label><Mfm text="$[jelly ❤]"/> Sponsored by</template>
+					<div style="display:flex;flex-wrap:wrap;gap:8px 8px;align-items:center;justify-content:center;">
+						<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.com/misskey-io/sponsors/skeb.png" alt="Skeb" width="140"></a>
+					</div>
+				</FormSection>
+
 				<FormSection>
 					<div class="_gaps_m">
 						<MkKeyValue :copy="version">
@@ -83,8 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</FormLink>
 							<FormLink v-if="instance.feedbackUrl" :to="instance.feedbackUrl" external>
 								<template #icon><i class="ti ti-message"></i></template>
-								{{ i18n.ts.feedback }}
-								<template #suffix>Helpdesk</template>
+								{{ i18n.ts.support }}
 							</FormLink>
 							<FormLink to="https://misskeyhq.fanbox.cc" external>
 								<template #icon><i class="ti ti-pig-money"></i></template>
