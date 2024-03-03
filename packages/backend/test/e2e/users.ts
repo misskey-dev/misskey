@@ -161,6 +161,9 @@ describe('ユーザー', () => {
 
 	let bob: misskey.entities.SignupResponse;
 
+	// NOTE: これがないと落ちる（bob の updatedAt が null になってしまうため？）
+	let bobNote: misskey.entities.Note; // eslint-disable-line @typescript-eslint/no-unused-vars
+
 	let carol: misskey.entities.SignupResponse;
 
 	let usersReplying: misskey.entities.SignupResponse[];
@@ -197,6 +200,7 @@ describe('ユーザー', () => {
 		alice = await signup({ username: 'alice' });
 		aliceNote = await post(alice, { text: 'test' });
 		bob = await signup({ username: 'bob' });
+		bobNote = await post(bob, { text: 'test' });
 		carol = await signup({ username: 'carol' });
 
 		// @alice -> @replyingへのリプライ。Promise.allで一気に作るとtimeoutしてしまうのでreduceで一つ一つawaitする
