@@ -60,6 +60,9 @@ export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 export const packedRoleCondFormulaValueAssignedRoleSchema = {
 	type: 'object',
 	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
 		type: {
 			type: 'string',
 			nullable: false, optional: false,
@@ -158,6 +161,10 @@ export const packedRolePoliciesSchema = {
 		},
 		canPublicNote: {
 			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		mentionLimit: {
+			type: 'integer',
 			optional: false, nullable: false,
 		},
 		canInvite: {

@@ -228,11 +228,14 @@ describe('RoleService', () => {
 				},
 				target: 'conditional',
 				condFormula: {
+					id: '232a4221-9816-49a6-a967-ae0fac52ec5e',
 					type: 'and',
 					values: [{
+						id: '2a37ef43-2d93-4c4d-87f6-f2fdb7d9b530',
 						type: 'followersMoreThanOrEq',
 						value: 10,
 					}, {
+						id: '1bd67839-b126-4f92-bad0-4e285dab453b',
 						type: 'createdMoreThan',
 						sec: 60 * 60 * 24 * 7,
 					}],
