@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,7 +43,7 @@ class UserListChannel extends Channel {
 		this.withRenotes = params.withRenotes ?? true;
 
 		// Check existence and owner
-		const listExist = await this.userListsRepository.exist({
+		const listExist = await this.userListsRepository.exists({
 			where: {
 				id: this.listId,
 				userId: this.user!.id,

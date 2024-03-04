@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					userListId: ps.listId,
 				});
 				if (me !== null) {
-					additionalProperties.isLiked = await this.userListFavoritesRepository.exist({
+					additionalProperties.isLiked = await this.userListFavoritesRepository.exists({
 						where: {
 							userId: me.id,
 							userListId: ps.listId,

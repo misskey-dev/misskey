@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -315,7 +315,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter((item): item is MiDriveFile => item != null);
+			return ids.map(id => items.find(item => item.id === id)).filter(isNotNull);
 		};
 
 		let inReplyTo;
@@ -325,7 +325,7 @@ export class ApRendererService {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
 
 			if (inReplyToNote != null) {
-				const inReplyToUserExist = await this.usersRepository.exist({ where: { id: inReplyToNote.userId } });
+				const inReplyToUserExist = await this.usersRepository.exists({ where: { id: inReplyToNote.userId } });
 
 				if (inReplyToUserExist) {
 					if (inReplyToNote.uri) {

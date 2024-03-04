@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,6 +27,11 @@ type CondFormulaValueIsLocal = {
 
 type CondFormulaValueIsRemote = {
 	type: 'isRemote';
+};
+
+type CondFormulaValueRoleAssignedTo = {
+	type: 'roleAssignedTo';
+	roleId: string;
 };
 
 type CondFormulaValueCreatedLessThan = {
@@ -69,12 +74,13 @@ type CondFormulaValueNotesMoreThanOrEq = {
 	value: number;
 };
 
-export type RoleCondFormulaValue =
+export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
 	CondFormulaValueNot |
 	CondFormulaValueIsLocal |
 	CondFormulaValueIsRemote |
+	CondFormulaValueRoleAssignedTo |
 	CondFormulaValueCreatedLessThan |
 	CondFormulaValueCreatedMoreThan |
 	CondFormulaValueFollowersLessThanOrEq |
@@ -82,7 +88,8 @@ export type RoleCondFormulaValue =
 	CondFormulaValueFollowingLessThanOrEq |
 	CondFormulaValueFollowingMoreThanOrEq |
 	CondFormulaValueNotesLessThanOrEq |
-	CondFormulaValueNotesMoreThanOrEq;
+	CondFormulaValueNotesMoreThanOrEq
+);
 
 @Entity('role')
 export class MiRole {
