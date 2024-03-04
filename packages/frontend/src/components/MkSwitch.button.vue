@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,7 +24,7 @@ import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	checked: boolean | Ref<boolean>;
-	disabled?: boolean;
+	disabled?: boolean | Ref<boolean>;
 }>(), {
 	disabled: false,
 });

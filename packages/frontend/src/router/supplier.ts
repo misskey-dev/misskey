@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { inject } from 'vue';
 import { IRouter, Router } from '@/nirax.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 /**
  * メインの{@link Router}を取得する。

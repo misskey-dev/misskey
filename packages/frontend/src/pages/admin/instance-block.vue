@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -50,7 +50,7 @@ function save() {
 		silencedHosts: silencedHosts.value.split('\n') || [],
 
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 
@@ -66,8 +66,8 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-eye-off',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.instanceBlocking,
 	icon: 'ti ti-ban',
-});
+}));
 </script>

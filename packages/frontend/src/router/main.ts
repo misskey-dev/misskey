@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -78,6 +78,10 @@ class MainRouterProxy implements IRouter {
 
 	resolve(path: string): Resolved | null {
 		return this.supplier().resolve(path);
+	}
+
+	init(): void {
+		this.supplier().init();
 	}
 
 	eventNames(): Array<EventEmitter.EventNames<RouterEvent>> {

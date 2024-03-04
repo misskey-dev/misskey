@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,6 +27,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { correctFilename } from '@/misc/correct-filename.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -67,20 +68,23 @@ export class FileServerService {
 			done();
 		});
 
-		fastify.get('/files/app-default.jpg', (request, reply) => {
-			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
-			reply.header('Content-Type', 'image/jpeg');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			return reply.send(file);
-		});
+		fastify.register((fastify, options, done) => {
+			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+			fastify.get('/files/app-default.jpg', (request, reply) => {
+				const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
+				reply.header('Content-Type', 'image/jpeg');
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
+				return reply.send(file);
+			});
 
-		fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
-			return await this.sendDriveFile(request, reply)
-				.catch(err => this.errorHandler(request, reply, err));
-		});
-		fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
-			return await this.sendDriveFile(request, reply)
-				.catch(err => this.errorHandler(request, reply, err));
+			fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
+				return await this.sendDriveFile(request, reply)
+					.catch(err => this.errorHandler(request, reply, err));
+			});
+			fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
+				return await reply.redirect(301, `${this.config.url}/files/${request.params.key}`);
+			});
+			done();
 		});
 
 		fastify.get<{

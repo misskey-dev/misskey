@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -45,7 +45,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const PRESET_DEFAULT = `/// @ 0.16.0
 
@@ -452,9 +452,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash.value ? {
-	title: i18n.ts._play.edit + ': ' + flash.value.title,
-} : {
-	title: i18n.ts._play.new,
+definePageMetadata(() => ({
+	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>

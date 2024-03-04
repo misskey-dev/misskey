@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i, signout, updateAccount } from '@/account.js';
+import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -19,7 +20,7 @@ import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -81,13 +82,18 @@ export async function mainBoot() {
 			// ▼南半球
 			if (month === 7 || month === 8) {
 				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect().render();
+				new SnowfallEffect({}).render();
 			}
 		} else {
 			// ▼北半球
 			if (month === 12 || month === 1) {
 				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect().render();
+				new SnowfallEffect({}).render();
+			} else if (month === 3 || month === 4) {
+				const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+				new SakuraEffect({
+					sakura: true,
+				}).render();
 			}
 		}
 	}
@@ -227,6 +233,11 @@ export async function mainBoot() {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
 			}
+		}
+
+		const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
+		if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
+			popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
 		}
 
 		if ('Notification' in window) {

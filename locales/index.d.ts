@@ -4001,6 +4001,10 @@ export interface Locale extends ILocale {
      */
     "pleaseDonate": ParameterizedString<"host">;
     /**
+     * 対応するソースコードは{anchor}から利用可能です。
+     */
+    "correspondingSourceIsAvailable": ParameterizedString<"anchor">;
+    /**
      * ロール
      */
     "roles": string;
@@ -4200,6 +4204,18 @@ export interface Locale extends ILocale {
      * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
      */
     "sensitiveWordsDescription2": string;
+    /**
+     * 禁止ワード
+     */
+    "prohibitedWords": string;
+    /**
+     * 設定したワードが含まれるノートを投稿しようとした際、エラーとなるようにします。改行で区切って複数設定できます。
+     */
+    "prohibitedWordsDescription": string;
+    /**
+     * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
+     */
+    "prohibitedWordsDescription2": string;
     /**
      * 非表示ハッシュタグ
      */
@@ -4661,6 +4677,10 @@ export interface Locale extends ILocale {
      */
     "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     "fileAttachedOnly": string;
@@ -4692,6 +4712,34 @@ export interface Locale extends ILocale {
      * 外部サービス
      */
     "externalServices": string;
+    /**
+     * ソースコード
+     */
+    "sourceCode": string;
+    /**
+     * ソースコードはまだ提供されていません。この問題の修正について管理者に問い合わせてください。
+     */
+    "sourceCodeIsNotYetProvided": string;
+    /**
+     * リポジトリURL
+     */
+    "repositoryUrl": string;
+    /**
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     */
+    "repositoryUrlDescription": string;
+    /**
+     * リポジトリを公開していない場合、代わりにtarballを提供する必要があります。詳細は.config/example.ymlを参照してください。
+     */
+    "repositoryUrlOrTarballRequired": string;
+    /**
+     * フィードバック
+     */
+    "feedback": string;
+    /**
+     * フィードバックURL
+     */
+    "feedbackUrl": string;
     /**
      * 運営者情報
      */
@@ -4833,6 +4881,14 @@ export interface Locale extends ILocale {
      */
     "replaying": string;
     /**
+     * リプレイを終了
+     */
+    "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    "copyReplayData": string;
+    /**
      * ランキング
      */
     "ranking": string;
@@ -4861,6 +4917,18 @@ export interface Locale extends ILocale {
      */
     "enableHorizontalSwipe": string;
     /**
+     * 読み込み中
+     */
+    "loading": string;
+    /**
+     * やめる
+     */
+    "surrender": string;
+    /**
+     * リトライ
+     */
+    "gameRetry": string;
+    /**
      * もう一度お試しください。
      */
     "tryAgain": string;
@@ -4869,6 +4937,40 @@ export interface Locale extends ILocale {
          * 遊び方
          */
         "howToPlay": string;
+        /**
+         * ホールド
+         */
+        "hold": string;
+        "_score": {
+            /**
+             * スコア
+             */
+            "score": string;
+            /**
+             * 稼いだ金額
+             */
+            "scoreYen": string;
+            /**
+             * ハイスコア
+             */
+            "highScore": string;
+            /**
+             * 最大チェーン数
+             */
+            "maxChain": string;
+            /**
+             * {yen}円
+             */
+            "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
         "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -4918,7 +5020,7 @@ export interface Locale extends ILocale {
          */
         "readConfirmText": ParameterizedString<"title">;
         /**
-         * 特に新規ユーザーのUXを損ねる可能性が高いため、ストック情報ではなくフロー情報の掲示にお知らせを使用することを推奨します。
+         * 特に新規ユーザーのUXを損ねる可能性が高いため、常時掲示するための情報ではなく、即時性が求められる情報の掲示のためにお知らせを使用することを推奨します。
          */
         "shouldNotBeUsedToPresentPermanentInfo": string;
         /**
@@ -6365,6 +6467,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -6454,6 +6560,10 @@ export interface Locale extends ILocale {
             "avatarDecorationLimit": string;
         };
         "_condition": {
+            /**
+             * マニュアルロールにアサイン済み
+             */
+            "roleAssignedTo": string;
             /**
              * ローカルユーザー
              */
@@ -6825,6 +6935,14 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         "source": string;
+        /**
+         * オリジナル
+         */
+        "original": string;
+        /**
+         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         */
+        "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
          * Misskeyを翻訳
          */
@@ -8823,6 +8941,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        "flushNotification": string;
         "_types": {
             /**
              * すべて
@@ -9144,7 +9266,7 @@ export interface Locale extends ILocale {
          */
         "updateServerSettings": string;
         /**
-         * モデレーションノート更新
+         * ユーザーのモデレーションノート更新
          */
         "updateUserNote": string;
         /**
@@ -9191,6 +9313,10 @@ export interface Locale extends ILocale {
          * リモートサーバーを再開
          */
         "unsuspendRemoteInstance": string;
+        /**
+         * リモートサーバーのモデレーションノート更新
+         */
+        "updateRemoteInstanceNote": string;
         /**
          * ファイルをセンシティブ付与
          */
@@ -9627,6 +9753,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        "useAvatarAsStone": string;
     };
     "_offlineScreen": {
         /**

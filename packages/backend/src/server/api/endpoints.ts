@@ -1,11 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { permissions } from 'misskey-js';
-import type { Schema } from '@/misc/json-schema.js';
-import { RolePolicies } from '@/core/RoleService.js';
+import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -294,6 +293,7 @@ import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
+import * as ep___notifications_flush from './endpoints/notifications/flush.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
 import * as ep___notifications_testNotification from './endpoints/notifications/test-notification.js';
 import * as ep___pagePush from './endpoints/page-push.js';
@@ -663,6 +663,7 @@ const eps = [
 	['notes/unrenote', ep___notes_unrenote],
 	['notes/user-list-timeline', ep___notes_userListTimeline],
 	['notifications/create', ep___notifications_create],
+	['notifications/flush', ep___notifications_flush],
 	['notifications/mark-all-as-read', ep___notifications_markAllAsRead],
 	['notifications/test-notification', ep___notifications_testNotification],
 	['page-push', ep___pagePush],
@@ -776,7 +777,7 @@ interface IEndpointMetaBase {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requireRolePolicy?: keyof RolePolicies;
+	readonly requireRolePolicy?: KeyOf<'RolePolicies'>;
 
 	/**
 	 * 引っ越し済みのユーザーによるリクエストを禁止するか

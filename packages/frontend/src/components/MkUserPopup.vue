@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -86,6 +86,7 @@ const top = ref(0);
 const left = ref(0);
 
 function showMenu(ev: MouseEvent) {
+	if (user.value == null) return;
 	const { menu, cleanup } = getUserMenu(user.value);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }

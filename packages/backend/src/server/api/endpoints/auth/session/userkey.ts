@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -112,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return {
 				accessToken: accessToken.token,
 				user: await this.userEntityService.pack(session.userId, null, {
-					detail: true,
+					schema: 'UserDetailedNotMe',
 				}),
 			};
 		});

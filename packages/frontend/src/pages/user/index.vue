@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -96,7 +96,7 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
-}] : []), ...($i && ($i.id === user.value.id)) || user.value.publicReactions ? [{
+}] : []), ...($i && ($i.id === user.value.id || $i.isAdmin || $i.isModerator)) || user.value.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',
@@ -126,15 +126,18 @@ const headerTabs = computed(() => user.value ? [{
 	icon: 'ti ti-code',
 }] : []);
 
-definePageMetadata(computed(() => user.value ? {
+definePageMetadata(() => ({
+	title: i18n.ts.user,
 	icon: 'ti ti-user',
-	title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
-	subtitle: `@${getAcct(user.value)}`,
-	userName: user.value,
-	avatar: user.value,
-	path: `/@${user.value.username}`,
-	share: {
-		title: user.value.name,
-	},
-} : null));
+	...user.value ? {
+		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
+		subtitle: `@${getAcct(user.value)}`,
+		userName: user.value,
+		avatar: user.value,
+		path: `/@${user.value.username}`,
+		share: {
+			title: user.value.name,
+		},
+	} : {},
+}));
 </script>

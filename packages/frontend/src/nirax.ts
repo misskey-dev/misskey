@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -426,11 +426,12 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	}
 }
 
-export function useScrollPositionManager(getScrollContainer: () => HTMLElement, router: IRouter) {
+export function useScrollPositionManager(getScrollContainer: () => HTMLElement | null, router: IRouter) {
 	const scrollPosStore = new Map<string, number>();
 
 	onMounted(() => {
 		const scrollContainer = getScrollContainer();
+		if (scrollContainer == null) return;
 
 		scrollContainer.addEventListener('scroll', () => {
 			scrollPosStore.set(router.getCurrentKey(), scrollContainer.scrollTop);

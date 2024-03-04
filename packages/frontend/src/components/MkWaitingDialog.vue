@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
 function done() {
 	emit('done');
-	modal.value.close();
+	modal.value?.close();
 }
 
 watch(() => props.showing, () => {
