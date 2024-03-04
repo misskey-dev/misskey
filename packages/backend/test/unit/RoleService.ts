@@ -228,11 +228,14 @@ describe('RoleService', () => {
 				},
 				target: 'conditional',
 				condFormula: {
+					id: '232a4221-9816-49a6-a967-ae0fac52ec5e',
 					type: 'and',
 					values: [{
+						id: '2a37ef43-2d93-4c4d-87f6-f2fdb7d9b530',
 						type: 'followersMoreThanOrEq',
 						value: 10,
 					}, {
+						id: '1bd67839-b126-4f92-bad0-4e285dab453b',
 						type: 'createdMoreThan',
 						sec: 60 * 60 * 24 * 7,
 					}],
@@ -249,6 +252,34 @@ describe('RoleService', () => {
 			const user2Policies = await roleService.getUserPolicies(user2.id);
 			expect(user1Policies.canManageCustomEmojis).toBe(false);
 			expect(user2Policies.canManageCustomEmojis).toBe(true);
+		});
+
+		test('コンディショナルロール: マニュアルロールにアサイン済み', async () => {
+			const [user1, user2, role1] = await Promise.all([
+				createUser(),
+				createUser(),
+				createRole({
+					name: 'manual role',
+				}),
+			]);
+			const role2 = await createRole({
+				name: 'conditional role',
+				target: 'conditional',
+				condFormula: {
+					// idはバックエンドのロジックに必要ない？
+					id: 'bdc612bd-9d54-4675-ae83-0499c82ea670',
+					type: 'roleAssignedTo',
+					roleId: role1.id,
+				},
+			});
+			await roleService.assign(user2.id, role1.id);
+
+			const [u1role, u2role] = await Promise.all([
+				roleService.getUserRoles(user1.id),
+				roleService.getUserRoles(user2.id),
+			]);
+			expect(u1role.some(r => r.id === role2.id)).toBe(false);
+			expect(u2role.some(r => r.id === role2.id)).toBe(true);
 		});
 
 		test('expired role', async () => {
