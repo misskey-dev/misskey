@@ -32,6 +32,8 @@ export type DeliverJobData = {
 	user: ThinUser;
 	/** Activity */
 	content: string;
+	/** Digest header */
+	digest: string;
 	/** inbox URL to deliver */
 	to: string;
 	/** whether it is sharedInbox */

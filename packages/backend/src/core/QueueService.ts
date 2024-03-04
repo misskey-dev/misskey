@@ -15,7 +15,7 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type * as Bull from 'bullmq';
-import type { ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+import { genRFC3230DigestHeader, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class QueueService {
@@ -81,6 +81,7 @@ export class QueueService {
 				id: user.id,
 			},
 			content: contentBody,
+			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
 		};

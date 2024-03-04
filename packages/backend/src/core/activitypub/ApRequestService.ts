@@ -28,7 +28,7 @@ type PrivateKey = {
 	keyId: string;
 };
 
-export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; additionalHeaders: Record<string, string> }) {
+export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string, additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
 	const request: RequestLike = {
 		url: u.href,
@@ -40,9 +40,9 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 			...args.additionalHeaders,
 		},
 	};
-
+c
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
-	const digestHeader = await genRFC3230DigestHeader(args.body, 'SHA-256');
+	const digestHeader = args.digest ?? await genRFC3230DigestHeader(args.body, 'SHA-256');
 	request.headers['Digest'] = digestHeader;
 
 	const result = await signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
@@ -105,7 +105,7 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string): Promise<void> {
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
 		const key = await this.getPrivateKey(user.id, level);
 		const req = await createSignedPost({
@@ -116,6 +116,7 @@ export class ApRequestService {
 			additionalHeaders: {
 				'User-Agent': this.config.userAgent,
 			},
+			digest,
 		});
 
 		this.logger.debug('create signed post', {

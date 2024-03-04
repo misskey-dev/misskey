@@ -76,7 +76,7 @@ export class DeliverProcessorService {
 			await this.fetchInstanceMetadataService.fetchInstanceMetadata(_server).then(() => {});
 			const server = await this.federatedInstanceService.fetch(host);
 
-			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, server.httpMessageSignaturesImplementationLevel);
+			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, server.httpMessageSignaturesImplementationLevel, job.data.digest);
 
 			// Update stats
 			if (server.isNotResponding) {
