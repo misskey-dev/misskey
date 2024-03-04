@@ -558,12 +558,11 @@ export class ApPersonService implements OnModuleInit {
 			(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
 			publicKeys.set(person.publicKey.id, person.publicKey);
 
-			for (const key of publicKeys.values()) {
-				await this.userPublickeysRepository.update({ keyId: key.id }, {
-					userId: exist.id,
-					keyPem: key.publicKeyPem,
-				});
-			}
+			await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
+				keyId: key.id,
+				userId: exist.id,
+				keyPem: key.publicKeyPem,
+			})));
 		}
 
 		this.userPublickeysRepository.delete({
