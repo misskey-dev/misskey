@@ -152,10 +152,10 @@ const {
 } = defaultStore.reactiveState;
 
 const recentlyUsedEmojisDef = computed(() => {
-	return recentlyUsedEmojis.value.map(getDef);
+	return recentlyUsedEmojis.value.map(getDef).filter(x => x != null);;
 });
 const pinnedEmojisDef = computed(() => {
-	return pinned.value?.map(getDef);
+	return pinned.value?.map(getDef).filter(x => x != null);;
 });
 
 const pinned = computed(() => props.pinnedEmojis);
