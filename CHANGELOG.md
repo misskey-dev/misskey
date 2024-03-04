@@ -15,7 +15,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: リバーシでリアクションを送りあえるように
 
 ### Client
 - 
