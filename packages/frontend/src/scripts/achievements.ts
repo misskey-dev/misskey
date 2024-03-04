@@ -487,21 +487,32 @@ export const ACHIEVEMENT_BADGES = {
  */
 } as const;
 
-export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
+export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name as typeof ACHIEVEMENT_TYPES[number]) : [];
 
-const claimingQueue = new Set<string>();
+const claimingQueue = new Set<{
+	name: typeof ACHIEVEMENT_TYPES[number];
+	token?: string;
+}>();
 
-export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
+export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number], token?: string) {
 	if ($i == null) return;
 	if ($i.movedTo) return;
 	if (claimedAchievements.includes(type)) return;
-	claimingQueue.add(type);
-	claimedAchievements.push(type);
+	claimingQueue.add({
+		name: type,
+		token,
+	});
+	if (!token || $i.token !== token) {
+		claimedAchievements.push(type);
+	}
 	await new Promise(resolve => setTimeout(resolve, (claimingQueue.size - 1) * 500));
 	window.setTimeout(() => {
-		claimingQueue.delete(type);
+		claimingQueue.delete({
+			name: type,
+			token,
+		});
 	}, 500);
-	misskeyApi('i/claim-achievement', { name: type });
+	misskeyApi('i/claim-achievement', { name: type }, token);
 }
 
 if (_DEV_) {
