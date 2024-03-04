@@ -22,7 +22,7 @@ describe('Renote Mute', () => {
 	}, 1000 * 60 * 2);
 
 	test('ミュート作成', async () => {
-		const res = await api('/renote-mute/create', {
+		const res = await api('renote-mute/create', {
 			userId: carol.id,
 		}, alice);
 
@@ -37,7 +37,7 @@ describe('Renote Mute', () => {
 		// redisに追加されるのを待つ
 		await sleep(100);
 
-		const res = await api('/notes/local-timeline', {}, alice);
+		const res = await api('notes/local-timeline', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
@@ -54,7 +54,7 @@ describe('Renote Mute', () => {
 		// redisに追加されるのを待つ
 		await sleep(100);
 
-		const res = await api('/notes/local-timeline', {}, alice);
+		const res = await api('notes/local-timeline', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);

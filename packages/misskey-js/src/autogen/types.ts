@@ -4583,6 +4583,7 @@ export type components = {
       type: 'isLocal' | 'isRemote';
     };
     RoleCondFormulaValueAssignedRole: {
+      id: string;
       /** @enum {string} */
       type: 'roleAssignedTo';
       /**
