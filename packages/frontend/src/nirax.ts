@@ -337,7 +337,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		return check(this.routes, _parts);
 	}
 
-	private navigate(path: string, key: string | null | undefined, emitChange = true, _redirected = false): Resolved {
+	private navigate(path: string, key: string | null | undefined, emitChange: boolean | 'whenFound' = 'whenFound', _redirected = false): Resolved {
 		const beforePath = this.currentPath;
 		this.currentPath = path;
 
@@ -373,7 +373,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		this.currentRoute.value = res.route;
 		this.currentKey = res.route.globalCacheKey ?? key ?? path;
 
-		if (emitChange) {
+		if (emitChange === true || (emitChange === 'whenFound' && res.route.path !== '/:(*)')) {
 			this.emit('change', {
 				beforePath,
 				path,
@@ -397,7 +397,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		return this.currentKey;
 	}
 
-	public push(path: string, flag?: any) {
+	public push(path: string, flag?: any, useBrowserWhenNotFound = true) {
 		const beforePath = this.currentPath;
 		if (path === beforePath) {
 			this.emit('same');
@@ -408,13 +408,17 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			if (cancel) return;
 		}
 		const res = this.navigate(path, null);
-		this.emit('push', {
-			beforePath,
-			path: res._parsedRoute.fullPath,
-			route: res.route,
-			props: res.props,
-			key: this.currentKey,
-		});
+		if (useBrowserWhenNotFound && res.route.path === '/:(*)') {
+			location.href = path;
+		} else {
+			this.emit('push', {
+				beforePath,
+				path: res._parsedRoute.fullPath,
+				route: res.route,
+				props: res.props,
+				key: this.currentKey,
+			});
+		}
 	}
 
 	public replace(path: string, key?: string | null) {
