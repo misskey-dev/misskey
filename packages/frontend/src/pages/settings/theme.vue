@@ -93,7 +93,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
-import { readFile } from 'fs';
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
