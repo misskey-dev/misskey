@@ -497,7 +497,9 @@ const claimingQueue = new Set<{
 export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number], token?: string) {
 	if ($i == null) return;
 	if ($i.movedTo) return;
-	if (claimedAchievements.includes(type)) return;
+	// バックエンドにも実績を獲ったかどうかのチェックがあるのでtoken指定時は常に実績獲得を送信する
+	if (!token && claimedAchievements.includes(type)) return;
+
 	claimingQueue.add({
 		name: type,
 		token,
