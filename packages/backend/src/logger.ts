@@ -4,6 +4,7 @@
  */
 
 import cluster from 'node:cluster';
+import { inspect } from 'node:util';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
@@ -73,7 +74,16 @@ export default class Logger {
 
 		const args: unknown[] = [important ? chalk.bold(log) : log];
 		if (data != null) {
-			args.push(data);
+			args.push(inspect(data, {
+				depth: Infinity,
+				compact: true,
+				breakLength: Infinity,
+				colors: true,
+				showHidden: false,
+				showProxy: false,
+				maxArrayLength: Infinity,
+				maxStringLength: Infinity,
+			}));
 		}
 		console.log(...args);
 	}

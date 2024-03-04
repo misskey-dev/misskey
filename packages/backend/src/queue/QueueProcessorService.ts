@@ -120,11 +120,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある
-				return {
-					stack: e.stack,
-					message: e.message,
-					name: e.name,
-				};
+				return e;
 			} else {
 				return {
 					stack: '?',
@@ -155,8 +151,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.systemQueueWorker
 			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => systemLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => systemLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => systemLogger.warn(`failed id=${job ? job.id : '-'}`, { data: job?.data, e: renderError(err) }))
+			.on('error', (err: Error) => systemLogger.error(`error`, { e: renderError(err) }))
 			.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -218,8 +214,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.deliverQueueWorker
 			.on('active', (job) => deliverLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-			.on('failed', (job, err) => deliverLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
-			.on('error', (err: Error) => deliverLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => deliverLogger.warn(`failed ${getJobInfo(job)} id=${job ? job.id : '-'} to=${job?.data.to}`, { data: job?.data, e: renderError(err) }))
+			.on('error', (err: Error) => deliverLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => deliverLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -242,8 +238,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.inboxQueueWorker
 			.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
-			.on('failed', (job, err) => inboxLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => inboxLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { data: job?.data, e: renderError(err) }))
+			.on('error', (err: Error) => inboxLogger.error(`error ${err}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
