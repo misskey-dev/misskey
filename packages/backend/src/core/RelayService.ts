@@ -111,7 +111,7 @@ export class RelayService {
 	}
 
 	@bindThis
-	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any): Promise<void> {
+	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, forceMainKey?: boolean): Promise<void> {
 		if (activity == null) return;
 
 		const relays = await this.relaysCache.fetch(() => this.relaysRepository.findBy({
@@ -125,7 +125,7 @@ export class RelayService {
 		const signed = await this.apRendererService.attachLdSignature(copy, user);
 
 		for (const relay of relays) {
-			this.queueService.deliver(user, signed, relay.inbox, false);
+			this.queueService.deliver(user, signed, relay.inbox, false, forceMainKey);
 		}
 	}
 }

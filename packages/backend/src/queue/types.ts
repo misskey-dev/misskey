@@ -38,6 +38,8 @@ export type DeliverJobData = {
 	to: string;
 	/** whether it is sharedInbox */
 	isSharedInbox: boolean;
+	/** force to use main (rsa) key */
+	forceMainKey?: boolean;
 };
 
 export type InboxJobData = {

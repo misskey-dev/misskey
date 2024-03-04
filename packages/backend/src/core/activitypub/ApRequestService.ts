@@ -91,11 +91,16 @@ export class ApRequestService {
 		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 	}
 
+	/**
+	 * Get private key by user id and implementation level
+	 * @param userId User id
+	 * @param level Implementation level
+	 */
 	@bindThis
 	private async getPrivateKey(userId: MiUser['id'], level: string): Promise<PrivateKey> {
 		const keypair = await this.userKeypairService.getUserKeypair(userId);
 
-		return (level !== '00' && keypair.ed25519PrivateKey) ? {
+		return (level !== '00' && level !== '10' && keypair.ed25519PrivateKey) ? {
 			privateKeyPem: keypair.ed25519PrivateKey,
 			keyId: `${this.config.url}/users/${userId}#ed25519-key`,
 		} : {

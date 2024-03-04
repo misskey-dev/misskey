@@ -70,7 +70,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
+	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, forceMainKey?: boolean) {
 		if (content == null) return null;
 		if (to == null) return null;
 
@@ -84,6 +84,7 @@ export class QueueService {
 			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
+			forceMainKey,
 		};
 
 		return this.deliverQueue.add(to, data, {
@@ -101,10 +102,11 @@ export class QueueService {
 	 * @param user `{ id: string; }` この関数ではThinUserに変換しないので前もって変換してください
 	 * @param content IActivity | null
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (whether it is sharedInbox)
+	 * @param forceMainKey boolean | undefined, force to use main (rsa) key
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, forceMainKey?: boolean) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
 
@@ -124,6 +126,7 @@ export class QueueService {
 				content: contentBody,
 				to: d[0],
 				isSharedInbox: d[1],
+				forceMainKey,
 			} as DeliverJobData,
 			opts,
 		})));

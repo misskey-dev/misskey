@@ -27,15 +27,22 @@ export class AccountUpdateService {
 	}
 
 	@bindThis
-	public async publishToFollowers(userId: MiUser['id']) {
+	/**
+	 * ユーザーのアップデートをフォロワーに配信する
+	 * @param userId ユーザーID
+	 * @param isKeyUpdation Ed25519キーの作成など公開鍵のアップデートによる呼び出しか？ trueにするとメインキーを使うようになる
+	 */
+	public async publishToFollowers(userId: MiUser['id'], isKeyUpdation: boolean = false) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 
 		// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderPerson(user), user));
-			this.apDeliverManagerService.deliverToFollowers(user, content);
-			this.relayService.deliverToRelays(user, content);
+			await Promise.allSettled([
+				this.apDeliverManagerService.deliverToFollowers(user, content, isKeyUpdation),
+				this.relayService.deliverToRelays(user, content, isKeyUpdation),
+			]);
 		}
 	}
 }
