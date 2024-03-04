@@ -114,7 +114,7 @@ export class InboxProcessorService {
 		});
 
 		// また、signatureのsignerは、activity.actorと一致する必要がある
-		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
+		if (httpSignatureValidated !== true || authUser.user.uri !== activity.actor) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
 			if (activity.signature?.creator) {
 				if (activity.signature.type !== 'RsaSignature2017') {

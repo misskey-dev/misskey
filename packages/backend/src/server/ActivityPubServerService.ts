@@ -103,7 +103,7 @@ export class ActivityPubServerService {
 		let signature: ReturnType<typeof parseRequestSignature>;
 
 		const verifyDigest = await verifyDigestHeader(request.raw, request.rawBody || '', true);
-		if (!verifyDigest) {
+		if (verifyDigest !== true) {
 			reply.code(401);
 			return;
 		}
