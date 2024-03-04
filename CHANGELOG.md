@@ -25,7 +25,7 @@
 - Fix: ノートの検索欄にURLを入れると勝手に照会される問題を修正
 
 ### Server
--
+- Fix: ローカルユーザーをMisskey WebのURL（`/@user`）で照会できない問題を修正
 
 ## 2024.3.0
 
@@ -152,7 +152,6 @@
 - Fix: ジョブに関する設定の名前を修正 relashionshipJobPerSec -> relationshipJobPerSec
 - Fix: コントロールパネル->モデレーション->「誰でも新規登録できるようにする」の初期値をONからOFFに変更 #13122
 - Fix: リモートユーザーが復活してもキャッシュにより該当ユーザーのActivityが受け入れられないのを修正 #13273
-- Fix: ローカルユーザーをMisskey WebのURL（`/@user`）で照会できない問題を修正
 
 ## 2023.12.2
 
