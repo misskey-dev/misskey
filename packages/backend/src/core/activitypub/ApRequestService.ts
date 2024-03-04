@@ -40,7 +40,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 			...args.additionalHeaders,
 		},
 	};
-c
+
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
 	const digestHeader = args.digest ?? await genRFC3230DigestHeader(args.body, 'SHA-256');
 	request.headers['Digest'] = digestHeader;
