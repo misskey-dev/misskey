@@ -76,7 +76,7 @@ function renderError(e: Error): any {
 				acc[key] = e[key];
 				return acc;
 			}, {} as Record<string, any>),
-			stack: e.stack?.split('\n').map(s => s.trim()),
+			stack: e.stack?.split('\n'),
 		};
 	} else {
 		return {
