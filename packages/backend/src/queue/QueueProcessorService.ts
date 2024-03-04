@@ -190,8 +190,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.dbQueueWorker
 			.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => dbLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => dbLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => dbLogger.warn(`failed id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => dbLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => dbLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -238,8 +238,11 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.inboxQueueWorker
 			.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
-			.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { data: job?.data, e: renderError(err) }))
-			.on('error', (err: Error) => inboxLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => inboxLogger.warn(
+				`failed ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`,
+				{ data: job?.data, e: renderError(err) }
+			))
+			.on('error', (err: Error) => inboxLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -262,8 +265,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.webhookDeliverQueueWorker
 			.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-			.on('failed', (job, err) => webhookLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
-			.on('error', (err: Error) => webhookLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => webhookLogger.warn(`failed ${getJobInfo(job)} to=${job ? job.data.to : '-'}`, { e: renderError(e) }))
+			.on('error', (err: Error) => webhookLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => webhookLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -291,8 +294,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.relationshipQueueWorker
 			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => relationshipLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => relationshipLogger.warn(`failed id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => relationshipLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -314,8 +317,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.objectStorageQueueWorker
 			.on('active', (job) => objectStorageLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => objectStorageLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => objectStorageLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('failed', (job, err) => objectStorageLogger.warn(`failed id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => objectStorageLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => objectStorageLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
