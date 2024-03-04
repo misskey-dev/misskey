@@ -1,5 +1,4 @@
-<!--
-## 202x.x.x (unreleased)
+## Unreleased
 
 ### General
 -
@@ -9,8 +8,6 @@
 
 ### Server
 -
-
--->
 
 ## 2024.3.1
 
