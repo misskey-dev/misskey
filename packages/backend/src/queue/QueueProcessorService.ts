@@ -9,6 +9,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { envOption } from '@/env.js';
 import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
@@ -41,7 +42,7 @@ import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QUEUE, baseQueueOptions } from './const.js';
-import { InboxJobData } from './types.js';
+import type { InboxJobData } from './types.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
@@ -160,7 +161,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
 			.on('failed', (job, err) => systemLogger.warn(`failed(${err.message}) id=${job ? job.id : '-'}`, { err: renderError(err), data: job?.data }))
-			.on('error', (err: Error) => systemLogger.error(`error`, { err: renderError(err) }))
+			.on('error', (err: Error) => systemLogger.error('error', { err: renderError(err) }))
 			.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -248,7 +249,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 			.on('failed', (job, err) => inboxLogger.warn(
 				`failed(${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`,
-				{ err: renderError(err), data: job ? { activity: JSON.stringify(job.data.activity), signature: JSON.stringify(job.data.signature) } : null }
+				{ err: renderError(err), data: job && !envOption.logJson ? { activity: JSON.stringify(job.data.activity), signature: JSON.stringify(job.data.signature) } : null },
 			))
 			.on('error', (err: Error) => inboxLogger.error('error', { err: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
