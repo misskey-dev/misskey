@@ -41,7 +41,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 		},
 	};
 
-	// TODO: levelによって処理を分ける
+	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
 	const digestHeader = await genRFC3230DigestHeader(args.body, 'SHA-256');
 	request.headers['Digest'] = digestHeader;
 
@@ -66,7 +66,7 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 		},
 	};
 
-	// TODO: levelによって処理を分ける
+	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
 	const result = await signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
 
 	return {
