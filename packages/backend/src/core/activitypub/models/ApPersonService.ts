@@ -50,7 +50,7 @@ import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
-import type { IActor, IObject } from '../type.js';
+import type { IActor, IKey, IObject } from '../type.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -396,20 +396,17 @@ export class ApPersonService implements OnModuleInit {
 				}));
 
 				if (person.publicKey) {
-					await transactionalEntityManager.save(new MiUserPublickey({
-						keyId: person.publicKey.id,
-						userId: user.id,
-						keyPem: person.publicKey.publicKeyPem,
-					}));
+					const keys = new Map<string, IKey>([
+						...(person.additionalPublicKeys ? person.additionalPublicKeys.map(key => [key.id, key] as const) : []),
+						[person.publicKey.id, person.publicKey],
+					]);
 
-					if (person.additionalPublicKeys) {
-						for (const key of person.additionalPublicKeys) {
-							await transactionalEntityManager.save(new MiUserPublickey({
-								keyId: key.id,
-								userId: user.id,
-								keyPem: key.publicKeyPem,
-							}));
-						}
+					for (const key of keys.values()) {
+						await transactionalEntityManager.save(new MiUserPublickey({
+							keyId: key.id,
+							userId: user.id,
+							keyPem: key.publicKeyPem,
+						}));
 					}
 				}
 			});
@@ -556,27 +553,21 @@ export class ApPersonService implements OnModuleInit {
 		// Update user
 		await this.usersRepository.update(exist.id, updates);
 
-		const availablePublicKeys = new Set<string>();
+		const publicKeys = new Map<string, IKey>();
 		if (person.publicKey) {
-			await this.userPublickeysRepository.update({ keyId: person.publicKey.id }, {
-				userId: exist.id,
-				keyPem: person.publicKey.publicKeyPem,
-			});
-			availablePublicKeys.add(person.publicKey.id);
+			(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
+			publicKeys.set(person.publicKey.id, person.publicKey);
 
-			if (person.additionalPublicKeys) {
-				for (const key of person.additionalPublicKeys) {
-					await this.userPublickeysRepository.update({ keyId: key.id }, {
-						userId: exist.id,
-						keyPem: key.publicKeyPem,
-					});
-					availablePublicKeys.add(key.id);
-				}
+			for (const key of publicKeys.values()) {
+				await this.userPublickeysRepository.update({ keyId: key.id }, {
+					userId: exist.id,
+					keyPem: key.publicKeyPem,
+				});
 			}
 		}
 
 		this.userPublickeysRepository.delete({
-			keyId: Not(In(Array.from(availablePublicKeys))),
+			keyId: Not(In(Array.from(publicKeys.keys()))),
 			userId: exist.id,
 		});
 
