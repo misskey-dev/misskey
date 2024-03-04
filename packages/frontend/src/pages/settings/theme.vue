@@ -195,7 +195,7 @@ definePageMetadata(() => ({
 		position: relative;
 		padding: 26px 0;
 		text-align: center;
-		overflow: hidden;
+		overflow: clip;
 
 		&.disabled::after {
 			position: absolute;
