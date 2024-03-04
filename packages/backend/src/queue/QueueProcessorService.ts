@@ -247,7 +247,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 			.on('failed', (job, err) => inboxLogger.warn(
 				`failed(${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`,
-				{ data: job?.data, err: renderError(err) }
+				{ err: renderError(err), data: job?.data }
 			))
 			.on('error', (err: Error) => inboxLogger.error('error', { err: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
