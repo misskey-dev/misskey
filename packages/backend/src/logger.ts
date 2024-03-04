@@ -38,11 +38,13 @@ export default class Logger {
 			transport: !envOption.logJson ? {
 				target: 'pino-pretty',
 				options: {
+					colorize: true,
+					colorizeObjects: true,
 					levelFirst: false,
 					levelKey: 'level',
 					timestampKey: 'time',
 					messageKey: 'message',
-					errorLikeObjectKeys: ['e', 'err', 'error'],
+					errorLikeObjectKeys: ['e', 'err', 'error', 'context.e', 'context.err', 'context.error'],
 					ignore: 'severity,pid,hostname,cluster,important',
 					messageFormat: '@{cluster} | {message}',
 				},
