@@ -41,6 +41,7 @@ import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QUEUE, baseQueueOptions } from './const.js';
+import { InboxJobData } from './types.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
@@ -93,7 +94,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private systemQueueWorker: Bull.Worker;
 	private dbQueueWorker: Bull.Worker;
 	private deliverQueueWorker: Bull.Worker;
-	private inboxQueueWorker: Bull.Worker;
+	private inboxQueueWorker: Bull.Worker<InboxJobData>;
 	private webhookDeliverQueueWorker: Bull.Worker;
 	private relationshipQueueWorker: Bull.Worker;
 	private objectStorageQueueWorker: Bull.Worker;
@@ -247,7 +248,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 			.on('failed', (job, err) => inboxLogger.warn(
 				`failed(${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`,
-				{ err: renderError(err), data: job?.data }
+				{ err: renderError(err), data: job ? { activity: JSON.stringify(job.data.activity), signature: JSON.stringify(job.data.signature) } : null }
 			))
 			.on('error', (err: Error) => inboxLogger.error('error', { err: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
