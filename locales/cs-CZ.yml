@@ -1095,8 +1095,10 @@ iHaveReadXCarefullyAndAgree: "Přečetl jsem si text \"{x}\" a souhlasím s ním
 icon: "Avatar"
 replies: "Odpovědět"
 renotes: "Přeposlat"
+sourceCode: "Zdrojový kód"
 flip: "Otočit"
 lastNDays: "Posledních {n} dnů"
+surrender: "Zrušit"
 _initialAccountSetting:
   accountCreated: "Váš účet byl úspěšně vytvořen!"
   letsStartAccountSetup: "Pro začátek si nastavte svůj profil."

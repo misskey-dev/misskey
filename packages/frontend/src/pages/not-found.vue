@@ -31,8 +31,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.notFound,
 	icon: 'ti ti-alert-triangle',
-});
+}));
 </script>

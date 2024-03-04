@@ -56,7 +56,7 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		proxyAccountId: proxyAccountId.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 
@@ -64,8 +64,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.proxyAccount,
 	icon: 'ti ti-ghost',
-});
+}));
 </script>

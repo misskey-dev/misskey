@@ -67,10 +67,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.error,
 	icon: 'ti ti-alert-triangle',
-});
+}));
 </script>
 
 <style lang="scss" module>

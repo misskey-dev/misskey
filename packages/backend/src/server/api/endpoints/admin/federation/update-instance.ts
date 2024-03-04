@@ -24,8 +24,9 @@ export const paramDef = {
 	properties: {
 		host: { type: 'string' },
 		isSuspended: { type: 'boolean' },
+		moderationNote: { type: 'string' },
 	},
-	required: ['host', 'isSuspended'],
+	required: ['host'],
 } as const;
 
 @Injectable()
@@ -47,9 +48,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.federatedInstanceService.update(instance.id, {
 				isSuspended: ps.isSuspended,
+				moderationNote: ps.moderationNote,
 			});
 
-			if (instance.isSuspended !== ps.isSuspended) {
+			if (ps.isSuspended != null && instance.isSuspended !== ps.isSuspended) {
 				if (ps.isSuspended) {
 					this.moderationLogService.log(me, 'suspendRemoteInstance', {
 						id: instance.id,
@@ -61,6 +63,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						host: instance.host,
 					});
 				}
+			}
+
+			if (ps.moderationNote != null && instance.moderationNote !== ps.moderationNote) {
+				this.moderationLogService.log(me, 'updateRemoteInstanceNote', {
+					id: instance.id,
+					host: instance.host,
+					before: instance.moderationNote,
+					after: ps.moderationNote,
+				});
 			}
 		});
 	}
