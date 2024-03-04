@@ -1,17 +1,3 @@
-<!--
-## 202x.x.x (unreleased)
-
-### General
--
-
-### Client
-- 
-
-### Server
--
-
--->
-
 ## Unreleased
 
 ### General
