@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -112,6 +112,7 @@ function onLogin(res: any): Promise<void> | void {
 }
 
 async function queryKey(): Promise<void> {
+	if (credentialRequest.value == null) return;
 	queryingKey.value = true;
 	await webAuthnRequest(credentialRequest.value)
 		.catch(() => {

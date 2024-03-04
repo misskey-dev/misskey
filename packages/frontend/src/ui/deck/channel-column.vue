@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template v-if="column.channelId">
 		<div style="padding: 8px; text-align: center;">
-			<MkButton primary gradate rounded inline @click="post"><i class="ti ti-pencil"></i></MkButton>
+			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
 		<MkTimeline ref="timeline" src="channel" :channel="column.channelId"/>
 	</template>

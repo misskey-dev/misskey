@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<template #item="{element}">
 							<button class="_button" :class="$style.emojisItem" @click="removeReaction(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
 								<MkEmoji v-else :emoji="element" :normal="true"/>
 							</button>
 						</template>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<template #item="{element}">
 							<button class="_button" :class="$style.emojisItem" @click="removeEmoji(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
 								<MkEmoji v-else :emoji="element" :normal="true"/>
 							</button>
 						</template>
@@ -157,7 +157,7 @@ const chooseEmoji = (ev: MouseEvent) => pickEmoji(pinnedEmojis, ev);
 const setDefaultEmoji = () => setDefault(pinnedEmojis);
 
 function previewReaction(ev: MouseEvent) {
-	reactionPicker.show(getHTMLElement(ev));
+	reactionPicker.show(getHTMLElement(ev), null);
 }
 
 function previewEmoji(ev: MouseEvent) {
@@ -213,7 +213,7 @@ async function pickEmoji(itemsRef: Ref<string[]>, ev: MouseEvent) {
 	os.pickEmoji(getHTMLElement(ev), {
 		showPinned: false,
 	}).then(it => {
-		const emoji = it as string;
+		const emoji = it;
 		if (!itemsRef.value.includes(emoji)) {
 			itemsRef.value.push(emoji);
 		}
@@ -237,10 +237,10 @@ watch(pinnedEmojis, () => {
 	deep: true,
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.emojiPicker,
 	icon: 'ti ti-mood-happy',
-});
+}));
 </script>
 
 <style lang="scss" module>

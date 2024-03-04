@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,6 +19,7 @@ import fastifyView from '@fastify/view';
 import fastifyCookie from '@fastify/cookie';
 import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
+import htmlSafeJsonStringify from 'htmlescape';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -28,12 +29,13 @@ import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, Obj
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
-import { deepClone } from '@/misc/clone.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -51,6 +53,7 @@ const clientAssets = `${_dirname}/../../../../frontend/assets/`;
 const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
+const tarball = `${_dirname}/../../../../../built/tarball/`;
 
 @Injectable()
 export class ClientServerService {
@@ -91,6 +94,7 @@ export class ClientServerService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private pageEntityService: PageEntityService,
+		private metaEntityService: MetaEntityService,
 		private galleryPostEntityService: GalleryPostEntityService,
 		private clipEntityService: ClipEntityService,
 		private channelEntityService: ChannelEntityService,
@@ -171,7 +175,7 @@ export class ClientServerService {
 	}
 
 	@bindThis
-	private generateCommonPugData(meta: MiMeta) {
+	private async generateCommonPugData(meta: MiMeta) {
 		return {
 			instanceName: meta.name ?? 'Misskey',
 			icon: meta.iconUrl,
@@ -181,6 +185,8 @@ export class ClientServerService {
 			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
 			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
 			instanceUrl: this.config.url,
+			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(meta)),
+			now: Date.now(),
 		};
 	}
 
@@ -252,11 +258,16 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.clientManifestExists) {
-			fastify.register(fastifyStatic, {
-				root: viteOut,
-				prefix: '/vite/',
-				maxAge: ms('30 days'),
-				decorateReply: false,
+			fastify.register((fastify, options, done) => {
+				fastify.register(fastifyStatic, {
+					root: viteOut,
+					prefix: '/vite/',
+					maxAge: ms('30 days'),
+					immutable: true,
+					decorateReply: false,
+				});
+				fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+				done();
 			});
 		} else {
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -289,6 +300,18 @@ export class ClientServerService {
 			prefix: '/assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
+		});
+
+		fastify.register((fastify, options, done) => {
+			fastify.register(fastifyStatic, {
+				root: tarball,
+				prefix: '/tarball/',
+				maxAge: ms('30 days'),
+				immutable: true,
+				decorateReply: false,
+			});
+			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+			done();
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {
@@ -414,7 +437,7 @@ export class ClientServerService {
 				url: this.config.url,
 				title: meta.name ?? 'Misskey',
 				desc: meta.description,
-				...this.generateCommonPugData(meta),
+				...await this.generateCommonPugData(meta),
 			});
 		};
 
@@ -501,7 +524,7 @@ export class ClientServerService {
 					user, profile, me,
 					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 					sub: request.params.sub,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				// リモートユーザーなので
@@ -551,7 +574,7 @@ export class ClientServerService {
 					avatarUrl: _note.user.avatarUrl,
 					// TODO: Let locale changeable by instance setting
 					summary: getNoteSummary(_note),
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);
@@ -590,7 +613,7 @@ export class ClientServerService {
 					page: _page,
 					profile,
 					avatarUrl: _page.user.avatarUrl,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);
@@ -616,7 +639,7 @@ export class ClientServerService {
 					flash: _flash,
 					profile,
 					avatarUrl: _flash.user.avatarUrl,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);
@@ -642,7 +665,7 @@ export class ClientServerService {
 					clip: _clip,
 					profile,
 					avatarUrl: _clip.user.avatarUrl,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);
@@ -666,7 +689,7 @@ export class ClientServerService {
 					post: _post,
 					profile,
 					avatarUrl: _post.user.avatarUrl,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);
@@ -685,7 +708,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await reply.view('channel', {
 					channel: _channel,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);
@@ -704,7 +727,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await reply.view('reversi-game', {
 					game: _game,
-					...this.generateCommonPugData(meta),
+					...await this.generateCommonPugData(meta),
 				});
 			} else {
 				return await renderBase(reply);

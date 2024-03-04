@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -42,12 +42,12 @@ export class FlashEntityService {
 			createdAt: this.idService.parse(flash.id).date.toISOString(),
 			updatedAt: flash.updatedAt.toISOString(),
 			userId: flash.userId,
-			user: this.userEntityService.pack(flash.user ?? flash.userId, me), // { detail: true } すると無限ループするので注意
+			user: this.userEntityService.pack(flash.user ?? flash.userId, me), // { schema: 'UserDetailed' } すると無限ループするので注意
 			title: flash.title,
 			summary: flash.summary,
 			script: flash.script,
 			likedCount: flash.likedCount,
-			isLiked: meId ? await this.flashLikesRepository.exist({ where: { flashId: flash.id, userId: meId } }) : undefined,
+			isLiked: meId ? await this.flashLikesRepository.exists({ where: { flashId: flash.id, userId: meId } }) : undefined,
 		});
 	}
 

@@ -1,8 +1,3 @@
-/*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.455Z
- */
-
 import type { SwitchCaseResponseType } from '../api.js';
 import type { Endpoints } from './endpoint.js';
 
@@ -3195,6 +3190,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:notifications*
      */
     request<E extends 'notifications/create', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:notifications*
+     */
+    request<E extends 'notifications/flush', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

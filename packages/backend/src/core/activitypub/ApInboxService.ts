@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,6 +27,7 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -35,6 +36,7 @@ import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
 
@@ -82,6 +84,7 @@ export class ApInboxService {
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
+		private globalEventService: GlobalEventService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -479,6 +482,8 @@ export class ApInboxService {
 			isDeleted: true,
 		});
 
+		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
+
 		return `ok: queued ${job.name} ${job.id}`;
 	}
 
@@ -515,7 +520,7 @@ export class ApInboxService {
 		const userIds = uris
 			.filter(uri => uri.startsWith(this.config.url + '/users/'))
 			.map(uri => uri.split('/').at(-1))
-			.filter((userId): userId is string => userId !== undefined);
+			.filter(isNotNull);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});
@@ -629,7 +634,7 @@ export class ApInboxService {
 			return 'skip: follower not found';
 		}
 
-		const isFollowing = await this.followingsRepository.exist({
+		const isFollowing = await this.followingsRepository.exists({
 			where: {
 				followerId: follower.id,
 				followeeId: actor.id,
@@ -686,14 +691,14 @@ export class ApInboxService {
 			return 'skip: フォロー解除しようとしているユーザーはローカルユーザーではありません';
 		}
 
-		const requestExist = await this.followRequestsRepository.exist({
+		const requestExist = await this.followRequestsRepository.exists({
 			where: {
 				followerId: actor.id,
 				followeeId: followee.id,
 			},
 		});
 
-		const isFollowing = await this.followingsRepository.exist({
+		const isFollowing = await this.followingsRepository.exists({
 			where: {
 				followerId: actor.id,
 				followeeId: followee.id,
