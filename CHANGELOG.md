@@ -1,18 +1,4 @@
-<!--
-## 202x.x.x (unreleased)
-
-### General
--
-
-### Client
-- 
-
-### Server
--
-
--->
-
-## 202x.x.x (unreleased)
+## Unreleased
 
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
@@ -20,6 +6,9 @@
 
 ### Client
 - 
+
+### Server
+-
 
 ## 2024.3.1
 
