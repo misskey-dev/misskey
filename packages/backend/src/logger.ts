@@ -76,7 +76,7 @@ export default class Logger {
 		if (data != null) {
 			args.push(inspect(data, {
 				depth: Infinity,
-				compact: true,
+				compact: false,
 				breakLength: Infinity,
 				colors: true,
 				showHidden: false,

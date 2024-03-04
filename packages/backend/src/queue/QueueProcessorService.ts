@@ -70,14 +70,7 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 
 function renderError(e: Error): any {
 	if (e) { // 何故かeがundefinedで来ることがある
-		return {
-			...Object.getOwnPropertyNames(e).reduce((acc, key) => {
-				//@ts-expect-error Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Error'.
-				acc[key] = e[key];
-				return acc;
-			}, {} as Record<string, any>),
-			stack: e.stack?.split('\n').map(s => s.trim()),
-		};
+		return e;
 	} else {
 		return {
 			stack: '?',
