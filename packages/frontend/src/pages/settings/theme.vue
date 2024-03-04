@@ -6,7 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m rsljpzjq">
 	<div v-adaptive-border class="rfqxtzch _panel">
-		<div class="toggle">
+		<div
+			class="toggle"
+			:class="{ disabled: syncDeviceDarkMode }"
+		>
 			<div class="toggleWrapper">
 				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
 				<label for="dn" class="toggle">
@@ -90,6 +93,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
+import { readFile } from 'fs';
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -191,13 +195,18 @@ definePageMetadata(() => ({
 		position: relative;
 		padding: 26px 0;
 		text-align: center;
+		overflow: hidden;
 
-		&.disabled {
-			opacity: 0.7;
-
-			&, * {
-				cursor: not-allowed !important;
-			}
+		&.disabled::after {
+			position: absolute;
+			z-index: 3;
+			content: '';
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: var(--acrylicPanel);
+			cursor: not-allowed;
 		}
 
 		> .toggleWrapper {
