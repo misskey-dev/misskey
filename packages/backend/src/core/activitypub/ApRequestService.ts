@@ -91,10 +91,9 @@ export class ApRequestService {
 	@bindThis
 	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKeyWithPem): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
-		key = key ?? await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, level);
 		const req = await createSignedPost({
 			level,
-			key,
+			key: await this.userKeypairService.getLocalUserPrivateKey(key ?? user.id, level),
 			url,
 			body,
 			additionalHeaders: {
@@ -124,7 +123,7 @@ export class ApRequestService {
 	 */
 	@bindThis
 	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
-		const key = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, level);
+		const key = await this.userKeypairService.getLocalUserPrivateKey(user.id, level);
 		const req = await createSignedGet({
 			level,
 			key,

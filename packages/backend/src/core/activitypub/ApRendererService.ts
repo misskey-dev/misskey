@@ -252,7 +252,7 @@ export class ApRendererService {
 	@bindThis
 	public renderKey(user: MiLocalUser, publicKey: string, postfix?: string): IKey {
 		return {
-			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
+			id: `${this.userEntityService.genLocalUserUri(user.id)}${postfix ?? '/publickey'}`,
 			type: 'Key',
 			owner: this.userEntityService.genLocalUserUri(user.id),
 			publicKeyPem: createPublicKey(publicKey).export({

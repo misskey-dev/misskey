@@ -195,6 +195,9 @@ export class MemoryKVCache<T> {
 	private lifetime: number;
 	private gcIntervalHandle: NodeJS.Timeout;
 
+	/**
+	 * @param lifetime キャッシュの生存期間 (ms)
+	 */
 	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
 		this.cache = new Map();
 		this.lifetime = lifetime;
