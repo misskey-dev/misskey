@@ -4,31 +4,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkSwitch v-model="notUseSound">
-		<template #label>{{ i18n.ts.notUseSound }}</template>
-	</MkSwitch>
-	<MkSwitch v-model="useSoundOnlyWhenActive">
-		<template #label>{{ i18n.ts.useSoundOnlyWhenActive }}</template>
-	</MkSwitch>
-	<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-		<template #label>{{ i18n.ts.masterVolume }}</template>
-	</MkRange>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<MkSwitch v-model="notUseSound">
+				<template #label>{{ i18n.ts.notUseSound }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="useSoundOnlyWhenActive">
+				<template #label>{{ i18n.ts.useSoundOnlyWhenActive }}</template>
+			</MkSwitch>
+			<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+				<template #label>{{ i18n.ts.masterVolume }}</template>
+			</MkRange>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.sounds }}</template>
-		<div class="_gaps_s">
-			<MkFolder v-for="type in operationTypes" :key="type">
-				<template #label>{{ i18n.ts._sfx[type] }}</template>
-				<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
+			<FormSection>
+				<template #label>{{ i18n.ts.sounds }}</template>
+				<div class="_gaps_s">
+					<MkFolder v-for="type in operationTypes" :key="type">
+						<template #label>{{ i18n.ts._sfx[type] }}</template>
+						<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 
-				<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
-			</MkFolder>
+						<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+					</MkFolder>
+				</div>
+			</FormSection>
+
+			<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 		</div>
-	</FormSection>
-
-	<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

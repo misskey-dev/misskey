@@ -4,30 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkSelect v-model="selectedThemeId">
-		<template #label>{{ i18n.ts.theme }}</template>
-		<optgroup :label="i18n.ts._theme.installedThemes">
-			<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="i18n.ts._theme.builtinThemes">
-			<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-		</optgroup>
-	</MkSelect>
-	<template v-if="selectedTheme">
-		<MkInput readonly :modelValue="selectedTheme.author">
-			<template #label>{{ i18n.ts.author }}</template>
-		</MkInput>
-		<MkTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">
-			<template #label>{{ i18n.ts._theme.description }}</template>
-		</MkTextarea>
-		<MkTextarea readonly tall :modelValue="selectedThemeCode">
-			<template #label>{{ i18n.ts._theme.code }}</template>
-			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
-		</MkTextarea>
-		<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
-	</template>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<MkSelect v-model="selectedThemeId">
+				<template #label>{{ i18n.ts.theme }}</template>
+				<optgroup :label="i18n.ts._theme.installedThemes">
+					<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
+				</optgroup>
+				<optgroup :label="i18n.ts._theme.builtinThemes">
+					<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
+				</optgroup>
+			</MkSelect>
+			<template v-if="selectedTheme">
+				<MkInput readonly :modelValue="selectedTheme.author">
+					<template #label>{{ i18n.ts.author }}</template>
+				</MkInput>
+				<MkTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">
+					<template #label>{{ i18n.ts._theme.description }}</template>
+				</MkTextarea>
+				<MkTextarea readonly tall :modelValue="selectedThemeCode">
+					<template #label>{{ i18n.ts._theme.code }}</template>
+					<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
+				</MkTextarea>
+				<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+			</template>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

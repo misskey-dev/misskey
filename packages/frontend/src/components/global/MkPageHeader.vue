@@ -30,7 +30,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
-				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+				<MkButton
+					v-if="action.asFullButton"
+					:key="`fullButton:${action.text}:${action.icon}`"
+					:class="$style.fullButton"
+					primary
+					@click.stop="action.handler"
+					@touchstart.stop="() => {}"
+				>
+					<i :class="action.icon" style="margin-right: 6px;"></i>
+					<span>{{ action.text }}</span>
+				</MkButton>
+				<button
+					v-else
+					:key="`button:${action.text}:${action.icon}`"
+					v-tooltip.noDelay="action.text"
+					:class="['_button', $style.button, { [$style.highlighted]: action.highlighted }]"
+					@click.stop="action.handler"
+					@touchstart.stop="() => {}"
+				>
+					<i :class="action.icon"></i>
+				</button>
 			</template>
 		</div>
 	</div>
@@ -49,6 +69,7 @@ import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { PageHeaderItem } from '@/types/page-header.js';
+import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
@@ -77,10 +98,6 @@ const hasActions = computed(() => props.actions && props.actions.length > 0);
 const show = computed(() => {
 	return !hideTitle || hasTabs.value || hasActions.value;
 });
-
-const preventDrag = (ev: TouchEvent) => {
-	ev.stopPropagation();
-};
 
 const top = () => {
 	if (el.value) {

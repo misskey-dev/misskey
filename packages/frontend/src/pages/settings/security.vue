@@ -4,39 +4,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts.password }}</template>
-		<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
-	</FormSection>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<FormSection first>
+				<template #label>{{ i18n.ts.password }}</template>
+				<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
+			</FormSection>
 
-	<X2fa/>
+			<X2fa/>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination" disableAutoLoad>
-			<template #default="{items}">
-				<div>
-					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
-						<header>
-							<i v-if="item.success" class="ti ti-check icon succ"></i>
-							<i v-else class="ti ti-circle-x icon fail"></i>
-							<code class="ip _monospace">{{ item.ip }}</code>
-							<MkTime :time="item.createdAt" class="time"/>
-						</header>
-					</div>
-				</div>
-			</template>
-		</MkPagination>
-	</FormSection>
+			<FormSection>
+				<template #label>{{ i18n.ts.signinHistory }}</template>
+				<MkPagination :pagination="pagination" disableAutoLoad>
+					<template #default="{items}">
+						<div>
+							<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
+								<header>
+									<i v-if="item.success" class="ti ti-check icon succ"></i>
+									<i v-else class="ti ti-circle-x icon fail"></i>
+									<code class="ip _monospace">{{ item.ip }}</code>
+									<MkTime :time="item.createdAt" class="time"/>
+								</header>
+							</div>
+						</div>
+					</template>
+				</MkPagination>
+			</FormSection>
 
-	<FormSection>
-		<FormSlot>
-			<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</MkButton>
-			<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
-		</FormSlot>
-	</FormSection>
-</div>
+			<FormSection>
+				<FormSlot>
+					<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</MkButton>
+					<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
+				</FormSlot>
+			</FormSection>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

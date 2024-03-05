@@ -4,56 +4,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection v-if="!fetching" first>
-		<template #label>{{ i18n.ts.usageAmount }}</template>
-
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<div>
-				<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
-			</div>
-			<FormSplit>
-				<MkKeyValue>
-					<template #key>{{ i18n.ts.capacity }}</template>
-					<template #value>{{ bytes(capacity, 1) }}</template>
-				</MkKeyValue>
-				<MkKeyValue>
-					<template #key>{{ i18n.ts.inUse }}</template>
-					<template #value>{{ bytes(usage, 1) }}</template>
-				</MkKeyValue>
-			</FormSplit>
-		</div>
-	</FormSection>
+			<FormSection v-if="!fetching" first>
+				<template #label>{{ i18n.ts.usageAmount }}</template>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.statistics }}</template>
-		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
-	</FormSection>
+				<div class="_gaps_m">
+					<div>
+						<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
+					</div>
+					<FormSplit>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.capacity }}</template>
+							<template #value>{{ bytes(capacity, 1) }}</template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.inUse }}</template>
+							<template #value>{{ bytes(usage, 1) }}</template>
+						</MkKeyValue>
+					</FormSplit>
+				</div>
+			</FormSection>
 
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="chooseUploadFolder()">
-				{{ i18n.ts.uploadFolder }}
-				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-				<template #suffixIcon><i class="ti ti-folder"></i></template>
-			</FormLink>
-			<FormLink to="/settings/drive/cleaner">
-				{{ i18n.ts.drivecleaner }}
-			</FormLink>
-			<MkSwitch v-model="keepOriginalUploading">
-				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
-				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
-				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
-				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
-				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
-			</MkSwitch>
+			<FormSection>
+				<template #label>{{ i18n.ts.statistics }}</template>
+				<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
+			</FormSection>
+
+			<FormSection>
+				<div class="_gaps_m">
+					<FormLink @click="chooseUploadFolder()">
+						{{ i18n.ts.uploadFolder }}
+						<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
+						<template #suffixIcon><i class="ti ti-folder"></i></template>
+					</FormLink>
+					<FormLink to="/settings/drive/cleaner">
+						{{ i18n.ts.drivecleaner }}
+					</FormLink>
+					<MkSwitch v-model="keepOriginalUploading">
+						<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
+						<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
+						<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
+						<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
+						<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
+					</MkSwitch>
+				</div>
+			</FormSection>
 		</div>
-	</FormSection>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

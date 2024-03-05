@@ -4,11 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
-	<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
-	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
+			<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
+			<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

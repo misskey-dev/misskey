@@ -4,40 +4,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<div :class="$style.buttons">
-		<MkButton inline primary @click="saveNew">{{ ts._preferencesBackups.saveNew }}</MkButton>
-		<MkButton inline @click="loadFile">{{ ts._preferencesBackups.loadFile }}</MkButton>
-	</div>
-
-	<FormSection>
-		<template #label>{{ ts._preferencesBackups.list }}</template>
-		<template v-if="profiles && Object.keys(profiles).length > 0">
-			<div class="_gaps_s">
-				<div
-					v-for="(profile, id) in profiles"
-					:key="id"
-					class="_panel"
-					:class="$style.profile"
-					@click="$event => menu($event, id)"
-					@contextmenu.prevent.stop="$event => menu($event, id)"
-				>
-					<div :class="$style.profileName">{{ profile.name }}</div>
-					<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
-					<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
-				</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<div :class="$style.buttons">
+				<MkButton inline primary @click="saveNew">{{ ts._preferencesBackups.saveNew }}</MkButton>
+				<MkButton inline @click="loadFile">{{ ts._preferencesBackups.loadFile }}</MkButton>
 			</div>
-		</template>
-		<div v-else-if="profiles">
-			<MkInfo>{{ ts._preferencesBackups.noBackups }}</MkInfo>
+
+			<FormSection>
+				<template #label>{{ ts._preferencesBackups.list }}</template>
+				<template v-if="profiles && Object.keys(profiles).length > 0">
+					<div class="_gaps_s">
+						<div
+							v-for="(profile, id) in profiles"
+							:key="id"
+							class="_panel"
+							:class="$style.profile"
+							@click="$event => menu($event, id)"
+							@contextmenu.prevent.stop="$event => menu($event, id)"
+						>
+							<div :class="$style.profileName">{{ profile.name }}</div>
+							<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
+							<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
+						</div>
+					</div>
+				</template>
+				<div v-else-if="profiles">
+					<MkInfo>{{ ts._preferencesBackups.noBackups }}</MkInfo>
+				</div>
+				<MkLoading v-else/>
+			</FormSection>
 		</div>
-		<MkLoading v-else/>
-	</FormSection>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -438,6 +443,10 @@ onMounted(() => {
 onUnmounted(() => {
 	connection?.off('registryUpdated');
 });
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
 	title: ts.preferencesBackups,

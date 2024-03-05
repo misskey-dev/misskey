@@ -4,61 +4,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkFolder :defaultOpen="true">
-		<template #icon><i class="ti ti-plane-arrival"></i></template>
-		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
-		<template #caption>{{ i18n.ts._accountMigration.moveFromSub }}</template>
-
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<FormInfo>
-				{{ i18n.ts._accountMigration.moveFromDescription }}
-			</FormInfo>
-			<div>
-				<MkButton :disabled="accountAliases.length >= 10" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-			</div>
-			<div class="_gaps">
-				<MkInput v-for="(_, i) in accountAliases" v-model="accountAliases[i]">
-					<template #prefix><i class="ti ti-plane-arrival"></i></template>
-					<template #label>{{ i18n.tsx._accountMigration.moveFromLabel({ n: i + 1 }) }}</template>
-				</MkInput>
-			</div>
+			<MkFolder :defaultOpen="true">
+				<template #icon><i class="ti ti-plane-arrival"></i></template>
+				<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
+				<template #caption>{{ i18n.ts._accountMigration.moveFromSub }}</template>
+
+				<div class="_gaps_m">
+					<FormInfo>
+						{{ i18n.ts._accountMigration.moveFromDescription }}
+					</FormInfo>
+					<div>
+						<MkButton :disabled="accountAliases.length >= 10" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+						<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					</div>
+					<div class="_gaps">
+						<MkInput v-for="(_, i) in accountAliases" v-model="accountAliases[i]">
+							<template #prefix><i class="ti ti-plane-arrival"></i></template>
+							<template #label>{{ i18n.tsx._accountMigration.moveFromLabel({ n: i + 1 }) }}</template>
+						</MkInput>
+					</div>
+				</div>
+			</MkFolder>
+
+			<MkFolder :defaultOpen="!!$i.movedTo">
+				<template #icon><i class="ti ti-plane-departure"></i></template>
+				<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
+
+				<div class="_gaps_m">
+					<FormInfo>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
+
+					<template v-if="$i && !$i.movedTo">
+						<FormInfo>{{ i18n.ts._accountMigration.moveAccountHowTo }}</FormInfo>
+						<FormInfo warn>{{ i18n.ts._accountMigration.moveCannotBeUndone }}</FormInfo>
+
+						<MkInput v-model="moveToAccount">
+							<template #prefix><i class="ti ti-plane-departure"></i></template>
+							<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
+						</MkInput>
+						<MkButton inline danger :disabled="!moveToAccount" @click="move">
+							<i class="ti ti-check"></i> {{ i18n.ts._accountMigration.startMigration }}
+						</MkButton>
+					</template>
+					<template v-else-if="$i">
+						<FormInfo>{{ i18n.ts._accountMigration.postMigrationNote }}</FormInfo>
+						<FormInfo warn>{{ i18n.ts._accountMigration.movedAndCannotBeUndone }}</FormInfo>
+						<div>{{ i18n.ts._accountMigration.movedTo }}</div>
+						<MkUserInfo v-if="movedTo" :user="movedTo" class="_panel _shadow"/>
+					</template>
+				</div>
+			</MkFolder>
 		</div>
-	</MkFolder>
-
-	<MkFolder :defaultOpen="!!$i.movedTo">
-		<template #icon><i class="ti ti-plane-departure"></i></template>
-		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
-
-		<div class="_gaps_m">
-			<FormInfo>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
-
-			<template v-if="$i && !$i.movedTo">
-				<FormInfo>{{ i18n.ts._accountMigration.moveAccountHowTo }}</FormInfo>
-				<FormInfo warn>{{ i18n.ts._accountMigration.moveCannotBeUndone }}</FormInfo>
-
-				<MkInput v-model="moveToAccount">
-					<template #prefix><i class="ti ti-plane-departure"></i></template>
-					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
-				</MkInput>
-				<MkButton inline danger :disabled="!moveToAccount" @click="move">
-					<i class="ti ti-check"></i> {{ i18n.ts._accountMigration.startMigration }}
-				</MkButton>
-			</template>
-			<template v-else-if="$i">
-				<FormInfo>{{ i18n.ts._accountMigration.postMigrationNote }}</FormInfo>
-				<FormInfo warn>{{ i18n.ts._accountMigration.movedAndCannotBeUndone }}</FormInfo>
-				<div>{{ i18n.ts._accountMigration.movedTo }}</div>
-				<MkUserInfo v-if="movedTo" :user="movedTo" class="_panel _shadow"/>
-			</template>
-		</div>
-	</MkFolder>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -120,6 +125,10 @@ async function save(): Promise<void> {
 }
 
 init();
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
 	title: i18n.ts.accountMigration,

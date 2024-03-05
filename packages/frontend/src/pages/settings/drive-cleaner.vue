@@ -4,47 +4,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps">
-	<MkSelect v-model="sortModeSelect">
-		<template #label>{{ i18n.ts.sort }}</template>
-		<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
-	</MkSelect>
-	<div v-if="!fetching">
-		<MkPagination v-slot="{items}" :pagination="pagination">
-			<div class="_gaps">
-				<div
-					v-for="file in items" :key="file.id"
-					class="_button"
-					@click="$event => onClick($event, file)"
-					@contextmenu.stop="$event => onContextMenu($event, file)"
-				>
-					<div :class="$style.file">
-						<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
-						<MkDriveFileThumbnail :class="$style.fileThumbnail" :file="file" fit="contain"/>
-						<div :class="$style.fileBody">
-							<div style="margin-bottom: 4px;">
-								{{ file.name }}
-							</div>
-							<div>
-								<span style="margin-right: 1em;">{{ file.type }}</span>
-								<span>{{ bytes(file.size) }}</span>
-							</div>
-							<div>
-								<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
-							</div>
-							<div v-if="sortModeSelect === 'sizeDesc'">
-								<div :class="$style.meter"><div :class="$style.meterValue" :style="genUsageBar(file.size)"></div></div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps">
+			<MkSelect v-model="sortModeSelect">
+				<template #label>{{ i18n.ts.sort }}</template>
+				<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
+			</MkSelect>
+			<div v-if="!fetching">
+				<MkPagination v-slot="{items}" :pagination="pagination">
+					<div class="_gaps">
+						<div
+							v-for="file in items" :key="file.id"
+							class="_button"
+							@click="$event => onClick($event, file)"
+							@contextmenu.stop="$event => onContextMenu($event, file)"
+						>
+							<div :class="$style.file">
+								<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
+								<MkDriveFileThumbnail :class="$style.fileThumbnail" :file="file" fit="contain"/>
+								<div :class="$style.fileBody">
+									<div style="margin-bottom: 4px;">
+										{{ file.name }}
+									</div>
+									<div>
+										<span style="margin-right: 1em;">{{ file.type }}</span>
+										<span>{{ bytes(file.size) }}</span>
+									</div>
+									<div>
+										<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+									</div>
+									<div v-if="sortModeSelect === 'sizeDesc'">
+										<div :class="$style.meter"><div :class="$style.meterValue" :style="genUsageBar(file.size)"></div></div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				</MkPagination>
 			</div>
-		</MkPagination>
-	</div>
-	<div v-else>
-		<MkLoading/>
-	</div>
-</div>
+			<div v-else>
+				<MkLoading/>
+			</div>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script setup lang="ts">
@@ -116,6 +121,10 @@ function onClick(ev: MouseEvent, file) {
 function onContextMenu(ev: MouseEvent, file): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
 	title: i18n.ts.drivecleaner,

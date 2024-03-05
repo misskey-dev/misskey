@@ -5,61 +5,142 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
-		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
-			<div class="body">
-				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-					<div class="baaadecd">
-						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
+	<template #header><MkPageHeader v-if="childPageMetadata == null"/></template>
+	<template #default>
+		<div ref="rootEl" :class="[$style.root, { [$style.wide]: isWide }]">
+			<div v-if="showNav" :class="$style.navRoot">
+				<MkSpacer :contentMax="700" :marginMin="16">
+					<div>
+						<MkInfo v-if="emailNotConfigured" warn :class="$style.navInfo">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkSuperMenu :def="menuDef" :grid="!isWide"></MkSuperMenu>
 					</div>
-				</div>
-				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-					<div class="bkzroven" style="container-type: inline-size;">
-						<RouterView/>
-					</div>
+				</MkSpacer>
+			</div>
+			<div v-if="showMain" :class="$style.mainRoot">
+				<div style="container-type: inline-size;">
+					<RouterView/>
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
-	<MkFooterSpacer/>
-</mkstickycontainer>
+		<MkFooterSpacer v-if="!isWide"/>
+	</template>
+</MkStickyContainer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { signinRequired, signout } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { clearCache } from '@/scripts/clear-cache.js';
+import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router/supplier.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import { signout, $i } from '@/account.js';
-import { clearCache } from '@/scripts/clear-cache.js';
-import { instance } from '@/instance.js';
-import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import * as os from '@/os.js';
-import { useRouter } from '@/router/supplier.js';
 
-const indexInfo = {
-	title: i18n.ts.settings,
-	icon: 'ti ti-settings',
-	hideHeader: true,
-};
-const INFO = ref(indexInfo);
-const el = shallowRef<HTMLElement | null>(null);
-const childInfo = ref<null | PageMetadata>(null);
+const ROOT_PAGE_PATH = '/settings' as const;
+const INITIAL_PAGE_PATH = '/settings/profile' as const;
 
-const router = useRouter();
+const $i = signinRequired();
 
-const narrow = ref(false);
-const NARROW_THRESHOLD = 600;
+const rootEl = shallowRef<HTMLElement | null>(null);
 
-const currentPage = computed(() => router.currentRef.value.child);
-
-const ro = new ResizeObserver((entries, observer) => {
-	if (entries.length === 0) return;
-	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+const showNav = computed(() => {
+	if (isWide.value) return true; // wideなら常に表示
+	return isRoot.value; // rootなら表示
+});
+const showMain = computed(() => {
+	if (!isRoot.value) return true; // 非rootなら常に表示
+	return isWide.value; // wideなら表示
 });
 
+const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
+
+const router = useRouter();
+const currentPage = computed(() => router.currentRef.value.child);
+const isRoot = computed(() => currentPage.value?.route.name == null);
+
+watch(router.currentRef, (to) => {
+	if (to.route.path === ROOT_PAGE_PATH && to.child?.route.name == null) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+const isWide = ref(false);
+const WIDE_THRESHOLD = 600 as const;
+
+watch(isWide, () => {
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+const ro = new ResizeObserver((entries) => {
+	const inlineSize = entries.at(0)?.borderBoxSize.at(0)?.inlineSize;
+	if (inlineSize == null) return;
+	isWide.value = inlineSize >= WIDE_THRESHOLD;
+});
+
+onMounted(() => {
+	if (rootEl.value != null) {
+		isWide.value = rootEl.value.offsetWidth >= WIDE_THRESHOLD;
+		ro.observe(rootEl.value);
+	}
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+onActivated(() => {
+	if (rootEl.value != null) {
+		isWide.value = rootEl.value.offsetWidth >= WIDE_THRESHOLD;
+	}
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+onUnmounted(() => {
+	ro.disconnect();
+});
+
+const childPageMetadata = ref<null | PageMetadata>(null);
+const pageMetadata = computed<PageMetadata>(() => {
+	if (childPageMetadata.value != null) {
+		return childPageMetadata.value;
+	}
+	return {
+		title: i18n.ts.settings,
+		icon: 'ti ti-settings',
+	};
+});
+
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+	childPageMetadata.value = info;
+});
+provideReactiveMetadata(pageMetadata);
+
+definePageMetadata(() => pageMetadata.value);
+
+//#region menuDef
 const menuDef = computed(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
@@ -197,102 +278,54 @@ const menuDef = computed(() => [{
 		danger: true,
 	}],
 }]);
-
-watch(narrow, () => {
-});
-
-onMounted(() => {
-	ro.observe(el.value);
-
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-
-	if (!narrow.value && currentPage.value?.route.name == null) {
-		router.replace('/settings/profile');
-	}
-});
-
-onActivated(() => {
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-
-	if (!narrow.value && currentPage.value?.route.name == null) {
-		router.replace('/settings/profile');
-	}
-});
-
-onUnmounted(() => {
-	ro.disconnect();
-});
-
-watch(router.currentRef, (to) => {
-	if (to.route.name === 'settings' && to.child?.route.name == null && !narrow.value) {
-		router.replace('/settings/profile');
-	}
-});
-
-const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
-
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	if (info == null) {
-		childInfo.value = null;
-	} else {
-		childInfo.value = info;
-		INFO.value.needWideArea = info.needWideArea ?? undefined;
-	}
-});
-provideReactiveMetadata(INFO);
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
-
-definePageMetadata(() => INFO.value);
-// w 890
-// h 700
+//#endregion
 </script>
 
-<style lang="scss" scoped>
-.vvcocwet {
-	> .body {
-		> .nav {
-			.baaadecd {
-				> .info {
-					margin: 16px 0;
-				}
-
-				> .accounts {
-					> .avatar {
-						display: block;
-						width: 50px;
-						height: 50px;
-						margin: 8px auto 16px auto;
-					}
-				}
-			}
-		}
-
-		> .main {
-			.bkzroven {
-			}
-		}
-	}
-
+<style lang="scss" module>
+.root {
 	&.wide {
-		> .body {
-			display: flex;
+		height: 100%;
+		margin: 0 auto;
+		display: flex;
+		box-sizing: border-box;
+
+		@supports (height: 100cqh) {
+			height: 100cqh;
+			overflow: hidden; // fallback (overflow: clip)
+			overflow: clip;
+			contain: strict;
+		}
+
+		> .navRoot {
+			width: 32%;
 			height: 100%;
+			max-width: 280px;
+			overflow: auto;
+			border-right: solid 0.5px var(--divider);
+			box-sizing: border-box;
 
-			> .nav {
-				width: 34%;
-				padding-right: 32px;
-				box-sizing: border-box;
+			@supports (height: 100cqh) {
+				overflow-y: scroll;
+				overscroll-behavior: contain;
 			}
+		}
 
-			> .main {
-				flex: 1;
-				min-width: 0;
+		> .mainRoot {
+			flex: 1;
+			min-width: 0;
+			height: 100%;
+			overflow: auto;
+			box-sizing: border-box;
+
+			@supports (height: 100cqh) {
+				overflow-y: scroll;
+				overscroll-behavior: contain;
 			}
 		}
 	}
+}
+
+.navInfo {
+	margin: 16px 0;
 }
 </style>

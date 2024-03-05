@@ -4,44 +4,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormPagination ref="list" :pagination="pagination">
-		<template #empty>
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
-		</template>
-		<template #default="{items}">
-			<div class="_gaps">
-				<div v-for="token in items" :key="token.id" class="_panel" :class="$style.app">
-					<img v-if="token.iconUrl" :class="$style.appIcon" :src="token.iconUrl" alt=""/>
-					<div :class="$style.appBody">
-						<div :class="$style.appName">{{ token.name }}</div>
-						<div>{{ token.description }}</div>
-						<MkKeyValue oneline>
-							<template #key>{{ i18n.ts.installedDate }}</template>
-							<template #value><MkTime :time="token.createdAt"/></template>
-						</MkKeyValue>
-						<MkKeyValue oneline>
-							<template #key>{{ i18n.ts.lastUsedDate }}</template>
-							<template #value><MkTime :time="token.lastUsedAt"/></template>
-						</MkKeyValue>
-						<details>
-							<summary>{{ i18n.ts.details }}</summary>
-							<ul>
-								<li v-for="p in token.permission" :key="p">{{ i18n.ts._permissions[p] }}</li>
-							</ul>
-						</details>
-						<div>
-							<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<FormPagination ref="list" :pagination="pagination">
+				<template #empty>
+					<div class="_fullinfo">
+						<img :src="infoImageUrl" class="_ghost"/>
+						<div>{{ i18n.ts.nothing }}</div>
+					</div>
+				</template>
+				<template #default="{items}">
+					<div class="_gaps">
+						<div v-for="token in items" :key="token.id" class="_panel" :class="$style.app">
+							<img v-if="token.iconUrl" :class="$style.appIcon" :src="token.iconUrl" alt=""/>
+							<div :class="$style.appBody">
+								<div :class="$style.appName">{{ token.name }}</div>
+								<div>{{ token.description }}</div>
+								<MkKeyValue oneline>
+									<template #key>{{ i18n.ts.installedDate }}</template>
+									<template #value><MkTime :time="token.createdAt"/></template>
+								</MkKeyValue>
+								<MkKeyValue oneline>
+									<template #key>{{ i18n.ts.lastUsedDate }}</template>
+									<template #value><MkTime :time="token.lastUsedAt"/></template>
+								</MkKeyValue>
+								<details>
+									<summary>{{ i18n.ts.details }}</summary>
+									<ul>
+										<li v-for="p in token.permission" :key="p">{{ i18n.ts._permissions[p] }}</li>
+									</ul>
+								</details>
+								<div>
+									<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</template>
-	</FormPagination>
-</div>
+				</template>
+			</FormPagination>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
