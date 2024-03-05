@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { api, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
+import { api, makeStreamCatcher, post, sendEnvUpdateRequest, signup, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Drive', () => {

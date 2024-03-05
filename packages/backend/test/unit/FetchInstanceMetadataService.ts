@@ -129,7 +129,7 @@ describe('FetchInstanceMetadataService', () => {
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
 
 		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as any, true);
-		expect(tryLockSpy).toHaveBeenCalledTimes(0);
+		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(1);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(0);
 		expect(httpRequestService.getJson).toHaveBeenCalled();
