@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { Equal, In, IsNull, Not } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
@@ -16,6 +16,7 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { MetaService } from '@/core/MetaService.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 export type FeedFormat = 'atom' | 'rss' | 'json';
@@ -42,6 +43,7 @@ export class FeedService {
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
 		private fanoutTimelineService: FanoutTimelineService,
+		private metaService: MetaService,
 	) {
 	}
 
@@ -65,8 +67,11 @@ export class FeedService {
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
+		const meta = await this.metaService.fetch();
+
 		let withFilesIds: string[] = [];
-		if (opts.withFiles) {
+
+		if (opts.withFiles && meta.enableFanoutTimeline) {
 			withFilesIds = await this.fanoutTimelineService.get(`userTimelineWithFiles:${user.id}`);
 		}
 
@@ -78,9 +83,13 @@ export class FeedService {
 				...(opts.withReplies ? {} : {
 					replyId: IsNull(),
 				}),
-				...(opts.withFiles ? {
-					id: In(withFilesIds),
-				} : {}),
+				...(opts.withFiles ?
+					meta.enableFanoutTimeline ? {
+						id: In(withFilesIds),
+					} : {
+						fileIds: Not(Equal('{}')),
+					} : {}
+				),
 			},
 			order: { id: -1 },
 			take: 20,
