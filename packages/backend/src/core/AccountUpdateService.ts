@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
@@ -14,16 +15,22 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class AccountUpdateService {
+export class AccountUpdateService implements OnModuleInit {
+	private apDeliverManagerService: ApDeliverManagerService;
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
-		private apDeliverManagerService: ApDeliverManagerService,
 		private relayService: RelayService,
 	) {
+	}
+
+	async onModuleInit() {
+		this.apDeliverManagerService = this.moduleRef.get(ApDeliverManagerService.name);
 	}
 
 	@bindThis
