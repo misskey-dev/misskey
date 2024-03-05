@@ -13,7 +13,6 @@ import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
-import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 @Injectable()
 export class UserKeypairService implements OnApplicationShutdown {
@@ -28,7 +27,6 @@ export class UserKeypairService implements OnApplicationShutdown {
 		private userKeypairsRepository: UserKeypairsRepository,
 
 		private globalEventService: GlobalEventService,
-		private accountUpdateService: AccountUpdateService,
 	) {
 		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h
@@ -56,15 +54,12 @@ export class UserKeypairService implements OnApplicationShutdown {
 		await this.refresh(userId);
 		const keypair = await this.cache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) return;
-
 		const ed25519 = await genEd25519KeyPair();
 		await this.userKeypairsRepository.update({ userId }, {
 			ed25519PublicKey: ed25519.publicKey,
 			ed25519PrivateKey: ed25519.privateKey,
 		});
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
-		// リモートに配信
-		await this.accountUpdateService.publishToFollowers(userId, true);
 	}
 
 	@bindThis
