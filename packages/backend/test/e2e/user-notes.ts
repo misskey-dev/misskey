@@ -11,9 +11,9 @@ import type * as misskey from 'misskey-js';
 
 describe('users/notes', () => {
 	let alice: misskey.entities.SignupResponse;
-	let jpgNote: any;
-	let pngNote: any;
-	let jpgPngNote: any;
+	let jpgNote: misskey.entities.Note;
+	let pngNote: misskey.entities.Note;
+	let jpgPngNote: misskey.entities.Note;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
@@ -31,7 +31,7 @@ describe('users/notes', () => {
 	}, 1000 * 60 * 2);
 
 	test('withFiles', async () => {
-		const res = await api('/users/notes', {
+		const res = await api('users/notes', {
 			userId: alice.id,
 			withFiles: true,
 		}, alice);
