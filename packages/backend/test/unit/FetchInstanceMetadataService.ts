@@ -87,7 +87,7 @@ describe('FetchInstanceMetadataService', () => {
 		expect(httpRequestService.getJson).toHaveBeenCalled();
 	});
 
-	test('Don\'t lock and update when recently updated', async () => {
+	test('Don\'t lock and update if recently updated', async () => {
 		redisClient.set = mockRedis();
 		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: new Date() } as any);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
