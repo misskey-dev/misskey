@@ -91,9 +91,10 @@ export class ApRequestService {
 	@bindThis
 	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKeyWithPem): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
+		const keyFetched = await this.userKeypairService.getLocalUserPrivateKey(key ?? user.id, level);
 		const req = await createSignedPost({
 			level,
-			key: await this.userKeypairService.getLocalUserPrivateKey(key ?? user.id, level),
+			key: keyFetched,
 			url,
 			body,
 			additionalHeaders: {
@@ -106,7 +107,7 @@ export class ApRequestService {
 			version: 'draft',
 			level,
 			url,
-			keyId: key.keyId,
+			keyId: keyFetched.keyId,
 		});
 
 		await this.httpRequestService.send(url, {
