@@ -49,17 +49,26 @@ export class UserKeypairService implements OnApplicationShutdown {
 		return await this.cache.refresh(userId);
 	}
 
+	/**
+	 *
+	 * @param userId user id
+	 * @returns Promise<boolean> true if keypair is created, false if keypair is already exists
+	 */
 	@bindThis
-	public async refreshAndprepareEd25519KeyPair(userId: MiUser['id']): Promise<void> {
+	public async refreshAndprepareEd25519KeyPair(userId: MiUser['id']): Promise<boolean> {
 		await this.refresh(userId);
 		const keypair = await this.cache.fetch(userId);
-		if (keypair.ed25519PublicKey != null) return;
+		if (keypair.ed25519PublicKey != null) {
+			return false;
+		}
+
 		const ed25519 = await genEd25519KeyPair();
 		await this.userKeypairsRepository.update({ userId }, {
 			ed25519PublicKey: ed25519.publicKey,
 			ed25519PrivateKey: ed25519.privateKey,
 		});
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
+		return true;
 	}
 
 	@bindThis

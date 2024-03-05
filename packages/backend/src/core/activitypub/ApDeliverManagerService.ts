@@ -12,8 +12,8 @@ import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
-import { UserKeypairService } from '../UserKeypairService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import { UserKeypairService } from '../UserKeypairService.js';
 
 interface IRecipe {
 	type: string;
@@ -112,9 +112,11 @@ class DeliverManager {
 			/**
 			 * ed25519の署名がなければ追加する
 			 */
-			await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
-			// リモートに配信
-			await this.accountUpdateService.publishToFollowers(this.actor.id, true);
+			const created = await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
+			if (created) {
+				// リモートに配信
+				await this.accountUpdateService.publishToFollowers(this.actor.id, true);
+			}
 		}
 		//#endregion
 
