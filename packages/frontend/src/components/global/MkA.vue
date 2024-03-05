@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,9 +14,8 @@ import { computed } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
-import { popout as popout_ } from '@/scripts/popout.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/router/supplier.js';
 
 const props = withDefaults(defineProps<{
 	to: string;

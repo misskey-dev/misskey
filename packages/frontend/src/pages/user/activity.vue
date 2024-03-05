@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-activity"></i> Heatmap</template>
-			<XHeatmap :user="user" :src="'notes'"/>
+			<MkHeatmap :user="user" :src="'notes'"/>
 		</MkFoldableSection>
 		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-pencil"></i> Notes</template>
@@ -28,11 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import XHeatmap from './activity.heatmap.vue';
 import XPv from './activity.pv.vue';
 import XNotes from './activity.notes.vue';
 import XFollowing from './activity.following.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkHeatmap from '@/components/MkHeatmap.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User;

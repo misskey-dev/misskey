@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,11 +9,13 @@ import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
 
 export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	secure: true,
 
 	description: 'Register to receive push notifications.',
 
@@ -65,6 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private idService: IdService,
 		private metaService: MetaService,
+		private pushNotificationService: PushNotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// if already subscribed
@@ -95,6 +98,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				publickey: ps.publickey,
 				sendReadMessage: ps.sendReadMessage,
 			});
+
+			this.pushNotificationService.refreshCache(me.id);
 
 			return {
 				state: 'subscribed' as const,

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
+import { ref, shallowRef, toRefs } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -42,8 +41,8 @@ const { modelValue } = toRefs(props);
 const v = ref(modelValue.value);
 const inputEl = shallowRef<HTMLElement>();
 
-const onInput = (ev: KeyboardEvent) => {
-	emit('update:modelValue', v.value);
+const onInput = () => {
+	emit('update:modelValue', v.value ?? '');
 };
 </script>
 

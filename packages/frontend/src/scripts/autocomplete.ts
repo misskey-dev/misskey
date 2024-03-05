@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,17 +8,20 @@ import getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode/';
 import { popup } from '@/os.js';
 
+export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';
+
 export class Autocomplete {
 	private suggestion: {
 		x: Ref<number>;
 		y: Ref<number>;
-		q: Ref<string | null>;
+		q: Ref<any>;
 		close: () => void;
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;
 	private currentType: string;
-	private textRef: Ref<string>;
+	private textRef: Ref<string | number | null>;
 	private opening: boolean;
+	private onlyType: SuggestionType[];
 
 	private get text(): string {
 		// Use raw .value to get the latest value
@@ -35,7 +38,7 @@ export class Autocomplete {
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
-	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
+	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string | number | null>, onlyType?: SuggestionType[]) {
 		//#region BIND
 		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);
@@ -46,6 +49,7 @@ export class Autocomplete {
 		this.textarea = textarea;
 		this.textRef = textRef;
 		this.opening = false;
+		this.onlyType = onlyType ?? ['user', 'hashtag', 'emoji', 'mfmTag', 'mfmParam'];
 
 		this.attach();
 	}
@@ -76,6 +80,7 @@ export class Autocomplete {
 		const hashtagIndex = text.lastIndexOf('#');
 		const emojiIndex = text.lastIndexOf(':');
 		const mfmTagIndex = text.lastIndexOf('$');
+		const mfmParamIndex = text.lastIndexOf('.');
 
 		const max = Math.max(
 			mentionIndex,
@@ -88,14 +93,17 @@ export class Autocomplete {
 			return;
 		}
 
+		const afterLastMfmParam = text.split(/\$\[[a-zA-Z]+/).pop();
+
 		const isMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
-		const isMfmTag = mfmTagIndex !== -1;
+		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam?.includes(' ');
+		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 
 		let opened = false;
 
-		if (isMention) {
+		if (isMention && this.onlyType.includes('user')) {
 			const username = text.substring(mentionIndex + 1);
 			if (username !== '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
@@ -106,7 +114,7 @@ export class Autocomplete {
 			}
 		}
 
-		if (isHashtag && !opened) {
+		if (isHashtag && !opened && this.onlyType.includes('hashtag')) {
 			const hashtag = text.substring(hashtagIndex + 1);
 			if (!hashtag.includes(' ')) {
 				this.open('hashtag', hashtag);
@@ -114,7 +122,7 @@ export class Autocomplete {
 			}
 		}
 
-		if (isEmoji && !opened) {
+		if (isEmoji && !opened && this.onlyType.includes('emoji')) {
 			const emoji = text.substring(emojiIndex + 1);
 			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);
@@ -122,10 +130,21 @@ export class Autocomplete {
 			}
 		}
 
-		if (isMfmTag && !opened) {
+		if (isMfmTag && !opened && this.onlyType.includes('mfmTag')) {
 			const mfmTag = text.substring(mfmTagIndex + 1);
 			if (!mfmTag.includes(' ')) {
 				this.open('mfmTag', mfmTag.replace('[', ''));
+				opened = true;
+			}
+		}
+
+		if (isMfmParam && !opened && this.onlyType.includes('mfmParam')) {
+			const mfmParam = text.substring(mfmParamIndex + 1);
+			if (!mfmParam.includes(' ')) {
+				this.open('mfmParam', {
+					tag: text.substring(mfmTagIndex + 2, mfmParamIndex),
+					params: mfmParam.split(','),
+				});
 				opened = true;
 			}
 		}
@@ -138,7 +157,7 @@ export class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private async open(type: string, q: string | null) {
+	private async open(type: string, q: any) {
 		if (type !== this.currentType) {
 			this.close();
 		}
@@ -274,6 +293,22 @@ export class Autocomplete {
 			nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + (value.length + 3);
+				this.textarea.setSelectionRange(pos, pos);
+			});
+		} else if (type === 'mfmParam') {
+			const source = this.text;
+
+			const before = source.substring(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf('.'));
+			const after = source.substring(caret);
+
+			// 挿入
+			this.text = `${trimmedBefore}.${value}${after}`;
+
+			// キャレットを戻す
+			nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + (value.length + 1);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		}

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,15 +11,16 @@ import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
+import fastifyCors from '@fastify/cors';
 import fastifyView from '@fastify/view';
 import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { mf2 } from 'microformats-parser';
+import { permissions as kinds } from 'misskey-js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { kinds } from '@/misc/api-permissions.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -348,25 +349,25 @@ export class OAuth2ProviderService {
 		}));
 	}
 
+	// https://datatracker.ietf.org/doc/html/rfc8414.html
+	// https://indieauth.spec.indieweb.org/#indieauth-server-metadata
+	public generateRFC8414() {
+		return {
+			issuer: this.config.url,
+			authorization_endpoint: new URL('/oauth/authorize', this.config.url),
+			token_endpoint: new URL('/oauth/token', this.config.url),
+			scopes_supported: kinds,
+			response_types_supported: ['code'],
+			grant_types_supported: ['authorization_code'],
+			service_documentation: 'https://misskey-hub.net',
+			code_challenge_methods_supported: ['S256'],
+			authorization_response_iss_parameter_supported: true,
+		};
+	}
+
 	@bindThis
 	public async createServer(fastify: FastifyInstance): Promise<void> {
-		// https://datatracker.ietf.org/doc/html/rfc8414.html
-		// https://indieauth.spec.indieweb.org/#indieauth-server-metadata
-		fastify.get('/.well-known/oauth-authorization-server', async (_request, reply) => {
-			reply.send({
-				issuer: this.config.url,
-				authorization_endpoint: new URL('/oauth/authorize', this.config.url),
-				token_endpoint: new URL('/oauth/token', this.config.url),
-				scopes_supported: kinds,
-				response_types_supported: ['code'],
-				grant_types_supported: ['authorization_code'],
-				service_documentation: 'https://misskey-hub.net',
-				code_challenge_methods_supported: ['S256'],
-				authorization_response_iss_parameter_supported: true,
-			});
-		});
-
-		fastify.get('/oauth/authorize', async (request, reply) => {
+		fastify.get('/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as MiddlewareRequest).oauth2;
 			if (!oauth2) {
 				throw new Error('Unexpected lack of authorization information');
@@ -381,8 +382,7 @@ export class OAuth2ProviderService {
 				scope: oauth2.req.scope.join(' '),
 			});
 		});
-		fastify.post('/oauth/decision', async () => { });
-		fastify.post('/oauth/token', async () => { });
+		fastify.post('/decision', async () => { });
 
 		fastify.register(fastifyView, {
 			root: fileURLToPath(new URL('../web/views', import.meta.url)),
@@ -394,7 +394,7 @@ export class OAuth2ProviderService {
 		});
 
 		await fastify.register(fastifyExpress);
-		fastify.use('/oauth/authorize', this.#server.authorize(((areq, done) => {
+		fastify.use('/authorize', this.#server.authorize(((areq, done) => {
 			(async (): Promise<Parameters<typeof done>> => {
 				// This should return client/redirectURI AND the error, or
 				// the handler can't send error to the redirection URI
@@ -426,7 +426,7 @@ export class OAuth2ProviderService {
 				}
 
 				try {
-					const scopes = [...new Set(scope)].filter(s => kinds.includes(s));
+					const scopes = [...new Set(scope)].filter(s => (<readonly string[]>kinds).includes(s));
 					if (!scopes.length) {
 						throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
 					}
@@ -448,30 +448,24 @@ export class OAuth2ProviderService {
 				return [null, clientInfo, redirectURI];
 			})().then(args => done(...args), err => done(err));
 		}) as ValidateFunctionArity2));
-		fastify.use('/oauth/authorize', this.#server.errorHandler({
+		fastify.use('/authorize', this.#server.errorHandler({
 			mode: 'indirect',
 			modes: getQueryMode(this.config.url),
 		}));
-		fastify.use('/oauth/authorize', this.#server.errorHandler());
+		fastify.use('/authorize', this.#server.errorHandler());
 
-		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
-		fastify.use('/oauth/decision', this.#server.decision((req, done) => {
+		fastify.use('/decision', bodyParser.urlencoded({ extended: false }));
+		fastify.use('/decision', this.#server.decision((req, done) => {
 			const { body } = req as OAuth2DecisionRequest;
 			this.#logger.info(`Received the decision. Cancel: ${!!body.cancel}`);
 			req.user = body.login_token;
 			done(null, undefined);
 		}));
-		fastify.use('/oauth/decision', this.#server.errorHandler());
-
-		// Clients may use JSON or urlencoded
-		fastify.use('/oauth/token', bodyParser.urlencoded({ extended: false }));
-		fastify.use('/oauth/token', bodyParser.json({ strict: true }));
-		fastify.use('/oauth/token', this.#server.token());
-		fastify.use('/oauth/token', this.#server.errorHandler());
+		fastify.use('/decision', this.#server.errorHandler());
 
 		// Return 404 for any unknown paths under /oauth so that clients can know
 		// whether a certain endpoint is supported or not.
-		fastify.all('/oauth/*', async (_request, reply) => {
+		fastify.all('/*', async (_request, reply) => {
 			reply.code(404);
 			reply.send({
 				error: {
@@ -482,5 +476,18 @@ export class OAuth2ProviderService {
 				},
 			});
 		});
+	}
+
+	@bindThis
+	public async createTokenServer(fastify: FastifyInstance): Promise<void> {
+		fastify.register(fastifyCors);
+		fastify.post('', async () => { });
+
+		await fastify.register(fastifyExpress);
+		// Clients may use JSON or urlencoded
+		fastify.use('', bodyParser.urlencoded({ extended: false }));
+		fastify.use('', bodyParser.json({ strict: true }));
+		fastify.use('', this.#server.token());
+		fastify.use('', this.#server.errorHandler());
 	}
 }

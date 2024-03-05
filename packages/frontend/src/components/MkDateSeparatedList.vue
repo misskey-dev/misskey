@@ -1,16 +1,16 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
-import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
+import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list';
+import { MisskeyEntity } from '@/types/date-separated-list.js';
 
 export default defineComponent({
 	props: {
@@ -46,7 +46,7 @@ export default defineComponent({
 		function getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
-			return i18n.t('monthAndDay', {
+			return i18n.tsx.monthAndDay({
 				month: month.toString(),
 				day: date.toString(),
 			});
@@ -118,34 +118,36 @@ export default defineComponent({
 			return children;
 		};
 
-		function onBeforeLeave(el: HTMLElement) {
+		function onBeforeLeave(element: Element) {
+			const el = element as HTMLElement;
 			el.style.top = `${el.offsetTop}px`;
 			el.style.left = `${el.offsetLeft}px`;
 		}
 
-		function onLeaveCanceled(el: HTMLElement) {
+		function onLeaveCancelled(element: Element) {
+			const el = element as HTMLElement;
 			el.style.top = '';
 			el.style.left = '';
 		}
 
-		return () => h(
-			defaultStore.state.animation ? TransitionGroup : 'div',
-			{
-				class: {
-					[$style['date-separated-list']]: true,
-					[$style['date-separated-list-nogap']]: props.noGap,
-					[$style['reversed']]: props.reversed,
-					[$style['direction-down']]: props.direction === 'down',
-					[$style['direction-up']]: props.direction === 'up',
-				},
-				...(defaultStore.state.animation ? {
-					name: 'list',
-					tag: 'div',
-					onBeforeLeave,
-					onLeaveCanceled,
-				} : {}),
-			},
-			{ default: renderChildren });
+		// eslint-disable-next-line vue/no-setup-props-destructure
+		const classes = {
+			[$style['date-separated-list']]: true,
+			[$style['date-separated-list-nogap']]: props.noGap,
+			[$style['reversed']]: props.reversed,
+			[$style['direction-down']]: props.direction === 'down',
+			[$style['direction-up']]: props.direction === 'up',
+		};
+
+		return () => defaultStore.state.animation ? h(TransitionGroup, {
+			class: classes,
+			name: 'list',
+			tag: 'div',
+			onBeforeLeave,
+			onLeaveCancelled,
+		}, { default: renderChildren }) : h('div', {
+			class: classes,
+		}, { default: renderChildren });
 	},
 });
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -35,7 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -47,17 +49,17 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-const list = ref(null);
+const list = ref<Misskey.entities.UserList | null>(null);
 const error = ref();
-const users = ref([]);
+const users = ref<Misskey.entities.UserDetailed[]>([]);
 
 function fetchList(): void {
-	os.api('users/lists/show', {
+	misskeyApi('users/lists/show', {
 		listId: props.listId,
 		forPublic: true,
 	}).then(_list => {
 		list.value = _list;
-		os.api('users/show', {
+		misskeyApi('users/show', {
 			userIds: list.value.userIds,
 		}).then(_users => {
 			users.value = _users;
@@ -99,10 +101,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => list.value ? {
-	title: list.value.name,
+definePageMetadata(() => ({
+	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
-} : null));
+}));
 </script>
 <style lang="scss" module>
 .main {

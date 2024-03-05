@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,7 +10,11 @@ import { i18n } from '@/i18n.js';
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-export const getNoteSummary = (note: Misskey.entities.Note): string => {
+export const getNoteSummary = (note?: Misskey.entities.Note | null): string => {
+	if (note == null) {
+		return '';
+	}
+
 	if (note.deletedAt) {
 		return `(${i18n.ts.deletedNote})`;
 	}
@@ -30,7 +34,7 @@ export const getNoteSummary = (note: Misskey.entities.Note): string => {
 
 	// ファイルが添付されているとき
 	if ((note.files || []).length !== 0) {
-		summary += ` (${i18n.t('withNFiles', { n: note.files.length })})`;
+		summary += ` (${i18n.tsx.withNFiles({ n: note.files.length })})`;
 	}
 
 	// 投票が添付されているとき

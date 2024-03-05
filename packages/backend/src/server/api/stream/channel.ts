@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ export default abstract class Channel {
 	public abstract readonly chName: string;
 	public static readonly shouldShare: boolean;
 	public static readonly requireCredential: boolean;
+	public static readonly kind?: string | null;
 
 	protected get user() {
 		return this.connection.user;
@@ -75,4 +76,11 @@ export default abstract class Channel {
 	public dispose?(): void;
 
 	public onMessage?(type: string, body: any): void;
+}
+
+export type MiChannelService<T extends boolean> = {
+	shouldShare: boolean;
+	requireCredential: T;
+	kind: T extends true ? string : string | null | undefined;
+	create: (id: string, connection: Connection) => Channel;
 }

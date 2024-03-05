@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -208,6 +208,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportClips from './endpoints/i/export-clips.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
@@ -292,6 +293,7 @@ import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
+import * as ep___notifications_flush from './endpoints/notifications/flush.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
 import * as ep___notifications_testNotification from './endpoints/notifications/test-notification.js';
 import * as ep___pagePush from './endpoints/page-push.js';
@@ -363,6 +365,15 @@ import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
+import * as ep___bubbleGame_register from './endpoints/bubble-game/register.js';
+import * as ep___bubbleGame_ranking from './endpoints/bubble-game/ranking.js';
+import * as ep___reversi_cancelMatch from './endpoints/reversi/cancel-match.js';
+import * as ep___reversi_games from './endpoints/reversi/games.js';
+import * as ep___reversi_match from './endpoints/reversi/match.js';
+import * as ep___reversi_invitations from './endpoints/reversi/invitations.js';
+import * as ep___reversi_showGame from './endpoints/reversi/show-game.js';
+import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
+import * as ep___reversi_verify from './endpoints/reversi/verify.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -569,6 +580,7 @@ const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass:
 const $i_exportFollowing: Provider = { provide: 'ep:i/export-following', useClass: ep___i_exportFollowing.default };
 const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_exportMute.default };
 const $i_exportNotes: Provider = { provide: 'ep:i/export-notes', useClass: ep___i_exportNotes.default };
+const $i_exportClips: Provider = { provide: 'ep:i/export-clips', useClass: ep___i_exportClips.default };
 const $i_exportFavorites: Provider = { provide: 'ep:i/export-favorites', useClass: ep___i_exportFavorites.default };
 const $i_exportUserLists: Provider = { provide: 'ep:i/export-user-lists', useClass: ep___i_exportUserLists.default };
 const $i_exportAntennas: Provider = { provide: 'ep:i/export-antennas', useClass: ep___i_exportAntennas.default };
@@ -653,6 +665,7 @@ const $notes_translate: Provider = { provide: 'ep:notes/translate', useClass: ep
 const $notes_unrenote: Provider = { provide: 'ep:notes/unrenote', useClass: ep___notes_unrenote.default };
 const $notes_userListTimeline: Provider = { provide: 'ep:notes/user-list-timeline', useClass: ep___notes_userListTimeline.default };
 const $notifications_create: Provider = { provide: 'ep:notifications/create', useClass: ep___notifications_create.default };
+const $notifications_flush: Provider = { provide: 'ep:notifications/flush', useClass: ep___notifications_flush.default };
 const $notifications_markAllAsRead: Provider = { provide: 'ep:notifications/mark-all-as-read', useClass: ep___notifications_markAllAsRead.default };
 const $notifications_testNotification: Provider = { provide: 'ep:notifications/test-notification', useClass: ep___notifications_testNotification.default };
 const $pagePush: Provider = { provide: 'ep:page-push', useClass: ep___pagePush.default };
@@ -724,6 +737,15 @@ const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass:
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $fetchExternalResources: Provider = { provide: 'ep:fetch-external-resources', useClass: ep___fetchExternalResources.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
+const $bubbleGame_register: Provider = { provide: 'ep:bubble-game/register', useClass: ep___bubbleGame_register.default };
+const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useClass: ep___bubbleGame_ranking.default };
+const $reversi_cancelMatch: Provider = { provide: 'ep:reversi/cancel-match', useClass: ep___reversi_cancelMatch.default };
+const $reversi_games: Provider = { provide: 'ep:reversi/games', useClass: ep___reversi_games.default };
+const $reversi_match: Provider = { provide: 'ep:reversi/match', useClass: ep___reversi_match.default };
+const $reversi_invitations: Provider = { provide: 'ep:reversi/invitations', useClass: ep___reversi_invitations.default };
+const $reversi_showGame: Provider = { provide: 'ep:reversi/show-game', useClass: ep___reversi_showGame.default };
+const $reversi_surrender: Provider = { provide: 'ep:reversi/surrender', useClass: ep___reversi_surrender.default };
+const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep___reversi_verify.default };
 
 @Module({
 	imports: [
@@ -934,6 +956,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportClips,
 		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_exportAntennas,
@@ -1018,6 +1041,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_unrenote,
 		$notes_userListTimeline,
 		$notifications_create,
+		$notifications_flush,
 		$notifications_markAllAsRead,
 		$notifications_testNotification,
 		$pagePush,
@@ -1089,6 +1113,15 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$fetchRss,
 		$fetchExternalResources,
 		$retention,
+		$bubbleGame_register,
+		$bubbleGame_ranking,
+		$reversi_cancelMatch,
+		$reversi_games,
+		$reversi_match,
+		$reversi_invitations,
+		$reversi_showGame,
+		$reversi_surrender,
+		$reversi_verify,
 	],
 	exports: [
 		$admin_meta,
@@ -1293,6 +1326,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportClips,
 		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_exportAntennas,
@@ -1377,7 +1411,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_unrenote,
 		$notes_userListTimeline,
 		$notifications_create,
+		$notifications_flush,
 		$notifications_markAllAsRead,
+		$notifications_testNotification,
 		$pagePush,
 		$pages_create,
 		$pages_delete,
@@ -1445,6 +1481,15 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$fetchRss,
 		$fetchExternalResources,
 		$retention,
+		$bubbleGame_register,
+		$bubbleGame_ranking,
+		$reversi_cancelMatch,
+		$reversi_games,
+		$reversi_match,
+		$reversi_invitations,
+		$reversi_showGame,
+		$reversi_surrender,
+		$reversi_verify,
 	],
 })
 export class EndpointsModule {}

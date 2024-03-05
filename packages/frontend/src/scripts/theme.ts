@@ -1,11 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { deepClone } from './clone.js';
+import type { BuiltinTheme } from 'shiki';
 import { globalEvents } from '@/events.js';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
@@ -18,6 +19,13 @@ export type Theme = {
 	desc?: string;
 	base?: 'dark' | 'light';
 	props: Record<string, string>;
+	codeHighlighter?: {
+		base: BuiltinTheme;
+		overrides?: Record<string, any>;
+	} | {
+		base: '_none_';
+		overrides: Record<string, any>;
+	};
 };
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
@@ -53,7 +61,7 @@ export const getBuiltinThemesRef = () => {
 	return builtinThemes;
 };
 
-let timeout = null;
+let timeout: number | null = null;
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) window.clearTimeout(timeout);

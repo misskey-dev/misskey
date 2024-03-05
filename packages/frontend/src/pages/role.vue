@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -37,7 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
-import * as os from '@/os.js';
+import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -53,16 +54,16 @@ const props = withDefaults(defineProps<{
 });
 
 const tab = ref(props.initialTab);
-const role = ref();
+const role = ref<Misskey.entities.Role>();
 const error = ref();
 const visible = ref(false);
 
 watch(() => props.role, () => {
-	os.api('roles/show', {
+	misskeyApi('roles/show', {
 		roleId: props.role,
 	}).then(res => {
 		role.value = res;
-		document.title = `${role.value?.name} | ${instanceName}`;
+		document.title = `${role.value.name} | ${instanceName}`;
 		visible.value = res.isExplorable && res.isPublic;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
@@ -92,10 +93,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.timeline,
 }]);
 
-definePageMetadata(computed(() => ({
-	title: role.value?.name,
+definePageMetadata(() => ({
+	title: role.value ? role.value.name : i18n.ts.role,
 	icon: 'ti ti-badge',
-})));
+}));
 </script>
 
 <style lang="scss" module>

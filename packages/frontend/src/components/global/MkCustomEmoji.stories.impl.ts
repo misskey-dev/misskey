@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -46,5 +46,20 @@ export const Missing = {
 	...Default,
 	args: {
 		name: Default.args.name,
+	},
+} satisfies StoryObj<typeof MkCustomEmoji>;
+export const ErrorToText = {
+	...Default,
+	args: {
+		url: 'https://example.com/404',
+		name: Default.args.name,
+	},
+} satisfies StoryObj<typeof MkCustomEmoji>;
+export const ErrorToImage = {
+	...Default,
+	args: {
+		url: 'https://example.com/404',
+		name: Default.args.name,
+		fallbackToImage: true,
 	},
 } satisfies StoryObj<typeof MkCustomEmoji>;

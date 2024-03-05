@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.used }}</span>
 					<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.format }}</span>
 					<span v-else-if="emailState === 'unavailable:disposable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.disposable }}</span>
+					<span v-else-if="emailState === 'unavailable:banned'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.banned }}</span>
 					<span v-else-if="emailState === 'unavailable:mx'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.mx }}</span>
 					<span v-else-if="emailState === 'unavailable:smtp'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.smtp }}</span>
 					<span v-else-if="emailState === 'unavailable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.unavailable }}</span>
@@ -62,6 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkInput>
 			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
+			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
 			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
 			<MkButton type="submit" :disabled="shouldDisableSubmitting" large gradate rounded data-cy-signup-submit style="margin: 0 auto;">
@@ -78,12 +80,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { toUnicode } from 'punycode/';
+import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
-import MkSwitch from './MkSwitch.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 import * as config from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -95,7 +98,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'signup', user: Record<string, any>): void;
+	(ev: 'signup', user: Misskey.entities.SigninResponse): void;
 	(ev: 'signupEmailPending'): void;
 }>();
 
@@ -111,19 +114,21 @@ const retypedPassword = ref<string>('');
 const invitationCode = ref<string>('');
 const email = ref('');
 const usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
-const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
+const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:banned' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
 const passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
 const passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
 const submitting = ref<boolean>(false);
-const hCaptchaResponse = ref(null);
-const reCaptchaResponse = ref(null);
-const turnstileResponse = ref(null);
+const hCaptchaResponse = ref<string | null>(null);
+const mCaptchaResponse = ref<string | null>(null);
+const reCaptchaResponse = ref<string | null>(null);
+const turnstileResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
 const emailAbortController = ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
 		instance.enableHcaptcha && !hCaptchaResponse.value ||
+		instance.enableMcaptcha && !mCaptchaResponse.value ||
 		instance.enableRecaptcha && !reCaptchaResponse.value ||
 		instance.enableTurnstile && !turnstileResponse.value ||
 		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
@@ -180,7 +185,7 @@ function onChangeUsername(): void {
 	usernameState.value = 'wait';
 	usernameAbortController.value = new AbortController();
 
-	os.api('username/available', {
+	misskeyApi('username/available', {
 		username: username.value,
 	}, undefined, usernameAbortController.value.signal).then(result => {
 		usernameState.value = result.available ? 'ok' : 'unavailable';
@@ -203,13 +208,14 @@ function onChangeEmail(): void {
 	emailState.value = 'wait';
 	emailAbortController.value = new AbortController();
 
-	os.api('email-address/available', {
+	misskeyApi('email-address/available', {
 		emailAddress: email.value,
 	}, undefined, emailAbortController.value.signal).then(result => {
 		emailState.value = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
 			result.reason === 'disposable' ? 'unavailable:disposable' :
+			result.reason === 'banned' ? 'unavailable:banned' :
 			result.reason === 'mx' ? 'unavailable:mx' :
 			result.reason === 'smtp' ? 'unavailable:smtp' :
 			'unavailable';
@@ -244,12 +250,13 @@ async function onSubmit(): Promise<void> {
 	submitting.value = true;
 
 	try {
-		await os.api('signup', {
+		await misskeyApi('signup', {
 			username: username.value,
 			password: password.value,
 			emailAddress: email.value,
 			invitationCode: invitationCode.value,
 			'hcaptcha-response': hCaptchaResponse.value,
+			'm-captcha-response': mCaptchaResponse.value,
 			'g-recaptcha-response': reCaptchaResponse.value,
 			'turnstile-response': turnstileResponse.value,
 		});
@@ -257,11 +264,11 @@ async function onSubmit(): Promise<void> {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
-				text: i18n.t('_signup.emailSent', { email: email.value }),
+				text: i18n.tsx._signup.emailSent({ email: email.value }),
 			});
 			emit('signupEmailPending');
 		} else {
-			const res = await os.api('signin', {
+			const res = await misskeyApi('signin', {
 				username: username.value,
 				password: password.value,
 			});

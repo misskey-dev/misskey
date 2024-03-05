@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -30,8 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { instance } from '@/instance.js';
+import { ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -40,7 +39,9 @@ import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { chooseFileFromPc } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const name = ref($i.name ?? '');
 const description = ref($i.description ?? '');
@@ -69,7 +70,7 @@ function setAvatar(ev) {
 
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.t('cropImageAsk'),
+			text: i18n.ts.cropImageAsk,
 			okText: i18n.ts.cropYes,
 			cancelText: i18n.ts.cropNo,
 		});

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,7 +32,7 @@ import { onActivated, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache } from '@/cache';
+import { antennasCache } from '@/cache.js';
 import { infoImageUrl } from '@/instance.js';
 
 const antennas = computed(() => antennasCache.value.value ?? []);
@@ -55,10 +55,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.manageAntennas,
 	icon: 'ti ti-antenna',
-});
+}));
 
 onActivated(() => {
 	antennasCache.fetch();

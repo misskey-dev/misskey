@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -60,9 +61,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => {
-					qb
-						.where(`'{"${me.id}"}' <@ note.mentions`)
-						.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
+					qb // このmeIdAsListパラメータはqueryServiceのgenerateVisibilityQueryでセットされる
+						.where(':meIdAsList <@ note.mentions')
+						.orWhere(':meIdAsList <@ note.visibleUserIds');
 				}))
 				// Avoid scanning primary key index
 				.orderBy('CONCAT(note.id)', 'DESC')

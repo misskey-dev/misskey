@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -42,11 +42,12 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const origin = ref('local');
-const type = ref(null);
+const type = ref<string | null>(null);
 const searchHost = ref('');
 const userId = ref('');
 const viewMode = ref('grid');
@@ -79,11 +80,11 @@ function show(file) {
 async function find() {
 	const { canceled, result: q } = await os.inputText({
 		title: i18n.ts.fileIdOrUrl,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 
-	os.api('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
+	misskeyApi('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
 		show(file);
 	}).catch(err => {
 		if (err.code === 'NO_SUCH_FILE') {
@@ -107,8 +108,8 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.files,
 	icon: 'ti ti-cloud',
-})));
+}));
 </script>

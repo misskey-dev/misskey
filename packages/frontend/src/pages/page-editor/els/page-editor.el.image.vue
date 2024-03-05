@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,9 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
 import { onMounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -35,7 +37,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-const file = ref<any>(null);
+const file = ref<Misskey.entities.DriveFile | null>(null);
 
 async function choose() {
 	os.selectDriveFile(false).then((fileResponse) => {
@@ -51,7 +53,7 @@ onMounted(async () => {
 	if (props.modelValue.fileId == null) {
 		await choose();
 	} else {
-		os.api('drive/files/show', {
+		misskeyApi('drive/files/show', {
 			fileId: props.modelValue.fileId,
 		}).then(fileResponse => {
 			file.value = fileResponse;

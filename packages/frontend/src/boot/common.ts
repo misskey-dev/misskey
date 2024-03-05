@@ -1,30 +1,28 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
+import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, ui, lang, updateLocale } from '@/config.js';
+import { version, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { i18n, updateI18n } from '@/i18n.js';
-import { confirm, alert, post, popup, toast } from '@/os.js';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { updateI18n } from '@/i18n.js';
+import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { mainRouter } from '@/router.js';
+import { setupRouter } from '@/router/definition.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -62,12 +60,6 @@ export async function common(createVue: () => App<Element>) {
 		});
 	}
 
-	const splash = document.getElementById('splash');
-	// 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
-	if (splash) splash.addEventListener('transitionend', () => {
-		splash.remove();
-	});
-
 	let isClientUpdated = false;
 
 	//#region クライアントが更新されたかチェック
@@ -88,7 +80,7 @@ export async function common(createVue: () => App<Element>) {
 
 	//#region Detect language & fetch translations
 	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
 	if (localeOutdated) {
 		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
 		if (res.status === 200) {
@@ -244,6 +236,8 @@ export async function common(createVue: () => App<Element>) {
 
 	const app = createVue();
 
+	setupRouter(app);
+
 	if (_DEV_) {
 		app.config.performance = true;
 	}
@@ -289,5 +283,10 @@ function removeSplash() {
 	if (splash) {
 		splash.style.opacity = '0';
 		splash.style.pointerEvents = 'none';
+
+		// transitionendイベントが発火しない場合があるため
+		window.setTimeout(() => {
+			splash.remove();
+		}, 1000);
 	}
 }

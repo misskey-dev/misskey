@@ -1,10 +1,13 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<KeepAlive :max="defaultStore.state.numberOfPageCache">
+<KeepAlive
+	:max="defaultStore.state.numberOfPageCache"
+	:exclude="pageCacheController"
+>
 	<Suspense :timeout="0">
 		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
 
@@ -16,12 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, onBeforeUnmount, provide, shallowRef, ref } from 'vue';
-import { Resolved, Router } from '@/nirax';
+import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
+import { IRouter, Resolved, RouteDef } from '@/nirax.js';
 import { defaultStore } from '@/store.js';
+import { globalEvents } from '@/events.js';
+import MkLoadingPage from '@/pages/_loading_.vue';
 
 const props = defineProps<{
-	router?: Router;
+	router?: IRouter;
 }>();
 
 const router = props.router ?? inject('router');
@@ -46,19 +51,46 @@ function resolveNested(current: Resolved, d = 0): Resolved | null {
 }
 
 const current = resolveNested(router.current)!;
-const currentPageComponent = shallowRef(current.route.component);
+const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
 const currentPageProps = ref(current.props);
 const key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
 
 function onChange({ resolved, key: newKey }) {
 	const current = resolveNested(resolved);
-	if (current == null) return;
+	if (current == null || 'redirect' in current.route) return;
 	currentPageComponent.value = current.route.component;
 	currentPageProps.value = current.props;
 	key.value = current.route.path + JSON.stringify(Object.fromEntries(current.props));
+
+	nextTick(() => {
+		// ページ遷移完了後に再びキャッシュを有効化
+		if (clearCacheRequested.value) {
+			clearCacheRequested.value = false;
+		}
+	});
 }
 
 router.addListener('change', onChange);
+
+// #region キャッシュ制御
+
+/**
+ * キャッシュクリアが有効になったら、全キャッシュをクリアする
+ *
+ * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
+ * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
+ */
+const pageCacheController = computed(() => clearCacheRequested.value ? /.*/ : undefined);
+const clearCacheRequested = ref(false);
+
+globalEvents.on('requestClearPageCache', () => {
+	if (_DEV_) console.log('clear page cache requested');
+	if (!clearCacheRequested.value) {
+		clearCacheRequested.value = true;
+	}
+});
+
+// #endregion
 
 onBeforeUnmount(() => {
 	router.removeListener('change', onChange);

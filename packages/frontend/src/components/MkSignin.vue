@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -59,6 +59,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { host as configHost } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
@@ -71,8 +72,6 @@ const host = ref(toUnicode(configHost));
 const totpLogin = ref(false);
 const queryingKey = ref(false);
 const credentialRequest = ref<CredentialRequestOptions | null>(null);
-const hCaptchaResponse = ref(null);
-const reCaptchaResponse = ref(null);
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -97,7 +96,7 @@ const props = defineProps({
 });
 
 function onUsernameChange(): void {
-	os.api('users/show', {
+	misskeyApi('users/show', {
 		username: username.value,
 	}).then(userResponse => {
 		user.value = userResponse;
@@ -113,6 +112,7 @@ function onLogin(res: any): Promise<void> | void {
 }
 
 async function queryKey(): Promise<void> {
+	if (credentialRequest.value == null) return;
 	queryingKey.value = true;
 	await webAuthnRequest(credentialRequest.value)
 		.catch(() => {
@@ -122,12 +122,10 @@ async function queryKey(): Promise<void> {
 			credentialRequest.value = null;
 			queryingKey.value = false;
 			signing.value = true;
-			return os.api('signin', {
+			return misskeyApi('signin', {
 				username: username.value,
 				password: password.value,
 				credential: credential.toJSON(),
-				'hcaptcha-response': hCaptchaResponse.value,
-				'g-recaptcha-response': reCaptchaResponse.value,
 			});
 		}).then(res => {
 			emit('login', res);
@@ -146,11 +144,9 @@ function onSubmit(): void {
 	signing.value = true;
 	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
 		if (webAuthnSupported() && user.value.securityKeys) {
-			os.api('signin', {
+			misskeyApi('signin', {
 				username: username.value,
 				password: password.value,
-				'hcaptcha-response': hCaptchaResponse.value,
-				'g-recaptcha-response': reCaptchaResponse.value,
 			}).then(res => {
 				totpLogin.value = true;
 				signing.value = false;
@@ -165,11 +161,9 @@ function onSubmit(): void {
 			signing.value = false;
 		}
 	} else {
-		os.api('signin', {
+		misskeyApi('signin', {
 			username: username.value,
 			password: password.value,
-			'hcaptcha-response': hCaptchaResponse.value,
-			'g-recaptcha-response': reCaptchaResponse.value,
 			token: user.value?.twoFactorEnabled ? token.value : undefined,
 		}).then(res => {
 			emit('login', res);

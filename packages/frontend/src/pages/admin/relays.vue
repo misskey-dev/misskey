@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-if="relay.status === 'accepted'" class="ti ti-check" :class="$style.icon" style="color: var(--success);"></i>
 					<i v-else-if="relay.status === 'rejected'" class="ti ti-ban" :class="$style.icon" style="color: var(--error);"></i>
 					<i v-else class="ti ti-clock" :class="$style.icon"></i>
-					<span>{{ i18n.t(`_relayStatus.${relay.status}`) }}</span>
+					<span>{{ i18n.ts._relayStatus[relay.status] }}</span>
 				</div>
 				<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>
@@ -25,13 +25,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const relays = ref<any[]>([]);
+const relays = ref<Misskey.entities.AdminRelaysListResponse>([]);
 
 async function addRelay() {
 	const { canceled, result: inbox } = await os.inputText({
@@ -40,7 +42,7 @@ async function addRelay() {
 		placeholder: i18n.ts.inboxUrl,
 	});
 	if (canceled) return;
-	os.api('admin/relays/add', {
+	misskeyApi('admin/relays/add', {
 		inbox,
 	}).then((relay: any) => {
 		refresh();
@@ -53,7 +55,7 @@ async function addRelay() {
 }
 
 function remove(inbox: string) {
-	os.api('admin/relays/remove', {
+	misskeyApi('admin/relays/remove', {
 		inbox,
 	}).then(() => {
 		refresh();
@@ -66,7 +68,7 @@ function remove(inbox: string) {
 }
 
 function refresh() {
-	os.api('admin/relays/list').then((relayList: any) => {
+	misskeyApi('admin/relays/list').then(relayList => {
 		relays.value = relayList;
 	});
 }
@@ -82,10 +84,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.relays,
 	icon: 'ti ti-planet',
-});
+}));
 </script>
 
 <style lang="scss" module>

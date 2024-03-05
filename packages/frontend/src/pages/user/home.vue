@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</dl>
 						<dl v-if="user.birthday" class="field">
 							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.t('yearsOld', { age }) }})</dd>
+							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
@@ -110,11 +110,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'following')">
+						<MkA v-if="isFollowingVisibleForMe(user)" :to="userPage(user, 'following')">
 							<b>{{ number(user.followingCount) }}</b>
 							<span>{{ i18n.ts.following }}</span>
 						</MkA>
-						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'followers')">
+						<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
 						</MkA>
@@ -128,12 +128,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
-					<XFiles :key="user.id" :user="user"/>
-					<XActivity :key="user.id" :user="user"/>
+					<MkLazy>
+						<XFiles :key="user.id" :user="user"/>
+					</MkLazy>
+					<MkLazy>
+						<XActivity :key="user.id" :user="user"/>
+					</MkLazy>
 				</template>
 				<div v-if="!disableNotes">
-					<div style="margin-bottom: 8px;">{{ i18n.ts.featured }}</div>
-					<MkNotes :class="$style.tl" :noGap="true" :pagination="pagination"/>
+					<MkLazy>
+						<XTimeline :user="user"/>
+					</MkLazy>
 				</div>
 			</div>
 		</div>
@@ -161,14 +166,13 @@ import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import MkNotes from '@/components/MkNotes.vue';
-import { api } from '@/os.js';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { useRouter } from '@/router/supplier.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -187,6 +191,7 @@ function calcAge(birthdate: string): number {
 
 const XFiles = defineAsyncComponent(() => import('./index.files.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
+const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -210,16 +215,8 @@ const moderationNote = ref(props.user.moderationNote);
 const editModerationNote = ref(false);
 
 watch(moderationNote, async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
+	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
-
-const pagination = {
-	endpoint: 'users/featured-notes' as const,
-	limit: 10,
-	params: computed(() => ({
-		userId: props.user.id,
-	})),
-};
 
 const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
@@ -269,7 +266,7 @@ function adjustMemoTextarea() {
 }
 
 async function updateMemo() {
-	await api('users/update-memo', {
+	await misskeyApi('users/update-memo', {
 		memo: memoDraft.value,
 		userId: props.user.id,
 	});

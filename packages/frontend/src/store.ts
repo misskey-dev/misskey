@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,7 +7,9 @@ import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
+import type { BuiltinTheme as ShikiBuiltinTheme } from 'shiki';
 import { Storage } from '@/pizzax.js';
+import { hemisphere } from '@/scripts/intl-const.js';
 
 interface PostFormAction {
 	title: string,
@@ -119,6 +121,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 	},
+	pinnedEmojis: {
+		where: 'account',
+		default: [],
+	},
 	reactionAcceptance: {
 		where: 'account',
 		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
@@ -180,6 +186,12 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: {
 			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
 			userList: null as Misskey.entities.UserList | null,
+			filter: {
+				withReplies: true,
+				withRenotes: true,
+				withSensitive: true,
+				onlyFiles: false,
+			},
 		},
 	},
 	pinnedUserLists: {
@@ -214,6 +226,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	advancedMfm: {
 		where: 'device',
 		default: true,
+	},
+	enableQuickAddMfmFunction: {
+		where: 'device',
+		default: false,
 	},
 	loadRawImages: {
 		where: 'device',
@@ -271,19 +287,19 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
-	reactionPickerSize: {
+	emojiPickerScale: {
 		where: 'device',
 		default: 1,
 	},
-	reactionPickerWidth: {
+	emojiPickerWidth: {
 		where: 'device',
 		default: 1,
 	},
-	reactionPickerHeight: {
+	emojiPickerHeight: {
 		where: 'device',
 		default: 2,
 	},
-	reactionPickerUseDrawerForMobile: {
+	emojiPickerUseDrawerForMobile: {
 		where: 'device',
 		default: true,
 	},
@@ -383,10 +399,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	tlWithReplies: {
-		where: 'device',
-		default: false,
-	},
 	defaultWithReplies: {
 		where: 'account',
 		default: false,
@@ -407,6 +419,25 @@ export const defaultStore = markRaw(new Storage('base', {
 			urlPreview: false,
 			code: false,
 		} as Record<string, boolean>,
+	},
+	enableSeasonalScreenEffect: {
+		where: 'device',
+		default: false,
+	},
+	dropAndFusion: {
+		where: 'device',
+		default: {
+			bgmVolume: 0.25,
+			sfxVolume: 1,
+		},
+	},
+  hemisphere: {
+		where: 'device',
+		default: hemisphere as 'N' | 'S',
+  },
+	enableHorizontalSwipe: {
+		where: 'device',
+		default: true,
 	},
 
 	sound_masterVolume: {

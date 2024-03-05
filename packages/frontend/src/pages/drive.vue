@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,19 +11,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const folder = ref(null);
+const folder = ref<Misskey.entities.DriveFolder | null>(null);
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: folder.value ? folder.value.name : i18n.ts.drive,
 	icon: 'ti ti-cloud',
 	hideHeader: true,
-})));
+}));
 </script>

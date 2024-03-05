@@ -102,7 +102,6 @@ clickToShow: "Klikk for å vise"
 add: "Legg til"
 reaction: "Reaksjon"
 reactions: "Reaksjoner"
-reactionSetting: "Reaksjoner som vises i reaksjonsvelgeren"
 reactionSettingDescription2: "Dra for å endre rekkefølgen, klikk for å slette, trykk \"+\" for å legge til."
 rememberNoteVisibility: "Husk innstillingene for synlighet av Notes"
 attachCancel: "Fjern vedlegg"
@@ -464,6 +463,7 @@ options: "Alternativ"
 icon: "Avatar"
 replies: "Svar"
 renotes: "Renote"
+surrender: "Avbryt"
 _initialAccountSetting:
   theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
@@ -721,3 +721,4 @@ _webhookSettings:
   name: "Navn"
 _moderationLogTypes:
   suspend: "Suspender"
+

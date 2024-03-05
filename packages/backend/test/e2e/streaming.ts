@@ -1,18 +1,17 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
-import { signup, api, post, startServer, initTestDb, waitFire } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Streaming', () => {
-	let app: INestApplicationContext;
 	let Followings: any;
 
 	const follow = async (follower: any, followee: any) => {
@@ -31,23 +30,22 @@ describe('Streaming', () => {
 
 	describe('Streaming', () => {
 		// Local users
-		let ayano: misskey.entities.MeSignup;
-		let kyoko: misskey.entities.MeSignup;
-		let chitose: misskey.entities.MeSignup;
-		let kanako: misskey.entities.MeSignup;
+		let ayano: misskey.entities.SignupResponse;
+		let kyoko: misskey.entities.SignupResponse;
+		let chitose: misskey.entities.SignupResponse;
+		let kanako: misskey.entities.SignupResponse;
 
 		// Remote users
-		let akari: misskey.entities.MeSignup;
-		let chinatsu: misskey.entities.MeSignup;
-		let takumi: misskey.entities.MeSignup;
+		let akari: misskey.entities.SignupResponse;
+		let chinatsu: misskey.entities.SignupResponse;
+		let takumi: misskey.entities.SignupResponse;
 
-		let kyokoNote: any;
-		let kanakoNote: any;
-		let takumiNote: any;
+		let kyokoNote: misskey.entities.Note;
+		let kanakoNote: misskey.entities.Note;
+		let takumiNote: misskey.entities.Note;
 		let list: any;
 
 		beforeAll(async () => {
-			app = await startServer();
 			const connection = await initTestDb(true);
 			Followings = connection.getRepository(MiFollowing);
 
@@ -69,6 +67,9 @@ describe('Streaming', () => {
 
 			// Follow: ayano => akari
 			await follow(ayano, akari);
+
+			// Follow: kyoko => chitose
+			await api('following/create', { userId: chitose.id }, kyoko);
 
 			// Mute: chitose => kanako
 			await api('mute/create', { userId: kanako.id }, chitose);
@@ -93,10 +94,6 @@ describe('Streaming', () => {
 				userId: takumi.id,
 			}, chitose);
 		}, 1000 * 60 * 2);
-
-		afterAll(async () => {
-			await app.close();
-		});
 
 		describe('Events', () => {
 			test('mention event', async () => {
@@ -176,7 +173,28 @@ describe('Streaming', () => {
 			*/
 
 			test('フォローしているユーザーのフォローしていないユーザーの visibility: followers な投稿への返信が流れない', async () => {
-				// TODO
+				const chitoseNote = await post(chitose, { text: 'followers-only post', visibility: 'followers' });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'reply to chitose\'s followers-only post', replyId: chitoseNote.id }, kyoko),	// kyoko's reply to chitose's followers-only post
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('フォローしているユーザーのフォローしていないユーザーの visibility: followers な投稿への返信のリノートが流れない', async () => {
+				const chitoseNote = await post(chitose, { text: 'followers-only post', visibility: 'followers' });
+				const kyokoReply = await post(kyoko, { text: 'reply to followers-only post', replyId: chitoseNote.id });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { renoteId: kyokoReply.id }, kyoko),	// kyoko's renote of kyoko's reply to chitose's followers-only post
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, false);
 			});
 
 			test('フォローしていないユーザーの投稿は流れない', async () => {
@@ -207,6 +225,79 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, false);
+			});
+
+			/**
+			 * TODO: 落ちる
+			 * @see https://github.com/misskey-dev/misskey/issues/13474
+			test('visibility: specified なノートで visibleUserIds に自分が含まれているときそのノートへのリプライが流れてくる', async () => {
+				const chitoseToKyokoAndAyano = await post(chitose, { text: 'direct note from chitose to kyoko and ayano', visibility: 'specified', visibleUserIds: [kyoko.id, ayano.id] });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'direct reply from kyoko to chitose and ayano', replyId: chitoseToKyokoAndAyano.id, visibility: 'specified', visibleUserIds: [chitose.id, ayano.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, true);
+			});
+			 */
+
+			test('visibility: specified な投稿に対するリプライで visibleUserIds が拡張されたとき、その拡張されたユーザーの HTL にはそのリプライが流れない', async () => {
+				const chitoseToKyoko = await post(chitose, { text: 'direct note from chitose to kyoko', visibility: 'specified', visibleUserIds: [kyoko.id] });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'direct reply from kyoko to chitose and ayano', replyId: chitoseToKyoko.id, visibility: 'specified', visibleUserIds: [chitose.id, ayano.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('visibility: specified な投稿に対するリプライで visibleUserIds が収縮されたとき、その収縮されたユーザーの HTL にはそのリプライが流れない', async () => {
+				const chitoseToKyokoAndAyano = await post(chitose, { text: 'direct note from chitose to kyoko and ayano', visibility: 'specified', visibleUserIds: [kyoko.id, ayano.id] });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'direct reply from kyoko to chitose', replyId: chitoseToKyokoAndAyano.id, visibility: 'specified', visibleUserIds: [chitose.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('withRenotes: false のときリノートが流れない', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { renoteId: kyokoNote.id }, kyoko),	// kyoko renote
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('withRenotes: false のとき引用リノートが流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'quote', renoteId: kyokoNote.id }, kyoko),	// kyoko quote
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withRenotes: false のとき投票のみのリノートが流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { poll: { choices: ['kinoko', 'takenoko'] }, renoteId: kyokoNote.id }, kyoko),	// kyoko renote with poll
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, true);
 			});
 		});	// Home
 
@@ -510,7 +601,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -527,7 +618,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートに対するリプライがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -544,7 +635,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートに対するリノートがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -558,6 +649,28 @@ describe('Streaming', () => {
 
 				assert.strictEqual(fired, false);
 			});
+		});
+
+		test('Authentication', async () => {
+			const application = await createAppToken(ayano, []);
+			const application2 = await createAppToken(ayano, ['read:account']);
+			const socket = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${application}`);
+			const established = await new Promise<boolean>((resolve, reject) => {
+				socket.on('error', () => resolve(false));
+				socket.on('unexpected-response', () => resolve(false));
+				setTimeout(() => resolve(true), 3000);
+			});
+
+			socket.close();
+			assert.strictEqual(established, false);
+
+			const fired = await waitFire(
+				{ token: application2 }, 'hybridTimeline',
+				() => api('notes/create', { text: 'Hello, world!' }, ayano),
+				msg => msg.type === 'note' && msg.body.userId === ayano.id,
+			);
+
+			assert.strictEqual(fired, true);
 		});
 
 		// XXX: QueryFailedError: duplicate key value violates unique constraint "IDX_347fec870eafea7b26c8a73bac"

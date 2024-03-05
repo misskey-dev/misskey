@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -93,7 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-bell-ringing-2" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts.pushNotification }}</div>
-							<div style="padding: 0 16px;">{{ i18n.t('_initialAccountSetting.pushNotificationDescription', { name: instance.name ?? host }) }}</div>
+							<div style="padding: 0 16px;">{{ i18n.tsx._initialAccountSetting.pushNotificationDescription({ name: instance.name ?? host }) }}</div>
 							<MkPushNotificationAllowButton primary showOnlyToRegister style="margin: 0 auto;"/>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
-							<div>{{ i18n.t('_initialAccountSetting.youCanContinueTutorial', { name: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._initialAccountSetting.youCanContinueTutorial({ name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
 								<MkButton rounded primary gradate data-cy-user-setup-continue @click="launchTutorial()">{{ i18n.ts._initialAccountSetting.startTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
 							</div>

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,12 +12,13 @@ import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = false;
-	public static requireCredential = true;
+	public static requireCredential = true as const;
+	public static kind = 'read:account';
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
@@ -114,9 +115,10 @@ class HybridTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class HybridTimelineChannelService {
+export class HybridTimelineChannelService implements MiChannelService<true> {
 	public readonly shouldShare = HybridTimelineChannel.shouldShare;
 	public readonly requireCredential = HybridTimelineChannel.requireCredential;
+	public readonly kind = HybridTimelineChannel.kind;
 
 	constructor(
 		private metaService: MetaService,

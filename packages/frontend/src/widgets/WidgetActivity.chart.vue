@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,17 +36,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 const props = defineProps<{
-	activity: any[]
+	activity: {
+		total: number;
+		notes: number;
+		replies: number;
+		renotes: number;
+	}[]
 }>();
 
 const viewBoxX = ref(147);
 const viewBoxY = ref(60);
 const zoom = ref(1);
 const pos = ref(0);
-const pointsNote = ref<any>(null);
-const pointsReply = ref<any>(null);
-const pointsRenote = ref<any>(null);
-const pointsTotal = ref<any>(null);
+const pointsNote = ref<string>();
+const pointsReply = ref<string>();
+const pointsRenote = ref<string>();
+const pointsTotal = ref<string>();
 
 function dragListen(fn) {
 	window.addEventListener('mousemove', fn);

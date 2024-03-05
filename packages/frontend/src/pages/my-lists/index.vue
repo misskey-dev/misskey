@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-if="items.length > 0" class="_gaps">
 				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/my/lists/${ list.id }`">
-					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }})</span></div>
+					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }})</span></div>
 					<MkAvatars :userIds="list.userIds" :limit="10"/>
 				</MkA>
 			</div>
@@ -35,9 +35,11 @@ import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { userListsCache } from '@/cache';
+import { userListsCache } from '@/cache.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const items = computed(() => userListsCache.value.value ?? []);
 
@@ -69,10 +71,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.manageLists,
 	icon: 'ti ti-list',
-});
+}));
 
 onActivated(() => {
 	fetch();

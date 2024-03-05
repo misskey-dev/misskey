@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,12 +10,13 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = false;
-	public static requireCredential = true;
+	public static requireCredential = true as const;
+	public static kind = 'read:account';
 	private withRenotes: boolean;
 	private withFiles: boolean;
 
@@ -70,7 +71,15 @@ class HomeTimelineChannel extends Channel {
 			}
 		}
 
-		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
+		// 純粋なリノート（引用リノートでないリノート）の場合
+		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && note.poll == null) {
+			if (!this.withRenotes) return;
+			if (note.renote.reply) {
+				const reply = note.renote.reply;
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+			}
+		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
@@ -99,9 +108,10 @@ class HomeTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class HomeTimelineChannelService {
+export class HomeTimelineChannelService implements MiChannelService<true> {
 	public readonly shouldShare = HomeTimelineChannel.shouldShare;
 	public readonly requireCredential = HomeTimelineChannel.requireCredential;
+	public readonly kind = HomeTimelineChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
