@@ -320,7 +320,21 @@ Don't forget to re-run the `.storybook/generate.js` script after adding, editing
 
 ### Nest Service Circular dependency / Nestでサービスの循環参照でエラーが起きた場合
 
-どちらかのサービスで`OnModuleInit`を使う
+#### forwardRef
+まずは簡単に`forwardRef`を試してみる
+
+```typescript
+export class FooService {
+	constructor(
+		@Inject(forwardRef(() => BarService))
+		private barService: BarService
+	) {
+	}
+}
+```
+
+#### OnModuleInit
+できなければ`OnModuleInit`を使う
 
 ```typescript
 import { Injectable, OnModuleInit } from '@nestjs/common';
@@ -346,8 +360,8 @@ export class FooService implements OnModuleInit {
 }
 ```
 
-#### Service Unit Test
-テストで`@nestjs/testing`のTest.createTestingModuleを使う場合
+##### Service Unit Test
+テストで`onModuleInit`を呼び出す必要がある
 
 ```typescript
 // import ...
