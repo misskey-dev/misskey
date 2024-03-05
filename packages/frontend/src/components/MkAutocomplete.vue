@@ -77,7 +77,7 @@ const emojiDb = computed(() => {
 				unicodeEmojiDB.push({
 					emoji: emoji,
 					name: k,
-					aliasOf: getEmojiName(emoji)!,
+					aliasOf: getEmojiName(emoji),
 					url: char2path(emoji),
 				});
 			}

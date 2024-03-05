@@ -387,9 +387,10 @@ function getKey(emoji: string | UnicodeEmojiDef | Misskey.entities.EmojiSimple):
 	}
 }
 
-function getDef(emoji: string) {
+function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeEmojiDef | null {
 	if (emoji.includes(':')) {
-		return customEmojisMap.get(emoji.replace(/:/g, '')) ?? null;
+		const name = emoji.replaceAll(':', '');
+		return customEmojisMap.get(name) ?? null;
 	} else {
 		return emoji;
 	}
@@ -399,7 +400,7 @@ function getDef(emoji: string) {
 function computeButtonTitle(ev: MouseEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
-	elm.title = getEmojiName(emoji) ?? emoji;
+	elm.title = getEmojiName(emoji);
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {

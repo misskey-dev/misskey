@@ -603,7 +603,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -620,7 +620,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートに対するリプライがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -637,7 +637,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートに対するリノートがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
