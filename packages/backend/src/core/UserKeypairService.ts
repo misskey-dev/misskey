@@ -13,6 +13,7 @@ import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
 export class UserKeypairService implements OnApplicationShutdown {
@@ -27,6 +28,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 		private userKeypairsRepository: UserKeypairsRepository,
 
 		private globalEventService: GlobalEventService,
+		private userEntityService: UserEntityService,
 	) {
 		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h
@@ -44,6 +46,35 @@ export class UserKeypairService implements OnApplicationShutdown {
 		return await this.cache.fetch(userId);
 	}
 
+	/**
+	 *
+	 * @param userIdOrHint user id or MiUserKeypair
+	 * @param preferType 'main' or 'ed25519'; If 'ed25519' is specified and ed25519 keypair is not exists, it will return main keypair
+	 * @returns
+	 */
+	@bindThis
+	public async getLocalUserKeypairWithKeyId(
+		userIdOrHint: MiUser['id'] | MiUserKeypair, preferType: 'main' | 'ed25519'
+	): Promise<{ keyId: string; publicKey: string; privateKey: string; }> {
+		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
+		if (preferType === 'ed25519' && keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null) {
+			return {
+				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#ed25519-key`,
+				publicKey: keypair.ed25519PublicKey,
+				privateKey: keypair.ed25519PrivateKey,
+			};
+		}
+		if (preferType === 'main') {
+			return {
+				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#main-key`,
+				publicKey: keypair.publicKey,
+				privateKey: keypair.privateKey,
+			};
+		}
+
+		throw new Error('invalid type');
+	}
+
 	@bindThis
 	public async refresh(userId: MiUser['id']): Promise<void> {
 		return await this.cache.refresh(userId);
@@ -52,14 +83,14 @@ export class UserKeypairService implements OnApplicationShutdown {
 	/**
 	 *
 	 * @param userId user id
-	 * @returns Promise<boolean> true if keypair is created, false if keypair is already exists
+	 * @returns MiUserKeypair if keypair is created, void if keypair is already exists
 	 */
 	@bindThis
-	public async refreshAndprepareEd25519KeyPair(userId: MiUser['id']): Promise<boolean> {
+	public async refreshAndprepareEd25519KeyPair(userId: MiUser['id']): Promise<MiUserKeypair | void> {
 		await this.refresh(userId);
 		const keypair = await this.cache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) {
-			return false;
+			return;
 		}
 
 		const ed25519 = await genEd25519KeyPair();
@@ -68,7 +99,11 @@ export class UserKeypairService implements OnApplicationShutdown {
 			ed25519PrivateKey: ed25519.privateKey,
 		});
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
-		return true;
+		return {
+			...keypair,
+			ed25519PublicKey: ed25519.publicKey,
+			ed25519PrivateKey: ed25519.privateKey,
+		};
 	}
 
 	@bindThis

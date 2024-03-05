@@ -15,18 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-
-type Signed = {
-	request: Request;
-	signingString: string;
-	signature: string;
-	signatureHeader: string;
-};
-
-type PrivateKey = {
-	privateKeyPem: string;
-	keyId: string;
-};
+import type { PrivateKey } from './type.js';
 
 export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string, additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
@@ -98,21 +87,19 @@ export class ApRequestService {
 	 */
 	@bindThis
 	private async getPrivateKey(userId: MiUser['id'], level: string): Promise<PrivateKey> {
-		const keypair = await this.userKeypairService.getUserKeypair(userId);
+		const type = level === '00' || level === '10' ? 'ed25519' : 'main';
+		const keypair = await this.userKeypairService.getLocalUserKeypairWithKeyId(userId, type);
 
-		return (level !== '00' && level !== '10' && keypair.ed25519PrivateKey) ? {
-			privateKeyPem: keypair.ed25519PrivateKey,
-			keyId: `${this.config.url}/users/${userId}#ed25519-key`,
-		} : {
+		return {
+			keyId: keypair.keyId,
 			privateKeyPem: keypair.privateKey,
-			keyId: `${this.config.url}/users/${userId}#main-key`,
 		};
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string): Promise<void> {
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKey): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
-		const key = await this.getPrivateKey(user.id, level);
+		key = key ?? await this.getPrivateKey(user.id, level);
 		const req = await createSignedPost({
 			level,
 			key,

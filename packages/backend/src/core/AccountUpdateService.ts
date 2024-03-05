@@ -13,6 +13,7 @@ import { RelayService } from '@/core/RelayService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { PrivateKey } from './activitypub/type.js';
 
 @Injectable()
 export class AccountUpdateService implements OnModuleInit {
@@ -39,7 +40,7 @@ export class AccountUpdateService implements OnModuleInit {
 	 * @param userId ユーザーID
 	 * @param isKeyUpdation Ed25519キーの作成など公開鍵のアップデートによる呼び出しか？ trueにするとメインキーを使うようになる
 	 */
-	public async publishToFollowers(userId: MiUser['id'], isKeyUpdation: boolean = false) {
+	public async publishToFollowers(userId: MiUser['id'], deliverKey?: PrivateKey) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 
@@ -47,8 +48,8 @@ export class AccountUpdateService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderPerson(user), user));
 			await Promise.allSettled([
-				this.apDeliverManagerService.deliverToFollowers(user, content, isKeyUpdation),
-				this.relayService.deliverToRelays(user, content, isKeyUpdation),
+				this.apDeliverManagerService.deliverToFollowers(user, content, deliverKey),
+				this.relayService.deliverToRelays(user, content, deliverKey),
 			]);
 		}
 	}

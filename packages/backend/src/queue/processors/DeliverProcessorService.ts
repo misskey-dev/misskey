@@ -76,16 +76,14 @@ export class DeliverProcessorService {
 			await this.fetchInstanceMetadataService.fetchInstanceMetadata(_server).then(() => {});
 			const server = await this.federatedInstanceService.fetch(host);
 
-			/**
-			 * RSAキーを強制するかでレベルを変える
-			 */
-			const level = job.data.forceMainKey ?
-				server.httpMessageSignaturesImplementationLevel === '11' ?
-					'10' :
-					'00'
-				: server.httpMessageSignaturesImplementationLevel;
-
-			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, level, job.data.digest);
+			await this.apRequestService.signedPost(
+				job.data.user,
+				job.data.to,
+				job.data.content,
+				server.httpMessageSignaturesImplementationLevel,
+				job.data.digest,
+				job.data.privateKey,
+			);
 
 			// Update stats
 			if (server.isNotResponding) {

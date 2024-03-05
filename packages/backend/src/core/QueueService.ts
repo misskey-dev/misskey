@@ -5,7 +5,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import type { IActivity } from '@/core/activitypub/type.js';
+import type { IActivity, PrivateKey } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiWebhook, webhookEventTypes } from '@/models/Webhook.js';
 import type { Config } from '@/config.js';
@@ -70,7 +70,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, forceMainKey?: boolean) {
+	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, privateKey?: PrivateKey) {
 		if (content == null) return null;
 		if (to == null) return null;
 
@@ -84,7 +84,7 @@ export class QueueService {
 			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
-			forceMainKey,
+			privateKey,
 		};
 
 		return this.deliverQueue.add(to, data, {
@@ -106,7 +106,7 @@ export class QueueService {
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, forceMainKey?: boolean) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, privateKey?: PrivateKey) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
 
@@ -126,7 +126,7 @@ export class QueueService {
 				content: contentBody,
 				to: d[0],
 				isSharedInbox: d[1],
-				forceMainKey,
+				privateKey,
 			} as DeliverJobData,
 			opts,
 		})));

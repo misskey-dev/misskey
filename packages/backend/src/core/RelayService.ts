@@ -16,6 +16,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
+import { PrivateKey } from './activitypub/type.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -111,7 +112,7 @@ export class RelayService {
 	}
 
 	@bindThis
-	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, forceMainKey?: boolean): Promise<void> {
+	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, privateKey?: PrivateKey): Promise<void> {
 		if (activity == null) return;
 
 		const relays = await this.relaysCache.fetch(() => this.relaysRepository.findBy({
@@ -125,7 +126,7 @@ export class RelayService {
 		const signed = await this.apRendererService.attachLdSignature(copy, user);
 
 		for (const relay of relays) {
-			this.queueService.deliver(user, signed, relay.inbox, false, forceMainKey);
+			this.queueService.deliver(user, signed, relay.inbox, false, privateKey);
 		}
 	}
 }

@@ -10,7 +10,7 @@ import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
-import type { IActivity } from '@/core/activitypub/type.js';
+import type { IActivity, PrivateKey } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import type Logger from '@/logger.js';
@@ -109,17 +109,19 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute(opts?: { forceMainKey?: boolean }): Promise<void> {
+	public async execute(opts?: { privateKey?: PrivateKey }): Promise<void> {
 		//#region MIGRATION
-		if (opts?.forceMainKey !== true) {
+		if (!opts?.privateKey) {
 			/**
 			 * ed25519の署名がなければ追加する
 			 */
 			const created = await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
 			if (created) {
+				// createdが存在するということは新規作成されたということなので、フォロワーに配信する
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
-				await this.accountUpdateService.publishToFollowers(this.actor.id, true);
+				const keyPair = await this.userKeypairService.getLocalUserKeypairWithKeyId(created, 'ed25519');
+				await this.accountUpdateService.publishToFollowers(this.actor.id, { keyId: keyPair.keyId, privateKeyPem: keyPair.privateKey });
 			}
 		}
 		//#endregion
@@ -163,7 +165,7 @@ class DeliverManager {
 		}
 
 		// deliver
-		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		await this.queueService.deliverMany(this.actor, this.activity, inboxes, opts?.privateKey);
 		this.logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor.id} activityId=${this.activity?.id}`);
 	}
 }
@@ -191,7 +193,7 @@ export class ApDeliverManagerService {
 	 * @param forceMainKey Force to use main (rsa) key
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, forceMainKey?: boolean): Promise<void> {
+	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, privateKey?: PrivateKey): Promise<void> {
 		const manager = new DeliverManager(
 			this.userKeypairService,
 			this.followingsRepository,
@@ -202,7 +204,7 @@ export class ApDeliverManagerService {
 			activity,
 		);
 		manager.addFollowersRecipe();
-		await manager.execute({ forceMainKey });
+		await manager.execute({ privateKey });
 	}
 
 	/**
