@@ -164,7 +164,7 @@ class DeliverManager {
 
 		// deliver
 		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
-		logger.info(`Deliver queues dispatched to ${inboxes.size} inboxes`);
+		logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor?.id} activityId=${this.activity?.id}`);
 	}
 }
 
