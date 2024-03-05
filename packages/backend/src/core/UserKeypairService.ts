@@ -49,30 +49,29 @@ export class UserKeypairService implements OnApplicationShutdown {
 	/**
 	 *
 	 * @param userIdOrHint user id or MiUserKeypair
-	 * @param preferType 'main' or 'ed25519'; If 'ed25519' is specified and ed25519 keypair is not exists, it will return main keypair
+	 * @param preferType If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair is returned if exists. Otherwise, main keypair is returned.
 	 * @returns
 	 */
 	@bindThis
 	public async getLocalUserKeypairWithKeyId(
-		userIdOrHint: MiUser['id'] | MiUserKeypair, preferType: 'main' | 'ed25519'
+		userIdOrHint: MiUser['id'] | MiUserKeypair, preferType?: string,
 	): Promise<{ keyId: string; publicKey: string; privateKey: string; }> {
 		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
-		if (preferType === 'ed25519' && keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null) {
+		if (
+			preferType && ['01', '11', 'ed25519'].includes(preferType.toLowerCase()) &&
+			keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null
+		) {
 			return {
 				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#ed25519-key`,
 				publicKey: keypair.ed25519PublicKey,
 				privateKey: keypair.ed25519PrivateKey,
 			};
 		}
-		if (preferType === 'main') {
-			return {
-				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#main-key`,
-				publicKey: keypair.publicKey,
-				privateKey: keypair.privateKey,
-			};
-		}
-
-		throw new Error('invalid type');
+		return {
+			keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#main-key`,
+			publicKey: keypair.publicKey,
+			privateKey: keypair.privateKey,
+		};
 	}
 
 	@bindThis

@@ -87,8 +87,7 @@ export class ApRequestService {
 	 */
 	@bindThis
 	private async getPrivateKey(userId: MiUser['id'], level: string): Promise<PrivateKey> {
-		const type = level === '00' || level === '10' ? 'ed25519' : 'main';
-		const keypair = await this.userKeypairService.getLocalUserKeypairWithKeyId(userId, type);
+		const keypair = await this.userKeypairService.getLocalUserKeypairWithKeyId(userId, level);
 
 		return {
 			keyId: keypair.keyId,

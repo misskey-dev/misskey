@@ -30,11 +30,18 @@ interface IDirectRecipe extends IRecipe {
 	to: MiRemoteUser;
 }
 
+interface IAllKnowingSharedInboxRecipe extends IRecipe {
+	type: 'AllKnowingSharedInbox';
+}
+
 const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 	recipe.type === 'Followers';
 
 const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
+
+const isAllKnowingSharedInbox = (recipe: IRecipe): recipe is IAllKnowingSharedInboxRecipe =>
+	recipe.type === 'AllKnowingSharedInbox';
 
 class DeliverManager {
 	private actor: ThinUser;
@@ -97,6 +104,18 @@ class DeliverManager {
 	}
 
 	/**
+	 * Add recipe for all-knowing shared inbox deliver
+	 */
+	@bindThis
+	public addAllKnowingSharedInboxRecipe(): void {
+		const deliver: IAllKnowingSharedInboxRecipe = {
+			type: 'AllKnowingSharedInbox',
+		};
+
+		this.addRecipe(deliver);
+	}
+
+	/**
 	 * Add recipe
 	 * @param recipe Recipe
 	 */
@@ -120,15 +139,32 @@ class DeliverManager {
 				// createdが存在するということは新規作成されたということなので、フォロワーに配信する
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
-				const keyPair = await this.userKeypairService.getLocalUserKeypairWithKeyId(created, 'ed25519');
+				const keyPair = await this.userKeypairService.getLocalUserKeypairWithKeyId(created, 'main');
 				await this.accountUpdateService.publishToFollowers(this.actor.id, { keyId: keyPair.keyId, privateKeyPem: keyPair.privateKey });
 			}
 		}
 		//#endregion
 
+		//#region correct inboxes by recipes
 		// The value flags whether it is shared or not.
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
+
+		if (this.recipes.some(r => isAllKnowingSharedInbox(r))) {
+			// all-knowing shared inbox
+			const followings = await this.followingsRepository.find({
+				where: [
+					{ followerSharedInbox: Not(IsNull()) },
+					{ followeeSharedInbox: Not(IsNull()) },
+				],
+				select: ['followerSharedInbox', 'followeeSharedInbox'],
+			});
+
+			for (const following of followings) {
+				if (following.followeeSharedInbox) inboxes.set(following.followeeSharedInbox, true);
+				if (following.followerSharedInbox) inboxes.set(following.followerSharedInbox, true);
+			}
+		}
 
 		// build inbox list
 		// Process follower recipes first to avoid duplication when processing direct recipes later.
@@ -163,6 +199,7 @@ class DeliverManager {
 
 			inboxes.set(recipe.to.inbox, false);
 		}
+		//#endregion
 
 		// deliver
 		await this.queueService.deliverMany(this.actor, this.activity, inboxes, opts?.privateKey);
