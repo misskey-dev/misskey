@@ -32,8 +32,8 @@ export class UserSuspendService {
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
 			// process delivre時にはキーペアが消去されているはずなので、ここで挿入する
-			const keypairs = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, 'main');
-			manager.execute({ privateKey: { keyId: keypairs.keyId, privateKeyPem: keypairs.privateKey } });
+			const privateKey = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, 'main');
+			manager.execute({ privateKey });
 		}
 	}
 
@@ -46,8 +46,8 @@ export class UserSuspendService {
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
 			// process delivre時にはキーペアが消去されているはずなので、ここで挿入する
-			const keypairs = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, 'main');
-			manager.execute({ privateKey: { keyId: keypairs.keyId, privateKeyPem: keypairs.privateKey } });
+			const privateKey = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, 'main');
+			manager.execute({ privateKey });
 		}
 	}
 }

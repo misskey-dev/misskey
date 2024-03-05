@@ -34,7 +34,11 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 	const digestHeader = args.digest ?? await genRFC3230DigestHeader(args.body, 'SHA-256');
 	request.headers['Digest'] = digestHeader;
 
-	const result = await signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
+	const result = await signAsDraftToRequest(
+		request,
+		{ keyId: args.key.keyId, privateKeyPem: args.key.privateKey },
+		['(request-target)', 'date', 'host', 'digest'],
+	);
 
 	return {
 		request,
@@ -56,7 +60,11 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 	};
 
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
-	const result = await signAsDraftToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
+	const result = await signAsDraftToRequest(
+		request,
+		{ keyId: args.key.keyId, privateKeyPem: args.key.privateKey },
+		['(request-target)', 'date', 'host', 'accept'],
+	);
 
 	return {
 		request,
@@ -80,25 +88,10 @@ export class ApRequestService {
 		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 	}
 
-	/**
-	 * Get private key by user id and implementation level
-	 * @param userId User id
-	 * @param level Implementation level
-	 */
-	@bindThis
-	private async getPrivateKey(userId: MiUser['id'], level: string): Promise<PrivateKey> {
-		const keypair = await this.userKeypairService.getLocalUserKeypairWithKeyId(userId, level);
-
-		return {
-			keyId: keypair.keyId,
-			privateKeyPem: keypair.privateKey,
-		};
-	}
-
 	@bindThis
 	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKey): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
-		key = key ?? await this.getPrivateKey(user.id, level);
+		key = key ?? await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, level);
 		const req = await createSignedPost({
 			level,
 			key,
@@ -131,7 +124,7 @@ export class ApRequestService {
 	 */
 	@bindThis
 	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
-		const key = await this.getPrivateKey(user.id, level);
+		const key = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, level);
 		const req = await createSignedGet({
 			level,
 			key,

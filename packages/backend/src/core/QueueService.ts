@@ -84,7 +84,7 @@ export class QueueService {
 			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
-			privateKey,
+			privateKey: privateKey && { keyId: privateKey.keyId, privateKey: privateKey.privateKey },
 		};
 
 		return this.deliverQueue.add(to, data, {
@@ -126,7 +126,7 @@ export class QueueService {
 				content: contentBody,
 				to: d[0],
 				isSharedInbox: d[1],
-				privateKey,
+				privateKey: privateKey && { keyId: privateKey.keyId, privateKey: privateKey.privateKey },
 			} as DeliverJobData,
 			opts,
 		})));

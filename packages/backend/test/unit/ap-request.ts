@@ -35,7 +35,7 @@ describe('ap-request', () => {
 	describe.each(['00', '01'])('createSignedPost with verify', (level) => {
 		test('pass', async () => {
 			const keypair = await getKeyPair(level);
-			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+			const key = { keyId: 'x', 'privateKey': keypair.privateKey };
 			const url = 'https://example.com/inbox';
 			const activity = { a: 1 };
 			const body = JSON.stringify(activity);
@@ -56,7 +56,7 @@ describe('ap-request', () => {
 	describe.each(['00', '01'])('createSignedGet with verify', (level) => {
 		test('pass', async () => {
 			const keypair = await getKeyPair(level);
-			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+			const key = { keyId: 'x', 'privateKey': keypair.privateKey };
 			const url = 'https://example.com/outbox';
 			const headers = {
 				'User-Agent': 'UA',

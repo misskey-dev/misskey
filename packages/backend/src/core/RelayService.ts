@@ -16,7 +16,8 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
-import { PrivateKey } from './activitypub/type.js';
+import { UserKeypairService } from './UserKeypairService.js';
+import type { PrivateKey } from './activitypub/type.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -35,6 +36,7 @@ export class RelayService {
 		private queueService: QueueService,
 		private createSystemUserService: CreateSystemUserService,
 		private apRendererService: ApRendererService,
+		private userKeypairService: UserKeypairService,
 	) {
 		this.relaysCache = new MemorySingleCache<MiRelay[]>(1000 * 60 * 10);
 	}
@@ -122,11 +124,9 @@ export class RelayService {
 
 		const copy = deepClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
+		privateKey = privateKey ?? await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id);
+		const signed = await this.apRendererService.attachLdSignature(copy, user, privateKey);
 
-		const signed = await this.apRendererService.attachLdSignature(copy, user);
-
-		for (const relay of relays) {
-			this.queueService.deliver(user, signed, relay.inbox, false, privateKey);
-		}
+		this.queueService.deliverMany(user, signed, new Map(relays.map(({ inbox }) => [inbox, false])), privateKey);
 	}
 }

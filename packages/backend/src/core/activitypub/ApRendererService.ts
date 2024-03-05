@@ -30,7 +30,7 @@ import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate, PrivateKey } from './type.js';
 
 @Injectable()
 export class ApRendererService {
@@ -657,12 +657,10 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
-		const keypair = await this.userKeypairService.getUserKeypair(user.id);
-
+	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }, key: PrivateKey): Promise<IActivity> {
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
+		activity = await ldSignature.signRsaSignature2017(activity, key.privateKey, key.keyId);
 
 		return activity;
 	}

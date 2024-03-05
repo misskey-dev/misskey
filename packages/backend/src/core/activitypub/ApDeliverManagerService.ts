@@ -140,7 +140,7 @@ class DeliverManager {
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
 				const keyPair = await this.userKeypairService.getLocalUserKeypairWithKeyId(created, 'main');
-				await this.accountUpdateService.publishToFollowers(this.actor.id, { keyId: keyPair.keyId, privateKeyPem: keyPair.privateKey });
+				await this.accountUpdateService.publishToFollowers(this.actor.id, keyPair);
 			}
 		}
 		//#endregion

@@ -328,6 +328,6 @@ export const isFlag = (object: IObject): object is IFlag => getApType(object) ==
 export const isMove = (object: IObject): object is IMove => getApType(object) === 'Move';
 
 export type PrivateKey = {
-	privateKeyPem: string;
+	privateKey: string;
 	keyId: string;
 };
