@@ -32,7 +32,7 @@ export class UserSuspendService {
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
 			// process deliver時にはキーペアが消去されているはずなので、ここで挿入する
-			const privateKey = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, 'main');
+			const privateKey = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, 'main');
 			manager.execute({ privateKey });
 		}
 	}
@@ -46,7 +46,7 @@ export class UserSuspendService {
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
 			// process deliver時にはキーペアが消去されているはずなので、ここで挿入する
-			const privateKey = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, 'main');
+			const privateKey = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, 'main');
 			manager.execute({ privateKey });
 		}
 	}

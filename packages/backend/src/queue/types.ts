@@ -8,8 +8,8 @@ import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiWebhook } from '@/models/Webhook.js';
-import type { IActivity, PrivateKey } from '@/core/activitypub/type.js';
-import type { ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+import type { IActivity } from '@/core/activitypub/type.js';
+import type { ParsedSignature, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 /**
  * @peertube/http-signature 時代の古いデータにも対応しておく
@@ -39,7 +39,7 @@ export type DeliverJobData = {
 	/** whether it is sharedInbox */
 	isSharedInbox: boolean;
 	/** force to use main (rsa) key */
-	privateKey?: PrivateKey;
+	privateKey?: PrivateKeyWithPem;
 };
 
 export type InboxJobData = {

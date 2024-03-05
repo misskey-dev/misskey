@@ -17,7 +17,7 @@ import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { UserKeypairService } from './UserKeypairService.js';
-import type { PrivateKey } from './activitypub/type.js';
+import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -114,7 +114,7 @@ export class RelayService {
 	}
 
 	@bindThis
-	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, privateKey?: PrivateKey): Promise<void> {
+	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, privateKey?: PrivateKeyWithPem): Promise<void> {
 		if (activity == null) return;
 
 		const relays = await this.relaysCache.fetch(() => this.relaysRepository.findBy({
@@ -124,7 +124,7 @@ export class RelayService {
 
 		const copy = deepClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
-		privateKey = privateKey ?? await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id);
+		privateKey = privateKey ?? await this.userKeypairService.getLocalUserPrivateKeyPem(user.id);
 		const signed = await this.apRendererService.attachLdSignature(copy, user, privateKey);
 
 		this.queueService.deliverMany(user, signed, new Map(relays.map(({ inbox }) => [inbox, false])), privateKey);

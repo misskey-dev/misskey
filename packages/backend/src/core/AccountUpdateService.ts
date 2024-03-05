@@ -13,7 +13,7 @@ import { RelayService } from '@/core/RelayService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import type { PrivateKey } from './activitypub/type.js';
+import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class AccountUpdateService implements OnModuleInit {
@@ -40,7 +40,7 @@ export class AccountUpdateService implements OnModuleInit {
 	 * @param userId ユーザーID
 	 * @param isKeyUpdation Ed25519キーの作成など公開鍵のアップデートによる呼び出しか？ trueにするとメインキーを使うようになる
 	 */
-	public async publishToFollowers(userId: MiUser['id'], deliverKey?: PrivateKey) {
+	public async publishToFollowers(userId: MiUser['id'], deliverKey?: PrivateKeyWithPem) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 

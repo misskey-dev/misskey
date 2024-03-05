@@ -326,8 +326,3 @@ export const isAnnounce = (object: IObject): object is IAnnounce => getApType(ob
 export const isBlock = (object: IObject): object is IBlock => getApType(object) === 'Block';
 export const isFlag = (object: IObject): object is IFlag => getApType(object) === 'Flag';
 export const isMove = (object: IObject): object is IMove => getApType(object) === 'Move';
-
-export type PrivateKey = {
-	privateKey: string;
-	keyId: string;
-};

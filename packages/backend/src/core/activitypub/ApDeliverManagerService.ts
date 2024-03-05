@@ -10,12 +10,13 @@ import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
-import type { IActivity, PrivateKey } from '@/core/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import type Logger from '@/logger.js';
 import { UserKeypairService } from '../UserKeypairService.js';
 import { ApLoggerService } from './ApLoggerService.js';
+import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 interface IRecipe {
 	type: string;
@@ -128,7 +129,7 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute(opts?: { privateKey?: PrivateKey }): Promise<void> {
+	public async execute(opts?: { privateKey?: PrivateKeyWithPem }): Promise<void> {
 		//#region MIGRATION
 		if (!opts?.privateKey) {
 			/**
@@ -139,7 +140,7 @@ class DeliverManager {
 				// createdが存在するということは新規作成されたということなので、フォロワーに配信する
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
-				const keyPair = await this.userKeypairService.getLocalUserKeypairWithKeyId(created, 'main');
+				const keyPair = await this.userKeypairService.getLocalUserPrivateKeyPem(created, 'main');
 				await this.accountUpdateService.publishToFollowers(this.actor.id, keyPair);
 			}
 		}
@@ -230,7 +231,7 @@ export class ApDeliverManagerService {
 	 * @param forceMainKey Force to use main (rsa) key
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, privateKey?: PrivateKey): Promise<void> {
+	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, privateKey?: PrivateKeyWithPem): Promise<void> {
 		const manager = new DeliverManager(
 			this.userKeypairService,
 			this.followingsRepository,

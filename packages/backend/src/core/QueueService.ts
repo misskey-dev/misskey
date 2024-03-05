@@ -5,7 +5,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import type { IActivity, PrivateKey } from '@/core/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiWebhook, webhookEventTypes } from '@/models/Webhook.js';
 import type { Config } from '@/config.js';
@@ -15,7 +15,7 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type * as Bull from 'bullmq';
-import { genRFC3230DigestHeader, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+import { genRFC3230DigestHeader, type PrivateKeyWithPem, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class QueueService {
@@ -70,7 +70,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, privateKey?: PrivateKey) {
+	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, privateKey?: PrivateKeyWithPem) {
 		if (content == null) return null;
 		if (to == null) return null;
 
@@ -84,7 +84,7 @@ export class QueueService {
 			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
-			privateKey: privateKey && { keyId: privateKey.keyId, privateKey: privateKey.privateKey },
+			privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
 		};
 
 		return this.deliverQueue.add(to, data, {
@@ -106,7 +106,7 @@ export class QueueService {
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, privateKey?: PrivateKey) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, privateKey?: PrivateKeyWithPem) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
 
@@ -126,7 +126,7 @@ export class QueueService {
 				content: contentBody,
 				to: d[0],
 				isSharedInbox: d[1],
-				privateKey: privateKey && { keyId: privateKey.keyId, privateKey: privateKey.privateKey },
+				privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
 			} as DeliverJobData,
 			opts,
 		})));

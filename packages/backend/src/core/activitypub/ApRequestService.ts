@@ -15,7 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import type { PrivateKey } from './type.js';
+import type { PrivateKeyWithPem, PrivateKey } from '@misskey-dev/node-http-message-signatures';
 
 export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string, additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
@@ -36,7 +36,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 
 	const result = await signAsDraftToRequest(
 		request,
-		{ keyId: args.key.keyId, privateKeyPem: args.key.privateKey },
+		args.key,
 		['(request-target)', 'date', 'host', 'digest'],
 	);
 
@@ -62,7 +62,7 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
 	const result = await signAsDraftToRequest(
 		request,
-		{ keyId: args.key.keyId, privateKeyPem: args.key.privateKey },
+		args.key,
 		['(request-target)', 'date', 'host', 'accept'],
 	);
 
@@ -89,9 +89,9 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKey): Promise<void> {
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKeyWithPem): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
-		key = key ?? await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, level);
+		key = key ?? await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, level);
 		const req = await createSignedPost({
 			level,
 			key,
@@ -124,7 +124,7 @@ export class ApRequestService {
 	 */
 	@bindThis
 	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
-		const key = await this.userKeypairService.getLocalUserKeypairWithKeyId(user.id, level);
+		const key = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, level);
 		const req = await createSignedGet({
 			level,
 			key,

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { genEd25519KeyPair } from '@misskey-dev/node-http-message-signatures';
+import { genEd25519KeyPair, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
 import { RedisKVCache } from '@/misc/cache.js';
@@ -53,9 +53,9 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 * @returns
 	 */
 	@bindThis
-	public async getLocalUserKeypairWithKeyId(
+	public async getLocalUserPrivateKeyPem(
 		userIdOrHint: MiUser['id'] | MiUserKeypair, preferType?: string,
-	): Promise<{ keyId: string; publicKey: string; privateKey: string; }> {
+	): Promise<PrivateKeyWithPem> {
 		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
 		if (
 			preferType && ['01', '11', 'ed25519'].includes(preferType.toLowerCase()) &&
@@ -63,14 +63,12 @@ export class UserKeypairService implements OnApplicationShutdown {
 		) {
 			return {
 				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#ed25519-key`,
-				publicKey: keypair.ed25519PublicKey,
-				privateKey: keypair.ed25519PrivateKey,
+				privateKeyPem: keypair.ed25519PrivateKey,
 			};
 		}
 		return {
 			keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#main-key`,
-			publicKey: keypair.publicKey,
-			privateKey: keypair.privateKey,
+			privateKeyPem: keypair.privateKey,
 		};
 	}
 

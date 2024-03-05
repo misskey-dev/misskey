@@ -22,7 +22,6 @@ import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
@@ -30,7 +29,8 @@ import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate, PrivateKey } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class ApRendererService {
@@ -657,10 +657,10 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }, key: PrivateKey): Promise<IActivity> {
+	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }, key: PrivateKeyWithPem): Promise<IActivity> {
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, key.privateKey, key.keyId);
+		activity = await ldSignature.signRsaSignature2017(activity, key.privateKeyPem, key.keyId);
 
 		return activity;
 	}
