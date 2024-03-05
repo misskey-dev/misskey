@@ -24,6 +24,7 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
 
@@ -180,7 +181,17 @@ export class InboxProcessorService {
 		});
 
 		// アクティビティを処理
-		await this.apInboxService.performActivity(authUser.user, activity);
+		try {
+			await this.apInboxService.performActivity(authUser.user, activity);
+		} catch (e) {
+			if (e instanceof IdentifiableError) {
+				if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
+					return 'blocked notes with prohibited words';
+				}
+				if (e.id === '85ab9bd7-3a41-4530-959d-f07073900109') return 'actor has been suspended';
+			}
+			throw e;
+		}
 		return 'ok';
 	}
 }

@@ -103,6 +103,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkInput v-model="policies.inviteLimit" type="number">
 								</MkInput>
 							</MkFolder>
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
+							<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
+							<template #suffix>{{ policies.mentionLimit }}</template>
+							<MkInput v-model="policies.mentionLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
+							<template #label>{{ i18n.ts._role._options.canInvite }}</template>
+							<template #suffix>{{ policies.canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canInvite">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimit, 'inviteLimit'])">
+							<template #label>{{ i18n.ts._role._options.inviteLimit }}</template>
+							<template #suffix>{{ policies.inviteLimit }}</template>
+							<MkInput v-model="policies.inviteLimit" type="number">
+							</MkInput>
+						</MkFolder>
 
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimitCycle, 'inviteLimitCycle'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.inviteLimitCycle }}</template>

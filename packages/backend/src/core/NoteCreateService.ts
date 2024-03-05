@@ -56,6 +56,8 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { isNotNull } from '@/misc/is-not-null.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -150,8 +152,6 @@ type Option = {
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
-
-	public static ContainsProhibitedWordsError = class extends Error {};
 
 	constructor(
 		@Inject(DI.config)
@@ -464,6 +464,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
 		}
+
+		if (mentionedUsers.length > 0 && mentionedUsers.length > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
+			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'Note contains too many mentions');
+		}
+
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
@@ -902,7 +907,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const mentions = extractMentions(tokens);
 		let mentionedUsers = (await Promise.all(mentions.map(m =>
 			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
-		))).filter(x => x != null) as MiUser[];
+		))).filter(isNotNull);
 
 		// Drop duplicate users
 		mentionedUsers = mentionedUsers.filter((u, i, self) =>
@@ -1074,6 +1079,23 @@ export class NoteCreateService implements OnApplicationShutdown {
 				isFollowerHibernated: true,
 			});
 		}
+	}
+
+	public async checkProhibitedWordsContain(content: Parameters<UtilityService['concatNoteContentsForKeyWordCheck']>[0], prohibitedWords?: string[]) {
+		if (prohibitedWords == null) {
+			prohibitedWords = (await this.metaService.fetch()).prohibitedWords;
+		}
+
+		if (
+			this.utilityService.isKeyWordIncluded(
+				this.utilityService.concatNoteContentsForKeyWordCheck(content),
+				prohibitedWords,
+			)
+		) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@bindThis

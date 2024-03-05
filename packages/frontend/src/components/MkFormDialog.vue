@@ -21,37 +21,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSpacer :marginMin="20" :marginMax="32">
 		<div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
-			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
-				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+			<template v-for="(v, k) in Object.fromEntries(Object.entries(form).filter(([_, v]) => !('hidden' in v) || 'hidden' in v && !v.hidden))">
+				<MkInput v-if="v.type === 'number'" v-model="values[k]" type="number" :step="v.step || 1">
+					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
+					<template v-if="v.description" #caption>{{ v.description }}</template>
 				</MkInput>
-				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text" :mfmAutocomplete="form[item].treatAsMfm">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				<MkInput v-else-if="v.type === 'string' && !v.multiline" v-model="values[k]" type="text" :mfmAutocomplete="v.treatAsMfm">
+					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
+					<template v-if="v.description" #caption>{{ v.description }}</template>
 				</MkInput>
-				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" :mfmAutocomplete="form[item].treatAsMfm" :mfmPreview="form[item].treatAsMfm">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				<MkTextarea v-else-if="v.type === 'string' && v.multiline" v-model="values[k]" :mfmAutocomplete="v.treatAsMfm" :mfmPreview="v.treatAsMfm">
+					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
+					<template v-if="v.description" #caption>{{ v.description }}</template>
 				</MkTextarea>
-				<MkSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
-					<span v-text="form[item].label || item"></span>
-					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				<MkSwitch v-else-if="v.type === 'boolean'" v-model="values[k]">
+					<span v-text="v.label || k"></span>
+					<template v-if="v.description" #caption>{{ v.description }}</template>
 				</MkSwitch>
-				<MkSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="option in form[item].enum" :key="option.value" :value="option.value">{{ option.label }}</option>
+				<MkSelect v-else-if="v.type === 'enum'" v-model="values[k]">
+					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
+					<option v-for="option in v.enum" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkSelect>
-				<MkRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="option in form[item].options" :key="option.value" :value="option.value">{{ option.label }}</option>
+				<MkRadios v-else-if="v.type === 'radio'" v-model="values[k]">
+					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
+					<option v-for="option in v.options" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkRadios>
-				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :textConverter="form[item].textConverter">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				<MkRange v-else-if="v.type === 'range'" v-model="values[k]" :min="v.min" :max="v.max" :step="v.step" :textConverter="v.textConverter">
+					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
+					<template v-if="v.description" #caption>{{ v.description }}</template>
 				</MkRange>
-				<MkButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)">
-					<span v-text="form[item].content || item"></span>
+				<MkButton v-else-if="v.type === 'button'" @click="v.action($event, values)">
+					<span v-text="v.content || k"></span>
 				</MkButton>
 			</template>
 		</div>
@@ -72,19 +72,21 @@ import MkSelect from './MkSelect.vue';
 import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
+import type { Form } from '@/scripts/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	title: string;
-	form: any;
+	form: Form;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'done', v: {
-		canceled?: boolean;
-		result?: any;
+		canceled: true;
+	} | {
+		result: Record<string, any>;
 	}): void;
 	(ev: 'closed'): void;
 }>();

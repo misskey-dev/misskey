@@ -243,7 +243,7 @@ function save() {
         enableProxyCheckio: enableProxyCheckio.value,
         proxyCheckioApiKey: proxyCheckioApiKey.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

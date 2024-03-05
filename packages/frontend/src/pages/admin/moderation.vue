@@ -117,7 +117,7 @@ function save() {
 		preservedUsernames: preservedUsernames.value.split('\n'),
 		enableGDPRMode: enableGDPRMode.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

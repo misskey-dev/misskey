@@ -108,7 +108,7 @@ function save() {
 		ApiBase: ApiBase.value,
 		DiscordWebhookUrlWordBlock: DiscordWebhookUrlWordBlock.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

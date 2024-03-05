@@ -39,11 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="select.items">
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 			</template>
-			<template v-else>
-				<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
-					<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
-				</optgroup>
-			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
 			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
@@ -66,7 +61,7 @@ import { i18n } from '@/i18n.js';
 import MkSwitch from "@/components/MkSwitch.vue";
 
 type Input = {
-	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local' | 'mksw';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local' | 'mksw';
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string | number | null;
@@ -76,22 +71,17 @@ type Input = {
 
 type Select = {
 	items: {
-		value: string;
+		value: any;
 		text: string;
-	}[];
-	groupedItems: {
-		label: string;
-		items: {
-			value: string;
-			text: string;
-		}[];
 	}[];
 	default: string | null;
 };
 
+type Result = string | number | true | null;
+
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting' | 'mksw';
-	title: string;
+	title?: string;
 	text?: string;
 	input?: Input;
 	select?: Select;
@@ -116,7 +106,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: { canceled: boolean; result: any }): void;
+	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -142,8 +132,11 @@ const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'character
 	return null;
 });
 
-function done(canceled: boolean, result?) {
-	emit('done', { canceled, result });
+// overload function を使いたいので lint エラーを無視する
+function done(canceled: true): void;
+function done(canceled: false, result: Result): void; // eslint-disable-line no-redeclare
+function done(canceled: boolean, result?: Result): void { // eslint-disable-line no-redeclare
+	emit('done', { canceled, result } as { canceled: true } | { canceled: false, result: Result });
 	modal.value?.close();
 }
 
