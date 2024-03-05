@@ -4,7 +4,7 @@
  */
 
 import * as assert from 'assert';
-import { verifyDraftSignature, parseRequestSignature, genEd25519KeyPair, genRsaKeyPair } from '@misskey-dev/node-http-message-signatures';
+import { verifyDraftSignature, parseRequestSignature, genEd25519KeyPair, genRsaKeyPair, importPrivateKey } from '@misskey-dev/node-http-message-signatures';
 import { createSignedGet, createSignedPost } from '@/core/activitypub/ApRequestService.js';
 
 export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
@@ -31,32 +31,47 @@ async function getKeyPair(level: string) {
 	throw new Error('Invalid level');
 }
 
-describe('ap-request', () => {
+describe('ap-request post', () => {
+	const url = 'https://example.com/inbox';
+	const activity = { a: 1 };
+	const body = JSON.stringify(activity);
+	const headers = {
+		'User-Agent': 'UA',
+	};
+
 	describe.each(['00', '01'])('createSignedPost with verify', (level) => {
-		test('pass', async () => {
+		test('pem', async () => {
 			const keypair = await getKeyPair(level);
-			const key = { keyId: 'x', 'privateKey': keypair.privateKey };
-			const url = 'https://example.com/inbox';
-			const activity = { a: 1 };
-			const body = JSON.stringify(activity);
-			const headers = {
-				'User-Agent': 'UA',
-			};
+			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
 
 			const req = await createSignedPost({ level, key, url, body, additionalHeaders: headers });
 
 			const parsed = parseRequestSignature(req.request);
-			expect(parsed?.version).toBe('draft');
+			expect(parsed.version).toBe('draft');
+			if (!parsed) return;
+			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
+			assert.deepStrictEqual(verify, true);
+		});
+		test('imported', async () => {
+			const keypair = await getKeyPair(level);
+			const key = { keyId: 'x', 'privateKey': await importPrivateKey(keypair.privateKey) };
+
+			const req = await createSignedPost({ level, key, url, body, additionalHeaders: headers });
+
+			const parsed = parseRequestSignature(req.request);
+			expect(parsed.version).toBe('draft');
 			if (!parsed) return;
 			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});
+});
 
+describe('ap-request get', () => {
 	describe.each(['00', '01'])('createSignedGet with verify', (level) => {
 		test('pass', async () => {
 			const keypair = await getKeyPair(level);
-			const key = { keyId: 'x', 'privateKey': keypair.privateKey };
+			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
 			const url = 'https://example.com/outbox';
 			const headers = {
 				'User-Agent': 'UA',
@@ -65,7 +80,7 @@ describe('ap-request', () => {
 			const req = await createSignedGet({ level, key, url, additionalHeaders: headers });
 
 			const parsed = parseRequestSignature(req.request);
-			expect(parsed?.version).toBe('draft');
+			expect(parsed.version).toBe('draft');
 			if (!parsed) return;
 			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
