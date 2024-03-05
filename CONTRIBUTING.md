@@ -318,70 +318,6 @@ Don't forget to re-run the `.storybook/generate.js` script after adding, editing
 
 ## Nest
 
-### Unit Test
-Short example
-
-```typescript
-import { jest } from '@jest/globals'; // for spyOn
-import { Test } from '@nestjs/testing';
-import type { TestingModule } from '@nestjs/testing';
-import { ModuleMocker } from 'jest-mock';
-import type { MockFunctionMetadata } from 'jest-mock';
-import { FooService } from '@/core/FooService';
-import { BarService } from '@/core/BarService';
-import { HogeService } from '@/core/HogeService';
-import { GlobalModule } from '@/GlobalModule.js';
-
-const moduleMocker = new ModuleMocker(global);
-
-describe('test', () => {
-	let app: TestingModule;
-	let fooService: FooService; // for test case
-	let barService: BarService; // for test case
-	let hogeService: HogeService; // Let's mock this service as it is not very relevant
-
-	beforeEach(async () => {
-		app = await Test.createTestingModule({
-			imports: [
-				GlobalModule,
-			],
-			providers: [
-				FooService,
-				BarService,
-			],
-		})
-			.useMocker((token) => {
-				if (token === HogeService) {
-					// return mock
-					return { fugaMethod: jest.fn() };
-				}
-				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
-				}
-			})
-			.compile();
-
-		fooService = app.get<FooService>(FooService);
-		barService = app.get<BarService>(BarService);
-		hogeService = app.get<HogeService>(HogeService) as jest.Mocked<HogeService>;
-	});
-	test('niceMethod', () => {
-		// spy
-		const bazSpy = jest.spyOn(barService, 'bazMethod');
-		// mock return value
-		hogeService.fugaMethod.mockResolvedValue('hello, world' as any);
-
-		// target function
-		await fooService.niceMethod();
-
-		// check values
-		expect(bazSpy).toHaveBeenCalled();
-	});
-})
-```
-
 ### Nest Service Circular dependency / Nestでサービスの循環参照でエラーが起きた場合
 
 どちらかのサービスで`OnModuleInit`を使う
@@ -426,7 +362,7 @@ describe('test', () => {
 			imports: ...,
 			providers: [
 				FooService,
-				{ // mockする (mockが必須かどうか不明)
+				{ // mockする (mockは必須ではないかもしれない)
 					provide: BarService,
 					useFactory: () => ({
 						incredibleMethod: jest.fn(),
