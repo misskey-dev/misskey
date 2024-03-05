@@ -13,7 +13,6 @@ import { bindThis } from '@/decorators.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 import { UserKeypairService } from '../UserKeypairService.js';
-import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 interface IRecipe {
 	type: string;
@@ -51,7 +50,6 @@ class DeliverManager {
 		private userKeypairService: UserKeypairService,
 		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
-		private accountUpdateService: AccountUpdateService,
 
 		actor: { id: MiUser['id']; host: null; },
 		activity: IActivity | null,
@@ -113,8 +111,6 @@ class DeliverManager {
 			 * ed25519の署名がなければ追加する
 			 */
 			await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
-			// リモートに配信
-			await this.accountUpdateService.publishToFollowers(this.actor.id, true);
 		}
 		//#endregion
 
@@ -169,7 +165,6 @@ export class ApDeliverManagerService {
 
 		private userKeypairService: UserKeypairService,
 		private queueService: QueueService,
-		private accountUpdateService: AccountUpdateService,
 	) {
 	}
 
@@ -185,7 +180,6 @@ export class ApDeliverManagerService {
 			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
-			this.accountUpdateService,
 			actor,
 			activity,
 		);
@@ -205,7 +199,6 @@ export class ApDeliverManagerService {
 			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
-			this.accountUpdateService,
 			actor,
 			activity,
 		);
@@ -219,7 +212,6 @@ export class ApDeliverManagerService {
 			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
-			this.accountUpdateService,
 			actor,
 			activity,
 		);

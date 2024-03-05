@@ -30,6 +30,8 @@ export class AccountUpdateService implements OnModuleInit {
 	}
 
 	async onModuleInit() {
+		// Circular dependency
+		// AccountUpdateService - ApDeliverManagerSevice( - DeliverManager) - UserKeypairService - AccountUpdateService
 		this.apDeliverManagerService = this.moduleRef.get(ApDeliverManagerService.name);
 	}
 
