@@ -4,118 +4,125 @@
  */
 
 import cluster from 'node:cluster';
-import { pino } from 'pino';
+import chalk from 'chalk';
+import { default as convertColor } from 'color-convert';
+import { format as dateFormat } from 'date-fns';
 import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 import type { KEYWORD } from 'color-convert/conversions.js';
 
+type Context = {
+	name: string;
+	color?: KEYWORD;
+};
+
+type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
+
 // eslint-disable-next-line import/no-default-export
 export default class Logger {
-	private readonly domain: string;
-	private logger: pino.Logger;
+	private context: Context;
+	private parentLogger: Logger | null = null;
+	private store: boolean;
 
-	constructor(domain: string, _color?: KEYWORD, _store = true, parentLogger?: Logger) {
-		if (parentLogger) {
-			this.domain = parentLogger.domain + '.' + domain;
-		} else {
-			this.domain = domain;
+	constructor(context: string, color?: KEYWORD, store = true) {
+		this.context = {
+			name: context,
+			color: color,
+		};
+		this.store = store;
+	}
+
+	@bindThis
+	public createSubLogger(context: string, color?: KEYWORD, store = true): Logger {
+		const logger = new Logger(context, color, store);
+		logger.parentLogger = this;
+		return logger;
+	}
+
+	@bindThis
+	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subContexts: Context[] = [], store = true): void {
+		if (envOption.quiet) return;
+		if (!this.store) store = false;
+		if (level === 'debug') store = false;
+
+		if (this.parentLogger) {
+			this.parentLogger.log(level, message, data, important, [this.context].concat(subContexts), store);
+			return;
 		}
 
-		this.logger = pino({
-			name: this.domain,
-			level: envOption.verbose ? 'debug' : 'info',
-			depthLimit: 8,
-			edgeLimit: 128,
-			redact: ['context.password', 'context.token'],
-			enabled: !envOption.quiet || envOption.logJson,
-			timestamp: envOption.withLogTime || envOption.logJson ? pino.stdTimeFunctions.isoTime : false,
-			messageKey: 'message',
-			errorKey: 'error',
-			formatters: {
-				level: (label, number) => ({ severity: label, level: number }),
-			},
-			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}` }),
-			transport: !envOption.logJson ? {
-				target: 'pino-pretty',
-				options: {
-					colorize: true,
-					colorizeObjects: true,
-					levelFirst: false,
-					levelKey: 'level',
-					timestampKey: 'time',
-					messageKey: 'message',
-					errorLikeObjectKeys: ['e', 'err', 'error', 'context.e', 'context.err', 'context.error'],
-					ignore: 'severity,pid,hostname,cluster,important',
-					messageFormat: '@{cluster} | {message}',
-				},
-			} : undefined,
-		});
+		if (envOption.logJson) {
+			console.log(JSON.stringify({
+				time: new Date().toISOString(),
+				level: level,
+				message: message,
+				data: data,
+				important: important,
+				context: [this.context].concat(subContexts).join('.'),
+				cluster: cluster.isPrimary ? 'primary' : `worker-${cluster.worker!.id}`,
+			}));
+			return;
+		}
+
+		const time = dateFormat(new Date(), 'HH:mm:ss');
+		const worker = cluster.isPrimary ? '*' : cluster.worker!.id;
+		const l =
+			level === 'error' ? important ? chalk.bgRed.white('ERR ') : chalk.red('ERR ') :
+			level === 'warning' ? chalk.yellow('WARN') :
+			level === 'success' ? important ? chalk.bgGreen.white('DONE') : chalk.green('DONE') :
+			level === 'debug' ? chalk.gray('VERB') :
+			level === 'info' ? chalk.blue('INFO') :
+			null;
+		const contexts = [this.context].concat(subContexts).map(d => d.color ? chalk.rgb(...convertColor.keyword.rgb(d.color))(d.name) : chalk.white(d.name));
+		const m =
+			level === 'error' ? chalk.red(message) :
+			level === 'warning' ? chalk.yellow(message) :
+			level === 'success' ? chalk.green(message) :
+			level === 'debug' ? chalk.gray(message) :
+			level === 'info' ? message :
+			null;
+
+		let log = `${l} ${worker}\t[${contexts.join(' ')}]\t${m}`;
+		if (envOption.withLogTime) log = chalk.gray(time) + ' ' + log;
+
+		const args: unknown[] = [important ? chalk.bold(log) : log];
+		if (data != null) {
+			args.push(data);
+		}
+		console.log(...args);
 	}
 
 	@bindThis
-	public createSubLogger(domain: string, _color?: KEYWORD, _store = true): Logger {
-		return new Logger(domain, undefined, false, this);
-	}
-
-	@bindThis
-	public error(x: string | Error, context?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
-		if (context === null) context = undefined;
-
+	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
-			context = context ?? {};
-			context.error = x;
-
-			if (important) this.logger.fatal({ context, important }, x.toString());
-			else this.logger.error({ context, important }, x.toString());
+			data = data ?? {};
+			data.e = x;
+			this.log('error', x.toString(), data, important);
 		} else if (typeof x === 'object') {
-			context = context ?? {};
-			context.error = context.error ?? x;
-
-			if (important) this.logger.fatal({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
-			else this.logger.error({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
+			this.log('error', `${(x as any).message ?? (x as any).name ?? x}`, data, important);
 		} else {
-			if (important) this.logger.fatal({ context, important }, x);
-			else this.logger.error({ context, important }, x);
+			this.log('error', `${x}`, data, important);
 		}
 	}
 
 	@bindThis
-	public warn(x: string | Error, context?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
-		if (context === null) context = undefined;
+	public warn(message: string, data?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
+		this.log('warning', message, data, important);
+	}
 
-		if (x instanceof Error) {
-			context = context ?? {};
-			context.error = x;
+	@bindThis
+	public succ(message: string, data?: Record<string, any> | null, important = false): void { // 何かに成功した状況で使う
+		this.log('success', message, data, important);
+	}
 
-			this.logger.warn({ context, important }, x.toString());
-		} else if (typeof x === 'object') {
-			context = context ?? {};
-			context.error = context.error ?? x;
-
-			this.logger.warn({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
-		} else {
-			this.logger.warn({ context, important }, x);
+	@bindThis
+	public debug(message: string, data?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
+		if (process.env.NODE_ENV !== 'production' || envOption.verbose) {
+			this.log('debug', message, data, important);
 		}
 	}
 
 	@bindThis
-	public succ(message: string, context?: Record<string, any> | null, important = false): void { // 何かに成功した状況で使う
-		if (context === null) context = undefined;
-
-		this.logger.trace({ context, important }, message);
-	}
-
-	@bindThis
-	public debug(message: string, context?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
-		if (context === null) context = undefined;
-
-		this.logger.debug({ context, important }, message);
-	}
-
-	@bindThis
-	public info(message: string, context?: Record<string, any> | null, important = false): void { // それ以外
-		if (context === null) context = undefined;
-
-		this.logger.info({ context, important }, message);
+	public info(message: string, data?: Record<string, any> | null, important = false): void { // それ以外
+		this.log('info', message, data, important);
 	}
 }
