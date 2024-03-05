@@ -86,9 +86,6 @@ onMounted(() => {
 
 onActivated(() => {
 	pagingComponent.value?.reload();
-	connection = useStream().useChannel('main');
-	connection.on('notification', onNotification);
-	connection.on('notificationFlushed', reload);
 });
 
 onUnmounted(() => {
