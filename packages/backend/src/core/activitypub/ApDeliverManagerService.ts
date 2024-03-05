@@ -13,8 +13,9 @@ import { bindThis } from '@/decorators.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import type Logger from '@/logger.js';
 import { UserKeypairService } from '../UserKeypairService.js';
-import Logger from '@/logger.js';
+import { ApLoggerService } from './ApLoggerService.js';
 
 interface IRecipe {
 	type: string;
@@ -23,8 +24,6 @@ interface IRecipe {
 interface IFollowersRecipe extends IRecipe {
 	type: 'Followers';
 }
-
-const logger = new Logger('deliver-manager', 'azure');
 
 interface IDirectRecipe extends IRecipe {
 	type: 'Direct';
@@ -55,6 +54,7 @@ class DeliverManager {
 		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
 		private accountUpdateService: AccountUpdateService,
+		private logger: Logger,
 
 		actor: { id: MiUser['id']; host: null; },
 		activity: IActivity | null,
@@ -117,7 +117,7 @@ class DeliverManager {
 			 */
 			const created = await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
 			if (created) {
-				logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
+				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
 				await this.accountUpdateService.publishToFollowers(this.actor.id, true);
 			}
@@ -164,12 +164,14 @@ class DeliverManager {
 
 		// deliver
 		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
-		logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor?.id} activityId=${this.activity?.id}`);
+		this.logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor.id} activityId=${this.activity?.id}`);
 	}
 }
 
 @Injectable()
 export class ApDeliverManagerService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
@@ -177,7 +179,9 @@ export class ApDeliverManagerService {
 		private userKeypairService: UserKeypairService,
 		private queueService: QueueService,
 		private accountUpdateService: AccountUpdateService,
+		private apLoggerService: ApLoggerService,
 	) {
+		this.logger = this.apLoggerService.logger.createSubLogger('deliver-manager');
 	}
 
 	/**
@@ -193,6 +197,7 @@ export class ApDeliverManagerService {
 			this.followingsRepository,
 			this.queueService,
 			this.accountUpdateService,
+			this.logger,
 			actor,
 			activity,
 		);
@@ -213,6 +218,7 @@ export class ApDeliverManagerService {
 			this.followingsRepository,
 			this.queueService,
 			this.accountUpdateService,
+			this.logger,
 			actor,
 			activity,
 		);
@@ -227,6 +233,7 @@ export class ApDeliverManagerService {
 			this.followingsRepository,
 			this.queueService,
 			this.accountUpdateService,
+			this.logger,
 			actor,
 			activity,
 		);
