@@ -187,14 +187,19 @@ export async function mainBoot() {
 		if ($i.followersCount >= 500) claimAchievement('followers500');
 		if ($i.followersCount >= 1000) claimAchievement('followers1000');
 
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365) {
-			claimAchievement('passedSinceAccountCreated1');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 2) {
-			claimAchievement('passedSinceAccountCreated2');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 3) {
-			claimAchievement('passedSinceAccountCreated3');
+		const createdAt = new Date($i.createdAt);
+
+		if (now.getMonth() === createdAt.getMonth() && now.getDate() === createdAt.getDate()) {
+			const yearDiff = now.getFullYear() - createdAt.getFullYear();
+			if (yearDiff >= 1) {
+				claimAchievement('passedSinceAccountCreated1');
+			}
+			if (yearDiff >= 2) {
+				claimAchievement('passedSinceAccountCreated2');
+			}
+			if (yearDiff >= 3) {
+				claimAchievement('passedSinceAccountCreated3');
+			}
 		}
 
 		if (claimedAchievements.length >= 30) {
@@ -229,7 +234,7 @@ export async function mainBoot() {
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
 			}
