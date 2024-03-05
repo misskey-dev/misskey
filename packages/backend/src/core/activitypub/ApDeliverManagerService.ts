@@ -14,6 +14,7 @@ import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { UserKeypairService } from '../UserKeypairService.js';
+import Logger from '@/logger.js';
 
 interface IRecipe {
 	type: string;
@@ -22,6 +23,8 @@ interface IRecipe {
 interface IFollowersRecipe extends IRecipe {
 	type: 'Followers';
 }
+
+const logger = new Logger('deliver-manager', 'azure');
 
 interface IDirectRecipe extends IRecipe {
 	type: 'Direct';
@@ -114,6 +117,7 @@ class DeliverManager {
 			 */
 			const created = await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
 			if (created) {
+				logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
 				await this.accountUpdateService.publishToFollowers(this.actor.id, true);
 			}
@@ -160,6 +164,7 @@ class DeliverManager {
 
 		// deliver
 		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		logger.info(`Deliver queues dispatched to ${inboxes.size} inboxes`);
 	}
 }
 
