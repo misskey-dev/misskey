@@ -63,7 +63,7 @@ export class FetchInstanceMetadataService {
 		return await this.redisClient.set(
 			`fetchInstanceMetadata:mutex:v2:${host}`, '1',
 			'EX', 30, // 30秒したら自動でロック解除 https://github.com/misskey-dev/misskey/issues/13506#issuecomment-1975375395
-			'GET' // 古い値を返す（なかったらnull）
+			'GET', // 古い値を返す（なかったらnull）
 		);
 	}
 
@@ -77,22 +77,24 @@ export class FetchInstanceMetadataService {
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
 
-		// finallyでunlockされてしまうのでtry内でロックチェックをしない
-		// （returnであってもfinallyは実行される）
-		if (!force && await this.tryLock(host) === '1') {
-			// 1が返ってきていたらロックされているという意味なので、何もしない
-			return;
+		if (!force) {
+			// キャッシュ有効チェックはロック取得前に行う
+			const _instance = await this.federatedInstanceService.fetch(host);
+			const now = Date.now();
+			if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
+				this.logger.debug(`Skip because updated recently ${_instance.infoUpdatedAt.toJSON()}`);
+				return;
+			}
+
+			// finallyでunlockされてしまうのでtry内でロックチェックをしない
+			// （returnであってもfinallyは実行される）
+			if (await this.tryLock(host) === '1') {
+				// 1が返ってきていたら他にロックされているという意味なので、何もしない
+				return;
+			}
 		}
 
 		try {
-			if (!force) {
-				const _instance = await this.federatedInstanceService.fetch(host);
-				const now = Date.now();
-				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
-					throw new Error(`Skip because updated recently ${_instance.infoUpdatedAt.toJSON()}`);
-				}
-			}
-
 			this.logger.info(`Fetching metadata of ${instance.host} ...`);
 
 			const [info, dom, manifest] = await Promise.all([
