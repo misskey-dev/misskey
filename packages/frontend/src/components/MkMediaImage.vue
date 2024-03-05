@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="showHiddenContent">
 	<component
-		:is="disableImageLink ? 'div' : 'a'"
-		v-bind="disableImageLink ? {
+		:is="(image.isSensitive && !$i) || disableImageLink ? 'div' : 'a'"
+		v-bind="(image.isSensitive && !$i) || disableImageLink ? {
 			title: image.name,
 			class: $style.imageContainer,
 		} : {
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<ImgWithBlurhash
 			:hash="image.blurhash"
-			:src="(props.image.isSensitive && !$i) || (defaultStore.state.dataSaver.media && hide) ? null : url"
+			:src="(image.isSensitive && !$i) || (defaultStore.state.dataSaver.media && hide) ? null : url"
 			:forceBlurhash="hide"
 			:cover="hide || cover"
 			:alt="image.comment || image.name"
