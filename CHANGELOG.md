@@ -1,24 +1,12 @@
-<!--
-## 202x.x.x (unreleased)
-
-### General
--
-
-### Client
-- 
-
-### Server
--
-
--->
-
 ## Unreleased
 
 ### General
 -
 
 ### Client
+- Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
+- Fix: 一部のページ内リンクが正しく動作しない問題を修正
 
 ### Server
 -
