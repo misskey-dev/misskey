@@ -1,10 +1,10 @@
 ## Unreleased
 
 ### General
--
+- Enhance: 不適切なPage、ギャラリー、Playを管理者権限で削除できるように
 
 ### Client
-- 
+- Enhance: 不適切なPage、ギャラリー、Playを通報できるように
 
 ### Server
 -
