@@ -5,9 +5,21 @@
 
 import cluster from 'node:cluster';
 import { pino } from 'pino';
+import pinoPretty from 'pino-pretty';
 import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 import type { KEYWORD } from 'color-convert/conversions.js';
+
+// @ts-expect-error it gives error if we use pinoPretty.PinoPretty instead of pinoPretty.
+const pinoPrettyStream = pinoPretty({
+	levelFirst: false,
+	levelKey: 'level',
+	timestampKey: 'time',
+	messageKey: 'message',
+	errorLikeObjectKeys: ['e', 'err', 'error'],
+	ignore: 'severity,pid,hostname,cluster,important',
+	messageFormat: '@{cluster} | {message}',
+});
 
 // eslint-disable-next-line import/no-default-export
 export default class Logger {
@@ -36,19 +48,7 @@ export default class Logger {
 				level: (label, number) => ({ severity: label, level: number }),
 			},
 			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}`, ...this.context }),
-			transport: !envOption.logJson ? {
-				target: 'pino-pretty',
-				options: {
-					levelFirst: false,
-					levelKey: 'level',
-					timestampKey: 'time',
-					messageKey: 'message',
-					errorLikeObjectKeys: ['e', 'err', 'error'],
-					ignore: 'severity,pid,hostname,cluster,important',
-					messageFormat: '@{cluster} | {message}',
-				},
-			} : undefined,
-		});
+		}, !envOption.logJson ? pinoPrettyStream : undefined);
 	}
 
 	@bindThis
