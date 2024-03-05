@@ -263,7 +263,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+		const hasProhibitedWords = await this.checkProhibitedWordsContain({
+			cw: data.cw,
+			text: data.text,
+			pollChoices: data.poll?.choices,
+		}, meta.prohibitedWords);
+
+		if (hasProhibitedWords) {
 			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 		}
 
@@ -993,6 +999,23 @@ export class NoteCreateService implements OnApplicationShutdown {
 				isFollowerHibernated: true,
 			});
 		}
+	}
+
+	public async checkProhibitedWordsContain(content: Parameters<UtilityService['concatNoteContentsForKeyWordCheck']>[0], prohibitedWords?: string[]) {
+		if (prohibitedWords == null) {
+			prohibitedWords = (await this.metaService.fetch()).prohibitedWords;
+		}
+
+		if (
+			this.utilityService.isKeyWordIncluded(
+				this.utilityService.concatNoteContentsForKeyWordCheck(content),
+				prohibitedWords,
+			)
+		) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@bindThis
