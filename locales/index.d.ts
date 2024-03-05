@@ -2757,7 +2757,7 @@ export interface Locale extends ILocale {
      */
     "reportAbuseOf": ParameterizedString<"name">;
     /**
-     * 通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。
+     * 通報理由の詳細を記入してください。対象のノートやPageなどがある場合はそのURLも記入してください。
      */
     "fillAbuseReportDescription": string;
     /**
@@ -9341,6 +9341,18 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         "unsetUserBanner": string;
+        /**
+         * ページを削除
+         */
+        "deletePage": string;
+        /**
+         * Playを削除
+         */
+        "deleteFlash": string;
+        /**
+         * ギャラリーの投稿を削除
+         */
+        "deleteGalleryPost": string;
     };
     "_fileViewer": {
         /**

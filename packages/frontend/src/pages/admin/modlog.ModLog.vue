@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="{
 				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration'].includes(log.type),
 				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword'].includes(log.type),
-				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration'].includes(log.type)
+				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration', 'deletePage', 'deleteFlash', 'deleteGalleryPost'].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
 		<span v-if="log.type === 'updateUserNote'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
@@ -40,6 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'createAvatarDecoration'">: {{ log.info.avatarDecoration.name }}</span>
 		<span v-else-if="log.type === 'updateAvatarDecoration'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'deleteAvatarDecoration'">: {{ log.info.avatarDecoration.name }}</span>
+		<span v-else-if="log.type === 'deletePage'">: @{{ log.info.pageUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
 	</template>
 	<template #icon>
 		<MkAvatar :user="log.user" :class="$style.avatar"/>
