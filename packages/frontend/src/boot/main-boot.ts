@@ -188,20 +188,25 @@ export async function mainBoot() {
 		if ($i.followersCount >= 1000) claimAchievement('followers1000');
 
 		const createdAt = new Date($i.createdAt);
-		const createdAtOneYearLater = new Date($i.createdAt);
-		createdAtOneYearLater.setFullYear(createdAtOneYearLater.getFullYear() + 1);
-		if (now >= createdAtOneYearLater) {
-			claimAchievement('passedSinceAccountCreated1');
-		}
-		const createdAtTwoYearsLater = new Date($i.createdAt);
-		createdAtTwoYearsLater.setFullYear(createdAtTwoYearsLater.getFullYear() + 2);
-		if (now >= createdAtTwoYearsLater) {
-			claimAchievement('passedSinceAccountCreated2');
-		}
 		const createdAtThreeYearsLater = new Date($i.createdAt);
 		createdAtThreeYearsLater.setFullYear(createdAtThreeYearsLater.getFullYear() + 3);
 		if (now >= createdAtThreeYearsLater) {
 			claimAchievement('passedSinceAccountCreated3');
+			claimAchievement('passedSinceAccountCreated2');
+			claimAchievement('passedSinceAccountCreated1');
+		} else {
+			const createdAtTwoYearsLater = new Date($i.createdAt);
+			createdAtTwoYearsLater.setFullYear(createdAtTwoYearsLater.getFullYear() + 2);
+			if (now >= createdAtTwoYearsLater) {
+				claimAchievement('passedSinceAccountCreated2');
+				claimAchievement('passedSinceAccountCreated1');
+			} else {
+				const createdAtOneYearLater = new Date($i.createdAt);
+				createdAtOneYearLater.setFullYear(createdAtOneYearLater.getFullYear() + 1);
+				if (now >= createdAtOneYearLater) {
+					claimAchievement('passedSinceAccountCreated1');
+				}
+			}
 		}
 
 		if (claimedAchievements.length >= 30) {
