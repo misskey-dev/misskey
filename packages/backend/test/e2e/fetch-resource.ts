@@ -80,7 +80,7 @@ describe('Webリソース', () => {
 		aliceUploadedFile = (await uploadFile(alice)).body;
 		alicesPost = await post(alice, {
 			text: 'test',
-			fileIds: [aliceUploadedFile.body.id],
+			fileIds: [aliceUploadedFile!.id],
 		});
 		alicePage = await page(alice, {});
 		alicePlay = await play(alice, {});
