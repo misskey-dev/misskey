@@ -125,6 +125,13 @@ function showMenu(ev: MouseEvent) {
 		action: () => {
 			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
 		},
+	}] : []), ...($i?.id === props.image.userId ? [{
+		type: 'divider' as const,
+	}, {
+		type: 'link' as const,
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-info-circle',
+		to: `/my/drive/file/${props.image.id}`,
 	}] : [])], ev.currentTarget ?? ev.target);
 }
 
