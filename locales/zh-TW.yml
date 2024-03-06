@@ -2298,6 +2298,7 @@ _notification:
   sendTestNotification: "發送測試通知"
   notificationWillBeDisplayedLikeThis: "通知會以這樣的方式顯示"
   reactedBySomeUsers: "{n}人做出了反應"
+  likedBySomeUsers: "{n} 人按了讚"
   renotedBySomeUsers: "{n}人做了轉發"
   followedBySomeUsers: "被{n}人追隨了"
   flushNotification: "重置通知歷史紀錄"
