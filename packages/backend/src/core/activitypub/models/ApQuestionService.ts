@@ -71,7 +71,7 @@ export class ApQuestionService {
 		if (uri == null) throw new Error('uri is null');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(this.config.url + '/')) throw new Error('uri points local');
+		if (new URL(uri).origin === this.config.url) throw new Error('uri points local');
 
 		//#region このサーバーに既に登録されているか
 		const note = await this.notesRepository.findOneBy({ uri });

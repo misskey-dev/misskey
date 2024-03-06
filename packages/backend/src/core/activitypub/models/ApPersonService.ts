@@ -225,7 +225,7 @@ export class ApPersonService implements OnModuleInit {
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
-		if (uri.startsWith(`${this.config.url}/`)) {
+		if (new URL(uri).origin === this.config.url) {
 			const id = uri.split('/').pop();
 			const u = await this.usersRepository.findOneBy({ id }) as MiLocalUser | null;
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
@@ -285,7 +285,7 @@ export class ApPersonService implements OnModuleInit {
 	public async createPerson(uri: string, resolver?: Resolver): Promise<MiRemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
-		if (uri.startsWith(this.config.url)) {
+		if (new URL(uri).origin === this.config.url) {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
@@ -447,7 +447,7 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(`${this.config.url}/`)) return;
+		if (new URL(uri).origin === this.config.url) return;
 
 		//#region このサーバーに既に登録されているか
 		const exist = await this.fetchPerson(uri) as MiRemoteUser | null;
@@ -692,7 +692,7 @@ export class ApPersonService implements OnModuleInit {
 			await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
 			dst = await this.fetchPerson(src.movedToUri) ?? dst;
 		} else {
-			if (src.movedToUri.startsWith(`${this.config.url}/`)) {
+			if (new URL(src.movedToUri).origin === this.config.url) {
 				// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
 				return 'failed: movedTo is local but not found';
 			}

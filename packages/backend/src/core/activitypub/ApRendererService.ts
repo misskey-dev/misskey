@@ -569,7 +569,7 @@ export class ApRendererService {
 
 	@bindThis
 	public renderUndo(object: string | IObject, user: { id: MiUser['id'] }): IUndo {
-		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
+		const id = typeof object !== 'string' && typeof object.id === 'string' && new URL(object.id).origin === this.config.url ? `${object.id}/undo` : undefined;
 
 		return {
 			type: 'Undo',
