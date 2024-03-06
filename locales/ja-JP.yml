@@ -2355,6 +2355,7 @@ _notification:
   sendTestNotification: "テスト通知を送信する"
   notificationWillBeDisplayedLikeThis: "通知はこのように表示されます"
   reactedBySomeUsers: "{n}人がリアクションしました"
+  likedBySomeUsers: "{n}人がいいねしました"
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"

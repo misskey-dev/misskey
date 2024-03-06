@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<MkCustomEmoji class="emoji" :name="emoji.name"/>
+					<MkCustomEmoji class="emoji" :name="emoji.name" :fallbackToImage="true"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
