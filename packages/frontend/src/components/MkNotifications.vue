@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -35,7 +36,6 @@ import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import * as Misskey from 'misskey-js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -57,13 +57,14 @@ const pagination = computed(() => defaultStore.reactiveState.useGroupedNotificat
 	})),
 });
 
-function onNotification(notification) {
+function onNotification(notification: Misskey.entities.Notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
+	const isAlreadyShown = pagingComponent.value?.items.has(notification.id);
 	if (isMuted || document.visibilityState === 'visible') {
 		useStream().send('readNotification');
 	}
 
-	if (!isMuted) {
+	if (!isMuted && !isAlreadyShown) {
 		pagingComponent.value?.prepend(notification);
 	}
 }
@@ -76,24 +77,41 @@ function reload() {
 	});
 }
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['main']>;
+let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | undefined;
 
 onMounted(() => {
-	connection = useStream().useChannel('main');
-	connection.on('notification', onNotification);
-	connection.on('notificationFlushed', reload);
+	if (!connection) {
+		connection = useStream().useChannel('main');
+		if (connection) {
+			connection.on('notification', onNotification);
+			connection.on('notificationFlushed', reload);
+		}
+	}
 });
 
 onActivated(() => {
+	if (!connection) {
+		connection = useStream().useChannel('main');
+		if (connection) {
+			connection.on('notification', onNotification);
+			connection.on('notificationFlushed', reload);
+		}
+	}
 	pagingComponent.value?.reload();
 });
 
 onUnmounted(() => {
-	if (connection) connection.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = undefined;
+	}
 });
 
 onDeactivated(() => {
-	if (connection) connection.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = undefined;
+	}
 });
 
 defineExpose({
