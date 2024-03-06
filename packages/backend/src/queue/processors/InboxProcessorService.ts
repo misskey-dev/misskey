@@ -53,6 +53,10 @@ export class InboxProcessorService {
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
 		const signature = 'version' in job.data.signature ? job.data.signature.value : job.data.signature;
+		if (Array.isArray(signature)) {
+			// RFC 9401はsignatureが配列になるが、とりあえずエラーにする
+			throw new Error('signature is array');
+		}
 		const activity = job.data.activity;
 
 		//#region Log

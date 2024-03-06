@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			for (const job of jobs) {
 				const signature = 'version' in job.data.signature ? job.data.signature.value : job.data.signature;
-				const host = new URL(signature.keyId).host;
+				const host = Array.isArray(signature) ? 'TODO' : new URL(signature.keyId).host;
 				if (res.find(x => x[0] === host)) {
 					res.find(x => x[0] === host)![1]++;
 				} else {
