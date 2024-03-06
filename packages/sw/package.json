@@ -15,12 +15,12 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@typescript-eslint/parser": "7.1.0",
+		"@typescript-eslint/parser": "7.1.1",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.67",
 		"eslint": "8.57.0",
 		"eslint-plugin-import": "2.29.1",
 		"nodemon": "3.1.0",
-		"typescript": "5.3.3"
+		"typescript": "5.4.2"
 	},
 	"type": "module"
 }
