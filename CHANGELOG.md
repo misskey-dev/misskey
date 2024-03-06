@@ -1,23 +1,11 @@
-<!--
-## 202x.x.x (unreleased)
-
-### General
--
-
-### Client
-- 
-
-### Server
--
-
--->
-
 ## Unreleased
 
 ### General
 -
 
 ### Client
+- Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
+- Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: ノートの検索欄にURLを入れると勝手に照会される問題を修正
 
 ### Server
