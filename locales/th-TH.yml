@@ -2298,6 +2298,7 @@ _notification:
   sendTestNotification: "ส่งทดสอบการแจ้งเตือน"
   notificationWillBeDisplayedLikeThis: "การแจ้งเตือนมีลักษณะแบบนี้"
   reactedBySomeUsers: "ถูกรีแอคชั่นโดยผู้ใช้ {n} ราย"
+  likedBySomeUsers: "{n} คนถูกใจ"
   renotedBySomeUsers: "รีโน้ตจากผู้ใช้ {n} ราย"
   followedBySomeUsers: "มีผู้ติดตาม {n} ราย"
   flushNotification: "ล้างประวัติการแจ้งเตือน"
