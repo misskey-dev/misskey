@@ -4,6 +4,8 @@
 -
 
 ### Client
+- Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
+- Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 通知が重複して受信される問題を修正 (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/504)
 
 ### Server
