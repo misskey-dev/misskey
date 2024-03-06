@@ -5,7 +5,7 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
-import { $i } from "@/account.js";
+import { $i } from '@/account.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();

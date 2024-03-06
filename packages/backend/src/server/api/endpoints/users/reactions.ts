@@ -12,8 +12,8 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { MiNoteReaction } from '@/models/_.js';
 import { ApiError } from '../../error.js';
-import { MiNoteReaction } from "@/models/_.js";
 
 export const meta = {
 	tags: ['users', 'reactions'],

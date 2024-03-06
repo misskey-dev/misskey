@@ -2315,6 +2315,7 @@ _notification:
   sendTestNotification: "테스트 알림 보내기"
   notificationWillBeDisplayedLikeThis: "알림이 이렇게 표시됩니다"
   reactedBySomeUsers: "{n}명이 반응했습니다"
+  likedBySomeUsers: "{n}명이 좋아요했습니다"
   renotedBySomeUsers: "{n}명이 리노트했습니다"
   followedBySomeUsers: "{n}명에게 팔로우됨"
   _types:

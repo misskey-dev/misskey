@@ -17,8 +17,8 @@ import { QueryService } from '@/core/QueryService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { ApiError } from '../../error.js';
-import { FanoutTimelineName } from "@/core/FanoutTimelineService.js";
 
 export const meta = {
 	tags: ['notes'],
