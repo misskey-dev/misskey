@@ -4,33 +4,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div>
-		<div v-if="game.ready" :class="$style.game">
-			<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-			<div :class="$style.count" class=""><img :class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
-																							 src="https://media.discordapp.net/attachments/1153099592863334431/1162139796647448576/AfovawbDhjHYAAAAAElFTkSuQmCC.png"/>
-				{{ number(cookies) }}
-			</div>
-			<button v-click-anime class="_button" @click="onClick">
-				<img src="https://cdn.discordapp.com/attachments/1153099592863334431/1160169965568143391/dihk_cossack.gif"
-						 :class="$style.img">
-			</button>
+<div>
+	<div v-if="game.ready" :class="$style.game">
+		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
+		<div :class="$style.count" class="">
+			<img
+				:class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
+				src="https://files.prismisskey.space/misskey/59731116-9616-4161-82b3-7eff6c48ea72.apng"
+			/>
+			{{ number(cookies) }}
 		</div>
-		<div v-else>
-			<MkLoading/>
-		</div>
+		<button v-click-anime class="_button" @click="onClick">
+			<img
+				src="https://files.prismisskey.space/misskey/59731116-9616-4161-82b3-7eff6c48ea72.apng"
+				:class="$style.img"
+			>
+		</button>
 	</div>
+	<div v-else>
+		<MkLoading/>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import * as game from '@/scripts/clicker-game.js';
 import number from '@/filters/number.js';
-import {claimAchievement} from '@/scripts/achievements.js';
-import {defaultStore} from "@/store.js";
+import { claimAchievement } from '@/scripts/achievements.js';
+import { defaultStore } from '@/store.js';
 
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const saveData = game.saveData;
@@ -100,7 +105,6 @@ onUnmounted(() => {
 }
 
 $color-scheme: var(--color-scheme);
-
 
 .icon {
 	width: 1.3em;

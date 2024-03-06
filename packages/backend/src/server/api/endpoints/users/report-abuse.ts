@@ -120,6 +120,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					});
 				}
 				const meta = await this.metaService.fetch();
+				if (meta.DiscordWebhookUrl) {
+					const data_disc = { 'username': '絵文字追加通知ちゃん',
+																									'content':
+
+							'通報' + '\n' +
+																										'通報' + report.comment + '\n' +
+							'通報したユーザー : ' + '@' + me.username + '\n' +
+							'通報されたユーザー : ' + report.targetUserId + '\n',
+					};
+					await fetch(meta.DiscordWebhookUrl, {
+						'method': 'post',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(data_disc),
+					});
+				}
 				if (meta.email) {
 					this.emailService.sendEmail(meta.email, 'New abuse report',
 						sanitizeHtml(ps.comment),

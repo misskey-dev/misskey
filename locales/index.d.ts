@@ -4893,10 +4893,6 @@ export interface Locale extends ILocale {
      */
     "followingOrFollower": string;
     /**
-     * ファイル付きのみ
-     */
-    "fileAttachedOnly": string;
-    /**
      * TLに他の人への返信を含める
      */
     "showRepliesToOthersInTimeline": string;
