@@ -4,7 +4,7 @@
 -
 
 ### Client
-- 
+- Fix: 通知が重複して受信される問題を修正 (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/504)
 
 ### Server
 -
