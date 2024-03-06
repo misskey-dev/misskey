@@ -541,6 +541,7 @@ objectStorageUseSSLDesc: "Désactivez cette option si vous n'utilisez pas HTTPS 
 objectStorageUseProxy: "Se connecter via proxy"
 objectStorageUseProxyDesc: "Désactivez cette option si vous n'utilisez pas de proxy pour la connexion API"
 objectStorageSetPublicRead: "Régler sur « public » lors de l'envoi"
+s3ForcePathStyleDesc: "Si s3ForcePathStyle est activé, le nom du compartiment doit être spécifié comme une partie du chemin de l'URL plutôt que le nom d'hôte. Il faudra peut-être l'activer lors de l'utilisation d'une instance de Minio autohébergée, etc."
 serverLogs: "Journal du serveur"
 deleteAll: "Supprimer tout"
 showFixedPostForm: "Afficher le formulaire de publication en haut du fil d'actualité"
