@@ -2296,6 +2296,7 @@ _notification:
   sendTestNotification: "发送测试通知"
   notificationWillBeDisplayedLikeThis: "通知将会这样表示"
   reactedBySomeUsers: "{n} 人回应了"
+  likedBySomeUsers: "{n}人赞了你的帖子"
   renotedBySomeUsers: "{n} 人转发了"
   followedBySomeUsers: "被 {n} 人关注"
   flushNotification: "重置通知历史"
