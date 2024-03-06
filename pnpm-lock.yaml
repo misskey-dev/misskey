@@ -111,8 +111,8 @@ importers:
         specifier: 8.2.0
         version: 8.2.0
       '@misskey-dev/node-http-message-signatures':
-        specifier: 0.0.4
-        version: 0.0.4
+        specifier: 0.0.5
+        version: 0.0.5
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.2.0
         version: 1.2.0
@@ -4754,8 +4754,8 @@ packages:
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)
     dev: true
 
-  /@misskey-dev/node-http-message-signatures@0.0.4:
-    resolution: {integrity: sha512-hAQFaJZwJsg63JAY1RZ/yvcaxHbpZg8fLvNdJFucS270TZGunKYv7I16tuNQMKV7+BYLQNxiE7uL11KVZ9jfrg==}
+  /@misskey-dev/node-http-message-signatures@0.0.5:
+    resolution: {integrity: sha512-lULO/ekgFA3p8K9Tc8HqKf/0jUFn3pR6SWB845OL44qKrIa8wsPAbMJN3u5NLBeFvPAGXhQfHJLcWfuTwlLB6Q==}
     engines: {node: '>=18.4.0'}
     dependencies:
       '@lapo/asn1js': 1.2.4
