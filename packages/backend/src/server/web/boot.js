@@ -223,7 +223,7 @@ function boot() {
 
 			const summaryElement = document.createElement('summary');
 			const titleCodeElement = document.createElement('code');
-			titleCodeElement.textContent = `ERROR CODE: ${code}`;
+			titleCodeElement.textContent = `ERROR CODE: ${code} (${details.name})`;
 			summaryElement.appendChild(titleCodeElement);
 			errorEl.appendChild(summaryElement);
 
