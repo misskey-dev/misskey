@@ -8,7 +8,7 @@ import * as OTPAuth from 'otpauth';
 import { DI } from '@/di-symbols.js';
 import type { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { IdentifiableError } from "@/misc/identifiable-error.js";
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 @Injectable()
 export class UserAuthService {

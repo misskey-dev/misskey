@@ -4,7 +4,7 @@
  */
 
 import type * as Bull from 'bullmq';
-import type { RedisOptions } from "ioredis";
+import type { RedisOptions } from 'ioredis';
 import type { RedisOptionsSource } from '@/config.js';
 
 export const QUEUE = {

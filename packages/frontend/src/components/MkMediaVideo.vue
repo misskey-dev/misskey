@@ -112,9 +112,7 @@ const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.data
 const menuShowing = ref(false);
 
 function showMenu(ev: MouseEvent) {
-	let menu: MenuItem[] = [];
-
-	menu = [
+	const menu: MenuItem[] = [
 		// TODO: 再生キューに追加
 		{
 			text: i18n.ts.hide,
@@ -125,14 +123,36 @@ function showMenu(ev: MouseEvent) {
 		},
 	];
 
-	if (iAmModerator) {
+	if ($i?.id === props.video.userId || iAmModerator) {
 		menu.push({
 			type: 'divider',
-		}, {
+		});
+	}
+
+	if (iAmModerator) {
+		menu.push({
 			text: props.video.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
 			icon: props.video.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
 			danger: true,
 			action: () => toggleSensitive(props.video),
+		});
+
+		if ($i?.id !== props.video.userId) {
+			menu.push({
+				type: 'link' as const,
+				text: i18n.ts._fileViewer.title,
+				icon: 'ti ti-info-circle',
+				to: `/admin/file/${props.video.id}`,
+			});
+		}
+	}
+
+	if ($i?.id === props.video.userId) {
+		menu.push({
+			type: 'link' as const,
+			text: i18n.ts._fileViewer.title,
+			icon: 'ti ti-info-circle',
+			to: `/my/drive/file/${props.video.id}`,
 		});
 	}
 

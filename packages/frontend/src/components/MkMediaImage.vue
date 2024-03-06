@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -84,6 +85,51 @@ const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 		: props.image.thumbnailUrl,
 );
 
+function showMenu(ev: MouseEvent) {
+	const menu: MenuItem[] = [{
+		text: i18n.ts.hide,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			hide.value = true;
+		},
+	}];
+
+	if ($i?.id === props.image.userId || iAmModerator) {
+		menu.push({
+			type: 'divider',
+		});
+	}
+
+	if (iAmModerator) {
+		menu.push({
+			text: props.image.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			icon: props.image.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
+			danger: true,
+			action: () => toggleSensitive(props.image),
+		});
+
+		if ($i?.id !== props.image.userId) {
+			menu.push({
+				type: 'link' as const,
+				text: i18n.ts._fileViewer.title,
+				icon: 'ti ti-info-circle',
+				to: `/admin/file/${props.image.id}`,
+			});
+		}
+	}
+
+	if ($i?.id === props.image.userId) {
+		menu.push({
+			type: 'link' as const,
+			text: i18n.ts._fileViewer.title,
+			icon: 'ti ti-info-circle',
+			to: `/my/drive/file/${props.image.id}`,
+		});
+	}
+
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+}
+
 function showHiddenContent(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
@@ -103,6 +149,13 @@ function showHiddenContent(ev: MouseEvent) {
 	}
 }
 
+function toggleSensitive(file: Misskey.entities.DriveFile) {
+	os.apiWithDialog('drive/files/update', {
+		fileId: file.id,
+		isSensitive: !file.isSensitive,
+	});
+}
+
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
 	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
@@ -110,24 +163,6 @@ watch(() => props.image, () => {
 	deep: true,
 	immediate: true,
 });
-
-function showMenu(ev: MouseEvent) {
-	os.popupMenu([{
-		text: i18n.ts.hide,
-		icon: 'ti ti-eye-off',
-		action: () => {
-			hide.value = true;
-		},
-	}, ...(iAmModerator ? [{
-		text: i18n.ts.markAsSensitive,
-		icon: 'ti ti-eye-exclamation',
-		danger: true,
-		action: () => {
-			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
-		},
-	}] : [])], ev.currentTarget ?? ev.target);
-}
-
 </script>
 
 <style lang="scss" module>
