@@ -70,7 +70,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
 	};
 
-	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
+	const useAnim = defaultStore.reactiveState.advancedMfm.value && defaultStore.reactiveState.animatedMfm.value;
 
 	/**
 	 * Gen Vue Elements from MFM AST
@@ -177,17 +177,17 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					}
 					case 'x2': {
 						return h('span', {
-							class: defaultStore.state.advancedMfm ? 'mfm-x2' : '',
+							class: defaultStore.reactiveState.advancedMfm.value ? 'mfm-x2' : '',
 						}, genEl(token.children, scale * 2));
 					}
 					case 'x3': {
 						return h('span', {
-							class: defaultStore.state.advancedMfm ? 'mfm-x3' : '',
+							class: defaultStore.reactiveState.advancedMfm.value ? 'mfm-x3' : '',
 						}, genEl(token.children, scale * 3));
 					}
 					case 'x4': {
 						return h('span', {
-							class: defaultStore.state.advancedMfm ? 'mfm-x4' : '',
+							class: defaultStore.reactiveState.advancedMfm.value ? 'mfm-x4' : '',
 						}, genEl(token.children, scale * 4));
 					}
 					case 'font': {
@@ -230,14 +230,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
 					case 'position': {
-						if (!defaultStore.state.advancedMfm) break;
+						if (!defaultStore.reactiveState.advancedMfm.value) break;
 						const x = safeParseFloat(token.props.args.x) ?? 0;
 						const y = safeParseFloat(token.props.args.y) ?? 0;
 						style = `transform: translateX(${x}em) translateY(${y}em);`;
 						break;
 					}
 					case 'scale': {
-						if (!defaultStore.state.advancedMfm) {
+						if (!defaultStore.reactiveState.advancedMfm.value) {
 							style = '';
 							break;
 						}

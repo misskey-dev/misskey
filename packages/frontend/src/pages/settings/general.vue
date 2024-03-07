@@ -49,18 +49,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.displayOfNote }}</template>
 
 		<div class="_gaps_m">
+			<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true"/>
 			<div class="_gaps_s">
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
-				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
 				<MkSwitch v-model="showRepliesCount">{{ i18n.ts.showRepliesCount }}</MkSwitch>
 				<MkSwitch v-model="showRenotesCount">{{ i18n.ts.showRenotesCount }}</MkSwitch>
 				<MkSwitch v-model="showReactionsCount">{{ i18n.ts.showReactionsCount }}</MkSwitch>
-				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
-				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
 					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
 					<option value="small">{{ i18n.ts.small }}</option>
@@ -68,6 +66,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="large">{{ i18n.ts.large }}</option>
 				</MkRadios>
 				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
+			</div>
+
+			<div class="_gaps_s">
+				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
+				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
+				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 			</div>
 
 			<MkSelect v-model="instanceTicker">
@@ -232,7 +236,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, reactive, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -244,7 +248,8 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { langs } from '@/config.js';
+import MkNote from '@/components/MkNote.vue';
+import { url as local, langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -342,13 +347,10 @@ watch([
 	useSystemFont,
 	enableInfiniteScroll,
 	squareAvatars,
-	showNoteActionsOnlyHover,
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
 	overridedDeviceKind,
 	mediaListWithOneImageAppearance,
-	reactionsDisplaySize,
-	limitWidthOfReaction,
 	highlightSensitiveMedia,
 	keepScreenOn,
 	disableStreamingTimeline,
@@ -467,6 +469,46 @@ watch(dataSaver, (to) => {
 	deep: true,
 });
 
+const exampleNote = reactive<Misskey.entities.Note>({
+	id: '0000000000',
+	createdAt: '2019-04-14T17:30:49.181Z',
+	userId: '0000000001',
+	user: {
+		id: '0000000001',
+		name: '藍',
+		username: 'ai',
+		host: null,
+		avatarDecorations: [],
+		avatarUrl: '/client-assets/tutorial/ai.webp',
+		avatarBlurhash: 'eiKmhHIByXxZ~qWXs:-pR*NbR*s:xuRjoL-oR*WCt6WWf6WVf6oeWB',
+		isBot: false,
+		isCat: true,
+		emojis: {},
+		onlineStatus: 'unknown',
+		badgeRoles: [],
+	},
+	text: 'You can change $[position.y=1 **position**], and you can even make it $[shake animated!]\n_',
+	cw: null,
+	visibility: 'public',
+	localOnly: false,
+	reactionAcceptance: null,
+	renoteCount: 1,
+	repliesCount: 1,
+	reactionCount: 30,
+	reactions: {
+		'👍': 25,
+		'👀': 4,
+		':misskey@misskey-hub.net:': 1,
+	},
+	reactionEmojis: {
+		'misskey@misskey-hub.net': `${local}/client-assets/tutorial/misskey2022.webp`,
+	},
+	fileIds: [],
+	files: [],
+	replyId: null,
+	renoteId: null,
+});
+
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
@@ -476,3 +518,11 @@ definePageMetadata(() => ({
 	icon: 'ti ti-adjustments',
 }));
 </script>
+
+<style lang="scss" module>
+.exampleNoteRoot {
+	border-radius: var(--radius);
+	border: var(--panelBorder);
+	background: var(--panel);
+}
+</style>
