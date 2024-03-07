@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="playerEl"
-	v-hotkey.global="keymap"
+	v-hotkey="keymap"
 	tabindex="0"
 	:class="[
 		$style.videoContainer,
@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@mouseover="onMouseOver"
 	@mouseleave="onMouseLeave"
 	@contextmenu.stop
+	@keydown.stop
 >
 	<button v-if="hide" :class="$style.hidden" @click="hide = false">
 		<div :class="$style.hiddenTextWrapper">
@@ -372,6 +373,10 @@ function init() {
 					}
 
 					elapsedTimeMs.value = videoEl.value.currentTime * 1000;
+
+					if (videoEl.value.loop !== loop.value) {
+						loop.value = videoEl.value.loop;
+					}
 				}
 				mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 			}

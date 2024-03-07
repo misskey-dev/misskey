@@ -6,13 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="playerEl"
-	v-hotkey.global="keymap"
+	v-hotkey="keymap"
 	tabindex="0"
 	:class="[
 		$style.audioContainer,
 		(audio.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@contextmenu.stop
+	@keydown.stop
 >
 	<button v-if="hide" :class="$style.hidden" @click="hide = false">
 		<div :class="$style.hiddenTextWrapper">
@@ -273,6 +274,10 @@ function init() {
 					}
 
 					elapsedTimeMs.value = audioEl.value.currentTime * 1000;
+
+					if (audioEl.value.loop !== loop.value) {
+						loop.value = audioEl.value.loop;
+					}
 				}
 				mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 			}
