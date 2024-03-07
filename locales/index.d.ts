@@ -1993,14 +1993,6 @@ export interface Locale extends ILocale {
      */
     "showNoteActionsOnlyHover": string;
     /**
-     * ノートの返信数を表示する
-     */
-    "showRepliesCount": string;
-    /**
-     * ノートのリノート数を表示する
-     */
-    "showRenotesCount": string;
-    /**
      * ノートのリアクション数を表示する
      */
     "showReactionsCount": string;
