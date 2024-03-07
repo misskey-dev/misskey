@@ -111,8 +111,8 @@ importers:
         specifier: 8.2.0
         version: 8.2.0
       '@misskey-dev/node-http-message-signatures':
-        specifier: 0.0.5
-        version: 0.0.5
+        specifier: 0.0.6
+        version: 0.0.6
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.2.0
         version: 1.2.0
@@ -4754,11 +4754,12 @@ packages:
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)
     dev: true
 
-  /@misskey-dev/node-http-message-signatures@0.0.5:
-    resolution: {integrity: sha512-lULO/ekgFA3p8K9Tc8HqKf/0jUFn3pR6SWB845OL44qKrIa8wsPAbMJN3u5NLBeFvPAGXhQfHJLcWfuTwlLB6Q==}
+  /@misskey-dev/node-http-message-signatures@0.0.6:
+    resolution: {integrity: sha512-Yw/bPzdXs0q/W1FkCOWNFl3woDwAr3wA2eg9ujfk5GlyfdrosWOdep3Vcc9rj4s+POr+2F2EAvTWNrduBWHkNQ==}
     engines: {node: '>=18.4.0'}
     dependencies:
       '@lapo/asn1js': 1.2.4
+      structured-headers: 1.0.1
     dev: false
 
   /@misskey-dev/sharp-read-bmp@1.2.0:
@@ -6648,7 +6649,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.21(typescript@5.3.3)
-      vue-component-type-helpers: 2.0.5
+      vue-component-type-helpers: 2.0.6
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -18286,6 +18287,11 @@ packages:
       peek-readable: 5.0.0
     dev: false
 
+  /structured-headers@1.0.1:
+    resolution: {integrity: sha512-QYBxdBtA4Tl5rFPuqmbmdrS9kbtren74RTJTcs0VSQNVV5iRhJD4QlYTLD0+81SBwUQctjEQzjTRI3WG4DzICA==}
+    engines: {node: '>= 14', npm: '>=6'}
+    dev: false
+
   /stylehacks@6.0.3(postcss@8.4.35):
     resolution: {integrity: sha512-KzBqjnqktc8/I0ERCb+lGq06giF/JxDbw2r9kEVhen9noHeIDRtMWUp9r62sOk+/2bbX6sFG1GhsS7ToXG0PEg==}
     engines: {node: ^14 || ^16 || >=18.0}
@@ -19447,8 +19453,8 @@ packages:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
     dev: true
 
-  /vue-component-type-helpers@2.0.5:
-    resolution: {integrity: sha512-v9N4ufDSnd8YHcDq/vURPjxDyBVak5ZVAQ6aGNIrf7ZAj/VxRKpLZXFHEaqt9yHkWi0/TZp76Jmf8yNJxDQi4g==}
+  /vue-component-type-helpers@2.0.6:
+    resolution: {integrity: sha512-qdGXCtoBrwqk1BT6r2+1Wcvl583ZVkuSZ3or7Y1O2w5AvWtlvvxwjGhmz5DdPJS9xqRdDlgTJ/38ehWnEi0tFA==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):
