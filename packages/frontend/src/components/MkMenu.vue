@@ -42,9 +42,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
+				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
-					<span :class="[$style.item_content_text, $style.switchText]">{{ item.text }}</span>
+					<span :class="[$style.item_content_text, { [$style.switchText]: !item.icon }]">{{ item.text }}</span>
+					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				</div>
 			</button>
 			<button v-else-if="item.type === 'radio'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showRadioOptions(item, $event)" @click="!preferClick ? null : showRadioOptions(item, $event)">
@@ -468,11 +470,11 @@ onBeforeUnmount(() => {
 
 .switchButton {
 	margin-left: -2px;
+	--height: 1.35em;
 }
 
 .switchText {
 	margin-left: 8px;
-	margin-top: 2px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }

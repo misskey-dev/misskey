@@ -2602,3 +2602,4 @@ _offlineScreen:
 _mediaControls:
   pip: "ピクチャインピクチャ"
   playbackRate: "再生速度"
+  loop: "ループ再生"

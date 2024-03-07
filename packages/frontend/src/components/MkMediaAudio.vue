@@ -137,6 +137,12 @@ function showMenu(ev: MouseEvent) {
 	menu = [
 		// TODO: 再生キューに追加
 		{
+			type: 'switch',
+			text: i18n.ts._mediaControls.loop,
+			icon: 'ti ti-repeat',
+			ref: loop,
+		},
+		{
 			type: 'radio',
 			text: i18n.ts._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
@@ -217,6 +223,7 @@ const rangePercent = computed({
 });
 const volume = ref(.25);
 const speed = ref(1);
+const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!audioEl.value) return 0;
@@ -307,6 +314,10 @@ watch(volume, (to) => {
 
 watch(speed, (to) => {
 	if (audioEl.value) audioEl.value.playbackRate = to;
+});
+
+watch(loop, (to) => {
+	if (audioEl.value) audioEl.value.loop = to;
 });
 
 onMounted(() => {

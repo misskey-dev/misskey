@@ -9765,6 +9765,10 @@ export interface Locale extends ILocale {
          * 再生速度
          */
         "playbackRate": string;
+        /**
+         * ループ再生
+         */
+        "loop": string;
     };
 }
 declare const locales: {
