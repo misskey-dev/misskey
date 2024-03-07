@@ -19,7 +19,7 @@ import type { PrivateKeyWithPem, PrivateKey } from '@misskey-dev/node-http-messa
 
 export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string, additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
-	const request: RequestLike = {
+	const request = {
 		url: u.href,
 		method: 'POST',
 		headers: {
@@ -27,7 +27,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 			'Host': u.host,
 			'Content-Type': 'application/activity+json',
 			...args.additionalHeaders,
-		},
+		} as Record<string, string>,
 	};
 
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
@@ -48,7 +48,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 
 export async function createSignedGet(args: { level: string; key: PrivateKey; url: string; additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
-	const request: RequestLike = {
+	const request = {
 		url: u.href,
 		method: 'GET',
 		headers: {
@@ -56,7 +56,7 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 			'Date': new Date().toUTCString(),
 			'Host': new URL(args.url).host,
 			...args.additionalHeaders,
-		},
+		} as Record<string, string>,
 	};
 
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
