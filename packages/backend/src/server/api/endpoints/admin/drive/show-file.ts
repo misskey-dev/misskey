@@ -15,8 +15,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-//	requireModerator: true,
-	requireAdmin: true,
+	requireModerator: true,
 	kind: 'read:admin:drive',
 
 	errors: {

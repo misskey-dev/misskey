@@ -56,10 +56,10 @@ const reactionName = computed(() => {
        return r.slice(0, r.indexOf('@'));
 });
 
-const alternative = computed(() => customEmojisMap.get(reactionName.value) );
+let alternative = computed(() => customEmojisMap.get(reactionName.value) );
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
+let emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
@@ -143,14 +143,14 @@ function anime() {
 	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
 }
 
-
-const im = (emoji) => {
+async function im(emoji) {
         console.log('@@im-emoji :' + emoji);
-        os.apiWithDialog('admin/emoji/copy', {
+        await os.apiWithDialog('admin/emoji/copy', {
                 emojiId: emoji,
         });
+        console.log('@@im-emoji reComputed alternative' );
+	alternative = computed(() => customEmojisMap.get(reactionName.value) );
 };
-
 
 const remoteMenu = (emoji, ev: MouseEvent) => {
         console.log('@@remoteMenu :' + emoji);
@@ -158,9 +158,8 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
                 type: 'label',
                 text: ':' + emoji + ':',
         }, {
-//                text: i18n.ts.import,
-//                text: '著作権等を考慮した上で、ふじさんすきーにインポートする',
-                text: 'ふじさんすきーにインポートする',
+                text: i18n.ts.import,
+//                text: 'ふじさんすきーにインポートする',
                 icon: 'ti ti-plus',
                 action: () => { im(emoji); },
         }], ev.currentTarget ?? ev.target);

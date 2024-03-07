@@ -27,7 +27,7 @@ function toolsMenuItems(): MenuItem[] {
 		to: '/clicker',
 		text: '🍪👈',
 		icon: 'ti ti-cookie',
-	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
+	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis || $i.policies.canCreateEmoji)) ? {
 		type: 'link',
 		to: '/custom-emojis-manager',
 		text: i18n.ts.manageCustomEmojis,

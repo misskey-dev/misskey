@@ -17,7 +17,6 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: true,
-	requireModerator: true,
 
 	prohibitMoved: true,
 
