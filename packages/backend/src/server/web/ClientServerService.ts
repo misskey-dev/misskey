@@ -776,17 +776,10 @@ export class ClientServerService {
 
 			reply.removeHeader('X-Frame-Options');
 
-			const [originalUsersCount, originalNotesCount] = await Promise.all([
-				this.usersRepository.count({ where: { host: IsNull() }, cache: 1000 * 60 * 60 * 6 }), // 6 hours
-				this.notesRepository.count({ where: { userHost: IsNull() }, cache: 1000 * 60 * 60 * 6 }), // 6 hours
-			]);
-
 			return await reply.view('info-card', {
 				version: this.config.version,
 				host: this.config.host,
 				meta: meta,
-				originalUsersCount,
-				originalNotesCount,
 			});
 		});
 
