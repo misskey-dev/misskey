@@ -11,20 +11,8 @@ Misskeyの　ふじさんすきー版のコードです。<br>
 	<a href=https://misskey.day/documents/htmls/fork.html>ふじさんすきーの特徴</a><br>
 	<br>
 	<b>[移行]</b><br>
-<div align="left">
-	Misskey純正から、ふじさんすきー版への移行は、基本的にはより新しいバージョンのコードを上書きするだけで行けます。<br>
-<b>
-git remote set-url origin https://github.com/fujisan-sky/misskey<br>
-git pull<br>
-</b>
-	ただし、アバターデコレーションの管理が異なりますので、そこは考慮が必要です。<br>
-　　　　一番確実なのは、アバターデコレーションをいったん全部削除して、移行後に再定義・再設定ですが、<br>
-　　　　たぶん、そのまま移行しても動きます(未検証)。<br>
-　　　　その上で、管理者であれば削除(だけ)はできますから、少しづつ移行……でしょうか(ないしは古い物は放置？)。<br>
-	ふじさんすきー版からMisskey純正への移行も同じですけど、そのまま移行して移行後に消した場合、<br>
-　　　　DBのファイルにゴミが残りますね。<br>
-	<font size=-1>もし、それなりに運用されているサーバーで移行を考えているとかでしたら連絡ください。</font><br>
-</div>
+	↓を見てください。<br>
+	<a href=https://misskey.day/documents/htmls/migration.html>ふじさんすきー版への移行</a><br>
 <br>
 <br>
 
