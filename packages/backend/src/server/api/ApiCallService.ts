@@ -220,11 +220,18 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async call(
-		ep: IEndpoint & { exec: any },
+	private async call<Data>(
+		ep: IEndpoint & { exec: (
+			data: Data,
+			user: MiLocalUser,
+			token: MiAccessToken | null | undefined,
+			file: { name: string, path: string } | null,
+			ip: any,
+			headers: any
+		) => Promise<any> },
 		user: MiLocalUser | null | undefined,
 		token: MiAccessToken | null | undefined,
-		data: any,
+		data: Data,
 		file: {
 			name: string;
 			path: string;
@@ -362,7 +369,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
-		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
+		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err) => {
 			if (err instanceof ApiError || err instanceof AuthenticationError) {
 				throw err;
 			} else {
