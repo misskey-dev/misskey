@@ -114,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.antennasRepository.update(antenna.id, {
 				name: ps.name,
 				src: ps.src,
-				userListId: ps.userListId ? userList ? userList.id : null : undefined,
+				userListId: ps.userListId !== undefined ? userList ? userList.id : null : undefined,
 				keywords: ps.keywords,
 				excludeKeywords: ps.excludeKeywords,
 				users: ps.users,
