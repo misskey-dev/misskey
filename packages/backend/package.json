@@ -79,7 +79,7 @@
 		"@fastify/multipart": "8.1.0",
 		"@fastify/static": "6.12.0",
 		"@fastify/view": "8.2.0",
-		"@misskey-dev/node-http-message-signatures": "0.0.7",
+		"@misskey-dev/node-http-message-signatures": "0.0.8",
 		"@misskey-dev/sharp-read-bmp": "1.2.0",
 		"@misskey-dev/summaly": "5.0.3",
 		"@nestjs/common": "10.3.3",
