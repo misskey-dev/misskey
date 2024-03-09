@@ -58,7 +58,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private apLoggerService: ApLoggerService,
 	) {
 		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(Infinity);
-		this.logger = this.apLoggerService.logger;
+		this.logger = this.apLoggerService.logger.createSubLogger('db-resolver');
 	}
 
 	@bindThis
