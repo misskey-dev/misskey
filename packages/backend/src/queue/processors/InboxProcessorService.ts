@@ -182,9 +182,10 @@ export class InboxProcessorService {
 
 		// アクティビティを処理
 		try {
-			const reason = await this.apInboxService.performActivity(authUser.user, activity);
-			if (reason) {
-				return reason;
+			const result = await this.apInboxService.performActivity(authUser.user, activity);
+			if (result && !result.startsWith('ok')) {
+				this.logger.warn(`inbox activity ignored (maybe): id=${activity.id} reason=${reason}`);
+				return result;
 			}
 		} catch (e) {
 			if (e instanceof IdentifiableError) {
