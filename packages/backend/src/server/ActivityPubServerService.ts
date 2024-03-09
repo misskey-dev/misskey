@@ -129,7 +129,9 @@ export class ActivityPubServerService {
 					draft: ['(request-target)', 'digest', 'host', 'date'],
 				},
 			});
-		} catch (e) {
+		} catch (err) {
+			this.inboxLogger.warn('signature header parsing failed', { err });
+
 			if (typeof request.body === 'object' && 'signature' in request.body) {
 				// LD SignatureがあればOK
 				this.queueService.inbox(request.body as IActivity, null);
