@@ -103,7 +103,9 @@ export class InboxProcessorService {
 
 		// publicKey がなくても終了
 		if (authUser.key == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user publicKey');
+			// publicKeyがないのはpublicKeyの変更（主にmain→ed25519）に
+			// 対応しきれていない場合があるためリトライする
+			throw new Error('skip: failed to resolve user publicKey');
 		}
 
 		// HTTP-Signatureの検証
