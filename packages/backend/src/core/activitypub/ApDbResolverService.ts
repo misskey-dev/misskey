@@ -124,12 +124,12 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		this.refreshCacheByUserId(userId);
 		const keys = await this.getPublicKeyByUserId(userId);
 		if (keys == null || !Array.isArray(keys) || keys.length === 0) {
-			this.logger.warn(`No key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${keys}`);
+			this.logger.warn(`No key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${JSON.stringify(keys)}`);
 			return null;
 		}
 		const exactKey = keys.find(x => x.keyId === keyId);
 		if (exactKey) return exactKey;
-		this.logger.warn(`No exact key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${keys}`);
+		this.logger.warn(`No exact key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${JSON.stringify(keys)}`);
 		return null;
 	}
 
@@ -149,7 +149,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const keys = await this.getPublicKeyByUserId(user.id);
 
 		if (keys == null || !Array.isArray(keys) || keys.length === 0) {
-			this.logger.warn(`No key found uri=${uri} userId=${user.id} keys=${keys}`);
+			this.logger.warn(`No key found uri=${uri} userId=${user.id} keys=${JSON.stringify(keys)}`);
 			return { user, key: null };
 		}
 
