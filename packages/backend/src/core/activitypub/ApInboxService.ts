@@ -90,13 +90,15 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: MiRemoteUser, activity: IObject): Promise<void> {
+	public async performActivity(actor: MiRemoteUser, activity: IObject): Promise<string | void> {
+		let reason = undefined as string | void;
 		if (isCollectionOrOrderedCollection(activity)) {
+			const reasons = [] as [string, string | void][];
 			const resolver = this.apResolverService.createResolver();
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
 				const act = await resolver.resolve(item);
 				try {
-					await this.performOneActivity(actor, act);
+					reasons.push([getApId(item), await this.performOneActivity(actor, act)]);
 				} catch (err) {
 					if (err instanceof Error || typeof err === 'string') {
 						this.logger.error(err);
@@ -105,52 +107,56 @@ export class ApInboxService {
 					}
 				}
 			}
+
+			const hasReason = reasons.some(([, reason]) => reason != null);
+			if (hasReason) {
+				reason = reasons.map(([id, reason]) => `${id}: ${reason}`).join('\n');
+			}
 		} else {
-			await this.performOneActivity(actor, activity);
+			reason = await this.performOneActivity(actor, activity);
 		}
 
 		// ついでにリモートユーザーの情報が古かったら更新しておく
 		if (actor.uri) {
 			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				setImmediate(() => {
-					this.apPersonService.updatePerson(actor.uri);
-				});
+				await this.apPersonService.updatePerson(actor.uri);
 			}
 		}
+		return reason;
 	}
 
 	@bindThis
-	public async performOneActivity(actor: MiRemoteUser, activity: IObject): Promise<void> {
+	public async performOneActivity(actor: MiRemoteUser, activity: IObject): Promise<string | void> {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
-			await this.create(actor, activity);
+			return await this.create(actor, activity);
 		} else if (isDelete(activity)) {
-			await this.delete(actor, activity);
+			return await this.delete(actor, activity);
 		} else if (isUpdate(activity)) {
-			await this.update(actor, activity);
+			return await this.update(actor, activity);
 		} else if (isFollow(activity)) {
-			await this.follow(actor, activity);
+			return await this.follow(actor, activity);
 		} else if (isAccept(activity)) {
-			await this.accept(actor, activity);
+			return await this.accept(actor, activity);
 		} else if (isReject(activity)) {
-			await this.reject(actor, activity);
+			return await this.reject(actor, activity);
 		} else if (isAdd(activity)) {
-			await this.add(actor, activity).catch(err => this.logger.error(err));
+			return await this.add(actor, activity).catch(err => this.logger.error(err));
 		} else if (isRemove(activity)) {
-			await this.remove(actor, activity).catch(err => this.logger.error(err));
+			return await this.remove(actor, activity).catch(err => this.logger.error(err));
 		} else if (isAnnounce(activity)) {
-			await this.announce(actor, activity);
+			return await this.announce(actor, activity);
 		} else if (isLike(activity)) {
-			await this.like(actor, activity);
+			return await this.like(actor, activity);
 		} else if (isUndo(activity)) {
-			await this.undo(actor, activity);
+			return await this.undo(actor, activity);
 		} else if (isBlock(activity)) {
-			await this.block(actor, activity);
+			return await this.block(actor, activity);
 		} else if (isFlag(activity)) {
-			await this.flag(actor, activity);
+			return await this.flag(actor, activity);
 		} else if (isMove(activity)) {
-			await this.move(actor, activity);
+			return await this.move(actor, activity);
 		} else {
 			this.logger.warn(`unrecognized activity type: ${activity.type}`);
 		}
@@ -254,18 +260,18 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announce(actor: MiRemoteUser, activity: IAnnounce): Promise<void> {
+	private async announce(actor: MiRemoteUser, activity: IAnnounce): Promise<string | void> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Announce: ${uri}`);
 
 		const targetUri = getApId(activity.object);
 
-		await this.announceNote(actor, activity, targetUri);
+		return await this.announceNote(actor, activity, targetUri);
 	}
 
 	@bindThis
-	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
+	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, targetUri: string): Promise<string | void> {
 		const uri = getApId(activity);
 
 		if (actor.isSuspended) {
@@ -289,7 +295,7 @@ export class ApInboxService {
 			let renote;
 			try {
 				renote = await this.apNoteService.resolveNote(targetUri);
-				if (renote == null) throw new Error('announce target is null');
+				if (renote == null) return 'announce target is null';
 			} catch (err) {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
