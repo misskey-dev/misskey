@@ -105,7 +105,7 @@ export class InboxProcessorService {
 		if (authUser.key == null) {
 			// publicKeyがないのはpublicKeyの変更（主にmain→ed25519）に
 			// 対応しきれていない場合があるためリトライする
-			throw new Error('skip: failed to resolve user publicKey');
+			throw new Error(`skip: failed to resolve user publicKey: keyId=${signature.keyId}`);
 		}
 
 		// HTTP-Signatureの検証
