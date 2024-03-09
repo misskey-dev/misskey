@@ -328,6 +328,7 @@ const patrons = [
 	'てば',
 	'たっくん',
 	'SHO SEKIGUCHI',
+	'塩キャベツ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
