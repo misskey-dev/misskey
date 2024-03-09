@@ -119,7 +119,9 @@ export class ApInboxService {
 		// ついでにリモートユーザーの情報が古かったら更新しておく
 		if (actor.uri) {
 			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				await this.apPersonService.updatePerson(actor.uri);
+				setImmediate(() => {
+					this.apPersonService.updatePerson(actor.uri);
+				});
 			}
 		}
 		return reason;
