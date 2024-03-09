@@ -48,8 +48,8 @@ describe('ap-request post', () => {
 
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed.version).toBe('draft');
-			if (!parsed) return;
-			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
+			expect(Array.isArray(parsed.value)).toBe(false);
+			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 		test('imported', async () => {
@@ -60,8 +60,8 @@ describe('ap-request post', () => {
 
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed.version).toBe('draft');
-			if (!parsed) return;
-			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
+			expect(Array.isArray(parsed.value)).toBe(false);
+			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});
@@ -81,8 +81,8 @@ describe('ap-request get', () => {
 
 			const parsed = parseRequestSignature(req.request);
 			expect(parsed.version).toBe('draft');
-			if (!parsed) return;
-			const verify = await verifyDraftSignature(parsed.value, keypair.publicKey);
+			expect(Array.isArray(parsed.value)).toBe(false);
+			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
 	});
