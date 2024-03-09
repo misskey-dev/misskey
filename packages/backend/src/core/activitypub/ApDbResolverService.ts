@@ -13,8 +13,10 @@ import { CacheService } from '@/core/CacheService.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import Logger from '@/logger.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
+import { ApLoggerService } from './ApLoggerService.js';
 import type { IObject } from './type.js';
 
 export type UriParseResult = {
@@ -36,6 +38,7 @@ export type UriParseResult = {
 @Injectable()
 export class ApDbResolverService implements OnApplicationShutdown {
 	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey[] | null>;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -52,8 +55,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
+		private apLoggerService: ApLoggerService,
 	) {
 		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(Infinity);
+		this.logger = this.apLoggerService.logger;
 	}
 
 	@bindThis
@@ -118,9 +123,14 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	private async refreshAndfindKey(userId: MiUser['id'], keyId: string): Promise<MiUserPublickey | null> {
 		this.refreshCacheByUserId(userId);
 		const keys = await this.getPublicKeyByUserId(userId);
-		if (keys == null || !Array.isArray(keys)) return null;
-
-		return keys.find(x => x.keyId === keyId) ?? null;
+		if (keys == null || !Array.isArray(keys) || keys.length === 0) {
+			this.logger.warn(`No key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${keys}`);
+			return null;
+		}
+		const exactKey = keys.find(x => x.keyId === keyId);
+		if (exactKey) return exactKey;
+		this.logger.warn(`No exact key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${keys}`);
+		return null;
 	}
 
 	/**
@@ -138,7 +148,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		const keys = await this.getPublicKeyByUserId(user.id);
 
-		if (keys == null || !Array.isArray(keys)) return { user, key: null };
+		if (keys == null || !Array.isArray(keys) || keys.length === 0) {
+			this.logger.warn(`No key found uri=${uri} userId=${user.id} keys=${keys}`);
+			return { user, key: null };
+		}
 
 		if (!keyId) {
 			// mainっぽいのを選ぶ
@@ -173,12 +186,14 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		// lastFetchedAtでの更新制限を弱めて再取得
 		if (user.lastFetchedAt == null || user.lastFetchedAt < new Date(Date.now() - 1000 * 60 * 12)) {
+			this.logger.info(`Fetching user to find public key uri=${uri} userId=${user.id} keyId=${keyId}`);
 			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
 			if (renewed == null || renewed.isDeleted) return null;
 
 			return { user, key: await this.refreshAndfindKey(user.id, keyId) };
 		}
 
+		this.logger.warn(`No key found uri=${uri} userId=${user.id} keyId=${keyId}`);
 		return { user, key: null };
 	}
 
