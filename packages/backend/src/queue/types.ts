@@ -44,7 +44,7 @@ export type DeliverJobData = {
 
 export type InboxJobData = {
 	activity: IActivity;
-	signature: ParsedSignature | OldParsedSignature;
+	signature: ParsedSignature | OldParsedSignature | null;
 };
 
 export type RelationshipJobData = {

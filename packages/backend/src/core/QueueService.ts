@@ -135,7 +135,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public inbox(activity: IActivity, signature: ParsedSignature) {
+	public inbox(activity: IActivity, signature: ParsedSignature | null) {
 		const data = {
 			activity: activity,
 			signature,

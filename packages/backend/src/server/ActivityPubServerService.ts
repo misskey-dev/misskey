@@ -30,12 +30,17 @@ import { IActivity } from '@/core/activitypub/type.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
+import { LoggerService } from '@/core/LoggerService.js';
+import Logger from '@/logger.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
 
 @Injectable()
 export class ActivityPubServerService {
+	private logger: Logger;
+	private inboxLogger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -70,8 +75,11 @@ export class ActivityPubServerService {
 		private queueService: QueueService,
 		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
+		private loggerService: LoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
+		this.logger = this.loggerService.getLogger('server-ap', 'gray', false);
+		this.inboxLogger = this.logger.createSubLogger('inbox', 'gray', false);
 	}
 
 	@bindThis
@@ -100,10 +108,17 @@ export class ActivityPubServerService {
 
 	@bindThis
 	private async inbox(request: FastifyRequest, reply: FastifyReply) {
+		if (request.body == null) {
+			this.inboxLogger.warn('request body is empty');
+			reply.code(400);
+			return;
+		}
+
 		let signature: ReturnType<typeof parseRequestSignature>;
 
 		const verifyDigest = await verifyDigestHeader(request.raw, request.rawBody || '', true);
 		if (verifyDigest !== true) {
+			this.inboxLogger.warn('digest verification failed');
 			reply.code(401);
 			return;
 		}
@@ -115,12 +130,19 @@ export class ActivityPubServerService {
 				},
 			});
 		} catch (e) {
+			if (typeof request.body === 'object' && 'signature' in request.body) {
+				// LD SignatureがあればOK
+				this.queueService.inbox(request.body as IActivity, null);
+				reply.code(202);
+				return;
+			}
+
+			this.inboxLogger.warn('signature header parsing failed and LD signature not found');
 			reply.code(401);
 			return;
 		}
 
 		this.queueService.inbox(request.body as IActivity, signature);
-
 		reply.code(202);
 	}
 

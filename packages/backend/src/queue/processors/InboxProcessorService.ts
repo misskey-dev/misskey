@@ -52,12 +52,15 @@ export class InboxProcessorService {
 
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
-		const signature = 'version' in job.data.signature ? job.data.signature.value : job.data.signature;
+		const signature = job.data.signature ?
+			'version' in job.data.signature ? job.data.signature.value : job.data.signature
+			: null;
 		if (Array.isArray(signature)) {
 			// RFC 9401はsignatureが配列になるが、とりあえずエラーにする
 			throw new Error('signature is array');
 		}
 		const activity = job.data.activity;
+		const actorUri = getApId(activity.actor);
 
 		//#region Log
 		const info = Object.assign({}, activity);
@@ -65,7 +68,7 @@ export class InboxProcessorService {
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
-		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
+		const host = this.utilityService.toPuny(new URL(activity.actor).hostname);
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
@@ -73,19 +76,12 @@ export class InboxProcessorService {
 			return `Blocked request: ${host}`;
 		}
 
-		const keyIdLower = signature.keyId.toLowerCase();
-		if (keyIdLower.startsWith('acct:')) {
-			return `Old keyId is no longer supported. ${keyIdLower}`;
-		}
-
 		// HTTP-Signature keyIdを元にDBから取得
-		let authUser: {
-			user: MiRemoteUser;
-			key: MiUserPublickey | null;
-		} | null = null;
+		let authUser: Awaited<ReturnType<typeof this.apDbResolverService.getAuthUserFromApId>> = null;
+		let httpSignatureIsValid = null as boolean | null;
 
 		try {
-			authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
+			authUser = await this.apDbResolverService.getAuthUserFromApId(actorUri, signature?.keyId);
 		} catch (err) {
 			// 対象が4xxならスキップ
 			if (err instanceof StatusError) {
@@ -96,45 +92,58 @@ export class InboxProcessorService {
 			}
 		}
 
-		// それでもわからなければ終了
-		if (authUser == null) {
+		// authUser.userがnullならスキップ
+		if (authUser != null && authUser.user == null) {
 			throw new Bull.UnrecoverableError('skip: failed to resolve user');
 		}
 
-		// publicKey がなくても終了
-		if (authUser.key == null) {
-			// publicKeyがないのはpublicKeyの変更（主にmain→ed25519）に
-			// 対応しきれていない場合があるためリトライする
-			throw new Error(`skip: failed to resolve user publicKey: keyId=${signature.keyId}`);
+		if (signature != null && authUser != null) {
+			if (signature.keyId.toLowerCase().startsWith('acct:')) {
+				this.logger.warn(`Old keyId is no longer supported. lowerKeyId=${signature.keyId.toLowerCase()}`);
+			} else if (authUser.key != null) {
+				// keyがなかったらLD Signatureで検証するべき
+				// HTTP-Signatureの検証
+				const errorLogger = (ms: any) => this.logger.error(ms);
+				httpSignatureIsValid = await verifyDraftSignature(signature, authUser.key.keyPem, errorLogger);
+				this.logger.debug('Inbox message validation: ', {
+					userId: authUser.user.id,
+					userAcct: Acct.toString(authUser.user),
+					parsedKeyId: signature.keyId,
+					foundKeyId: authUser.key.keyId,
+					httpSignatureValid: httpSignatureIsValid,
+				});
+			}
 		}
 
-		// HTTP-Signatureの検証
-		const errorLogger = (ms: any) => this.logger.error(ms);
-		const httpSignatureValidated = await verifyDraftSignature(signature, authUser.key.keyPem, errorLogger);
-		this.logger.debug('Inbox message validation: ', {
-			userId: authUser.user.id,
-			userAcct: Acct.toString(authUser.user),
-			parsedKeyId: signature.keyId,
-			foundKeyId: authUser.key.keyId,
-			httpSignatureValidated,
-		});
-
-		// また、signatureのsignerは、activity.actorと一致する必要がある
-		if (httpSignatureValidated !== true || authUser.user.uri !== activity.actor) {
+		if (
+			authUser == null ||
+			httpSignatureIsValid !== true ||
+			authUser.user.uri !== actorUri // 一応チェック
+		) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
 			if (activity.signature?.creator) {
 				if (activity.signature.type !== 'RsaSignature2017') {
 					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${activity.signature.type}`);
 				}
 
-				authUser = await this.apDbResolverService.getAuthUserFromApId(activity.signature.creator.replace(/#.*/, ''));
-
-				if (authUser == null) {
-					throw new Bull.UnrecoverableError('skip: LD-Signatureのユーザーが取得できませんでした');
+				if (activity.signature.creator.toLowerCase().startsWith('acct:')) {
+					throw new Bull.UnrecoverableError(`old key not supported ${activity.signature.creator}`);
 				}
 
+				authUser = await this.apDbResolverService.getAuthUserFromApId(actorUri, activity.signature.creator);
+
+				if (authUser == null) {
+					throw new Bull.UnrecoverableError(`skip: LD-Signatureのactorとcreatorが一致しませんでした uri=${actorUri} creator=${activity.signature.creator}`);
+				}
+				if (authUser.user == null) {
+					throw new Bull.UnrecoverableError(`skip: LD-Signatureのユーザーが取得できませんでした uri=${actorUri} creator=${activity.signature.creator}`);
+				}
+				// 一応actorチェック
+				if (authUser.user.uri !== actorUri) {
+					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${actorUri})`);
+				}
 				if (authUser.key == null) {
-					throw new Bull.UnrecoverableError('skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした');
+					throw new Bull.UnrecoverableError(`skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした uri=${actorUri} creator=${activity.signature.creator}`);
 				}
 
 				// LD-Signature検証
@@ -144,18 +153,13 @@ export class InboxProcessorService {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
 				}
 
-				// もう一度actorチェック
-				if (authUser.user.uri !== activity.actor) {
-					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`);
-				}
-
 				// ブロックしてたら中断
 				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
 				if (this.utilityService.isBlockedHost(meta.blockedHosts, ldHost)) {
 					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
 				}
 			} else {
-				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. keyId=${signature.keyId}`);
+				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
 			}
 		}
 

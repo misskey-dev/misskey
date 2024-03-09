@@ -137,14 +137,41 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Actor id => Misskey User and Key
 	 * @param uri AP Actor id
 	 * @param keyId Key id to find. If not specified, main key will be selected.
+	 *	keyIdがURLライクの場合、ハッシュを削除したkeyIdはuriと同一であることが期待される
+	 * @returns
+	 *	1. uriとkeyIdが一致しない場合`null`
+	 *	2. userが見つからない場合`{ user: null, key: null }`
+	 *	3. keyが見つからない場合`{ user, key: null }`
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string, keyId?: string): Promise<{
 		user: MiRemoteUser;
 		key: MiUserPublickey | null;
-	} | null> {
+	} | {
+		user: null;
+		key: null;
+	} |
+	null> {
+		if (keyId) {
+			try {
+				const actorUrl = new URL(uri);
+				const keyUrl = new URL(keyId);
+				actorUrl.hash = '';
+				keyUrl.hash = '';
+				if (actorUrl.href !== keyUrl.href) {
+					// uriとkeyId（のhashなし）が一致しない場合、actorと鍵の所有者が一致していないということである
+					// その場合、そもそも署名は有効といえないのでキーの検索は無意味
+					this.logger.warn(`actor uri and keyId are not matched uri=${uri} keyId=${keyId}`);
+					return null;
+				}
+			} catch (err) {
+				// キーがURLっぽくない場合はエラーになるはず。そういった場合はとりあえずキー検索してみる
+				this.logger.warn(`maybe actor uri or keyId are not url like: uri=${uri} keyId=${keyId}`, { err });
+			}
+		}
+
 		const user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
-		if (user.isDeleted) return null;
+		if (user.isDeleted) return { user: null, key: null };
 
 		const keys = await this.getPublicKeyByUserId(user.id);
 
