@@ -12,7 +12,6 @@ node_modules/
 packages/*/node_modules
 redis/
 files/
-misskey-assets/
 fluent-emojis/
 .pnp.*
 
