@@ -411,7 +411,7 @@ export class ApPersonService implements OnModuleInit {
 						[person.publicKey.id, person.publicKey],
 					]);
 
-					await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
+					await transactionalEntityManager.save(Array.from(publicKeys.values(), key => new MiUserPublickey({
 						keyId: key.id,
 						userId: user!.id,
 						keyPem: key.publicKeyPem,
