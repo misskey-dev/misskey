@@ -396,18 +396,16 @@ export class ApPersonService implements OnModuleInit {
 				}));
 
 				if (person.publicKey) {
-					const keys = new Map<string, IKey>([
+					const publicKeys = new Map<string, IKey>([
 						...(person.additionalPublicKeys ? person.additionalPublicKeys.map(key => [key.id, key] as const) : []),
 						[person.publicKey.id, person.publicKey],
 					]);
 
-					for (const key of keys.values()) {
-						await transactionalEntityManager.save(new MiUserPublickey({
-							keyId: key.id,
-							userId: user.id,
-							keyPem: key.publicKeyPem,
-						}));
-					}
+					await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
+						keyId: key.id,
+						userId: user!.id,
+						keyPem: key.publicKeyPem,
+					})));
 				}
 			});
 		} catch (e) {
