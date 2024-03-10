@@ -7,7 +7,6 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { Packed } from '@/misc/json-schema.js';
 import {
 	api,
 	failedApiCall,
@@ -29,10 +28,7 @@ describe('アンテナ', () => {
 	// エンティティとしてのアンテナを主眼においたテストを記述する
 	// (Antennaを返すエンドポイント、Antennaエンティティを書き換えるエンドポイント、Antennaからノートを取得するエンドポイントをテストする)
 
-	// BUG misskey-jsとjson-schemaが一致していない。
-	// - srcのenumにgroupが残っている
-	// - userGroupIdが残っている, isActiveがない
-	type Antenna = misskey.entities.Antenna | Packed<'Antenna'>;
+	type Antenna = misskey.entities.Antenna;
 	type User = misskey.entities.SignupResponse;
 	type Note = misskey.entities.Note;
 
@@ -80,7 +76,7 @@ describe('アンテナ', () => {
 		aliceList = await userList(alice, {});
 		bob = await signup({ username: 'bob' });
 		aliceList = await userList(alice, {});
-		bobFile = (await uploadFile(bob)).body;
+		bobFile = (await uploadFile(bob)).body!;
 		bobList = await userList(bob);
 		carol = await signup({ username: 'carol' });
 		await api('users/lists/push', { listId: aliceList.id, userId: bob.id }, alice);
@@ -129,9 +125,9 @@ describe('アンテナ', () => {
 	beforeEach(async () => {
 		// テスト間で影響し合わないように毎回全部消す。
 		for (const user of [alice, bob]) {
-			const list = await api('/antennas/list', {}, user);
+			const list = await api('antennas/list', {}, user);
 			for (const antenna of list.body) {
-				await api('/antennas/delete', { antennaId: antenna.id }, user);
+				await api('antennas/delete', { antennaId: antenna.id }, user);
 			}
 		}
 	});
@@ -141,11 +137,11 @@ describe('アンテナ', () => {
 	test('が作成できること、キーが過不足なく入っていること。', async () => {
 		const response = await successfulApiCall({
 			endpoint: 'antennas/create',
-			parameters: { ...defaultParam },
+			parameters: defaultParam,
 			user: alice,
 		});
 		assert.match(response.id, /[0-9a-z]{10}/);
-		const expected = {
+		const expected: Antenna = {
 			id: response.id,
 			caseSensitive: false,
 			createdAt: new Date(response.createdAt).toISOString(),
@@ -161,7 +157,7 @@ describe('アンテナ', () => {
 			withFile: false,
 			withReplies: false,
 			localOnly: false,
-		} as Antenna;
+		};
 		assert.deepStrictEqual(response, expected);
 	});
 
@@ -202,27 +198,27 @@ describe('アンテナ', () => {
 	});
 
 	const antennaParamPattern = [
-		{ parameters: (): object => ({ name: 'x'.repeat(100) }) },
-		{ parameters: (): object => ({ name: 'x' }) },
-		{ parameters: (): object => ({ src: 'home' }) },
-		{ parameters: (): object => ({ src: 'all' }) },
-		{ parameters: (): object => ({ src: 'users' }) },
-		{ parameters: (): object => ({ src: 'list' }) },
-		{ parameters: (): object => ({ userListId: null }) },
-		{ parameters: (): object => ({ src: 'list', userListId: aliceList.id }) },
-		{ parameters: (): object => ({ keywords: [['x']] }) },
-		{ parameters: (): object => ({ keywords: [['a', 'b', 'c'], ['x'], ['y'], ['z']] }) },
-		{ parameters: (): object => ({ excludeKeywords: [['a', 'b', 'c'], ['x'], ['y'], ['z']] }) },
-		{ parameters: (): object => ({ users: [alice.username] }) },
-		{ parameters: (): object => ({ users: [alice.username, bob.username, carol.username] }) },
-		{ parameters: (): object => ({ caseSensitive: false }) },
-		{ parameters: (): object => ({ caseSensitive: true }) },
-		{ parameters: (): object => ({ withReplies: false }) },
-		{ parameters: (): object => ({ withReplies: true }) },
-		{ parameters: (): object => ({ withFile: false }) },
-		{ parameters: (): object => ({ withFile: true }) },
-		{ parameters: (): object => ({ notify: false }) },
-		{ parameters: (): object => ({ notify: true }) },
+		{ parameters: () => ({ name: 'x'.repeat(100) }) },
+		{ parameters: () => ({ name: 'x' }) },
+		{ parameters: () => ({ src: 'home' as const }) },
+		{ parameters: () => ({ src: 'all' as const }) },
+		{ parameters: () => ({ src: 'users' as const }) },
+		{ parameters: () => ({ src: 'list' as const }) },
+		{ parameters: () => ({ userListId: null }) },
+		{ parameters: () => ({ src: 'list' as const, userListId: aliceList.id }) },
+		{ parameters: () => ({ keywords: [['x']] }) },
+		{ parameters: () => ({ keywords: [['a', 'b', 'c'], ['x'], ['y'], ['z']] }) },
+		{ parameters: () => ({ excludeKeywords: [['a', 'b', 'c'], ['x'], ['y'], ['z']] }) },
+		{ parameters: () => ({ users: [alice.username] }) },
+		{ parameters: () => ({ users: [alice.username, bob.username, carol.username] }) },
+		{ parameters: () => ({ caseSensitive: false }) },
+		{ parameters: () => ({ caseSensitive: true }) },
+		{ parameters: () => ({ withReplies: false }) },
+		{ parameters: () => ({ withReplies: true }) },
+		{ parameters: () => ({ withFile: false }) },
+		{ parameters: () => ({ withFile: true }) },
+		{ parameters: () => ({ notify: false }) },
+		{ parameters: () => ({ notify: true }) },
 	];
 	test.each(antennaParamPattern)('を作成できること($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({
@@ -335,7 +331,7 @@ describe('アンテナ', () => {
 		test.each([
 			{
 				label: '全体から',
-				parameters: (): object => ({ src: 'all' }),
+				parameters: () => ({ src: 'all' }),
 				posts: [
 					{ note: (): Promise<Note> => post(alice, { text: `${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}` }), included: true },
@@ -346,7 +342,7 @@ describe('アンテナ', () => {
 			{
 				// BUG e4144a1 以降home指定は壊れている(allと同じ)
 				label: 'ホーム指定はallと同じ',
-				parameters: (): object => ({ src: 'home' }),
+				parameters: () => ({ src: 'home' }),
 				posts: [
 					{ note: (): Promise<Note> => post(alice, { text: `${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}` }), included: true },
@@ -357,7 +353,7 @@ describe('アンテナ', () => {
 			{
 				// https://github.com/misskey-dev/misskey/issues/9025
 				label: 'ただし、フォロワー限定投稿とDM投稿を含まない。フォロワーであっても。',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'public' }), included: true },
 					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'home' }), included: true },
@@ -367,56 +363,56 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'ブロックしているユーザーのノートは含む',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userBlockedByAlice, { text: `${keyword}` }), included: true },
 				],
 			},
 			{
 				label: 'ブロックされているユーザーのノートは含まない',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userBlockingAlice, { text: `${keyword}` }) },
 				],
 			},
 			{
 				label: 'ミュートしているユーザーのノートは含まない',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userMutedByAlice, { text: `${keyword}` }) },
 				],
 			},
 			{
 				label: 'ミュートされているユーザーのノートは含む',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userMutingAlice, { text: `${keyword}` }), included: true },
 				],
 			},
 			{
 				label: '「見つけやすくする」がOFFのユーザーのノートも含まれる',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userNotExplorable, { text: `${keyword}` }), included: true },
 				],
 			},
 			{
 				label: '鍵付きユーザーのノートも含まれる',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userLocking, { text: `${keyword}` }), included: true },
 				],
 			},
 			{
 				label: 'サイレンスのノートも含まれる',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userSilenced, { text: `${keyword}` }), included: true },
 				],
 			},
 			{
 				label: '削除ユーザーのノートも含まれる',
-				parameters: (): object => ({}),
+				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userDeletedBySelf, { text: `${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(userDeletedByAdmin, { text: `${keyword}` }), included: true },
@@ -424,7 +420,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'ユーザー指定で',
-				parameters: (): object => ({ src: 'users', users: [`@${bob.username}`, `@${carol.username}`] }),
+				parameters: () => ({ src: 'users', users: [`@${bob.username}`, `@${carol.username}`] }),
 				posts: [
 					{ note: (): Promise<Note> => post(alice, { text: `test ${keyword}` }) },
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword}` }), included: true },
@@ -433,7 +429,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'リスト指定で',
-				parameters: (): object => ({ src: 'list', userListId: aliceList.id }),
+				parameters: () => ({ src: 'list', userListId: aliceList.id }),
 				posts: [
 					{ note: (): Promise<Note> => post(alice, { text: `test ${keyword}` }) },
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword}` }), included: true },
@@ -442,14 +438,14 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'CWにもマッチする',
-				parameters: (): object => ({ keywords: [[keyword]] }),
+				parameters: () => ({ keywords: [[keyword]] }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: 'test', cw: `cw ${keyword}` }), included: true },
 				],
 			},
 			{
 				label: 'キーワード1つ',
-				parameters: (): object => ({ keywords: [[keyword]] }),
+				parameters: () => ({ keywords: [[keyword]] }),
 				posts: [
 					{ note: (): Promise<Note> => post(alice, { text: 'test' }) },
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword}` }), included: true },
@@ -458,7 +454,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'キーワード3つ(AND)',
-				parameters: (): object => ({ keywords: [['A', 'B', 'C']] }),
+				parameters: () => ({ keywords: [['A', 'B', 'C']] }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: 'test A' }) },
 					{ note: (): Promise<Note> => post(bob, { text: 'test A B' }) },
@@ -469,7 +465,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'キーワード3つ(OR)',
-				parameters: (): object => ({ keywords: [['A'], ['B'], ['C']] }),
+				parameters: () => ({ keywords: [['A'], ['B'], ['C']] }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: 'test' }) },
 					{ note: (): Promise<Note> => post(bob, { text: 'test A' }), included: true },
@@ -482,7 +478,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: '除外ワード3つ(AND)',
-				parameters: (): object => ({ excludeKeywords: [['A', 'B', 'C']] }),
+				parameters: () => ({ excludeKeywords: [['A', 'B', 'C']] }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword} A` }), included: true },
@@ -495,7 +491,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: '除外ワード3つ(OR)',
-				parameters: (): object => ({ excludeKeywords: [['A'], ['B'], ['C']] }),
+				parameters: () => ({ excludeKeywords: [['A'], ['B'], ['C']] }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `test ${keyword} A` }) },
@@ -508,7 +504,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'キーワード1つ(大文字小文字区別する)',
-				parameters: (): object => ({ keywords: [['KEYWORD']], caseSensitive: true }),
+				parameters: () => ({ keywords: [['KEYWORD']], caseSensitive: true }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: 'keyword' }) },
 					{ note: (): Promise<Note> => post(bob, { text: 'kEyWoRd' }) },
@@ -517,7 +513,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'キーワード1つ(大文字小文字区別しない)',
-				parameters: (): object => ({ keywords: [['KEYWORD']], caseSensitive: false }),
+				parameters: () => ({ keywords: [['KEYWORD']], caseSensitive: false }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: 'keyword' }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: 'kEyWoRd' }), included: true },
@@ -526,7 +522,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: '除外ワード1つ(大文字小文字区別する)',
-				parameters: (): object => ({ excludeKeywords: [['KEYWORD']], caseSensitive: true }),
+				parameters: () => ({ excludeKeywords: [['KEYWORD']], caseSensitive: true }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword} keyword` }), included: true },
@@ -536,7 +532,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: '除外ワード1つ(大文字小文字区別しない)',
-				parameters: (): object => ({ excludeKeywords: [['KEYWORD']], caseSensitive: false }),
+				parameters: () => ({ excludeKeywords: [['KEYWORD']], caseSensitive: false }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}` }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword} keyword` }) },
@@ -546,7 +542,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: '添付ファイルを問わない',
-				parameters: (): object => ({ withFile: false }),
+				parameters: () => ({ withFile: false }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, fileIds: [bobFile.id] }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}` }), included: true },
@@ -554,7 +550,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: '添付ファイル付きのみ',
-				parameters: (): object => ({ withFile: true }),
+				parameters: () => ({ withFile: true }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, fileIds: [bobFile.id] }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}` }) },
@@ -562,7 +558,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'リプライ以外',
-				parameters: (): object => ({ withReplies: false }),
+				parameters: () => ({ withReplies: false }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, replyId: alicePost.id }) },
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}` }), included: true },
@@ -570,7 +566,7 @@ describe('アンテナ', () => {
 			},
 			{
 				label: 'リプライも含む',
-				parameters: (): object => ({ withReplies: true }),
+				parameters: () => ({ withReplies: true }),
 				posts: [
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, replyId: alicePost.id }), included: true },
 					{ note: (): Promise<Note> => post(bob, { text: `${keyword}` }), included: true },
@@ -633,7 +629,7 @@ describe('アンテナ', () => {
 					endpoint: 'antennas/notes',
 					parameters: { antennaId: antenna.id, ...paginationParam },
 					user: alice,
-				}) as any as Note[];
+				});
 			}, offsetBy, 'desc');
 		});
 

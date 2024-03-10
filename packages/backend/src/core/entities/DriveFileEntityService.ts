@@ -248,7 +248,7 @@ export class DriveFileEntityService {
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
-			userId: opts.withUser ? file.userId : null,
+			userId: file.userId,
 			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
 		});
 	}
@@ -259,7 +259,7 @@ export class DriveFileEntityService {
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
 		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
-		return items.filter((x): x is Packed<'DriveFile'> => x != null);
+		return items.filter(isNotNull);
 	}
 
 	@bindThis

@@ -14,10 +14,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			[$style.form_vertical]: chosen.place === 'vertical',
 		}]"
 	>
-		<a :href="chosen.url" target="_blank" :class="$style.link">
+		<component
+			:is="self ? 'MkA' : 'a'"
+			:class="$style.link"
+			v-bind="self ? {
+				to: chosen.url.substring(local.length),
+			} : {
+				href: chosen.url,
+				rel: 'nofollow noopener',
+				target: '_blank',
+			}"
+		>
 			<img :src="chosen.imageUrl" :class="$style.img">
 			<button class="_button" :class="$style.i" @click.prevent.stop="toggleMenu"><i :class="$style.iIcon" class="ti ti-info-circle"></i></button>
-		</a>
+		</component>
 	</div>
 	<div v-else :class="$style.menu">
 		<div :class="$style.menuContainer">
@@ -32,10 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { host } from '@/config.js';
+import { url as local, host } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -96,6 +106,9 @@ const choseAd = (): Ad | null => {
 };
 
 const chosen = ref(choseAd());
+
+const self = computed(() => chosen.value?.url.startsWith(local));
+
 const shouldHide = ref(!defaultStore.state.forceShowAds && $i && $i.policies.canHideAds && (props.specify == null));
 
 function reduceFrequency(): void {
