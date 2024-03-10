@@ -94,9 +94,11 @@ export class Autocomplete {
 			return;
 		}
 
+		const afterLastMfmParam = text.split(/\$\[[a-zA-Z]+/).pop();
+
 		const isMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
-		const isMfmParam = mfmParamIndex !== -1 && text.split(/\$\[[a-zA-Z]+/).pop()?.includes('.');
+		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam?.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 		// :ok:などを🆗にするたいおぷ
