@@ -551,22 +551,28 @@ export class ApPersonService implements OnModuleInit {
 		// Update user
 		await this.usersRepository.update(exist.id, updates);
 
-		const publicKeys = new Map<string, IKey>();
-		if (person.publicKey) {
-			(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
-			publicKeys.set(person.publicKey.id, person.publicKey);
+		try {
+			// Deleteアクティビティ受信時にもここが走ってsaveがuserforeign key制約エラーを吐くことがある
+			// とりあえずtry-catchで囲っておく
+			const publicKeys = new Map<string, IKey>();
+			if (person.publicKey) {
+				(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
+				publicKeys.set(person.publicKey.id, person.publicKey);
 
-			await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
-				keyId: key.id,
+				await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
+					keyId: key.id,
+					userId: exist.id,
+					keyPem: key.publicKeyPem,
+				})));
+			}
+
+			this.userPublickeysRepository.delete({
+				keyId: Not(In(Array.from(publicKeys.keys()))),
 				userId: exist.id,
-				keyPem: key.publicKeyPem,
-			})));
+			});
+		} catch (err) {
+			this.logger.error('something happened while updating remote user public keys:', { err });
 		}
-
-		this.userPublickeysRepository.delete({
-			keyId: Not(In(Array.from(publicKeys.keys()))),
-			userId: exist.id,
-		});
 
 		let _description: string | null = null;
 
