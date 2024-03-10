@@ -41,13 +41,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { provide, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
+import { MkABehavior } from '@/components/global/MkA.vue';
+
+provide<MkABehavior>('linkBehaviour', 'window');
 
 const props = defineProps<{
 	report: any;
