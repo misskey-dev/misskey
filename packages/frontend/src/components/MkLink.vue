@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <component
 	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	:behavior="props.behavior"
 	:title="url"
 >
 	<slot></slot>
@@ -19,12 +18,10 @@ import { defineAsyncComponent, ref } from 'vue';
 import { url as local } from '@/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
-import { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
-	behavior?: MkABehavior;
 }>(), {
 });
 

@@ -14,7 +14,7 @@ export type MkABehavior = 'window' | 'browser' | null;
 </script>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
@@ -29,6 +29,8 @@ const props = withDefaults(defineProps<{
 	activeClass: null,
 	behavior: null,
 });
+
+const linkBehaviour = props.behavior ?? inject<MkABehavior>('linkBehaviour', null);
 
 const router = useRouter();
 
@@ -80,15 +82,13 @@ function openWindow() {
 }
 
 function nav(ev: MouseEvent) {
-	if (props.behavior === 'browser') {
+	if (linkBehaviour === 'browser') {
 		location.href = props.to;
 		return;
 	}
 
-	if (props.behavior) {
-		if (props.behavior === 'window') {
-			return openWindow();
-		}
+	if (linkBehaviour === 'window') {
+		return openWindow();
 	}
 
 	if (ev.shiftKey) {
