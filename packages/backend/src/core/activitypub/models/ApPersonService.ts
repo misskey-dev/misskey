@@ -249,6 +249,12 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
+	/**
+	 * uriからUser(Person)をフェッチします。
+	 *
+	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
+	 * また、TTLが0でない場合、TTLを過ぎていた場合はupdatePersonを実行します。
+	 */
 	@bindThis
 	async fetchPersonWithRenewal(uri: string, TTL = REMOTE_USER_CACHE_TTL): Promise<MiLocalUser | MiRemoteUser | null> {
 		const exist = await this.fetchPerson(uri);
@@ -257,8 +263,12 @@ export class ApPersonService implements OnModuleInit {
 		if (this.userEntityService.isRemoteUser(exist)) {
 			if (TTL === 0 || exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > TTL) {
 				this.logger.debug('fetchPersonWithRenewal: renew', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
-				await this.updatePerson(exist.uri);
-				return await this.fetchPerson(uri);
+				try {
+					await this.updatePerson(exist.uri);
+					return await this.fetchPerson(uri);
+				} catch (err) {
+					this.logger.error('error occurred while renewing user', { err });
+				}
 			}
 			this.logger.debug('fetchPersonWithRenewal: use cache', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
 		}
