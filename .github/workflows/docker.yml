@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: misskey/misskey
+  REGISTRY_IMAGE: ${{ github.repository }}
+  REGISTRY : gchr.io
   TAGS: |
     type=edge
     type=ref,event=pr
@@ -31,21 +32,27 @@ jobs:
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
       - name: Check out the repo
         uses: actions/checkout@v4.1.1
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: ${{ env.TAGS }}
-      - name: Log in to Docker Hub
+
+      - name: Log in to Github Packages
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
       - name: Build and Push to Docker Hub
         id: build
         uses: docker/build-push-action@v5
@@ -58,11 +65,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
+
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
@@ -82,24 +91,30 @@ jobs:
           path: /tmp/digests
           pattern: digests-*
           merge-multiple: true
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: ${{ env.TAGS }}
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+           registry: ${{ env.REGISTRY }} 
+           username: ${{ github.actor }}
+           password: ${{ secrets.GH_TOKEN }}   
+
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
