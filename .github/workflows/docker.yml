@@ -61,7 +61,7 @@ jobs:
           context: .
           push: true
           platforms: ${{ matrix.platform }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY_NAME }}:develop
           provenance: false
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
