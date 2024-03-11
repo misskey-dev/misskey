@@ -47,10 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div class="_gaps_s">
 						<div class="_buttons">
-							<MkButton inline @click="copy(pluginLoggers.get(plugin.id)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+							<MkButton inline @click="copy(pluginLogs.get(plugin.id)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
 						</div>
 
-						<MkCode :code="pluginLoggers.get(plugin.id)?.join('\n') ?? ''"/>
+						<MkCode :code="pluginLogs.get(plugin.id)?.join('\n') ?? ''"/>
 					</div>
 				</MkFolder>
 
@@ -87,7 +87,7 @@ import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pluginLoggers } from '@/plugin.js';
+import { pluginLogs } from '@/plugin.js';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
