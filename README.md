@@ -16,7 +16,28 @@ Misskeyの　ふじさんすきー版のコードです。<br>
 <br>
 <br>
 
+<<<<<<< HEAD
 [Learn more](https://misskey-hub.net/)
+=======
+<<<<<<< HEAD
+**🌎 **[Misskey](https://misskey-hub.net/)** is an open source, decentralized social media platform that's free forever! 🚀**
+=======
+ふじさんすきー版のコードです。<br>
+小規模サーバーで、かつ、鯖缶が適当（さぼってる）な場合に有効じゃないかと思います。<br>
+<br>
+インストール方法は、misskey公式と同じです。<br>
+<br>
+　あと、時間のある時に説明を作ってみますが、取り合えずソース公開という事で。<br>
+ 姉妹サーバーを歓迎しますので（多少は）構築のお手伝いもさせて頂く（かもしれません）！<br>
+<br>
+<br>
+
+
+**🌎 **Misskey** is an open source, federated social media platform that's free forever! 🚀**
+
+[Learn more](https://misskey-hub.net/)
+>>>>>>> 8c1b0a1a7 (Update README.md)
+>>>>>>> master
 
 ---
 
