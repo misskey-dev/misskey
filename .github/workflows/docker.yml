@@ -61,7 +61,7 @@ jobs:
           context: .
           push: true
           platforms: ${{ matrix.platform }}
-          tags: ${{ env.REGISTRY_NAME }}.${{version}}
+          tags: ${{ env.REGISTRY_NAME }}.devleop
           provenance: false
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
