@@ -70,12 +70,11 @@ async function alertOtherHost() {
 		// show confirm dialog when redirecting other host
 		const confirm = await os.confirm({
 			type: 'warning',
-			title: i18n.ts.warningRedirectingOtherHost,
-			text: props.url,
+			text: i18n.tsx.warningRedirectingOtherHost({ url: props.url }),
 		});
 		if (confirm.canceled) return;
 	}
-	window.open(props.url, target, props.rel ?? 'nofollow noopener');
+	window.open(props.url, "_blank", 'nofollow noopener');
 }
 </script>
 

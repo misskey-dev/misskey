@@ -4811,7 +4811,7 @@ export interface Locale extends ILocale {
     /**
      * 外部サイトへリダイレクトしようとしています。
      */
-    "warningRedirectingOtherHost": string;
+    "warningRedirectingOtherHost": ParameterizedString<"url">;
     /**
      * リアクションする
      */
