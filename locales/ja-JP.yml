@@ -1772,6 +1772,7 @@ _plugin:
   installWarn: "信頼できないプラグインはインストールしないでください。"
   manage: "プラグインの管理"
   viewSource: "ソースを表示"
+  viewLog: "ログを表示"
 
 _preferencesBackups:
   list: "作成したバックアップ"
