@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <component
 	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	@contextmenu.stop="() => {}"
+	@contextmenu.stop="() => {}" @click.prevent.stop="alertOtherHost"
 >
 	<template v-if="!self">
 		<span :class="$style.schema">{{ schema }}//</span>
@@ -30,6 +30,8 @@ import { url as local } from '@/config.js';
 import * as os from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -61,7 +63,20 @@ const pathname = safeURIDecode(url.pathname);
 const query = safeURIDecode(url.search);
 const hash = safeURIDecode(url.hash);
 const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
+const target = self ? undefined : '_blank';
+
+async function alertOtherHost() {
+	if(defaultStore.state.checkRedirectingOtherHost && !self) {
+		// show confirm dialog when redirecting other host
+		const confirm = await os.confirm({
+			type: 'warning',
+			title: i18n.ts.warningRedirectingOtherHost,
+			text: props.url,
+		});
+		if (confirm.canceled) return;
+	}
+	window.open(props.url, target, props.rel ?? 'nofollow noopener');
+}
 </script>
 
 <style lang="scss" module>

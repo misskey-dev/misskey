@@ -2961,6 +2961,10 @@ export interface Locale extends ILocale {
      */
     "loadRawImages": string;
     /**
+     * ノートに含まれたURLを開くとき、外部サイトの場合は警告を出す
+     */
+    "checkRedirectingOtherHost": string;
+    /**
      * アニメーション画像を再生しない
      */
     "disableShowingAnimatedImages": string;
@@ -4804,6 +4808,10 @@ export interface Locale extends ILocale {
      * 「内容を隠す」がオンの場合は注釈の記述が必要です。
      */
     "cwNotationRequired": string;
+    /**
+     * 外部サイトへリダイレクトしようとしています。
+     */
+    "warningRedirectingOtherHost": string;
     /**
      * リアクションする
      */
