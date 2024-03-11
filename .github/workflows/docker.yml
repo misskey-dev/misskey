@@ -61,7 +61,7 @@ jobs:
           context: .
           push: true
           platforms: ${{ matrix.platform }}
-          tags: ghcr.io/${{ github.repository }}
+          tags: ghcr.io/${{ github.repository }}:development
           provenance: false
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
