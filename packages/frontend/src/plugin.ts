@@ -11,7 +11,7 @@ import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFo
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
-export const pluginLoggers = ref(new Map<string, string[]>());
+export const pluginLogs = ref(new Map<string, string[]>());
 
 export async function install(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
@@ -24,13 +24,12 @@ export async function install(plugin: Plugin): Promise<void> {
 		in: aiScriptReadline,
 		out: (value): void => {
 			console.log(value);
-			pluginLoggers.value.get(plugin.id).push(utils.reprValue(value));
+			pluginLogs.value.get(plugin.id).push(utils.reprValue(value));
 		},
 		log: (): void => {
 		},
 		err: (err): void => {
-			pluginLoggers.value.get(plugin.id).push(`${err}`);
-			pluginLoggers.value.get(plugin.id).push('Plugin halted because of this error.');
+			pluginLogs.value.get(plugin.id).push(`${err}`);
 			throw err; // install時のtry-catchに反応させる
 		},
 	});
@@ -101,7 +100,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 
 function initPlugin({ plugin, aiscript }): void {
 	pluginContexts.set(plugin.id, aiscript);
-	pluginLoggers.value.set(plugin.id, []);
+	pluginLogs.value.set(plugin.id, []);
 }
 
 function registerPostFormAction({ pluginId, title, handler }): void {
