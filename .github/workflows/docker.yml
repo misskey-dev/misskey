@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: ${{ github.repository }}
+  REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
   REGISTRY : ghcr.io
   PUBLISHER : mochaworks
   TAGS: |
@@ -61,6 +61,7 @@ jobs:
           context: .
           push: true
           platforms: ${{ matrix.platform }}
+          tags: ${{ steps.meta.outputs.tags }}
           provenance: false
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
