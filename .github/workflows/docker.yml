@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY_IMAGE: ${{ github.repository }}
   REGISTRY : ghcr.io
+  PUBLISHER : mochaworks
   TAGS: |
     type=edge
     type=ref,event=pr
@@ -50,7 +51,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          username: ${{ env.PUBLISHER }}
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Build and Push to Docker Hub
@@ -106,7 +107,7 @@ jobs:
         uses: docker/login-action@v3
         with:
            registry: ${{ env.REGISTRY }} 
-           username: ${{ github.actor }}
+           username: ${{ env.PUBLISHER }}
            password: ${{ secrets.GH_TOKEN }}   
 
       - name: Create manifest list and push
