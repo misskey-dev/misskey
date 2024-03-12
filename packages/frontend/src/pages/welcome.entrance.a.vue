@@ -9,7 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<XTimeline class="tl"/>
 	<div class="shape1"></div>
 	<div class="shape2"></div>
-	<img :src="misskeysvg" class="misskey"/>
+	<div class="misskey-parent">
+		<div class="powered-by">Powered By</div>
+		<img :src="misskeysvg" class="misskey"/>
+	</div>
 	<div class="emojis">
 		<MkEmoji :normal="true" :noStyle="true" emoji="👍"/>
 		<MkEmoji :normal="true" :noStyle="true" emoji="❤"/>
@@ -113,14 +116,18 @@ misskeyApiGet('federation/instances', {
 		opacity: 0.5;
 	}
 
-	> .misskey {
+	> .misskey-parent {
 		position: fixed;
-		top: 42px;
-		left: 42px;
-		width: 140px;
+		top: 36px;
+		left: 36px;
+		flex: auto;
+		color: #fff;
 
-		@media (max-width: 450px) {
-			width: 130px;
+		>.misskey {
+			width: 140px;
+			@media (max-width: 450px) {
+				width: 130px;
+			}
 		}
 	}
 
