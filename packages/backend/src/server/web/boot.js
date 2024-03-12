@@ -86,8 +86,8 @@
 	//#endregion
 
 	//#region Script
-	function importAppScript() {
-		import(`/vite/${CLIENT_ENTRY}`)
+	async function importAppScript() {
+		await import(`/vite/${CLIENT_ENTRY}`)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);
