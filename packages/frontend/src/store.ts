@@ -7,7 +7,6 @@ import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
-import type { BuiltinTheme as ShikiBuiltinTheme } from 'shiki';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
 
@@ -63,7 +62,17 @@ export const pageViewInterruptors: PageViewInterruptor[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
-export const defaultStore = markRaw(new Storage('base', {
+export const defaultStore = markRaw(new Storage<{
+	[K: string]: {
+		where: 'device' | 'deviceAccount';
+		/** 設定のバックアップに含みたくないものはtrueを指定する */
+		ignoreBackup?: boolean;
+		default: any;
+	} | {
+		where: 'account';
+		default: any;
+	};
+}>('base', {
 	accountSetupWizard: {
 		where: 'account',
 		default: 0,
@@ -397,6 +406,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
+		ignoreBackup: true,
 		default: {} as Record<string, Record<string, string[]>>,
 	},
 	keepScreenOn: {
