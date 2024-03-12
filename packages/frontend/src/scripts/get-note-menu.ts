@@ -237,6 +237,12 @@ export function getNoteMenu(props: {
 		os.success();
 	}
 
+	async function copyNoteLinkOnRemoteServer(): Promise<void> {
+		// TODO: 何が違う？
+		copyToClipboard(appearNote.url ?? appearNote.uri);
+		return os.success();
+	}
+
 	function copyLink(): void {
 		copyToClipboard(`${url}/notes/${appearNote.id}`);
 		os.success();
@@ -327,6 +333,10 @@ export function getNoteMenu(props: {
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
+			}, { // リモートのリンクをコピー
+				icon: 'ti ti-external-link',
+				text: i18n.ts.showOnRemote,
+				action: () => copyNoteLinkOnRemoteServer,
 			});
 		} else {
 			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
