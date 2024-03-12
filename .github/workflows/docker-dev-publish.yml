@@ -51,7 +51,7 @@ jobs:
           tags: ${{ env.REGISTRY_IMAGE }}:develop
           labels: develop
           provenance: false
-          plaforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platform }}
 
 
 
