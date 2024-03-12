@@ -368,12 +368,6 @@ export class FileInfoService {
 						ext: 'm4a',
 					};
 				}
-				if (newMime === 'audio/webm') {
-					return {
-						mime: 'audio/webm',
-						ext: 'webm',
-					};
-				}
 				return {
 					mime: newMime,
 					ext: type.ext,
