@@ -12,7 +12,7 @@
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 
 ### Server
--
+- Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 
 ## 2024.3.1
 
@@ -26,7 +26,7 @@
 - Fix: カスタム絵文字の画像読み込みに失敗した際はテキストではなくダミー画像を表示 #13487
 
 ### Server
-- Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+-
 
 ## 2024.3.0
 
