@@ -323,8 +323,6 @@ describe('FileInfoService', () => {
 			});
 		});
 
-		/*
-		 * video/webmとして検出されてしまう
 		test('WEBM AUDIO', async () => {
 			const path = `${resources}/kick_gaba7.webm`;
 			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
@@ -344,6 +342,5 @@ describe('FileInfoService', () => {
 				},
 			});
 		});
-		 */
 	});
 });

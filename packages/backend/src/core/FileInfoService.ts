@@ -318,6 +318,27 @@ export class FileInfoService {
 	}
 
 	/**
+	 * ビデオファイルにビデオトラックがあるかどうかチェック
+	 * （ない場合：m4a, webmなど）
+	 */
+	@bindThis
+	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
+		return new Promise((resolve, reject) => {
+			try {
+				FFmpeg.ffprobe(path, (err, metadata) => {
+					if (err) {
+						resolve(true);
+						return;
+					}
+					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
+				});
+			} catch (e) {
+				resolve(true);
+			}
+		});
+	}
+
+	/**
 	 * Detect MIME Type and extension
 	 */
 	@bindThis
@@ -337,6 +358,26 @@ export class FileInfoService {
 		// XMLはSVGかもしれない
 			if (type.mime === 'application/xml' && await this.checkSvg(path)) {
 				return TYPE_SVG;
+			}
+
+			if (type.mime.startsWith('video') && !(await this.hasVideoTrackOnVideoFile(path))) {
+				const newMime = `audio/${type.mime.split('/')[1]}`;
+				if (newMime === 'audio/mp4') {
+					return {
+						mime: 'audio/aac',
+						ext: 'm4a',
+					};
+				}
+				if (newMime === 'audio/webm') {
+					return {
+						mime: 'audio/webm',
+						ext: 'webm',
+					};
+				}
+				return {
+					mime: newMime,
+					ext: type.ext,
+				};
 			}
 
 			return {
