@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
 	<MkSpacer :contentMax="800">
+		{{ channelInfo ? channelInfo.name : '' }}
 		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
 			<div :key="src" ref="rootEl" v-hotkey.global="keymap">
 				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
@@ -68,7 +69,7 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>({
+const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`| `channel:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
@@ -127,13 +128,14 @@ const showSocialTimeline = ref(defaultStore.state.showSocialTimeline);
 const channelInfo = ref();
 if (src.value.split(':')[0] === 'channel') {
 	const channelId = src.value.split(':')[1];
-	channelInfo.value = misskeyApi('channels/show', { channelId });
+	channelInfo.value = await misskeyApi('channels/show', { channelId });
 }
 watch(src, async () => {
 	queue.value = 0;
+
 	if (src.value.split(':')[0] === 'channel') {
 		const channelId = src.value.split(':')[1];
-		channelInfo.value = misskeyApi('channels/show', { channelId });
+		channelInfo.value = await misskeyApi('channels/show', { channelId });
 	} else {
 		channelInfo.value = null;
 	}
