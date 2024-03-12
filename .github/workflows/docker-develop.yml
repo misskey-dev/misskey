@@ -11,7 +11,6 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   build:
     name: Build
     runs-on: ubuntu-latest
