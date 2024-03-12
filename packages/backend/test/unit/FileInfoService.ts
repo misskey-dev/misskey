@@ -323,6 +323,26 @@ describe('FileInfoService', () => {
 			});
 		});
 
+		test('MPEG-4 AUDIO (M4A)', async () => {
+			const path = `${resources}/kick_gaba7.m4a`;
+			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
+			delete info.warnings;
+			delete info.blurhash;
+			delete info.sensitive;
+			delete info.porn;
+			delete info.width;
+			delete info.height;
+			delete info.orientation;
+			assert.deepStrictEqual(info, {
+				size: 9817,
+				md5: '74c9279a4abe98789565f1dc1a541a42',
+				type: {
+					mime: 'audio/mp4',
+					ext: 'm4a',
+				},
+			});
+		});
+
 		test('WEBM AUDIO', async () => {
 			const path = `${resources}/kick_gaba7.webm`;
 			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
@@ -335,7 +355,7 @@ describe('FileInfoService', () => {
 			delete info.orientation;
 			assert.deepStrictEqual(info, {
 				size: 8879,
-				md5: '3350083dec312419cfdc06c16413aca7',
+				md5: '53bc1adcb6acbbda67ff9bd484896438',
 				type: {
 					mime: 'audio/webm',
 					ext: 'webm',
