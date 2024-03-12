@@ -14,6 +14,7 @@
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
 
 ## 2024.3.1
 
