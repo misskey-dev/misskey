@@ -8631,6 +8631,10 @@ export interface Locale extends ILocale {
          * 説明
          */
         "summary": string;
+        /**
+         * 非公開に設定するとプロフィールに表示されなくなりますが、URLを知っている人は引き続きアクセスできます。
+         */
+        "visibilityDescription": string;
     };
     "_pages": {
         /**
