@@ -20,7 +20,7 @@ jobs:
           search() {
             local directory="$1"
             find "$directory" -type f \
-              '('\
+              '(' \
                 -name "*.cjs" -and -not -name '*.config.cjs' -o \
                 -name "*.html" -o \
                 -name "*.js" -and -not -name '*.config.js' -o \
