@@ -1,6 +1,10 @@
 name: Check SPDX-License-Identifier
 
 on:
+  push:
+    branches:
+      - master
+      - develop
   pull_request:
 
 jobs:
