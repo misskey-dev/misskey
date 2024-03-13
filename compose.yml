@@ -5,14 +5,14 @@ services:
     restart: always
     links:
       - redis
-      - db
+      # - db
       # - meilisearch
       # - es
     depends_on:
       redis:
         condition: service_healthy
-      db:
-        condition: service_healthy
+      # db:
+      #   condition: service_healthy
     networks:
       - internal_network
       - external_network
@@ -32,20 +32,20 @@ services:
       interval: 5s
       retries: 20
 
-  db:
-    restart: always
-    image: postgres:15.3-bullseye
-    networks:
-      - internal_network
-    env_file:
-      - .config/docker.env
-    volumes:
-      - postgres:/var/lib/postgresql/data
-      - ./db:/misskey-na2na-db
-    healthcheck:
-      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
-      interval: 5s
-      retries: 20
+  # db:
+  #   restart: always
+  #   image: postgres:15.3-bullseye
+  #   networks:
+  #     - internal_network
+  #   env_file:
+  #     - .config/docker.env
+  #   volumes:
+  #     - postgres:/var/lib/postgresql/data
+  #     - ./db:/misskey-na2na-db
+  #   healthcheck:
+  #     test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+  #     interval: 5s
+  #     retries: 20
 
   # meilisearch:
   #   restart: always
@@ -119,6 +119,6 @@ networks:
   external_network:
 
 volumes:
-  postgres:
+  # postgres:
   redis:
   # meili_data:
