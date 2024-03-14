@@ -10539,16 +10539,16 @@ export type operations = {
       content: {
         'application/json': {
           id: string;
-          name?: string;
+          name?: string | null;
           issuer?: string;
           audience?: string[];
           acsUrl?: string;
           signatureAlgorithm?: string;
-          cipherAlgorithm?: string;
+          cipherAlgorithm?: string | null;
           wantAuthnRequestsSigned?: boolean;
           wantAssertionsSigned?: boolean;
-          regenerateCertificate?: boolean;
-          secret?: string;
+          regenerateCertificate?: boolean | null;
+          secret?: string | null;
         };
       };
     };

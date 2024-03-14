@@ -526,7 +526,7 @@ export class OAuth2ProviderService {
 				email: user?.email,
 				email_verified: user?.emailVerified,
 				mfa_enabled: user?.twoFactorEnabled,
-				updated_at: (accessToken.user?.updatedAt?.getTime() ?? accessToken.user?.createdAt.getTime() ?? 0) / 1000,
+				updated_at: Math.floor((accessToken.user?.updatedAt?.getTime() ?? accessToken.user?.createdAt.getTime() ?? 0) / 1000),
 			};
 		});
 	}

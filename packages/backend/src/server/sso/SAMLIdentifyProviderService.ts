@@ -56,7 +56,10 @@ export class SAMLIdentifyProviderService {
 		provider: MiSingleSignOnServiceProvider,
 	): Promise<string> {
 		const today = new Date();
-		const publicKey = await jose.importJWK(JSON.parse(provider.publicKey)).then((r) => jose.exportSPKI(r as jose.KeyLike));
+		const publicKey = await jose
+			.importJWK(JSON.parse(provider.publicKey))
+			.then(k => jose.exportSPKI(k as jose.KeyLike))
+			.then(k => k.replace(/-----(?:BEGIN|END) PUBLIC KEY-----|\s/g, ''));
 
 		const nodes = {
 			'md:EntityDescriptor': {
@@ -103,7 +106,10 @@ export class SAMLIdentifyProviderService {
 		provider: MiSingleSignOnServiceProvider,
 	): Promise<string> {
 		const today = new Date();
-		const publicKey = await jose.importJWK(JSON.parse(provider.publicKey)).then((r) => jose.exportSPKI(r as jose.KeyLike));
+		const publicKey = await jose
+			.importJWK(JSON.parse(provider.publicKey))
+			.then(k => jose.exportSPKI(k as jose.KeyLike))
+			.then(k => k.replace(/-----(?:BEGIN|END) PUBLIC KEY-----|\s/g, ''));
 
 		const keyDescriptor: unknown[] = [
 			{
@@ -230,7 +236,8 @@ export class SAMLIdentifyProviderService {
 				metadata: await this.createIdPMetadataXml(ssoServiceProvider),
 				privateKey: await jose
 					.importJWK(JSON.parse(ssoServiceProvider.privateKey ?? '{}'))
-					.then((r) => jose.exportPKCS8(r as jose.KeyLike)),
+					.then(k => jose.exportPKCS8(k as jose.KeyLike))
+					.then(k => k.replace(/-----(?:BEGIN|END) PRIVATE KEY-----|\s/g, '')),
 			});
 
 			const sp = saml.ServiceProvider({
@@ -364,7 +371,8 @@ export class SAMLIdentifyProviderService {
 					metadata: await this.createIdPMetadataXml(ssoServiceProvider),
 					privateKey: await jose
 						.importJWK(JSON.parse(ssoServiceProvider.privateKey ?? '{}'))
-						.then((r) => jose.exportPKCS8(r as jose.KeyLike)),
+						.then(k => jose.exportPKCS8(k as jose.KeyLike))
+						.then(k => k.replace(/-----(?:BEGIN|END) PRIVATE KEY-----|\s/g, '')),
 					loginResponseTemplate: { context: 'ignored' },
 				});
 
@@ -557,7 +565,7 @@ export class SAMLIdentifyProviderService {
 													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:integer',
-													'#text': (user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000,
+													'#text': Math.floor((user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000),
 												},
 											},
 											{

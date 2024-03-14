@@ -184,7 +184,7 @@ export class JWTIdentifyProviderService {
 				email: profile.email,
 				email_verified: profile.emailVerified,
 				mfa_enabled: profile.twoFactorEnabled,
-				updated_at: (user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000,
+				updated_at: Math.floor((user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000),
 				admin: isAdministrator,
 				moderator: isModerator,
 				roles: roles.filter(r => r.isPublic).map(r => r.id),
