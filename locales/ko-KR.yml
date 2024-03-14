@@ -1566,7 +1566,7 @@ _achievements:
       description: "3개 이상의 창을 열었습니다"
     _driveFolderCircularReference:
       title: "순환 참조"
-      description: "드라이브 폴더를 자신을 가리키도록 만드려 시도했습니다"
+      description: "드라이브 폴더에 스스로를 넣게 했습니다"
     _reactWithoutRead:
       title: "읽고 답하긴 하시는 건가요?"
       description: "100자가 넘는 노트가 작성되고 3초 안에 반응했습니다"
