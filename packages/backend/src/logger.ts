@@ -50,6 +50,19 @@ export default class Logger {
 			return;
 		}
 
+		if (envOption.logJson) {
+			console.log(JSON.stringify({
+				time: new Date().toISOString(),
+				level: level,
+				message: message,
+				data: data,
+				important: important,
+				context: [this.context].concat(subContexts).join('.'),
+				cluster: cluster.isPrimary ? 'primary' : `worker-${cluster.worker!.id}`,
+			}));
+			return;
+		}
+
 		const time = dateFormat(new Date(), 'HH:mm:ss');
 		const worker = cluster.isPrimary ? '*' : cluster.worker!.id;
 		const l =

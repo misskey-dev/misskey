@@ -9,6 +9,7 @@ const envOption = {
 	noDaemons: false,
 	disableClustering: false,
 	verbose: false,
+	logJson: false,
 	withLogTime: false,
 	quiet: false,
 };
