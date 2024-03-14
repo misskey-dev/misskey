@@ -1,0 +1,21 @@
+html
+	body
+		noscript: p
+			| JavaScriptを有効にしてください
+			br
+			| Please turn on your JavaScript
+
+		p
+			| Redirecting...
+
+		form(id='sso', method='post', action=action autocomplete='off')
+			input(type='hidden', name='SAMLResponse', value=samlResponse)
+
+			if relayState !== null
+				input(type='hidden', name='RelayState', value=relayState)
+
+			button(type='submit')
+				| click here if you are not redirected.
+
+		script.
+			document.forms[0].submit();

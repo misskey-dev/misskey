@@ -111,6 +111,12 @@ import type {
 	AdminRolesUpdateDefaultPoliciesRequest,
 	AdminRolesUsersRequest,
 	AdminRolesUsersResponse,
+	AdminSsoCreateRequest,
+	AdminSsoCreateResponse,
+	AdminSsoDeleteRequest,
+	AdminSsoListRequest,
+	AdminSsoListResponse,
+	AdminSsoUpdateRequest,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AntennasCreateRequest,
@@ -653,6 +659,10 @@ export type Endpoints = {
 	'admin/roles/unassign': { req: AdminRolesUnassignRequest; res: EmptyResponse };
 	'admin/roles/update-default-policies': { req: AdminRolesUpdateDefaultPoliciesRequest; res: EmptyResponse };
 	'admin/roles/users': { req: AdminRolesUsersRequest; res: AdminRolesUsersResponse };
+	'admin/sso/create': { req: AdminSsoCreateRequest; res: AdminSsoCreateResponse };
+	'admin/sso/delete': { req: AdminSsoDeleteRequest; res: EmptyResponse };
+	'admin/sso/list': { req: AdminSsoListRequest; res: AdminSsoListResponse };
+	'admin/sso/update': { req: AdminSsoUpdateRequest; res: EmptyResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };

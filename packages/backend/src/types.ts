@@ -88,6 +88,9 @@ export const moderationLogTypes = [
 	'createIndieAuthClient',
 	'updateIndieAuthClient',
 	'deleteIndieAuthClient',
+	'createSSOServiceProvider',
+	'updateSSOServiceProvider',
+	'deleteSSOServiceProvider',
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
@@ -272,6 +275,19 @@ export type ModerationLogPayloads = {
 	deleteIndieAuthClient: {
 		clientId: string;
 		client: any;
+	};
+	createSSOServiceProvider: {
+		serviceId: string;
+		service: any;
+	};
+	updateSSOServiceProvider: {
+		serviceId: string;
+		before: any;
+		after: any;
+	};
+	deleteSSOServiceProvider: {
+		serviceId: string;
+		service: any;
 	};
 	createAvatarDecoration: {
 		avatarDecorationId: string;

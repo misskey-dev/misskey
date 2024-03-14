@@ -265,6 +265,9 @@ const routes: RouteDef[] = [{
 	path: '/oauth/authorize',
 	component: page(() => import('@/pages/oauth.vue')),
 }, {
+	path: '/sso/:kind/:serviceId',
+	component: page(() => import('@/pages/sso.vue')),
+}, {
 	path: '/tags/:tag',
 	component: page(() => import('@/pages/tag.vue')),
 }, {

@@ -89,6 +89,8 @@ export const permissions = [
 	'write:admin:promo',
 	'write:admin:drive',
 	'read:admin:drive',
+	'write:admin:sso',
+	'read:admin:sso',
 	'write:admin:ad',
 	'read:admin:ad',
 	'write:invite-codes',
@@ -136,6 +138,9 @@ export const moderationLogTypes = [
 	'createIndieAuthClient',
 	'updateIndieAuthClient',
 	'deleteIndieAuthClient',
+	'createSSOServiceProvider',
+	'updateSSOServiceProvider',
+	'deleteSSOServiceProvider',
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
@@ -320,6 +325,19 @@ export type ModerationLogPayloads = {
 	deleteIndieAuthClient: {
 		clientId: string;
 		client: any;
+	};
+	createSSOServiceProvider: {
+		serviceId: string;
+		service: any;
+	};
+	updateSSOServiceProvider: {
+		serviceId: string;
+		before: any;
+		after: any;
+	};
+	deleteSSOServiceProvider: {
+		serviceId: string;
+		service: any;
 	};
 	createAvatarDecoration: {
 		avatarDecorationId: string;

@@ -36,6 +36,10 @@ export default class Logger {
 
 		this.logger = pino({
 			name: this.domain,
+			serializers: {
+				...pino.stdSerializers,
+				err: pino.stdSerializers.errWithCause,
+			},
 			level: envOption.verbose ? 'debug' : 'info',
 			depthLimit: 8,
 			edgeLimit: 128,
@@ -63,17 +67,19 @@ export default class Logger {
 
 	@bindThis
 	public error(x: string | Error, context?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
+		// eslint-disable-next-line no-param-reassign
 		if (context === null) context = undefined;
+		if (context?.error) context.error = pino.stdSerializers.errWithCause(context.error);
 
 		if (x instanceof Error) {
-			context = context ?? {};
-			context.error = x;
+			// eslint-disable-next-line no-param-reassign
+			if (context?.error === undefined) context = { ...context, error: pino.stdSerializers.errWithCause(x) };
 
 			if (important) this.logger.fatal({ context, important }, x.toString());
 			else this.logger.error({ context, important }, x.toString());
 		} else if (typeof x === 'object') {
-			context = context ?? {};
-			context.error = context.error ?? x;
+			// eslint-disable-next-line no-param-reassign
+			if (context?.error === undefined) context = { ...context, error: pino.stdSerializers.errWithCause(x) };
 
 			if (important) this.logger.fatal({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
 			else this.logger.error({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
@@ -85,16 +91,18 @@ export default class Logger {
 
 	@bindThis
 	public warn(x: string | Error, context?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
+		// eslint-disable-next-line no-param-reassign
 		if (context === null) context = undefined;
+		if (context?.error) context.error = pino.stdSerializers.errWithCause(context.error);
 
 		if (x instanceof Error) {
-			context = context ?? {};
-			context.error = x;
+			// eslint-disable-next-line no-param-reassign
+			if (context?.error === undefined) context = { ...context, error: pino.stdSerializers.errWithCause(x) };
 
 			this.logger.warn({ context, important }, x.toString());
 		} else if (typeof x === 'object') {
-			context = context ?? {};
-			context.error = context.error ?? x;
+			// eslint-disable-next-line no-param-reassign
+			if (context?.error === undefined) context = { ...context, error: pino.stdSerializers.errWithCause(x) };
 
 			this.logger.warn({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
 		} else {

@@ -58,6 +58,7 @@ import {
 	MiRole,
 	MiRoleAssignment,
 	MiSignin,
+	MiSingleSignOnServiceProvider,
 	MiSwSubscription,
 	MiUsedUsername,
 	MiUser,
@@ -325,6 +326,12 @@ const $signinsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $singleSignOnServiceProviderRepository: Provider = {
+	provide: DI.singleSignOnServiceProviderRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiSingleSignOnServiceProvider),
+	inject: [DI.db],
+};
+
 const $pagesRepository: Provider = {
 	provide: DI.pagesRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiPage),
@@ -538,6 +545,7 @@ const $abuseReportResolversRepository: Provider = {
 		$authSessionsRepository,
 		$accessTokensRepository,
 		$signinsRepository,
+		$singleSignOnServiceProviderRepository,
 		$pagesRepository,
 		$pageLikesRepository,
 		$galleryPostsRepository,
@@ -609,6 +617,7 @@ const $abuseReportResolversRepository: Provider = {
 		$authSessionsRepository,
 		$accessTokensRepository,
 		$signinsRepository,
+		$singleSignOnServiceProviderRepository,
 		$pagesRepository,
 		$pageLikesRepository,
 		$galleryPostsRepository,

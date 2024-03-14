@@ -90,6 +90,10 @@ import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
+import * as ep___admin_sso_create from './endpoints/admin/sso/create.js';
+import * as ep___admin_sso_delete from './endpoints/admin/sso/delete.js';
+import * as ep___admin_sso_list from './endpoints/admin/sso/list.js';
+import * as ep___admin_sso_update from './endpoints/admin/sso/update.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -470,6 +474,10 @@ const eps = [
 	['admin/roles/unassign', ep___admin_roles_unassign],
 	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['admin/roles/users', ep___admin_roles_users],
+	['admin/sso/create', ep___admin_sso_create],
+	['admin/sso/delete', ep___admin_sso_delete],
+	['admin/sso/list', ep___admin_sso_list],
+	['admin/sso/update', ep___admin_sso_update],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],

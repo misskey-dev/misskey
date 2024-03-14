@@ -769,6 +769,42 @@ export type paths = {
      */
     post: operations['admin/roles/users'];
   };
+  '/admin/sso/create': {
+    /**
+     * admin/sso/create
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:sso*
+     */
+    post: operations['admin/sso/create'];
+  };
+  '/admin/sso/delete': {
+    /**
+     * admin/sso/delete
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:sso*
+     */
+    post: operations['admin/sso/delete'];
+  };
+  '/admin/sso/list': {
+    /**
+     * admin/sso/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:sso*
+     */
+    post: operations['admin/sso/list'];
+  };
+  '/admin/sso/update': {
+    /**
+     * admin/sso/update
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:sso*
+     */
+    post: operations['admin/sso/update'];
+  };
   '/announcements': {
     /**
      * announcements
@@ -10254,6 +10290,272 @@ export type operations = {
               expiresAt: string | null;
             })[];
         };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/sso/create
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:sso*
+   */
+  'admin/sso/create': {
+    requestBody: {
+      content: {
+        'application/json': {
+          name?: string | null;
+          /** @enum {string} */
+          type: 'saml' | 'jwt';
+          issuer: string;
+          /** @default [] */
+          audience?: string[];
+          acsUrl: string;
+          signatureAlgorithm: string;
+          cipherAlgorithm?: string | null;
+          /** @default false */
+          wantAuthnRequestsSigned?: boolean;
+          /** @default true */
+          wantAssertionsSigned?: boolean;
+          /** @default true */
+          useCertificate: boolean;
+          secret?: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            name: string | null;
+            /** @enum {string} */
+            type: 'saml' | 'jwt';
+            issuer: string;
+            audience: string[];
+            acsUrl: string;
+            publicKey: string;
+            signatureAlgorithm: string;
+            cipherAlgorithm?: string | null;
+            wantAuthnRequestsSigned: boolean;
+            wantAssertionsSigned: boolean;
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/sso/delete
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:sso*
+   */
+  'admin/sso/delete': {
+    requestBody: {
+      content: {
+        'application/json': {
+          id: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/sso/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:sso*
+   */
+  'admin/sso/list': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** @default 0 */
+          offset?: number;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': ({
+              id: string;
+              /** Format: date-time */
+              createdAt: string;
+              name: string | null;
+              /** @enum {string} */
+              type: 'saml' | 'jwt';
+              issuer: string;
+              audience: string[];
+              acsUrl: string;
+              publicKey: string;
+              signatureAlgorithm: string;
+              cipherAlgorithm?: string | null;
+              wantAuthnRequestsSigned: boolean;
+              wantAssertionsSigned: boolean;
+            })[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/sso/update
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:sso*
+   */
+  'admin/sso/update': {
+    requestBody: {
+      content: {
+        'application/json': {
+          id: string;
+          name?: string;
+          issuer?: string;
+          audience?: string[];
+          acsUrl?: string;
+          signatureAlgorithm?: string;
+          cipherAlgorithm?: string;
+          wantAuthnRequestsSigned?: boolean;
+          wantAssertionsSigned?: boolean;
+          regenerateCertificate?: boolean;
+          secret?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {

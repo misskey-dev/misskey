@@ -90,6 +90,10 @@ import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
+import * as ep___admin_sso_create from './endpoints/admin/sso/create.js';
+import * as ep___admin_sso_delete from './endpoints/admin/sso/delete.js';
+import * as ep___admin_sso_list from './endpoints/admin/sso/list.js';
+import * as ep___admin_sso_update from './endpoints/admin/sso/update.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -472,6 +476,10 @@ const $admin_roles_assign: Provider = { provide: 'ep:admin/roles/assign', useCla
 const $admin_roles_unassign: Provider = { provide: 'ep:admin/roles/unassign', useClass: ep___admin_roles_unassign.default };
 const $admin_roles_updateDefaultPolicies: Provider = { provide: 'ep:admin/roles/update-default-policies', useClass: ep___admin_roles_updateDefaultPolicies.default };
 const $admin_roles_users: Provider = { provide: 'ep:admin/roles/users', useClass: ep___admin_roles_users.default };
+const $admin_sso_create: Provider = { provide: 'ep:admin/sso/create', useClass: ep___admin_sso_create.default };
+const $admin_sso_delete: Provider = { provide: 'ep:admin/sso/delete', useClass: ep___admin_sso_delete.default };
+const $admin_sso_list: Provider = { provide: 'ep:admin/sso/list', useClass: ep___admin_sso_list.default };
+const $admin_sso_update: Provider = { provide: 'ep:admin/sso/update', useClass: ep___admin_sso_update.default };
 const $announcements: Provider = { provide: 'ep:announcements', useClass: ep___announcements.default };
 const $antennas_create: Provider = { provide: 'ep:antennas/create', useClass: ep___antennas_create.default };
 const $antennas_delete: Provider = { provide: 'ep:antennas/delete', useClass: ep___antennas_delete.default };
@@ -858,6 +866,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_roles_unassign,
 		$admin_roles_updateDefaultPolicies,
 		$admin_roles_users,
+		$admin_sso_create,
+		$admin_sso_delete,
+		$admin_sso_list,
+		$admin_sso_update,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1238,6 +1250,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_roles_unassign,
 		$admin_roles_updateDefaultPolicies,
 		$admin_roles_users,
+		$admin_sso_create,
+		$admin_sso_delete,
+		$admin_sso_list,
+		$admin_sso_update,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,

@@ -33,6 +33,8 @@ import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+import { JWTIdentifyProviderService } from './sso/JWTIdentifyProviderService.js';
+import { SAMLIdentifyProviderService } from './sso/SAMLIdentifyProviderService.js';
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -67,6 +69,8 @@ export class ServerService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 		private oauth2ProviderService: OAuth2ProviderService,
+		private jwtIdentifyProviderService: JWTIdentifyProviderService,
+		private samlIdentifyProviderService: SAMLIdentifyProviderService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
@@ -117,6 +121,9 @@ export class ServerService implements OnApplicationShutdown {
 		fastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
 		fastify.register(this.oauth2ProviderService.createApiServer, { prefix: '/oauth/api' });
 		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
+		fastify.register(this.samlIdentifyProviderService.createServer, { prefix: '/sso/saml' });
+		fastify.register(this.jwtIdentifyProviderService.createServer, { prefix: '/sso/jwt' });
+		fastify.register(this.jwtIdentifyProviderService.createApiServer, { prefix: '/sso/jwt/api' });
 
 		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;

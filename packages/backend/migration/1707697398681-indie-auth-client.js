@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 export class IndieAuthClient1707697398681 {
     name = 'IndieAuthClient1707697398681'
 
