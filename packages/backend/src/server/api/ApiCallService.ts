@@ -89,11 +89,18 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public handleRequest(
-		endpoint: IEndpoint & { exec: any },
+	public async handleRequest<Ret extends string | number | Record<string, unknown> | null | undefined>(
+		endpoint: IEndpoint & { exec: (
+				data: Record<string, unknown> | undefined,
+				user: MiLocalUser | null | undefined,
+				token: MiAccessToken | null | undefined,
+				file: { name: string, path: string } | null,
+				ip: string,
+				headers: any,
+			) => Promise<Ret> },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	): void {
+	): Promise<void> {
 		const body = request.method === 'GET'
 			? request.query
 			: request.body;
@@ -126,7 +133,14 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public async handleMultipartRequest(
-		endpoint: IEndpoint & { exec: any },
+		endpoint: IEndpoint & { exec: (
+				data: unknown,
+				user: MiLocalUser | null | undefined,
+				token: MiAccessToken | null | undefined,
+				file: { name: string, path: string } | null,
+				ip: string,
+				headers: any,
+			) => Promise<string | number | Record<string, unknown> | null | undefined> },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	): Promise<void> {
@@ -173,8 +187,18 @@ export class ApiCallService implements OnApplicationShutdown {
 		});
 	}
 
+	/**
+	 *
+	 * @param reply Fastifyのレスポンス
+	 * @param x 返却する中身。
+	 * `null`または`undefined`なら204。
+	 * `number`かつ`y`が与えられているならそのステータスコード。
+	 * `string`ならそれをそのままbodyとし、それ以外ならJSON化してbodyとする。
+	 * @param y
+	 * @private
+	 */
 	@bindThis
-	private send(reply: FastifyReply, x?: any, y?: ApiError) {
+	private send(reply: FastifyReply, x?: number | string | Record<string, unknown> | null | undefined, y?: ApiError) {
 		if (x == null) {
 			reply.code(204);
 			reply.send();
@@ -220,15 +244,15 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async call<Data>(
+	private async call<Data, Ret>(
 		ep: IEndpoint & { exec: (
 			data: Data,
-			user: MiLocalUser,
+			user: MiLocalUser | null | undefined,
 			token: MiAccessToken | null | undefined,
 			file: { name: string, path: string } | null,
-			ip: any,
-			headers: any
-		) => Promise<any> },
+			ip: string,
+			headers: any,
+		) => Promise<Ret> },
 		user: MiLocalUser | null | undefined,
 		token: MiAccessToken | null | undefined,
 		data: Data,
@@ -351,8 +375,10 @@ export class ApiCallService implements OnApplicationShutdown {
 		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
 				const param = ep.params.properties![k];
+				// @ts-expect-error TS7053: Element implicitly has an any type because expression of type string can't be used to index type unknown
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
 					try {
+						// @ts-expect-error TS7053: Element implicitly has an any type because expression of type string can't be used to index type unknown
 						data[k] = JSON.parse(data[k]);
 					} catch (e) {
 						throw new ApiError({
