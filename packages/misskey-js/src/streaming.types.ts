@@ -209,6 +209,7 @@ export type Channels = {
 			canceled: (payload: { userId: User['id']; }) => void;
 			changeReadyStates: (payload: { user1: boolean; user2: boolean; }) => void;
 			updateSettings: (payload: { userId: User['id']; key: string; value: any; }) => void;
+			reacted: (payload: { userId: User['id']; reaction: string; }) => void;
 			log: (payload: Record<string, any>) => void;
 		};
 		receives: {
@@ -223,6 +224,7 @@ export type Channels = {
 				value: any;
 			};
 			claimTimeIsUp: null | Record<string, never>;
+			reaction: string;
 		}
 	}
 };
