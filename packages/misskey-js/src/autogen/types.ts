@@ -3982,7 +3982,8 @@ export type components = {
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
-      myReaction?: string | null;
+      myReaction?: string | null; // 互換性のために残す
+      myReactions?: string[];
     };
     NoteReaction: {
       /**
