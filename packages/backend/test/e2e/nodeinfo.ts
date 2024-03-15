@@ -14,7 +14,7 @@ describe('nodeinfo', () => {
 		assert.ok(res.ok);
 		assert.strictEqual(res.headers.get('Access-Control-Allow-Origin'), '*');
 
-		const nodeInfo = await res.json() as any;
+		const nodeInfo = await res.json() as FIXME;
 		assert.strictEqual(nodeInfo.software.name, 'misskey');
 	});
 
@@ -23,7 +23,7 @@ describe('nodeinfo', () => {
 		assert.ok(res.ok);
 		assert.strictEqual(res.headers.get('Access-Control-Allow-Origin'), '*');
 
-		const nodeInfo = await res.json() as any;
+		const nodeInfo = await res.json() as FIXME;
 		assert.strictEqual(nodeInfo.software.name, 'misskey');
 	});
 });

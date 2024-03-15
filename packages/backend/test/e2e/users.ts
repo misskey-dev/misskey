@@ -633,7 +633,7 @@ describe('ユーザー', () => {
 		{ label: 'フォローリクエストされている', user: () => userFollowRequesting, me: () => userFollowRequested, selector: (user: misskey.entities.UserDetailed) => user.hasPendingFollowRequestToYou },
 	] as const)('を取得することができ、$labelこと', async ({ user, me, selector, expected }) => {
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters: { userId: user().id }, user: me?.() ?? alice });
-		assert.strictEqual(selector(response as any), (expected ?? ((): true => true))());
+		assert.strictEqual(selector(response as FIXME), (expected ?? ((): true => true))());
 	});
 	test('を取得することができ、Publicなロールがセットされていること', async () => {
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters: { userId: userRolePublic.id }, user: alice });

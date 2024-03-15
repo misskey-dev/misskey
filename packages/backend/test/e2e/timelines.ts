@@ -890,15 +890,33 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await api('users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: false }, alice);
 			await sleep(1000);
 			const aliceNote = await post(alice, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
 			await waitForPushToTl();
 
-			const res = await api('notes/user-list-timeline', { listId: list.id, withReplies: false }, alice);
+			const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test.concurrent('withReplies: false でリスインしているフォローしていないユーザーの他人への返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await api('users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: false }, alice);
+			await sleep(1000);
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
 
 		test.concurrent('withReplies: true でリスインしているフォローしていないユーザーの他人への返信が含まれる', async () => {

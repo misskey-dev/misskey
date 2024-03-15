@@ -447,8 +447,8 @@ describe('Account Move', () => {
 			const res = await uploadFile(alice);
 
 			assert.strictEqual(res.status, 403);
-			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.code, 'YOUR_ACCOUNT_MOVED');
-			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+			assert.strictEqual((res.body! as FIXME as { error: misskey.api.APIError }).error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual((res.body! as FIXME as { error: misskey.api.APIError }).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
 		});
 
 		test('Prohibit updating alsoKnownAs after moving', async () => {

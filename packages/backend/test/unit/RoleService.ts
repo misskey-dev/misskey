@@ -130,7 +130,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: false,
 				},
-			} as any);
+			} as FIXME);
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -143,7 +143,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: true,
 				},
-			} as any);
+			} as FIXME);
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -167,7 +167,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: false,
 				},
-			} as any);
+			} as FIXME);
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -202,7 +202,7 @@ describe('RoleService', () => {
 				policies: {
 					driveCapacityMb: 50,
 				},
-			} as any);
+			} as FIXME);
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -246,7 +246,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: false,
 				},
-			} as any);
+			} as FIXME);
 
 			const user1Policies = await roleService.getUserPolicies(user1.id);
 			const user2Policies = await roleService.getUserPolicies(user2.id);
@@ -299,7 +299,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: false,
 				},
-			} as any);
+			} as FIXME);
 
 			const result = await roleService.getUserPolicies(user.id);
 			expect(result.canManageCustomEmojis).toBe(true);

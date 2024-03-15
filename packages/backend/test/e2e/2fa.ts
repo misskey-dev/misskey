@@ -248,7 +248,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		}) as FIXME, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 		assert.strictEqual(keyDoneResponse.body.id, credentialId.toString('base64url'));
 		assert.strictEqual(keyDoneResponse.body.name, keyName);
@@ -307,7 +307,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		}) as FIXME, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 
 		const passwordLessResponse = await api('i/2fa/password-less', {
@@ -370,7 +370,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		}) as FIXME, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 
 		const renamedKey = 'other-key';
@@ -419,7 +419,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		}) as FIXME, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 
 		// テストの実行順によっては複数残ってるので全部消す

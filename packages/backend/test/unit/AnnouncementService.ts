@@ -178,7 +178,7 @@ describe('AnnouncementService', () => {
 
 			expect(globalEventService.publishBroadcastStream).toHaveBeenCalled();
 			expect(globalEventService.publishBroadcastStream.mock.lastCall![0]).toBe('announcementCreated');
-			expect((globalEventService.publishBroadcastStream.mock.lastCall![1] as any).announcement).toBe(result.packed);
+			expect((globalEventService.publishBroadcastStream.mock.lastCall![1] as FIXME).announcement).toBe(result.packed);
 			expect(moderationLogService.log).toHaveBeenCalled();
 		});
 
@@ -198,7 +198,7 @@ describe('AnnouncementService', () => {
 			expect(globalEventService.publishMainStream).toHaveBeenCalled();
 			expect(globalEventService.publishMainStream.mock.lastCall![0]).toBe(user.id);
 			expect(globalEventService.publishMainStream.mock.lastCall![1]).toBe('announcementCreated');
-			expect((globalEventService.publishMainStream.mock.lastCall![2] as any).announcement).toBe(result.packed);
+			expect((globalEventService.publishMainStream.mock.lastCall![2] as FIXME).announcement).toBe(result.packed);
 			expect(moderationLogService.log).toHaveBeenCalled();
 		});
 	});

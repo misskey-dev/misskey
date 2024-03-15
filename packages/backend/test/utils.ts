@@ -194,7 +194,7 @@ export const page = async (user: UserToken, page: Partial<misskey.entities.Page>
 			},
 		],
 		eyeCatchingImageId: null,
-		font: 'sans-serif' as any,
+		font: 'sans-serif' as FIXME,
 		hideTitleWhenPinned: false,
 		name: '1678594845072',
 		script: '',
@@ -256,7 +256,7 @@ export const role = async (user: UserToken, role: Partial<misskey.entities.Role>
 		condFormula: {
 			id: 'ebef1684-672d-49b6-ad82-1b3ec3784f85',
 			type: 'isRemote',
-		} as any,
+		} as FIXME,
 		description: '',
 		displayOrder: 0,
 		iconUrl: null,

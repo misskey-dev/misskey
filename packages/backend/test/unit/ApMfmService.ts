@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as assert from 'assert';
 import { Test } from '@nestjs/testing';
 
@@ -21,7 +26,7 @@ describe('ApMfmService', () => {
 			const note: MiNote = {
 				text: 'テキスト #タグ @mention 🍊 :emoji: https://example.com',
 				mentionedRemoteUsers: '[]',
-			} as any;
+			} as FIXME;
 
 			const { content, noMisskeyContent } = apMfmService.getNoteHtml(note);
 
@@ -33,7 +38,7 @@ describe('ApMfmService', () => {
 			const note: MiNote = {
 				text: '$[tada foo]',
 				mentionedRemoteUsers: '[]',
-			} as any;
+			} as FIXME;
 
 			const { content, noMisskeyContent } = apMfmService.getNoteHtml(note);
 

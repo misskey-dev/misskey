@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { bundledThemesInfo } from 'shiki';
 import { getHighlighterCore, loadWasm } from 'shiki/core';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
