@@ -35,6 +35,12 @@ export const meta = {
 			code: 'NOT_REACTED',
 			id: '92f4426d-4196-4125-aa5b-02943e2ec8fc',
 		},
+
+    multiReacted: {
+      message: 'For notes with multiple reactions, please specify the reaction to be deleted.',
+      code: 'NO_REACTION_SPECIFIED',
+      id: 'b21ffbbf-037c-bfc2-e29a-3edd6174a36b',
+    }
 	},
 } as const;
 
@@ -42,6 +48,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		noteId: { type: 'string', format: 'misskey:id' },
+    reaction: { type: 'string' },
 	},
 	required: ['noteId'],
 } as const;
@@ -57,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
-			await this.reactionService.delete(me, note).catch(err => {
+			await this.reactionService.delete(me, note, ps.reaction).catch(err => {
 				if (err.id === '60527ec9-b4cb-4a88-a6bd-32d3ad26817d') throw new ApiError(meta.errors.notReacted);
 				throw err;
 			});
