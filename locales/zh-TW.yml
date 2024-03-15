@@ -2227,6 +2227,7 @@ _play:
   title: "標題"
   script: "腳本"
   summary: "描述"
+  visibilityDescription: "如果您將其設為私密，它將不再顯示在您的個人資料中，但知道該 URL 的人仍然可以存取它。"
 _pages:
   newPage: "建立頁面"
   editPage: "編輯頁面"
