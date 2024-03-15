@@ -95,7 +95,7 @@ describe('.well-known', () => {
 		assert.ok(res.ok);
 		assert.strictEqual(res.headers.get('Access-Control-Allow-Origin'), '*');
 
-		const serverInfo = await res.json() as any;
+		const serverInfo = await res.json() as FIXME;
 		assert.strictEqual(serverInfo.issuer, origin);
 		assert.strictEqual(serverInfo.authorization_endpoint, `${origin}/oauth/authorize`);
 		assert.strictEqual(serverInfo.token_endpoint, `${origin}/oauth/token`);

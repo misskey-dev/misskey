@@ -86,7 +86,7 @@ describe('クリップ', () => {
 			...request,
 		}, {
 			status: 204,
-		}) as any as void;
+		}) as FIXME as void;
 	};
 
 	const show = async (parameters: Misskey.entities.ClipsShowRequest, request: Partial<ApiRequest<'clips/show'>> = {}): Promise<Misskey.entities.Clip> => {
@@ -234,7 +234,7 @@ describe('クリップ', () => {
 			code: 'NO_SUCH_CLIP',
 			id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
 		} },
-		...createClipDenyPattern as any,
+		...createClipDenyPattern as FIXME,
 	])('の更新は$labelならできない', async ({ parameters, user, assertion }) => failedApiCall({
 		endpoint: 'clips/update',
 		parameters: {
@@ -462,7 +462,7 @@ describe('クリップ', () => {
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			}) as FIXME as void;
 		};
 
 		const unfavorite = async (parameters: Misskey.entities.ClipsUnfavoriteRequest, request: Partial<ApiRequest<'clips/unfavorite'>> = {}): Promise<void> => {
@@ -473,7 +473,7 @@ describe('クリップ', () => {
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			}) as FIXME as void;
 		};
 
 		const myFavorites = async (request: Partial<ApiRequest<'clips/my-favorites'>> = {}): Promise<Misskey.entities.Clip[]> => {
@@ -648,7 +648,7 @@ describe('クリップ', () => {
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			}) as FIXME as void;
 		};
 
 		const removeNote = async (parameters: Misskey.entities.ClipsRemoveNoteRequest, request: Partial<ApiRequest<'clips/remove-note'>> = {}): Promise<void> => {
@@ -659,7 +659,7 @@ describe('クリップ', () => {
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			}) as FIXME as void;
 		};
 
 		const notes = async (parameters: Misskey.entities.ClipsNotesRequest, request: Partial<ApiRequest<'clips/notes'>> = {}): Promise<Misskey.entities.Note[]> => {

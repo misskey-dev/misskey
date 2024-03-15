@@ -7,7 +7,6 @@ process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
-import { Redis } from 'ioredis';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -18,15 +17,16 @@ import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { TestingModule } from '@nestjs/testing';
 
-function mockRedis() {
-	const hash = {} as any;
-	const set = jest.fn((key: string, value) => {
-		// このテストで呼び出すSETにはNXオプションが付いてる
-		if (hash[key]) return null;
-		hash[key] = value;
-		return 'OK';
+function mockRedisSetNX() {
+	const hash = {} as FIXME;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	return jest.fn((key: string, value, secondsToken: 'EX', seconds: number, nx: 'NX', callback?): Promise<'OK' | null> => {
+		return new Promise(resolve => {
+			if (hash[key]) return resolve(null);
+			hash[key] = value;
+			resolve('OK');
+		});
 	});
-	return set;
 }
 
 describe('FetchInstanceMetadataService', () => {
@@ -34,7 +34,6 @@ describe('FetchInstanceMetadataService', () => {
 	let fetchInstanceMetadataService: jest.Mocked<FetchInstanceMetadataService>;
 	let federatedInstanceService: jest.Mocked<FederatedInstanceService>;
 	let httpRequestService: jest.Mocked<HttpRequestService>;
-	let redisClient: jest.Mocked<Redis>;
 
 	beforeEach(async () => {
 		app = await Test
@@ -55,7 +54,7 @@ describe('FetchInstanceMetadataService', () => {
 				} else if (token === FederatedInstanceService) {
 					return { fetch: jest.fn() };
 				} else if (token === DI.redis) {
-					return mockRedis;
+					return { set: mockRedisSetNX() };
 				}
 				return null;
 			})
@@ -65,7 +64,6 @@ describe('FetchInstanceMetadataService', () => {
 
 		fetchInstanceMetadataService = app.get<FetchInstanceMetadataService>(FetchInstanceMetadataService) as jest.Mocked<FetchInstanceMetadataService>;
 		federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService) as jest.Mocked<FederatedInstanceService>;
-		redisClient = app.get<Redis>(DI.redis) as jest.Mocked<Redis>;
 		httpRequestService = app.get<HttpRequestService>(HttpRequestService) as jest.Mocked<HttpRequestService>;
 	});
 
@@ -74,14 +72,13 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Lock and update', async () => {
-		redisClient.set = mockRedis();
 		const now = Date.now();
-		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => { return now - 10 * 1000 * 60 * 60 * 24; } } } as any);
+		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => { return now - 10 * 1000 * 60 * 60 * 24; } } } as FIXME);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
 
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as any);
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as FIXME);
 		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(1);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(1);
@@ -89,14 +86,13 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Lock and don\'t update', async () => {
-		redisClient.set = mockRedis();
 		const now = Date.now();
-		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => now } } as any);
+		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => now } } as FIXME);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
 
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as any);
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as FIXME);
 		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(1);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(1);
@@ -104,15 +100,14 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Do nothing when lock not acquired', async () => {
-		redisClient.set = mockRedis();
 		const now = Date.now();
-		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } } as any);
+		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } } as FIXME);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		await fetchInstanceMetadataService.tryLock('example.com');
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
 
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as any);
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as FIXME);
 		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(0);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(0);
@@ -120,15 +115,14 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Do when lock not acquired but forced', async () => {
-		redisClient.set = mockRedis();
 		const now = Date.now();
-		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } } as any);
+		federatedInstanceService.fetch.mockResolvedValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } } as FIXME);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		await fetchInstanceMetadataService.tryLock('example.com');
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
 
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as any, true);
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' } as FIXME, true);
 		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(1);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(0);
