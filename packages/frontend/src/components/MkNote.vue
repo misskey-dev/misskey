@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
-					<div :class="$style.reactionOmitted">{{ i18n.ts.more }}</div>
+					<MkButton class="_button" link :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted, { [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]">{{ i18n.ts.more }}</MkButton>
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
@@ -162,6 +162,7 @@ import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
+import MkButton from './MkButton.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
@@ -977,12 +978,28 @@ function emitUpdReaction(emoji: string, delta: number) {
 	text-align: center;
 	opacity: 0.7;
 }
-
 .reactionOmitted {
-	display: inline-block;
-	height: 32px;
+	display: inline-flex;
+	min-width: 0;
+	height: 42px;
 	margin: 2px;
 	padding: 0 6px;
-	opacity: .8;
+	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	border: dashed 1px var(--divider);
+
+	&.small {
+		height: 32px;
+		font-size: 1em;
+		border-radius: 4px;
+	}
+
+	&.large {
+		height: 52px;
+		font-size: 2em;
+		border-radius: 8px;
+	}
 }
 </style>
