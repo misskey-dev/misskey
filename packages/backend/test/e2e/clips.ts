@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,24 +18,12 @@ import { paramDef as UnfavoriteParamDef } from '@/server/api/endpoints/clips/unf
 import { paramDef as AddNoteParamDef } from '@/server/api/endpoints/clips/add-note.js';
 import { paramDef as RemoveNoteParamDef } from '@/server/api/endpoints/clips/remove-note.js';
 import { paramDef as NotesParamDef } from '@/server/api/endpoints/clips/notes.js';
-import {
-	signup,
-	post,
-	startServer,
-	api,
-	successfulApiCall,
-	failedApiCall,
-	ApiRequest,
-	hiddenNote,
-} from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, ApiRequest, failedApiCall, hiddenNote, post, signup, successfulApiCall } from '../utils.js';
 
 describe('クリップ', () => {
 	type User = Packed<'User'>;
 	type Note = Packed<'Note'>;
 	type Clip = Packed<'Clip'>;
-
-	let app: INestApplicationContext;
 
 	let alice: User;
 	let bob: User;
@@ -145,7 +133,6 @@ describe('クリップ', () => {
 	};
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 
@@ -159,10 +146,6 @@ describe('クリップ', () => {
 		bobFollowersNote = await post(bob, { text: 'followers only', visibility: 'followers' }) as any;
 		bobSpecifiedNote = await post(bob, { text: 'specified only', visibility: 'specified' }) as any;
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	afterEach(async () => {
 		// テスト間で影響し合わないように毎回全部消す。
@@ -720,8 +703,8 @@ describe('クリップ', () => {
 		test('を追加できる。', async () => {
 			await addNote({ clipId: aliceClip.id, noteId: aliceNote.id });
 			const res = await show({ clipId: aliceClip.id });
-			assert.strictEqual(res.lastClippedAt, new Date(res.lastClippedAt ?? '').toISOString());
-			assert.deepStrictEqual(await notes({ clipId: aliceClip.id }), [aliceNote]);
+			assert.strictEqual(res.lastClippedAt, res.lastClippedAt ? new Date(res.lastClippedAt).toISOString() : null);
+			assert.deepStrictEqual((await notes({ clipId: aliceClip.id })).map(x => x.id), [aliceNote.id]);
 
 			// 他人の非公開ノートも突っ込める
 			await addNote({ clipId: aliceClip.id, noteId: bobHomeNote.id });
@@ -861,8 +844,8 @@ describe('クリップ', () => {
 				bobNote, bobHomeNote,
 			];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test('を始端IDとlimitで取得できる。', async () => {
@@ -881,8 +864,8 @@ describe('クリップ', () => {
 			// Promise.allで返ってくる配列はID順で並んでないのでソートして厳密比較
 			const expects = [noteList[3], noteList[4], noteList[5]];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test('をID範囲指定で取得できる。', async () => {
@@ -901,8 +884,8 @@ describe('クリップ', () => {
 			// Promise.allで返ってくる配列はID順で並んでないのでソートして厳密比較
 			const expects = [noteList[2], noteList[3]];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test.todo('Remoteのノートもクリップできる。どうテストしよう？');
@@ -911,7 +894,7 @@ describe('クリップ', () => {
 			const bobClip = await create({ isPublic: true }, { user: bob } );
 			await addNote({ clipId: bobClip.id, noteId: aliceNote.id }, { user: bob });
 			const res = await notes({ clipId: bobClip.id });
-			assert.deepStrictEqual(res, [aliceNote]);
+			assert.deepStrictEqual(res.map(x => x.id), [aliceNote.id]);
 		});
 
 		test('はPublicなクリップなら認証なしでも取得できる。(非公開ノートはhideされて返ってくる)', async () => {
@@ -928,8 +911,8 @@ describe('クリップ', () => {
 				hiddenNote(aliceFollowersNote), hiddenNote(aliceSpecifiedNote),
 			];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test.todo('ブロック、ミュートされたユーザーからの設定＆取得etc.');

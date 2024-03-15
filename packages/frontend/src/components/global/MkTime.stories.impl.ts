@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { expect } from '@storybook/jest';
+import { expect } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
 import MkTime from './MkTime.vue';
-import { i18n } from '@/i18n';
-import { dateTimeFormat } from '@/scripts/intl-const';
+import { i18n } from '@/i18n.js';
+import { dateTimeFormat } from '@/scripts/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
 const future = new Date(8640000000000000);
 const oneHourAgo = new Date(now.getTime() - 3600000);
@@ -123,7 +123,7 @@ export const DetailNow = {
 export const RelativeOneHourAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.hoursAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.hoursAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -162,7 +162,7 @@ export const DetailOneHourAgo = {
 export const RelativeOneDayAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.daysAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.daysAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -201,7 +201,7 @@ export const DetailOneDayAgo = {
 export const RelativeOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.weeksAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.weeksAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -240,7 +240,7 @@ export const DetailOneWeekAgo = {
 export const RelativeOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.monthsAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.monthsAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -279,7 +279,7 @@ export const DetailOneMonthAgo = {
 export const RelativeOneYearAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.yearsAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.yearsAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,

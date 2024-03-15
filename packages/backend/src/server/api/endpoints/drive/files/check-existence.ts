@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -38,7 +38,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private driveFilesRepository: DriveFilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const exist = await this.driveFilesRepository.exist({
+			const exist = await this.driveFilesRepository.exists({
 				where: {
 					md5: ps.md5,
 					userId: me.id,

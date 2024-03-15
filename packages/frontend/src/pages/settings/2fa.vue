@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -72,16 +72,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, computed } from 'vue';
 import { supported as webAuthnSupported, create as webAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { signinRequired } from '@/account.js';
+import { i18n } from '@/i18n.js';
+
+const $i = signinRequired();
 
 // メモ: 各エンドポイントはmeUpdatedを発行するため、refreshAccountは不要
 
@@ -91,19 +93,15 @@ withDefaults(defineProps<{
 	first: false,
 });
 
-const usePasswordLessLogin = $computed(() => $i?.usePasswordLessLogin ?? false);
+const usePasswordLessLogin = computed(() => $i.usePasswordLessLogin ?? false);
 
 async function registerTOTP(): Promise<void> {
-	const password = await os.inputText({
-		title: i18n.ts._2fa.registerTOTP,
-		text: i18n.ts._2fa.passwordToTOTP,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
 	os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
@@ -111,20 +109,17 @@ async function registerTOTP(): Promise<void> {
 	}, {}, 'closed');
 }
 
-function unregisterTOTP(): void {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.apiWithDialog('i/2fa/unregister', {
-			password: password,
-		}).catch(error => {
-			os.alert({
-				type: 'error',
-				text: error,
-			});
+async function unregisterTOTP(): Promise<void> {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	os.apiWithDialog('i/2fa/unregister', {
+		password: auth.result.password,
+		token: auth.result.token,
+	}).catch(error => {
+		os.alert({
+			type: 'error',
+			text: error,
 		});
 	});
 }
@@ -146,19 +141,16 @@ async function unregisterKey(key) {
 	const confirm = await os.confirm({
 		type: 'question',
 		title: i18n.ts._2fa.removeKey,
-		text: i18n.t('_2fa.removeKeyConfirm', { name: key.name }),
+		text: i18n.tsx._2fa.removeKeyConfirm({ name: key.name }),
 	});
 	if (confirm.canceled) return;
 
-	const password = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	await os.apiWithDialog('i/2fa/remove-key', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 		credentialId: key.id,
 	});
 	os.success();
@@ -181,16 +173,13 @@ async function renameKey(key) {
 }
 
 async function addSecurityKey() {
-	const password = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	const registrationOptions = parseCreationOptionsFromJSON({
 		publicKey: await os.apiWithDialog('i/2fa/register-key', {
-			password: password.result,
+			password: auth.result.password,
+			token: auth.result.token,
 		}),
 	});
 
@@ -211,8 +200,12 @@ async function addSecurityKey() {
 	);
 	if (!credential) return;
 
+	const auth2 = await os.authenticateDialog();
+	if (auth2.canceled) return;
+
 	await os.apiWithDialog('i/2fa/key-done', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 		name: name.result,
 		credential: credential.toJSON(),
 	});

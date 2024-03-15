@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,6 +13,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:notifications',
+
+	limit: {
+		duration: 1000 * 60,
+		max: 10,
+	},
 
 	errors: {
 	},
@@ -37,8 +42,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.notificationService.createNotification(user.id, 'app', {
 				appAccessTokenId: token ? token.id : null,
 				customBody: ps.body,
-				customHeader: ps.header,
-				customIcon: ps.icon,
+				customHeader: ps.header ?? token?.name ?? null,
+				customIcon: ps.icon ?? token?.iconUrl ?? null,
 			});
 		});
 	}

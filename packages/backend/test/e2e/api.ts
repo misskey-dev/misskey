@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,26 +7,29 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { IncomingMessage } from 'http';
-import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream, relativeFetch } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import {
+	api,
+	connectStream,
+	createAppToken,
+	failedApiCall,
+	relativeFetch,
+	signup,
+	successfulApiCall,
+	uploadFile,
+	waitFire,
+} from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('API', () => {
-	let app: INestApplicationContext;
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	describe('General validation', () => {
 		test('wrong type', async () => {
@@ -89,6 +92,11 @@ describe('API', () => {
 	});
 
 	test('管理者専用のAPIのアクセス制限', async () => {
+		const application = await createAppToken(alice, ['read:account']);
+		const application2 = await createAppToken(alice, ['read:admin:index-stats']);
+		const application3 = await createAppToken(bob, []);
+		const application4 = await createAppToken(bob, ['read:admin:index-stats']);
+
 		// aliceは管理者、APIを使える
 		await successfulApiCall({
 			endpoint: '/admin/get-index-stats',
@@ -127,6 +135,42 @@ describe('API', () => {
 			status: 401,
 			code: 'AUTHENTICATION_FAILED',
 			id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+		});
+
+		await successfulApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application2 },
+		});
+
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application },
+		}, {
+			status: 403,
+			code: 'PERMISSION_DENIED',
+			id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+		});
+
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application3 },
+		}, {
+			status: 403,
+			code: 'ROLE_PERMISSION_DENIED',
+			id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+		});
+
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application4 },
+		}, {
+			status: 403,
+			code: 'ROLE_PERMISSION_DENIED',
+			id: 'c3d38592-54c0-429d-be96-5636b0431a61',
 		});
 	});
 

@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/index.js';
-import { MiGalleryPost } from '@/models/entities/GalleryPost.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
+import { MiGalleryPost } from '@/models/GalleryPost.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -76,8 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const post = await this.galleryPostsRepository.insert(new MiGalleryPost({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
 				description: ps.description,

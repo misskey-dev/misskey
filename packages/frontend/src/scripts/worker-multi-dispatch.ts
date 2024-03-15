@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -71,9 +71,11 @@ export class WorkerMultiDispatch<POST = any, RETURN = any> {
 	public isTerminated() {
 		return this.terminated;
 	}
+
 	public getWorkers() {
 		return this.workers;
 	}
+
 	public getSymbol() {
 		return this.symbol;
 	}

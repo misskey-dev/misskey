@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,13 +10,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { initChart } from '@/scripts/init-chart';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { initChart } from '@/scripts/init-chart.js';
+
+export type InstanceForPie = {
+	name: string,
+	color: string | null,
+	value: number,
+	onClick?: () => void
+};
 
 initChart();
 
 const props = defineProps<{
-	data: { name: string; value: number; color: string; onClick?: () => void }[];
+	data: InstanceForPie[];
 }>();
 
 const chartEl = shallowRef<HTMLCanvasElement>(null);

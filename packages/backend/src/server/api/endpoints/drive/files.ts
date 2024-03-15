@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -36,7 +36,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
-		sort: { type: 'string', nullable: true, enum: ['+createdAt', '-createdAt', '+name', '-name', '+size', '-size'] },
+		sort: { type: 'string', nullable: true, enum: ['+createdAt', '-createdAt', '+name', '-name', '+size', '-size', null] },
 	},
 	required: [],
 } as const;
@@ -69,8 +69,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			switch (ps.sort) {
-				case '+createdAt': query.orderBy('file.createdAt', 'DESC'); break;
-				case '-createdAt': query.orderBy('file.createdAt', 'ASC'); break;
+				case '+createdAt': query.orderBy('file.id', 'DESC'); break;
+				case '-createdAt': query.orderBy('file.id', 'ASC'); break;
 				case '+name': query.orderBy('file.name', 'DESC'); break;
 				case '-name': query.orderBy('file.name', 'ASC'); break;
 				case '+size': query.orderBy('file.size', 'DESC'); break;

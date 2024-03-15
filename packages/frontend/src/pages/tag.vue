@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,11 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	tag: string;
@@ -51,25 +51,26 @@ async function post() {
 	notes.value?.pagingComponent?.reload();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: props.tag,
 	icon: 'ti ti-hash',
-})));
+}));
 </script>
 
 <style lang="scss" module>
 .footer {
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+	background: var(--acrylicBg);
 	border-top: solid 0.5px var(--divider);
 	display: flex;
 }
 
 .button {
-		margin: 0 auto var(--margin) auto;
+	margin: 0 auto;
 }
 </style>

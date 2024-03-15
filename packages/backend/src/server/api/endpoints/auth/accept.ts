@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
+import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const accessToken = secureRndstr(32);
 
 			// Fetch exist access token
-			const exist = await this.accessTokensRepository.exist({
+			const exist = await this.accessTokensRepository.exists({
 				where: {
 					appId: session.appId,
 					userId: me.id,
@@ -80,8 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const now = new Date();
 
 				await this.accessTokensRepository.insert({
-					id: this.idService.genId(),
-					createdAt: now,
+					id: this.idService.gen(now.getTime()),
 					lastUsedAt: now,
 					appId: session.appId,
 					userId: me.id,

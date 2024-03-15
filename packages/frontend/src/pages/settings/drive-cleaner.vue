@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -50,17 +50,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
-import * as os from '@/os';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import { i18n } from '@/i18n';
-import bytes from '@/filters/bytes';
-import { dateString } from '@/filters/date';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import bytes from '@/filters/bytes.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSelect from '@/components/MkSelect.vue';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
+import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
 
-let sortMode = ref('+size');
+const sortMode = ref('+size');
 const pagination = {
 	endpoint: 'drive/files' as const,
 	limit: 10,
@@ -95,7 +95,7 @@ watch(sortModeSelect, () => {
 
 function fetchDriveInfo(): void {
 	fetching.value = true;
-	os.api('drive').then(info => {
+	misskeyApi('drive').then(info => {
 		capacity.value = info.capacity;
 		usage.value = info.usage;
 		fetching.value = false;
@@ -117,10 +117,10 @@ function onContextMenu(ev: MouseEvent, file): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.drivecleaner,
 	icon: 'ti ti-trash',
-});
+}));
 </script>
 
 <style lang="scss" module>

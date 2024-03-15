@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistrationTicketsRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -19,6 +19,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canInvite',
+	kind: 'write:invite-codes',
 
 	errors: {
 		exceededCreateLimit: {
@@ -31,13 +32,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		properties: {
-			code: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: 'GR6S02ERUA5VR',
-			},
-		},
+		ref: 'InviteCode',
 	},
 } as const;
 
@@ -62,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (policies.inviteLimit) {
 				const count = await this.registrationTicketsRepository.countBy({
-					createdAt: MoreThan(new Date(Date.now() - (policies.inviteLimitCycle * 1000 * 60))),
+					id: MoreThan(this.idService.gen(Date.now() - (policies.inviteLimitCycle * 1000 * 60))),
 					createdById: me.id,
 				});
 
@@ -72,8 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const ticket = await this.registrationTicketsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				createdBy: me,
 				createdById: me.id,
 				expiresAt: policies.inviteExpirationTime ? new Date(Date.now() + (policies.inviteExpirationTime * 1000 * 60)) : null,

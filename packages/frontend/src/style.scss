@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -132,6 +132,10 @@ hr {
 	background: var(--divider);
 }
 
+rt {
+	white-space: initial;
+}
+
 .ti {
 	width: 1.28em;
 	vertical-align: -12%;
@@ -153,6 +157,19 @@ hr {
 	height: 1em;
 	border-radius: 100%;
 	background: currentColor;
+}
+
+._indicateCounter {
+	display: inline-flex;
+	color: var(--fgOnAccent);
+	font-weight: 700;
+	background: var(--indicator);
+	height: 1.5em;
+	min-width: 1.5em;
+	align-items: center;
+	justify-content: center;
+	border-radius: 99rem;
+	padding: 0.3em 0.5em;
 }
 
 ._noSelect {
@@ -331,12 +348,6 @@ hr {
 	grid-gap: 12px;
 }
 
-._formLinks {
-	> *:not(:last-child) {
-		margin-bottom: 8px;
-	}
-}
-
 ._beta {
 	margin-left: 0.7em;
 	font-size: 65%;
@@ -400,10 +411,6 @@ hr {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace !important;
 }
 
-.prism-editor__textarea:focus {
-	outline: none;
-}
-
 ._zoom {
 	transition-duration: 0.5s, 0.5s;
 	transition-property: opacity, transform;
@@ -418,13 +425,13 @@ hr {
 	transform: scale(0.9);
 }
 
-@keyframes blink {
+@keyframes global-blink {
 	0% { opacity: 1; transform: scale(1); }
 	30% { opacity: 1; transform: scale(1); }
 	90% { opacity: 0; transform: scale(0.5); }
 }
 
-@keyframes tada {
+@keyframes global-tada {
 	from {
 		transform: scale3d(1, 1, 1);
 	}
@@ -454,7 +461,7 @@ hr {
 
 ._anime_bounce {
 	will-change: transform;
-  animation: bounce ease 0.7s;
+  animation: global-bounce ease 0.7s;
   animation-iteration-count: 1;
   transform-origin: 50% 50%;
 }
@@ -466,7 +473,7 @@ hr {
 	transition: transform 0.1s ease;
 }
 
-@keyframes bounce {
+@keyframes global-bounce {
   0% {
     transform:  scaleX(0.90) scaleY(0.90) ;
   }

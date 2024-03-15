@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { serverErrorImageUrl } from '@/instance';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { serverErrorImageUrl } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'retry'): void;

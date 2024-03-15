@@ -1,0 +1,97 @@
+name: Report API Diff
+
+on:
+  workflow_run:
+    types: [completed]
+    workflows:
+      - Get api.json from Misskey # get-api-diff.yml
+
+jobs:
+  compare-diff:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      pull-requests: write
+
+# api-artifact
+    steps:
+      - name: Download artifact
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("api-artifact-") || artifact.name == "api-artifact"
+            });
+            await Promise.all(matchArtifacts.map(async (artifact) => {
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+            }));
+      - name: Extract all artifacts
+        run: |
+          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d artifacts ';'
+          ls -la
+      - name: Load PR Number
+        id: load-pr-num
+        run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
+
+      - name: Output base
+        run: cat ./artifacts/api-base.json
+      - name: Output head
+        run: cat ./artifacts/api-head.json
+      - name: Arrange json files
+        run: |
+          jq '.' ./artifacts/api-base.json > ./api-base.json
+          jq '.' ./artifacts/api-head.json > ./api-head.json
+      - name: Get diff of 2 files
+        run: diff -u --label=base --label=head ./api-base.json ./api-head.json | cat > api.json.diff
+      - name: Get full diff
+        run: diff --label=base --label=head --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' ./api-base.json ./api-head.json | cat > api-full.json.diff
+      - name: Echo full diff
+        run: cat ./api-full.json.diff
+      - name: Upload full diff to Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-artifact
+          path: |
+            api-full.json.diff
+            api-base.json
+            api-head.json
+      - id: out-diff
+        name: Build diff Comment
+        run: |
+          cat <<- EOF > ./output.md
+          このPRによるapi.jsonの差分
+          <details>
+          <summary>差分はこちら</summary>
+
+          \`\`\`diff
+          $(cat ./api.json.diff)
+          \`\`\`
+          </details>
+
+          [Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})
+          EOF
+      - uses: thollander/actions-comment-pull-request@v2
+        with:
+          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment_tag: show_diff
+          filePath: ./output.md
+      - name: Tell error to PR
+        uses: thollander/actions-comment-pull-request@v2
+        if: failure() && steps.load-pr-num.outputs.pr-number
+        with:
+          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment_tag: show_diff_error
+          message: |
+            api.jsonの差分作成中にエラーが発生しました。詳細は[Workflowのログ](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})を確認してください。

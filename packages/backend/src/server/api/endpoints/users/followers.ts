@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
@@ -93,15 +93,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-			if (profile.ffVisibility === 'private') {
+			if (profile.followersVisibility === 'private') {
 				if (me == null || (me.id !== user.id)) {
 					throw new ApiError(meta.errors.forbidden);
 				}
-			} else if (profile.ffVisibility === 'followers') {
+			} else if (profile.followersVisibility === 'followers') {
 				if (me == null) {
 					throw new ApiError(meta.errors.forbidden);
 				} else if (me.id !== user.id) {
-					const isFollowing = await this.followingsRepository.exist({
+					const isFollowing = await this.followingsRepository.exists({
 						where: {
 							followeeId: user.id,
 							followerId: me.id,

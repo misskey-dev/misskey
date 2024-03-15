@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -74,6 +74,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		onlineStatus: 'unknown',
 		avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
 		avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',
+		avatarDecorations: [],
 		emojis: [],
 		bannerBlurhash: 'eQA^IW^-MH8w9tE8I=S^o{$*R4RikXtSxutRozjEnNR.RQadoyozog',
 		bannerColor: '#000000',
@@ -81,7 +82,8 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		birthday: '2014-06-20',
 		createdAt: '2016-12-28T22:49:51.000Z',
 		description: 'I am a cool user!',
-		ffVisibility: 'public',
+		followingVisibility: 'public',
+		followersVisibility: 'public',
 		roles: [],
 		fields: [
 			{
@@ -89,6 +91,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 				value: 'https://misskey-hub.net',
 			},
 		],
+		verifiedLinks: [],
 		followersCount: 1024,
 		followingCount: 16,
 		hasPendingFollowRequestFromYou: false,
@@ -119,6 +122,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		updatedAt: null,
 		uri: null,
 		url: null,
+		notify: 'none',
 	};
 }
 

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -73,6 +73,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
 	</FormSection>
+
+	<FormSection>
+		<div class="_gaps_s">
+			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
+			<MkButton danger @click="updateRepliesAll(true)"><i class="ti ti-messages"></i> {{ i18n.ts.showRepliesToOthersInTimelineAll }}</MkButton>
+			<MkButton danger @click="updateRepliesAll(false)"><i class="ti ti-messages-off"></i> {{ i18n.ts.hideRepliesToOthersInTimelineAll }}</MkButton>
+		</div>
+	</FormSection>
 </div>
 </template>
 
@@ -84,25 +92,21 @@ import MkFolder from '@/components/MkFolder.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { signout, $i } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { unisonReload } from '@/scripts/unison-reload';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { signout, signinRequired } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 import FormSection from '@/components/form/section.vue';
+
+const $i = signinRequired();
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
 const devMode = computed(defaultStore.makeGetterSetter('devMode'));
-
-function onChangeInjectFeaturedNote(v) {
-	os.api('i/update', {
-		injectFeaturedNote: v,
-	}).then((i) => {
-		$i!.injectFeaturedNote = i.injectFeaturedNote;
-	});
-}
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 async function deleteAccount() {
 	{
@@ -113,14 +117,12 @@ async function deleteAccount() {
 		if (canceled) return;
 	}
 
-	const { canceled, result: password } = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	});
-	if (canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	await os.apiWithDialog('i/delete-account', {
-		password: password,
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
 	await os.alert({
@@ -140,18 +142,28 @@ async function reloadAsk() {
 	unisonReload();
 }
 
+async function updateRepliesAll(withReplies: boolean) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: withReplies ? i18n.ts.confirmShowRepliesAll : i18n.ts.confirmHideRepliesAll,
+	});
+	if (canceled) return;
+
+	misskeyApi('following/update-all', { withReplies });
+}
+
 watch([
 	enableCondensedLineForAcct,
 ], async () => {
 	await reloadAsk();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.other,
 	icon: 'ti ti-dots',
-});
+}));
 </script>

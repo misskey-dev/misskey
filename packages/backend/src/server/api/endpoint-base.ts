@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as fs from 'node:fs';
 import _Ajv from 'ajv';
 import type { Schema, SchemaType } from '@/misc/json-schema.js';
-import type { MiLocalUser } from '@/models/entities/User.js';
-import type { MiAccessToken } from '@/models/entities/AccessToken.js';
+import type { MiLocalUser } from '@/models/User.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
 import { ApiError } from './error.js';
 import type { IEndpointMeta } from './endpoints.js';
 

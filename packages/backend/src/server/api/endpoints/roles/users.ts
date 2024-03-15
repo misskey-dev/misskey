@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
+import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
@@ -22,6 +22,25 @@ export const meta = {
 			message: 'No such role.',
 			code: 'NO_SUCH_ROLE',
 			id: '30aaaee3-4792-48dc-ab0d-cf501a575ac5',
+		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			nullable: false,
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+				user: {
+					type: 'object',
+					ref: 'UserDetailed',
+				},
+			},
+			required: ['id', 'user'],
 		},
 	},
 } as const;
@@ -62,9 +81,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId)
 				.andWhere('assign.roleId = :roleId', { roleId: role.id })
-				.andWhere(new Brackets(qb => { qb
-					.where('assign.expiresAt IS NULL')
-					.orWhere('assign.expiresAt > :now', { now: new Date() });
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('assign.expiresAt IS NULL')
+						.orWhere('assign.expiresAt > :now', { now: new Date() });
 				}))
 				.innerJoinAndSelect('assign.user', 'user');
 
@@ -74,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
-				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
+				user: await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
 			})));
 		});
 	}

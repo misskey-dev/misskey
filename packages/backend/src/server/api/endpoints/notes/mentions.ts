@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
+import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -16,6 +16,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -59,9 +60,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('following.followerId = :followerId', { followerId: me.id });
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-				.andWhere(new Brackets(qb => { qb
-					.where(`'{"${me.id}"}' <@ note.mentions`)
-					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
+				.andWhere(new Brackets(qb => {
+					qb // このmeIdAsListパラメータはqueryServiceのgenerateVisibilityQueryでセットされる
+						.where(':meIdAsList <@ note.mentions')
+						.orWhere(':meIdAsList <@ note.visibleUserIds');
 				}))
 				// Avoid scanning primary key index
 				.orderBy('CONCAT(note.id)', 'DESC')

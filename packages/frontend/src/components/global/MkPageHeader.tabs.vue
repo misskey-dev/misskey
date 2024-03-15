@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 export type Tab = {
 	key: string;
+	title: string;
 	onClick?: (ev: MouseEvent) => void;
 } & (
 	| {
@@ -54,7 +55,7 @@ export type Tab = {
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
@@ -120,8 +121,9 @@ function onTabWheel(ev: WheelEvent) {
 
 let entering = false;
 
-async function enter(el: HTMLElement) {
+async function enter(element: Element) {
 	entering = true;
+	const el = element as HTMLElement;
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
@@ -134,10 +136,13 @@ async function enter(el: HTMLElement) {
 
 	setTimeout(renderTab, 170);
 }
-function afterEnter(el: HTMLElement) {
+
+function afterEnter(element: Element) {
 	//el.style.width = '';
 }
-async function leave(el: HTMLElement) {
+
+async function leave(element: Element) {
+	const el = element as HTMLElement;
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = elementWidth + 'px';
 	el.style.paddingLeft = '';
@@ -145,7 +150,9 @@ async function leave(el: HTMLElement) {
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
 }
-function afterLeave(el: HTMLElement) {
+
+function afterLeave(element: Element) {
+	const el = element as HTMLElement;
 	el.style.width = '';
 }
 

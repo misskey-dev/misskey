@@ -1,24 +1,178 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/index.js';
+import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { notificationRecieveConfig } from '@/models/json-schema/user.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:show-user',
 
 	res: {
 		type: 'object',
 		nullable: false, optional: false,
+		properties: {
+			email: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			emailVerified: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			autoAcceptFollowed: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			noCrawle: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			preventAiLearning: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			alwaysMarkNsfw: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			autoSensitive: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			carefulBot: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			injectFeaturedNote: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			receiveAnnouncementEmail: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			mutedWords: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					anyOf: [
+						{
+							type: 'string',
+						},
+						{
+							type: 'array',
+							items: {
+								type: 'string',
+							},
+						},
+					],
+				},
+			},
+			mutedInstances: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
+			notificationRecieveConfig: {
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					note: { optional: true, ...notificationRecieveConfig },
+					follow: { optional: true, ...notificationRecieveConfig },
+					mention: { optional: true, ...notificationRecieveConfig },
+					reply: { optional: true, ...notificationRecieveConfig },
+					renote: { optional: true, ...notificationRecieveConfig },
+					quote: { optional: true, ...notificationRecieveConfig },
+					reaction: { optional: true, ...notificationRecieveConfig },
+					pollEnded: { optional: true, ...notificationRecieveConfig },
+					receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
+					followRequestAccepted: { optional: true, ...notificationRecieveConfig },
+					roleAssigned: { optional: true, ...notificationRecieveConfig },
+					achievementEarned: { optional: true, ...notificationRecieveConfig },
+					app: { optional: true, ...notificationRecieveConfig },
+					test: { optional: true, ...notificationRecieveConfig },
+				},
+			},
+			isModerator: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			isSilenced: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			isSuspended: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			isHibernated: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			lastActiveDate: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			moderationNote: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			signins: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					ref: 'Signin',
+				},
+			},
+			policies: {
+				type: 'object',
+				optional: false, nullable: false,
+				ref: 'RolePolicies',
+			},
+			roles: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'object',
+					ref: 'Role',
+				},
+			},
+			roleAssigns: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'object',
+					properties: {
+						createdAt: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+						expiresAt: {
+							type: 'string',
+							optional: false, nullable: true,
+						},
+						roleId: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+				},
+			},
+		},
 	},
 } as const;
 
@@ -44,6 +198,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private roleService: RoleService,
 		private roleEntityService: RoleEntityService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [user, profile] = await Promise.all([
@@ -81,17 +236,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
-				mutingNotificationTypes: profile.mutingNotificationTypes,
+				notificationRecieveConfig: profile.notificationRecieveConfig,
 				isModerator: isModerator,
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
-				lastActiveDate: user.lastActiveDate,
+				isHibernated: user.isHibernated,
+				lastActiveDate: user.lastActiveDate ? user.lastActiveDate.toISOString() : null,
 				moderationNote: profile.moderationNote ?? '',
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
 				roleAssigns: roleAssigns.map(a => ({
-					createdAt: a.createdAt.toISOString(),
+					createdAt: this.idService.parse(a.id).date.toISOString(),
 					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
 					roleId: a.roleId,
 				})),

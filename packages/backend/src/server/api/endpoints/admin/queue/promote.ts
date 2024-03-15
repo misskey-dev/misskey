@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,6 +13,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:queue',
 } as const;
 
 export const paramDef = {
@@ -70,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					break;
 			}
 
-			this.moderationLogService.insertModerationLog(me, 'promoteQueue');
+			this.moderationLogService.log(me, 'promoteQueue');
 		});
 	}
 }

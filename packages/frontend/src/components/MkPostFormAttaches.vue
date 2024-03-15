@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,11 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -32,6 +33,8 @@ const props = defineProps<{
 	modelValue: any[];
 	detachMediaFn?: (id: string) => void;
 }>();
+
+const mock = inject<boolean>('mock', false);
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;
@@ -44,6 +47,8 @@ const emit = defineEmits<{
 let menuShowing = false;
 
 function detachMedia(id: string) {
+	if (mock) return;
+
 	if (props.detachMediaFn) {
 		props.detachMediaFn(id);
 	} else {
@@ -51,22 +56,47 @@ function detachMedia(id: string) {
 	}
 }
 
+async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
+	if (mock) return;
+
+	detachMedia(file.id);
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
+	});
+
+	if (canceled) return;
+
+	os.apiWithDialog('drive/files/delete', {
+		fileId: file.id,
+	});
+}
+
 function toggleSensitive(file) {
-	os.api('drive/files/update', {
+	if (mock) {
+		emit('changeSensitive', file, !file.isSensitive);
+		return;
+	}
+
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).then(() => {
 		emit('changeSensitive', file, !file.isSensitive);
 	});
 }
+
 async function rename(file) {
+	if (mock) return;
+
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
 		default: file.name,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
-	os.api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		name: result,
 	}).then(() => {
@@ -76,13 +106,15 @@ async function rename(file) {
 }
 
 async function describe(file) {
+	if (mock) return;
+
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
 	}, {
 		done: caption => {
 			let comment = caption.length === 0 ? null : caption;
-			os.api('drive/files/update', {
+			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				comment: comment,
 			}).then(() => {
@@ -93,6 +125,8 @@ async function describe(file) {
 }
 
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {
+	if (mock) return;
+
 	const newFile = await os.cropImage(file, { aspectRatio: NaN });
 	emit('replaceFile', file, newFile);
 }
@@ -121,6 +155,13 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		text: i18n.ts.attachCancel,
 		icon: 'ti ti-circle-x',
 		action: () => { detachMedia(file.id); },
+	}, {
+		type: 'divider',
+	}, {
+		text: i18n.ts.deleteFile,
+		icon: 'ti ti-trash',
+		danger: true,
+		action: () => { detachAndDeleteMedia(file); },
 	}], ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
 }

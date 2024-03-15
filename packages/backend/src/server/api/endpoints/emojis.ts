@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { DI } from '@/di-symbols.js';

@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IsNull } from 'typeorm';
-import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
@@ -19,7 +19,7 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
@@ -28,6 +28,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -71,6 +73,7 @@ export class UserFollowingService implements OnModuleInit {
 		private instancesRepository: InstancesRepository,
 
 		private cacheService: CacheService,
+		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
@@ -81,6 +84,7 @@ export class UserFollowingService implements OnModuleInit {
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
 		private accountMoveService: AccountMoveService,
+		private fanoutTimelineService: FanoutTimelineService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -91,7 +95,15 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async follow(_follower: { id: MiUser['id'] }, _followee: { id: MiUser['id'] }, requestId?: string, silent = false): Promise<void> {
+	public async follow(
+		_follower: { id: MiUser['id'] },
+		_followee: { id: MiUser['id'] },
+		{ requestId, silent = false, withReplies }: {
+			requestId?: string,
+			silent?: boolean,
+			withReplies?: boolean,
+		} = {},
+	): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
@@ -118,16 +130,21 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
-
 		// フォロー対象が鍵アカウントである or
 		// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
-		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
+		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである or
+		// フォロワーがローカルユーザーであり、フォロー対象がサイレンスされているサーバーである
 		// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
-		if (followee.isLocked || (followeeProfile.carefulBot && follower.isBot) || (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee))) {
+		if (
+			followee.isLocked ||
+			(followeeProfile.carefulBot && follower.isBot) ||
+			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
+			(this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && this.utilityService.isSilencedHost((await this.metaService.fetch()).silencedHosts, follower.host))
+		) {
 			let autoAccept = false;
 
 			// 鍵アカウントであっても、既にフォローされていた場合はスルー
-			const isFollowing = await this.followingsRepository.exist({
+			const isFollowing = await this.followingsRepository.exists({
 				where: {
 					followerId: follower.id,
 					followeeId: followee.id,
@@ -139,7 +156,7 @@ export class UserFollowingService implements OnModuleInit {
 
 			// フォローしているユーザーは自動承認オプション
 			if (!autoAccept && (this.userEntityService.isLocalUser(followee) && followeeProfile.autoAcceptFollowed)) {
-				const isFollowed = await this.followingsRepository.exist({
+				const isFollowed = await this.followingsRepository.exists({
 					where: {
 						followerId: followee.id,
 						followeeId: follower.id,
@@ -153,7 +170,7 @@ export class UserFollowingService implements OnModuleInit {
 			if (followee.isLocked && !autoAccept) {
 				autoAccept = !!(await this.accountMoveService.validateAlsoKnownAs(
 					follower,
-					(oldSrc, newSrc) => this.followingsRepository.exist({
+					(oldSrc, newSrc) => this.followingsRepository.exists({
 						where: {
 							followeeId: followee.id,
 							followerId: newSrc.id,
@@ -164,12 +181,12 @@ export class UserFollowingService implements OnModuleInit {
 			}
 
 			if (!autoAccept) {
-				await this.createFollowRequest(follower, followee, requestId);
+				await this.createFollowRequest(follower, followee, requestId, withReplies);
 				return;
 			}
 		}
 
-		await this.insertFollowingDoc(followee, follower, silent);
+		await this.insertFollowingDoc(followee, follower, silent, withReplies);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
@@ -186,16 +203,17 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
 		silent = false,
+		withReplies?: boolean,
 	): Promise<void> {
 		if (follower.id === followee.id) return;
 
 		let alreadyFollowed = false as boolean;
 
 		await this.followingsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
+			withReplies: withReplies,
 
 			// 非正規化
 			followerHost: follower.host,
@@ -215,7 +233,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.cacheService.userFollowingsCache.refresh(follower.id);
 
-		const requestExist = await this.followRequestsRepository.exist({
+		const requestExist = await this.followRequestsRepository.exists({
 			where: {
 				followeeId: followee.id,
 				followerId: follower.id,
@@ -230,8 +248,7 @@ export class UserFollowingService implements OnModuleInit {
 
 			// 通知を作成
 			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
-				notifierId: followee.id,
-			});
+			}, followee.id);
 		}
 
 		if (alreadyFollowed) return;
@@ -273,12 +290,12 @@ export class UserFollowingService implements OnModuleInit {
 			this.perUserFollowingChart.update(follower, followee, true);
 		}
 
-		// Publish follow event
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
+			// Publish follow event
 			this.userEntityService.pack(followee.id, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
-				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
+				this.globalEventService.publishMainStream(follower.id, 'follow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
@@ -304,8 +321,7 @@ export class UserFollowingService implements OnModuleInit {
 
 			// 通知を作成
 			this.notificationService.createNotification(followee.id, 'follow', {
-				notifierId: follower.id,
-			});
+			}, follower.id);
 		}
 	}
 
@@ -341,10 +357,10 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.decrementFollowing(following.follower, following.followee);
 
-		// Publish unfollow event
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
+			// Publish unfollow event
 			this.userEntityService.pack(followee.id, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
@@ -450,6 +466,7 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		requestId?: string,
+		withReplies?: boolean,
 	): Promise<void> {
 		if (follower.id === followee.id) return;
 
@@ -463,11 +480,11 @@ export class UserFollowingService implements OnModuleInit {
 		if (blocked) throw new Error('blocked');
 
 		const followRequest = await this.followRequestsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
 			requestId,
+			withReplies,
 
 			// 非正規化
 			followerHost: follower.host,
@@ -483,14 +500,12 @@ export class UserFollowingService implements OnModuleInit {
 			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventService.publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
 			this.userEntityService.pack(followee.id, followee, {
-				detail: true,
+				schema: 'MeDetailed',
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 
 			// 通知を作成
 			this.notificationService.createNotification(followee.id, 'receiveFollowRequest', {
-				notifierId: follower.id,
-				followRequestId: followRequest.id,
-			});
+			}, follower.id);
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
@@ -516,7 +531,7 @@ export class UserFollowingService implements OnModuleInit {
 			}
 		}
 
-		const requestExist = await this.followRequestsRepository.exist({
+		const requestExist = await this.followRequestsRepository.exists({
 			where: {
 				followeeId: followee.id,
 				followerId: follower.id,
@@ -533,7 +548,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		this.userEntityService.pack(followee.id, followee, {
-			detail: true,
+			schema: 'MeDetailed',
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
@@ -553,7 +568,7 @@ export class UserFollowingService implements OnModuleInit {
 			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No follow request.');
 		}
 
-		await this.insertFollowingDoc(followee, follower);
+		await this.insertFollowingDoc(followee, follower, false, request.withReplies);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee as MiPartialLocalUser, request.requestId!), followee));
@@ -561,7 +576,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		this.userEntityService.pack(followee.id, followee, {
-			detail: true,
+			schema: 'MeDetailed',
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
@@ -681,7 +696,7 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async publishUnfollow(followee: Both, follower: Local): Promise<void> {
 		const packedFollowee = await this.userEntityService.pack(followee.id, follower, {
-			detail: true,
+			schema: 'UserDetailedNotMe',
 		});
 
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
@@ -692,5 +707,13 @@ export class UserFollowingService implements OnModuleInit {
 				user: packedFollowee,
 			});
 		}
+	}
+
+	@bindThis
+	public getFollowees(userId: MiUser['id']) {
+		return this.followingsRepository.createQueryBuilder('following')
+			.select('following.followeeId')
+			.where('following.followerId = :followerId', { followerId: userId })
+			.getMany();
 	}
 }

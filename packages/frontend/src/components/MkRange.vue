@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch, shallowRef } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;
@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<{
 	textConverter?: (value: number) => string,
 	showTicks?: boolean;
 	easing?: boolean;
+	continuousUpdate?: boolean;
 }>(), {
 	step: 1,
 	textConverter: (v) => v.toString(),
@@ -42,6 +43,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: number): void;
+	(ev: 'dragEnded', value: number): void;
 }>();
 
 const containerEl = shallowRef<HTMLElement>();
@@ -84,7 +86,7 @@ onMounted(() => {
 	ro = new ResizeObserver((entries, observer) => {
 		calcThumbPosition();
 	});
-	ro.observe(containerEl.value);
+	if (containerEl.value) ro.observe(containerEl.value);
 });
 
 onUnmounted(() => {
@@ -120,9 +122,13 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	const onDrag = (ev: MouseEvent | TouchEvent) => {
 		ev.preventDefault();
 		const containerRect = containerEl.value!.getBoundingClientRect();
-		const pointerX = ev.touches && ev.touches.length > 0 ? ev.touches[0].clientX : ev.clientX;
+		const pointerX = 'touches' in ev && ev.touches.length > 0 ? ev.touches[0].clientX : 'clientX' in ev ? ev.clientX : 0;
 		const pointerPositionOnContainer = pointerX - (containerRect.left + (thumbWidth / 2));
 		rawValue.value = Math.min(1, Math.max(0, pointerPositionOnContainer / (containerEl.value!.offsetWidth - thumbWidth)));
+
+		if (props.continuousUpdate) {
+			emit('update:modelValue', finalValue.value);
+		}
 	};
 
 	let beforeValue = finalValue.value;
@@ -138,6 +144,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 		// 値が変わってたら通知
 		if (beforeValue !== finalValue.value) {
 			emit('update:modelValue', finalValue.value);
+			emit('dragEnded', finalValue.value);
 		}
 	};
 

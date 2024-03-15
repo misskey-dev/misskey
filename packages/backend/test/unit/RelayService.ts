@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,7 +15,7 @@ import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
-import type { RelaysRepository } from '@/models/index.js';
+import type { RelaysRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';

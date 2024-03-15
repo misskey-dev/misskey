@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import type { WebhooksRepository } from '@/models/index.js';
-import { webhookEventTypes } from '@/models/entities/Webhook.js';
+import type { WebhooksRepository } from '@/models/_.js';
+import { webhookEventTypes } from '@/models/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -25,6 +25,33 @@ export const meta = {
 			message: 'You cannot create webhook any more.',
 			code: 'TOO_MANY_WEBHOOKS',
 			id: '87a9bb19-111e-4e37-81d3-a3e7426453b0',
+		},
+	},
+
+	res: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+			userId: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+			name: { type: 'string' },
+			on: {
+				type: 'array',
+				items: {
+					type: 'string',
+					enum: webhookEventTypes,
+				},
+			},
+			url: { type: 'string' },
+			secret: { type: 'string' },
+			active: { type: 'boolean' },
+			latestSentAt: { type: 'string', format: 'date-time', nullable: true },
+			latestStatus: { type: 'integer', nullable: true },
 		},
 	},
 } as const;
@@ -63,8 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const webhook = await this.webhooksRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
 				url: ps.url,
@@ -74,7 +100,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.globalEventService.publishInternalEvent('webhookCreated', webhook);
 
-			return webhook;
+			return {
+				id: webhook.id,
+				userId: webhook.userId,
+				name: webhook.name,
+				on: webhook.on,
+				url: webhook.url,
+				secret: webhook.secret,
+				active: webhook.active,
+				latestSentAt: webhook.latestSentAt ? webhook.latestSentAt.toISOString() : null,
+				latestStatus: webhook.latestStatus,
+			};
 		});
 	}
 }

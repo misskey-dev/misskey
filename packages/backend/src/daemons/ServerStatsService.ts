@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,7 +37,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 		const log = [] as any[];
 
 		ev.on('requestServerStatsLog', x => {
-			ev.emit(`serverStatsLog:${x.id}`, log.slice(0, x.length ?? 50));
+			ev.emit(`serverStatsLog:${x.id}`, log.slice(0, x.length));
 		});
 
 		const tick = async () => {
@@ -108,6 +108,5 @@ async function net() {
 
 // FS STAT
 async function fs() {
-	const data = await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
-	return data ?? { rIO_sec: 0, wIO_sec: 0 };
+	return await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
 }

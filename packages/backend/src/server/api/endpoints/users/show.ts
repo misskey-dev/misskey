@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await Promise.all(_users.map(u => this.userEntityService.pack(u, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				})));
 			} else {
 				// Lookup user
@@ -146,7 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await this.userEntityService.pack(user, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				});
 			}
 		});

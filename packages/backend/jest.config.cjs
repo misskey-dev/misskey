@@ -160,7 +160,6 @@ module.exports = {
 	testMatch: [
 		"<rootDir>/test/unit/**/*.ts",
 		"<rootDir>/src/**/*.test.ts",
-		"<rootDir>/test/e2e/**/*.ts",
 	],
 
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
@@ -216,4 +215,6 @@ module.exports = {
 	maxWorkers: 1, // Make it use worker (that can be killed and restarted)
 	logHeapUsage: true, // To debug when out-of-memory happens on CI
 	workerIdleMemoryLimit: '1GiB', // Limit the worker to 1GB (GitHub Workflows dies at 2GB)
+
+	maxConcurrency: 32,
 };

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,12 +9,12 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class HashtagChannel extends Channel {
 	public readonly chName = 'hashtag';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private q: string[][];
 
 	constructor(
@@ -43,19 +43,19 @@ class HashtagChannel extends Channel {
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
 		if (!matched) return;
 
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-				detail: true,
-			});
-		}
-
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (this.user && note.renoteId && !note.text) {
+			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+				note.renote.myReaction = myRenoteReaction;
+			}
+		}
 
 		this.connection.cacheNote(note);
 
@@ -70,9 +70,10 @@ class HashtagChannel extends Channel {
 }
 
 @Injectable()
-export class HashtagChannelService {
+export class HashtagChannelService implements MiChannelService<false> {
 	public readonly shouldShare = HashtagChannel.shouldShare;
 	public readonly requireCredential = HashtagChannel.requireCredential;
+	public readonly kind = HashtagChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,

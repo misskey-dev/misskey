@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,7 +11,7 @@ import { GetterService } from '@/server/api/GetterService.js';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: true,
+	requireCredential: false,
 } as const;
 
 export const paramDef = {

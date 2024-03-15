@@ -1,15 +1,16 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os';
-import { useStream } from '@/stream';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { uploadFile } from '@/scripts/upload';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { uploadFile } from '@/scripts/upload.js';
 
 export function chooseFileFromPc(multiple: boolean, keepOriginal = false): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
@@ -65,7 +66,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 				}
 			});
 
-			os.api('drive/files/upload-from-url', {
+			misskeyApi('drive/files/upload-from-url', {
 				url: url,
 				folderId: defaultStore.state.uploadFolder,
 				marker,

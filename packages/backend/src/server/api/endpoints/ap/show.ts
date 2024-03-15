@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import type { SchemaType } from '@/misc/json-schema.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
@@ -25,6 +25,7 @@ export const meta = {
 	tags: ['federation'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	limit: {
 		duration: ms('1hour'),
@@ -147,7 +148,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (user != null) {
 			return {
 				type: 'User',
-				object: await this.userEntityService.pack(user, me, { detail: true }),
+				object: await this.userEntityService.pack(user, me, { schema: 'UserDetailedNotMe' }),
 			};
 		} else if (note != null) {
 			try {

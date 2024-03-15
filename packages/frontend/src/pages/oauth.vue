@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<div v-if="$i">
 			<div v-if="permissions.length > 0">
-				<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
+				<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
 				<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 				<ul>
-					<li v-for="p in permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+					<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
 				</ul>
 			</div>
-			<div v-if="name">{{ i18n.t('_auth.shareAccess', { name }) }}</div>
+			<div v-if="name">{{ i18n.tsx._auth.shareAccess({ name }) }}</div>
 			<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 			<form :class="$style.buttons" action="/oauth/decision" accept-charset="utf-8" method="post">
 				<input name="login_token" type="hidden" :value="$i.token"/>
@@ -35,9 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
-import { $i, login } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i, login } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const transactionIdMeta = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]');
 if (transactionIdMeta) {
@@ -51,10 +51,10 @@ function onLogin(res): void {
 	login(res.i);
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'OAuth',
 	icon: 'ti ti-apps',
-});
+}));
 </script>
 
 <style lang="scss" module>

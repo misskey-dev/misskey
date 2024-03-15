@@ -1,17 +1,18 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead } from '@/models/index.js';
+import type { MiUser } from '@/models/User.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
 export class AnnouncementService {
@@ -22,8 +23,12 @@ export class AnnouncementService {
 		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: AnnouncementReadsRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private moderationLogService: ModerationLogService,
 	) {
 	}
 
@@ -42,13 +47,14 @@ export class AnnouncementService {
 
 		const q = this.announcementsRepository.createQueryBuilder('announcement')
 			.where('announcement.isActive = true')
+			.andWhere('announcement.silence = false')
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
 				qb.orWhere('announcement.userId IS NULL');
 			}))
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
-				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
+				qb.orWhere('announcement.id > :userId', { userId: user.id });
 			}))
 			.andWhere(`announcement.id NOT IN (${ readsQuery.getQuery() })`);
 
@@ -58,10 +64,9 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async create(values: Partial<MiAnnouncement>): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
+	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			updatedAt: null,
 			title: values.title,
 			text: values.text,
@@ -69,6 +74,7 @@ export class AnnouncementService {
 			icon: values.icon,
 			display: values.display,
 			forExistingUsers: values.forExistingUsers,
+			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			userId: values.userId,
 		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
@@ -79,10 +85,28 @@ export class AnnouncementService {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
 				announcement: packed,
 			});
+
+			if (moderator) {
+				const user = await this.usersRepository.findOneByOrFail({ id: values.userId });
+				this.moderationLogService.log(moderator, 'createUserAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+					userId: values.userId,
+					userUsername: user.username,
+					userHost: user.host,
+				});
+			}
 		} else {
 			this.globalEventService.publishBroadcastStream('announcementCreated', {
 				announcement: packed,
 			});
+
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'createGlobalAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			}
 		}
 
 		return {
@@ -92,11 +116,72 @@ export class AnnouncementService {
 	}
 
 	@bindThis
+	public async update(announcement: MiAnnouncement, values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<void> {
+		await this.announcementsRepository.update(announcement.id, {
+			updatedAt: new Date(),
+			title: values.title,
+			text: values.text,
+			/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+			imageUrl: values.imageUrl || null,
+			display: values.display,
+			icon: values.icon,
+			forExistingUsers: values.forExistingUsers,
+			silence: values.silence,
+			needConfirmationToRead: values.needConfirmationToRead,
+			isActive: values.isActive,
+		});
+
+		const after = await this.announcementsRepository.findOneByOrFail({ id: announcement.id });
+
+		if (moderator) {
+			if (announcement.userId) {
+				const user = await this.usersRepository.findOneByOrFail({ id: announcement.userId });
+				this.moderationLogService.log(moderator, 'updateUserAnnouncement', {
+					announcementId: announcement.id,
+					before: announcement,
+					after: after,
+					userId: announcement.userId,
+					userUsername: user.username,
+					userHost: user.host,
+				});
+			} else {
+				this.moderationLogService.log(moderator, 'updateGlobalAnnouncement', {
+					announcementId: announcement.id,
+					before: announcement,
+					after: after,
+				});
+			}
+		}
+	}
+
+	@bindThis
+	public async delete(announcement: MiAnnouncement, moderator?: MiUser): Promise<void> {
+		await this.announcementsRepository.delete(announcement.id);
+
+		if (moderator) {
+			if (announcement.userId) {
+				const user = await this.usersRepository.findOneByOrFail({ id: announcement.userId });
+				this.moderationLogService.log(moderator, 'deleteUserAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+					userId: announcement.userId,
+					userUsername: user.username,
+					userHost: user.host,
+				});
+			} else {
+				this.moderationLogService.log(moderator, 'deleteGlobalAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			}
+		}
+	}
+
+	@bindThis
 	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				announcementId: announcementId,
 				userId: user.id,
 			});
@@ -120,7 +205,7 @@ export class AnnouncementService {
 		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
 		return announcements.map(announcement => ({
 			id: announcement.id,
-			createdAt: announcement.createdAt.toISOString(),
+			createdAt: this.idService.parse(announcement.id).date.toISOString(),
 			updatedAt: announcement.updatedAt?.toISOString() ?? null,
 			text: announcement.text,
 			title: announcement.title,
@@ -128,6 +213,7 @@ export class AnnouncementService {
 			icon: announcement.icon,
 			display: announcement.display,
 			needConfirmationToRead: announcement.needConfirmationToRead,
+			silence: announcement.silence,
 			forYou: announcement.userId === me?.id,
 			isRead: reads.some(read => read.announcementId === announcement.id),
 		}));

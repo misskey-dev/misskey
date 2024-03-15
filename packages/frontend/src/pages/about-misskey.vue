@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,16 +22,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
 				</div>
 				<div style="text-align: center;">
-					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
+					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/about-misskey/" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 				</div>
 				<div v-if="$i != null" style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
 				</div>
 				<FormSection>
-					<div class="_formLinks">
+					<div class="_gaps_s">
 						<FormLink to="https://github.com/misskey-dev/misskey" external>
 							<template #icon><i class="ti ti-code"></i></template>
-							{{ i18n.ts._aboutMisskey.source }}
+							{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
 							<template #suffix>GitHub</template>
 						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
@@ -46,8 +46,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</FormLink>
 					</div>
 				</FormSection>
+				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
+					<div class="_gaps_s">
+						<MkInfo>
+							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name }) }}
+						</MkInfo>
+						<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}
+						</FormLink>
+						<FormLink v-if="instance.providesTarball" :to="`/tarball/misskey-${version}.tar.gz`" external>
+							<template #icon><i class="ti ti-download"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}
+							<template #suffix>Tarball</template>
+						</FormLink>
+						<MkInfo v-if="!instance.repositoryUrl && !instance.providesTarball" warn>
+							{{ i18n.ts.sourceCodeIsNotYetProvided }}
+						</MkInfo>
+					</div>
+				</FormSection>
 				<FormSection>
-					<template #label>{{ i18n.ts._aboutMisskey.contributors }}</template>
+					<template #label>{{ i18n.ts._aboutMisskey.projectMembers }}</template>
 					<div :class="$style.contributors">
 						<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor">
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
@@ -61,20 +80,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
 						</a>
-						<a href="https://github.com/rinsuki" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/6533808?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@rinsuki</span>
+						<a href="https://github.com/kakkokari-gtyih" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/67428053?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@kakkokari-gtyih</span>
 						</a>
-						<a href="https://github.com/mei23" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/30769358?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@mei23</span>
+						<a href="https://github.com/tai-cha" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/40626578?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@tai-cha</span>
 						</a>
-						<a href="https://github.com/robflop" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/8159402?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@robflop</span>
+						<a href="https://github.com/samunohito" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/46447427?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@samunohito</span>
+						</a>
+						<a href="https://github.com/anatawa12" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/22656849?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@anatawa12</span>
 						</a>
 					</div>
-					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
+				</FormSection>
+				<FormSection>
+					<template #label>Special thanks</template>
+					<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));grid-gap:24px;align-items:center;">
+						<div>
+							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/xserver.png" alt="XServer"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
+						</div>
+					</div>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
@@ -89,20 +125,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
-				<FormSection>
-					<template #label>Special thanks</template>
-					<div class="_gaps" style="text-align: center;">
-						<div>
-							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="100" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
-						</div>
-					</div>
-				</FormSection>
 			</div>
 		</MkSpacer>
 	</div>
@@ -110,83 +132,96 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount } from 'vue';
-import { version } from '@/config';
+import { nextTick, onBeforeUnmount, ref, shallowRef, computed } from 'vue';
+import { version } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkLink from '@/components/MkLink.vue';
-import { physics } from '@/scripts/physics';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
-import { $i } from '@/account';
+import MkInfo from '@/components/MkInfo.vue';
+import { physics } from '@/scripts/physics.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { $i } from '@/account.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
-	icon: 'https://misskey-hub.net/patrons/a2820716883e408cb87773e377ce7c8d.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/a2820716883e408cb87773e377ce7c8d.jpg',
 }, {
 	name: 'だれかさん',
-	icon: 'https://misskey-hub.net/patrons/f7409b5e5a88477a9b9d740c408de125.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/f7409b5e5a88477a9b9d740c408de125.jpg',
 }, {
 	name: 'narazaka',
-	icon: 'https://misskey-hub.net/patrons/e3affff31ffb4877b1196c7360abc3e5.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/e3affff31ffb4877b1196c7360abc3e5.jpg',
 }, {
 	name: 'ひとぅ',
-	icon: 'https://misskey-hub.net/patrons/8cc0d0a0a6d84c88bca1aedabf6ed5ab.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/8cc0d0a0a6d84c88bca1aedabf6ed5ab.jpg',
 }, {
 	name: 'ぱーこ',
-	icon: 'https://misskey-hub.net/patrons/79c6602ffade489e8df2fcf2c2bc5d9d.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/79c6602ffade489e8df2fcf2c2bc5d9d.jpg',
 }, {
 	name: 'わっほー☆',
-	icon: 'https://misskey-hub.net/patrons/d31d5d13924443a082f3da7966318a0a.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/d31d5d13924443a082f3da7966318a0a.jpg',
 }, {
 	name: 'mollinaca',
-	icon: 'https://misskey-hub.net/patrons/ceb36b8f66e549bdadb3b90d5da62314.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/ceb36b8f66e549bdadb3b90d5da62314.jpg',
 }, {
 	name: '坂本龍',
-	icon: 'https://misskey-hub.net/patrons/a631cf8b490145cf8dbbe4e7508cfbc2.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/a631cf8b490145cf8dbbe4e7508cfbc2.jpg',
 }, {
 	name: 'takke',
-	icon: 'https://misskey-hub.net/patrons/6c3327e626c046f2914fbcd9f7557935.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/6c3327e626c046f2914fbcd9f7557935.jpg',
 }, {
 	name: 'ぺんぎん',
-	icon: 'https://misskey-hub.net/patrons/6a652e0534ff4cb1836e7ce4968d76a7.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/6a652e0534ff4cb1836e7ce4968d76a7.jpg',
 }, {
 	name: 'かみらえっと',
-	icon: 'https://misskey-hub.net/patrons/be1326bda7d940a482f3758ffd9ffaf6.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/be1326bda7d940a482f3758ffd9ffaf6.jpg',
 }, {
 	name: 'へてて',
-	icon: 'https://misskey-hub.net/patrons/0431eacd7c6843d09de8ea9984307e86.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/0431eacd7c6843d09de8ea9984307e86.jpg',
 }, {
 	name: 'spinlock',
-	icon: 'https://misskey-hub.net/patrons/6a1cebc819d540a78bf20e9e3115baa8.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/6a1cebc819d540a78bf20e9e3115baa8.jpg',
 }, {
 	name: 'じゅくま',
-	icon: 'https://misskey-hub.net/patrons/3e56bdac69dd42f7a06e0f12cf2fc895.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/3e56bdac69dd42f7a06e0f12cf2fc895.jpg',
 }, {
 	name: '清遊あみ',
-	icon: 'https://misskey-hub.net/patrons/de25195b88e940a388388bea2e7637d8.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/de25195b88e940a388388bea2e7637d8.jpg',
 }, {
 	name: 'Nagi8410',
-	icon: 'https://misskey-hub.net/patrons/31b102ab4fc540ed806b0461575d38be.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/31b102ab4fc540ed806b0461575d38be.jpg',
 }, {
 	name: '山岡士郎',
-	icon: 'https://misskey-hub.net/patrons/84b9056341684266bb1eda3e680d094d.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/84b9056341684266bb1eda3e680d094d.jpg',
 }, {
 	name: 'よもやまたろう',
-	icon: 'https://misskey-hub.net/patrons/4273c9cce50d445f8f7d0f16113d6d7f.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/4273c9cce50d445f8f7d0f16113d6d7f.jpg',
 }, {
 	name: '花咲ももか',
-	icon: 'https://misskey-hub.net/patrons/8c9b2b9128cb4fee99f04bb4f86f2efa.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/8c9b2b9128cb4fee99f04bb4f86f2efa.jpg',
 }, {
 	name: 'カガミ',
-	icon: 'https://misskey-hub.net/patrons/226ea3a4617749548580ec2d9a263e24.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/226ea3a4617749548580ec2d9a263e24.jpg',
 }, {
 	name: 'フランギ・シュウ',
-	icon: 'https://misskey-hub.net/patrons/3016d37e35f3430b90420176c912d304.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/3016d37e35f3430b90420176c912d304.jpg',
+}, {
+	name: '百日紅',
+	icon: 'https://assets.misskey-hub.net/patrons/302dce2898dd457ba03c3f7dc037900b.jpg',
+}, {
+	name: 'taichan',
+	icon: 'https://assets.misskey-hub.net/patrons/f981ab0159fb4e2c998e05f7263e1cd9.jpg',
+}, {
+	name: '猫吉よりお',
+	icon: 'https://assets.misskey-hub.net/patrons/a11518b3b34b4536a4bdd7178ba76a7b.jpg',
+}, {
+	name: '有栖かずみ',
+	icon: 'https://assets.misskey-hub.net/patrons/9240e8e0ba294a8884143e99ac7ed6a0.jpg',
 }];
 
 const patrons = [
@@ -286,20 +321,28 @@ const patrons = [
 	'Nick / pprmint.',
 	'kino3277',
 	'美少女JKぐーちゃん',
+	'てば',
+	'たっくん',
+	'SHO SEKIGUCHI',
 ];
 
-let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
+const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
 
 let easterEggReady = false;
-let easterEggEmojis = $ref([]);
-let easterEggEngine = $ref(null);
-const containerEl = $shallowRef<HTMLElement>();
+const easterEggEmojis = ref<{
+	id: string,
+	top: number,
+	left: number,
+	emoji: string
+}[]>([]);
+const easterEggEngine = ref<{ stop: () => void } | null>(null);
+const containerEl = shallowRef<HTMLElement>();
 
 function iconLoaded() {
 	const emojis = defaultStore.state.reactions;
-	const containerWidth = containerEl.offsetWidth;
+	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
-		easterEggEmojis.push({
+		easterEggEmojis.value.push({
 			id: i.toString(),
 			top: -(128 + (Math.random() * 256)),
 			left: (Math.random() * containerWidth),
@@ -315,7 +358,7 @@ function iconLoaded() {
 function gravity() {
 	if (!easterEggReady) return;
 	easterEggReady = false;
-	easterEggEngine = physics(containerEl);
+	easterEggEngine.value = physics(containerEl.value);
 }
 
 function iLoveMisskey() {
@@ -326,24 +369,24 @@ function iLoveMisskey() {
 }
 
 function getTreasure() {
-	thereIsTreasure = false;
+	thereIsTreasure.value = false;
 	claimAchievement('foundTreasure');
 }
 
 onBeforeUnmount(() => {
-	if (easterEggEngine) {
-		easterEggEngine.stop();
+	if (easterEggEngine.value) {
+		easterEggEngine.value.stop();
 	}
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.aboutMisskey,
 	icon: null,
-});
+}));
 </script>
 
 <style lang="scss" scoped>

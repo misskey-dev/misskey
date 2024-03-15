@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	x: number;
@@ -77,7 +77,14 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-const particles = [];
+const particles: {
+	size: number;
+	xA: number;
+	yA: number;
+	xB: number;
+	yB: number;
+	color: string;
+}[] = [];
 const origin = 64;
 const colors = ['#FF1493', '#00FFFF', '#FFE202'];
 const zIndex = os.claimZIndex('high');

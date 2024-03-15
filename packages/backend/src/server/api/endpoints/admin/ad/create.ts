@@ -1,19 +1,27 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AdsRepository } from '@/models/index.js';
+import type { AdsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:ad',
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		ref: 'Ad',
+	},
 } as const;
 
 export const paramDef = {
@@ -39,11 +47,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private adsRepository: AdsRepository,
 
 		private idService: IdService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.adsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+			const ad = await this.adsRepository.insert({
+				id: this.idService.gen(),
 				expiresAt: new Date(ps.expiresAt),
 				startsAt: new Date(ps.startsAt),
 				dayOfWeek: ps.dayOfWeek,
@@ -53,7 +61,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ratio: ps.ratio,
 				place: ps.place,
 				memo: ps.memo,
+			}).then(r => this.adsRepository.findOneByOrFail({ id: r.identifiers[0].id }));
+
+			this.moderationLogService.log(me, 'createAd', {
+				adId: ad.id,
+				ad: ad,
 			});
+
+			return {
+				id: ad.id,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
+				dayOfWeek: ad.dayOfWeek,
+				url: ad.url,
+				imageUrl: ad.imageUrl,
+				priority: ad.priority,
+				ratio: ad.ratio,
+				place: ad.place,
+				memo: ad.memo,
+			};
 		});
 	}
 }

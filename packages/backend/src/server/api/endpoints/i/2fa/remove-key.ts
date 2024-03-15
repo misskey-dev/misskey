@@ -1,16 +1,17 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -30,6 +31,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		password: { type: 'string' },
+		token: { type: 'string', nullable: true },
 		credentialId: { type: 'string' },
 	},
 	required: ['password', 'credentialId'],
@@ -45,15 +47,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
+		private userAuthService: UserAuthService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const token = ps.token;
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
-			// Compare password
-			const same = await bcrypt.compare(ps.password, profile.password ?? '');
+			if (profile.twoFactorEnabled) {
+				if (token == null) {
+					throw new Error('authentication failed');
+				}
 
-			if (!same) {
+				try {
+					await this.userAuthService.twoFactorAuthenticate(profile, token);
+				} catch (e) {
+					throw new Error('authentication failed');
+				}
+			}
+
+			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
+			if (!passwordMatched) {
 				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
@@ -83,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			}));
 

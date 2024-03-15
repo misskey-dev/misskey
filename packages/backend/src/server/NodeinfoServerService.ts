@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,6 +18,7 @@ import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';
+const nodeinfo_homepage = 'https://misskey-hub.net';
 
 @Injectable()
 export class NodeinfoServerService {
@@ -78,6 +79,8 @@ export class NodeinfoServerService {
 				software: {
 					name: 'misskey',
 					version: this.config.version,
+					homepage: nodeinfo_homepage,
+					repository: meta.repositoryUrl,
 				},
 				protocols: ['activitypub'],
 				services: {
@@ -93,12 +96,19 @@ export class NodeinfoServerService {
 				metadata: {
 					nodeName: meta.name,
 					nodeDescription: meta.description,
+					nodeAdmins: [{
+						name: meta.maintainerName,
+						email: meta.maintainerEmail,
+					}],
+					// deprecated
 					maintainer: {
 						name: meta.maintainerName,
 						email: meta.maintainerEmail,
 					},
 					langs: meta.langs,
 					tosUrl: meta.termsOfServiceUrl,
+					privacyPolicyUrl: meta.privacyPolicyUrl,
+					impressumUrl: meta.impressumUrl,
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
 					disableRegistration: meta.disableRegistration,
@@ -130,7 +140,11 @@ export class NodeinfoServerService {
 				.type(
 					'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
 				)
-				.header('Cache-Control', 'public, max-age=600');
+				.header('Cache-Control', 'public, max-age=600')
+				.header('Access-Control-Allow-Headers', 'Accept')
+				.header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+				.header('Access-Control-Allow-Origin', '*')
+				.header('Access-Control-Expose-Headers', 'Vary');
 			return { version: '2.1', ...base };
 		});
 
@@ -143,7 +157,11 @@ export class NodeinfoServerService {
 				.type(
 					'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.0#"',
 				)
-				.header('Cache-Control', 'public, max-age=600');
+				.header('Cache-Control', 'public, max-age=600')
+				.header('Access-Control-Allow-Headers', 'Accept')
+				.header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+				.header('Access-Control-Allow-Origin', '*')
+				.header('Access-Control-Expose-Headers', 'Vary');
 			return { version: '2.0', ...base };
 		});
 

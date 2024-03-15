@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,7 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 const props = defineProps<{
-	activity: any[]
+	activity: {
+		total: number;
+		notes: number;
+		replies: number;
+		renotes: number;
+	}[]
 }>();
 
 for (const d of props.activity) {

@@ -3,3 +3,6 @@ packages:
  - 'packages/frontend'
  - 'packages/sw'
  - 'packages/misskey-js'
+ - 'packages/misskey-js/generator'
+ - 'packages/misskey-reversi'
+ - 'packages/misskey-bubble-game'

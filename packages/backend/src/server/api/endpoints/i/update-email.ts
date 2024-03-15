@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,13 +7,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -39,6 +40,11 @@ export const meta = {
 			id: 'a2defefb-f220-8849-0af6-17f816099323',
 		},
 	},
+
+	res: {
+		type: 'object',
+		ref: 'MeDetailed',
+	},
 } as const;
 
 export const paramDef = {
@@ -46,6 +52,7 @@ export const paramDef = {
 	properties: {
 		password: { type: 'string' },
 		email: { type: 'string', nullable: true },
+		token: { type: 'string', nullable: true },
 	},
 	required: ['password'],
 } as const;
@@ -61,15 +68,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private emailService: EmailService,
+		private userAuthService: UserAuthService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const token = ps.token;
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
-			// Compare password
-			const same = await bcrypt.compare(ps.password, profile.password!);
+			if (profile.twoFactorEnabled) {
+				if (token == null) {
+					throw new Error('authentication failed');
+				}
 
-			if (!same) {
+				try {
+					await this.userAuthService.twoFactorAuthenticate(profile, token);
+				} catch (e) {
+					throw new Error('authentication failed');
+				}
+			}
+
+			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
+			if (!passwordMatched) {
 				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
@@ -87,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			const iObj = await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			});
 

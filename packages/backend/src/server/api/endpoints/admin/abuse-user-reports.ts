@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AbuseUserReportsRepository } from '@/models/index.js';
+import type { AbuseUserReportsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { AbuseUserReportEntityService } from '@/core/entities/AbuseUserReportEntityService.js';
@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:abuse-user-reports',
 
 	res: {
 		type: 'array',
@@ -61,17 +62,17 @@ export const meta = {
 				reporter: {
 					type: 'object',
 					nullable: false, optional: false,
-					ref: 'User',
+					ref: 'UserDetailedNotMe',
 				},
 				targetUser: {
 					type: 'object',
 					nullable: false, optional: false,
-					ref: 'User',
+					ref: 'UserDetailedNotMe',
 				},
 				assignee: {
 					type: 'object',
 					nullable: true, optional: true,
-					ref: 'User',
+					ref: 'UserDetailedNotMe',
 				},
 			},
 		},

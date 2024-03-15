@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -41,6 +41,7 @@ export type BadgeNames =
 	| 'antenna'
 	| 'arrow-back-up'
 	| 'at'
+	| 'bell'
 	| 'chart-arrows'
 	| 'circle-check'
 	| 'medal'

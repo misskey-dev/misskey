@@ -1,21 +1,21 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { App } from 'vue';
 
-import userPreview from './user-preview';
-import getSize from './get-size';
-import ripple from './ripple';
-import tooltip from './tooltip';
-import hotkey from './hotkey';
-import appear from './appear';
-import anim from './anim';
-import clickAnime from './click-anime';
-import panel from './panel';
-import adaptiveBorder from './adaptive-border';
-import adaptiveBg from './adaptive-bg';
+import userPreview from './user-preview.js';
+import getSize from './get-size.js';
+import ripple from './ripple.js';
+import tooltip from './tooltip.js';
+import hotkey from './hotkey.js';
+import appear from './appear.js';
+import anim from './anim.js';
+import clickAnime from './click-anime.js';
+import panel from './panel.js';
+import adaptiveBorder from './adaptive-border.js';
+import adaptiveBg from './adaptive-bg.js';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(directives)) {

@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';

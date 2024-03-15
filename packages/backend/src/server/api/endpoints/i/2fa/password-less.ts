@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			}));
 		});

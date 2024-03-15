@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -173,6 +173,7 @@
 			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
 			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
 			<p>Disable an adblocker / アドブロッカーを無効にする</p>
+	 		<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
 			<details style="color: #86b300;">
 				<summary>Other options / その他のオプション</summary>
 				<a href="/flush">

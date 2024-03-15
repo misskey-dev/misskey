@@ -1,16 +1,17 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, MutedNotesRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/index.js';
+import type { AntennasRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
+import { ReversiService } from '@/core/ReversiService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 
@@ -25,9 +26,6 @@ export class CleanProcessorService {
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 
-		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MutedNotesRepository,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -35,6 +33,7 @@ export class CleanProcessorService {
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
 		private queueLoggerService: QueueLoggerService,
+		private reversiService: ReversiService,
 		private idService: IdService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean');
@@ -46,16 +45,6 @@ export class CleanProcessorService {
 
 		this.userIpsRepository.delete({
 			createdAt: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90))),
-		});
-
-		this.mutedNotesRepository.delete({
-			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
-			reason: 'word',
-		});
-
-		this.mutedNotesRepository.delete({
-			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
-			reason: 'word',
 		});
 
 		// 使われてないアンテナを停止
@@ -77,6 +66,8 @@ export class CleanProcessorService {
 				id: In(expiredRoleAssignments.map(x => x.id)),
 			});
 		}
+
+		this.reversiService.cleanOutdatedGames();
 
 		this.logger.succ('Cleaned.');
 	}

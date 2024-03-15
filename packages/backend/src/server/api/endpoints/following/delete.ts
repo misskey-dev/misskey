@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { FollowingsRepository } from '@/models/index.js';
+import type { FollowingsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
@@ -85,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Check not following
-			const exist = await this.followingsRepository.exist({
+			const exist = await this.followingsRepository.exists({
 				where: {
 					followerId: follower.id,
 					followeeId: followee.id,

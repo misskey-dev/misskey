@@ -1,15 +1,16 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistrationTicketsRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { generateInviteCode } from '@/misc/generate-invite-code.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -17,6 +18,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:invite-codes',
 
 	errors: {
 		invalidDateTime: {
@@ -32,13 +34,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			properties: {
-				code: {
-					type: 'string',
-					optional: false, nullable: false,
-					example: 'GR6S02ERUA5VR',
-				},
-			},
+			ref: 'InviteCode',
 		},
 	},
 } as const;
@@ -60,6 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private inviteCodeEntityService: InviteCodeEntityService,
 		private idService: IdService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.expiresAt && isNaN(Date.parse(ps.expiresAt))) {
@@ -70,14 +67,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			for (let i = 0; i < ps.count; i++) {
 				ticketsPromises.push(this.registrationTicketsRepository.insert({
-					id: this.idService.genId(),
-					createdAt: new Date(),
+					id: this.idService.gen(),
 					expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
 					code: generateInviteCode(),
 				}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0])));
 			}
 
 			const tickets = await Promise.all(ticketsPromises);
+
+			this.moderationLogService.log(me, 'createInvitation', {
+				invitations: tickets,
+			});
+
 			return await this.inviteCodeEntityService.packMany(tickets, me);
 		});
 	}

@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AccessTokensRepository } from '@/models/index.js';
+import type { AccessTokensRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
@@ -59,8 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Insert access token doc
 			await this.accessTokensRepository.insert({
-				id: this.idService.genId(),
-				createdAt: now,
+				id: this.idService.gen(now.getTime()),
 				lastUsedAt: now,
 				session: ps.session,
 				userId: me.id,

@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { concat, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
 import { getApIds } from './type.js';
@@ -58,7 +58,7 @@ export class ApAudienceService {
 			};
 		}
 
-		if (toGroups.followers.length > 0) {
+		if (toGroups.followers.length > 0 || ccGroups.followers.length > 0) {
 			return {
 				visibility: 'followers',
 				mentionedUsers,

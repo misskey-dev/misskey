@@ -1,22 +1,25 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, Ref } from 'vue';
+import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { claimAchievement } from './achievements';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { url } from '@/config';
-import { defaultStore, noteActions } from '@/store';
-import { miLocalStorage } from '@/local-storage';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import { clipsCache } from '@/cache';
-import { MenuItem } from '@/types/menu';
+import { claimAchievement } from './achievements.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { url } from '@/config.js';
+import { defaultStore, noteActions } from '@/store.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { getUserMenu } from '@/scripts/get-user-menu.js';
+import { clipsCache } from '@/cache.js';
+import { MenuItem } from '@/types/menu.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -33,18 +36,18 @@ export async function getNoteClipMenu(props: {
 	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
 
 	const clips = await clipsCache.fetch();
-	return [...clips.map(clip => ({
+	const menu: MenuItem[] = [...clips.map(clip => ({
 		text: clip.name,
 		action: () => {
 			claimAchievement('noteClipped1');
 			os.promiseDialog(
-				os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
+				misskeyApi('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
 				null,
 				async (err) => {
 					if (err.id === '734806c4-542c-463a-9311-15c512803965') {
 						const confirm = await os.confirm({
 							type: 'warning',
-							text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
+							text: i18n.tsx.confirmToUnclipAlreadyClippedNote({ name: clip.name }),
 						});
 						if (!confirm.canceled) {
 							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
@@ -59,7 +62,7 @@ export async function getNoteClipMenu(props: {
 				},
 			);
 		},
-	})), null, {
+	})), { type: 'divider' }, {
 		icon: 'ti ti-plus',
 		text: i18n.ts.createNew,
 		action: async () => {
@@ -90,23 +93,28 @@ export async function getNoteClipMenu(props: {
 			os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
 		},
 	}];
+
+	return menu;
 }
 
-export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): MenuItem {
+export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): MenuItem {
 	return {
 		icon: 'ti ti-exclamation-circle',
 		text,
 		action: (): void => {
-			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
+			const localUrl = `${url}/notes/${note.id}`;
+			let noteInfo = '';
+			if (note.url ?? note.uri != null) noteInfo = `Note: ${note.url ?? note.uri}\n`;
+			noteInfo += `Local Note: ${localUrl}\n`;
 			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 				user: note.user,
-				initialComment: `Note: ${u}\n-----\n`,
+				initialComment: `${noteInfo}-----\n`,
 			}, {}, 'closed');
 		},
 	};
 }
 
-export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): MenuItem {
+export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): MenuItem {
 	return {
 		icon: 'ti ti-link',
 		text,
@@ -119,8 +127,7 @@ export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): 
 
 export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
-	menuButton: Ref<HTMLElement>;
-	translation: Ref<any>;
+	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
@@ -143,7 +150,7 @@ export function getNoteMenu(props: {
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
-			os.api('notes/delete', {
+			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
 			});
 
@@ -160,7 +167,7 @@ export function getNoteMenu(props: {
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
-			os.api('notes/delete', {
+			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
 			});
 
@@ -228,7 +235,7 @@ export function getNoteMenu(props: {
 
 	function share(): void {
 		navigator.share({
-			title: i18n.t('noteOf', { user: appearNote.user.name }),
+			title: i18n.tsx.noteOf({ user: appearNote.user.name }),
 			text: appearNote.text,
 			url: `${url}/notes/${appearNote.id}`,
 		});
@@ -238,22 +245,10 @@ export function getNoteMenu(props: {
 		os.pageWindow(`/notes/${appearNote.id}`);
 	}
 
-	function showReactions(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
-	}
-
-	function showRenotes(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkRenotedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
-	}
-
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
-		const res = await os.api('notes/translate', {
+		const res = await misskeyApi('notes/translate', {
 			noteId: appearNote.id,
 			targetLang: miLocalStorage.getItem('lang') ?? navigator.language,
 		});
@@ -263,7 +258,7 @@ export function getNoteMenu(props: {
 
 	let menu: MenuItem[];
 	if ($i) {
-		const statePromise = os.api('notes/state', {
+		const statePromise = misskeyApi('notes/state', {
 			noteId: appearNote.id,
 		});
 
@@ -274,19 +269,11 @@ export function getNoteMenu(props: {
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,
-				}, null] : []
+				}, { type: 'divider' }] : []
 			), {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
 				action: openDetail,
-			}, {
-				icon: 'ti ti-repeat',
-				text: i18n.ts.renotesList,
-				action: showRenotes,
-			}, {
-				icon: 'ti ti-icons',
-				text: i18n.ts.reactionsList,
-				action: showReactions,
 			}, {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
@@ -296,20 +283,20 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url ?? appearNote.uri, '_blank');
+					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
 			} : undefined,
-			{
+			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
 				action: share,
-			},
-			instance.translatorAvailable ? {
+			}] : []),
+			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
-			null,
+			{ type: 'divider' },
 			statePromise.then(state => state.isFavorited ? {
 				icon: 'ti ti-star-off',
 				text: i18n.ts.unfavorite,
@@ -348,7 +335,7 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-user',
 				text: i18n.ts.user,
 				children: async () => {
-					const user = appearNote.userId === $i?.id ? $i : await os.api('users/show', { userId: appearNote.userId });
+					const user = appearNote.userId === $i?.id ? $i : await misskeyApi('users/show', { userId: appearNote.userId });
 					const { menu, cleanup } = getUserMenu(user);
 					cleanups.push(cleanup);
 					return menu;
@@ -356,7 +343,7 @@ export function getNoteMenu(props: {
 			},
 			/*
 		...($i.isModerator || $i.isAdmin ? [
-			null,
+			{ type: 'divider' },
 			{
 				icon: 'ti ti-speakerphone',
 				text: i18n.ts.promote,
@@ -365,13 +352,49 @@ export function getNoteMenu(props: {
 			: []
 		),*/
 			...(appearNote.userId !== $i.id ? [
-				null,
+				{ type: 'divider' },
 				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
 			]
 			: []
 			),
+			...(appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin) ? [
+				{ type: 'divider' },
+				{
+					type: 'parent' as const,
+					icon: 'ti ti-device-tv',
+					text: i18n.ts.channel,
+					children: async () => {
+						const channelChildMenu = [] as MenuItem[];
+
+						const channel = await misskeyApi('channels/show', { channelId: appearNote.channel!.id });
+
+						if (channel.pinnedNoteIds.includes(appearNote.id)) {
+							channelChildMenu.push({
+								icon: 'ti ti-pinned-off',
+								text: i18n.ts.unpin,
+								action: () => os.apiWithDialog('channels/update', {
+									channelId: appearNote.channel!.id,
+									pinnedNoteIds: channel.pinnedNoteIds.filter(id => id !== appearNote.id),
+								}),
+							});
+						} else {
+							channelChildMenu.push({
+								icon: 'ti ti-pin',
+								text: i18n.ts.pin,
+								action: () => os.apiWithDialog('channels/update', {
+									channelId: appearNote.channel!.id,
+									pinnedNoteIds: [...channel.pinnedNoteIds, appearNote.id],
+								}),
+							});
+						}
+						return channelChildMenu;
+					},
+				},
+			]
+			: []
+			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
-				null,
+				{ type: 'divider' },
 				appearNote.userId === $i.id ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
@@ -388,8 +411,8 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'ti ti-external-link',
-			text: i18n.ts.detailed,
+			icon: 'ti ti-info-circle',
+			text: i18n.ts.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',
@@ -400,14 +423,14 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
-				window.open(appearNote.url ?? appearNote.uri, '_blank');
+				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
 		} : undefined]
 			.filter(x => x !== undefined);
 	}
 
 	if (noteActions.length > 0) {
-		menu = menu.concat([null, ...noteActions.map(action => ({
+		menu = menu.concat([{ type: 'divider' }, ...noteActions.map(action => ({
 			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
@@ -417,7 +440,7 @@ export function getNoteMenu(props: {
 	}
 
 	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
+		menu = menu.concat([{ type: 'divider' }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
 			action: () => {
@@ -436,5 +459,123 @@ export function getNoteMenu(props: {
 	return {
 		menu,
 		cleanup,
+	};
+}
+
+type Visibility = 'public' | 'home' | 'followers' | 'specified';
+
+// defaultStore.state.visibilityがstringなためstringも受け付けている
+function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
+	if (a === 'specified' || b === 'specified') return 'specified';
+	if (a === 'followers' || b === 'followers') return 'followers';
+	if (a === 'home' || b === 'home') return 'home';
+	// if (a === 'public' || b === 'public')
+	return 'public';
+}
+
+export function getRenoteMenu(props: {
+	note: Misskey.entities.Note;
+	renoteButton: ShallowRef<HTMLElement | undefined>;
+	mock?: boolean;
+}) {
+	const isRenote = (
+		props.note.renote != null &&
+		props.note.text == null &&
+		props.note.fileIds.length === 0 &&
+		props.note.poll == null
+	);
+
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+
+	const channelRenoteItems: MenuItem[] = [];
+	const normalRenoteItems: MenuItem[] = [];
+
+	if (appearNote.channel) {
+		channelRenoteItems.push(...[{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = props.renoteButton.value;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
+				if (!props.mock) {
+					misskeyApi('notes/create', {
+						renoteId: appearNote.id,
+						channelId: appearNote.channelId,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				if (!props.mock) {
+					os.post({
+						renote: appearNote,
+						channel: appearNote.channel,
+					});
+				}
+			},
+		}]);
+	}
+
+	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
+		normalRenoteItems.push(...[{
+			text: i18n.ts.renote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = props.renoteButton.value;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
+				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+
+				let visibility = appearNote.visibility;
+				visibility = smallerVisibility(visibility, configuredVisibility);
+				if (appearNote.channel?.isSensitive) {
+					visibility = smallerVisibility(visibility, 'home');
+				}
+
+				if (!props.mock) {
+					misskeyApi('notes/create', {
+						localOnly,
+						visibility,
+						renoteId: appearNote.id,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, (props.mock) ? undefined : {
+			text: i18n.ts.quote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+				});
+			},
+		}]);
+	}
+
+	const renoteItems = [
+		...normalRenoteItems,
+		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [{ type: 'divider' }] as MenuItem[] : [],
+		...channelRenoteItems,
+	];
+
+	return {
+		menu: renoteItems,
 	};
 }

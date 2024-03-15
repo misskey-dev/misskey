@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, DriveFilesRepository, MiDriveFile } from '@/models/index.js';
+import type { UsersRepository, DriveFilesRepository, MiDriveFile } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';

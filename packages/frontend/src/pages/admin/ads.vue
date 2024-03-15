@@ -1,19 +1,27 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header>
+		<XHeader :actions="headerActions" :tabs="headerTabs"/>
+	</template>
 	<MkSpacer :contentMax="900">
+		<MkSelect v-model="filterType" :class="$style.input" @update:modelValue="filterItems">
+			<template #label>{{ i18n.ts.state }}</template>
+			<option value="all">{{ i18n.ts.all }}</option>
+			<option value="publishing">{{ i18n.ts.publishing }}</option>
+			<option value="expired">{{ i18n.ts.expired }}</option>
+		</MkSelect>
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
-				<MkAd v-if="ad.url" :specify="ad"/>
+				<MkAd v-if="ad.url" :key="ad.id" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
 				</MkInput>
-				<MkInput v-model="ad.imageUrl">
+				<MkInput v-model="ad.imageUrl" type="url">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
 				<MkRadios v-model="ad.place">
@@ -46,7 +54,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span>
 						{{ i18n.ts._ad.timezoneinfo }}
 						<div v-for="(day, index) in daysOfWeek" :key="index">
-							<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayOfWeek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad, index)">
+							<input
+								:id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayOfWeek & (1 << index)) !== 0"
+								@change="toggleDayOfWeek(ad, index)"
+							>
 							<label :for="`ad${ad.id}-${index}`">{{ day }}</label>
 						</div>
 					</span>
@@ -55,8 +66,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
 				<div class="buttons">
-					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton class="button" inline danger @click="remove(ad)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)">
+						<i
+							class="ti ti-device-floppy"
+						></i> {{ i18n.ts.save }}
+					</MkButton>
+					<MkButton class="button" inline danger @click="remove(ad)">
+						<i class="ti ti-trash"></i> {{ i18n.ts.remove }}
+					</MkButton>
 				</div>
 			</div>
 			<MkButton class="button" @click="more()">
@@ -68,38 +85,57 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let ads: any[] = $ref([]);
+const ads = ref<Misskey.entities.Ad[]>([]);
 
 // ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
 const localTime = new Date();
 const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
 const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, i18n.ts._weekday.tuesday, i18n.ts._weekday.wednesday, i18n.ts._weekday.thursday, i18n.ts._weekday.friday, i18n.ts._weekday.saturday];
+const filterType = ref('all');
+let publishing: boolean | null = null;
 
-os.api('admin/ad/list').then(adsResponse => {
-	ads = adsResponse.map(r => {
-		const exdate = new Date(r.expiresAt);
-		const stdate = new Date(r.startsAt);
-		exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
-		stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
-		return {
-			...r,
-			expiresAt: exdate.toISOString().slice(0, 16),
-			startsAt: stdate.toISOString().slice(0, 16),
-		};
-	});
+misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+	if (adsResponse != null) {
+		ads.value = adsResponse.map(r => {
+			const exdate = new Date(r.expiresAt);
+			const stdate = new Date(r.startsAt);
+			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
+			stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
+			return {
+				...r,
+				expiresAt: exdate.toISOString().slice(0, 16),
+				startsAt: stdate.toISOString().slice(0, 16),
+			};
+		});
+	}
 });
+
+const filterItems = (v) => {
+	if (v === 'publishing') {
+		publishing = true;
+	} else if (v === 'expired') {
+		publishing = false;
+	} else {
+		publishing = null;
+	}
+
+	refresh();
+};
 
 // 選択された曜日(index)のビットフラグを操作する
 function toggleDayOfWeek(ad, index) {
@@ -107,7 +143,7 @@ function toggleDayOfWeek(ad, index) {
 }
 
 function add() {
-	ads.unshift({
+	ads.value.unshift({
 		id: null,
 		memo: '',
 		place: 'square',
@@ -124,20 +160,22 @@ function add() {
 function remove(ad) {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: ad.url }),
+		text: i18n.tsx.removeAreYouSure({ x: ad.url }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		ads = ads.filter(x => x !== ad);
+		ads.value = ads.value.filter(x => x !== ad);
 		if (ad.id == null) return;
 		os.apiWithDialog('admin/ad/delete', {
 			id: ad.id,
+		}).then(() => {
+			refresh();
 		});
 	});
 }
 
 function save(ad) {
 	if (ad.id == null) {
-		os.api('admin/ad/create', {
+		misskeyApi('admin/ad/create', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
 			startsAt: new Date(ad.startsAt).getTime(),
@@ -154,7 +192,7 @@ function save(ad) {
 			});
 		});
 	} else {
-		os.api('admin/ad/update', {
+		misskeyApi('admin/ad/update', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
 			startsAt: new Date(ad.startsAt).getTime(),
@@ -171,9 +209,11 @@ function save(ad) {
 		});
 	}
 }
+
 function more() {
-	os.api('admin/ad/list', { untilId: ads.reduce((acc, ad) => ad.id != null ? ad : acc).id }).then(adsResponse => {
-		ads = ads.concat(adsResponse.map(r => {
+	misskeyApi('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
+		if (adsResponse == null) return;
+		ads.value = ads.value.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
@@ -188,8 +228,9 @@ function more() {
 }
 
 function refresh() {
-	os.api('admin/ad/list').then(adsResponse => {
-		ads = adsResponse.map(r => {
+	misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+		if (adsResponse == null) return;
+		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
@@ -205,19 +246,19 @@ function refresh() {
 
 refresh();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.ads,
 	icon: 'ti ti-ad',
-});
+}));
 </script>
 
 <style lang="scss" module>
@@ -227,5 +268,8 @@ definePageMetadata({
 	&:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
+}
+.input {
+	margin-bottom: 32px;
 }
 </style>

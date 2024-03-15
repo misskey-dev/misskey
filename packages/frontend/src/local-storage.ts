@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,7 @@ type Keys =
 	'latestDonationInfoShownAt' |
 	'neverShowDonationInfo' |
 	'neverShowLocalOnlyInfo' |
+	'modifiedVersionMustProminentlyOfferInAgplV3Section13Read' |
 	'lastUsed' |
 	'lang' |
 	'drafts' |
@@ -35,7 +36,8 @@ type Keys =
 	`themes:${string}` |
 	`aiscript:${string}` |
 	'lastEmojisFetchedAt' | // DEPRECATED, stored in indexeddb (13.9.0~)
-	'emojis' // DEPRECATED, stored in indexeddb (13.9.0~);
+	'emojis' | // DEPRECATED, stored in indexeddb (13.9.0~);
+	`channelLastReadedAt:${string}`
 
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => window.localStorage.getItem(key),

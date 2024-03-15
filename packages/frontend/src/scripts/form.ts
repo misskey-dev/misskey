@@ -1,9 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-type EnumItem = string | {label: string; value: string;};
+type EnumItem = string | {
+	label: string;
+	value: string;
+};
+
 export type FormItem = {
 	label?: string;
 	type: 'string';
@@ -38,14 +42,21 @@ export type FormItem = {
 	}[];
 } | {
 	label?: string;
+	type: 'range';
+	default: number | null;
+	step: number;
+	min: number;
+	max: number;
+} | {
+	label?: string;
 	type: 'object';
 	default: Record<string, unknown> | null;
-	hidden: true;
+	hidden: boolean;
 } | {
 	label?: string;
 	type: 'array';
 	default: unknown[] | null;
-	hidden: true;
+	hidden: boolean;
 };
 
 export type Form = Record<string, FormItem>;
@@ -55,6 +66,7 @@ type GetItemType<Item extends FormItem> =
 	Item['type'] extends 'number' ? number :
 	Item['type'] extends 'boolean' ? boolean :
 	Item['type'] extends 'radio' ? unknown :
+	Item['type'] extends 'range' ? number :
 	Item['type'] extends 'enum' ? string :
 	Item['type'] extends 'array' ? unknown[] :
 	Item['type'] extends 'object' ? Record<string, unknown>

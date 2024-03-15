@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +8,7 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -52,6 +52,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		fileId: { type: 'string', format: 'misskey:id' },
+		withReplies: { type: 'boolean' },
 	},
 	required: ['fileId'],
 } as const;
@@ -79,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			);
 			if (checkMoving ? file.size > 32 * 1024 * 1024 : file.size > 64 * 1024) throw new ApiError(meta.errors.tooBigFile);
 
-			this.queueService.createImportFollowingJob(me, file.id);
+			this.queueService.createImportFollowingJob(me, file.id, ps.withReplies);
 		});
 	}
 }

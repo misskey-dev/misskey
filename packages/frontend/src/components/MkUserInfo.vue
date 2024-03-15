@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<span v-if="$i && $i.id !== user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
 	<div :class="$style.description">
 		<div v-if="user.description" :class="$style.mfm">
-			<Mfm :text="user.description" :author="user" :i="$i"/>
+			<Mfm :text="user.description" :author="user"/>
 		</div>
 		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
 	</div>
@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
 		</div>
-		<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+		<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
 		</div>
-		<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+		<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</div>
 	</div>
@@ -36,11 +36,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import number from '@/filters/number';
-import { userPage } from '@/filters/user';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
+import number from '@/filters/number.js';
+import { userPage } from '@/filters/user.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

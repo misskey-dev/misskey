@@ -1,15 +1,15 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';

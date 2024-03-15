@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,6 +13,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:notifications',
+
+	limit: {
+		duration: 1000 * 60,
+		max: 10,
+	},
 } as const;
 
 export const paramDef = {

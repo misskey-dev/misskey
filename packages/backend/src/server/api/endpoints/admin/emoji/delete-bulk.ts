@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 } as const;
 
 export const paramDef = {
@@ -30,7 +31,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.customEmojiService.deleteBulk(ps.ids);
+			await this.customEmojiService.deleteBulk(ps.ids, me);
 		});
 	}
 }

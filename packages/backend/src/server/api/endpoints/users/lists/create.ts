@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository } from '@/models/index.js';
+import type { UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
+import type { MiUserList } from '@/models/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -66,8 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const userList = await this.userListsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
 			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));

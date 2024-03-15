@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
-import type { MiRemoteUser } from '@/models/entities/User.js';
+import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/_.js';
+import type { MiRemoteUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -145,8 +145,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Create vote
 			const vote = await this.pollVotesRepository.insert({
-				id: this.idService.genId(),
-				createdAt,
+				id: this.idService.gen(createdAt.getTime()),
 				noteId: note.id,
 				userId: me.id,
 				choice: ps.choice,

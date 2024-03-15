@@ -1,24 +1,26 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import { common } from './common';
-import { version, ui, lang, updateLocale } from '@/config';
-import { i18n, updateI18n } from '@/i18n';
-import { confirm, alert, post, popup, toast } from '@/os';
-import { useStream } from '@/stream';
-import * as sound from '@/scripts/sound';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { makeHotkey } from '@/scripts/hotkey';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { miLocalStorage } from '@/local-storage';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
-import { mainRouter } from '@/router';
-import { initializeSw } from '@/scripts/initialize-sw';
-import { deckStore } from '@/ui/deck/deck-store';
+import { createApp, defineAsyncComponent, markRaw } from 'vue';
+import { common } from './common.js';
+import { ui } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import { alert, confirm, popup, post, toast } from '@/os.js';
+import { useStream } from '@/stream.js';
+import * as sound from '@/scripts/sound.js';
+import { $i, signout, updateAccount } from '@/account.js';
+import { fetchInstance, instance } from '@/instance.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { initializeSw } from '@/scripts/initialize-sw.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
+import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { mainRouter } from '@/router/main.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -30,6 +32,7 @@ export async function mainBoot() {
 	));
 
 	reactionPicker.init();
+	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
 		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
@@ -57,7 +60,7 @@ export async function mainBoot() {
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('../plugin').then(async ({ install }) => {
+		import('@/plugin.js').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
 			await new Promise(r => setTimeout(r, 0));
 			install(plugin);
@@ -72,6 +75,28 @@ export async function mainBoot() {
 			mainRouter.push('/search');
 		},
 	};
+
+	if (defaultStore.state.enableSeasonalScreenEffect) {
+		const month = new Date().getMonth() + 1;
+		if (defaultStore.state.hemisphere === 'S') {
+			// ▼南半球
+			if (month === 7 || month === 8) {
+				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+				new SnowfallEffect({}).render();
+			}
+		} else {
+			// ▼北半球
+			if (month === 12 || month === 1) {
+				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+				new SnowfallEffect({}).render();
+			} else if (month === 3 || month === 4) {
+				const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+				new SakuraEffect({
+					sakura: true,
+				}).render();
+			}
+		}
+	}
 
 	if ($i) {
 		// only add post shortcuts if logged in
@@ -195,7 +220,7 @@ export async function mainBoot() {
 			const lastUsedDate = parseInt(lastUsed, 10);
 			// 二時間以上前なら
 			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.t('welcomeBackWithName', {
+				toast(i18n.tsx.welcomeBackWithName({
 					name: $i.name || $i.username,
 				}));
 			}
@@ -209,6 +234,13 @@ export async function mainBoot() {
 				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
 			}
 		}
+
+		fetchInstance().then(() => {
+			const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
+			if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
+				popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
+			}
+		});
 
 		if ('Notification' in window) {
 			// 許可を得ていなかったらリクエスト
@@ -225,11 +257,18 @@ export async function mainBoot() {
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccount({ hasUnreadNotification: false });
+			updateAccount({
+				hasUnreadNotification: false,
+				unreadNotificationsCount: 0,
+			});
 		});
 
 		main.on('unreadNotification', () => {
-			updateAccount({ hasUnreadNotification: true });
+			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
+			updateAccount({
+				hasUnreadNotification: true,
+				unreadNotificationsCount,
+			});
 		});
 
 		main.on('unreadMention', () => {
@@ -254,7 +293,7 @@ export async function mainBoot() {
 
 		main.on('unreadAntenna', () => {
 			updateAccount({ hasUnreadAntenna: true });
-			sound.play('antenna');
+			sound.playMisskeySfx('antenna');
 		});
 
 		main.on('readAllAnnouncements', () => {

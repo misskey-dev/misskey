@@ -1,17 +1,18 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
+import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiGalleryPost } from '@/models/entities/GalleryPost.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiGalleryPost } from '@/models/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -26,6 +27,7 @@ export class GalleryPostEntityService {
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -39,7 +41,7 @@ export class GalleryPostEntityService {
 
 		return await awaitAll({
 			id: post.id,
-			createdAt: post.createdAt.toISOString(),
+			createdAt: this.idService.parse(post.id).date.toISOString(),
 			updatedAt: post.updatedAt.toISOString(),
 			userId: post.userId,
 			user: this.userEntityService.pack(post.user ?? post.userId, me),
@@ -51,7 +53,7 @@ export class GalleryPostEntityService {
 			tags: post.tags.length > 0 ? post.tags : undefined,
 			isSensitive: post.isSensitive,
 			likedCount: post.likedCount,
-			isLiked: meId ? await this.galleryLikesRepository.exist({ where: { postId: post.id, userId: meId } }) : undefined,
+			isLiked: meId ? await this.galleryLikesRepository.exists({ where: { postId: post.id, userId: meId } }) : undefined,
 		});
 	}
 

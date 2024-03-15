@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Not, In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { maximum } from '@/misc/prelude/array.js';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -122,7 +122,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Make replies object (includes weights)
 			const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
-				user: await this.userEntityService.pack(user, me, { detail: true }),
+				user: await this.userEntityService.pack(user, me, { schema: 'UserDetailed' }),
 				weight: repliedUsers[user] / peak,
 			})));
 

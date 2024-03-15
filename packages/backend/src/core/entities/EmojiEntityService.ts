@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { MiEmoji } from '@/models/entities/Emoji.js';
+import type { } from '@/models/Blocking.js';
+import type { MiEmoji } from '@/models/Emoji.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class EmojiEntityService {
 			category: emoji.category,
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url: emoji.publicUrl || emoji.originalUrl,
+			localOnly: emoji.localOnly ? true : undefined,
 			isSensitive: emoji.isSensitive ? true : undefined,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length > 0 ? emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : undefined,
 		};

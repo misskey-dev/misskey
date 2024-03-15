@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -29,19 +29,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { infoImageUrl } from '@/instance';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { infoImageUrl } from '@/instance.js';
 
 const pagination = {
 	endpoint: 'i/favorites' as const,
 	limit: 10,
 };
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.favorites,
 	icon: 'ti ti-star',
-});
+}));
 </script>
 
 <style lang="scss" module>

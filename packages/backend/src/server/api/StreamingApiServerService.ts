@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,14 +8,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, MiAccessToken } from '@/models/index.js';
+import type { UsersRepository, MiAccessToken } from '@/models/_.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { MiLocalUser } from '@/models/entities/User.js';
+import { MiLocalUser } from '@/models/User.js';
+import { UserService } from '@/core/UserService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import MainStreamConnection from './stream/index.js';
+import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type * as http from 'node:http';
 
@@ -37,6 +39,8 @@ export class StreamingApiServerService {
 		private authenticateService: AuthenticateService,
 		private channelsService: ChannelsService,
 		private notificationService: NotificationService,
+		private usersService: UserService,
+		private channelFollowingService: ChannelFollowingService,
 	) {
 	}
 
@@ -67,6 +71,10 @@ export class StreamingApiServerService {
 
 			try {
 				[user, app] = await this.authenticateService.authenticate(token);
+
+				if (app !== null && !app.permission.some(p => p === 'read:account')) {
+					throw new AuthenticationError('Your app does not have necessary permissions to use websocket API.');
+				}
 			} catch (e) {
 				if (e instanceof AuthenticationError) {
 					socket.write([
@@ -91,6 +99,7 @@ export class StreamingApiServerService {
 				this.noteReadService,
 				this.notificationService,
 				this.cacheService,
+				this.channelFollowingService,
 				user, app,
 			);
 
@@ -130,14 +139,10 @@ export class StreamingApiServerService {
 			this.#connections.set(connection, Date.now());
 
 			const userUpdateIntervalId = user ? setInterval(() => {
-				this.usersRepository.update(user.id, {
-					lastActiveDate: new Date(),
-				});
+				this.usersService.updateLastActiveDate(user);
 			}, 1000 * 60 * 5) : null;
 			if (user) {
-				this.usersRepository.update(user.id, {
-					lastActiveDate: new Date(),
-				});
+				this.usersService.updateLastActiveDate(user);
 			}
 
 			connection.once('close', () => {

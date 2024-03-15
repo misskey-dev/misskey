@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,10 +20,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { host } from '@/config';
-import { instance } from '@/instance';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { host } from '@/config.js';
+import { instance } from '@/instance.js';
 
 const name = 'instanceInfo';
 

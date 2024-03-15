@@ -1,0 +1,73 @@
+# this name is used in report-api-diff.yml so be careful when change name
+name: Get api.json from Misskey
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+      - .github/workflows/get-api-diff.yml
+
+jobs:
+  get-from-misskey:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [20.10.0]
+        api-json-name: [api-base.json, api-head.json]
+        include:
+          - api-json-name: api-base.json
+            ref: ${{ github.base_ref }}
+          - api-json-name: api-head.json
+            ref: refs/pull/${{ github.event.number }}/merge
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        ref: ${{ matrix.ref }}
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 8
+        run_install: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4.0.2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .config/example.yml .config/default.yml
+    - name: Build
+      run: pnpm build
+    - name: Generate API JSON
+      run: pnpm --filter backend generate-api-json
+    - name: Copy API.json
+      run: cp packages/backend/built/api.json ${{ matrix.api-json-name }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: api-artifact-${{ matrix.api-json-name }}
+        path: ${{ matrix.api-json-name }}
+
+  save-pr-number:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          echo "$PR_NUMBER" > ./pr_number
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-artifact-pr-number
+          path: pr_number

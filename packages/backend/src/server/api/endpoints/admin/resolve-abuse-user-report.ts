@@ -1,21 +1,23 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
+import type { UsersRepository, AbuseUserReportsRepository } from '@/models/_.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:resolve-abuse-user-report',
 } as const;
 
 export const paramDef = {
@@ -41,6 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queueService: QueueService,
 		private instanceActorService: InstanceActorService,
 		private apRendererService: ApRendererService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const report = await this.abuseUserReportsRepository.findOneBy({ id: ps.reportId });
@@ -59,6 +62,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.abuseUserReportsRepository.update(report.id, {
 				resolved: true,
 				assigneeId: me.id,
+				forwarded: ps.forward && report.targetUserHost != null,
+			});
+
+			this.moderationLogService.log(me, 'resolveAbuseReport', {
+				reportId: report.id,
+				report: report,
 				forwarded: ps.forward && report.targetUserHost != null,
 			});
 		});

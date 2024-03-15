@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { PromoReadsRepository } from '@/models/index.js';
+import type { PromoReadsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -15,6 +15,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	kind: 'write:account',
 
 	errors: {
 		noSuchNote: {
@@ -48,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			const exist = await this.promoReadsRepository.exist({
+			const exist = await this.promoReadsRepository.exists({
 				where: {
 					noteId: note.id,
 					userId: me.id,
@@ -60,8 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.promoReadsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				noteId: note.id,
 				userId: me.id,
 			});

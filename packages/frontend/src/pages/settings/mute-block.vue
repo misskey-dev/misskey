@@ -1,17 +1,35 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="_gaps_m">
-	<MkTab v-model="tab">
-		<option value="renoteMute">{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</option>
-		<option value="mute">{{ i18n.ts.mutedUsers }}</option>
-		<option value="block">{{ i18n.ts.blockedUsers }}</option>
-	</MkTab>
+	<MkFolder>
+		<template #icon><i class="ti ti-message-off"></i></template>
+		<template #label>{{ i18n.ts.wordMute }}</template>
 
-	<div v-if="tab === 'renoteMute'">
+		<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
+	</MkFolder>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-message-off"></i></template>
+		<template #label>{{ i18n.ts.hardWordMute }}</template>
+
+		<XWordMute :muted="$i.hardMutedWords" @save="saveHardMutedWords"/>
+	</MkFolder>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-planet-off"></i></template>
+		<template #label>{{ i18n.ts.instanceMute }}</template>
+
+		<XInstanceMute/>
+	</MkFolder>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-repeat-off"></i></template>
+		<template #label>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</template>
+
 		<MkPagination :pagination="renoteMutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -37,9 +55,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 		</MkPagination>
-	</div>
+	</MkFolder>
 
-	<div v-else-if="tab === 'mute'">
+	<MkFolder>
+		<template #icon><i class="ti ti-eye-off"></i></template>
+		<template #label>{{ i18n.ts.mutedUsers }}</template>
+
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -67,9 +88,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 		</MkPagination>
-	</div>
+	</MkFolder>
 
-	<div v-else-if="tab === 'block'">
+	<MkFolder>
+		<template #icon><i class="ti ti-ban"></i></template>
+		<template #label>{{ i18n.ts.blockedUsers }}</template>
+
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -97,24 +121,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 		</MkPagination>
-	</div>
+	</MkFolder>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
+import XInstanceMute from './mute-block.instance-mute.vue';
+import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import MkTab from '@/components/MkTab.vue';
-import FormInfo from '@/components/MkInfo.vue';
-import FormLink from '@/components/form/link.vue';
-import { userPage } from '@/filters/user';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { userPage } from '@/filters/user.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import * as os from '@/os';
-import { infoImageUrl } from '@/instance';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { infoImageUrl } from '@/instance.js';
+import { signinRequired } from '@/account.js';
+import MkFolder from '@/components/MkFolder.vue';
 
-let tab = $ref('renoteMute');
+const $i = signinRequired();
 
 const renoteMutingPagination = {
 	endpoint: 'renote-mute/list' as const,
@@ -131,9 +157,9 @@ const blockingPagination = {
 	limit: 10,
 };
 
-let expandedRenoteMuteItems = $ref([]);
-let expandedMuteItems = $ref([]);
-let expandedBlockItems = $ref([]);
+const expandedRenoteMuteItems = ref([]);
+const expandedMuteItems = ref([]);
+const expandedBlockItems = ref([]);
 
 async function unrenoteMute(user, ev) {
 	os.popupMenu([{
@@ -169,37 +195,45 @@ async function unblock(user, ev) {
 }
 
 async function toggleRenoteMuteItem(item) {
-	if (expandedRenoteMuteItems.includes(item.id)) {
-		expandedRenoteMuteItems = expandedRenoteMuteItems.filter(x => x !== item.id);
+	if (expandedRenoteMuteItems.value.includes(item.id)) {
+		expandedRenoteMuteItems.value = expandedRenoteMuteItems.value.filter(x => x !== item.id);
 	} else {
-		expandedRenoteMuteItems.push(item.id);
+		expandedRenoteMuteItems.value.push(item.id);
 	}
 }
 
 async function toggleMuteItem(item) {
-	if (expandedMuteItems.includes(item.id)) {
-		expandedMuteItems = expandedMuteItems.filter(x => x !== item.id);
+	if (expandedMuteItems.value.includes(item.id)) {
+		expandedMuteItems.value = expandedMuteItems.value.filter(x => x !== item.id);
 	} else {
-		expandedMuteItems.push(item.id);
+		expandedMuteItems.value.push(item.id);
 	}
 }
 
 async function toggleBlockItem(item) {
-	if (expandedBlockItems.includes(item.id)) {
-		expandedBlockItems = expandedBlockItems.filter(x => x !== item.id);
+	if (expandedBlockItems.value.includes(item.id)) {
+		expandedBlockItems.value = expandedBlockItems.value.filter(x => x !== item.id);
 	} else {
-		expandedBlockItems.push(item.id);
+		expandedBlockItems.value.push(item.id);
 	}
 }
 
-const headerActions = $computed(() => []);
+async function saveMutedWords(mutedWords: (string | string[])[]) {
+	await misskeyApi('i/update', { mutedWords });
+}
 
-const headerTabs = $computed(() => []);
+async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
+	await misskeyApi('i/update', { hardMutedWords });
+}
 
-definePageMetadata({
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
+
+definePageMetadata(() => ({
 	title: i18n.ts.muteAndBlock,
 	icon: 'ti ti-ban',
-});
+}));
 </script>
 
 <style lang="scss" module>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,21 +23,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { deckStore } from '@/ui/deck/deck-store';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { deckStore } from '@/ui/deck/deck-store.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const navWindow = computed(deckStore.makeGetterSetter('navWindow'));
 const useSimpleUiForNonRootPages = computed(deckStore.makeGetterSetter('useSimpleUiForNonRootPages'));
 const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
 const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.deck,
 	icon: 'ti ti-columns',
-});
+}));
 </script>

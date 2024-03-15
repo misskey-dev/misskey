@@ -120,7 +120,6 @@ sensitive: "Sezuvchan"
 add: "Qo'shish"
 reaction: "Reaktsiyalar"
 reactions: "Reaktsiyalar"
-reactionSetting: "Reaksiyalar ro'yxati"
 reactionSettingDescription2: "Qayta tartiblash uchun ushlab turib siljiting, oʻchirish uchun bosing, qoʻshish uchun “+” tugmasini bosing."
 rememberNoteVisibility: "Qaydning ko'rinish sozlamarini eslab qolish"
 attachCancel: "Qo'shimchani olib tashlash"
@@ -355,7 +354,6 @@ invite: "Taklif qilish"
 driveCapacityPerLocalAccount: "Har bir mahalliy foydalanuvchi uchun disk maydoni"
 driveCapacityPerRemoteAccount: "Har bir masofaviy foydalanuvchi uchun disk maydoni"
 inMb: "Megabaytlarda"
-iconUrl: "Ikonkaning URL manzili (masalan: favicon)"
 bannerUrl: "Banner URLi"
 backgroundImageUrl: "Fon rasmi URL manzili"
 basicInfo: "Asosiy ma'lumot"
@@ -368,6 +366,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "hCaptchani yoqish"
 hcaptchaSiteKey: "Sayt kaliti"
 hcaptchaSecretKey: "Mahfiy kalit"
+mcaptchaSiteKey: "Sayt kaliti"
+mcaptchaSecretKey: "Maxfiy kalit"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "reCAPTCHA ni yoqish"
 recaptchaSiteKey: "Sayt kaliti"
@@ -429,7 +429,6 @@ share: "Yuborish"
 notFound: "Topilmadi"
 notFoundDescription: "Ushbu sahifa topilmadi"
 uploadFolder: "Jildni yuklash"
-cacheClear: "Keshni tozalash"
 markAsReadAllNotifications: "Bildirishnomalarni o'qilgan deb belgilash"
 markAsReadAllUnreadNotes: "Barch xabarlarni oq'ilgan deb belgilash"
 markAsReadAllTalkMessages: "Barcha suhbatlarni o'qilgan deb belgilang"
@@ -844,6 +843,9 @@ rolesAssignedToMe: "Mening rollarim"
 resetPasswordConfirm: "Qayta parol o'rnatmoqchimisiz?"
 sensitiveWords: "Ta'sirchan so'zlar"
 icon: "Avatar"
+replies: "Javob berish"
+renotes: "Qayta qayd etish"
+flip: "Teskari"
 _achievements:
   _types:
     _viewInstanceChart:
@@ -909,7 +911,6 @@ _theme:
 _sfx:
   note: "Qaydlar"
   notification: "Xabarnomalar"
-  chat: "Suhbat"
 _ago:
   minutesAgo: "{n} daqiqa oldin"
   hoursAgo: "{n} soat oldin"
@@ -974,6 +975,7 @@ _profile:
   changeBanner: "Bannerni o'zgartirish"
 _exportOrImport:
   allNotes: "Barcha qaydlar"
+  clips: "Klip"
   followingList: "Obuna bo‘lish"
   muteList: "Ovozni o‘chirish"
   blockingList: "Bloklangan foydalanuvchilar"
@@ -1083,3 +1085,9 @@ _webhookSettings:
   _events:
     renote: "Qayta qayd qilinganda"
     mention: "Eslanganda"
+_moderationLogTypes:
+  suspend: "To'xtatish"
+  resetPassword: "Parolni tiklash"
+_reversi:
+  total: "Jami"
+

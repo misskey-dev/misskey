@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,8 +15,8 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import { getApId } from '@/core/activitypub/type.js';
-import type { MiRemoteUser } from '@/models/entities/User.js';
-import type { MiUserPublickey } from '@/models/entities/UserPublickey.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -85,10 +85,10 @@ export class InboxProcessorService {
 			} catch (err) {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
-					if (err.isClientError) {
+					if (!err.isRetryable) {
 						throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
 					}
-					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode ?? err}`);
+					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
 				}
 			}
 		}

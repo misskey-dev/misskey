@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const users = await query.limit(ps.limit).offset(ps.offset).getMany();
 
-			return await this.userEntityService.packMany(users, me, { detail: true });
+			return await this.userEntityService.packMany(users, me, { schema: 'UserDetailed' });
 		});
 	}
 }

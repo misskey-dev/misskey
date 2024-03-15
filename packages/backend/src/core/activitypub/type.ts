@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,7 @@ export interface IObject {
 	id?: string;
 	name?: string | null;
 	summary?: string;
+	_misskey_summary?: string;
 	published?: string;
 	cc?: ApObject;
 	to?: ApObject;

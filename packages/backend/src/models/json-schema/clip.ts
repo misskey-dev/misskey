@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -44,13 +44,13 @@ export const packedClipSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		isFavorited: {
-			type: 'boolean',
-			optional: true, nullable: false,
-		},
 		favoritedCount: {
 			type: 'number',
 			optional: false, nullable: false,
+		},
+		isFavorited: {
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 	},
 } as const;

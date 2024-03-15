@@ -1,23 +1,28 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="_gaps_m">
-	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
-			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+	<div class="_panel">
+		<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+			<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 		</div>
-		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+		<div :class="$style.avatarContainer">
+			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
+			<div class="_buttonsCenter">
+				<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+				<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+			</div>
+		</div>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave>
+	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
@@ -76,6 +81,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</template>
 				</Sortable>
+
+				<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 			</div>
 		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -102,23 +109,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { langmap } from '@/scripts/langmap';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { claimAchievement } from '@/scripts/achievements';
-import { defaultStore } from '@/store';
+import { selectFile } from '@/scripts/select-file.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { signinRequired } from '@/account.js';
+import { langmap } from '@/scripts/langmap.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { defaultStore } from '@/store.js';
+import { globalEvents } from '@/events.js';
+import MkInfo from '@/components/MkInfo.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+
+const $i = signinRequired();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -130,8 +141,8 @@ const profile = reactive({
 	location: $i.location,
 	birthday: $i.birthday,
 	lang: $i.lang,
-	isBot: $i.isBot,
-	isCat: $i.isCat,
+	isBot: $i.isBot ?? false,
+	isCat: $i.isCat ?? false,
 });
 
 watch(() => profile, () => {
@@ -140,7 +151,7 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
+const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
 
 function addField() {
@@ -163,6 +174,7 @@ function saveFields() {
 	os.apiWithDialog('i/update', {
 		fields: fields.value.filter(field => field.name !== '' && field.value !== '').map(field => ({ name: field.name, value: field.value })),
 	});
+	globalEvents.emit('requestClearPageCache');
 }
 
 function save() {
@@ -181,6 +193,7 @@ function save() {
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
 	});
+	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
 		claimAchievement('setNameToSyuilo');
@@ -196,7 +209,7 @@ function changeAvatar(ev) {
 
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.t('cropImageAsk'),
+			text: i18n.ts.cropImageAsk,
 			okText: i18n.ts.cropYes,
 			cancelText: i18n.ts.cropNo,
 		});
@@ -212,6 +225,7 @@ function changeAvatar(ev) {
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
+		globalEvents.emit('requestClearPageCache');
 		claimAchievement('profileFilled');
 	});
 }
@@ -222,7 +236,7 @@ function changeBanner(ev) {
 
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.t('cropImageAsk'),
+			text: i18n.ts.cropImageAsk,
 			okText: i18n.ts.cropYes,
 			cancelText: i18n.ts.cropNo,
 		});
@@ -238,33 +252,34 @@ function changeBanner(ev) {
 		});
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;
+		globalEvents.emit('requestClearPageCache');
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.profile,
 	icon: 'ti ti-user',
-});
+}));
 </script>
 
 <style lang="scss" module>
-.avatarAndBanner {
+.banner {
 	position: relative;
+	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border: solid 1px var(--divider);
-	border-radius: 10px;
+	border-bottom: solid 1px var(--divider);
 	overflow: clip;
 }
 
 .avatarContainer {
-	display: inline-block;
+	margin-top: -50px;
+	padding-bottom: 16px;
 	text-align: center;
-	padding: 16px;
 }
 
 .avatar {

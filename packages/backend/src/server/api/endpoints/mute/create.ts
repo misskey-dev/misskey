@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MutingsRepository } from '@/models/index.js';
+import type { MutingsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Check if already muting
-			const exist = await this.mutingsRepository.exist({
+			const exist = await this.mutingsRepository.exists({
 				where: {
 					muterId: muter.id,
 					muteeId: mutee.id,

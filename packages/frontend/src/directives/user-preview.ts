@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { defineAsyncComponent, Directive, ref } from 'vue';
-import { popup } from '@/os';
+import { popup } from '@/os.js';
 
 export class UserPreview {
 	private el;

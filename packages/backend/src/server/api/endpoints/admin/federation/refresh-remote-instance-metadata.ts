@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/_.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:federation',
 } as const;
 
 export const paramDef = {

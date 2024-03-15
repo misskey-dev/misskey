@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -47,43 +47,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { swInject } from './sw-inject';
+import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
-import { popups, pendingApiRequestsCount } from '@/os';
-import { uploads } from '@/scripts/upload';
-import * as sound from '@/scripts/sound';
-import { $i } from '@/account';
-import { useStream } from '@/stream';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { globalEvents } from '@/events';
+import { popups } from '@/os.js';
+import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
+import { uploads } from '@/scripts/upload.js';
+import * as sound from '@/scripts/sound.js';
+import { $i } from '@/account.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { globalEvents } from '@/events.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = $ref<Misskey.entities.Notification[]>([]);
+const notifications = ref<Misskey.entities.Notification[]>([]);
 
-function onNotification(notification: Misskey.entities.Notification, isClient: boolean = false) {
-	if ($i.mutingNotificationTypes.includes(notification.type)) return;
-
+function onNotification(notification: Misskey.entities.Notification, isClient = false) {
 	if (document.visibilityState === 'visible') {
-		if (!isClient) {
+		if (!isClient && notification.type !== 'test') {
+			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
 			useStream().send('readNotification');
 		}
 
-		notifications.unshift(notification);
+		notifications.value.unshift(notification);
 		window.setTimeout(() => {
-			if (notifications.length > 3) notifications.pop();
+			if (notifications.value.length > 3) notifications.value.pop();
 		}, 500);
 
 		window.setTimeout(() => {
-			notifications = notifications.filter(x => x.id !== notification.id);
+			notifications.value = notifications.value.filter(x => x.id !== notification.id);
 		}, 6000);
 	}
 
-	sound.play('notification');
+	sound.playMisskeySfx('notification');
 }
 
 if ($i) {

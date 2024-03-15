@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
-import type { summaly } from 'summaly';
-import { components } from '@/components';
-import { directives } from '@/directives';
+import type { summaly } from '@misskey-dev/summaly';
+import { components } from '@/components/index.js';
+import { directives } from '@/directives/index.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
@@ -116,6 +116,34 @@ describe('MkUrlPreview', () => {
 		assert.strictEqual(iframe?.allow, 'fullscreen;web-share');
 	});
 
+	test('A Summaly proxy response without allow falls back to the default', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://example.local',
+			player: {
+				url: 'https://example.local/player',
+				width: null,
+				height: null,
+				allow: undefined as any,
+			},
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.allow, 'autoplay;encrypted-media;fullscreen');
+	});
+
+	test('Filtering the allow list from the Summaly proxy', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://example.local',
+			player: {
+				url: 'https://example.local/player',
+				width: null,
+				height: null,
+				allow: ['autoplay', 'camera', 'fullscreen'],
+			},
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.allow, 'autoplay;fullscreen');
+	});
+
 	test('Having a player width should keep the fixed aspect ratio', async () => {
 		const iframe = await renderAndOpenPreview({
 			url: 'https://example.local',
@@ -150,7 +178,7 @@ describe('MkUrlPreview', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
-		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
 	});
 
 	test('Loading a post in iframe', async () => {
@@ -159,6 +187,6 @@ describe('MkUrlPreview', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
-		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
 	});
 });

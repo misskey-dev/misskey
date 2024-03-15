@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Brackets, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, MutingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { NotesRepository, MutingsRepository, PollsRepository, PollVotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -57,9 +58,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('poll.userHost IS NULL')
 				.andWhere('poll.userId != :meId', { meId: me.id })
 				.andWhere('poll.noteVisibility = \'public\'')
-				.andWhere(new Brackets(qb => { qb
-					.where('poll.expiresAt IS NULL')
-					.orWhere('poll.expiresAt > :now', { now: new Date() });
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('poll.expiresAt IS NULL')
+						.orWhere('poll.expiresAt > :now', { now: new Date() });
 				}));
 
 			//#region exclude arleady voted polls
@@ -97,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: In(polls.map(poll => poll.noteId)),
 				},
 				order: {
-					createdAt: 'DESC',
+					id: 'DESC',
 				},
 			});
 

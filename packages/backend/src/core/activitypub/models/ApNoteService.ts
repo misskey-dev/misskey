@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,15 +7,15 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository } from '@/models/index.js';
+import type { PollsRepository, EmojisRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { MiRemoteUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import type { MiEmoji } from '@/models/entities/Emoji.js';
+import type { MiEmoji } from '@/models/Emoji.js';
 import { MetaService } from '@/core/MetaService.js';
 import { AppLockService } from '@/core/AppLockService.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
@@ -92,6 +92,10 @@ export class ApNoteService {
 			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
 		}
 
+		if (object.published && !this.idService.isSafeT(new Date(object.published).valueOf())) {
+			return new Error('invalid Note: published timestamp is malformed');
+		}
+
 		return null;
 	}
 
@@ -166,7 +170,33 @@ export class ApNoteService {
 			}
 		}
 
+		// SPAM対策
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
+		const hasNoFF = actor.followersCount === 0 && actor.followingCount === 0;
+		if (apMentions.length >= 5 && hasNoFF){
+			this.logger.error('Too many mensions included', {
+				account: `@${actor.username}@${actor.host}`,
+				note: `${note.id}`,
+				mentions: apMentions.map((user) => user.uri),
+			});
+			throw new Error('too many mensions included.');
+		}
+		if (apMentions.includes((user) => user.isSuspended) && hasNoFF) {
+			this.logger.error('Suspended user mention included', {
+				account: `@${actor.username}@${actor.host}`,
+				note: `${note.id}`,
+				suspended: apMentions.find((user)  => user.isSuspended)
+			});
+			throw new Error('includes suspended user.')
+		}
+		if (actor.username === actor.name && /^[a-z0-9]+$/.test(actor.username) && apMentions.length > 0 && hasNoFF){
+			this.logger.error('Suspected SPAM', {
+				account: `@${actor.username}@${actor.host}`,
+				note: `${note.id}`,
+			});
+			throw new Error('suspected SPAM')
+		}
+
 		const apHashtags = extractApHashtags(note.tag);
 
 		// 添付ファイル
@@ -212,7 +242,7 @@ export class ApNoteService {
 					return { status: 'ok', res };
 				} catch (e) {
 					return {
-						status: (e instanceof StatusError && e.isClientError) ? 'permerror' : 'temperror',
+						status: (e instanceof StatusError && !e.isRetryable) ? 'permerror' : 'temperror',
 					};
 				}
 			};
@@ -386,7 +416,7 @@ export class ApNoteService {
 			this.logger.info(`register emoji host=${host}, name=${name}`);
 
 			return await this.emojisRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				host,
 				name,
 				uri: tag.id,

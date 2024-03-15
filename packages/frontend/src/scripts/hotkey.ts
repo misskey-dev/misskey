@@ -1,9 +1,9 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import keyCode from './keycode';
+import keyCode from './keycode.js';
 
 type Callback = (ev: KeyboardEvent) => void;
 

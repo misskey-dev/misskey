@@ -1,9 +1,9 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { get } from '@/scripts/idb-proxy';
+import { get } from '@/scripts/idb-proxy.js';
 
 export async function getAccountFromId(id: string) {
 	const accounts = await get('accounts') as { token: string; id: string; }[];

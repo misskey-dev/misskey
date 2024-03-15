@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository, UsersRepository } from '@/models/index.js';
+import type { RolesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:roles',
 
 	errors: {
 		noSuchRole: {
@@ -83,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return;
 			}
 
-			await this.roleService.assign(user.id, role.id, ps.expiresAt ? new Date(ps.expiresAt) : null);
+			await this.roleService.assign(user.id, role.id, ps.expiresAt ? new Date(ps.expiresAt) : null, me);
 		});
 	}
 }

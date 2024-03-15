@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import type { UserMemoRepository } from '@/models/index.js';
+import type { UserMemoRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -72,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (!previousMemo) {
 				await this.userMemosRepository.insert({
-					id: this.idService.genId(),
+					id: this.idService.gen(),
 					userId: me.id,
 					targetUserId: target.id,
 					memo: ps.memo,

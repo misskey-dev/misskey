@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -16,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:show-users',
 
 	res: {
 		type: 'array',
@@ -99,8 +100,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			switch (ps.sort) {
 				case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
 				case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
-				case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
-				case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+				case '+createdAt': query.orderBy('user.id', 'DESC'); break;
+				case '-createdAt': query.orderBy('user.id', 'ASC'); break;
 				case '+updatedAt': query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST'); break;
 				case '-updatedAt': query.orderBy('user.updatedAt', 'ASC', 'NULLS FIRST'); break;
 				case '+lastActiveDate': query.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST'); break;
@@ -113,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const users = await query.getMany();
 
-			return await this.userEntityService.packMany(users, me, { detail: true });
+			return await this.userEntityService.packMany(users, me, { schema: 'UserDetailed' });
 		});
 	}
 }

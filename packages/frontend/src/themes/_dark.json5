@@ -54,9 +54,6 @@
 		infoWarnBg: '#42321c',
 		infoWarnFg: '#ffbd3e',
 		switchBg: 'rgba(255, 255, 255, 0.15)',
-		cwBg: '#687390',
-		cwFg: '#393f4f',
-		cwHoverBg: '#707b97',
 		buttonBg: 'rgba(255, 255, 255, 0.05)',
 		buttonHoverBg: 'rgba(255, 255, 255, 0.1)',
 		buttonGradateA: '@accent',
@@ -96,5 +93,9 @@
 		X15: ':alpha<0<@panel',
 		X16: ':alpha<0.7<@panel',
 		X17: ':alpha<0.8<@bg',
+	},
+
+	codeHighlighter: {
+		base: 'one-dark-pro',
 	},
 }

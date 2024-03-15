@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
-			<img class="icon" :src="page.user.avatarUrl"/>
+			<img v-if="page.user.avatarUrl" class="icon" :src="page.user.avatarUrl"/>
 			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import { userName } from '@/filters/user';
+import { userName } from '@/filters/user.js';
 import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
@@ -114,7 +114,6 @@ const props = defineProps<{
 
 			& + article {
 				left: 0;
-				width: 100%;
 			}
 		}
 	}
@@ -124,6 +123,7 @@ const props = defineProps<{
 
 		> .thumbnail {
 			height: 80px;
+			overflow: clip;
 		}
 
 		> article {

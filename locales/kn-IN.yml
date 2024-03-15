@@ -61,6 +61,7 @@ smtpPass: "ಗುಪ್ತಪದ"
 user: "ಬಳಕೆದಾರ"
 searchByGoogle: "ಹುಡುಕು"
 file: "ಕಡತಗಳು"
+replies: "ಉತ್ತರಿಸು"
 _email:
   _follow:
     title: "ಹಿಂಬಾಲಿಸಿದರು"
@@ -83,3 +84,4 @@ _deck:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"
     tl: "ಸಮಯಸಾಲು"
     mentions: "ಹೆಸರಿಸಿದ"
+

@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AntennasRepository, UserListsRepository } from '@/models/index.js';
+import type { AntennasRepository, UserListsRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -46,7 +46,7 @@ export const paramDef = {
 	properties: {
 		antennaId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
-		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'users_blacklist'] },
 		userListId: { type: 'string', format: 'misskey:id', nullable: true },
 		keywords: { type: 'array', items: {
 			type: 'array', items: {
@@ -62,6 +62,7 @@ export const paramDef = {
 			type: 'string',
 		} },
 		caseSensitive: { type: 'boolean' },
+		localOnly: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 		notify: { type: 'boolean' },
@@ -116,6 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludeKeywords: ps.excludeKeywords,
 				users: ps.users,
 				caseSensitive: ps.caseSensitive,
+				localOnly: ps.localOnly,
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
 				notify: ps.notify,

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -48,6 +48,11 @@ describe('api:notes/create', () => {
 				expect(v({ text: await tooLong }))
 					.toBe(INVALID);
 			});
+
+			test('whitespace-only post', () => {
+				expect(v({ text: ' ' }))
+					.toBe(INVALID);
+			});
 		});
 
 		describe('cw', () => {
@@ -63,7 +68,7 @@ describe('api:notes/create', () => {
 
 			test('0 characters cw', () => {
 				expect(v({ text: 'Body', cw: '' }))
-					.toBe(VALID);
+					.toBe(INVALID);
 			});
 
 			test('reject only cw', () => {

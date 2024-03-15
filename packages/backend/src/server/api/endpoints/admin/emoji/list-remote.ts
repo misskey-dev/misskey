@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
@@ -17,6 +17,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'read:admin:emoji',
 
 	res: {
 		type: 'array',

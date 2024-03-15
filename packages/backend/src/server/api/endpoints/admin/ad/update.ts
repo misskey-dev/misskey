@@ -1,12 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AdsRepository } from '@/models/index.js';
+import type { AdsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -14,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:ad',
 
 	errors: {
 		noSuchAd: {
@@ -46,6 +48,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
+
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const ad = await this.adsRepository.findOneBy({ id: ps.id });
@@ -62,6 +66,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				expiresAt: new Date(ps.expiresAt),
 				startsAt: new Date(ps.startsAt),
 				dayOfWeek: ps.dayOfWeek,
+			});
+
+			const updatedAd = await this.adsRepository.findOneByOrFail({ id: ad.id });
+
+			this.moderationLogService.log(me, 'updateAd', {
+				adId: ad.id,
+				before: ad,
+				after: updatedAd,
 			});
 		});
 	}

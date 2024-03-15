@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { AhoCorasick } from 'slacc';
 import RE2 from 're2';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
 
 type NoteLike = {
 	userId: MiNote['userId'];

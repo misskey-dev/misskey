@@ -56,17 +56,17 @@ dbReplications: false
 # You can configure any number of replicas here
 #dbSlaves:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -95,8 +95,19 @@ redis:
 #  #prefix: example-prefix
 #  #db: 1
 
+#redisForTimelines:
+#  host: redis
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
+
+# You can set scope to local (default value) or global 
+# (include notes from remote).
 
 #meilisearch:
 #  host: meilisearch
@@ -104,6 +115,7 @@ redis:
 #  apiKey: ''
 #  ssl: true
 #  index: ''
+#  scope: local
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -139,7 +151,7 @@ id: 'aidx'
 
 # Job rate limiter
 # deliverJobPerSec: 128
-# inboxJobPerSec: 16
+# inboxJobPerSec: 32
 
 # Job attempts
 # deliverJobMaxAttempts: 12
@@ -172,6 +184,9 @@ proxyRemoteFiles: true
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
 
+# For security reasons, uploading attachments from the intranet is prohibited,
+# but exceptions can be made from the following settings. Default value is "undefined". 
+# Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]

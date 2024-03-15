@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	kind: "read:account",
 
 	res: {
 		type: 'object',
@@ -70,8 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
 
-			return await this.userEntityService.pack<true, true>(userProfile.user!, userProfile.user!, {
-				detail: true,
+			return await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
+				schema: 'MeDetailed',
 				includeSecrets: isSecure,
 				userProfile,
 			});

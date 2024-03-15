@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { SigninsRepository } from '@/models/index.js';
+import type { SigninsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiLocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -30,8 +30,7 @@ export class SigninService {
 		setImmediate(async () => {
 			// Append signin history
 			const record = await this.signinsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: user.id,
 				ip: request.ip,
 				headers: request.headers as any,

@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelFavoritesRepository, ChannelsRepository } from '@/models/index.js';
+import type { ChannelFavoritesRepository, ChannelsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -57,8 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.channelFavoritesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				channelId: channel.id,
 			});

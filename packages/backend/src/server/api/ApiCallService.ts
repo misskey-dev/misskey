@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,10 +9,10 @@ import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
-import type { MiAccessToken } from '@/models/entities/AccessToken.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
 import type Logger from '@/logger.js';
-import type { UserIpsRepository } from '@/models/index.js';
+import type { UserIpsRepository } from '@/models/_.js';
 import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
@@ -318,8 +318,9 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+			const myRoles = await this.roleService.getUserRoles(user!.id);
 			const policies = await this.roleService.getUserPolicies(user!.id);
-			if (!policies[ep.meta.requireRolePolicy]) {
+			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
 					code: 'ROLE_PERMISSION_DENIED',
@@ -329,7 +330,8 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (token && ep.meta.kind && !token.permission.some(p => p === ep.meta.kind)) {
+		if (token && ((ep.meta.kind && !token.permission.some(p => p === ep.meta.kind))
+			|| (!ep.meta.kind && (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin)))) {
 			throw new ApiError({
 				message: 'Your app does not have the necessary permissions to use this endpoint.',
 				code: 'PERMISSION_DENIED',

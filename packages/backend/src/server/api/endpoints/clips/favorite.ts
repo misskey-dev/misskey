@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { ClipsRepository, ClipFavoritesRepository } from '@/models/index.js';
+import type { ClipsRepository, ClipFavoritesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			const exist = await this.clipFavoritesRepository.exist({
+			const exist = await this.clipFavoritesRepository.exists({
 				where: {
 					clipId: clip.id,
 					userId: me.id,
@@ -74,8 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.clipFavoritesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				clipId: clip.id,
 				userId: me.id,
 			});

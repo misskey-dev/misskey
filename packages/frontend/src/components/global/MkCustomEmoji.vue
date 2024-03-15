@@ -1,18 +1,34 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <span v-if="errored">:{{ customEmojiName }}:</span>
-<img v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
+<img
+	v-else
+	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
+	:src="url"
+	:alt="alt"
+	:title="alt"
+	decoding="async"
+	@error="errored = true"
+	@load="errored = false"
+	@click="onClick"
+/>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy';
-import { defaultStore } from '@/store';
-import { customEmojisMap } from '@/custom-emojis';
+import { computed, inject, ref } from 'vue';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { defaultStore } from '@/store.js';
+import { customEmojisMap } from '@/custom-emojis.js';
+import * as os from '@/os.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import * as sound from '@/scripts/sound.js';
+import { i18n } from '@/i18n.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
 	name: string;
@@ -21,7 +37,12 @@ const props = defineProps<{
 	host?: string | null;
 	url?: string;
 	useOriginalSize?: boolean;
+	menu?: boolean;
+	menuReaction?: boolean;
+  menuImport?: boolean;
 }>();
+
+const react = inject<((name: string) => void) | null>('react', null);
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
@@ -37,7 +58,7 @@ const rawUrl = computed(() => {
 });
 
 const url = computed(() => {
-	if (rawUrl.value == null) return null;
+	if (rawUrl.value == null) return undefined;
 
 	const proxied =
 		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
@@ -54,7 +75,84 @@ const url = computed(() => {
 });
 
 const alt = computed(() => `:${customEmojiName.value}:`);
-let errored = $ref(url.value == null);
+const errored = ref(url.value == null);
+
+const importEmoji = async(emojiName) => {
+  // 同名の絵文字が存在しないかチェック
+  const localCheckResponse = Object.values(await misskeyApi('admin/emoji/list', {
+    query: emojiName
+  })).find((e) => e.name === emojiName)
+
+  // 存在しない場合 インポート
+  if (!localCheckResponse){
+    const emoji = (await misskeyApi('admin/emoji/list-remote', {
+      query: emojiName
+    })).find((e) => e.name === emojiName)
+	  await os.apiWithDialog('admin/emoji/copy', {
+		  emojiId: emoji.id,
+	  });
+  }
+
+  // リアクション
+  react(`:${emojiName}:`);
+  sound.playMisskeySfx('reaction');
+};
+
+function onClick(ev: MouseEvent) {
+	if (props.menu) {
+    if(props.menuImport){
+      os.popupMenu([{
+        type: 'label',
+        text: `:${props.name}:`,
+        }, {
+        text: i18n.ts.copy,
+        icon: 'ti ti-copy',
+        action: () => {
+          copyToClipboard(`:${props.name}:`);
+          os.success();
+        },
+      }, ...(props.menuImport && react ? [{
+        text: i18n.ts.doReaction,
+        icon: 'ti ti-plus',
+        action: () => {
+          importEmoji(props.name)
+        },
+      }] : [])
+      ], ev.currentTarget ?? ev.target);
+    }else{
+      os.popupMenu([{
+        type: 'label',
+        text: `:${props.name}:`,
+        }, {
+        text: i18n.ts.copy,
+        icon: 'ti ti-copy',
+        action: () => {
+          copyToClipboard(`:${props.name}:`);
+          os.success();
+        },
+      }, ...(props.menuReaction && react ? [{
+        text: i18n.ts.doReaction,
+        icon: 'ti ti-plus',
+        action: () => {
+          react(`:${props.name}:`);
+          sound.playMisskeySfx('reaction');
+        },
+      }] : []), {
+        text: i18n.ts.info,
+        icon: 'ti ti-info-circle',
+        action: async () => {
+          os.popup(MkCustomEmojiDetailedDialog, {
+            emoji: await misskeyApiGet('emoji', {
+              name: customEmojiName.value,
+            }),
+          }, {
+            anchor: ev.target,
+          });
+        },
+      }], ev.currentTarget ?? ev.target);
+    }
+  }
+}
 </script>
 
 <style lang="scss" module>

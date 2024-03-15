@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
@@ -18,6 +18,38 @@ export const meta = {
 
 	allowGet: true,
 	cacheSec: 60 * 60,
+
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		properties: {
+			topSubInstances: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
+				},
+			},
+			otherFollowersCount: { type: 'number' },
+			topPubInstances: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
+				},
+			},
+			otherFollowingCount: { type: 'number' },
+		},
+	},
 } as const;
 
 export const paramDef = {

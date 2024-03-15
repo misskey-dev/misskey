@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:unsuspend-user',
 } as const;
 
 export const paramDef = {
@@ -45,8 +46,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSuspended: false,
 			});
 
-			this.moderationLogService.insertModerationLog(me, 'unsuspend', {
-				targetId: user.id,
+			this.moderationLogService.log(me, 'unsuspend', {
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
 			});
 
 			this.userSuspendService.doPostUnsuspend(user);

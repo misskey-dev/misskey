@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AuthSessionsRepository } from '@/models/index.js';
+import type { AuthSessionsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiAuthSession } from '@/models/entities/AuthSession.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiAuthSession } from '@/models/AuthSession.js';
+import type { MiUser } from '@/models/User.js';
 import { bindThis } from '@/decorators.js';
 import { AppEntityService } from './AppEntityService.js';
 

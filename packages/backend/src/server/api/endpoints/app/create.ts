@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository } from '@/models/index.js';
+import type { AppsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { unique } from '@/misc/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
@@ -55,8 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Create account
 			const app = await this.appsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me ? me.id : null,
 				name: ps.name,
 				description: ps.description,

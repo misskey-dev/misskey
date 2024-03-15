@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,12 +31,14 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
@@ -50,45 +52,7 @@ const clientAssets = `${_dirname}/../../../../frontend/assets/`;
 const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
-
-const manifest = {
-	'short_name': 'Misskey',
-	'name': 'Misskey',
-	'start_url': '/',
-	'display': 'standalone',
-	'background_color': '#313a42',
-	'theme_color': '#86b300',
-	'icons': [
-		{
-			'src': '/static-assets/icons/192.png',
-			'sizes': '192x192',
-			'type': 'image/png',
-			'purpose': 'maskable',
-		},
-		{
-			'src': '/static-assets/icons/512.png',
-			'sizes': '512x512',
-			'type': 'image/png',
-			'purpose': 'maskable',
-		},
-		{
-			'src': '/static-assets/splash.png',
-			'sizes': '300x300',
-			'type': 'image/png',
-			'purpose': 'any',
-		},
-	],
-	'share_target': {
-		'action': '/share/',
-		'method': 'GET',
-		'enctype': 'application/x-www-form-urlencoded',
-		'params': {
-			'title': 'title',
-			'text': 'text',
-			'url': 'url',
-		},
-	},
-};
+const tarball = `${_dirname}/../../../../../built/tarball/`;
 
 @Injectable()
 export class ClientServerService {
@@ -122,6 +86,9 @@ export class ClientServerService {
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
 
+		@Inject(DI.reversiGamesRepository)
+		private reversiGamesRepository: ReversiGamesRepository,
+
 		private flashEntityService: FlashEntityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -129,6 +96,7 @@ export class ClientServerService {
 		private galleryPostEntityService: GalleryPostEntityService,
 		private clipEntityService: ClipEntityService,
 		private channelEntityService: ChannelEntityService,
+		private reversiGameEntityService: ReversiGameEntityService,
 		private metaService: MetaService,
 		private urlPreviewService: UrlPreviewService,
 		private feedService: FeedService,
@@ -148,16 +116,60 @@ export class ClientServerService {
 
 	@bindThis
 	private async manifestHandler(reply: FastifyReply) {
-		const res = deepClone(manifest);
-
 		const instance = await this.metaService.fetch(true);
 
-		res.short_name = instance.name ?? 'Misskey';
-		res.name = instance.name ?? 'Misskey';
-		if (instance.themeColor) res.theme_color = instance.themeColor;
+		let manifest = {
+			// 空文字列の場合右辺を使いたいため
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+			'short_name': instance.shortName || instance.name || this.config.host,
+			// 空文字列の場合右辺を使いたいため
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+			'name': instance.name || this.config.host,
+			'start_url': '/',
+			'display': 'standalone',
+			'background_color': '#313a42',
+			// 空文字列の場合右辺を使いたいため
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+			'theme_color': instance.themeColor || '#86b300',
+			'icons': [{
+				// 空文字列の場合右辺を使いたいため
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				'src': instance.app192IconUrl || '/static-assets/icons/192.png',
+				'sizes': '192x192',
+				'type': 'image/png',
+				'purpose': 'maskable',
+			}, {
+				// 空文字列の場合右辺を使いたいため
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				'src': instance.app512IconUrl || '/static-assets/icons/512.png',
+				'sizes': '512x512',
+				'type': 'image/png',
+				'purpose': 'maskable',
+			}, {
+				'src': '/static-assets/splash.png',
+				'sizes': '300x300',
+				'type': 'image/png',
+				'purpose': 'any',
+			}],
+			'share_target': {
+				'action': '/share/',
+				'method': 'GET',
+				'enctype': 'application/x-www-form-urlencoded',
+				'params': {
+					'title': 'title',
+					'text': 'text',
+					'url': 'url',
+				},
+			},
+		};
+
+		manifest = {
+			...manifest,
+			...JSON.parse(instance.manifestJsonOverride === '' ? '{}' : instance.manifestJsonOverride),
+		};
 
 		reply.header('Cache-Control', 'max-age=300');
-		return (res);
+		return (manifest);
 	}
 
 	@bindThis
@@ -165,10 +177,12 @@ export class ClientServerService {
 		return {
 			instanceName: meta.name ?? 'Misskey',
 			icon: meta.iconUrl,
+			appleTouchIcon: meta.app512IconUrl,
 			themeColor: meta.themeColor,
 			serverErrorImageUrl: meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
 			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
 			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
+			instanceUrl: this.config.url,
 		};
 	}
 
@@ -182,7 +196,7 @@ export class ClientServerService {
 		// Authenticate
 		fastify.addHook('onRequest', async (request, reply) => {
 			// %71ueueとかでリクエストされたら困るため
-			const url = decodeURI(request.url);
+			const url = decodeURI(request.routeOptions.url);
 			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
 				const token = request.cookies.token;
 				if (token == null) {
@@ -240,15 +254,21 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.clientManifestExists) {
-			fastify.register(fastifyStatic, {
-				root: viteOut,
-				prefix: '/vite/',
-				maxAge: ms('30 days'),
-				decorateReply: false,
+			fastify.register((fastify, options, done) => {
+				fastify.register(fastifyStatic, {
+					root: viteOut,
+					prefix: '/vite/',
+					maxAge: ms('30 days'),
+					immutable: true,
+					decorateReply: false,
+				});
+				fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+				done();
 			});
 		} else {
+			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:5173', // TODO: port configuration
+				upstream: 'http://localhost:' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
@@ -276,6 +296,18 @@ export class ClientServerService {
 			prefix: '/assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
+		});
+
+		fastify.register((fastify, options, done) => {
+			fastify.register(fastifyStatic, {
+				root: tarball,
+				prefix: '/tarball/',
+				maxAge: ms('30 days'),
+				immutable: true,
+				decorateReply: false,
+			});
+			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+			done();
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {
@@ -468,6 +500,8 @@ export class ClientServerService {
 				isSuspended: false,
 			});
 
+			vary(reply.raw, 'Accept');
+
 			if (user != null) {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 				const meta = await this.metaService.fetch();
@@ -506,6 +540,8 @@ export class ClientServerService {
 				reply.code(404);
 				return;
 			}
+
+			vary(reply.raw, 'Accept');
 
 			reply.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
 		});
@@ -674,6 +710,25 @@ export class ClientServerService {
 				return await renderBase(reply);
 			}
 		});
+
+		// Reversi game
+		fastify.get<{ Params: { game: string; } }>('/reversi/g/:game', async (request, reply) => {
+			const game = await this.reversiGamesRepository.findOneBy({
+				id: request.params.game,
+			});
+
+			if (game) {
+				const _game = await this.reversiGameEntityService.packDetail(game);
+				const meta = await this.metaService.fetch();
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('reversi-game', {
+					game: _game,
+					...this.generateCommonPugData(meta),
+				});
+			} else {
+				return await renderBase(reply);
+			}
+		});
 		//#endregion
 
 		fastify.get('/_info_card_', async (request, reply) => {
@@ -722,8 +777,8 @@ export class ClientServerService {
 
 		fastify.setErrorHandler(async (error, request, reply) => {
 			const errId = randomUUID();
-			this.clientLoggerService.logger.error(`Internal error occurred in ${request.routerPath}: ${error.message}`, {
-				path: request.routerPath,
+			this.clientLoggerService.logger.error(`Internal error occurred in ${request.routeOptions.url}: ${error.message}`, {
+				path: request.routeOptions.url,
 				params: request.params,
 				query: request.query,
 				code: error.name,

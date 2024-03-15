@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { PagesRepository, PageLikesRepository } from '@/models/index.js';
+import type { PagesRepository, PageLikesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// if already liked
-			const exist = await this.pageLikesRepository.exist({
+			const exist = await this.pageLikesRepository.exists({
 				where: {
 					pageId: page.id,
 					userId: me.id,
@@ -83,8 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Create like
 			await this.pageLikesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				pageId: page.id,
 				userId: me.id,
 			});
