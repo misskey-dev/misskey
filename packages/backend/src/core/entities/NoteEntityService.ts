@@ -185,9 +185,9 @@ export class NoteEntityService implements OnModuleInit {
 		const reactionsCount = Object.values(note.reactions).reduce((a, b) => a + b, 0);
 		if (reactionsCount === 0) return undefined;
 		if (note.reactionAndUserPairCache && reactionsCount <= note.reactionAndUserPairCache.length) {
-			const pair = note.reactionAndUserPairCache.find(p => p.startsWith(meId));
+			const pair = note.reactionAndUserPairCache.filter(p => p.startsWith(meId));
 			if (pair) {
-				return this.reactionService.convertLegacyReaction(pair.split('/')[1]);
+				return pair.map(p => this.reactionService.convertLegacyReaction(p.split('/')[1]));
 			} else {
 				return undefined;
 			}
@@ -198,13 +198,15 @@ export class NoteEntityService implements OnModuleInit {
 			return undefined;
 		}
 
-		const reaction = await this.noteReactionsRepository.findOneBy({
-			userId: meId,
-			noteId: note.id,
+		const reaction = await this.noteReactionsRepository.find({
+      where: {
+        userId: meId,
+        noteId: note.id,
+      }
 		});
 
 		if (reaction) {
-			return this.reactionService.convertLegacyReaction(reaction.reaction);
+			return reaction.map(r => this.reactionService.convertLegacyReaction(r.reaction));
 		}
 
 		return undefined;
