@@ -24,7 +24,7 @@ import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js'
 import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
@@ -39,6 +39,7 @@ const props = defineProps<{
 	useOriginalSize?: boolean;
 	menu?: boolean;
 	menuReaction?: boolean;
+  menuImport?: boolean;
 }>();
 
 const react = inject<((name: string) => void) | null>('react', null);
@@ -76,39 +77,81 @@ const url = computed(() => {
 const alt = computed(() => `:${customEmojiName.value}:`);
 const errored = ref(url.value == null);
 
+const importEmoji = async(emojiName) => {
+  // 同名の絵文字が存在しないかチェック
+  const localCheckResponse = Object.values(await misskeyApi('admin/emoji/list', {
+    query: emojiName
+  })).find((e) => e.name === emojiName)
+
+  // 存在しない場合 インポート
+  if (!localCheckResponse){
+    const emoji = (await misskeyApi('admin/emoji/list-remote', {
+      query: emojiName
+    })).find((e) => e.name === emojiName)
+	  await os.apiWithDialog('admin/emoji/copy', {
+		  emojiId: emoji.id,
+	  });
+  }
+
+  // リアクション
+  react(`:${emojiName}:`);
+  sound.playMisskeySfx('reaction');
+};
+
 function onClick(ev: MouseEvent) {
 	if (props.menu) {
-		os.popupMenu([{
-			type: 'label',
-			text: `:${props.name}:`,
-		}, {
-			text: i18n.ts.copy,
-			icon: 'ti ti-copy',
-			action: () => {
-				copyToClipboard(`:${props.name}:`);
-				os.success();
-			},
-		}, ...(props.menuReaction && react ? [{
-			text: i18n.ts.doReaction,
-			icon: 'ti ti-plus',
-			action: () => {
-				react(`:${props.name}:`);
-				sound.playMisskeySfx('reaction');
-			},
-		}] : []), {
-			text: i18n.ts.info,
-			icon: 'ti ti-info-circle',
-			action: async () => {
-				os.popup(MkCustomEmojiDetailedDialog, {
-					emoji: await misskeyApiGet('emoji', {
-						name: customEmojiName.value,
-					}),
-				}, {
-					anchor: ev.target,
-				});
-			},
-		}], ev.currentTarget ?? ev.target);
-	}
+    if(props.menuImport){
+      os.popupMenu([{
+        type: 'label',
+        text: `:${props.name}:`,
+        }, {
+        text: i18n.ts.copy,
+        icon: 'ti ti-copy',
+        action: () => {
+          copyToClipboard(`:${props.name}:`);
+          os.success();
+        },
+      }, ...(props.menuImport && react ? [{
+        text: i18n.ts.doReaction,
+        icon: 'ti ti-plus',
+        action: () => {
+          importEmoji(props.name)
+        },
+      }] : [])
+      ], ev.currentTarget ?? ev.target);
+    }else{
+      os.popupMenu([{
+        type: 'label',
+        text: `:${props.name}:`,
+        }, {
+        text: i18n.ts.copy,
+        icon: 'ti ti-copy',
+        action: () => {
+          copyToClipboard(`:${props.name}:`);
+          os.success();
+        },
+      }, ...(props.menuReaction && react ? [{
+        text: i18n.ts.doReaction,
+        icon: 'ti ti-plus',
+        action: () => {
+          react(`:${props.name}:`);
+          sound.playMisskeySfx('reaction');
+        },
+      }] : []), {
+        text: i18n.ts.info,
+        icon: 'ti ti-info-circle',
+        action: async () => {
+          os.popup(MkCustomEmojiDetailedDialog, {
+            emoji: await misskeyApiGet('emoji', {
+              name: customEmojiName.value,
+            }),
+          }, {
+            anchor: ev.target,
+          });
+        },
+      }], ev.currentTarget ?? ev.target);
+    }
+  }
 }
 </script>
 

@@ -38,6 +38,11 @@ export function useNoteCapture(props: {
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = reaction;
+          if (note.value.myReactions) {
+            note.value.myReactions.push(reaction);
+          }else{
+            note.value.myReactions = [reaction]
+          }
 				}
 				break;
 			}
@@ -53,6 +58,9 @@ export function useNoteCapture(props: {
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = null;
+          if (note.value.myReactions) {
+            note.value.myReactions = note.value.myReactions.filter(r => r !== reaction);
+          }
 				}
 				break;
 			}
