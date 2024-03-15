@@ -2225,6 +2225,7 @@ _play:
   title: "标题"
   script: "脚本"
   summary: "描述"
+  visibilityDescription: "设置为不公开后资料将不再显示，但知道 URL 的人仍可继续访问。"
 _pages:
   newPage: "创建页面"
   editPage: "编辑页面"
