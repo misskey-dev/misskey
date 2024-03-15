@@ -212,7 +212,6 @@ export class ApNoteService {
 		}
 
 		// SPAM対策
-		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const hasNoFF = actor.followersCount === 0 && actor.followingCount === 0;
 
 		this.logger.info('CHECK', JSON.stringify({
@@ -250,7 +249,6 @@ export class ApNoteService {
 			throw new StatusError('SUSPECTED_SPAM', 202, 'Violated SPAM policy.');
 		}
 
-		const apHashtags = extractApHashtags(note.tag);
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
