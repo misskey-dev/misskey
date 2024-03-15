@@ -11,6 +11,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
+import { RateLimiter } from '@/scripts/rate-limiter.js';
 
 export function aiScriptReadline(q: string): Promise<string> {
 	return new Promise(ok => {
@@ -23,6 +24,8 @@ export function aiScriptReadline(q: string): Promise<string> {
 }
 
 export function createAiScriptEnv(opts) {
+	const rateLimiter = new RateLimiter<string>({ duration: 1000 * 15, max: 30 });
+
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
@@ -55,6 +58,7 @@ export function createAiScriptEnv(opts) {
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
 			const actualToken: string|null = token?.value ?? opts.token ?? null;
+			if (!rateLimiter.hit(ep.value)) return values.ERROR('rate_limited', values.NULL);
 			return misskeyApi(ep.value, utils.valToJs(param), actualToken).then(res => {
 				return utils.jsToVal(res);
 			}, err => {

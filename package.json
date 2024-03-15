@@ -46,17 +46,17 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
+		"@tensorflow/tfjs-core": "4.17.0",
 		"chokidar": "3.6.0",
 		"lodash": "4.17.21",
-		"sharp": "0.33.2",
-		"@tensorflow/tfjs-core": "4.17.0"
+		"sharp": "0.33.2"
 	},
 	"dependencies": {
 		"cssnano": "6.1.0",
 		"execa": "8.0.1",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.35",
-		"terser": "5.29.1",
+		"terser": "5.29.2",
 		"typescript": "5.4.2"
 	},
 	"devDependencies": {
