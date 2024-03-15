@@ -63,7 +63,7 @@ const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	const oldReactions = props.note.myReactions;
+	const oldReactions = props.note.myReactions ?? [];
 
   // 取り消しの場合
 	if (oldReactions.find(r => r === props.reaction) || props.note.myReaction === props.reaction) {
