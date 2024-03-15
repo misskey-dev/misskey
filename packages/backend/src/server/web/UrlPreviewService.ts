@@ -61,25 +61,25 @@ export class UrlPreviewService {
 		}
 
 		const meta = await this.metaService.fetch();
-
-		this.logger.info(meta.summalyProxy
-			? `(Proxy) Getting preview of ${url}@${lang} ...`
-			: `Getting preview of ${url}@${lang} ...`);
+		//
+		this.logger.info(//meta.summalyProxy
+		// 	? `(Proxy) Getting preview of ${url}@${lang} ...`
+			 `Getting preview of ${url}@${lang} ...`);
 		try {
-			const summary = meta.summalyProxy ?
-				await this.httpRequestService.getJson<ReturnType<typeof summaly>>(`${meta.summalyProxy}?${query({
-					url: url,
-					lang: lang ?? 'ja-JP',
-				})}`)
-				:
-				await summaly(url, {
-					followRedirects: false,
-					lang: lang ?? 'ja-JP',
-					agent: this.config.proxy ? {
-						http: this.httpRequestService.httpAgent,
-						https: this.httpRequestService.httpsAgent,
-					} : undefined,
-				});
+			// const summary = meta.summalyProxy ?
+			// 	await this.httpRequestService.getJson<ReturnType<typeof summaly>>(`${meta.summalyProxy}?${query({
+			// 		url: url,
+			// 		lang: lang ?? 'ja-JP',
+			// 	})}`)
+			// 	:
+			const summary =	await summaly(url, {
+				followRedirects: false,
+				lang: lang ?? 'ja-JP',
+				agent: this.config.proxy ? {
+					http: this.httpRequestService.httpAgent,
+					https: this.httpRequestService.httpsAgent,
+				} : undefined,
+			});
 
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
 
@@ -95,13 +95,13 @@ export class UrlPreviewService {
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
 			// Cache 7days
-			reply.header('Cache-Control', 'max-age=604800, immutable');
+			reply.header('Cache-Control', 'max-age=0, immutable');
 
 			return summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
 			reply.code(422);
-			reply.header('Cache-Control', 'max-age=86400, immutable');
+			reply.header('Cache-Control', 'max-age=0, immutable');
 			return {
 				error: new ApiError({
 					message: 'Failed to get preview',
