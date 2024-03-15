@@ -276,6 +276,7 @@ export class ReactionService {
       where: {
 			  noteId: note.id,
 			  userId: user.id,
+        reaction
       }
 		});
 
@@ -287,9 +288,7 @@ export class ReactionService {
       throw new IdentifiableError('b21ffbbf-037c-bfc2-e29a-3edd6174a36b', 'multi reacted')
     }
 
-    const target = exist.length === 1
-    ? exist[0]
-    : exist.find(r => r.reaction === reaction)
+    const target = exist[0]
 
     if (!target) {
       throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
