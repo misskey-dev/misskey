@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
@@ -65,6 +65,70 @@ const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 const dev = _DEV_;
 
 const notifications = ref<Misskey.entities.Notification[]>([]);
+
+class NotificationFavIconDot {
+	canvas : HTMLCanvasElement;
+	src : string | null = null;
+	ctx : CanvasRenderingContext2D | null = null;
+	favconImage : HTMLImageElement | null = null;
+
+	constructor() {
+		this.canvas = document.createElement('canvas');
+
+		if (this.faviconEL == null) return;
+
+		this.src = this.faviconEL.getAttribute('href');
+		this.ctx = this.canvas.getContext('2d');
+
+		this.favconImage = document.createElement('img');
+		this.favconImage.src = this.faviconEL.href;
+
+		this.favconImage.onload = () => {
+			if (!this.favconImage) return;
+
+			this.canvas.width = this.favconImage.width;
+			this.canvas.height = this.favconImage.height;
+		};
+	}
+
+	faviconEL = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
+
+	_createFaviconElem() {
+		const newLink = document.createElement('link');
+		newLink.rel = 'icon';
+		newLink.href = '/favicon.ico';
+		document.head.appendChild(newLink);
+		return newLink;
+	}
+
+	_drawIcon() {
+		if (!this.ctx || !this.favconImage) return;
+		this.ctx.drawImage(this.favconImage, 0, 0, this.favconImage.width, this.favconImage.height);
+	}
+
+	_drawDot() {
+		if (!this.ctx || !this.favconImage) return;
+		this.ctx.beginPath();
+		this.ctx.arc(this.favconImage.width - 10, 10, 10, 0, 2 * Math.PI);
+		this.ctx.fillStyle = 'red';
+		this.ctx.strokeStyle = this.ctx.fillStyle;
+		this.ctx.fill();
+		this.ctx.stroke();
+	}
+
+	_drawFavicon() {
+		this.faviconEL.href = this.canvas.toDataURL('image/png');
+	}
+
+	setVisible(isVisible : boolean) {
+		this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this._drawIcon();
+		if (isVisible) this._drawDot();
+		this._drawFavicon();
+	}
+}
+
+const notificationDot = new NotificationFavIconDot();
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
 	if (document.visibilityState === 'visible') {
@@ -89,6 +153,11 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
+	
+	watch(() => $i?.hasUnreadNotification, (hasAny) => {
+		notificationDot.setVisible(hasAny ?? false);
+	});
+
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
 	//#region Listen message from SW
