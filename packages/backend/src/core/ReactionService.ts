@@ -270,42 +270,56 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote) {
+	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, reaction?: string) {
 		// if already unreacted
-		const exist = await this.noteReactionsRepository.findOneBy({
-			noteId: note.id,
-			userId: user.id,
+		const exist = await this.noteReactionsRepository.find({
+      where: {
+			  noteId: note.id,
+			  userId: user.id,
+      }
 		});
 
 		if (exist == null) {
 			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
 
+    if (exist.length > 1 && !reaction) {
+      throw new IdentifiableError('b21ffbbf-037c-bfc2-e29a-3edd6174a36b', 'multi reacted')
+    }
+
+    const target = exist.length === 1
+    ? exist[0]
+    : exist.find(r => r.reaction === reaction)
+
+    if (!target) {
+      throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
+		}
+
 		// Delete reaction
-		const result = await this.noteReactionsRepository.delete(exist.id);
+		const result = await this.noteReactionsRepository.delete(target.id);
 
 		if (result.affected !== 1) {
 			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
 
 		// Decrement reactions count
-		const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
+		const sql = `jsonb_set("reactions", '{${target.reaction}}', (COALESCE("reactions"->>'${target.reaction}', '0')::int - 1)::text::jsonb)`;
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
-				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
+				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${target.reaction}')`,
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
 
 		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
-			reaction: this.decodeReaction(exist.reaction).reaction,
+			reaction: this.decodeReaction(target.reaction).reaction,
 			userId: user.id,
 		});
 
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(await this.apRendererService.renderLike(exist, note), user));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(await this.apRendererService.renderLike(target, note), user));
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
