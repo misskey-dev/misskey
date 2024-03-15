@@ -43,6 +43,20 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public concatNoteContentsForKeyWordCheck(content: {
+		cw?: string | null;
+		text?: string | null;
+		pollChoices?: string[] | null;
+		others?: string[] | null;
+	}): string {
+		/**
+		 * ノートの内容を結合してキーワードチェック用の文字列を生成する
+		 * cwとtextは内容が繋がっているかもしれないので間に何も入れずにチェックする
+		 */
+		return `${content.cw ?? ''}${content.text ?? ''}\n${(content.pollChoices ?? []).join('\n')}\n${(content.others ?? []).join('\n')}`;
+	}
+
+	@bindThis
 	public isKeyWordIncluded(text: string, keyWords: string[]): boolean {
 		if (keyWords.length === 0) return false;
 		if (text === '') return false;

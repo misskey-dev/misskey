@@ -90,4 +90,45 @@ describe('ReactionService', () => {
 			assert.strictEqual(await reactionService.normalize('unknown'), '❤');
 		});
 	});
+
+	describe('convertLegacyReactions', () => {
+		test('空の入力に対しては何もしない', () => {
+			const input = {};
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), input);
+		});
+
+		test('Unicode絵文字リアクションを変換してしまわない', () => {
+			const input = { '👍': 1, '🍮': 2 };
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), input);
+		});
+
+		test('カスタム絵文字リアクションを変換してしまわない', () => {
+			const input = { ':like@.:': 1, ':pudding@example.tld:': 2 };
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), input);
+		});
+
+		test('文字列によるレガシーなリアクションを変換する', () => {
+			const input = { 'like': 1, 'pudding': 2 };
+			const output = { '👍': 1, '🍮': 2 };
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
+		});
+
+		test('host部分が省略されたレガシーなカスタム絵文字リアクションを変換する', () => {
+			const input = { ':custom_emoji:': 1 };
+			const output = { ':custom_emoji@.:': 1 };
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
+		});
+
+		test('「0個のリアクション」情報を削除する', () => {
+			const input = { 'angry': 0 };
+			const output = {};
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
+		});
+
+		test('host部分の有無によりデコードすると同じ表記になるカスタム絵文字リアクションの個数情報を正しく足し合わせる', () => {
+			const input = { ':custom_emoji:': 1, ':custom_emoji@.:': 2 };
+			const output = { ':custom_emoji@.:': 3 };
+			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
+		});
+	});
 });
