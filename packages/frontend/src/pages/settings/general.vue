@@ -58,6 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+        <MkSwitch v-model="denyaize">{{ i18n.ts.denyaize }}</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
 					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
 					<option value="small">{{ i18n.ts.small }}</option>
@@ -306,6 +307,7 @@ const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disable
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
 const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
+const denyaize = computed(defaultStore.makeGetterSetter('denyaize'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

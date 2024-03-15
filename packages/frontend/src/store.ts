@@ -221,7 +221,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animatedMfm: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	advancedMfm: {
 		where: 'device',
@@ -476,6 +476,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+  denyaize: {
+    where: 'device',
+    default: false,
+  }
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
