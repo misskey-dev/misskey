@@ -16,8 +16,8 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' 
 	}
 
 	return `${mustOrigin ? localProxy : instance.mediaProxy}/${
-		type === 'preview' ? 'preview.webp'
-		: 'image.webp'
+		type === 'preview' ? 'preview'
+		: 'image'
 	}?${query({
 		url: imageUrl,
 		...(!noFallback ? { 'fallback': '1' } : {}),

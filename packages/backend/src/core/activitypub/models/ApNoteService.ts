@@ -52,6 +52,9 @@ export class ApNoteService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private idService: IdService,
 		private apMfmService: ApMfmService,
 		private apResolverService: ApResolverService,
@@ -173,28 +176,40 @@ export class ApNoteService {
 		// SPAM対策
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const hasNoFF = actor.followersCount === 0 && actor.followingCount === 0;
+
+		this.logger.info('CHECK', JSON.stringify({
+			note: note.id,
+			hasNoFF,
+			mentions: apMentions.map((user) => user.uri),
+			username: actor.username,
+			handle: actor.name,
+			pattern: /^[a-z0-9]+$/.test(actor.username),
+			length: actor.username.length === 10,
+			suspectSPAMUsername: actor.username === (actor.name ?? actor.username) && /^[a-z0-9]+$/.test(actor.username) && actor.username.length === 10
+		}))
+
 		if (apMentions.length >= 5 && hasNoFF){
 			this.logger.error('Too many mensions included', {
 				account: `@${actor.username}@${actor.host}`,
 				note: `${note.id}`,
 				mentions: apMentions.map((user) => user.uri),
 			});
-			throw new Error('too many mensions included.');
+			throw new StatusError('TOO_MANY_MENTIONS', 202, 'Too many mentions included.');
 		}
 		if (apMentions.includes((user) => user.isSuspended) && hasNoFF) {
 			this.logger.error('Suspended user mention included', {
 				account: `@${actor.username}@${actor.host}`,
 				note: `${note.id}`,
-				suspended: apMentions.find((user)  => user.isSuspended)
+				suspended: apMentions.find((user)  => user.isSuspended),
 			});
-			throw new Error('includes suspended user.')
+			throw new StatusError('INCLUDES_SUSPENDED_USER_MENTEON', 202, 'To avoid SPAM, do not include mention of the suspended user.');
 		}
-		if (actor.username === actor.name && /^[a-z0-9]+$/.test(actor.username) && apMentions.length > 0 && hasNoFF){
+		if (actor.username === (actor.name ?? actor.username) && /^[a-z0-9]+$/.test(actor.username) && actor.username.length === 10 && apMentions.length > 0 && hasNoFF){
 			this.logger.error('Suspected SPAM', {
 				account: `@${actor.username}@${actor.host}`,
 				note: `${note.id}`,
 			});
-			throw new Error('suspected SPAM')
+			throw new StatusError('SUSPECTED_SPAM', 202, 'Violated SPAM policy.');
 		}
 
 		const apHashtags = extractApHashtags(note.tag);

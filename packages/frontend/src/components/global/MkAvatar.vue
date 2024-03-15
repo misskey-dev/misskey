@@ -84,7 +84,13 @@ const bound = computed(() => props.link
 const url = computed(() => {
 	if (props.user.avatarUrl == null) return null;
 	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
-	return props.user.avatarUrl;
+	const url = new URL(props.user.avatarUrl);
+	const pathname = url.pathname;
+	const lastDotIndex = pathname.lastIndexOf(".");
+	if (lastDotIndex > -1) {
+		url.pathname = pathname.substring(0, lastDotIndex);
+	}
+	return url.href;
 });
 
 function onClick(ev: MouseEvent): void {
