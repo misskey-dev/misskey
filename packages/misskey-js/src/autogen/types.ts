@@ -3993,8 +3993,8 @@ export type components = {
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
-      myReaction?: string | null; // 互換性のために残す
-      myReactions?: string[];
+      myReaction?: string | null;
+      myReactions?: string[] | null;
     };
     NoteReaction: {
       /**
@@ -21212,6 +21212,7 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           noteId: string;
+          reaction?: string;
         };
       };
     };
