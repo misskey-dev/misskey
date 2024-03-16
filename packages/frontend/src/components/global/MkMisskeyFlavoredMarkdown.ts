@@ -78,7 +78,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	 * @param scale How times large the text is
 	 * @param disableNyaize Whether nyaize is disabled or not
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = defaultStore.state.denyaize) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
@@ -462,7 +462,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'plain': {
-				return [h('span', genEl(token.children, scale, true))];
+				return [h('span', genEl(token.children, scale, defaultStore.state.denyaize))];
 			}
 
 			default: {

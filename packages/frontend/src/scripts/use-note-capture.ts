@@ -40,8 +40,8 @@ export function useNoteCapture(props: {
 					note.value.myReaction = reaction;
           if (note.value.myReactions) {
             note.value.myReactions.push(reaction);
-          }else{
-            note.value.myReactions = [reaction]
+          } else {
+            note.value.myReactions = [reaction];
           }
 				}
 				break;

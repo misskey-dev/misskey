@@ -5,22 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <img
-	v-if="errored && fallbackToImage"
-	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
-	src="/client-assets/dummy.png"
-	:title="alt"
+	v-if="errored && fallbackToImage" :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
+	src="/client-assets/dummy.png" :title="alt"
 />
 <span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
-	v-else
-	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
-	:src="url"
-	:alt="alt"
-	:title="alt"
-	decoding="async"
-	@error="errored = true"
-	@load="errored = false"
-	@click="onClick"
+	v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt"
+	:title="alt" decoding="async" @error="errored = true" @load="errored = false" @click="onClick"
 />
 </template>
 
@@ -45,7 +36,7 @@ const props = defineProps<{
 	useOriginalSize?: boolean;
 	menu?: boolean;
 	menuReaction?: boolean;
-  menuImport?: boolean;
+	menuImport?: boolean;
 	fallbackToImage?: boolean;
 }>();
 
@@ -84,81 +75,81 @@ const url = computed(() => {
 const alt = computed(() => `:${customEmojiName.value}:`);
 const errored = ref(url.value == null);
 
-const importEmoji = async(emojiName) => {
-  // 同名の絵文字が存在しないかチェック
-  const localCheckResponse = Object.values(await misskeyApi('admin/emoji/list', {
-    query: emojiName
-  })).find((e) => e.name === emojiName)
+const importEmoji = async (emojiName) => {
+	// 同名の絵文字が存在しないかチェック
+	const localCheckResponse = Object.values(await misskeyApi('admin/emoji/list', {
+		query: emojiName,
+	})).find((_emoji) => _emoji.name === emojiName);
 
-  // 存在しない場合 インポート
-  if (!localCheckResponse){
-    const emoji = (await misskeyApi('admin/emoji/list-remote', {
-      query: emojiName
-    })).find((e) => e.name === emojiName)
-	  await os.apiWithDialog('admin/emoji/copy', {
-		  emojiId: emoji.id,
-	  });
-  }
+	// 存在しない場合 インポート
+	if (!localCheckResponse) {
+		const emoji = (await misskeyApi('admin/emoji/list-remote', {
+			query: emojiName,
+		})).find((_emoji) => _emoji.name === emojiName);
+		await os.apiWithDialog('admin/emoji/copy', {
+			emojiId: emoji.id,
+		});
+	}
 
-  // リアクション
-  react(`:${emojiName}:`);
-  sound.playMisskeySfx('reaction');
+	// リアクション
+	react(`:${emojiName}:`);
+	sound.playMisskeySfx('reaction');
 };
 
 function onClick(ev: MouseEvent) {
 	if (props.menu) {
-    if(props.menuImport){
-      os.popupMenu([{
-        type: 'label',
-        text: `:${props.name}:`,
-        }, {
-        text: i18n.ts.copy,
-        icon: 'ti ti-copy',
-        action: () => {
-          copyToClipboard(`:${props.name}:`);
-          os.success();
-        },
-      }, ...(props.menuImport && react ? [{
-        text: i18n.ts.doReaction,
-        icon: 'ti ti-plus',
-        action: () => {
-          importEmoji(props.name)
-        },
-      }] : [])
-      ], ev.currentTarget ?? ev.target);
-    }else{
-      os.popupMenu([{
-        type: 'label',
-        text: `:${props.name}:`,
-        }, {
-        text: i18n.ts.copy,
-        icon: 'ti ti-copy',
-        action: () => {
-          copyToClipboard(`:${props.name}:`);
-          os.success();
-        },
-      }, ...(props.menuReaction && react ? [{
-        text: i18n.ts.doReaction,
-        icon: 'ti ti-plus',
-        action: () => {
-          react(`:${props.name}:`);
-          sound.playMisskeySfx('reaction');
-        },
-      }] : []), {
-        text: i18n.ts.info,
-        icon: 'ti ti-info-circle',
-        action: async () => {
-          os.popup(MkCustomEmojiDetailedDialog, {
-            emoji: await misskeyApiGet('emoji', {
-              name: customEmojiName.value,
-            }),
-          }, {
-            anchor: ev.target,
-          });
-        },
-      }], ev.currentTarget ?? ev.target);
-    }
-  }
+		if (props.menuImport) {
+			os.popupMenu([{
+				type: 'label',
+				text: `:${props.name}:`,
+			}, {
+				text: i18n.ts.copy,
+				icon: 'ti ti-copy',
+				action: () => {
+					copyToClipboard(`:${props.name}:`);
+					os.success();
+				},
+			}, ...(props.menuImport && react ? [{
+				text: i18n.ts.doReaction,
+				icon: 'ti ti-plus',
+				action: () => {
+					importEmoji(props.name);
+				},
+			}] : []),
+			], ev.currentTarget ?? ev.target);
+		} else {
+			os.popupMenu([{
+				type: 'label',
+				text: `:${props.name}:`,
+			}, {
+				text: i18n.ts.copy,
+				icon: 'ti ti-copy',
+				action: () => {
+					copyToClipboard(`:${props.name}:`);
+					os.success();
+				},
+			}, ...(props.menuReaction && react ? [{
+				text: i18n.ts.doReaction,
+				icon: 'ti ti-plus',
+				action: () => {
+					react(`:${props.name}:`);
+					sound.playMisskeySfx('reaction');
+				},
+			}] : []), {
+				text: i18n.ts.info,
+				icon: 'ti ti-info-circle',
+				action: async () => {
+					os.popup(MkCustomEmojiDetailedDialog, {
+						emoji: await misskeyApiGet('emoji', {
+							name: customEmojiName.value,
+						}),
+					}, {
+						anchor: ev.target,
+					});
+				},
+			}], ev.currentTarget ?? ev.target);
+		}
+	}
 }
 </script>
 
