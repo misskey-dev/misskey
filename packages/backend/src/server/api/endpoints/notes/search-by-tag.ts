@@ -30,6 +30,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		local: { type: 'boolean', nullable: true, default: null },
 		reply: { type: 'boolean', nullable: true, default: null },
 		renote: { type: 'boolean', nullable: true, default: null },
 		withFiles: {
@@ -103,6 +104,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (e) {
 				if (e === 'Injection') return [];
 				throw e;
+			}
+
+			if (ps.local != null) {
+				if (ps.local) {
+					query.andWhere('user.host IS NULL');
+				} else {
+					query.andWhere('user.host IS NOT NULL');
+				}
 			}
 
 			if (ps.reply != null) {

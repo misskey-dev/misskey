@@ -22448,6 +22448,8 @@ export type operations = {
       content: {
         'application/json': {
           /** @default null */
+          local?: boolean | null;
+          /** @default null */
           reply?: boolean | null;
           /** @default null */
           renote?: boolean | null;
