@@ -71,6 +71,7 @@ class NotificationFavIconDot {
 	src : string | null = null;
 	ctx : CanvasRenderingContext2D | null = null;
 	favconImage : HTMLImageElement | null = null;
+	loaded = false;
 
 	constructor() {
 		this.canvas = document.createElement('canvas');
@@ -88,6 +89,7 @@ class NotificationFavIconDot {
 
 			this.canvas.width = this.favconImage.width;
 			this.canvas.height = this.favconImage.height;
+			this.loaded = true;
 		};
 	}
 
@@ -116,11 +118,14 @@ class NotificationFavIconDot {
 		this.ctx.stroke();
 	}
 
-	_drawFavicon() {
+	private _drawFavicon() {
 		this.faviconEL.href = this.canvas.toDataURL('image/png');
 	}
 
-	setVisible(isVisible : boolean) {
+	async setVisible(isVisible : boolean) {
+		//Wait for it to have loaded the icon
+		const waiter = (done) => (this.loaded ? done() : setTimeout(() => waiter(done), 500));
+		await new Promise(waiter);
 		this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		this._drawIcon();
 		if (isVisible) this._drawDot();
@@ -154,9 +159,9 @@ if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
 	
-	watch(() => $i?.hasUnreadNotification, (hasAny) => {
-		notificationDot.setVisible(hasAny ?? false);
-	});
+	watch(() => $i?.hasUnreadNotification, (hasAny) => notificationDot.setVisible(hasAny ?? false));
+	
+	if ($i.hasUnreadNotification) notificationDot.setVisible(true);
 
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
