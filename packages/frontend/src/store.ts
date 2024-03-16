@@ -238,6 +238,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	enableFaviconNotificationDot: {
+		where: 'device',
+		default: true,
+	},
 	imageNewTab: {
 		where: 'device',
 		default: false,

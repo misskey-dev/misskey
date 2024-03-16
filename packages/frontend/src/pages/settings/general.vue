@@ -162,6 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
+				<MkSwitch v-model="enableFaviconNotificationDot">{{ i18n.ts.enableFaviconNotificationDot }}</MkSwitch>
 				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
 				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
@@ -296,6 +297,7 @@ const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
+const enableFaviconNotificationDot = computed(defaultStore.makeGetterSetter('enableFaviconNotificationDot'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
