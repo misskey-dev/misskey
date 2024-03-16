@@ -172,7 +172,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
 							</MkInput>
 
-							<div class="_gaps_s">
+							<div>
 								<MkInput v-model="urlPreviewSummaryProxyUrl" type="text">
 									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}</template>
 									<template #caption>{{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
@@ -180,11 +180,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<div :class="$style.subCaption">
 									{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
-									<ul style="padding-left: 20px; margin: 6px 0">
-										<li>timeout</li>
-										<li>maximumContentLength</li>
-										<li>requireContentLength</li>
-										<li>userAgent</li>
+									<ul style="padding-left: 20px; margin: 4px 0">
+										<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
+										<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
+										<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
+										<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
 									</ul>
 								</div>
 							</div>
