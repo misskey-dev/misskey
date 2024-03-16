@@ -93,7 +93,7 @@ class NotificationFavIconDot {
 
 	faviconEL = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
 
-	_createFaviconElem() {
+	private _createFaviconElem() {
 		const newLink = document.createElement('link');
 		newLink.rel = 'icon';
 		newLink.href = '/favicon.ico';
@@ -101,12 +101,12 @@ class NotificationFavIconDot {
 		return newLink;
 	}
 
-	_drawIcon() {
+	private _drawIcon() {
 		if (!this.ctx || !this.favconImage) return;
 		this.ctx.drawImage(this.favconImage, 0, 0, this.favconImage.width, this.favconImage.height);
 	}
 
-	_drawDot() {
+	private _drawDot() {
 		if (!this.ctx || !this.favconImage) return;
 		this.ctx.beginPath();
 		this.ctx.arc(this.favconImage.width - 10, 10, 10, 0, 2 * Math.PI);
