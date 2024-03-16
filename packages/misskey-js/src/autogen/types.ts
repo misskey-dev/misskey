@@ -10488,6 +10488,7 @@ export type operations = {
               issuer: string;
               audience: string[];
               acsUrl: string;
+              useCertificate: boolean;
               publicKey: string;
               signatureAlgorithm: string;
               cipherAlgorithm?: string | null;

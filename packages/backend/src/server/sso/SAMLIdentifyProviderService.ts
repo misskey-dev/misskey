@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import forge from 'node-forge';
 import * as jose from 'jose';
 import * as Redis from 'ioredis';
 import * as saml from 'samlify';
@@ -55,17 +56,33 @@ export class SAMLIdentifyProviderService {
 	public async createIdPMetadataXml(
 		provider: MiSingleSignOnServiceProvider,
 	): Promise<string> {
-		const today = new Date();
-		const publicKey = await jose
-			.importJWK(JSON.parse(provider.publicKey))
+		const nowTime = new Date();
+		const tenYearsLaterTime = new Date(nowTime.getTime());
+		tenYearsLaterTime.setFullYear(tenYearsLaterTime.getFullYear() + 10);
+		const tenYearsLater = tenYearsLaterTime.toISOString();
+
+		const cert = forge.pki.createCertificate();
+		cert.serialNumber = '01';
+		cert.validity.notBefore = provider.createdAt;
+		cert.validity.notAfter = tenYearsLaterTime;
+		const attrs = [{ name: 'commonName', value: this.config.hostname }];
+		cert.setSubject(attrs);
+		cert.setIssuer(attrs);
+		cert.publicKey = await jose.importJWK(JSON.parse(provider.publicKey))
 			.then(k => jose.exportSPKI(k as jose.KeyLike))
-			.then(k => k.replace(/-----(?:BEGIN|END) PUBLIC KEY-----|\s/g, ''));
+			.then(k => forge.pki.publicKeyFromPem(k));
+		cert.sign(
+			await jose.importJWK(JSON.parse(provider.privateKey ?? '{}'))
+				.then(k => jose.exportPKCS8(k as jose.KeyLike))
+				.then(k => forge.pki.privateKeyFromPem(k)),
+			forge.md.sha256.create(),
+		);
 
 		const nodes = {
 			'md:EntityDescriptor': {
 				'@xmlns:md': 'urn:oasis:names:tc:SAML:2.0:metadata',
 				'@entityID': provider.issuer,
-				'@validUntil': new Date(today.setFullYear(today.getFullYear() + 10)).toISOString(),
+				'@validUntil': tenYearsLater,
 				'md:IDPSSODescriptor': {
 					'@WantAuthnRequestsSigned': provider.wantAuthnRequestsSigned,
 					'@protocolSupportEnumeration': 'urn:oasis:names:tc:SAML:2.0:protocol',
@@ -75,7 +92,7 @@ export class SAMLIdentifyProviderService {
 							'@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
 							'ds:X509Data': {
 								'ds:X509Certificate': {
-									'#text': publicKey,
+									'#text': forge.pki.certificateToPem(cert).replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, ''),
 								},
 							},
 						},
@@ -86,10 +103,6 @@ export class SAMLIdentifyProviderService {
 					'md:SingleSignOnService': [
 						{
 							'@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-							'@Location': `${this.config.url}/sso/saml/${provider.id}`,
-						},
-						{
-							'@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
 							'@Location': `${this.config.url}/sso/saml/${provider.id}`,
 						},
 					],
@@ -105,11 +118,28 @@ export class SAMLIdentifyProviderService {
 	public async createSPMetadataXml(
 		provider: MiSingleSignOnServiceProvider,
 	): Promise<string> {
-		const today = new Date();
-		const publicKey = await jose
-			.importJWK(JSON.parse(provider.publicKey))
+		const nowTime = new Date();
+		const tenYearsLaterTime = new Date(nowTime.getTime());
+		tenYearsLaterTime.setFullYear(tenYearsLaterTime.getFullYear() + 10);
+		const tenYearsLater = tenYearsLaterTime.toISOString();
+
+		const cert = forge.pki.createCertificate();
+		cert.serialNumber = '01';
+		cert.validity.notBefore = provider.createdAt;
+		cert.validity.notAfter = tenYearsLaterTime;
+		const attrs = [{ name: 'commonName', value: this.config.hostname }];
+		cert.setSubject(attrs);
+		cert.setIssuer(attrs);
+		cert.publicKey = await jose.importJWK(JSON.parse(provider.publicKey))
 			.then(k => jose.exportSPKI(k as jose.KeyLike))
-			.then(k => k.replace(/-----(?:BEGIN|END) PUBLIC KEY-----|\s/g, ''));
+			.then(k => forge.pki.publicKeyFromPem(k));
+		cert.sign(
+			await jose.importJWK(JSON.parse(provider.privateKey ?? '{}'))
+				.then(k => jose.exportPKCS8(k as jose.KeyLike))
+				.then(k => forge.pki.privateKeyFromPem(k)),
+			forge.md.sha256.create(),
+		);
+		const x509 = forge.pki.certificateToPem(cert).replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, '');
 
 		const keyDescriptor: unknown[] = [
 			{
@@ -118,7 +148,7 @@ export class SAMLIdentifyProviderService {
 					'@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
 					'ds:X509Data': {
 						'ds:X509Certificate': {
-							'#text': publicKey,
+							'#text': x509,
 						},
 					},
 				},
@@ -132,13 +162,13 @@ export class SAMLIdentifyProviderService {
 					'@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
 					'ds:X509Data': {
 						'ds:X509Certificate': {
-							'#text': publicKey,
+							'#text': x509,
 						},
 					},
 				},
-				'md:EncryptionMethod': {
-					'@Algorithm': 'http://www.w3.org/2001/04/xmlenc#aes256-cbc',
-				},
+				'md:EncryptionMethod': [
+					{ '@Algorithm': `http://www.w3.org/2001/04/xmlenc#${provider.cipherAlgorithm}` },
+				],
 			});
 		}
 
@@ -146,7 +176,7 @@ export class SAMLIdentifyProviderService {
 			'md:EntityDescriptor': {
 				'@xmlns:md': 'urn:oasis:names:tc:SAML:2.0:metadata',
 				'@entityID': provider.issuer,
-				'@validUntil': new Date(today.setFullYear(today.getFullYear() + 10)).toISOString(),
+				'@validUntil': tenYearsLater,
 				'md:SPSSODescriptor': {
 					'@AuthnRequestsSigned': provider.wantAuthnRequestsSigned,
 					'@WantAssertionsSigned': provider.wantAssertionsSigned,
@@ -155,11 +185,13 @@ export class SAMLIdentifyProviderService {
 					'md:NameIDFormat': {
 						'#text': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
 					},
-					'md:AssertionConsumerService': {
-						'@index': 1,
-						'@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-						'@Location': provider.acsUrl,
-					},
+					'md:AssertionConsumerService': [
+						{
+							'@index': 1,
+							'@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+							'@Location': provider.acsUrl,
+						},
+					],
 				},
 			},
 		};
@@ -203,7 +235,7 @@ export class SAMLIdentifyProviderService {
 			Body?: { SAMLRequest?: string; RelayState?: string };
 		}>('/:serviceId', async (request, reply) => {
 			const serviceId = request.params.serviceId;
-			const binding = request.query?.SAMLRequest ? 'redirect' : 'post';
+			const binding = 'redirect'; // 今はリダイレクトのみ対応 request.query?.SAMLRequest ? 'redirect' : 'post';
 			const samlRequest = request.query?.SAMLRequest ?? request.body?.SAMLRequest;
 			const relayState = request.query?.RelayState ?? request.body?.RelayState;
 
@@ -236,38 +268,63 @@ export class SAMLIdentifyProviderService {
 				metadata: await this.createIdPMetadataXml(ssoServiceProvider),
 				privateKey: await jose
 					.importJWK(JSON.parse(ssoServiceProvider.privateKey ?? '{}'))
-					.then(k => jose.exportPKCS8(k as jose.KeyLike))
-					.then(k => k.replace(/-----(?:BEGIN|END) PRIVATE KEY-----|\s/g, '')),
+					.then(k => jose.exportPKCS8(k as jose.KeyLike)),
 			});
 
 			const sp = saml.ServiceProvider({
 				metadata: await this.createSPMetadataXml(ssoServiceProvider),
 			});
 
-			const parsed = await idp.parseLoginRequest(sp, binding, { query: request.query, body: request.body });
-			this.#logger.info('Parsed SAML request', { saml: parsed });
+			try {
+				const parsed = await idp.parseLoginRequest(sp, binding, { query: request.query, body: request.body });
+				this.#logger.info('Parsed SAML request', { saml: parsed });
 
-			const transactionId = randomUUID();
-			await this.redisClient.set(
-				`sso:saml:transaction:${transactionId}`,
-				JSON.stringify({
-					serviceId: serviceId,
-					binding: binding,
-					flowResult: parsed,
-					relayState: relayState,
-				}),
-				'EX',
-				60 * 5,
-			);
+				const transactionId = randomUUID();
+				await this.redisClient.set(
+					`sso:saml:transaction:${transactionId}`,
+					JSON.stringify({
+						serviceId: serviceId,
+						binding: binding,
+						flowResult: parsed,
+						relayState: relayState,
+					}),
+					'EX',
+					60 * 5,
+				);
 
-			this.#logger.info(`Rendering authorization page for "${ssoServiceProvider.name ?? ssoServiceProvider.issuer}"`);
+				this.#logger.info(`Rendering authorization page for "${ssoServiceProvider.name ?? ssoServiceProvider.issuer}"`);
 
-			reply.header('Cache-Control', 'no-store');
-			return await reply.view('sso', {
-				transactionId: transactionId,
-				serviceName: ssoServiceProvider.name ?? ssoServiceProvider.issuer,
-				kind: 'saml',
-			});
+				reply.header('Cache-Control', 'no-store');
+				return await reply.view('sso', {
+					transactionId: transactionId,
+					serviceName: ssoServiceProvider.name ?? ssoServiceProvider.issuer,
+					kind: 'saml',
+				});
+			} catch (err) {
+				this.#logger.error('Failed to parse SAML request', { error: err });
+				const traceableError = err as Error & {code?: string};
+
+				if (traceableError.code) {
+					reply.status(500).send({
+						error: {
+							message: traceableError.message,
+							code: traceableError.code,
+							id: 'a8aa8e69-a4c3-4148-8efe-fe3e8cb89684',
+							kind: 'client',
+						},
+					});
+					return;
+				}
+
+				reply.status(400).send({
+					error: {
+						message: 'Invalid SAML Request',
+						code: 'INVALID_SAML_REQUEST',
+						id: '874b9cc2-71cb-4000-95c7-449391ee9861',
+						kind: 'client',
+					},
+				});
+			}
 		});
 
 		fastify.get<{ Params: { serviceId: string } }>(
@@ -371,8 +428,7 @@ export class SAMLIdentifyProviderService {
 					metadata: await this.createIdPMetadataXml(ssoServiceProvider),
 					privateKey: await jose
 						.importJWK(JSON.parse(ssoServiceProvider.privateKey ?? '{}'))
-						.then(k => jose.exportPKCS8(k as jose.KeyLike))
-						.then(k => k.replace(/-----(?:BEGIN|END) PRIVATE KEY-----|\s/g, '')),
+						.then(k => jose.exportPKCS8(k as jose.KeyLike)),
 					loginResponseTemplate: { context: 'ignored' },
 				});
 
@@ -380,7 +436,7 @@ export class SAMLIdentifyProviderService {
 					metadata: await this.createSPMetadataXml(ssoServiceProvider),
 				});
 
-				const samlResponse = await idp.createLoginResponse(
+				const loginResponse = await idp.createLoginResponse(
 					sp,
 					flowResult,
 					binding,
@@ -422,8 +478,7 @@ export class SAMLIdentifyProviderService {
 									},
 									'saml:Subject': {
 										'saml:NameID': {
-											'@Format':
-												'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+											'@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
 											'#text': user.id,
 										},
 										'saml:SubjectConfirmation': {
@@ -453,8 +508,7 @@ export class SAMLIdentifyProviderService {
 										'@SessionNotOnOrAfter': fiveMinutesLater,
 										'saml:AuthnContext': {
 											'saml:AuthnContextClassRef': {
-												'#text':
-													'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
+												'#text': 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
 											},
 										},
 									},
@@ -462,8 +516,7 @@ export class SAMLIdentifyProviderService {
 										'saml:Attribute': [
 											{
 												'@Name': 'identityprovider',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': this.config.url,
@@ -471,8 +524,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'uid',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': user.id,
@@ -480,8 +532,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'displayname',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': user.name,
@@ -489,8 +540,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'name',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': user.username,
@@ -498,8 +548,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'preferred_username',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': user.username,
@@ -507,8 +556,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'profile',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': `${this.config.url}/@${user.username}`,
@@ -516,8 +564,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'picture',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': user.avatarUrl,
@@ -525,8 +572,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'mail',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': profile.email,
@@ -534,8 +580,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'email',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': profile.email,
@@ -543,8 +588,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'email_verified',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:boolean',
 													'#text': profile.emailVerified,
@@ -552,8 +596,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'mfa_enabled',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:boolean',
 													'#text': profile.twoFactorEnabled,
@@ -561,8 +604,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'updated_at',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:integer',
 													'#text': Math.floor((user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000),
@@ -570,8 +612,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'admin',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:boolean',
 													'#text': isAdministrator,
@@ -579,8 +620,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'moderator',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:boolean',
 													'#text': isModerator,
@@ -588,8 +628,7 @@ export class SAMLIdentifyProviderService {
 											},
 											{
 												'@Name': 'roles',
-												'@NameFormat':
-													'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': [
 													...roles
 														.filter((r) => r.isPublic)
@@ -616,7 +655,7 @@ export class SAMLIdentifyProviderService {
 					relayState,
 				);
 
-				this.#logger.info(`Rendering SAML response page for "${ssoServiceProvider.name ?? ssoServiceProvider.issuer}"`, {
+				this.#logger.info(`Redirecting to "${ssoServiceProvider.acsUrl}"`, {
 					userId: user.id,
 					ssoServiceProvider: ssoServiceProvider.id,
 					acsUrl: ssoServiceProvider.acsUrl,
@@ -624,11 +663,8 @@ export class SAMLIdentifyProviderService {
 				});
 
 				reply.header('Cache-Control', 'no-store');
-				return await reply.view('sso-saml-post', {
-					acsUrl: ssoServiceProvider.acsUrl,
-					samlResponse: samlResponse,
-					relyState: relayState ?? null,
-				});
+				reply.redirect(loginResponse.context);
+				return;
 			} catch (err) {
 				this.#logger.error('Failed to create SAML response', { error: err });
 				const traceableError = err as Error & { code?: string };

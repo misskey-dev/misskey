@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.singleSignOnServiceProviderRepository.update(service.id, {
 				name: ps.name !== '' ? ps.name : null,
 				issuer: ps.issuer,
-				audience: ps.audience?.filter(i => !!i),
+				audience: ps.audience?.filter(i => i.length > 0),
 				acsUrl: ps.acsUrl,
 				publicKey: publicKey,
 				privateKey: privateKey,

@@ -427,12 +427,12 @@ function ssoServiceAddNew() {
 		issuer: '',
 		audience: '',
 		acsUrl: '',
+		useCertificate: false,
 		publicKey: '',
 		signatureAlgorithm: 'HS256',
 		cipherAlgorithm: '',
 		wantAuthnRequestsSigned: false,
 		wantAssertionsSigned: true,
-		useCertificate: false,
 		regenerateCertificate: false,
 	});
 }

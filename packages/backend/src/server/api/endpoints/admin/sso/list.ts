@@ -48,6 +48,10 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				useCertificate: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
 				publicKey: {
 					type: 'string',
 					optional: false, nullable: false,
@@ -100,6 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				issuer: service.issuer,
 				audience: service.audience,
 				acsUrl: service.acsUrl,
+				useCertificate: service.privateKey != null,
 				publicKey: service.publicKey,
 				signatureAlgorithm: service.signatureAlgorithm,
 				cipherAlgorithm: service.cipherAlgorithm,

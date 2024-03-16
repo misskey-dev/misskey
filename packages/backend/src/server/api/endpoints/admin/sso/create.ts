@@ -125,7 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name ? ps.name : null,
 				type: ps.type,
 				issuer: ps.issuer,
-				audience: ps.audience?.filter(i => !!i),
+				audience: ps.audience?.filter(i => i.length > 0) ?? [],
 				acsUrl: ps.acsUrl,
 				publicKey: publicKey,
 				privateKey: privateKey,
