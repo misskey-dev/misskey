@@ -42,6 +42,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { host } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
@@ -63,7 +65,7 @@ const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFro
 const wait = ref(false);
 const connection = useStream().useChannel('main');
 
-if (props.user.isFollowing == null) {
+if (props.user.isFollowing == null && $i) {
 	misskeyApi('users/show', {
 		userId: props.user.id,
 	})
@@ -78,6 +80,8 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 }
 
 async function onClick() {
+	pleaseLogin(undefined, { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` });
+
 	wait.value = true;
 
 	try {

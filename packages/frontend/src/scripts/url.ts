@@ -21,3 +21,8 @@ export function query(obj: Record<string, any>): string {
 export function appendQuery(url: string, query: string): string {
 	return `${url}${/\?/.test(url) ? url.endsWith('?') ? '' : '&' : '?'}${query}`;
 }
+
+export function extractDomain(url: string) {
+	const match = url.match(/^(https)?:?\/{0,2}([^\/]+)/);
+	return match ? match[2] : null;
+}

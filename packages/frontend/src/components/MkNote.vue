@@ -194,6 +194,7 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { host } from '@/config.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -271,6 +272,11 @@ const renoteCollapsed = ref(
 	)
 );
 
+const pleaseLoginContext = {
+	type: 'lookup',
+	path: `https://${host}/notes/${appearNote.value.id}`,
+} as const;
+
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
@@ -340,7 +346,7 @@ if (!props.mock) {
 }
 
 function renote(viaKeyboard = false) {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
@@ -350,7 +356,7 @@ function renote(viaKeyboard = false) {
 }
 
 function reply(viaKeyboard = false): void {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	if (props.mock) {
 		return;
 	}
@@ -364,7 +370,7 @@ function reply(viaKeyboard = false): void {
 }
 
 function react(viaKeyboard = false): void {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -495,7 +501,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 	}
 
 	if (isMyRenote) {
-		pleaseLogin();
+		pleaseLogin(undefined, pleaseLoginContext);
 		os.popupMenu([
 			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
