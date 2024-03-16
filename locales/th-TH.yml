@@ -494,6 +494,7 @@ emojiStyle: "สไตล์เอโมจิ"
 native: "ภาษาแม่"
 disableDrawer: "อย่าใช้ลิ้นชักสไตล์เมนู"
 showNoteActionsOnlyHover: "แสดงการดำเนินการเฉพาะโน้ตเมื่อโฮเวอร์"
+showReactionsCount: "แสดงจำนวนรีแอกชั่นในโน้ต"
 noHistory: "ไม่มีประวัติ"
 signinHistory: "ประวัติการเข้าสู่ระบบ"
 enableAdvancedMfm: "เปิดใช้งาน MFM ขั้นสูง"
@@ -1751,6 +1752,7 @@ _plugin:
   installWarn: "กรุณาอย่าติดตั้งปลั๊กอินที่ไม่น่าเชื่อถือนะคะ"
   manage: "จัดการปลั๊กอิน"
   viewSource: "ดูต้นฉบับ"
+  viewLog: "แสดงปูม"
 _preferencesBackups:
   list: "สร้างการสำรองข้อมูล"
   saveNew: "บันทึกข้อมูลสำรองใหม่"
@@ -2225,6 +2227,7 @@ _play:
   title: "หัวข้อ"
   script: "สคริปต์"
   summary: "รายละเอียด"
+  visibilityDescription: "หากตั้งค่าเป็นส่วนตัว มันจะไม่ปรากฏในโปรไฟล์อีกต่อไป แต่ผู้ที่ทราบ URL ของมันจะยังสามารถเข้าถึงได้"
 _pages:
   newPage: "สร้างหน้าเพจใหม่"
   editPage: "แก้ไขหน้าเพจ"
