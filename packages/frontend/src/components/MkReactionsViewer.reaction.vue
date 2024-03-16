@@ -78,7 +78,7 @@ async function toggleReaction() {
 		misskeyApi('notes/reactions/delete', {
 			noteId: props.note.id,
       reaction: (isCustomEmoji.value) ? `:${emoji.value.name}:` : props.reaction,
-		})
+		});
 	} else {
 		sound.playMisskeySfx('reaction');
 

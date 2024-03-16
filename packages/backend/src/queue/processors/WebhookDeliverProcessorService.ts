@@ -36,9 +36,9 @@ export class WebhookDeliverProcessorService {
 	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
-			const isDiscord = job.data.to.startsWith('https://discordapp.com') || job.data.to.startsWith('https://discord.com')
+			const isDiscord = job.data.to.startsWith('https://discordapp.com') || job.data.to.startsWith('https://discord.com');
 
-			if (isDiscord && job.data.type !== 'note') throw Error('Not new post')
+			if (isDiscord && job.data.type !== 'note') throw Error('Not new post');
 
 			const res = (isDiscord)
 				? await this.httpRequestService.send(job.data.to, {

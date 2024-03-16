@@ -167,14 +167,14 @@ export class ReactionService {
 		} catch (e) {
 			if (isDuplicateKeyValueError(e)) {
 				const exists = await this.noteReactionsRepository.findOneBy({
-          noteId: note.id,
-          userId: user.id,
-          reaction,
-        });
+					noteId: note.id,
+					userId: user.id,
+					reaction,
+				});
 
-        // 同じリアクションがすでにされていたらエラー
-        if (exists) throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-      } else {
+				// 同じリアクションがすでにされていたらエラー
+				if (exists) throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+			} else {
 				throw e;
 			}
 		}
@@ -273,25 +273,25 @@ export class ReactionService {
 	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, reaction?: string) {
 		// if already unreacted
 		const exist = await this.noteReactionsRepository.find({
-      where: {
-			  noteId: note.id,
-			  userId: user.id,
-        reaction
-      }
+			where: {
+				noteId: note.id,
+				userId: user.id,
+				reaction
+			}
 		});
 
 		if (exist == null) {
 			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
 
-    if (exist.length > 1 && !reaction) {
-      throw new IdentifiableError('b21ffbbf-037c-bfc2-e29a-3edd6174a36b', 'multi reacted')
-    }
+		if (exist.length > 1 && !reaction) {
+			throw new IdentifiableError('b21ffbbf-037c-bfc2-e29a-3edd6174a36b', 'multi reacted');
+		}
 
-    const target = exist[0]
+		const target = exist[0];
 
-    if (!target) {
-      throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
+		if (!target) {
+			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
 
 		// Delete reaction

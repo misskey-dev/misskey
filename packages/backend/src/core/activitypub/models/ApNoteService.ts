@@ -223,9 +223,9 @@ export class ApNoteService {
 			pattern: /^[a-z0-9]+$/.test(actor.username),
 			length: actor.username.length === 10,
 			suspectSPAMUsername: actor.username === (actor.name ?? actor.username) && /^[a-z0-9]+$/.test(actor.username) && actor.username.length === 10
-		}))
+		}));
 
-		if (apMentions.length >= 5 && hasNoFF){
+		if (apMentions.length >= 5 && hasNoFF) {
 			this.logger.error('Too many mensions included', {
 				account: `@${actor.username}@${actor.host}`,
 				note: `${note.id}`,
@@ -237,11 +237,11 @@ export class ApNoteService {
 			this.logger.error('Suspended user mention included', {
 				account: `@${actor.username}@${actor.host}`,
 				note: `${note.id}`,
-				suspended: apMentions.find((user)  => user.isSuspended),
+				suspended: apMentions.find((user) => user.isSuspended),
 			});
 			throw new StatusError('INCLUDES_SUSPENDED_USER_MENTEON', 202, 'To avoid SPAM, do not include mention of the suspended user.');
 		}
-		if (actor.username === (actor.name ?? actor.username) && /^[a-z0-9]+$/.test(actor.username) && actor.username.length === 10 && apMentions.length > 0 && hasNoFF){
+		if (actor.username === (actor.name ?? actor.username) && /^[a-z0-9]+$/.test(actor.username) && actor.username.length === 10 && apMentions.length > 0 && hasNoFF) {
 			this.logger.error('Suspected SPAM', {
 				account: `@${actor.username}@${actor.host}`,
 				note: `${note.id}`,

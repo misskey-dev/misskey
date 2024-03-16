@@ -324,7 +324,7 @@ export class NoteEntityService implements OnModuleInit {
 
     const myReactions = (meId && Object.keys(note.reactions).length)
     ? await this.populateMyReaction(note, meId, options?._hint_)
-    : undefined
+    : undefined;
 
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
