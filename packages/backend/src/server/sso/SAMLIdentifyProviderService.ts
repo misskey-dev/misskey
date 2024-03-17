@@ -97,9 +97,10 @@ export class SAMLIdentifyProviderService {
 							},
 						},
 					},
-					'md:NameIDFormat': {
-						'#text': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-					},
+					'md:NameIDFormat': [
+						{ '#text': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' },
+						{ '#text': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent' },
+					],
 					'md:SingleSignOnService': [
 						{
 							'@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
@@ -186,9 +187,10 @@ export class SAMLIdentifyProviderService {
 					'@WantAssertionsSigned': provider.wantAssertionsSigned,
 					'@protocolSupportEnumeration': 'urn:oasis:names:tc:SAML:2.0:protocol',
 					'md:KeyDescriptor': keyDescriptor,
-					'md:NameIDFormat': {
-						'#text': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-					},
+					'md:NameIDFormat': [
+						{ '#text': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' },
+						{ '#text': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent' },
+					],
 					'md:AssertionConsumerService': {
 						'@isDefault': 'true',
 						'@index': 0,
@@ -475,10 +477,16 @@ export class SAMLIdentifyProviderService {
 										'#text': ssoServiceProvider.issuer,
 									},
 									'saml:Subject': {
-										'saml:NameID': {
-											'@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-											'#text': user.id,
-										},
+										'saml:NameID': [
+											{
+												'@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+												'#text': profile.email,
+											},
+											{
+												'@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+												'#text': user.id,
+											},
+										],
 										'saml:SubjectConfirmation': {
 											'@Method': 'urn:oasis:names:tc:SAML:2.0:cm:bearer',
 											'saml:SubjectConfirmationData': {
