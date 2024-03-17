@@ -6,5 +6,9 @@
 import { DropAndFusionGame, Mono } from './game.js';
 
 export {
-	DropAndFusionGame, Mono,
+	DropAndFusionGame,
+};
+
+export type {
+	Mono,
 };
