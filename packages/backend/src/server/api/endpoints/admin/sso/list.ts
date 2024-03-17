@@ -7,7 +7,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireAdmin: true,
 	kind: 'read:admin:sso',
 
 	res: {
@@ -43,6 +43,11 @@ export const meta = {
 					type: 'array',
 					optional: false, nullable: false,
 					items: { type: 'string', nullable: false },
+				},
+				binding: {
+					type: 'string',
+					optional: false, nullable: false,
+					enum: ['post', 'redirect'],
 				},
 				acsUrl: {
 					type: 'string',
@@ -103,6 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				type: service.type,
 				issuer: service.issuer,
 				audience: service.audience,
+				binding: service.binding,
 				acsUrl: service.acsUrl,
 				useCertificate: service.privateKey != null,
 				publicKey: service.publicKey,

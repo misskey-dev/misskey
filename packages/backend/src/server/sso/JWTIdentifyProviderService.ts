@@ -104,16 +104,10 @@ export class JWTIdentifyProviderService {
 		});
 
 		fastify.post<{
-			Body: { transaction_id: string; login_token: string; cancel?: string };
+			Body: { transaction_id: string; login_token: string; };
 		}>('/authorize', async (request, reply) => {
 			const transactionId = request.body.transaction_id;
 			const token = request.body.login_token;
-			const cancel = !!request.body.cancel;
-
-			if (cancel) {
-				reply.redirect('/');
-				return;
-			}
 
 			const transaction = await this.redisClient.get(`sso:jwt:transaction:${transactionId}`);
 			if (!transaction) {
@@ -190,13 +184,14 @@ export class JWTIdentifyProviderService {
 				roles: roles.filter(r => r.isPublic).map(r => r.id),
 			};
 
+			let jwt: string;
 			try {
 				if (ssoServiceProvider.cipherAlgorithm) {
 					const key = ssoServiceProvider.publicKey.startsWith('{')
 						? await jose.importJWK(JSON.parse(ssoServiceProvider.publicKey))
 						: jose.base64url.decode(ssoServiceProvider.publicKey);
 
-					const jwt = await new jose.EncryptJWT(payload)
+					jwt = await new jose.EncryptJWT(payload)
 						.setProtectedHeader({
 							alg: ssoServiceProvider.signatureAlgorithm,
 							enc: ssoServiceProvider.cipherAlgorithm,
@@ -208,31 +203,12 @@ export class JWTIdentifyProviderService {
 						.setJti(randomUUID())
 						.setSubject(user.id)
 						.encrypt(key);
-
-					this.#logger.info(`Redirecting to "${ssoServiceProvider.acsUrl}"`, {
-						userId: user.id,
-						ssoServiceProvider: ssoServiceProvider.id,
-						acsUrl: ssoServiceProvider.acsUrl,
-						returnTo,
-					});
-
-					if (returnTo) {
-						reply.redirect(
-							`${ssoServiceProvider.acsUrl}?jwt=${jwt}&return_to=${returnTo}`,
-						);
-						return;
-					} else {
-						reply.redirect(
-							`${ssoServiceProvider.acsUrl}?jwt=${jwt}`,
-						);
-						return;
-					}
 				} else {
 					const key = ssoServiceProvider.privateKey
 						? await jose.importJWK(JSON.parse(ssoServiceProvider.privateKey))
 						: jose.base64url.decode(ssoServiceProvider.publicKey);
 
-					const jwt = await new jose.SignJWT(payload)
+					jwt = await new jose.SignJWT(payload)
 						.setProtectedHeader({ alg: ssoServiceProvider.signatureAlgorithm })
 						.setIssuer(ssoServiceProvider.issuer)
 						.setAudience(ssoServiceProvider.audience)
@@ -241,25 +217,6 @@ export class JWTIdentifyProviderService {
 						.setJti(randomUUID())
 						.setSubject(user.id)
 						.sign(key);
-
-					this.#logger.info(`Redirecting to "${ssoServiceProvider.acsUrl}"`, {
-						userId: user.id,
-						ssoServiceProvider: ssoServiceProvider.id,
-						acsUrl: ssoServiceProvider.acsUrl,
-						returnTo,
-					});
-
-					if (returnTo) {
-						reply.redirect(
-							`${ssoServiceProvider.acsUrl}?jwt=${jwt}&return_to=${returnTo}`,
-						);
-						return;
-					} else {
-						reply.redirect(
-							`${ssoServiceProvider.acsUrl}?jwt=${jwt}`,
-						);
-						return;
-					}
 				}
 			} catch (err) {
 				this.#logger.error('Failed to create JWT', { error: err });
@@ -288,6 +245,30 @@ export class JWTIdentifyProviderService {
 				return;
 			} finally {
 				await this.redisClient.del(`sso:jwt:transaction:${transactionId}`);
+			}
+
+			this.#logger.info(`User "${user.username}" authorized for "${ssoServiceProvider.name ?? ssoServiceProvider.issuer}"`);
+			reply.header('Cache-Control', 'no-store');
+			switch (ssoServiceProvider.binding) {
+				case 'post': return reply
+					.status(200)
+					.send({
+						binding: 'post',
+						action: ssoServiceProvider.acsUrl,
+						context: {
+							jwt,
+							return_to: returnTo ?? undefined,
+						},
+					});
+
+				case 'redirect': return reply
+					.status(200)
+					.send({
+						binding: 'redirect',
+						action: !returnTo
+							? `${ssoServiceProvider.acsUrl}?jwt=${jwt}`
+							: `${ssoServiceProvider.acsUrl}?jwt=${jwt}&return_to=${returnTo}`,
+					});
 			}
 		});
 	}

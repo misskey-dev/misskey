@@ -10339,6 +10339,8 @@ export type operations = {
           issuer: string;
           /** @default [] */
           audience?: string[];
+          /** @enum {string} */
+          binding?: 'post' | 'redirect';
           acsUrl: string;
           signatureAlgorithm: string;
           cipherAlgorithm?: string | null;
@@ -10365,6 +10367,8 @@ export type operations = {
             type: 'saml' | 'jwt';
             issuer: string;
             audience: string[];
+            /** @enum {string} */
+            binding: 'post' | 'redirect';
             acsUrl: string;
             publicKey: string;
             signatureAlgorithm: string;
@@ -10487,6 +10491,8 @@ export type operations = {
               type: 'saml' | 'jwt';
               issuer: string;
               audience: string[];
+              /** @enum {string} */
+              binding: 'post' | 'redirect';
               acsUrl: string;
               useCertificate: boolean;
               publicKey: string;
@@ -10543,6 +10549,8 @@ export type operations = {
           name?: string | null;
           issuer?: string;
           audience?: string[];
+          /** @enum {string} */
+          binding?: 'post' | 'redirect';
           acsUrl?: string;
           signatureAlgorithm?: string;
           cipherAlgorithm?: string | null;

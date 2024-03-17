@@ -11,7 +11,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireAdmin: true,
 	kind: 'write:admin:sso',
 
 	errors: {
@@ -53,6 +53,11 @@ export const meta = {
 				optional: false, nullable: false,
 				items: { type: 'string', nullable: false },
 			},
+			binding: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['post', 'redirect'],
+			},
 			acsUrl: {
 				type: 'string',
 				optional: false, nullable: false,
@@ -88,6 +93,7 @@ export const paramDef = {
 		type: { type: 'string', enum: ['saml', 'jwt'], nullable: false },
 		issuer: { type: 'string', nullable: false },
 		audience: { type: 'array', items: { type: 'string', nullable: false }, default: [] },
+		binding: { type: 'string', enum: ['post', 'redirect'], nullable: false },
 		acsUrl: { type: 'string', nullable: false },
 		signatureAlgorithm: { type: 'string', nullable: false },
 		cipherAlgorithm: { type: 'string', nullable: true },
@@ -126,6 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				type: ps.type,
 				issuer: ps.issuer,
 				audience: ps.audience?.filter(i => i.length > 0) ?? [],
+				binding: ps.binding,
 				acsUrl: ps.acsUrl,
 				publicKey: publicKey,
 				privateKey: privateKey,
@@ -147,6 +154,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				type: ssoServiceProvider.type,
 				issuer: ssoServiceProvider.issuer,
 				audience: ssoServiceProvider.audience,
+				binding: ssoServiceProvider.binding,
 				acsUrl: ssoServiceProvider.acsUrl,
 				publicKey: ssoServiceProvider.publicKey,
 				signatureAlgorithm: ssoServiceProvider.signatureAlgorithm,

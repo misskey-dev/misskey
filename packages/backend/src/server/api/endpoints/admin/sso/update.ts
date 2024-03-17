@@ -10,7 +10,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireAdmin: true,
 	kind: 'write:admin:sso',
 
 	errors: {
@@ -29,6 +29,7 @@ export const paramDef = {
 		name: { type: 'string', nullable: true },
 		issuer: { type: 'string', nullable: false },
 		audience: { type: 'array', items: { type: 'string', nullable: false } },
+		binding: { type: 'string', enum: ['post', 'redirect'], nullable: false },
 		acsUrl: { type: 'string', nullable: false },
 		signatureAlgorithm: { type: 'string', nullable: false },
 		cipherAlgorithm: { type: 'string', nullable: true },
@@ -65,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name !== '' ? ps.name : null,
 				issuer: ps.issuer,
 				audience: ps.audience?.filter(i => i.length > 0),
+				binding: ps.binding,
 				acsUrl: ps.acsUrl,
 				publicKey: publicKey,
 				privateKey: privateKey,
