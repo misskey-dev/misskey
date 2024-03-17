@@ -81,7 +81,7 @@ export class SAMLIdentifyProviderService {
 		const nodes = {
 			'md:EntityDescriptor': {
 				'@xmlns:md': 'urn:oasis:names:tc:SAML:2.0:metadata',
-				'@entityID': this.config.url,
+				'@entityID': `${this.config.url}/sso/saml/${provider.id}/metadata`,
 				'@validUntil': tenYearsLater,
 				'md:IDPSSODescriptor': {
 					'@WantAuthnRequestsSigned': provider.wantAuthnRequestsSigned,
@@ -460,7 +460,7 @@ export class SAMLIdentifyProviderService {
 								'@Destination': ssoServiceProvider.acsUrl,
 								'@InResponseTo': this.get(flowResult, 'extract.request.id', ''),
 								'saml:Issuer': {
-									'#text': ssoServiceProvider.issuer,
+									'#text': `${this.config.url}/sso/saml/${ssoServiceProvider.id}/metadata`,
 								},
 								'samlp:Status': {
 									'samlp:StatusCode': {
@@ -474,7 +474,7 @@ export class SAMLIdentifyProviderService {
 									'@Version': '2.0',
 									'@IssueInstant': now,
 									'saml:Issuer': {
-										'#text': ssoServiceProvider.issuer,
+										'#text': `${this.config.url}/sso/saml/${ssoServiceProvider.id}/metadata`,
 									},
 									'saml:Subject': {
 										'saml:NameID': profile.emailVerified
