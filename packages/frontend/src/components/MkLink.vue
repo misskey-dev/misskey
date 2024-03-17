@@ -29,13 +29,13 @@ const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 
-const el = ref<HTMLElement>();
+const el = ref<HTMLElement | { $el: HTMLElement }>();
 
 useTooltip(el, (showing) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 		showing,
 		url: props.url,
-		source: el.value,
+		source: el.value instanceof HTMLElement ? el.value : el.value?.$el,
 	}, {}, 'closed');
 });
 </script>
