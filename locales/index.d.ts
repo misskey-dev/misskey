@@ -4912,6 +4912,10 @@ export interface Locale extends ILocale {
      * リトライ
      */
     "gameRetry": string;
+    /**
+     * URLを検知しました。照会しますか？
+     */
+    "searchOrLookup": string;
     "_bubbleGame": {
         /**
          * 遊び方

@@ -65,6 +65,16 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const uri = new URL(getApId(value));
 		if (uri.origin !== this.config.url) return { local: false, uri: uri.href };
 
+		if (uri.pathname.slice(1, 2) === '@') {
+			const [, username, ...rest] = uri.pathname.split(separator);
+			return {
+				local: true,
+				type: '__ui_user__',
+				id: username,
+				rest: rest.length === 0 ? undefined : rest.join(separator),
+			};
+		}
+
 		const [, type, id, ...rest] = uri.pathname.split(separator);
 		return {
 			local: true,
@@ -102,6 +112,11 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
+			if (parsed.type === '__ui_user__') {
+				const [, username, host] = parsed.id.split('@');
+				return await this.usersRepository.findOneBy({ username, host, isDeleted: false }) as MiLocalUser | undefined ?? null;
+			}
+
 			if (parsed.type !== 'users') return null;
 
 			return await this.cacheService.userByIdCache.fetchMaybe(
