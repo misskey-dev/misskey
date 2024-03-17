@@ -16,6 +16,7 @@
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Fix: フォローリクエストを作成する際に既存のものは削除するように
 
 ## 2024.3.1
 
