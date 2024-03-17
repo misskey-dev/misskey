@@ -477,16 +477,9 @@ export class SAMLIdentifyProviderService {
 										'#text': ssoServiceProvider.issuer,
 									},
 									'saml:Subject': {
-										'saml:NameID': [
-											{
-												'@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-												'#text': profile.email,
-											},
-											{
-												'@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-												'#text': user.id,
-											},
-										],
+										'saml:NameID': profile.emailVerified
+											? { '@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress', '#text': profile.email }
+											: { '@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent', '#text': user.id },
 										'saml:SubjectConfirmation': {
 											'@Method': 'urn:oasis:names:tc:SAML:2.0:cm:bearer',
 											'saml:SubjectConfirmationData': {
@@ -541,7 +534,7 @@ export class SAMLIdentifyProviderService {
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
-													'#text': user.name,
+													'#text': user.name ?? user.username,
 												},
 											},
 											{
@@ -568,30 +561,32 @@ export class SAMLIdentifyProviderService {
 													'#text': `${this.config.url}/@${user.username}`,
 												},
 											},
-											{
+											...(user.avatarUrl ? [{
 												'@Name': 'picture',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': user.avatarUrl,
 												},
-											},
-											{
-												'@Name': 'mail',
-												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-												'saml:AttributeValue': {
-													'@xsi:type': 'xs:string',
-													'#text': profile.email,
+											}] : []),
+											...(profile.emailVerified ? [
+												{
+													'@Name': 'mail',
+													'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+													'saml:AttributeValue': {
+														'@xsi:type': 'xs:string',
+														'#text': profile.email,
+													},
 												},
-											},
-											{
-												'@Name': 'email',
-												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-												'saml:AttributeValue': {
-													'@xsi:type': 'xs:string',
-													'#text': profile.email,
+												{
+													'@Name': 'email',
+													'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+													'saml:AttributeValue': {
+														'@xsi:type': 'xs:string',
+														'#text': profile.email,
+													},
 												},
-											},
+											] : []),
 											{
 												'@Name': 'email_verified',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',

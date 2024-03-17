@@ -171,11 +171,11 @@ export class JWTIdentifyProviderService {
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			const payload: JWTPayload = {
-				name: user.name,
+				name: user.name ?? user.username,
 				preferred_username: user.username,
 				profile: `${this.config.url}/@${user.username}`,
-				picture: user.avatarUrl,
-				email: profile.email,
+				picture: user.avatarUrl ?? undefined,
+				email: profile.emailVerified ? profile.email : undefined,
 				email_verified: profile.emailVerified,
 				mfa_enabled: profile.twoFactorEnabled,
 				updated_at: Math.floor((user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000),
