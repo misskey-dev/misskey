@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
-import forge from 'node-forge';
 import * as jose from 'jose';
 import * as Redis from 'ioredis';
 import * as saml from 'samlify';
@@ -56,27 +55,9 @@ export class SAMLIdentifyProviderService {
 	public async createIdPMetadataXml(
 		provider: MiSingleSignOnServiceProvider,
 	): Promise<string> {
-		const nowTime = new Date();
-		const tenYearsLaterTime = new Date(nowTime.getTime());
+		const tenYearsLaterTime = new Date(provider.createdAt.getTime());
 		tenYearsLaterTime.setFullYear(tenYearsLaterTime.getFullYear() + 10);
 		const tenYearsLater = tenYearsLaterTime.toISOString();
-
-		const cert = forge.pki.createCertificate();
-		cert.serialNumber = '01';
-		cert.validity.notBefore = provider.createdAt;
-		cert.validity.notAfter = tenYearsLaterTime;
-		const attrs = [{ name: 'commonName', value: this.config.hostname }];
-		cert.setSubject(attrs);
-		cert.setIssuer(attrs);
-		cert.publicKey = await jose.importJWK(JSON.parse(provider.publicKey))
-			.then(k => jose.exportSPKI(k as jose.KeyLike))
-			.then(k => forge.pki.publicKeyFromPem(k));
-		cert.sign(
-			await jose.importJWK(JSON.parse(provider.privateKey ?? '{}'))
-				.then(k => jose.exportPKCS8(k as jose.KeyLike))
-				.then(k => forge.pki.privateKeyFromPem(k)),
-			forge.md.sha256.create(),
-		);
 
 		const nodes = {
 			'md:EntityDescriptor': {
@@ -92,7 +73,7 @@ export class SAMLIdentifyProviderService {
 							'@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
 							'ds:X509Data': {
 								'ds:X509Certificate': {
-									'#text': forge.pki.certificateToPem(cert).replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, ''),
+									'#text': provider.publicKey.replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, ''),
 								},
 							},
 						},
@@ -123,28 +104,9 @@ export class SAMLIdentifyProviderService {
 	public async createSPMetadataXml(
 		provider: MiSingleSignOnServiceProvider,
 	): Promise<string> {
-		const nowTime = new Date();
-		const tenYearsLaterTime = new Date(nowTime.getTime());
+		const tenYearsLaterTime = new Date(provider.createdAt.getTime());
 		tenYearsLaterTime.setFullYear(tenYearsLaterTime.getFullYear() + 10);
 		const tenYearsLater = tenYearsLaterTime.toISOString();
-
-		const cert = forge.pki.createCertificate();
-		cert.serialNumber = '01';
-		cert.validity.notBefore = provider.createdAt;
-		cert.validity.notAfter = tenYearsLaterTime;
-		const attrs = [{ name: 'commonName', value: this.config.hostname }];
-		cert.setSubject(attrs);
-		cert.setIssuer(attrs);
-		cert.publicKey = await jose.importJWK(JSON.parse(provider.publicKey))
-			.then(k => jose.exportSPKI(k as jose.KeyLike))
-			.then(k => forge.pki.publicKeyFromPem(k));
-		cert.sign(
-			await jose.importJWK(JSON.parse(provider.privateKey ?? '{}'))
-				.then(k => jose.exportPKCS8(k as jose.KeyLike))
-				.then(k => forge.pki.privateKeyFromPem(k)),
-			forge.md.sha256.create(),
-		);
-		const x509 = forge.pki.certificateToPem(cert).replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, '');
 
 		const keyDescriptor: unknown[] = [
 			{
@@ -153,7 +115,7 @@ export class SAMLIdentifyProviderService {
 					'@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
 					'ds:X509Data': {
 						'ds:X509Certificate': {
-							'#text': x509,
+							'#text': provider.publicKey.replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, ''),
 						},
 					},
 				},
@@ -167,7 +129,7 @@ export class SAMLIdentifyProviderService {
 					'@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
 					'ds:X509Data': {
 						'ds:X509Certificate': {
-							'#text': x509,
+							'#text': provider.publicKey.replace(/-----(?:BEGIN|END) CERTIFICATE-----|\s/g, ''),
 						},
 					},
 				},

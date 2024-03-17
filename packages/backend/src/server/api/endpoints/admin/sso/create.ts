@@ -1,10 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as jose from 'jose';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { SingleSignOnServiceProviderRepository } from '@/models/_.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { genX509CertFromJWK } from '@/misc/gen-x509-cert-from-jwk.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -108,6 +110,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
 		@Inject(DI.singleSignOnServiceProviderRepository)
 		private singleSignOnServiceProviderRepository: SingleSignOnServiceProviderRepository,
 
@@ -125,16 +129,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}))
 				: { publicKey: ps.secret ?? randomUUID(), privateKey: null };
 
+			const now = new Date();
+			const tenYearsLaterTime = new Date(now.getTime());
+			tenYearsLaterTime.setFullYear(tenYearsLaterTime.getFullYear() + 10);
+
+			const x509Cert = ps.type === 'saml' && ps.useCertificate ? await genX509CertFromJWK(
+				this.config.hostname,
+				now,
+				tenYearsLaterTime,
+				publicKey,
+				privateKey ?? '',
+			) : undefined;
+
 			const ssoServiceProvider = await this.singleSignOnServiceProviderRepository.insert({
 				id: randomUUID(),
-				createdAt: new Date(),
+				createdAt: now,
 				name: ps.name ? ps.name : null,
 				type: ps.type,
 				issuer: ps.issuer,
 				audience: ps.audience?.filter(i => i.length > 0) ?? [],
 				binding: ps.binding,
 				acsUrl: ps.acsUrl,
-				publicKey: publicKey,
+				publicKey: ps.type === 'saml' && ps.useCertificate ? x509Cert : publicKey,
 				privateKey: privateKey,
 				signatureAlgorithm: ps.signatureAlgorithm,
 				cipherAlgorithm: ps.cipherAlgorithm ? ps.cipherAlgorithm : null,

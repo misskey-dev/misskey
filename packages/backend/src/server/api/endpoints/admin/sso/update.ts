@@ -1,9 +1,11 @@
-import * as jose from 'jose';
 import { Inject, Injectable } from '@nestjs/common';
-import type { SingleSignOnServiceProviderRepository } from '@/models/_.js';
+import * as jose from 'jose';
 import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { SingleSignOnServiceProviderRepository } from '@/models/_.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { genX509CertFromJWK } from '@/misc/gen-x509-cert-from-jwk.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -44,6 +46,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
 		@Inject(DI.singleSignOnServiceProviderRepository)
 		private singleSignOnServiceProviderRepository: SingleSignOnServiceProviderRepository,
 
@@ -62,13 +66,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}))
 				: { publicKey: ps.secret ?? undefined, privateKey: undefined };
 
+			const now = new Date();
+			const tenYearsLaterTime = new Date(now.getTime());
+			tenYearsLaterTime.setFullYear(tenYearsLaterTime.getFullYear() + 10);
+
+			const x509Cert = service.type === 'saml' && ps.regenerateCertificate ? await genX509CertFromJWK(
+				this.config.hostname,
+				now,
+				tenYearsLaterTime,
+				publicKey ?? '',
+				privateKey ?? '',
+			) : undefined;
+
 			await this.singleSignOnServiceProviderRepository.update(service.id, {
 				name: ps.name !== '' ? ps.name : null,
+				createdAt: service.type === 'saml' && ps.regenerateCertificate ? now : undefined,
 				issuer: ps.issuer,
 				audience: ps.audience?.filter(i => i.length > 0),
 				binding: ps.binding,
 				acsUrl: ps.acsUrl,
-				publicKey: publicKey,
+				publicKey: service.type === 'saml' && ps.regenerateCertificate ? x509Cert : publicKey,
 				privateKey: privateKey,
 				signatureAlgorithm: ps.signatureAlgorithm,
 				cipherAlgorithm: ps.cipherAlgorithm !== '' ? ps.cipherAlgorithm : null,

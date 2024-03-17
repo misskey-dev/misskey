@@ -204,9 +204,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkInput v-model="service.acsUrl">
 									<template #label>Assertion Consumer Service URL</template>
 								</MkInput>
-								<MkInput v-model="service.publicKey">
+								<MkTextarea v-model="service.publicKey">
 									<template #label>{{ service['useCertificate'] ? 'Public Key' : 'Secret' }}</template>
-								</MkInput>
+								</MkTextarea>
 								<MkInput v-model="service.signatureAlgorithm">
 									<template #label>Signature Algorithm</template>
 								</MkInput>

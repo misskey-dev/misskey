@@ -12,6 +12,10 @@ export default defineComponent({
 		modelValue: {
 			required: false,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, context) {
 		const value = ref(props.modelValue);
@@ -41,6 +45,7 @@ export default defineComponent({
 				key: option.key as string,
 				value: option.props?.value,
 				modelValue: value.value,
+				disabled: props.disabled,
 				'onUpdate:modelValue': _v => value.value = _v,
 			}, () => option.children)),
 			),
