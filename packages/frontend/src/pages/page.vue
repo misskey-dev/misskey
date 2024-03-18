@@ -55,9 +55,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div :class="$style.other">
-							<button v-tooltip="i18n.ts.shareWithNote" class="_button" :class="$style.generalActionButton" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
 							<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
-							<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+							<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
 						</div>
 					</div>
 					<div :class="$style.pageUser">
@@ -70,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.pageDate">
 						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
+						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 					</div>
 					<div :class="$style.pageLinks">
 						<MkA v-if="!$i || $i.id !== page.userId" :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ i18n.ts._pages.viewSource }}</MkA>
@@ -158,14 +157,21 @@ function fetchPage() {
 	});
 }
 
-function share() {
+function share(ev: MouseEvent) {
 	if (!page.value) return;
 
-	navigator.share({
-		title: page.value.title ?? page.value.name,
-		text: page.value.summary ?? undefined,
-		url: `${url}/@${page.value.user.username}/pages/${page.value.name}`,
-	});
+	os.popupMenu([
+		{
+			text: i18n.ts.shareWithNote,
+			icon: 'ti ti-pencil',
+			action: shareWithNote,
+		},
+		...(isSupportShare() ? [{
+			text: i18n.ts.share,
+			icon: 'ti ti-share',
+			action: shareWithNavigator,
+		}] : []),
+	], ev.currentTarget ?? ev.target);
 }
 
 function copyLink() {
@@ -181,6 +187,16 @@ function shareWithNote() {
 	os.post({
 		initialText: `${page.value.title || page.value.name}\n${url}/@${page.value.user.username}/pages/${page.value.name}`,
 		instant: true,
+	});
+}
+
+function shareWithNavigator() {
+	if (!page.value) return;
+
+	navigator.share({
+		title: page.value.title ?? page.value.name,
+		text: page.value.summary ?? undefined,
+		url: `${url}/@${page.value.user.username}/pages/${page.value.name}`,
 	});
 }
 
