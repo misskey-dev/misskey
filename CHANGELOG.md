@@ -1,7 +1,10 @@
 ## Unreleased
 
+### Note
+- コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+
 ### General
--
+- Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 
 ### Client
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
@@ -16,6 +19,7 @@
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
 
 ## 2024.3.1
 
