@@ -146,9 +146,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { instance } from '@/instance.js';
-import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store';
-import { signinRequired } from '@/account.js';
-import { $i } from '@/account.js';
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store.js';
+
 const props = withDefaults(defineProps<{
 	initialTab?: string;
 }>(), {
@@ -166,6 +165,7 @@ watch(tab, () => {
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+
 if (darkMode.value) {
 	bannerUrl.value = bannerDark;
 	iconUrl.value = iconDark;
@@ -173,6 +173,7 @@ if (darkMode.value) {
 	bannerUrl.value = bannerLight;
 	iconUrl.value = iconLight;
 }
+
 watch(darkMode, () => {
 	if (darkMode.value) {
 		bannerUrl.value = bannerDark;
@@ -182,6 +183,7 @@ watch(darkMode, () => {
 		iconUrl.value = iconLight;
 	}
 });
+
 const initStats = () => misskeyApi('stats', {
 }).then((res) => {
 	stats.value = res;

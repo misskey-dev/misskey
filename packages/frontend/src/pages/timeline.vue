@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
+						:withCw="withCw"
 						:sound="true"
 						@queue="queueUpdated"
 					/>
@@ -75,6 +76,10 @@ const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`| 
 const withRenotes = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
+});
+const withCw = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withCw,
+	set: (x) => saveTlFilter('withCw', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
@@ -254,14 +259,17 @@ function closeTutorial(): void {
 
 const headerActions = computed(() => {
 	const tmp = [
-		 { icon: 'ti ti-dots',
+		{ icon: 'ti ti-dots',
 				text: i18n.ts.options,
 				handler: (ev) => {
 					os.popupMenu([{
 						type: 'switch',
 						text: i18n.ts.showRenotes,
-
 						ref: withRenotes,
+					}, {
+						type: 'switch',
+						text: i18n.ts.showCw,
+						ref: withCw,
 					}, src.value === 'local' || src.value === 'social' ? {
 						type: 'switch',
 						text: i18n.ts.showRepliesToOthersInTimeline,

@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="tlComponent"
 		:pagination="paginationQuery"
 		:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
+        :withCw="props.withCw"
 		@queue="emit('queue', $event)"
 		@status="prComponent?.setDisabled($event)"
 	/>
@@ -38,11 +39,12 @@ const props = withDefaults(defineProps<{
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
-
+    withCw?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
 	onlyFiles: false,
+	withCw: false,
 });
 
 const emit = defineEmits<{

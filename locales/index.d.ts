@@ -4881,6 +4881,10 @@ export interface Locale extends ILocale {
      */
     "showRenotes": string;
     /**
+     * CWを非表示
+     */
+    "showCw": string;
+    /**
      * 編集済み
      */
     "edited": string;
