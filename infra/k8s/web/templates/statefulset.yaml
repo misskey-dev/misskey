@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "web.labels" . | nindent 4 }}
 spec:
+  serviceName: "web"
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
