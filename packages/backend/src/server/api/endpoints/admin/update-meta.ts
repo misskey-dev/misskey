@@ -603,11 +603,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.urlPreviewUserAgent !== undefined) {
-				set.urlPreviewUserAgent = ps.urlPreviewUserAgent;
+				const value = (ps.urlPreviewUserAgent ?? '').trim();
+				set.urlPreviewUserAgent = value === '' ? null : ps.urlPreviewUserAgent;
 			}
 
 			if (ps.summalyProxy !== undefined || ps.urlPreviewSummaryProxyUrl !== undefined) {
-				const value = ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy;
+				const value = ((ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy) ?? '').trim();
 				set.urlPreviewSummaryProxyUrl = value === '' ? null : value;
 			}
 

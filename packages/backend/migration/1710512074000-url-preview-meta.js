@@ -17,7 +17,7 @@ export class UrlPreviewMeta1710512074000 {
 					alter table meta
 						add "urlPreviewMaximumContentLength" bigint default 10485760 not null;
 					alter table meta
-						add "urlPreviewRequireContentLength" boolean default true;
+						add "urlPreviewRequireContentLength" boolean default false not null;
 					alter table meta
 						add "urlPreviewUserAgent" varchar(1024) default null;
 				`);

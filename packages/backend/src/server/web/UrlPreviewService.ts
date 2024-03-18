@@ -64,6 +64,17 @@ export class UrlPreviewService {
 
 		const meta = await this.metaService.fetch();
 
+		if (!meta.urlPreviewEnabled) {
+			reply.code(403);
+			return {
+				error: new ApiError({
+					message: 'URL preview is disabled',
+					code: 'URL_PREVIEW_DISABLED',
+					id: '58b36e13-d2f5-0323-b0c6-76aa9dabefb8',
+				}),
+			};
+		}
+
 		this.logger.info(meta.urlPreviewSummaryProxyUrl
 			? `(Proxy) Getting preview of ${url}@${lang} ...`
 			: `Getting preview of ${url}@${lang} ...`);
