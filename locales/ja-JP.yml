@@ -2280,6 +2280,7 @@ _play:
   title: "タイトル"
   script: "スクリプト"
   summary: "説明"
+  visibilityDescription: "非公開に設定するとプロフィールに表示されなくなりますが、URLを知っている人は引き続きアクセスできます。"
 
 _pages:
   newPage: "ページの作成"

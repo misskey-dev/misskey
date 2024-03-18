@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps">
+<div class="_gaps" :class="$style.textRoot">
 	<Mfm :text="block.text ?? ''" :isNote="false"/>
 	<div v-if="isEnabledUrlPreview">
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url"/>
@@ -28,3 +28,9 @@ const props = defineProps<{
 
 const urls = props.block.text ? extractUrlFromMfm(mfm.parse(props.block.text)) : [];
 </script>
+
+<style lang="scss" module>
+.textRoot {
+	font-size: 1.1rem;
+}
+</style>
