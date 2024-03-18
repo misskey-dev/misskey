@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
@@ -13,6 +13,8 @@
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
+- Fix: WebGL2をサポートしないブラウザで「季節に応じた画面の演出」が有効になっているとき、Misskeyが起動できなくなる問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/459)
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
