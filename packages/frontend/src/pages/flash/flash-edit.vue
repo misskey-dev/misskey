@@ -18,16 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCodeEditor v-model="script" lang="is">
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkCodeEditor>
+			<MkSelect v-model="visibility">
+				<template #label>{{ i18n.ts.visibility }}</template>
+				<template #caption>{{ i18n.ts._play.visibilityDescription }}</template>
+				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
+				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
+			</MkSelect>
 			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
-			<MkSelect v-model="visibility">
-				<template #label>{{ i18n.ts.visibility }}</template>
-				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
-				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
-			</MkSelect>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>

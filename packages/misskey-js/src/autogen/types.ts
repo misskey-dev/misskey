@@ -23749,7 +23749,10 @@ export type operations = {
           summary: string;
           script: string;
           permissions: string[];
-          /** @enum {string} */
+          /**
+           * @default public
+           * @enum {string}
+           */
           visibility?: 'public' | 'private';
         };
       };
