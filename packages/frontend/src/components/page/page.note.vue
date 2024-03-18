@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div style="margin: 1em 0;">
-	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>
-	<MkNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" v-model:note="note"/>
+<div :class="$style.root">
+	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" :note="note"/>
+	<MkNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" :note="note"/>
 </div>
 </template>
 
@@ -32,3 +32,10 @@ onMounted(() => {
 		});
 });
 </script>
+
+<style lang="scss" module>
+.root {
+	border: 1px solid var(--divider);
+	border-radius: var(--radius);
+}
+</style>
