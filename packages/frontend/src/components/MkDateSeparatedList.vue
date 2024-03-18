@@ -211,11 +211,6 @@ export default defineComponent({
 	}
 }
 
-.reversed {
-	display: flex;
-	flex-direction: column-reverse;
-}
-
 .separator {
 	text-align: center;
 }

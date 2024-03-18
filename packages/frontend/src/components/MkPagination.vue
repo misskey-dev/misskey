@@ -84,8 +84,8 @@ function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 	return entities.map(en => [en.id, en]);
 }
 
-function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
-	return new Map([...map, ...arrayToEntries(entities)]);
+function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[], reversed = false): MisskeyEntityMap {
+	return reversed ? new Map([...arrayToEntries(entities), ...map]) : new Map([...map, ...arrayToEntries(entities)]);
 }
 
 </script>
@@ -314,10 +314,10 @@ const fetchMoreAhead = async (): Promise<void> => {
 		}),
 	}).then(res => {
 		if (res.length === 0) {
-			items.value = concatMapWithArray(items.value, res);
+			items.value = concatMapWithArray(items.value, res, true);
 			more.value = false;
 		} else {
-			items.value = concatMapWithArray(items.value, res);
+			items.value = concatMapWithArray(items.value, res, true);
 			more.value = true;
 		}
 		offset.value += res.length;
