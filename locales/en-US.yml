@@ -494,6 +494,7 @@ emojiStyle: "Emoji style"
 native: "Native"
 disableDrawer: "Don't use drawer-style menus"
 showNoteActionsOnlyHover: "Only show note actions on hover"
+showReactionsCount: "See the number of reactions in one note"
 noHistory: "No history available"
 signinHistory: "Login history"
 enableAdvancedMfm: "Enable advanced MFM"
@@ -1751,6 +1752,7 @@ _plugin:
   installWarn: "Please do not install untrustworthy plugins."
   manage: "Manage plugins"
   viewSource: "View source"
+  viewLog: "Show log"
 _preferencesBackups:
   list: "Created backups"
   saveNew: "Save new backup"
@@ -2225,6 +2227,7 @@ _play:
   title: "Title"
   script: "Script"
   summary: "Description"
+  visibilityDescription: "Putting it private means it won't be visible on your profile, but anyone that has the URL can still access it."
 _pages:
   newPage: "Create a new Page"
   editPage: "Edit this Page"
