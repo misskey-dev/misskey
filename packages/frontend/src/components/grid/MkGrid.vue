@@ -1283,6 +1283,7 @@ $borderRadius: var(--radius);
 	overflow: scroll;
 	table-layout: fixed;
 	user-select: none;
+	font-size: 90%;
 }
 
 .border {
