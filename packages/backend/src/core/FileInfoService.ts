@@ -332,6 +332,7 @@ export class FileInfoService {
 	@bindThis
 	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
 		const sublogger = this.logger.createSubLogger('ffprobe');
+		sublogger.info(`Checking the video file. File path: ${path}`);
 		return new Promise((resolve) => {
 			try {
 				FFmpeg.ffprobe(path, (err, metadata) => {
