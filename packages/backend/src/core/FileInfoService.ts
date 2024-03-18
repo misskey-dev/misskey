@@ -19,7 +19,10 @@ import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { sub } from 'date-fns';
 
 export type FileInfo = {
 	size: number;
@@ -49,9 +52,13 @@ const TYPE_SVG = {
 
 @Injectable()
 export class FileInfoService {
+	private logger: Logger;
+
 	constructor(
 		private aiService: AiService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('file-info');
 	}
 
 	/**
@@ -320,19 +327,25 @@ export class FileInfoService {
 	/**
 	 * ビデオファイルにビデオトラックがあるかどうかチェック
 	 * （ない場合：m4a, webmなど）
+	 *
+	 * @param path ファイルパス
+	 * @returns ビデオトラックがあるかどうか（エラー発生時は常に`true`を返す）
 	 */
 	@bindThis
 	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
-		return new Promise((resolve, reject) => {
+		const sublogger = this.logger.createSubLogger('ffprobe');
+		return new Promise((resolve) => {
 			try {
 				FFmpeg.ffprobe(path, (err, metadata) => {
 					if (err) {
+						sublogger.warn(`Could not determine video file. Returns true. File path: ${path}`, err);
 						resolve(true);
 						return;
 					}
 					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
 				});
-			} catch (e) {
+			} catch (err) {
+				sublogger.warn(`Could not determine video file. Returns true. File path: ${path}`, err as Error);
 				resolve(true);
 			}
 		});
