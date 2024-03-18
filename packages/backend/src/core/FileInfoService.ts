@@ -338,14 +338,14 @@ export class FileInfoService {
 			try {
 				FFmpeg.ffprobe(path, (err, metadata) => {
 					if (err) {
-						sublogger.warn(`Could not determine video file. Returns true. File path: ${path}`, err);
+						sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err);
 						resolve(true);
 						return;
 					}
 					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
 				});
 			} catch (err) {
-				sublogger.warn(`Could not determine video file. Returns true. File path: ${path}`, err as Error);
+				sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err as Error);
 				resolve(true);
 			}
 		});
