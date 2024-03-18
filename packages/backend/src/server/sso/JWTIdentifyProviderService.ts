@@ -63,11 +63,11 @@ export class JWTIdentifyProviderService {
 
 		fastify.all<{
 			Params: { serviceId: string };
-			Querystring?: { return_to?: string };
-			Body?: { return_to?: string };
+			Querystring?: { serviceurl?: string, return_to?: string };
+			Body?: { serviceurl?: string, return_to?: string };
 		}>('/:serviceId', async (request, reply) => {
 			const serviceId = request.params.serviceId;
-			const returnTo = request.query?.return_to ?? request.body?.return_to;
+			const returnTo = request.query?.return_to ?? request.query?.serviceurl ?? request.body?.return_to ?? request.body?.serviceurl;
 
 			const ssoServiceProvider = await this.singleSignOnServiceProviderRepository.findOneBy({ id: serviceId, type: 'jwt' });
 			if (!ssoServiceProvider) {
@@ -193,6 +193,7 @@ export class JWTIdentifyProviderService {
 
 					jwt = await new jose.EncryptJWT(payload)
 						.setProtectedHeader({
+							typ: 'JWT',
 							alg: ssoServiceProvider.signatureAlgorithm,
 							enc: ssoServiceProvider.cipherAlgorithm,
 						})
@@ -209,7 +210,10 @@ export class JWTIdentifyProviderService {
 						: jose.base64url.decode(ssoServiceProvider.publicKey);
 
 					jwt = await new jose.SignJWT(payload)
-						.setProtectedHeader({ alg: ssoServiceProvider.signatureAlgorithm })
+						.setProtectedHeader({
+							typ: 'JWT',
+							alg: ssoServiceProvider.signatureAlgorithm,
+						})
 						.setIssuer(ssoServiceProvider.issuer)
 						.setAudience(ssoServiceProvider.audience)
 						.setIssuedAt()
