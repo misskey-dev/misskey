@@ -2957,6 +2957,10 @@ export interface Locale extends ILocale {
      */
     "loadRawImages": string;
     /**
+     * 猫化(nyaize)を強制的に無効にする
+     */
+    "denyaize": string;
+    /**
      * アニメーション画像を再生しない
      */
     "disableShowingAnimatedImages": string;
