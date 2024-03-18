@@ -25,14 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
+		<div v-show="pagination.prepend && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
+		<div v-show="!pagination.prepend && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
@@ -67,9 +67,9 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 	noPaging?: boolean;
 
 	/**
-	 * items 配列の中身を逆順にする(新しい方が最後)
+	 * fetchの際に、 items 配列を上方向に追加していく（append, prepend等の関数には影響しない）
 	 */
-	reversed?: boolean;
+	prepend?: boolean;
 
 	offsetMode?: boolean;
 
@@ -126,14 +126,14 @@ const BACKGROUND_PAUSE_WAIT_SEC = 10;
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
 const scrollObserver = ref<IntersectionObserver>();
 
-watch([() => props.pagination.reversed, scrollableElement], () => {
+watch([() => props.pagination.prepend, scrollableElement], () => {
 	if (scrollObserver.value) scrollObserver.value.disconnect();
 
 	scrollObserver.value = new IntersectionObserver(entries => {
 		backed.value = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement.value,
-		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
+		rootMargin: props.pagination.prepend ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.01,
 	});
 }, { immediate: true });
@@ -149,7 +149,7 @@ watch([backed, contentEl], () => {
 	if (!backed.value) {
 		if (!contentEl.value) return;
 
-		scrollRemove.value = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl.value, executeQueue, TOLERANCE);
+		scrollRemove.value = (props.pagination.prepend ? onScrollBottom : onScrollTop)(contentEl.value, executeQueue, TOLERANCE);
 	} else {
 		if (scrollRemove.value) scrollRemove.value();
 		scrollRemove.value = null;
@@ -187,7 +187,7 @@ async function init(): Promise<void> {
 			items.value = res;
 			more.value = false;
 		} else {
-			if (props.pagination.reversed) moreFetching.value = true;
+			if (props.pagination.prepend) moreFetching.value = true;
 			items.value = res;
 			more.value = true;
 		}
@@ -242,7 +242,7 @@ const fetchMore = async (): Promise<void> => {
 		};
 
 		if (res.length === 0) {
-			if (props.pagination.reversed) {
+			if (props.pagination.prepend) {
 				reverseConcat(res).then(() => {
 					more.value = false;
 					moreFetching.value = false;
@@ -253,7 +253,7 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		} else {
-			if (props.pagination.reversed) {
+			if (props.pagination.prepend) {
 				reverseConcat(res).then(() => {
 					more.value = true;
 					moreFetching.value = false;
@@ -280,14 +280,14 @@ const fetchMoreAhead = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			sinceId: items.value[items.value.length - 1].id,
+			sinceId: items.value[0].id,
 		}),
 	}).then(res => {
 		if (res.length === 0) {
-			items.value = items.value.concat(res);
+			items.value = res.concat(items.value);
 			more.value = false;
 		} else {
-			items.value = items.value.concat(res);
+			items.value = res.concat(items.value);
 			more.value = true;
 		}
 		offset.value += res.length;
@@ -297,7 +297,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
-const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl.value!, TOLERANCE);
+const isTop = (): boolean => isBackTop.value || (props.pagination.prepend ? isBottomVisible : isTopVisible)(contentEl.value!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
@@ -369,7 +369,7 @@ onActivated(() => {
 });
 
 onDeactivated(() => {
-	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl.value ? rootEl.value.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+	isBackTop.value = props.pagination.prepend ? window.scrollY >= (rootEl.value ? rootEl.value.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
 });
 
 function toBottom() {
@@ -378,7 +378,7 @@ function toBottom() {
 
 onBeforeMount(() => {
 	init().then(() => {
-		if (props.pagination.reversed) {
+		if (props.pagination.prepend) {
 			nextTick(() => {
 				setTimeout(toBottom, 800);
 

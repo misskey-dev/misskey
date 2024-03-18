@@ -134,7 +134,6 @@ export default defineComponent({
 		const classes = {
 			[$style['date-separated-list']]: true,
 			[$style['date-separated-list-nogap']]: props.noGap,
-			[$style['reversed']]: props.reversed,
 			[$style['direction-down']]: props.direction === 'down',
 			[$style['direction-up']]: props.direction === 'up',
 		};
@@ -209,11 +208,6 @@ export default defineComponent({
 		transform: translateY(-64px);
 	}
 	}
-}
-
-.reversed {
-	display: flex;
-	flex-direction: column-reverse;
 }
 
 .separator {

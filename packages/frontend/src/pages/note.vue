@@ -85,6 +85,7 @@ const prevUserPagination: Paging = {
 };
 
 const nextUserPagination: Paging = {
+	prepend: true,
 	endpoint: 'users/notes',
 	limit: 10,
 	params: computed(() => note.value ? ({
@@ -103,6 +104,7 @@ const prevChannelPagination: Paging = {
 };
 
 const nextChannelPagination: Paging = {
+	prepend: true,
 	endpoint: 'channels/timeline',
 	limit: 10,
 	params: computed(() => note.value ? ({
