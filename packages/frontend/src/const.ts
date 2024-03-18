@@ -79,6 +79,7 @@ export const ROLE_POLICIES = [
 	'canCreateContent',
 	'canUpdateContent',
 	'canDeleteContent',
+	'canPurgeAccount',
 	'canUpdateAvatar',
 	'canUpdateBanner',
 	'mentionLimit',

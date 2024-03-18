@@ -124,6 +124,13 @@ export class SigninApiService {
 			});
 		}
 
+		if (user.isDeleted && user.isSuspended) {
+			logger.error('No such user. (logical deletion)');
+			return error(404, {
+				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
+			});
+		}
+
 		if (user.isSuspended) {
 			logger.error('User is suspended.');
 			return error(403, {

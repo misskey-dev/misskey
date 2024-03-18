@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 import { DI } from '@/di-symbols.js';
+import type { UsersRepository } from '@/models/_.js';
+import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireAdmin: true,
-	kind: 'write:admin:delete-account',
+	requireModerator: true,
+	kind: 'write:admin:drive',
 } as const;
 
 export const paramDef = {
@@ -33,13 +33,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private deleteAccountService: DeleteAccountService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: ps.userId });
-			if (user.isDeleted) {
-				return;
-			}
 
-			await this.deleteAccountService.deleteAccount(user);
+			await this.deleteAccountService.deleteAllDriveFiles(user, me);
 		});
 	}
 }

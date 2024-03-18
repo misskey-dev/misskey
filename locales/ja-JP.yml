@@ -1706,6 +1706,7 @@ _role:
     canCreateContent: "コンテンツの作成"
     canUpdateContent: "コンテンツの編集"
     canDeleteContent: "コンテンツの削除"
+    canPurgeAccount: "完全なアカウントの削除"
     canUpdateAvatar: "アイコンの変更"
     canUpdateBanner: "バナーの変更"
     mentionMax: "ノート内の最大メンション数"

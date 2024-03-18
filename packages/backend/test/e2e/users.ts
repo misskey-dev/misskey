@@ -246,7 +246,7 @@ describe('ユーザー', () => {
 		await api('i/delete-account', { password: 'userDeletedBySelf' }, userDeletedBySelf);
 		userDeletedByAdmin = await signup({ username: 'userDeletedByAdmin' });
 		await post(userDeletedByAdmin, { text: 'test' });
-		await api('admin/delete-account', { userId: userDeletedByAdmin.id }, root);
+		await api('admin/accounts/delete', { userId: userDeletedByAdmin.id }, root);
 		userFollowingAlice = await signup({ username: 'userFollowingAlice' });
 		await post(userFollowingAlice, { text: 'test' });
 		await api('following/create', { userId: alice.id }, userFollowingAlice);

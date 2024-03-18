@@ -15,10 +15,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
-							<span v-if="suspended" class="suspended">Suspended</span>
-							<span v-if="limited" class="limited">Limited</span>
-							<span v-if="silenced" class="silenced">Silenced</span>
+							<span v-if="admin" class="admin">Admin</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
+							<span v-if="silenced" class="silenced">Silenced</span>
+							<span v-if="limited" class="limited">Limited</span>
+							<span v-if="suspended" class="suspended">Suspended</span>
+							<span v-if="deleted" class="deleted">Deleted</span>
 						</span>
 					</div>
 				</div>
@@ -32,12 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #key>ID</template>
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
 					</MkKeyValue>
-					<!-- 要る？
-					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline>
-						<template #key>IP (recent)</template>
-						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
-					</MkKeyValue>
-					-->
 					<MkKeyValue oneline>
 						<template #key>{{ i18n.ts.createdAt }}</template>
 						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
@@ -50,47 +46,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #key>{{ i18n.ts.email }}</template>
 						<template #value><span class="_monospace">{{ info.email }}</span></template>
 					</MkKeyValue>
+					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline>
+						<template #key>IP (recent)</template>
+						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
+					</MkKeyValue>
 				</div>
 
 				<MkTextarea v-model="moderationNote" manualSave>
 					<template #label>{{ i18n.ts.moderationNote }}</template>
 				</MkTextarea>
-
-				<!--
-				<FormSection>
-					<template #label>ActivityPub</template>
-
-					<div class="_gaps_m">
-						<div style="display: flex; flex-direction: column; gap: 1em;">
-							<MkKeyValue v-if="user.host" oneline>
-								<template #key>{{ i18n.ts.instanceInfo }}</template>
-								<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ti ti-chevron-right"></i></MkA></template>
-							</MkKeyValue>
-							<MkKeyValue v-else oneline>
-								<template #key>{{ i18n.ts.instanceInfo }}</template>
-								<template #value>(Local user)</template>
-							</MkKeyValue>
-							<MkKeyValue oneline>
-								<template #key>{{ i18n.ts.updatedAt }}</template>
-								<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
-							</MkKeyValue>
-							<MkKeyValue v-if="ap" oneline>
-								<template #key>Type</template>
-								<template #value><span class="_monospace">{{ ap.type }}</span></template>
-							</MkKeyValue>
-						</div>
-
-						<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</MkButton>
-
-						<MkFolder>
-							<template #label>Raw</template>
-
-							<MkObjectView v-if="ap" tall :value="ap">
-							</MkObjectView>
-						</MkFolder>
-					</div>
-				</FormSection>
-			-->
 
 				<FormSection>
 					<div class="_gaps">
@@ -123,8 +87,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 						</MkFolder>
 
-						<div>
-							<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
+						<div class="_buttons">
+							<MkButton v-if="iAmModerator" inline danger @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 							<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
 						</div>
 						<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
@@ -172,6 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-else-if="tab === 'drive'" class="_gaps">
+				<MkButton v-if="iAmModerator" inline danger @click="deleteAllFiles"><i class="ti ti-trash"></i> {{ i18n.ts.deleteAllFiles }}</MkButton>
 				<MkFileListForAdmin :pagination="filesPagination" viewMode="grid"/>
 			</div>
 
@@ -189,6 +154,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
 					</div>
 				</div>
+			</div>
+
+			<div v-else-if="tab === 'activitypub'" class="_gaps_m">
+				<div style="display: flex; flex-direction: column; gap: 1em;">
+					<MkKeyValue v-if="user.host" oneline>
+						<template #key>{{ i18n.ts.instanceInfo }}</template>
+						<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ti ti-chevron-right"></i></MkA></template>
+					</MkKeyValue>
+					<MkKeyValue v-else oneline>
+						<template #key>{{ i18n.ts.instanceInfo }}</template>
+						<template #value>(Local user)</template>
+					</MkKeyValue>
+					<MkKeyValue oneline>
+						<template #key>{{ i18n.ts.updatedAt }}</template>
+						<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="ap" oneline>
+						<template #key>Type</template>
+						<template #value><span class="_monospace">{{ ap.type }}</span></template>
+					</MkKeyValue>
+				</div>
+
+				<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</MkButton>
+
+				<MkFolder>
+					<template #label>Raw</template>
+
+					<MkObjectView v-if="ap" tall :value="ap">
+					</MkObjectView>
+				</MkFolder>
 			</div>
 
 			<div v-else-if="tab === 'raw'" class="_gaps_m">
@@ -243,10 +238,12 @@ const init = ref<ReturnType<typeof createFetcher>>();
 const info = ref<any>();
 const ips = ref<Misskey.entities.AdminGetUserIpsResponse | null>(null);
 const ap = ref<any>(null);
+const admin = ref(false);
 const moderator = ref(false);
 const silenced = ref(false);
 const limited = ref(false);
 const suspended = ref(false);
+const deleted = ref(false);
 const moderationNote = ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
@@ -277,15 +274,18 @@ function createFetcher() {
 		user.value = _user;
 		info.value = _info;
 		ips.value = _ips;
+		admin.value = info.value.isAdmin;
 		moderator.value = info.value.isModerator;
 		silenced.value = info.value.isSilenced;
 		limited.value = info.value.isLimited;
 		suspended.value = info.value.isSuspended;
+		deleted.value = info.value.isDeleted;
 		moderationNote.value = info.value.moderationNote;
 
 		watch(moderationNote, async () => {
-			await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
-			await refreshUser();
+			await misskeyApi('admin/update-user-note', {
+				userId: user.value.id, text: moderationNote.value
+			}).then(refreshUser);
 		});
 	});
 }
@@ -295,8 +295,9 @@ function refreshUser() {
 }
 
 async function updateRemoteUser() {
-	await os.apiWithDialog('federation/update-remote-user', { userId: user.value.id });
-	refreshUser();
+	await os.apiWithDialog('federation/update-remote-user', {
+		userId: user.value.id
+	}).then(refreshUser);
 }
 
 async function resetPassword() {
@@ -325,8 +326,9 @@ async function toggleSuspend(v) {
 	if (confirm.canceled) {
 		suspended.value = !v;
 	} else {
-		await misskeyApi(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.value.id });
-		await refreshUser();
+		await misskeyApi(v ? 'admin/suspend-user' : 'admin/unsuspend-user', {
+			userId: user.value.id
+		}).then(refreshUser);
 	}
 }
 
@@ -336,17 +338,10 @@ async function unsetUserAvatar() {
 		text: i18n.ts.unsetUserAvatarConfirm,
 	});
 	if (confirm.canceled) return;
-	const process = async () => {
-		await misskeyApi('admin/unset-user-avatar', { userId: user.value.id });
-		os.success();
-	};
-	await process().catch(err => {
-		os.alert({
-			type: 'error',
-			text: err.toString(),
-		});
-	});
-	refreshUser();
+
+	await os.apiWithDialog('admin/unset-user-avatar', {
+		userId: user.value.id
+	}).then(refreshUser);
 }
 
 async function unsetUserBanner() {
@@ -355,17 +350,10 @@ async function unsetUserBanner() {
 		text: i18n.ts.unsetUserBannerConfirm,
 	});
 	if (confirm.canceled) return;
-	const process = async () => {
-		await misskeyApi('admin/unset-user-banner', { userId: user.value.id });
-		os.success();
-	};
-	await process().catch(err => {
-		os.alert({
-			type: 'error',
-			text: err.toString(),
-		});
-	});
-	refreshUser();
+
+	await os.apiWithDialog('admin/unset-user-banner', {
+		userId: user.value.id
+	}).then(refreshUser);
 }
 
 async function deleteAllFiles() {
@@ -374,17 +362,22 @@ async function deleteAllFiles() {
 		text: i18n.ts.deleteAllFilesConfirm,
 	});
 	if (confirm.canceled) return;
-	const process = async () => {
-		await misskeyApi('admin/delete-all-files-of-a-user', { userId: user.value.id });
-		os.success();
-	};
-	await process().catch(err => {
+
+	const typed = await os.inputText({
+		text: i18n.tsx.typeToConfirm({ x: user.value?.username }),
+	});
+	if (typed.canceled) return;
+
+	if (typed.result === user.value?.username) {
+		await os.apiWithDialog('admin/drive/delete-all-files-of-a-user', {
+			userId: user.value.id
+		}).then(refreshUser);
+	} else {
 		os.alert({
 			type: 'error',
-			text: err.toString(),
+			text: 'input not match',
 		});
-	});
-	await refreshUser();
+	}
 }
 
 async function deleteAccount() {
@@ -400,9 +393,9 @@ async function deleteAccount() {
 	if (typed.canceled) return;
 
 	if (typed.result === user.value?.username) {
-		await os.apiWithDialog('admin/delete-account', {
+		await os.apiWithDialog('admin/accounts/delete', {
 			userId: user.value.id,
-		});
+		}).then(refreshUser);
 	} else {
 		os.alert({
 			type: 'error',
@@ -444,8 +437,9 @@ async function assignRole() {
 		: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
 		: null;
 
-	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.value.id, expiresAt });
-	refreshUser();
+	await os.apiWithDialog('admin/roles/assign', {
+		roleId, userId: user.value.id, expiresAt
+	}).then(refreshUser);
 }
 
 async function unassignRole(role, ev) {
@@ -454,8 +448,9 @@ async function unassignRole(role, ev) {
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
-			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.value.id });
-			refreshUser();
+			await os.apiWithDialog('admin/roles/unassign', {
+				roleId: role.id, userId: user.value.id
+			}).then(refreshUser);
 		},
 	}], ev.currentTarget ?? ev.target);
 }
@@ -526,6 +521,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.charts,
 	icon: 'ti ti-chart-line',
 }, {
+	key: 'activitypub',
+	title: 'ActivityPub',
+	icon: 'ti ti-share',
+}, {
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',
@@ -581,7 +580,12 @@ definePageMetadata(() => ({
 				display: none;
 			}
 
-			> .suspended, > .limited, > .silenced, > .moderator {
+			> .admin,
+			> .moderator,
+			> .silenced,
+			> .limited,
+			> .suspended,
+			> .deleted {
 				display: inline-block;
 				border: solid 1px;
 				border-radius: 6px;
@@ -589,14 +593,14 @@ definePageMetadata(() => ({
 				font-size: 85%;
 			}
 
-			> .suspended {
-				color: var(--error);
-				border-color: var(--error);
+			> .admin {
+				color: var(--success);
+				border-color: var(--success);
 			}
 
-			> .limited {
-				color: var(--error);
-				border-color: var(--error);
+			> .moderator {
+				color: var(--success);
+				border-color: var(--success);
 			}
 
 			> .silenced {
@@ -604,9 +608,19 @@ definePageMetadata(() => ({
 				border-color: var(--warn);
 			}
 
-			> .moderator {
-				color: var(--success);
-				border-color: var(--success);
+			> .limited {
+				color: var(--error);
+				border-color: var(--error);
+			}
+
+			> .suspended {
+				color: var(--error);
+				border-color: var(--error);
+			}
+
+			> .deleted {
+				color: var(--error);
+				border-color: var(--error);
 			}
 		}
 	}

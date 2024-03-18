@@ -104,7 +104,7 @@ describe('アンテナ', () => {
 		await api('i/delete-account', { password: 'userDeletedBySelf' }, userDeletedBySelf);
 		userDeletedByAdmin = await signup({ username: 'userDeletedByAdmin' });
 		await post(userDeletedByAdmin, { text: 'test' });
-		await api('admin/delete-account', { userId: userDeletedByAdmin.id }, root);
+		await api('admin/accounts/delete', { userId: userDeletedByAdmin.id }, root);
 		userFollowedByAlice = await signup({ username: 'userFollowedByAlice' });
 		await post(userFollowedByAlice, { text: 'test' });
 		await api('following/create', { userId: userFollowedByAlice.id }, alice);

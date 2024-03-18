@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/_.js';
-import { QueueService } from '@/core/QueueService.js';
-import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { UsersRepository } from '@/models/_.js';
+import { RoleService } from '@/core/RoleService.js';
+import { DeleteAccountService } from '@/core/DeleteAccountService.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -17,6 +17,20 @@ export const meta = {
 	requireCredential: true,
 	requireAdmin: true,
 	kind: 'write:admin:account',
+
+	errors: {
+		userNotFound: {
+			message: 'User not found.',
+			code: 'USER_NOT_FOUND',
+			id: '6c45276a-525e-46b0-892f-17a5036258bf',
+		},
+
+		cannotDeleteModerator: {
+			message: 'Cannot delete a moderator.',
+			code: 'CANNOT_DELETE_MODERATOR',
+			id: 'd195c621-f21a-4c2f-a634-484c2a616311',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -33,37 +47,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		private userEntityService: UserEntityService,
-		private queueService: QueueService,
-		private userSuspendService: UserSuspendService,
+		private roleService: RoleService,
+		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
-			if (user == null) {
-				throw new Error('user not found');
-			}
+			if (user == null) throw new ApiError(meta.errors.userNotFound);
+			if (await this.roleService.isModerator(user)) throw new ApiError(meta.errors.cannotDeleteModerator);
 
-			if (user.isRoot) {
-				throw new Error('cannot delete a root account');
-			}
-
-			if (this.userEntityService.isLocalUser(user)) {
-				// 物理削除する前にDelete activityを送信する
-				await this.userSuspendService.doPostSuspend(user).catch(err => {});
-
-				this.queueService.createDeleteAccountJob(user, {
-					soft: false,
-				});
-			} else {
-				this.queueService.createDeleteAccountJob(user, {
-					soft: true, // リモートユーザーの削除は、完全にDBから物理削除してしまうと再度連合してきてアカウントが復活する可能性があるため、soft指定する
-				});
-			}
-
-			await this.usersRepository.update(user.id, {
-				isDeleted: true,
-			});
+			// 管理者からの削除ということはモデレーション行為なので、soft delete にする
+			await this.deleteAccountService.deleteAccount(user, true, me);
 		});
 	}
 }

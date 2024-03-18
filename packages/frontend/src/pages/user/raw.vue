@@ -12,10 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.userMInfoMetaName"><MkUserName :class="$style.userMInfoMetaName" :user="user"/></span>
 				<span :class="$style.userMInfoMetaSub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 				<span :class="$style.userMInfoMetaState">
-					<span v-if="suspended" :class="$style.suspended">Suspended</span>
-					<span v-if="limited" :class="$style.limited">Limited</span>
-					<span v-if="silenced" :class="$style.silenced">Silenced</span>
 					<span v-if="moderator" :class="$style.moderator">Moderator</span>
+					<span v-if="silenced" :class="$style.silenced">Silenced</span>
+					<span v-if="limited" :class="$style.limited">Limited</span>
+					<span v-if="suspended" :class="$style.suspended">Suspended</span>
+					<span v-if="deleted" :class="$style.deleted">Deleted</span>
 				</span>
 			</div>
 		</div>
@@ -56,6 +57,7 @@ const moderator = computed(() => props.user.isModerator ?? false);
 const silenced = computed(() => props.user.isSilenced ?? false);
 const limited = computed(() => props.user.isLimited ?? false);
 const suspended = computed(() => props.user.isSuspended ?? false);
+const deleted = computed(() => props.user.isDeleted ?? false);
 </script>
 
 <style lang="scss" module>
@@ -104,10 +106,11 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 		display: none;
 	}
 
-	> .suspended,
-	> .limited,
+	> .moderator,
 	> .silenced,
-	> .moderator {
+	> .limited,
+	> .suspended,
+	> .deleted {
 		display: inline-block;
 		border: solid 1px;
 		border-radius: 6px;
@@ -115,14 +118,9 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 		font-size: 85%;
 	}
 
-	> .suspended {
-		color: var(--error);
-		border-color: var(--error);
-	}
-
-	> .limited {
-		color: var(--error);
-		border-color: var(--error);
+	> .moderator {
+		color: var(--success);
+		border-color: var(--success);
 	}
 
 	> .silenced {
@@ -130,9 +128,19 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 		border-color: var(--warn);
 	}
 
-	> .moderator {
-		color: var(--success);
-		border-color: var(--success);
+	> .limited {
+		color: var(--error);
+		border-color: var(--error);
+	}
+
+	> .suspended {
+		color: var(--error);
+		border-color: var(--error);
+	}
+
+	> .deleted {
+		color: var(--error);
+		border-color: var(--error);
 	}
 }
 </style>

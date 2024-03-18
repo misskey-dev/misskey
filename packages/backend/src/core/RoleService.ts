@@ -40,6 +40,7 @@ export type RolePolicies = {
 	canCreateContent: boolean;
 	canUpdateContent: boolean;
 	canDeleteContent: boolean;
+	canPurgeAccount: boolean;
 	canUpdateAvatar: boolean;
 	canUpdateBanner: boolean;
 	mentionLimit: number;
@@ -77,6 +78,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canCreateContent: true,
 	canUpdateContent: true,
 	canDeleteContent: true,
+	canPurgeAccount: true,
 	canUpdateAvatar: true,
 	canUpdateBanner: true,
 	mentionLimit: 20,
@@ -353,6 +355,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canCreateContent: calc('canCreateContent', vs => vs.some(v => v === true)),
 			canUpdateContent: calc('canUpdateContent', vs => vs.some(v => v === true)),
 			canDeleteContent: calc('canDeleteContent', vs => vs.some(v => v === true)),
+			canPurgeAccount: calc('canPurgeAccount', vs => vs.some(v => v === true)),
 			canUpdateAvatar: calc('canUpdateAvatar', vs => vs.some(v => v === true)),
 			canUpdateBanner: calc('canUpdateBanner', vs => vs.some(v => v === true)),
 			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),

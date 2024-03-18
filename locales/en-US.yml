@@ -1691,6 +1691,7 @@ _role:
     canCreateContent: "Can create contents"
     canUpdateContent: "Can edit contents"
     canDeleteContent: "Can delete contents"
+    canPurgeAccount: "Can delete account completely"
     canUpdateAvatar: "Can change avatar"
     canUpdateBanner: "Can change banner"
     mentionMax: "Maximum number of mentions in a note"

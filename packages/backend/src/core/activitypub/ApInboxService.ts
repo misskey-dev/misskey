@@ -487,7 +487,8 @@ export class ApInboxService {
 			return 'skip: already deleted';
 		}
 
-		const job = await this.queueService.createDeleteAccountJob(actor);
+		// リモートから消されたということなので、物理削除する
+		const job = await this.queueService.createDeleteAccountJob(actor, { force: true, soft: false });
 
 		await this.usersRepository.update(actor.id, {
 			isDeleted: true,

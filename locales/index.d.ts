@@ -6595,6 +6595,10 @@ export interface Locale extends ILocale {
              */
             "canDeleteContent": string;
             /**
+             * 完全なアカウントの削除
+             */
+            "canPurgeAccount": string;
+            /**
              * アイコンの変更
              */
             "canUpdateAvatar": string;

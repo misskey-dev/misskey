@@ -179,6 +179,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canPurgeAccount: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canUpdateAvatar: {
 			type: 'boolean',
 			optional: false, nullable: false,

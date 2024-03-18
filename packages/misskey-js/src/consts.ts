@@ -48,8 +48,6 @@ export const permissions = [
 	'read:admin:abuse-user-reports',
 	'read:admin:abuse-report-resolvers',
 	'write:admin:abuse-report-resolvers',
-	'write:admin:delete-account',
-	'write:admin:delete-all-files-of-a-user',
 	'read:admin:index-stats',
 	'read:admin:table-stats',
 	'read:admin:user-ips',

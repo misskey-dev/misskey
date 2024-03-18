@@ -14,7 +14,6 @@ import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	requireCredential: true,
-	requireRolePolicy: 'canDeleteContent',
 
 	secure: true,
 
@@ -76,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.userAuthService.twoFactorAuthenticate(profile, token);
 			}
 
-			await this.deleteAccountService.deleteAccount(me);
+			await this.deleteAccountService.deleteAccount(me, false, me);
 		});
 	}
 }

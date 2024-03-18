@@ -4,14 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { DriveService } from '@/core/DriveService.js';
-import type { MiUser } from '@/models/User.js';
-import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import { DriveService } from '@/core/DriveService.js';
+import { EmailService } from '@/core/EmailService.js';
 import { SearchService } from '@/core/SearchService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';
@@ -35,8 +36,9 @@ export class DeleteAccountProcessorService {
 
 		private driveService: DriveService,
 		private emailService: EmailService,
-		private queueLoggerService: QueueLoggerService,
 		private searchService: SearchService,
+		private roleService: RoleService,
+		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-account');
 	}
@@ -87,19 +89,32 @@ export class DeleteAccountProcessorService {
 
 	@bindThis
 	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
-		this.logger.info(`Deleting account of ${job.data.user.id} ...`);
+		this.logger.info(`Deleting account of ${job.data.user.id} ...`, { userDeleteJobData: job.data });
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
 			return;
 		}
 
-		await Promise.all([
-			this.deleteNotes(user),
-			this.deleteFiles(user),
-		]);
+		const { canDeleteContent, canPurgeAccount } = !job.data.force
+			? await this.roleService.getUserPolicies(user.id)
+			: { canDeleteContent: true, canPurgeAccount: true };
 
-		{ // Send email notification
+		if (job.data.onlyFiles) {
+			if (!canDeleteContent) return 'Permission denied';
+
+			await this.deleteFiles(user);
+			return 'Files deleted';
+		}
+
+		if (canDeleteContent) {
+			await Promise.all([
+				this.deleteNotes(user),
+				this.deleteFiles(user),
+			]);
+		}
+
+		if (user.token) { // Send email notification
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 			if (profile.email && profile.emailVerified) {
 				await this.emailService.sendEmail(profile.email, 'Account deleted',
@@ -108,9 +123,13 @@ export class DeleteAccountProcessorService {
 			}
 		}
 
-		// soft指定されている場合は物理削除しない
-		if (job.data.soft) {
-		// nop
+		// 制限されている もしくは soft指定されている場合は物理削除しない、代わりに凍結＋削除フラグを立てる
+		if (!(canDeleteContent && canPurgeAccount) || job.data.soft) {
+			await this.usersRepository.update(user.id, {
+				token: null,
+				isSuspended: true,
+				isDeleted: true,
+			});
 		} else {
 			await this.usersRepository.delete(job.data.user.id);
 		}

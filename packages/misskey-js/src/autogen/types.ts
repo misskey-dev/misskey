@@ -201,15 +201,6 @@ export type paths = {
      */
     post: operations['admin/avatar-decorations/update'];
   };
-  '/admin/delete-all-files-of-a-user': {
-    /**
-     * admin/delete-all-files-of-a-user
-     * @description No description provided.
-     *
-     * **Credential required**: *Yes* / **Permission**: *write:admin:delete-all-files-of-a-user*
-     */
-    post: operations['admin/delete-all-files-of-a-user'];
-  };
   '/admin/unset-user-avatar': {
     /**
      * admin/unset-user-avatar
@@ -245,6 +236,15 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:admin:drive*
      */
     post: operations['admin/drive/cleanup'];
+  };
+  '/admin/drive/delete-all-files-of-a-user': {
+    /**
+     * admin/drive/delete-all-files-of-a-user
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:drive*
+     */
+    post: operations['admin/drive/delete-all-files-of-a-user'];
   };
   '/admin/drive/files': {
     /**
@@ -669,15 +669,6 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:admin:meta*
      */
     post: operations['admin/update-meta'];
-  };
-  '/admin/delete-account': {
-    /**
-     * admin/delete-account
-     * @description No description provided.
-     *
-     * **Credential required**: *Yes* / **Permission**: *write:admin:delete-account*
-     */
-    post: operations['admin/delete-account'];
   };
   '/admin/update-user-note': {
     /**
@@ -4844,6 +4835,7 @@ export type components = {
       canCreateContent: boolean;
       canUpdateContent: boolean;
       canDeleteContent: boolean;
+      canPurgeAccount: boolean;
       canUpdateAvatar: boolean;
       canUpdateBanner: boolean;
       mentionLimit: number;
@@ -6513,58 +6505,6 @@ export type operations = {
     };
   };
   /**
-   * admin/delete-all-files-of-a-user
-   * @description No description provided.
-   *
-   * **Credential required**: *Yes* / **Permission**: *write:admin:delete-all-files-of-a-user*
-   */
-  'admin/delete-all-files-of-a-user': {
-    requestBody: {
-      content: {
-        'application/json': {
-          /** Format: misskey:id */
-          userId: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
-      };
-      /** @description Client error */
-      400: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Authentication error */
-      401: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Forbidden error */
-      403: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description I'm Ai */
-      418: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-    };
-  };
-  /**
    * admin/unset-user-avatar
    * @description No description provided.
    *
@@ -6719,6 +6659,58 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *write:admin:drive*
    */
   'admin/drive/cleanup': {
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/drive/delete-all-files-of-a-user
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:drive*
+   */
+  'admin/drive/delete-all-files-of-a-user': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+        };
+      };
+    };
     responses: {
       /** @description OK (without any results) */
       204: {
@@ -9321,6 +9313,8 @@ export type operations = {
             };
             isModerator: boolean;
             isSilenced: boolean;
+            isLimited: boolean;
+            isDeleted: boolean;
             isSuspended: boolean;
             isHibernated: boolean;
             lastActiveDate: string | null;
@@ -9663,58 +9657,6 @@ export type operations = {
           sensitiveMediaHosts?: string[] | null;
           urlPreviewDenyList?: string[] | null;
           featuredGameChannels?: string[] | null;
-        };
-      };
-    };
-    responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
-      };
-      /** @description Client error */
-      400: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Authentication error */
-      401: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Forbidden error */
-      403: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description I'm Ai */
-      418: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-    };
-  };
-  /**
-   * admin/delete-account
-   * @description No description provided.
-   *
-   * **Credential required**: *Yes* / **Permission**: *write:admin:delete-account*
-   */
-  'admin/delete-account': {
-    requestBody: {
-      content: {
-        'application/json': {
-          /** Format: misskey:id */
-          userId: string;
         };
       };
     };
