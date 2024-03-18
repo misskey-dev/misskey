@@ -421,7 +421,8 @@ function chooseFileFrom(ev) {
 	if (props.mock) return;
 
 	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
-		for (const file of files_) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		for (const file of files_.filter(f => f?.id)) {
 			files.value.push(file);
 		}
 	});
@@ -450,7 +451,7 @@ function upload(file: File, name?: string): void {
 	if (props.mock) return;
 
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
-		files.value.push(res);
+		if (res.id) files.value.push(res);
 	});
 }
 
@@ -657,7 +658,7 @@ function onDrop(ev: DragEvent): void {
 	const driveFile = ev.dataTransfer?.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
-		files.value.push(file);
+		if (file?.id) files.value.push(file);
 		ev.preventDefault();
 	}
 	//#endregion
@@ -676,7 +677,8 @@ function saveDraft() {
 			cw: cw.value,
 			visibility: visibility.value,
 			localOnly: localOnly.value,
-			files: files.value,
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			files: files.value.filter(f => f?.id && f.type && f.name),
 			poll: poll.value,
 		},
 	};
@@ -747,7 +749,8 @@ async function post(ev?: MouseEvent) {
 
 	let postData = {
 		text: text.value === '' ? null : text.value,
-		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		fileIds: files.value.length > 0 ? files.value.filter(f => f?.id).map(f => f.id) : undefined,
 		replyId: props.reply ? props.reply.id : undefined,
 		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
@@ -946,7 +949,8 @@ onMounted(() => {
 				cw.value = draft.data.cw;
 				visibility.value = draft.data.visibility;
 				localOnly.value = draft.data.localOnly;
-				files.value = (draft.data.files || []).filter(draftFile => draftFile);
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				files.value = draft.data.files?.filter(f => f?.id && f.type && f.name) || [];
 				if (draft.data.poll) {
 					poll.value = draft.data.poll;
 				}
@@ -957,7 +961,8 @@ onMounted(() => {
 		if (props.initialNote) {
 			const init = props.initialNote;
 			text.value = init.text ? init.text : '';
-			files.value = init.files ?? [];
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			files.value = init.files?.filter(f => f?.id && f.type && f.name) ?? [];
 			cw.value = init.cw ?? null;
 			useCw.value = init.cw != null;
 			if (init.poll) {
