@@ -44,6 +44,9 @@ importers:
         specifier: 4.4.0
         version: 4.4.0
     devDependencies:
+      '@types/node':
+        specifier: ^20.11.28
+        version: 20.11.28
       '@typescript-eslint/eslint-plugin':
         specifier: 7.1.0
         version: 7.1.0(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)(typescript@5.3.3)
@@ -7649,6 +7652,12 @@ packages:
     resolution: {integrity: sha512-/G+IxWxma6V3E+pqK1tSl2Fo1kl41pK1yeCyDsgkF9WlVAme4j5ISYM2zR11bgLFJGLN5sVK40T4RJNuiZbEjA==}
     dependencies:
       undici-types: 5.26.5
+
+  /@types/node@20.11.28:
+    resolution: {integrity: sha512-M/GPWVS2wLkSkNHVeLkrF2fD5Lx5UC4PxA0uZcKc6QqbIQUJyW1jVjueJYi1z8n0I5PxYrtpnPnWglE+y9A0KA==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: true
 
   /@types/node@20.11.5:
     resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
@@ -19443,6 +19452,10 @@ packages:
 
   /vue-component-type-helpers@1.8.4:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
+    dev: true
+
+  /vue-component-type-helpers@2.0.6:
+    resolution: {integrity: sha512-qdGXCtoBrwqk1BT6r2+1Wcvl583ZVkuSZ3or7Y1O2w5AvWtlvvxwjGhmz5DdPJS9xqRdDlgTJ/38ehWnEi0tFA==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):
