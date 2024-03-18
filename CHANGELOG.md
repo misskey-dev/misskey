@@ -16,7 +16,8 @@
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
 - Fix: WebGL2をサポートしないブラウザで「季節に応じた画面の演出」が有効になっているとき、Misskeyが起動できなくなる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/459)
-- Fix: ページタイトルでローカルユーザーとリモートユーザーの区別がつかない問題を修正
+- Fix: ページタイトルでローカルユーザーとリモートユーザーの区別がつかない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/528)
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
