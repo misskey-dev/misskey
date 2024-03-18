@@ -108,9 +108,7 @@ export type EndedPollNotificationJobData = {
 
 export type WebhookDeliverJobData = {
 	type: string;
-	content: {
-    note: MiNote
-  }; // TODO: 本当はノート以外にも取り得る
+	content: any;
 	webhookId: MiWebhook['id'];
 	userId: MiUser['id'];
 	to: string;
