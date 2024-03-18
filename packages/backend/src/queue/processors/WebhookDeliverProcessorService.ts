@@ -47,7 +47,7 @@ export class WebhookDeliverProcessorService {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						content: `[@${job.data.content.note.user.name}](https://misskey.sweshelo.jp/notes/${job.data.content.note.id})\n> ${job.data.content.note.text}`,
+						content: `[@${job.data.content.note.user?.name}](https://misskey.sweshelo.jp/notes/${job.data.content.note.id})\n> ${job.data.content.note.text}`,
 					})
 				})
 				: await this.httpRequestService.send(job.data.to, {
