@@ -735,6 +735,7 @@ noCrawleDescription: "外部の検索エンジンにあなたのユーザーペ�
 lockedAccountInfo: "フォローを承認制にしても、ノートの公開範囲を「フォロワー」にしない限り、誰でもあなたのノートを見ることができます。"
 alwaysMarkSensitive: "デフォルトでメディアをセンシティブ設定にする"
 loadRawImages: "添付画像のサムネイルをオリジナル画質にする"
+denyaize: "猫化(nyaize)を強制的に無効にする"
 disableShowingAnimatedImages: "アニメーション画像を再生しない"
 highlightSensitiveMedia: "メディアがセンシティブであることを分かりやすく表示"
 verificationEmailSent: "確認のメールを送信しました。メールに記載されたリンクにアクセスして、設定を完了してください。"

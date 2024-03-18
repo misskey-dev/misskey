@@ -271,8 +271,9 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public getOnlineStatus(user: MiUser): 'unknown' | 'online' | 'active' | 'offline' {
 		if (user.hideOnlineStatus) return 'unknown';
-		if (user.lastActiveDate == null) return 'unknown';
-		const elapsed = Date.now() - user.lastActiveDate.getTime();
+    const activeDate = user.lastActiveDate ?? user.updatedAt;
+		if (activeDate == null) return 'unknown';
+		const elapsed = Date.now() - activeDate.getTime();
 		return (
 			elapsed < USER_ONLINE_THRESHOLD ? 'online' :
 			elapsed < USER_ACTIVE_THRESHOLD ? 'active' :

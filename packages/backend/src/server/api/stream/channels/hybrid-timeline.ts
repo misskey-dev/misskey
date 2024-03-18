@@ -98,7 +98,7 @@ class HybridTimelineChannel extends Channel {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				console.log(note.renote.reactionAndUserPairCache);
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-				note.renote.myReaction = myRenoteReaction;
+				note.renote.myReaction = myRenoteReaction?.find(() => true);
 			}
 		}
 

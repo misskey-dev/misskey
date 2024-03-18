@@ -735,6 +735,7 @@ noCrawleDescription: "Ask search engines to not index your profile page, notes, 
 lockedAccountInfo: "Unless you set your note visiblity to \"Followers only\", your notes will be visible to anyone, even if you require followers to be manually approved."
 alwaysMarkSensitive: "Mark as sensitive by default"
 loadRawImages: "Load original images instead of showing thumbnails"
+denyaize: "Forcefully disable the nyaize (cat-marking) feature"
 disableShowingAnimatedImages: "Don't play animated images"
 highlightSensitiveMedia: "Highlight sensitive media"
 verificationEmailSent: "A verification email has been sent. Please follow the included link to complete verification."

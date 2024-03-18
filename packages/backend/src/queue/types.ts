@@ -108,7 +108,7 @@ export type EndedPollNotificationJobData = {
 
 export type WebhookDeliverJobData = {
 	type: string;
-	content: unknown;
+	content: any;
 	webhookId: MiWebhook['id'];
 	userId: MiUser['id'];
 	to: string;
