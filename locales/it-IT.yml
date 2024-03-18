@@ -494,6 +494,7 @@ emojiStyle: "Stile emoji"
 native: "Nativo"
 disableDrawer: "Non mostrare il menù sul drawer"
 showNoteActionsOnlyHover: "Mostra le azioni delle Note solo al passaggio del mouse"
+showReactionsCount: "Visualizza il numero di reazioni su una nota"
 noHistory: "Nessuna cronologia"
 signinHistory: "Storico degli accessi al profilo"
 enableAdvancedMfm: "Attiva MFM avanzati"
@@ -1751,6 +1752,7 @@ _plugin:
   installWarn: "Si prega di installare soltanto estensioni che provengono da fonti affidabili."
   manage: "Gestisci estensioni"
   viewSource: "Visualizza sorgente"
+  viewLog: "Mostra log"
 _preferencesBackups:
   list: "Elenco di impostazioni salvate in precedenza"
   saveNew: "Nuovo salvataggio"
@@ -2225,6 +2227,7 @@ _play:
   title: "Titolo"
   script: "Script"
   summary: "Descrizione"
+  visibilityDescription: "Impostarlo su privato significa che non verrà visualizzato sul tuo profilo, ma chiunque ha l'URL potrà comunque accedervi."
 _pages:
   newPage: "Crea pagina"
   editPage: "Modifica pagina"
