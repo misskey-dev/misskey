@@ -39,10 +39,10 @@ const emit = defineEmits<{
 	(ev: 'change:width', sender: GridColumn, width: string): void;
 	(ev: 'change:contentSize', sender: GridColumn, newSize: Size): void;
 }>();
+
 defineProps<{
 	columns: GridColumn[],
 	gridSetting: GridRowSetting,
 	bus: GridEventEmitter,
 }>();
-
 </script>
