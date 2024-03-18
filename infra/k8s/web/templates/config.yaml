@@ -9,7 +9,7 @@ data:
     #───┘ URL └─────────────────────────────────────────────────────
 
     # Final accessible URL seen by a user.
-    url: https://mk8stest.na2na.dev/
+    url: {{ .Values.service.host }}
 
     # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
     # URL SETTINGS AFTER THAT!
@@ -37,15 +37,15 @@ data:
     #───┘ PostgreSQL configuration └────────────────────────────────
 
     db:
-      host: postgres-cluster-rw.misskey.svc.cluster.local
-      port: 5432
+      host: {{ .Values.database.host }}
+      port: {{ .Values.database.port }}
 
       # Database name
-      db: misskey
+      db: {{ .Values.database.db }}
 
       # Auth
-      user: misskey
-      pass: misskey
+      user: {{ .Values.database.user }}
+      pass: {{ .Values.database.pass }}
 
       # Whether disable Caching queries
       #disableCache: true
@@ -152,6 +152,9 @@ data:
 
     # Upload or download file size limits (bytes)
     maxFileSize: 5000000000
+    # default: false
+    misskeyBlockMentionsFromUnfamiliarRemoteUsers: true
+
 
 kind: ConfigMap
 metadata:

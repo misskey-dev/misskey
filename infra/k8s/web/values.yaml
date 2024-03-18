@@ -5,7 +5,15 @@ image:
   tag: "2023.11.1-na2na-v4"
   pullPolicy: Always
 
+database:
+  host: "hoge.local"
+  port: 5432
+  db: "misskey"
+  user: "misskey"
+  pass: "misskey"
+
 service:
+  host: "https://mk8stest.na2na.dev/"
   type: NodePort
   port: 3000
   nodePort: 30000
