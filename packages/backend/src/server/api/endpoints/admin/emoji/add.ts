@@ -90,7 +90,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (!FILE_TYPE_IMAGE.includes(driveFile.type)) throw new ApiError(meta.errors.notSupportFileType);
 
 			const emoji = await this.customEmojiService.add({
-				driveFile,
+				originalUrl: driveFile.url,
+				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+				fileType: driveFile.webpublicType ?? driveFile.type,
 				name: ps.name,
 				category: ps.category ?? null,
 				aliases: ps.aliases ?? [],

@@ -10,7 +10,6 @@ import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
@@ -104,7 +103,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async add(data: {
-		driveFile: MiDriveFile;
+		originalUrl: string;
+		publicUrl: string;
+		fileType: string;
 		name: string;
 		category: string | null;
 		aliases: string[];
@@ -121,9 +122,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			category: data.category,
 			host: data.host,
 			aliases: data.aliases,
-			originalUrl: data.driveFile.url,
-			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
-			type: data.driveFile.webpublicType ?? data.driveFile.type,
+			originalUrl: data.originalUrl,
+			publicUrl: data.publicUrl,
+			type: data.fileType,
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
@@ -150,7 +151,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async update(id: MiEmoji['id'], data: {
-		driveFile?: MiDriveFile;
+		originalUrl?: string;
+		publicUrl?: string;
+		fileType?: string;
 		name?: string;
 		category?: string | null;
 		aliases?: string[];
@@ -171,9 +174,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
-			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
-			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
-			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
+			originalUrl: data.originalUrl,
+			publicUrl: data.publicUrl,
+			type: data.fileType,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
 		});
 

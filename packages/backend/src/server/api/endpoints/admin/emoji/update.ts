@@ -95,7 +95,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.customEmojiService.update(emojiId, {
-				driveFile,
+				originalUrl: driveFile != null ? driveFile.url : undefined,
+				publicUrl: driveFile != null ? (driveFile.webpublicUrl ?? driveFile.url) : undefined,
+				fileType: driveFile != null ? (driveFile.webpublicType ?? driveFile.type) : undefined,
 				name: ps.name,
 				category: ps.category,
 				aliases: ps.aliases,
