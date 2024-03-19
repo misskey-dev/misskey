@@ -37,4 +37,8 @@ export const bottomItemDef = {
 		title: i18n.ts.addMfmFunction,
 		icon: 'ti-palette',
 	},
+	clearPost: {
+		title: i18n.ts.clearPost,
+		icon: 'ti-trash',
+	},
 };
