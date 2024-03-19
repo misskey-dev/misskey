@@ -790,6 +790,9 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
+      katex:
+        specifier: 0.16.9
+        version: 0.16.9
       matter-js:
         specifier: 0.19.0
         version: 0.19.0
@@ -929,6 +932,9 @@ importers:
       '@types/estree':
         specifier: 1.0.6
         version: 1.0.6
+      '@types/katex':
+        specifier: 0.16.7
+        version: 0.16.7
       '@types/matter-js':
         specifier: 0.19.7
         version: 0.19.7
@@ -1163,7 +1169,7 @@ importers:
         version: 7.17.0(eslint@9.11.0)(typescript@5.6.2)
       '@vitest/coverage-v8':
         specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0))
+        version: 1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0))
       '@vue/runtime-core':
         specifier: 3.5.11
         version: 3.5.11
@@ -4698,6 +4704,9 @@ packages:
 
   '@types/jsrsasign@10.5.14':
     resolution: {integrity: sha512-lppSlfK6etu+cuKs40K4rg8As79PH6hzIB+v55zSqImbSH3SE6Fm8MBHCiI91cWlAP3Z4igtJK1VL3fSN09blQ==}
+
+  '@types/katex@0.16.7':
+    resolution: {integrity: sha512-HMwFiRujE5PjrgwHQ25+bsLJgowjGjm5Z8FVSf0N6PwgJrwxH0QxzHYDcKsTfV3wva0vzrpqMTJS2jXPr5BMEQ==}
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
@@ -8242,6 +8251,10 @@ packages:
 
   jws@4.0.0:
     resolution: {integrity: sha512-KDncfTmOZoOMTFG4mBlG0qUIOlc03fmzH+ru6RgYVZhPkyiy/92Owlt/8UEN+a4TXR1FQetfIpJE8ApdvdVxTg==}
+
+  katex@0.16.9:
+    resolution: {integrity: sha512-fsSYjWS0EEOwvy81j3vRA8TEAhQhKiqO+FQaKWp0m39qwOzHVBgAUBIXWj1pB+O2W3fIpNa6Y9KSKCVbfPhyAQ==}
+    hasBin: true
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -15653,6 +15666,8 @@ snapshots:
 
   '@types/jsrsasign@10.5.14': {}
 
+  '@types/katex@0.16.7': {}
+
   '@types/keyv@3.1.4':
     dependencies:
       '@types/node': 20.14.12
@@ -16190,7 +16205,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0))':
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@bcoe/v8-coverage': 0.2.3
@@ -16205,7 +16220,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0)
+      vitest: 1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -20315,6 +20330,35 @@ snapshots:
 
   jsdoc-type-pratt-parser@4.1.0: {}
 
+  jsdom@24.1.1:
+    dependencies:
+      cssstyle: 4.0.1
+      data-urls: 5.0.0
+      decimal.js: 10.4.3
+      form-data: 4.0.0
+      html-encoding-sniffer: 4.0.0
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.5
+      is-potential-custom-element-name: 1.0.1
+      nwsapi: 2.2.12
+      parse5: 7.1.2
+      rrweb-cssom: 0.7.1
+      saxes: 6.0.0
+      symbol-tree: 3.2.4
+      tough-cookie: 4.1.4
+      w3c-xmlserializer: 5.0.0
+      webidl-conversions: 7.0.0
+      whatwg-encoding: 3.1.1
+      whatwg-mimetype: 4.0.0
+      whatwg-url: 14.0.0
+      ws: 8.18.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
+      xml-name-validator: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    optional: true
+
   jsdom@24.1.1(bufferutil@4.0.7)(utf-8-validate@6.0.3):
     dependencies:
       cssstyle: 4.0.1
@@ -20473,6 +20517,10 @@ snapshots:
     dependencies:
       jwa: 2.0.0
       safe-buffer: 5.2.1
+
+  katex@0.16.9:
+    dependencies:
+      commander: 8.3.0
 
   keyv@4.5.4:
     dependencies:
@@ -23949,7 +23997,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0):
+  vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -23974,7 +24022,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.12
       happy-dom: 10.0.3
-      jsdom: 24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      jsdom: 24.1.1
     transitivePeerDependencies:
       - less
       - lightningcss
