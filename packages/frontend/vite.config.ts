@@ -16,7 +16,7 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
  * CDNを使わずにバンドルしたい場合、以下の配列から該当要素を削除orコメントアウトすればOK
  */
 const externalPackages = [
-	// shikiはテーマ・言語の定義の容量が大きいため、それらはCDNから読み込む
+	// shiki（コードブロックのシンタックスハイライトで使用中）はテーマ・言語の定義の容量が大きいため、それらはCDNから読み込む
 	{
 		name: 'shiki',
 		match: /^shiki\/(?<subPkg>(langs|themes))$/,
