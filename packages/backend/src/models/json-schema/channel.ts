@@ -89,5 +89,9 @@ export const packedChannelSchema = {
 				ref: 'Note',
 			},
 		},
+		announcement: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 	},
 } as const;
