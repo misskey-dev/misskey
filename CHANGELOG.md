@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
@@ -10,14 +10,21 @@
 - Enhance: リアクション受け入れが「いいねのみ」の場合はリアクション絵文字一覧を表示しないように
 - Enhance: 設定>プラグインのページからプラグインの簡易的なログやエラーを見られるように
   - 実装の都合により、プラグインは１つエラーを起こした時に即時停止するようになりました
+- Enhance: ページのデザインを変更	
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
+- Fix: WebGL2をサポートしないブラウザで「季節に応じた画面の演出」が有効になっているとき、Misskeyが起動できなくなる問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/459)
+- Fix: ページタイトルでローカルユーザーとリモートユーザーの区別がつかない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/528)
 - Fix: コードブロックのシンタックスハイライトで使用される定義ファイルをCDNから取得するように #13177
   - CDNから取得せずMisskey本体にバンドルする場合は`pacakges/frontend/vite.config.ts`を修正してください。
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Fix: フォローリクエストを作成する際に既存のものは削除するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 
 ## 2024.3.1
 
