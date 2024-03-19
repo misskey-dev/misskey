@@ -1215,6 +1215,10 @@ surrender: "やめとく"
 scheduledNoteDelete: "ほな消す"
 noteDeletationAt: "このノートは{time}に削除されるで"
 addToEmojiPicker: "絵文字ピッカーに追加する"
+channelAnnouncementDescription: "このお知らせはチャンネルのタイムライン上部に表示されるで。最初の1行がタイトル、2行目以降はお知らせをタップすることで表示される感じや！"
+postForm: "投稿フォーム"
+postFormBottomSettingsDescription: "投稿フォームの下に表示されとる項目の並び替えができるで。項目をクリックすると削除もできるんや。"
+
 _bubbleGame:
   howToPlay: "遊び方"
   _howToPlay:

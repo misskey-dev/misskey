@@ -1229,6 +1229,10 @@ gameRetry: "Retry"
 scheduledNoteDelete: "Scheduled note deletion"
 noteDeletationAt: "This note will be deleted at {time}."
 addToEmojiPicker: "Add to Emoji Picker"
+channelAnnouncementDescription: "This announcement will appear at the top of the channel's timeline. The first line is displayed as the title, and the second and subsequent lines are displayed by tapping the announcement."
+postForm: "Post Form"
+postFormBottomSettingsDescription: "You can reorder the items displayed at the bottom of the submission form. Click on an item to delete it."
+
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"

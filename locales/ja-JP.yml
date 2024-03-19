@@ -1235,6 +1235,8 @@ scheduledNoteDelete: "すぐ消す"
 noteDeletationAt: "このノートは{time}に削除されます"
 addToEmojiPicker: "絵文字ピッカーに追加"
 channelAnnouncementDescription: "このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。"
+postForm: "投稿フォーム"
+postFormBottomSettingsDescription: "投稿フォームの下部に表示される項目の並び替えが出来ます。項目をクリックすると削除できます。"
 
 _bubbleGame:
   howToPlay: "遊び方"
