@@ -494,6 +494,7 @@ emojiStyle: "絵文字のスタイル"
 native: "ネイティブ"
 disableDrawer: "メニューをドロワーで表示しない"
 showNoteActionsOnlyHover: "ノートのアクションをホバー時のみ表示する"
+showReactionsCount: "ノートのリアクション数を表示する"
 noHistory: "履歴はありません"
 signinHistory: "ログイン履歴"
 enableAdvancedMfm: "高度なMFMを有効にする"
@@ -1771,6 +1772,7 @@ _plugin:
   installWarn: "信頼できないプラグインはインストールしないでください。"
   manage: "プラグインの管理"
   viewSource: "ソースを表示"
+  viewLog: "ログを表示"
 
 _preferencesBackups:
   list: "作成したバックアップ"
@@ -2278,6 +2280,7 @@ _play:
   title: "タイトル"
   script: "スクリプト"
   summary: "説明"
+  visibilityDescription: "非公開に設定するとプロフィールに表示されなくなりますが、URLを知っている人は引き続きアクセスできます。"
 
 _pages:
   newPage: "ページの作成"
@@ -2355,6 +2358,7 @@ _notification:
   sendTestNotification: "テスト通知を送信する"
   notificationWillBeDisplayedLikeThis: "通知はこのように表示されます"
   reactedBySomeUsers: "{n}人がリアクションしました"
+  likedBySomeUsers: "{n}人がいいねしました"
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"

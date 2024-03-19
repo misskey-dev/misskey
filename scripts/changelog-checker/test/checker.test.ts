@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import {expect, suite, test} from "vitest";
 import {Release, ReleaseCategory} from "../src/parser";
 import {checkNewRelease, checkNewTopic} from "../src/checker";
