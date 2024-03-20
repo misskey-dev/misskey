@@ -4912,6 +4912,10 @@ export interface Locale extends ILocale {
      * リトライ
      */
     "gameRetry": string;
+    /**
+     * [使用しない場合は空欄にしてください]
+     */
+    "notUsePleaseLeaveBlank": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -9810,7 +9814,7 @@ export interface Locale extends ILocale {
          */
         "summaryProxy": string;
         /**
-         * [使用しない場合は空欄にしてください] Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
+         * Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
          */
         "summaryProxyDescription": string;
         /**

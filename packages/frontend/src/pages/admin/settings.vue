@@ -175,7 +175,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div>
 								<MkInput v-model="urlPreviewSummaryProxyUrl" type="text">
 									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}</template>
-									<template #caption>{{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+									<template #caption>{{ i18n.ts.notUsePleaseLeaveBlank }} {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
 								</MkInput>
 
 								<div :class="$style.subCaption">
