@@ -4,71 +4,76 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
-	<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
-
-	<MkSwitch v-model="publicReactions" @update:modelValue="save()">
-		{{ i18n.ts.makeReactionsPublic }}
-		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
-	</MkSwitch>
-
-	<MkSelect v-model="followingVisibility" @update:modelValue="save()">
-		<template #label>{{ i18n.ts.followingVisibility }}</template>
-		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
-		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
-		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-	</MkSelect>
-
-	<MkSelect v-model="followersVisibility" @update:modelValue="save()">
-		<template #label>{{ i18n.ts.followersVisibility }}</template>
-		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
-		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
-		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-	</MkSelect>
-
-	<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
-		{{ i18n.ts.hideOnlineStatus }}
-		<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
-	</MkSwitch>
-	<MkSwitch v-model="noCrawle" @update:modelValue="save()">
-		{{ i18n.ts.noCrawle }}
-		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
-	</MkSwitch>
-	<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
-		{{ i18n.ts.preventAiLearning }}<span class="_beta">{{ i18n.ts.beta }}</span>
-		<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
-	</MkSwitch>
-	<MkSwitch v-model="isExplorable" @update:modelValue="save()">
-		{{ i18n.ts.makeExplorable }}
-		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
-	</MkSwitch>
-
-	<FormSection>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
-			<MkFolder v-if="!rememberNoteVisibility">
-				<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
-				<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
-				<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
-				<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
-				<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+			<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
+			<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
 
+			<MkSwitch v-model="publicReactions" @update:modelValue="save()">
+				{{ i18n.ts.makeReactionsPublic }}
+				<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
+			</MkSwitch>
+
+			<MkSelect v-model="followingVisibility" @update:modelValue="save()">
+				<template #label>{{ i18n.ts.followingVisibility }}</template>
+				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
+				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
+				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
+			</MkSelect>
+
+			<MkSelect v-model="followersVisibility" @update:modelValue="save()">
+				<template #label>{{ i18n.ts.followersVisibility }}</template>
+				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
+				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
+				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
+			</MkSelect>
+
+			<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
+				{{ i18n.ts.hideOnlineStatus }}
+				<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="noCrawle" @update:modelValue="save()">
+				{{ i18n.ts.noCrawle }}
+				<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
+				{{ i18n.ts.preventAiLearning }}<span class="_beta">{{ i18n.ts.beta }}</span>
+				<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="isExplorable" @update:modelValue="save()">
+				{{ i18n.ts.makeExplorable }}
+				<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
+			</MkSwitch>
+
+			<FormSection>
 				<div class="_gaps_m">
-					<MkSelect v-model="defaultNoteVisibility">
-						<option value="public">{{ i18n.ts._visibility.public }}</option>
-						<option value="home">{{ i18n.ts._visibility.home }}</option>
-						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
-						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
-					</MkSelect>
-					<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
-				</div>
-			</MkFolder>
-		</div>
-	</FormSection>
+					<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
+					<MkFolder v-if="!rememberNoteVisibility">
+						<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
+						<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+						<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
+						<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
+						<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
 
-	<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
-</div>
+						<div class="_gaps_m">
+							<MkSelect v-model="defaultNoteVisibility">
+								<option value="public">{{ i18n.ts._visibility.public }}</option>
+								<option value="home">{{ i18n.ts._visibility.home }}</option>
+								<option value="followers">{{ i18n.ts._visibility.followers }}</option>
+								<option value="specified">{{ i18n.ts._visibility.specified }}</option>
+							</MkSelect>
+							<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
+						</div>
+					</MkFolder>
+				</div>
+			</FormSection>
+
+			<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

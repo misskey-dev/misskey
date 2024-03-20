@@ -4,13 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
-	<MkCodeEditor v-model="localCustomCss" manualSave lang="css">
-		<template #label>CSS</template>
-	</MkCodeEditor>
-</div>
+			<MkCodeEditor v-model="localCustomCss" manualSave lang="css">
+				<template #label>CSS</template>
+			</MkCodeEditor>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

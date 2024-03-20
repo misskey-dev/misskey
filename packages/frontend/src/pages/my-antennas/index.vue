@@ -44,7 +44,6 @@ function fetch() {
 fetch();
 
 const headerActions = computed(() => [{
-	asFullButton: true,
 	icon: 'ti ti-refresh',
 	text: i18n.ts.reload,
 	handler: () => {

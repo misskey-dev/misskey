@@ -4,19 +4,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkSwitch v-model="useSimpleUiForNonRootPages">{{ i18n.ts._deck.useSimpleUiForNonRootPages }}</MkSwitch>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<MkSwitch v-model="useSimpleUiForNonRootPages">{{ i18n.ts._deck.useSimpleUiForNonRootPages }}</MkSwitch>
 
-	<MkSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</MkSwitch>
+			<MkSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</MkSwitch>
 
-	<MkSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</MkSwitch>
+			<MkSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</MkSwitch>
 
-	<MkRadios v-model="columnAlign">
-		<template #label>{{ i18n.ts._deck.columnAlign }}</template>
-		<option value="left">{{ i18n.ts.left }}</option>
-		<option value="center">{{ i18n.ts.center }}</option>
-	</MkRadios>
-</div>
+			<MkRadios v-model="columnAlign">
+				<template #label>{{ i18n.ts._deck.columnAlign }}</template>
+				<option value="left">{{ i18n.ts.left }}</option>
+				<option value="center">{{ i18n.ts.center }}</option>
+			</MkRadios>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

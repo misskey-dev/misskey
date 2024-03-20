@@ -4,162 +4,159 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
-			<FormSuspense :p="init">
-				<div class="_gaps_m">
-					<MkInput v-model="name">
-						<template #label>{{ i18n.ts.instanceName }}</template>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
+		<FormSuspense :p="init">
+			<div class="_gaps_m">
+				<MkInput v-model="name">
+					<template #label>{{ i18n.ts.instanceName }}</template>
+				</MkInput>
+
+				<MkInput v-model="shortName">
+					<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
+					<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
+				</MkInput>
+
+				<MkTextarea v-model="description">
+					<template #label>{{ i18n.ts.instanceDescription }}</template>
+				</MkTextarea>
+
+				<FormSplit :minWidth="300">
+					<MkInput v-model="maintainerName">
+						<template #label>{{ i18n.ts.maintainerName }}</template>
 					</MkInput>
 
-					<MkInput v-model="shortName">
-						<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
-						<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
+					<MkInput v-model="maintainerEmail" type="email">
+						<template #prefix><i class="ti ti-mail"></i></template>
+						<template #label>{{ i18n.ts.maintainerEmail }}</template>
 					</MkInput>
+				</FormSplit>
 
-					<MkTextarea v-model="description">
-						<template #label>{{ i18n.ts.instanceDescription }}</template>
-					</MkTextarea>
+				<MkInput v-model="repositoryUrl" type="url">
+					<template #label>{{ i18n.ts.repositoryUrl }}</template>
+					<template #prefix><i class="ti ti-link"></i></template>
+					<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
+				</MkInput>
 
-					<FormSplit :minWidth="300">
-						<MkInput v-model="maintainerName">
-							<template #label>{{ i18n.ts.maintainerName }}</template>
+				<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
+					{{ i18n.ts.repositoryUrlOrTarballRequired }}
+				</MkInfo>
+
+				<MkInput v-model="impressumUrl" type="url">
+					<template #label>{{ i18n.ts.impressumUrl }}</template>
+					<template #prefix><i class="ti ti-link"></i></template>
+					<template #caption>{{ i18n.ts.impressumDescription }}</template>
+				</MkInput>
+
+				<MkTextarea v-model="pinnedUsers">
+					<template #label>{{ i18n.ts.pinnedUsers }}</template>
+					<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
+				</MkTextarea>
+
+				<FormSection>
+					<template #label>{{ i18n.ts.files }}</template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="cacheRemoteFiles">
+							<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
+							<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+						</MkSwitch>
+
+						<template v-if="cacheRemoteFiles">
+							<MkSwitch v-model="cacheRemoteSensitiveFiles">
+								<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}</template>
+								<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
+							</MkSwitch>
+						</template>
+					</div>
+				</FormSection>
+
+				<FormSection>
+					<template #label>ServiceWorker</template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="enableServiceWorker">
+							<template #label>{{ i18n.ts.enableServiceworker }}</template>
+							<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
+						</MkSwitch>
+
+						<template v-if="enableServiceWorker">
+							<MkInput v-model="swPublicKey">
+								<template #prefix><i class="ti ti-key"></i></template>
+								<template #label>Public key</template>
+							</MkInput>
+
+							<MkInput v-model="swPrivateKey">
+								<template #prefix><i class="ti ti-key"></i></template>
+								<template #label>Private key</template>
+							</MkInput>
+						</template>
+					</div>
+				</FormSection>
+
+				<FormSection>
+					<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="enableFanoutTimeline">
+							<template #label>{{ i18n.ts.enable }}</template>
+							<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
+						</MkSwitch>
+
+						<MkSwitch v-model="enableFanoutTimelineDbFallback">
+							<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</template>
+							<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
+						</MkSwitch>
+
+						<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
+							<template #label>perLocalUserUserTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="maintainerEmail" type="email">
-							<template #prefix><i class="ti ti-mail"></i></template>
-							<template #label>{{ i18n.ts.maintainerEmail }}</template>
+						<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
+							<template #label>perRemoteUserUserTimelineCacheMax</template>
 						</MkInput>
-					</FormSplit>
 
-					<MkInput v-model="repositoryUrl" type="url">
-						<template #label>{{ i18n.ts.repositoryUrl }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
-					</MkInput>
+						<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
+							<template #label>perUserHomeTimelineCacheMax</template>
+						</MkInput>
 
-					<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
-						{{ i18n.ts.repositoryUrlOrTarballRequired }}
-					</MkInfo>
+						<MkInput v-model="perUserListTimelineCacheMax" type="number">
+							<template #label>perUserListTimelineCacheMax</template>
+						</MkInput>
+					</div>
+				</FormSection>
 
-					<MkInput v-model="impressumUrl" type="url">
-						<template #label>{{ i18n.ts.impressumUrl }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #caption>{{ i18n.ts.impressumDescription }}</template>
-					</MkInput>
+				<FormSection>
+					<template #label>{{ i18n.ts._ad.adsSettings }}</template>
 
-					<MkTextarea v-model="pinnedUsers">
-						<template #label>{{ i18n.ts.pinnedUsers }}</template>
-						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
-					</MkTextarea>
-
-					<FormSection>
-						<template #label>{{ i18n.ts.files }}</template>
-
-						<div class="_gaps_m">
-							<MkSwitch v-model="cacheRemoteFiles">
-								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
-								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
-							</MkSwitch>
-
-							<template v-if="cacheRemoteFiles">
-								<MkSwitch v-model="cacheRemoteSensitiveFiles">
-									<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}</template>
-									<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
-								</MkSwitch>
-							</template>
-						</div>
-					</FormSection>
-
-					<FormSection>
-						<template #label>ServiceWorker</template>
-
-						<div class="_gaps_m">
-							<MkSwitch v-model="enableServiceWorker">
-								<template #label>{{ i18n.ts.enableServiceworker }}</template>
-								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-							</MkSwitch>
-
-							<template v-if="enableServiceWorker">
-								<MkInput v-model="swPublicKey">
-									<template #prefix><i class="ti ti-key"></i></template>
-									<template #label>Public key</template>
-								</MkInput>
-
-								<MkInput v-model="swPrivateKey">
-									<template #prefix><i class="ti ti-key"></i></template>
-									<template #label>Private key</template>
-								</MkInput>
-							</template>
-						</div>
-					</FormSection>
-
-					<FormSection>
-						<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
-
-						<div class="_gaps_m">
-							<MkSwitch v-model="enableFanoutTimeline">
-								<template #label>{{ i18n.ts.enable }}</template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="enableFanoutTimelineDbFallback">
-								<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
-							</MkSwitch>
-
-							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
-								<template #label>perLocalUserUserTimelineCacheMax</template>
+					<div class="_gaps_m">
+						<div class="_gaps_s">
+							<MkInput v-model="notesPerOneAd" :min="0" type="number">
+								<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
+								<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
 							</MkInput>
-
-							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
-								<template #label>perRemoteUserUserTimelineCacheMax</template>
-							</MkInput>
-
-							<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
-								<template #label>perUserHomeTimelineCacheMax</template>
-							</MkInput>
-
-							<MkInput v-model="perUserListTimelineCacheMax" type="number">
-								<template #label>perUserListTimelineCacheMax</template>
-							</MkInput>
+							<MkInfo v-if="notesPerOneAd > 0 && notesPerOneAd < 20" :warn="true">
+								{{ i18n.ts._ad.adsTooClose }}
+							</MkInfo>
 						</div>
-					</FormSection>
-
-					<FormSection>
-						<template #label>{{ i18n.ts._ad.adsSettings }}</template>
-
-						<div class="_gaps_m">
-							<div class="_gaps_s">
-								<MkInput v-model="notesPerOneAd" :min="0" type="number">
-									<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
-									<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
-								</MkInput>
-								<MkInfo v-if="notesPerOneAd > 0 && notesPerOneAd < 20" :warn="true">
-									{{ i18n.ts._ad.adsTooClose }}
-								</MkInfo>
-							</div>
-						</div>
-					</FormSection>
-				</div>
-			</FormSuspense>
-		</MkSpacer>
-		<template #footer>
-			<div :class="$style.footer">
-				<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</MkSpacer>
+					</div>
+				</FormSection>
 			</div>
-		</template>
-	</MkStickyContainer>
-</div>
+		</FormSuspense>
+	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</MkSpacer>
+		</div>
+	</template>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -245,6 +242,8 @@ async function save(): void {
 
 	fetchInstance(true);
 }
+
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 

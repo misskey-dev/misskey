@@ -4,56 +4,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
-		<div class="_gaps_s">
-			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
-				<template #label>{{ i18n.ts._notification._types[type] }}</template>
-				<template #suffix>
-					{{
-						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
-						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
-						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
-						i18n.ts.all
-					}}
-				</template>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<FormSection first>
+				<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
+				<div class="_gaps_s">
+					<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
+						<template #label>{{ i18n.ts._notification._types[type] }}</template>
+						<template #suffix>
+							{{
+								$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
+								$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
+								$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
+								$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+								$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+								$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+								i18n.ts.all
+							}}
+						</template>
 
-				<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
-		</div>
-	</FormSection>
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
-			<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label>{{ i18n.ts.pushNotification }}</template>
+						<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
+					</MkFolder>
+				</div>
+			</FormSection>
+			<FormSection>
+				<div class="_gaps_m">
+					<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
+					<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
+				</div>
+			</FormSection>
+			<FormSection>
+				<div class="_gaps_m">
+					<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
+					<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
+				</div>
+			</FormSection>
+			<FormSection>
+				<template #label>{{ i18n.ts.pushNotification }}</template>
 
-		<div class="_gaps_m">
-			<MkPushNotificationAllowButton ref="allowButton"/>
-			<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
-				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
-				<template #caption>
-					<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
-						<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
-					</I18n>
-				</template>
-			</MkSwitch>
+				<div class="_gaps_m">
+					<MkPushNotificationAllowButton ref="allowButton"/>
+					<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
+						<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
+						<template #caption>
+							<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
+								<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
+							</I18n>
+						</template>
+					</MkSwitch>
+				</div>
+			</FormSection>
 		</div>
-	</FormSection>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
