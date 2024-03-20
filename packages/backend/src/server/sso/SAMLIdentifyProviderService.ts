@@ -492,20 +492,28 @@ export class SAMLIdentifyProviderService {
 													'#text': user.id,
 												},
 											},
-											{
-												'@Name': 'displayname',
+											...(user.name ? [{
+												'@Name': 'firstName',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
-													'#text': user.name ?? user.username,
+													'#text': user.name,
+												},
+											}] : []),
+											{
+												'@Name': 'lastName',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'saml:AttributeValue': {
+													'@xsi:type': 'xs:string',
+													'#text': `@${user.username}`,
 												},
 											},
 											{
-												'@Name': 'name',
+												'@Name': 'displayName',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
-													'#text': user.username,
+													'#text': user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
 												},
 											},
 											{

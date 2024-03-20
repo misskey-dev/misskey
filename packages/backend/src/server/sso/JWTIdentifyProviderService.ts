@@ -172,7 +172,9 @@ export class JWTIdentifyProviderService {
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			const payload: JWTPayload = {
-				name: user.name ?? user.username,
+				name: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
+				given_name: user.name ?? undefined,
+				family_name: `@${user.username}`,
 				preferred_username: user.username,
 				profile: `${this.config.url}/@${user.username}`,
 				picture: user.avatarUrl ?? undefined,
