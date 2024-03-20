@@ -6,10 +6,29 @@ import { type UserConfig, defineConfig } from 'vite';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
+import packageInfo from './package.json' assert { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+/**
+ * Misskeyのフロントエンドにバンドルせず、CDNなどから別途読み込むリソースを記述する。
+ * CDNを使わずにバンドルしたい場合、以下の配列から該当要素を削除orコメントアウトすればOK
+ */
+const externalPackages = [
+	// shiki（コードブロックのシンタックスハイライトで使用中）はテーマ・言語の定義の容量が大きいため、それらはCDNから読み込む
+	{
+		name: 'shiki',
+		match: /^shiki\/(?<subPkg>(langs|themes))$/,
+		path(id: string, pattern: RegExp): string {
+			const match = pattern.exec(id)?.groups;
+			return match
+				? `https://esm.sh/shiki@${packageInfo.dependencies.shiki}/${match['subPkg']}`
+				: id;
+		},
+	},
+];
 
 const hash = (str: string, seed = 0): number => {
 	let h1 = 0xdeadbeef ^ seed,
@@ -114,6 +133,7 @@ export function getConfig(): UserConfig {
 				input: {
 					app: './src/_boot_.ts',
 				},
+				external: externalPackages.map(p => p.match),
 				output: {
 					manualChunks: {
 						vue: ['vue'],
@@ -122,6 +142,12 @@ export function getConfig(): UserConfig {
 					entryFileNames: `${meta.version}.[hash].js`,
 					chunkFileNames: `${meta.version}.[hash].js`,
 					assetFileNames: `${meta.version}.[hash][extname]`,
+					paths(id: string): string {
+						for (const p of externalPackages) {
+							if (p.match.test(id)) return p.path(id, p.match);
+						}
+						return id;
+					},
 				},
 			},
 			cssCodeSplit: true,
