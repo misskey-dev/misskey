@@ -47,6 +47,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 				type: 'error',
 				title,
 				text,
+				details: err.info,
 				actions: [{
 					value: 'ok',
 					text: i18n.ts.gotIt,
@@ -81,6 +82,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 			type: 'error',
 			title,
 			text,
+			details: err.info,
 		});
 	});
 
@@ -113,7 +115,9 @@ export function promiseDialog<T>(
 		} else {
 			alert({
 				type: 'error',
-				text: err,
+				title: err.message,
+				text: err.id,
+				details: err.info,
 			});
 		}
 	});
@@ -217,6 +221,7 @@ export function alert(props: {
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	details?: Record<string, string>;
 }): Promise<void> {
 	return new Promise(resolve => {
 		popup(MkDialog, props, {
@@ -231,6 +236,7 @@ export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	details?: Record<string, string>;
 	okText?: string;
 	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
@@ -257,6 +263,7 @@ export function actions<T extends {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	details?: Record<string, string>;
 	actions: T;
 }): Promise<{
 	canceled: true; result: undefined;

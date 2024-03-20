@@ -191,10 +191,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						id: '6708863c-6791-4487-aa01-2d682c6e7db0',
 					},
 					{
-						e: {
-							message: err.message,
-							code: err.name,
-						},
+						message: err.message,
+						code: err.name,
 					},
 				);
 			} finally {

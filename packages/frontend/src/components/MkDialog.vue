@@ -48,6 +48,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 			</template>
 		</MkSelect>
+		<details v-if="details" class="_acrylic" style="margin: 1em 0;">
+			<summary>{{ i18n.ts.details }}</summary>
+			<div class="_gaps_s" style="text-align: initial;">
+				<MkKeyValue v-for="(value, key) in details" :key="key" :value="value">
+					<template #key>{{ key }}</template>
+					<template #value>{{ value }}</template>
+				</MkKeyValue>
+			</div>
+		</details>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
 			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
@@ -66,6 +75,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import { i18n } from '@/i18n.js';
 
 type Input = {
@@ -89,11 +99,12 @@ type Result = string | number | true | null;
 
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
+	icon?: string;
 	title?: string | null;
 	text?: string | null;
 	input?: Input;
 	select?: Select;
-	icon?: string;
+	details?: Record<string, string>;
 	actions?: {
 		text: string;
 		primary?: boolean,
@@ -107,11 +118,12 @@ const props = withDefaults(defineProps<{
 	cancelText?: string;
 }>(), {
 	type: 'info',
+	icon: undefined,
 	title: undefined,
 	text: undefined,
 	input: undefined,
 	select: undefined,
-	icon: undefined,
+	details: undefined,
 	actions: undefined,
 	showOkButton: true,
 	showCancelButton: false,

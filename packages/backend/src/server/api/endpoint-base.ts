@@ -63,7 +63,7 @@ export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
 					id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 				}, {
 					param: errors[0].schemaPath,
-					reason: errors[0].message,
+					reason: errors[0].message ?? 'Invalid',
 				});
 				return Promise.reject(err);
 			}

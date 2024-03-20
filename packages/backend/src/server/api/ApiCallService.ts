@@ -389,11 +389,9 @@ export class ApiCallService implements OnApplicationShutdown {
 						id: err.id,
 					},
 					{
-						e: {
-							message: err.message,
-							code: err.name,
-							id: err.id,
-						},
+						message: err.message,
+						code: err.name,
+						id: err.id,
 					},
 				);
 			} else {
@@ -416,11 +414,9 @@ export class ApiCallService implements OnApplicationShutdown {
 						kind: 'server',
 					},
 					{
-						e: {
-							message: err.message,
-							code: err.name,
-							id: errId,
-						},
+						message: err.message,
+						code: err.name,
+						id: errId,
 					},
 				);
 			}
