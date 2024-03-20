@@ -1,4 +1,7 @@
-import crypto from "node:crypto";
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 /**
  * AIで生成した無作為なファーストネーム
