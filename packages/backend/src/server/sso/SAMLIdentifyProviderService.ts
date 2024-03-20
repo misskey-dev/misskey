@@ -26,6 +26,7 @@ import { RoleService } from '@/core/RoleService.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import { normalizeEmailAddress } from '@/misc/normalize-email-address.js';
 import type { FastifyInstance } from 'fastify';
 
 @Injectable()
@@ -440,7 +441,7 @@ export class SAMLIdentifyProviderService {
 									},
 									'saml:Subject': {
 										'saml:NameID': profile.emailVerified
-											? { '@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress', '#text': profile.email }
+											? { '@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress', '#text': normalizeEmailAddress(profile.email) }
 											: { '@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent', '#text': user.id },
 										'saml:SubjectConfirmation': {
 											'@Method': 'urn:oasis:names:tc:SAML:2.0:cm:bearer',
@@ -531,24 +532,14 @@ export class SAMLIdentifyProviderService {
 													'#text': user.avatarUrl,
 												},
 											}] : []),
-											...(profile.emailVerified ? [
-												{
-													'@Name': 'mail',
-													'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-													'saml:AttributeValue': {
-														'@xsi:type': 'xs:string',
-														'#text': profile.email,
-													},
+											...(profile.emailVerified ? [{
+												'@Name': 'email',
+												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'saml:AttributeValue': {
+													'@xsi:type': 'xs:string',
+													'#text': normalizeEmailAddress(profile.email),
 												},
-												{
-													'@Name': 'email',
-													'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-													'saml:AttributeValue': {
-														'@xsi:type': 'xs:string',
-														'#text': profile.email,
-													},
-												},
-											] : []),
+											}] : []),
 											{
 												'@Name': 'email_verified',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',

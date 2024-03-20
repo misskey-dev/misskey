@@ -22,6 +22,7 @@ import type { MiLocalUser } from '@/models/User.js';
 import { CacheService } from '@/core/CacheService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { normalizeEmailAddress } from '@/misc/normalize-email-address.js';
 import type { FastifyInstance } from 'fastify';
 
 @Injectable()
@@ -175,7 +176,7 @@ export class JWTIdentifyProviderService {
 				preferred_username: user.username,
 				profile: `${this.config.url}/@${user.username}`,
 				picture: user.avatarUrl ?? undefined,
-				email: profile.emailVerified ? profile.email : undefined,
+				email: profile.emailVerified ? normalizeEmailAddress(profile.email) : undefined,
 				email_verified: profile.emailVerified,
 				mfa_enabled: profile.twoFactorEnabled,
 				updated_at: Math.floor((user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000),
