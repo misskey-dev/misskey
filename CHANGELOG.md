@@ -18,9 +18,11 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/459)
 - Fix: ページタイトルでローカルユーザーとリモートユーザーの区別がつかない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/528)
+- Fix: コードブロックのシンタックスハイライトで使用される定義ファイルをCDNから取得するように #13177
+  - CDNから取得せずMisskey本体にバンドルする場合は`pacakges/frontend/vite.config.ts`を修正してください。
 - Fix: ノートの詳細ページのユーザーもしくはチャンネルを遡るとタイムラインの並び順番が逆になる問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/529)
-
+  
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
