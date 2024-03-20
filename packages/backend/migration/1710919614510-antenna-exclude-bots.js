@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class AntennaExcludeBots1710919614510 {
     name = 'AntennaExcludeBots1710919614510'
 
