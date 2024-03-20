@@ -4586,6 +4586,8 @@ export type components = {
       localOnly: boolean;
       notify: boolean;
       /** @default false */
+      excludeBots: boolean;
+      /** @default false */
       withReplies: boolean;
       withFile: boolean;
       isActive: boolean;
@@ -10618,6 +10620,7 @@ export type operations = {
           users: string[];
           caseSensitive: boolean;
           localOnly?: boolean;
+          excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
           notify: boolean;
@@ -10899,6 +10902,7 @@ export type operations = {
           users?: string[];
           caseSensitive?: boolean;
           localOnly?: boolean;
+          excludeBots?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
           notify?: boolean;
