@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - beta
-    tags:
-      - "**"
   workflow_dispatch:
 
 jobs:

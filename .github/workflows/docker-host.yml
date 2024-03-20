@@ -1,11 +1,11 @@
-name: Publish Docker image (io)
+name: Publish Docker image (host)
 
 on:
   push:
     branches:
-      - io
+      - host
     tags:
-      - '[0-9.]+-io.*'
+      - '[0-9.]+-host.*'
   workflow_dispatch:
 
 jobs:
@@ -44,8 +44,8 @@ jobs:
           platforms: ${{ steps.buildx.outputs.platforms }}
           provenance: false
           labels: ${{ env.FORMATTED_BRANCH_NAME }}
-          cache-from: type=registry,ref=ghcr.io/misskeyio/misskey:io-buildcache
-          cache-to: type=registry,ref=ghcr.io/misskeyio/misskey:io-buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/misskeyio/misskey:host-buildcache
+          cache-to: type=registry,ref=ghcr.io/misskeyio/misskey:host-buildcache,mode=max
           tags: |
-            ghcr.io/misskeyio/misskey:latest
+            ghcr.io/misskeyio/misskey:host
             ghcr.io/misskeyio/misskey:${{ env.FORMATTED_BRANCH_NAME }}
