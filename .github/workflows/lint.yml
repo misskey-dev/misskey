@@ -3,7 +3,9 @@ name: Lint
 on:
   push:
     branches:
+      - beta
       - io
+      - host
     paths:
       - packages/backend/**
       - packages/frontend/**

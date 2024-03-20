@@ -5,7 +5,10 @@ name: Test (misskey.js)
 
 on:
   push:
-    branches: [ io ]
+    branches:
+      - beta
+      - io
+      - host
     paths:
       - packages/misskey-js/**
   pull_request:

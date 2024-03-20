@@ -3,7 +3,9 @@ name: Test (frontend)
 on:
   push:
     branches:
+      - beta
       - io
+      - host
     paths:
       - packages/frontend/**
       # for permissions

@@ -5,7 +5,7 @@ on:
     branches:
       - host
     tags:
-      - '[0-9.]+-host.*'
+      - '**-host.*'
   workflow_dispatch:
 
 jobs:
