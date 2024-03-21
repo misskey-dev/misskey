@@ -28,6 +28,7 @@ import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserR
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -36,7 +37,6 @@ import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
 
@@ -349,10 +349,14 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async create(actor: MiRemoteUser, activity: ICreate): Promise<void> {
+	private async create(actor: MiRemoteUser, activity: ICreate): Promise<string | void> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Create: ${uri}`);
+
+		if (!activity.object) return 'skip: activity has no object property';
+		const targetUri = getApId(activity.object);
+		if (targetUri.startsWith('bear:')) return 'skip: bearcaps url not supported.';
 
 		// copy audiences between activity <=> object.
 		if (typeof activity.object === 'object') {
