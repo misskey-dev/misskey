@@ -269,6 +269,10 @@ export class ApInboxService {
 
 		const resolver = this.apResolverService.createResolver();
 
+		if (!activity.object) return 'skip: activity has no object property';
+		const targetUri = getApId(activity.object);
+		if (targetUri.startsWith('bear:')) return 'skip: bearcaps url not supported.';
+
 		const target = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
 			return e;
