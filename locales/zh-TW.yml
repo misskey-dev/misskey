@@ -1225,6 +1225,7 @@ enableHorizontalSwipe: "滑動切換時間軸"
 loading: "載入中"
 surrender: "退出"
 gameRetry: "再試一次"
+notUsePleaseLeaveBlank: "如不使用，請留空"
 _bubbleGame:
   howToPlay: "玩法說明"
   hold: "保留"
@@ -2529,3 +2530,13 @@ _reversi:
 _offlineScreen:
   title: "離線－無法連接伺服器"
   header: "無法連接伺服器"
+_urlPreviewSetting:
+  title: "URL 預覽設定"
+  enable: "啟用 URL 預覽"
+  timeout: "取得預覽的逾時時間 (ms)"
+  timeoutDescription: "若取得預覽所需的時間超過這個值，則不會產生預覽。"
+  maximumContentLength: "Content-Length 的最大値 (byte)"
+  maximumContentLengthDescription: "若 Content-Length 超過這個值，則不會產生預覽。"
+  requireContentLength: "僅在能夠取得 Content-Length 時，才產生預覽。"
+  requireContentLengthDescription: "若對方的伺服器未回傳 Content -Length，則不會產生預覽。"
+  userAgent: "User-Agent"
