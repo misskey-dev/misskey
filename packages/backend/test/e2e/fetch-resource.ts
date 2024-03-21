@@ -23,13 +23,13 @@ const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Webリソース', () => {
 	let alice: misskey.entities.SignupResponse;
-	let aliceUploadedFile: any;
-	let alicesPost: any;
-	let alicePage: any;
-	let alicePlay: any;
-	let aliceClip: any;
-	let aliceGalleryPost: any;
-	let aliceChannel: any;
+	let aliceUploadedFile: misskey.entities.DriveFile | null;
+	let alicesPost: misskey.entities.Note;
+	let alicePage: misskey.entities.Page;
+	let alicePlay: misskey.entities.Flash;
+	let aliceClip: misskey.entities.Clip;
+	let aliceGalleryPost: misskey.entities.GalleryPost;
+	let aliceChannel: misskey.entities.Channel;
 
 	let bob: misskey.entities.SignupResponse;
 
@@ -77,7 +77,7 @@ describe('Webリソース', () => {
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
-		aliceUploadedFile = await uploadFile(alice);
+		aliceUploadedFile = (await uploadFile(alice)).body;
 		alicesPost = await post(alice, {
 			text: 'test',
 		});
@@ -85,7 +85,7 @@ describe('Webリソース', () => {
 		alicePlay = await play(alice, {});
 		aliceClip = await clip(alice, {});
 		aliceGalleryPost = await galleryPost(alice, {
-			fileIds: [aliceUploadedFile.body.id],
+			fileIds: [aliceUploadedFile!.id],
 		});
 		aliceChannel = await channel(alice, {});
 

@@ -2770,6 +2770,15 @@ export type paths = {
      */
     post: operations['notifications/create'];
   };
+  '/notifications/flush': {
+    /**
+     * notifications/flush
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:notifications*
+     */
+    post: operations['notifications/flush'];
+  };
   '/notifications/mark-all-as-read': {
     /**
      * notifications/mark-all-as-read
@@ -3978,6 +3987,7 @@ export type components = {
       reactions: {
         [key: string]: number;
       };
+      reactionCount: number;
       renoteCount: number;
       repliesCount: number;
       uri?: string;
@@ -4424,6 +4434,8 @@ export type components = {
       localOnly: boolean;
       notify: boolean;
       /** @default false */
+      excludeBots: boolean;
+      /** @default false */
       withReplies: boolean;
       withFile: boolean;
       isActive: boolean;
@@ -4574,6 +4586,7 @@ export type components = {
       type: 'isLocal' | 'isRemote';
     };
     RoleCondFormulaValueAssignedRole: {
+      id: string;
       /** @enum {string} */
       type: 'roleAssignedTo';
       /**
@@ -4643,6 +4656,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      mentionLimit: number;
       canInvite: boolean;
       inviteLimit: number;
       inviteLimitCycle: number;
@@ -4796,6 +4810,7 @@ export type components = {
       enableServiceWorker: boolean;
       translatorAvailable: boolean;
       mediaProxy: string;
+      enableUrlPreview: boolean;
       backgroundImageUrl: string | null;
       impressumUrl: string | null;
       logoImageUrl: string | null;
@@ -4948,11 +4963,21 @@ export type operations = {
             objectStorageS3ForcePathStyle: boolean;
             privacyPolicyUrl: string | null;
             repositoryUrl: string | null;
+            /**
+             * @deprecated
+             * @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead.
+             */
             summalyProxy: string | null;
             themeColor: string | null;
             tosUrl: string | null;
             uri: string;
             version: string;
+            urlPreviewEnabled: boolean;
+            urlPreviewTimeout: number;
+            urlPreviewMaximumContentLength: number;
+            urlPreviewRequireContentLength: boolean;
+            urlPreviewUserAgent: string | null;
+            urlPreviewSummaryProxyUrl: string | null;
           };
         };
       };
@@ -8848,7 +8873,6 @@ export type operations = {
           maintainerName?: string | null;
           maintainerEmail?: string | null;
           langs?: string[];
-          summalyProxy?: string | null;
           deeplAuthKey?: string | null;
           deeplIsPro?: boolean;
           enableEmail?: boolean;
@@ -8902,6 +8926,14 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
+          summalyProxy?: string | null;
+          urlPreviewEnabled?: boolean;
+          urlPreviewTimeout?: number;
+          urlPreviewMaximumContentLength?: number;
+          urlPreviewRequireContentLength?: boolean;
+          urlPreviewUserAgent?: string | null;
+          urlPreviewSummaryProxyUrl?: string | null;
         };
       };
     };
@@ -9642,6 +9674,7 @@ export type operations = {
           users: string[];
           caseSensitive: boolean;
           localOnly?: boolean;
+          excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
           notify: boolean;
@@ -9913,19 +9946,20 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           antennaId: string;
-          name: string;
+          name?: string;
           /** @enum {string} */
-          src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+          src?: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
           /** Format: misskey:id */
           userListId?: string | null;
-          keywords: string[][];
-          excludeKeywords: string[][];
-          users: string[];
-          caseSensitive: boolean;
+          keywords?: string[][];
+          excludeKeywords?: string[][];
+          users?: string[];
+          caseSensitive?: boolean;
           localOnly?: boolean;
-          withReplies: boolean;
-          withFile: boolean;
-          notify: boolean;
+          excludeBots?: boolean;
+          withReplies?: boolean;
+          withFile?: boolean;
+          notify?: boolean;
         };
       };
     };
@@ -22057,6 +22091,50 @@ export type operations = {
     };
   };
   /**
+   * notifications/flush
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:notifications*
+   */
+  'notifications/flush': {
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * notifications/mark-all-as-read
    * @description No description provided.
    *
@@ -22630,6 +22708,11 @@ export type operations = {
           summary: string;
           script: string;
           permissions: string[];
+          /**
+           * @default public
+           * @enum {string}
+           */
+          visibility?: 'public' | 'private';
         };
       };
     };

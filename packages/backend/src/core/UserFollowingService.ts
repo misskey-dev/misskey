@@ -511,6 +511,12 @@ export class UserFollowingService implements OnModuleInit {
 		if (blocking) throw new Error('blocking');
 		if (blocked) throw new Error('blocked');
 
+		// Remove old follow requests before creating a new one.
+		await this.followRequestsRepository.delete({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+
 		const followRequest = await this.followRequestsRepository.insert({
 			id: this.idService.gen(),
 			followerId: follower.id,

@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<template #item="{element}">
 							<button class="_button" :class="$style.emojisItem" @click="removeReaction(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
 								<MkEmoji v-else :emoji="element" :normal="true"/>
 							</button>
 						</template>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<template #item="{element}">
 							<button class="_button" :class="$style.emojisItem" @click="removeEmoji(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
 								<MkEmoji v-else :emoji="element" :normal="true"/>
 							</button>
 						</template>
