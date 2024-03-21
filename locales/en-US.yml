@@ -2529,4 +2529,3 @@ _reversi:
 _offlineScreen:
   title: "Offline - cannot connect to the server"
   header: "Unable to connect to the server"
-
