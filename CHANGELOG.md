@@ -1,6 +1,12 @@
 ## Unreleased
 
+### Note
+- コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+
 ### General
+- Enhance: URLプレビューの有効化・無効化を設定できるように #13569
+- Enhance: アンテナでBotによるノートを除外できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
@@ -23,6 +29,7 @@
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 

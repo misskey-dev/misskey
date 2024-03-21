@@ -20,7 +20,7 @@
 		"eslint": "8.57.0",
 		"eslint-plugin-import": "2.29.1",
 		"nodemon": "3.1.0",
-		"typescript": "5.4.2"
+		"typescript": "5.4.3"
 	},
 	"type": "module"
 }
