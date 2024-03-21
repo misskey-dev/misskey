@@ -1,6 +1,8 @@
 ## Unreleased
 
 ### General
+- Enhance: アンテナでBotによるノートを除外できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
