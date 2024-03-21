@@ -6,10 +6,10 @@
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
+import { RateLimiter } from '@/scripts/rate-limiter.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
-let canPlay = true;
 
 export const soundsTypes = [
 	// 音声なし
@@ -188,16 +188,12 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
+	if (sound.type == null || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
 
-	canPlay = false;
-	playMisskeySfxFile(sound).finally(() => {
-		// ごく短時間に音が重複しないように
-		setTimeout(() => {
-			canPlay = true;
-		}, 25);
-	});
+	playMisskeySfxFile(sound);
 }
+
+const rateLimiter = new RateLimiter<string>({ duration: 50, max: 1 });
 
 /**
  * サウンド設定形式で指定された音声を再生する
@@ -213,7 +209,7 @@ export async function playMisskeySfxFile(soundStore: SoundStore) {
 	}
 	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
 	const buffer = await loadAudio(url);
-	if (!buffer) return;
+	if (!buffer || !rateLimiter.hit(url)) return;
 	const volume = soundStore.volume * masterVolume;
 	createSourceNode(buffer, { volume }).soundSource.start();
 }
