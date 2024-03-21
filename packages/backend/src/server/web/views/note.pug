@@ -2,7 +2,7 @@ extends ./base
 
 block vars
 	- const user = note.user;
-	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
+	- const title = user.name ? `${user.name} (@${user.username}${user.host ? `@${user.host}` : ''})` : `@${user.username}${user.host ? `@${user.host}` : ''}`;
 	- const url = `${config.url}/notes/${note.id}`;
 	- const isRenote = note.renote && note.text == null && note.fileIds.length == 0 && note.poll == null;
 	- const images = (note.files || []).filter(file => file.type.startsWith('image/') && !file.isSensitive)
@@ -28,7 +28,7 @@ block og
 			// FIXME: add embed player for Twitter
 	if images.length
 		meta(property='twitter:card' content='summary_large_image')
-		each image in images	
+		each image in images
 			meta(property='og:image'     content= image.url)
 	else
 		meta(property='twitter:card' content='summary')
