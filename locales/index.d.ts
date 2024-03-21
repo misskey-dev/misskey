@@ -4916,6 +4916,14 @@ export interface Locale extends ILocale {
      * リトライ
      */
     "gameRetry": string;
+    /**
+     * ワンタイムパスワードを使う
+     */
+    "useTotp": string;
+    /**
+     * バックアップコードを使う
+     */
+    "useBackupCode": string;
     "_bubbleGame": {
         /**
          * 遊び方
