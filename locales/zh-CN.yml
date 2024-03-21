@@ -2536,3 +2536,6 @@ _urlPreviewSetting:
   requireContentLengthDescription: "如果目标服务器不返回 Content-Length，则不生成预览。"
   userAgent: "User-Agent"
   userAgentDescription: "设定获取预览时使用的 User-Agent。留空时将使用默认的 User-Agent。"
+  summaryProxy: "用来生成预览的代理的 endpoint。"
+  summaryProxyDescription: "不使用 Misskey 本体，而是通过 Summaly Proxy 生成预览。"
+  summaryProxyDescription2: "下面的参数将作为查询字符串发送至代理。代理侧如果不支持此设置，则忽略设定值。"
