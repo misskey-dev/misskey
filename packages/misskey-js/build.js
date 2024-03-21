@@ -23,6 +23,9 @@ const options = {
 	sourcemap: 'linked',
 };
 
+// built配下をすべて削除する
+fs.rmSync('./built', { recursive: true, force: true });
+
 if (process.argv.map(arg => arg.toLowerCase()).includes("--watch")) {
 	await watchSrc();
 } else {
