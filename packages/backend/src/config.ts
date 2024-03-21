@@ -98,6 +98,8 @@ type Source = {
 	proxyRemoteFiles?: boolean;
 	videoThumbnailGenerator?: string;
 
+	bypassRateLimit?: { header: string; value: string }[];
+
 	signToActivityPubGet?: boolean;
 
 	perChannelMaxNoteCacheCount?: number;
@@ -175,6 +177,7 @@ export type Config = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
+	bypassRateLimit: { header: string; value: string }[] | undefined;
 	redis: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForSystemQueue: RedisOptions & RedisOptionsSource;
@@ -288,6 +291,7 @@ export function loadConfig(): Config {
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
+		bypassRateLimit: config.bypassRateLimit,
 		userAgent: `Misskey/${version} (${config.url})`,
 		clientEntry: clientManifest['src/_boot_.ts'],
 		clientManifestExists: clientManifestExists,

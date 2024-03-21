@@ -18,6 +18,7 @@ import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import type { Config } from '@/config.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -39,6 +40,8 @@ export class ApiCallService implements OnApplicationShutdown {
 	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 
@@ -243,7 +246,8 @@ export class ApiCallService implements OnApplicationShutdown {
 			throw new ApiError(accessDenied);
 		}
 
-		if (ep.meta.limit) {
+		const bypassRateLimit = this.config.bypassRateLimit?.some(({ header, value }) => request.headers[header] === value) ?? false;
+		if (ep.meta.limit && !bypassRateLimit) {
 			// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 			let limitActor: string;
 			if (user) {
