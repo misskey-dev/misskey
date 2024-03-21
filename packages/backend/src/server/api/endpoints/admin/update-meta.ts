@@ -155,6 +155,11 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		wellKnownWebsites: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		urlPreviewDenyList: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
@@ -218,6 +223,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					lastValue = h;
 					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
 				}).map(x => x.toLowerCase());
+			}
+
+			if (Array.isArray(ps.wellKnownWebsites)) {
+				set.wellKnownWebsites = ps.wellKnownWebsites.filter(Boolean);
 			}
 
 			if (Array.isArray(ps.urlPreviewDenyList)) {

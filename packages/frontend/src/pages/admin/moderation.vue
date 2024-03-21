@@ -45,6 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
 					</MkTextarea>
 
+					<MkTextarea v-model="wellKnownWebsites">
+						<template #label>{{ i18n.ts.wellKnownWebsites }}</template>
+						<template #caption>{{ i18n.ts.wellKnownWebsitesDescription }}</template>
+					</MkTextarea>
+
 					<MkTextarea v-model="urlPreviewDenyList">
 						<template #label>{{ i18n.ts.urlPreviewDenyList }}</template>
 						<template #caption>{{ i18n.ts.urlPreviewDenyListDescription }}</template>
@@ -91,7 +96,8 @@ const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
 const tosUrl = ref<string | null>(null);
 const privacyPolicyUrl = ref<string | null>(null);
-const urlPreviewDenyList = ref<string | undefined>('');
+const wellKnownWebsites = ref<string>('');
+const urlPreviewDenyList = ref<string>('');
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -103,7 +109,8 @@ async function init() {
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
 	tosUrl.value = meta.tosUrl;
 	privacyPolicyUrl.value = meta.privacyPolicyUrl;
-	urlPreviewDenyList.value = meta.urlPreviewDenyList?.join('\n');
+	wellKnownWebsites.value = meta.wellKnownWebsites.join('\n');
+	urlPreviewDenyList.value = meta.urlPreviewDenyList.join('\n');
 }
 
 function save() {
@@ -116,7 +123,8 @@ function save() {
 		prohibitedWords: prohibitedWords.value.split('\n'),
 		hiddenTags: hiddenTags.value.split('\n'),
 		preservedUsernames: preservedUsernames.value.split('\n'),
-		urlPreviewDenyList: urlPreviewDenyList.value?.split('\n'),
+		wellKnownWebsites: wellKnownWebsites.value.split('\n'),
+		urlPreviewDenyList: urlPreviewDenyList.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});

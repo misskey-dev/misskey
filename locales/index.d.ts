@@ -4861,6 +4861,25 @@ export interface Locale extends ILocale {
      */
     "doReaction": string;
     /**
+     * よく知られたウェブサイト
+     */
+    "wellKnownWebsites": string;
+    /**
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。
+     */
+    "wellKnownWebsitesDescription": string;
+    /**
+     * 外部サイトへ移動します
+     */
+    "warningRedirectingExternalWebsiteTitle": string;
+    /**
+     * 別のサイトにジャンプしようとしています。
+     * リンク先の安全性を十分に確認した上で進んでください。
+     *
+     * {url}
+     */
+    "warningRedirectingExternalWebsiteDescription": ParameterizedString<"url">;
+    /**
      * サムネイルの表示を制限するURL
      */
     "urlPreviewDenyList": string;

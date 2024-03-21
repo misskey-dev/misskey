@@ -597,6 +597,11 @@ export class MiMeta {
 	@Column('varchar', {
 		length: 3072, array: true, default: '{}',
 	})
+	public wellKnownWebsites: string[];
+
+	@Column('varchar', {
+		length: 3072, array: true, default: '{}',
+	})
 	public urlPreviewDenyList: string[];
 
 	@Column('varchar', {

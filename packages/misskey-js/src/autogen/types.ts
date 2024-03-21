@@ -4991,6 +4991,7 @@ export type components = {
           imageUrl: string;
           dayOfWeek: number;
         })[];
+      wellKnownWebsites: string[];
       /** @default 0 */
       notesPerOneAd: number;
       enableEmail: boolean;
@@ -5181,7 +5182,8 @@ export type operations = {
             perUserHomeTimelineCacheMax: number;
             perUserListTimelineCacheMax: number;
             notesPerOneAd: number;
-            urlPreviewDenyList?: string[];
+            wellKnownWebsites: string[];
+            urlPreviewDenyList: string[];
             featuredGameChannels: string[];
             backgroundImageUrl: string | null;
             deeplAuthKey: string | null;
@@ -9657,6 +9659,7 @@ export type operations = {
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
           sensitiveMediaHosts?: string[] | null;
+          wellKnownWebsites?: string[] | null;
           urlPreviewDenyList?: string[] | null;
           featuredGameChannels?: string[] | null;
         };

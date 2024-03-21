@@ -5,8 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel ?? 'nofollow noopener'" :target="target"
+	:is="self ? 'MkA' : 'a'"
+	ref="el"
+	style="word-break: break-all;"
+	class="_link"
+	:[attr]="self ? url.substring(local.length) : url"
+	:rel="rel ?? 'nofollow noopener'"
+	:target="target"
 	:title="url"
+	@click="(ev: MouseEvent) => warningExternalWebsite(ev, url)"
 >
 	<slot></slot>
 	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
@@ -17,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ref } from 'vue';
 import { url as local } from '@/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
+import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
 import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{

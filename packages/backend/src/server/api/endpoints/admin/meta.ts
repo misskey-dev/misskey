@@ -381,9 +381,17 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			wellKnownWebsites: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 			urlPreviewDenyList: {
 				type: 'array',
-				optional: true, nullable: false,
+				optional: false, nullable: false,
 				items: {
 					type: 'string',
 					optional: false, nullable: false,
@@ -602,6 +610,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
+				wellKnownWebsites: instance.wellKnownWebsites,
 				notesPerOneAd: instance.notesPerOneAd,
 				urlPreviewDenyList: instance.urlPreviewDenyList,
 				featuredGameChannels: instance.featuredGameChannels,

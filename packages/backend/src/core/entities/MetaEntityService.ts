@@ -99,6 +99,7 @@ export class MetaEntityService {
 				imageUrl: ad.imageUrl,
 				dayOfWeek: ad.dayOfWeek,
 			})),
+			wellKnownWebsites: instance.wellKnownWebsites,
 			notesPerOneAd: instance.notesPerOneAd,
 			enableEmail: instance.enableEmail,
 			enableServiceWorker: instance.enableServiceWorker,
