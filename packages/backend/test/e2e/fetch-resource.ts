@@ -80,6 +80,7 @@ describe('Webリソース', () => {
 		aliceUploadedFile = (await uploadFile(alice)).body;
 		alicesPost = await post(alice, {
 			text: 'test',
+			fileIds: [aliceUploadedFile!.id],
 		});
 		alicePage = await page(alice, {});
 		alicePlay = await play(alice, {});
@@ -146,6 +147,42 @@ describe('Webリソース', () => {
 
 		test('がGETできる。(ノートが存在しない場合でも。)', async () => await ok({
 			path: path(bob.username),
+			type,
+		}));
+
+		test('は存在しないユーザーはGETできない。', async () => await notOk({
+			path: path('nonexisting'),
+			status: 404,
+		}));
+	});
+
+	describe.each([
+		{ ext: 'rss', type: 'application/rss+xml; charset=utf-8' },
+		{ ext: 'atom', type: 'application/atom+xml; charset=utf-8' },
+		{ ext: 'json', type: 'application/json; charset=utf-8' },
+	])('/@:username.with_replies.$ext', ({ ext, type }) => {
+		const path = (username: string): string => `/@${username}.with_replies.${ext}`;
+
+		test('がGETできる。', async () => await ok({
+			path: path(alice.username),
+			type,
+		}));
+
+		test('は存在しないユーザーはGETできない。', async () => await notOk({
+			path: path('nonexisting'),
+			status: 404,
+		}));
+	});
+
+	describe.each([
+		{ ext: 'rss', type: 'application/rss+xml; charset=utf-8' },
+		{ ext: 'atom', type: 'application/atom+xml; charset=utf-8' },
+		{ ext: 'json', type: 'application/json; charset=utf-8' },
+	])('/@:username.with_files.$ext', ({ ext, type }) => {
+		const path = (username: string): string => `/@${username}.with_files.${ext}`;
+
+		test('がGETできる。', async () => await ok({
+			path: path(alice.username),
 			type,
 		}));
 
