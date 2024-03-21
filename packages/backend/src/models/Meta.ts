@@ -87,6 +87,11 @@ export class MiMeta {
 	public silencedHosts: string[];
 
 	@Column('varchar', {
+		length: 1024, array: true, default: '{}'
+	})
+	public prohibitedImageMD5: string[];
+
+	@Column('varchar', {
 		length: 1024,
 		nullable: true,
 	})

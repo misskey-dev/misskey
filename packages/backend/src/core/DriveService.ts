@@ -90,6 +90,7 @@ export class DriveService {
 	public static NoSuchFolderError = class extends Error {};
 	public static InvalidFileNameError = class extends Error {};
 	public static CannotUnmarkSensitiveError = class extends Error {};
+	public static AbusiveFileDetectedError = class extends Error {};
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
@@ -481,6 +482,10 @@ export class DriveService {
 			enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 		});
 		this.registerLogger.info(`${JSON.stringify(info)}`);
+
+		if (instance.prohibitedImageMD5.includes(info.md5)) {
+			throw new DriveService.AbusiveFileDetectedError();
+		}
 
 		// 現状 false positive が多すぎて実用に耐えない
 		//if (info.porn && instance.disallowUploadWhenPredictedAsPorn) {
