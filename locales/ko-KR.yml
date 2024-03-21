@@ -1224,6 +1224,7 @@ enableHorizontalSwipe: "스와이프하여 탭 전환"
 loading: "불러오는 중"
 surrender: "그만두기"
 gameRetry: "다시 시도"
+notUsePleaseLeaveBlank: "사용하지 않는 경우 비워두세요."
 _bubbleGame:
   howToPlay: "설명"
   hold: "홀드"
@@ -2527,3 +2528,10 @@ _reversi:
 _offlineScreen:
   title: "오프라인 - 서버에 접속할 수 없습니다"
   header: "서버에 접속할 수 없습니다"
+_urlPreviewSetting:
+  title: "URL 미리보기 설정"
+  enable: "URL 미리보기 활성화"
+  timeout: "미리보기를 불러올 때의 타임아웃 (ms)"
+  timeoutDescription: "미리보기를 로딩하는데 걸리는 시간이 정한 시간보다 오래 걸리는 경우, 미리보기를 생성하지 않습니다."
+  maximumContentLength: "Content-Length의 최대치 (byte)"
+  maximumContentLengthDescription: "Content-Length가 이 값을 넘어서면 미리보기를 생성하지 않습니다."
