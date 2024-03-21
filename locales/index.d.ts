@@ -4913,7 +4913,7 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
-     * [使用しない場合は空欄にしてください]
+     * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
     "_bubbleGame": {
