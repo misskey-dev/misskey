@@ -604,6 +604,11 @@ export class MiMeta {
 	public urlPreviewRequireContentLength: boolean;
 
 	@Column('varchar', {
+		length: 3072, array: true, default: '{}',
+	})
+	public wellKnownWebsites: string[];
+
+	@Column('varchar', {
 		length: 1024,
 		nullable: true,
 	})
