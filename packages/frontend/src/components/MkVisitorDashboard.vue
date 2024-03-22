@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.footer, $style.panel]">
 		<div :class="$style.sponsors">
 			<div><Mfm text="$[jelly ❤]"/> Sponsored by</div>
-			<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.com/misskey-io/sponsors/skeb.png" alt="Skeb" width="140"></a>
+			<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.jp/misskey-io/sponsors/skeb.png" alt="Skeb" width="140"></a>
 		</div>
 		<div :class="$style.legalNotice">
 			<div>© {{ new Date().getFullYear() }} MisskeyHQ Inc.</div>

@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> Sponsored by</template>
 					<div style="display:flex;flex-wrap:wrap;gap:8px 8px;align-items:center;justify-content:center;">
-						<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.com/misskey-io/sponsors/skeb.png" alt="Skeb" width="140"></a>
+						<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.jp/misskey-io/sponsors/skeb.png" alt="Skeb" width="140"></a>
 					</div>
 				</FormSection>
 

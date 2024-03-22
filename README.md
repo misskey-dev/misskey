@@ -58,7 +58,7 @@ List of sponsors of Misskey can be found at [Misskey Hub](https://misskey-hub.ne
 ## Sponsors of Misskey.io
 
 <div style="display:flex;flex-direction:column;gap:8px 8px;align-items:center;justify-content:center;">
-	<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.com/misskey-io/sponsors/skeb.svg" alt="Skeb" width="140"></a>
+	<a title="Skeb" href="https://skeb.jp/" target="_blank"><img src="https://media.misskeyusercontent.jp/misskey-io/sponsors/skeb.svg" alt="Skeb" width="140"></a>
 </div>
 
 ## Thanks
