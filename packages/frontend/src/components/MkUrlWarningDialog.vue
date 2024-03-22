@@ -35,12 +35,9 @@ import { defaultStore } from '@/store.js';
 
 type Result = string | number | true | null;
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	url: string;
-	openInNewTab?: boolean;
-}>(), {
-	openInNewTab: true,
-});
+}>();
 
 const emit = defineEmits<{
 	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;

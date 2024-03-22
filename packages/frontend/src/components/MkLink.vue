@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	:title="url" @click.prevent.stop="alertOtherHost"
+	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel" :target="target"
+	:title="url" @click="(ev: MouseEvent) => warningExternalWebsite(ev, props.url)"
 >
 	<slot></slot>
 	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
@@ -18,33 +18,22 @@ import { defineAsyncComponent, ref } from 'vue';
 import { url as local } from '@/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { isEnabledUrlPreview } from '@/instance.js';
+import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
 }>(), {
+	rel: 'nofollow noopener',
 });
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? undefined : '_blank';
 
 const el = ref<HTMLElement | { $el: HTMLElement }>();
-
-async function alertOtherHost() {
-	if(defaultStore.state.checkRedirectingOtherHost && !self) {
-		// show confirm dialog when redirecting other host
-		const confirm = await os.confirm({
-			type: 'warning',
-			text: i18n.tsx.warningRedirectingOtherHost({ url: props.url }),
-		});
-		if (confirm.canceled) return;
-	}
-	window.open(props.url, "_blank", 'nofollow noopener');
-}
 
 if (isEnabledUrlPreview.value) {
 	useTooltip(el, (showing) => {
