@@ -50,7 +50,7 @@
 		"ncp": "2.0.0",
 		"nodemon": "3.1.0",
 		"tsd": "0.30.7",
-		"typescript": "5.4.2"
+		"typescript": "5.4.3"
 	},
 	"files": [
 		"built",

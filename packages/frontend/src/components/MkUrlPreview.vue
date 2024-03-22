@@ -44,7 +44,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </template>
 <div v-else>
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+	<component
+		:is="self ? 'MkA' : 'a'"
+		:class="[$style.link, { [$style.compact]: compact }]"
+		:[attr]="self ? url.substring(local.length) : url"
+		rel="nofollow noopener"
+		:target="target"
+		:title="url"
+		@click="(ev: MouseEvent) => warningExternalWebsite(ev, url)"
+	>
 		<div v-if="thumbnail" :class="[$style.thumbnail, { [$style.thumbnailBlur]: sensitive }]" :style="defaultStore.state.dataSaver.urlPreview ? '' : `background-image: url('${thumbnail}')`">
 		</div>
 		<article :class="$style.body">
@@ -92,6 +100,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
+import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -152,15 +161,16 @@ requestUrl.hash = '';
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`)
 	.then(res => {
 		if (!res.ok) {
-			fetching.value = false;
-			unknownUrl.value = true;
-			return;
+			if (_DEV_) {
+				console.warn(`[HTTP${res.status}] Failed to fetch url preview`);
+			}
+			return null;
 		}
 
 		return res.json();
 	})
-	.then((info: SummalyResult) => {
-		if (info.url == null) {
+	.then((info: SummalyResult | null) => {
+		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
 			return;

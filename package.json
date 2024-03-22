@@ -52,19 +52,19 @@
 		"sharp": "0.33.2"
 	},
 	"dependencies": {
-		"cssnano": "6.1.0",
+		"cssnano": "6.1.1",
 		"execa": "8.0.1",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.37",
+		"postcss": "8.4.38",
 		"terser": "5.29.2",
-		"typescript": "5.4.2"
+		"typescript": "5.4.3"
 	},
 	"devDependencies": {
 		"@types/node": "20.11.30",
 		"@typescript-eslint/eslint-plugin": "7.3.1",
 		"@typescript-eslint/parser": "7.3.1",
 		"cross-env": "7.0.3",
-		"cypress": "13.7.0",
+		"cypress": "13.7.1",
 		"eslint": "8.57.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.3"
