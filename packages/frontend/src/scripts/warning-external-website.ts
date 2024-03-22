@@ -5,12 +5,15 @@
 
 import { url as local } from '@/config.js';
 import { instance } from '@/instance.js';
+import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import MkUrlWarningDialog from '@/components/MkUrlWarningDialog.vue';
 
 const isRegExp = /^\/(.+)\/(.*)$/;
 
 export async function warningExternalWebsite(ev: MouseEvent, url: string) {
+	const _url = new URL(url);
+
 	const self = url.startsWith(local);
 	const isWellKnownWebsite = self || instance.wellKnownWebsites.some(expression => {
 		const r = isRegExp.exec(expression);
@@ -18,8 +21,9 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 			return new RegExp(r[1], r[2]).test(url);
 		} else return expression.split(' ').every(keyword => url.includes(keyword));
 	});
+	const isTrustedByUser = defaultStore.reactiveState.trustedDomains.value.includes(_url.hostname);
 
-	if (!self && !isWellKnownWebsite) {
+	if (!self && !isWellKnownWebsite && !isTrustedByUser) {
 		ev.preventDefault();
 		ev.stopPropagation();
 

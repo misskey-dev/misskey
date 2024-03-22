@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
 }
 
 .urlAddress {
-	padding: 8px;
+	padding: var(--margin);
 	border-radius: calc(var(--radius) / 2);
 	border: 1px solid var(--divider);
 	overflow-x: auto;
