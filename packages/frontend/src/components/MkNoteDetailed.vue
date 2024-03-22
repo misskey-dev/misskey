@@ -233,9 +233,12 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
-}>();
+	initialTab: string;
+}>(), {
+	initialTab: 'replies',
+});
 
 const inChannel = inject('inChannel', null);
 
@@ -303,7 +306,7 @@ provide('react', (reaction: string) => {
 	});
 });
 
-const tab = ref('replies');
+const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
 
 const renotesPagination = computed<Paging>(() => ({
