@@ -9842,6 +9842,21 @@ export interface Locale extends ILocale {
          */
         "summaryProxyDescription2": string;
     };
+    "_urlWarning": {
+        /**
+         * 外部サイトに移動します
+         */
+        "title": string;
+        /**
+         * 別のサイトに移動しようとしています。
+         * リンク先の安全性を十分に確認した上で進んでください。
+         */
+        "description": string;
+        /**
+         * 今後{domain}のリンクを信頼する
+         */
+        "trustThisDomain": ParameterizedString<"domain">;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

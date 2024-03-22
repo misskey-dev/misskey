@@ -2621,3 +2621,8 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_urlWarning:
+  title: "外部サイトに移動します"
+  description: "別のサイトに移動しようとしています。\nリンク先の安全性を十分に確認した上で進んでください。"
+  trustThisDomain: "今後{domain}のリンクを信頼する"
