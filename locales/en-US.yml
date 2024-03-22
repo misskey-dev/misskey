@@ -1213,7 +1213,7 @@ signupPendingError: "There was a problem verifying the email address. The link m
 cwNotationRequired: "If \"Hide content\" is enabled, a description must be provided."
 doReaction: "Add reaction"
 wellKnownWebsites: "Well-known websites"
-wellKnownWebsitesDescription: "Separate with spaces for AND, new lines for OR. Surround with slashes for regular expressions. Matching will allow redirection to external sites without a warning."
+wellKnownWebsitesDescription: "Separate with spaces for AND, new lines for OR. Surround with slashes for regex. Domain names only will match the end of the domain of the URL. If matched, the warning of external links will not be displayed."
 warningRedirectingExternalWebsiteTitle: "You are leaving our site!"
 warningRedirectingExternalWebsiteDescription: "You are about to jump to another site.\nPlease make sure this link is reliable before proceeding.\n\n{url}"
 code: "Code"
