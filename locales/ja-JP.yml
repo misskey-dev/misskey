@@ -1201,6 +1201,8 @@ signupPendingError: "メールアドレスの確認中に問題が発生しま�
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 warningRedirectingOtherHost: "外部サイトへリダイレクトしようとしています。\nURLが問題ないか確認してアクセスしてください\n{url}"
 doReaction: "リアクションする"
+wellKnownWebsites: "よく知られたウェブサイト"
+wellKnownWebsitesDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。"
 code: "コード"
 reloadRequiredToApplySettings: "設定の反映にはリロードが必要です。"
 remainingN: "残り: {n}"
@@ -2621,3 +2623,8 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_urlWarning:
+  title: "外部サイトに移動します"
+  description: "別のサイトに移動しようとしています。\nリンク先の安全性を十分に確認した上で進んでください。"
+  trustThisDomain: "今後{domain}のリンクを信頼する"

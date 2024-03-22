@@ -132,6 +132,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: [] as string[],
 	},
+	trustedDomains: {
+		where: 'account',
+		default: [] as string[],
+	},
 
 	menu: {
 		where: 'deviceAccount',

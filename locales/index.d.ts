@@ -4821,6 +4821,14 @@ export interface Locale extends ILocale {
      */
     "doReaction": string;
     /**
+     * よく知られたウェブサイト
+     */
+    "wellKnownWebsites": string;
+    /**
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。
+     */
+    "wellKnownWebsitesDescription": string;
+    /**
      * コード
      */
     "code": string;
@@ -9841,6 +9849,21 @@ export interface Locale extends ILocale {
          * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
          */
         "summaryProxyDescription2": string;
+    };
+    "_urlWarning": {
+        /**
+         * 外部サイトに移動します
+         */
+        "title": string;
+        /**
+         * 別のサイトに移動しようとしています。
+         * リンク先の安全性を十分に確認した上で進んでください。
+         */
+        "description": string;
+        /**
+         * 今後{domain}のリンクを信頼する
+         */
+        "trustThisDomain": ParameterizedString<"domain">;
     };
 }
 declare const locales: {
