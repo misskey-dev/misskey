@@ -7,7 +7,6 @@ import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
-import type { BuiltinTheme as ShikiBuiltinTheme } from 'shiki';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
 
@@ -227,6 +226,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	showReactionsCount: {
+		where: 'device',
+		default: false,
+	},
 	enableQuickAddMfmFunction: {
 		where: 'device',
 		default: false,
@@ -431,10 +434,10 @@ export const defaultStore = markRaw(new Storage('base', {
 			sfxVolume: 1,
 		},
 	},
-  hemisphere: {
+	hemisphere: {
 		where: 'device',
 		default: hemisphere as 'N' | 'S',
-  },
+	},
 	enableHorizontalSwipe: {
 		where: 'device',
 		default: true,
