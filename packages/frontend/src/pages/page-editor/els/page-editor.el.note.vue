@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
-	<section style="padding: 0 16px 0 16px;">
+	<section style="padding: 16px;" class="_gaps_s">
 		<MkInput v-model="id">
 			<template #label>{{ i18n.ts._pages.blocks._note.id }}</template>
 			<template #caption>{{ i18n.ts._pages.blocks._note.idDescription }}</template>

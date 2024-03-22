@@ -20,6 +20,7 @@ import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import { isEnabledUrlPreview } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -31,15 +32,7 @@ const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? undefined : '_blank';
 
-const el = ref<HTMLElement>();
-
-useTooltip(el, (showing) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-		showing,
-		url: props.url,
-		source: el.value,
-	}, {}, 'closed');
-});
+const el = ref<HTMLElement | { $el: HTMLElement }>();
 
 async function alertOtherHost() {
 	if(defaultStore.state.checkRedirectingOtherHost && !self) {
@@ -51,6 +44,16 @@ async function alertOtherHost() {
 		if (confirm.canceled) return;
 	}
 	window.open(props.url, "_blank", 'nofollow noopener');
+}
+
+if (isEnabledUrlPreview.value) {
+	useTooltip(el, (showing) => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+			showing,
+			url: props.url,
+			source: el.value instanceof HTMLElement ? el.value : el.value?.$el,
+		}, {}, 'closed');
+	});
 }
 </script>
 
