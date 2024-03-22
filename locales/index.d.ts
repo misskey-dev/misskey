@@ -4996,6 +4996,14 @@ export interface Locale extends ILocale {
      */
     "notUsePleaseLeaveBlank": string;
     /**
+     * ワンタイムパスワードを使う
+     */
+    "useTotp": string;
+    /**
+     * バックアップコードを使う
+     */
+    "useBackupCode": string;
+    /**
      * 通報の種類
      */
     "abuseReportCategory": string;

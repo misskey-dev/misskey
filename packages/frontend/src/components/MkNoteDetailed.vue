@@ -201,6 +201,7 @@ import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
+import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
@@ -213,7 +214,7 @@ import { userPage } from '@/filters/user.js';
 import { notePage } from '@/filters/note.js';
 import number from '@/filters/number.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import * as sound from '@/scripts/sound.js';
 import { defaultStore, noteViewInterruptors } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -351,6 +352,28 @@ useTooltip(renoteButton, async (showing) => {
 		targetElement: renoteButton.value,
 	}, {}, 'closed');
 });
+
+if (appearNote.value.reactionAcceptance === 'likeOnly') {
+	useTooltip(reactButton, async (showing) => {
+		const reactions = await misskeyApiGet('notes/reactions', {
+			noteId: appearNote.value.id,
+			limit: 10,
+			_cacheKey_: appearNote.value.reactionCount,
+		});
+
+		const users = reactions.map(x => x.user);
+
+		if (users.length < 1) return;
+
+		os.popup(MkReactionsViewerDetails, {
+			showing,
+			reaction: '❤️',
+			users,
+			count: appearNote.value.reactionCount,
+			targetElement: reactButton.value!,
+		}, {}, 'closed');
+	});
+}
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
