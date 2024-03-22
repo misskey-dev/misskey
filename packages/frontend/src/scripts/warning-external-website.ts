@@ -9,19 +9,20 @@ import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import MkUrlWarningDialog from '@/components/MkUrlWarningDialog.vue';
 
+const extractDomain = /^(https?:\/\/|\/\/)?([^@/\s]+@)?(www\.)?([^:/\s]+)/i;
 const isRegExp = /^\/(.+)\/(.*)$/;
 
 export async function warningExternalWebsite(ev: MouseEvent, url: string) {
-	const _url = new URL(url);
-
-	const self = url.startsWith(local);
+	const domain = extractDomain.exec(url)?.[4];
+	const self = !domain || url.startsWith(local);
 	const isWellKnownWebsite = self || instance.wellKnownWebsites.some(expression => {
 		const r = isRegExp.exec(expression);
 		if (r) {
 			return new RegExp(r[1], r[2]).test(url);
-		} else return expression.split(' ').every(keyword => url.includes(keyword));
+		} else if (expression.includes(' ')) return expression.split(' ').every(keyword => url.includes(keyword));
+		else return domain.endsWith(expression);
 	});
-	const isTrustedByUser = defaultStore.reactiveState.trustedDomains.value.includes(_url.hostname);
+	const isTrustedByUser = defaultStore.reactiveState.trustedDomains.value.includes(domain);
 
 	if (!self && !isWellKnownWebsite && !isTrustedByUser) {
 		ev.preventDefault();
