@@ -604,7 +604,10 @@ export class MiMeta {
 	public urlPreviewRequireContentLength: boolean;
 
 	@Column('varchar', {
-		length: 3072, array: true, default: '{}',
+		length: 3072,
+		array: true,
+		default: '{}',
+		comment: 'An array of URL strings or regex that can be used to omit warnings about redirects to external sites. Separate them with spaces to specify AND, and enclose them with slashes to specify regular expressions.',
 	})
 	public wellKnownWebsites: string[];
 
