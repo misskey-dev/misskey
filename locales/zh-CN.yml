@@ -1226,6 +1226,8 @@ loading: "读取中"
 surrender: "取消"
 gameRetry: "重试"
 notUsePleaseLeaveBlank: "如不使用请留空"
+useTotp: "使用一次性代码"
+useBackupCode: "使用备用代码"
 _bubbleGame:
   howToPlay: "游戏说明"
   hold: "抓住"
