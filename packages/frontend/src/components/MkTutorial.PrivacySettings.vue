@@ -11,6 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSwitch v-model="isLocked">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
 
+	<MkSwitch v-model="publicReactions">{{ i18n.ts.makeReactionsPublic }}<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template></MkSwitch>
+
 	<MkSwitch v-model="hideOnlineStatus">{{ i18n.ts.hideOnlineStatus }}<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template></MkSwitch>
 
 	<MkSwitch v-model="noCrawle">{{ i18n.ts.noCrawle }}<template #caption>{{ i18n.ts.noCrawleDescription }}</template></MkSwitch>
@@ -27,15 +29,20 @@ import { i18n } from '@/i18n.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { signinRequired } from '@/account.js';
 
-const isLocked = ref(false);
-const hideOnlineStatus = ref(false);
-const noCrawle = ref(false);
-const preventAiLearning = ref(true);
+const $i = signinRequired();
 
-watch([isLocked, hideOnlineStatus, noCrawle, preventAiLearning], () => {
+const isLocked = ref($i.isLocked);
+const publicReactions = ref($i.publicReactions);
+const hideOnlineStatus = ref($i.hideOnlineStatus);
+const noCrawle = ref($i.noCrawle);
+const preventAiLearning = ref($i.preventAiLearning);
+
+watch([isLocked, publicReactions, hideOnlineStatus, noCrawle, preventAiLearning], () => {
 	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
+		publicReactions: !!publicReactions.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		noCrawle: !!noCrawle.value,
 		preventAiLearning: !!preventAiLearning.value,

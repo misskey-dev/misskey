@@ -5323,6 +5323,11 @@ export interface Locale extends ILocale {
              * チュートリアルを完了すると実績が解除されます。
              */
             "takesAbout": ParameterizedString<"min">;
+            /**
+             * このサーバーの管理者は新規ユーザーにチュートリアルを完了することを義務付けています。
+             * チュートリアルを完了するまでMisskeyを使い始めることはできません。
+             */
+            "adminForcesToTakeTutorial": string;
         };
         "_onboardingDone": {
             /**

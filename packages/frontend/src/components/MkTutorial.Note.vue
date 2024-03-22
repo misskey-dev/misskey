@@ -15,7 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </div>
 <div v-else-if="phase === 'howToReact'" class="_gaps">
-	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
+	<div class="_gaps_s">
+		<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
+		<img :class="$style.image" src="/client-assets/tutorial/reaction.png"/>
+	</div>
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
 	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
 	<div v-if="onceReacted"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
@@ -78,7 +81,11 @@ function addReaction(emoji) {
 	emit('reacted');
 	exampleNote.reactions[emoji] = 1;
 	exampleNote.myReaction = emoji;
-	doNotification(emoji);
+
+	// 通知音も鳴らしたいのでちょっと遅らせる
+	setTimeout(() => {
+		doNotification(emoji);
+	}, 200);
 }
 
 function doNotification(emoji: string): void {
@@ -113,5 +120,11 @@ function removeReaction(emoji) {
 .divider {
 	height: 1px;
 	background: var(--divider);
+}
+
+.image {
+	max-width: 300px;
+	margin: 0 auto;
+	border-radius: var(--radius);
 }
 </style>

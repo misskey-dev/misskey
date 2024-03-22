@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<div class="_gaps">
 							<XNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
-							<b v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</b>
+							<b v-if="!isReactionTutorialPushed" :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</b>
 						</div>
 					</MkSpacer>
 				</div>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<div class="_gaps">
 							<XSensitive @succeeded="isSensitiveTutorialSucceeded = true"/>
-							<b v-if="!isSensitiveTutorialSucceeded">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.doItToContinue }}</b>
+							<b v-if="!isSensitiveTutorialSucceeded" :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.doItToContinue }}</b>
 						</div>
 					</MkSpacer>
 				</div>
@@ -297,6 +297,10 @@ function prev() {
 	flex-grow: 1;
 	line-height: 1.5;
 	margin-bottom: 56px;
+}
+
+.actionWaitText {
+	color: var(--error);
 }
 
 .pageFooter {
