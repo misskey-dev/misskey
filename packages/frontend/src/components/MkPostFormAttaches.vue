@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -152,11 +152,11 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		icon: 'ti ti-crop',
 		action: () : void => { crop(file); },
 	}] : [], {
+		type: 'divider',
+	}, {
 		text: i18n.ts.attachCancel,
 		icon: 'ti ti-circle-x',
 		action: () => { detachMedia(file.id); },
-	}, {
-		type: 'divider',
 	}, {
 		text: i18n.ts.deleteFile,
 		icon: 'ti ti-trash',

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
+import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -261,10 +261,10 @@ onUnmounted(() => {
 	cancelMatching();
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
-})));
+}));
 </script>
 
 <style lang="scss" module>

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -126,7 +126,7 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (sound.type == null || !canPlay) return;
+	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
 
 	canPlay = false;
 	playMisskeySfxFile(sound).finally(() => {

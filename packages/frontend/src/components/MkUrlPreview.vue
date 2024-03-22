@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			scrolling="no"
-			:allow="player.allow.join(';')"
+			:allow="player.allow == null ? 'autoplay;encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
 			:class="$style.playerIframe"
 			:src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')"
 			:style="{ border: 0 }"
@@ -152,15 +152,16 @@ requestUrl.hash = '';
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`)
 	.then(res => {
 		if (!res.ok) {
-			fetching.value = false;
-			unknownUrl.value = true;
-			return;
+			if (_DEV_) {
+				console.warn(`[HTTP${res.status}] Failed to fetch url preview`);
+			}
+			return null;
 		}
 
 		return res.json();
 	})
-	.then((info: SummalyResult) => {
-		if (info.url == null) {
+	.then((info: SummalyResult | null) => {
+		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
 			return;

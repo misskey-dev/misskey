@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -91,10 +91,10 @@ const headerActions = computed(() => antenna.value ? [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => antenna.value ? {
-	title: antenna.value.name,
+definePageMetadata(() => ({
+	title: antenna.value ? antenna.value.name : i18n.ts.antennas,
 	icon: 'ti ti-antenna',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

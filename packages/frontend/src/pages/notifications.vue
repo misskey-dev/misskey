@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -52,7 +52,7 @@ const directNotesPagination = {
 function setFilter(ev) {
 	const typeItems = notificationTypes.map(t => ({
 		text: i18n.ts._notification._types[t],
-		active: includeTypes.value && includeTypes.value.includes(t),
+		active: (includeTypes.value && includeTypes.value.includes(t)) ?? false,
 		action: () => {
 			includeTypes.value = [t];
 		},
@@ -63,7 +63,7 @@ function setFilter(ev) {
 		action: () => {
 			includeTypes.value = null;
 		},
-	}, { type: 'divider' }, ...typeItems] : typeItems;
+	}, { type: 'divider' as const }, ...typeItems] : typeItems;
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
@@ -94,10 +94,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-mail',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
-})));
+}));
 </script>
 
 <style module lang="scss">

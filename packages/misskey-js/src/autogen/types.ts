@@ -2779,6 +2779,15 @@ export type paths = {
      */
     post: operations['notifications/create'];
   };
+  '/notifications/flush': {
+    /**
+     * notifications/flush
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:notifications*
+     */
+    post: operations['notifications/flush'];
+  };
   '/notifications/mark-all-as-read': {
     /**
      * notifications/mark-all-as-read
@@ -3597,7 +3606,9 @@ export type components = {
         faviconUrl: string | null;
         themeColor: string | null;
       };
-      emojis: Record<string, never>;
+      emojis: {
+        [key: string]: string;
+      };
       /** @enum {string} */
       onlineStatus: 'unknown' | 'online' | 'active' | 'offline';
       badgeRoles?: ({
@@ -3705,42 +3716,132 @@ export type components = {
       hardMutedWords: string[][];
       mutedInstances: string[] | null;
       notificationRecieveConfig: {
-        app?: {
+        note?: OneOf<[{
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        quote?: {
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        reply?: {
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        follow?: OneOf<[{
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        follow?: {
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        renote?: {
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        mention?: OneOf<[{
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        mention?: {
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        reaction?: {
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        reply?: OneOf<[{
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        pollEnded?: {
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
-        receiveFollowRequest?: {
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        renote?: OneOf<[{
           /** @enum {string} */
-          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
-        };
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        quote?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        reaction?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        pollEnded?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        receiveFollowRequest?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        followRequestAccepted?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        roleAssigned?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        achievementEarned?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        app?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        test?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
       };
       emailNotificationTypes: string[];
       achievements: {
@@ -3895,6 +3996,7 @@ export type components = {
       reactions: {
         [key: string]: number;
       };
+      reactionCount: number;
       renoteCount: number;
       repliesCount: number;
       uri?: string;
@@ -4341,6 +4443,8 @@ export type components = {
       localOnly: boolean;
       notify: boolean;
       /** @default false */
+      excludeBots: boolean;
+      /** @default false */
       withReplies: boolean;
       withFile: boolean;
       isActive: boolean;
@@ -4399,6 +4503,7 @@ export type components = {
       infoUpdatedAt: string | null;
       /** Format: date-time */
       latestRequestReceivedAt: string | null;
+      moderationNote?: string | null;
     };
     GalleryPost: {
       /**
@@ -4472,6 +4577,46 @@ export type components = {
       headers: Record<string, never>;
       success: boolean;
     };
+    RoleCondFormulaLogics: {
+      id: string;
+      /** @enum {string} */
+      type: 'and' | 'or';
+      values: components['schemas']['RoleCondFormulaValue'][];
+    };
+    RoleCondFormulaValueNot: {
+      id: string;
+      /** @enum {string} */
+      type: 'not';
+      value: components['schemas']['RoleCondFormulaValue'];
+    };
+    RoleCondFormulaValueIsLocalOrRemote: {
+      id: string;
+      /** @enum {string} */
+      type: 'isLocal' | 'isRemote';
+    };
+    RoleCondFormulaValueAssignedRole: {
+      id: string;
+      /** @enum {string} */
+      type: 'roleAssignedTo';
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      roleId: string;
+    };
+    RoleCondFormulaValueCreated: {
+      id: string;
+      /** @enum {string} */
+      type: 'createdLessThan' | 'createdMoreThan';
+      sec: number;
+    };
+    RoleCondFormulaFollowersOrFollowingOrNotes: {
+      id: string;
+      /** @enum {string} */
+      type: 'followersLessThanOrEq' | 'followersMoreThanOrEq' | 'followingLessThanOrEq' | 'followingMoreThanOrEq' | 'notesLessThanOrEq' | 'notesMoreThanOrEq';
+      value: number;
+    };
+    RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueNot'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueAssignedRole'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
     RoleLite: {
       /**
        * Format: id
@@ -4498,7 +4643,7 @@ export type components = {
       updatedAt: string;
       /** @enum {string} */
       target: 'manual' | 'conditional';
-      condFormula: Record<string, never>;
+      condFormula: components['schemas']['RoleCondFormulaValue'];
       /** @example false */
       isPublic: boolean;
       /** @example false */
@@ -4520,6 +4665,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      mentionLimit: number;
       canInvite: boolean;
       inviteLimit: number;
       inviteLimitCycle: number;
@@ -4557,11 +4703,11 @@ export type components = {
       user1Id: string;
       /** Format: id */
       user2Id: string;
-      user1: components['schemas']['User'];
-      user2: components['schemas']['User'];
+      user1: components['schemas']['UserLite'];
+      user2: components['schemas']['UserLite'];
       /** Format: id */
       winnerId: string | null;
-      winner: components['schemas']['User'] | null;
+      winner: components['schemas']['UserLite'] | null;
       /** Format: id */
       surrenderedUserId: string | null;
       /** Format: id */
@@ -4593,11 +4739,11 @@ export type components = {
       user1Id: string;
       /** Format: id */
       user2Id: string;
-      user1: components['schemas']['User'];
-      user2: components['schemas']['User'];
+      user1: components['schemas']['UserLite'];
+      user2: components['schemas']['UserLite'];
       /** Format: id */
       winnerId: string | null;
-      winner: components['schemas']['User'] | null;
+      winner: components['schemas']['UserLite'] | null;
       /** Format: id */
       surrenderedUserId: string | null;
       /** Format: id */
@@ -4609,9 +4755,100 @@ export type components = {
       canPutEverywhere: boolean;
       loopedBoard: boolean;
       timeLimitForEachTurn: number;
-      logs: unknown[][];
+      logs: number[][];
       map: string[];
     };
+    MetaLite: {
+      maintainerName: string | null;
+      maintainerEmail: string | null;
+      version: string;
+      providesTarball: boolean;
+      name: string | null;
+      shortName: string | null;
+      /**
+       * Format: url
+       * @example https://misskey.example.com
+       */
+      uri: string;
+      description: string | null;
+      langs: string[];
+      tosUrl: string | null;
+      /** @default https://github.com/misskey-dev/misskey */
+      repositoryUrl: string | null;
+      /** @default https://github.com/misskey-dev/misskey/issues/new */
+      feedbackUrl: string | null;
+      defaultDarkTheme: string | null;
+      defaultLightTheme: string | null;
+      disableRegistration: boolean;
+      emailRequiredForSignup: boolean;
+      enableHcaptcha: boolean;
+      hcaptchaSiteKey: string | null;
+      enableMcaptcha: boolean;
+      mcaptchaSiteKey: string | null;
+      mcaptchaInstanceUrl: string | null;
+      enableRecaptcha: boolean;
+      recaptchaSiteKey: string | null;
+      enableTurnstile: boolean;
+      turnstileSiteKey: string | null;
+      swPublickey: string | null;
+      /** @default /assets/ai.png */
+      mascotImageUrl: string;
+      bannerUrl: string | null;
+      serverErrorImageUrl: string | null;
+      infoImageUrl: string | null;
+      notFoundImageUrl: string | null;
+      iconUrl: string | null;
+      maxNoteTextLength: number;
+      ads: {
+          /**
+           * Format: id
+           * @example xxxxxxxxxx
+           */
+          id: string;
+          /** Format: url */
+          url: string;
+          place: string;
+          ratio: number;
+          /** Format: url */
+          imageUrl: string;
+          dayOfWeek: number;
+        }[];
+      /** @default 0 */
+      notesPerOneAd: number;
+      enableEmail: boolean;
+      enableServiceWorker: boolean;
+      translatorAvailable: boolean;
+      mediaProxy: string;
+      enableUrlPreview: boolean;
+      backgroundImageUrl: string | null;
+      impressumUrl: string | null;
+      logoImageUrl: string | null;
+      privacyPolicyUrl: string | null;
+      serverRules: string[];
+      themeColor: string | null;
+      policies: components['schemas']['RolePolicies'];
+    };
+    MetaDetailedOnly: {
+      features?: {
+        registration: boolean;
+        emailRequiredForSignup: boolean;
+        localTimeline: boolean;
+        globalTimeline: boolean;
+        hcaptcha: boolean;
+        turnstile: boolean;
+        recaptcha: boolean;
+        objectStorage: boolean;
+        serviceWorker: boolean;
+        /** @default true */
+        miauth?: boolean;
+      };
+      proxyAccountName: string | null;
+      /** @example false */
+      requireSetup: boolean;
+      cacheRemoteFiles: boolean;
+      cacheRemoteSensitiveFiles: boolean;
+    };
+    MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
   };
   responses: never;
   parameters: never;
@@ -4668,6 +4905,7 @@ export type operations = {
             hiddenTags: string[];
             blockedHosts: string[];
             sensitiveWords: string[];
+            prohibitedWords: string[];
             bannedEmailDomains?: string[];
             preservedUsernames: string[];
             hcaptchaSecretKey: string | null;
@@ -4733,12 +4971,22 @@ export type operations = {
             shortName: string | null;
             objectStorageS3ForcePathStyle: boolean;
             privacyPolicyUrl: string | null;
-            repositoryUrl: string;
+            repositoryUrl: string | null;
+            /**
+             * @deprecated
+             * @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead.
+             */
             summalyProxy: string | null;
             themeColor: string | null;
             tosUrl: string | null;
             uri: string;
             version: string;
+            urlPreviewEnabled: boolean;
+            urlPreviewTimeout: number;
+            urlPreviewMaximumContentLength: number;
+            urlPreviewRequireContentLength: boolean;
+            urlPreviewUserAgent: string | null;
+            urlPreviewSummaryProxyUrl: string | null;
           };
         };
       };
@@ -6136,7 +6384,12 @@ export type operations = {
             size: number;
             comment: string | null;
             blurhash: string | null;
-            properties: Record<string, never>;
+            properties: {
+              width?: number;
+              height?: number;
+              orientation?: number;
+              avgColor?: string;
+            };
             /** @example true */
             storedInternal: boolean | null;
             /** Format: url */
@@ -6268,9 +6521,11 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['EmojiDetailed'];
+        };
       };
       /** @description Client error */
       400: {
@@ -6881,13 +7136,13 @@ export type operations = {
       content: {
         'application/json': {
           /** Format: misskey:id */
-          id: string;
-          name: string;
+          id?: string;
+          name?: string;
           /** Format: misskey:id */
           fileId?: string;
           /** @description Use `null` to reset the category. */
           category?: string | null;
-          aliases: string[];
+          aliases?: string[];
           license?: string | null;
           isSensitive?: boolean;
           localOnly?: boolean;
@@ -7096,7 +7351,8 @@ export type operations = {
       content: {
         'application/json': {
           host: string;
-          isSuspended: boolean;
+          isSuspended?: boolean;
+          moderationNote?: string;
         };
       };
     };
@@ -7197,7 +7453,12 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            [key: string]: {
+              count: number;
+              size: number;
+            };
+          };
         };
       };
       /** @description Client error */
@@ -8193,7 +8454,162 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            email: string | null;
+            emailVerified: boolean;
+            autoAcceptFollowed: boolean;
+            noCrawle: boolean;
+            preventAiLearning: boolean;
+            alwaysMarkNsfw: boolean;
+            autoSensitive: boolean;
+            carefulBot: boolean;
+            injectFeaturedNote: boolean;
+            receiveAnnouncementEmail: boolean;
+            mutedWords: (string | string[])[];
+            mutedInstances: string[];
+            notificationRecieveConfig: {
+              note?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              follow?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              mention?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              reply?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              renote?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              quote?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              reaction?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              pollEnded?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              receiveFollowRequest?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              followRequestAccepted?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              roleAssigned?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              achievementEarned?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              app?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              test?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+            };
+            isModerator: boolean;
+            isSilenced: boolean;
+            isSuspended: boolean;
+            isHibernated: boolean;
+            lastActiveDate: string | null;
+            moderationNote: string;
+            signins: components['schemas']['Signin'][];
+            policies: components['schemas']['RolePolicies'];
+            roles: components['schemas']['Role'][];
+            roleAssigns: ({
+                createdAt: string;
+                expiresAt: string | null;
+                roleId: string;
+              })[];
+          };
         };
       };
       /** @description Client error */
@@ -8422,6 +8838,7 @@ export type operations = {
           hiddenTags?: string[] | null;
           blockedHosts?: string[] | null;
           sensitiveWords?: string[] | null;
+          prohibitedWords?: string[] | null;
           themeColor?: string | null;
           mascotImageUrl?: string | null;
           bannerUrl?: string | null;
@@ -8465,7 +8882,6 @@ export type operations = {
           maintainerName?: string | null;
           maintainerEmail?: string | null;
           langs?: string[];
-          summalyProxy?: string | null;
           deeplAuthKey?: string | null;
           deeplIsPro?: boolean;
           enableEmail?: boolean;
@@ -8479,8 +8895,8 @@ export type operations = {
           swPublicKey?: string | null;
           swPrivateKey?: string | null;
           tosUrl?: string | null;
-          repositoryUrl?: string;
-          feedbackUrl?: string;
+          repositoryUrl?: string | null;
+          feedbackUrl?: string | null;
           impressumUrl?: string | null;
           privacyPolicyUrl?: string | null;
           useObjectStorage?: boolean;
@@ -8519,6 +8935,14 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
+          summalyProxy?: string | null;
+          urlPreviewEnabled?: boolean;
+          urlPreviewTimeout?: number;
+          urlPreviewMaximumContentLength?: number;
+          urlPreviewRequireContentLength?: boolean;
+          urlPreviewUserAgent?: string | null;
+          urlPreviewSummaryProxyUrl?: string | null;
         };
       };
     };
@@ -8575,11 +8999,9 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (with results) */
-      200: {
-        content: {
-          'application/json': unknown;
-        };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {
@@ -9261,6 +9683,7 @@ export type operations = {
           users: string[];
           caseSensitive: boolean;
           localOnly?: boolean;
+          excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
           notify: boolean;
@@ -9532,19 +9955,20 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           antennaId: string;
-          name: string;
+          name?: string;
           /** @enum {string} */
-          src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+          src?: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
           /** Format: misskey:id */
           userListId?: string | null;
-          keywords: string[][];
-          excludeKeywords: string[][];
-          users: string[];
-          caseSensitive: boolean;
+          keywords?: string[][];
+          excludeKeywords?: string[][];
+          users?: string[];
+          caseSensitive?: boolean;
           localOnly?: boolean;
-          withReplies: boolean;
-          withFile: boolean;
-          notify: boolean;
+          excludeBots?: boolean;
+          withReplies?: boolean;
+          withFile?: boolean;
+          notify?: boolean;
         };
       };
     };
@@ -15574,9 +15998,13 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            backupCodes: string[];
+          };
+        };
       };
       /** @description Client error */
       400: {
@@ -15744,7 +16172,7 @@ export type operations = {
         content: {
           'application/json': {
             rp: {
-              id: string | null;
+              id?: string;
             };
             user: {
               id: string;
@@ -16055,11 +16483,11 @@ export type operations = {
           'application/json': {
               /** Format: misskey:id */
               id: string;
-              name: string;
+              name?: string;
               /** Format: date-time */
               createdAt: string;
               /** Format: date-time */
-              lastUsedAt: string;
+              lastUsedAt?: string;
               permission: string[];
             }[];
         };
@@ -16129,7 +16557,7 @@ export type operations = {
               name: string;
               callbackUrl: string | null;
               permission: string[];
-              isAuthorized: boolean;
+              isAuthorized?: boolean;
             })[];
         };
       };
@@ -17302,8 +17730,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
@@ -17750,7 +18178,10 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            updatedAt: string;
+            value: unknown;
+          };
         };
       };
       /** @description Client error */
@@ -17861,7 +18292,9 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            [key: string]: string;
+          };
         };
       };
       /** @description Client error */
@@ -17913,9 +18346,11 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': string[];
+        };
       };
       /** @description Client error */
       400: {
@@ -18392,7 +18827,134 @@ export type operations = {
           mutedWords?: (string[] | string)[];
           hardMutedWords?: (string[] | string)[];
           mutedInstances?: string[];
-          notificationRecieveConfig?: Record<string, never>;
+          notificationRecieveConfig?: {
+            note?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            follow?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            mention?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            reply?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            renote?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            quote?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            reaction?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            pollEnded?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            receiveFollowRequest?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            followRequestAccepted?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            roleAssigned?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            achievementEarned?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            app?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            test?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+          };
           emailNotificationTypes?: string[];
           alsoKnownAs?: string[];
         };
@@ -19032,90 +19594,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-            maintainerName: string | null;
-            maintainerEmail: string | null;
-            version: string;
-            name: string;
-            shortName: string | null;
-            /**
-             * Format: url
-             * @example https://misskey.example.com
-             */
-            uri: string;
-            description: string | null;
-            langs: string[];
-            tosUrl: string | null;
-            /** @default https://github.com/misskey-dev/misskey */
-            repositoryUrl: string;
-            /** @default https://github.com/misskey-dev/misskey/issues/new */
-            feedbackUrl: string;
-            defaultDarkTheme: string | null;
-            defaultLightTheme: string | null;
-            disableRegistration: boolean;
-            cacheRemoteFiles: boolean;
-            cacheRemoteSensitiveFiles: boolean;
-            emailRequiredForSignup: boolean;
-            enableHcaptcha: boolean;
-            hcaptchaSiteKey: string | null;
-            enableMcaptcha: boolean;
-            mcaptchaSiteKey: string | null;
-            mcaptchaInstanceUrl: string | null;
-            enableRecaptcha: boolean;
-            recaptchaSiteKey: string | null;
-            enableTurnstile: boolean;
-            turnstileSiteKey: string | null;
-            swPublickey: string | null;
-            /** @default /assets/ai.png */
-            mascotImageUrl: string;
-            bannerUrl: string;
-            serverErrorImageUrl: string | null;
-            infoImageUrl: string | null;
-            notFoundImageUrl: string | null;
-            iconUrl: string | null;
-            maxNoteTextLength: number;
-            ads: {
-                /**
-                 * Format: id
-                 * @example xxxxxxxxxx
-                 */
-                id: string;
-                /** Format: url */
-                url: string;
-                place: string;
-                ratio: number;
-                /** Format: url */
-                imageUrl: string;
-                dayOfWeek: number;
-              }[];
-            /** @default 0 */
-            notesPerOneAd: number;
-            /** @example false */
-            requireSetup: boolean;
-            enableEmail: boolean;
-            enableServiceWorker: boolean;
-            translatorAvailable: boolean;
-            proxyAccountName: string | null;
-            mediaProxy: string;
-            features?: {
-              registration: boolean;
-              localTimeline: boolean;
-              globalTimeline: boolean;
-              hcaptcha: boolean;
-              recaptcha: boolean;
-              objectStorage: boolean;
-              serviceWorker: boolean;
-              /** @default true */
-              miauth?: boolean;
-            };
-            backgroundImageUrl: string | null;
-            impressumUrl: string | null;
-            logoImageUrl: string | null;
-            privacyPolicyUrl: string | null;
-            serverRules: string[];
-            themeColor: string | null;
-            policies: components['schemas']['RolePolicies'];
-          };
+          'application/json': components['schemas']['MetaLite'] | components['schemas']['MetaDetailed'];
         };
       };
       /** @description Client error */
@@ -21681,6 +22160,50 @@ export type operations = {
     };
   };
   /**
+   * notifications/flush
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:notifications*
+   */
+  'notifications/flush': {
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * notifications/mark-all-as-read
    * @description No description provided.
    *
@@ -22254,6 +22777,11 @@ export type operations = {
           summary: string;
           script: string;
           permissions: string[];
+          /**
+           * @default public
+           * @enum {string}
+           */
+          visibility?: 'public' | 'private';
         };
       };
     };
@@ -22570,10 +23098,10 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           flashId: string;
-          title: string;
-          summary: string;
-          script: string;
-          permissions: string[];
+          title?: string;
+          summary?: string;
+          script?: string;
+          permissions?: string[];
           /** @enum {string} */
           visibility?: 'public' | 'private';
         };
@@ -23645,12 +24173,12 @@ export type operations = {
         content: {
           'application/json': {
             /** Format: misskey:id */
-            id: string;
+            id?: string;
             required: boolean;
-            string: string;
-            default: string;
+            string?: string;
+            default?: string;
             /** @default hello */
-            nullableDefault: string | null;
+            nullableDefault?: string | null;
           };
         };
       };
@@ -25761,18 +26289,16 @@ export type operations = {
         'application/json': {
           score: number;
           seed: string;
-          logs: unknown[];
+          logs: number[][];
           gameMode: string;
           gameVersion: number;
         };
       };
     };
     responses: {
-      /** @description OK (with results) */
-      200: {
-        content: {
-          'application/json': unknown;
-        };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {
@@ -25834,7 +26360,7 @@ export type operations = {
               /** Format: misskey:id */
               id: string;
               score: number;
-              user: components['schemas']['UserLite'];
+              user?: components['schemas']['UserLite'];
             }[];
         };
       };
@@ -25886,11 +26412,9 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (with results) */
-      200: {
-        content: {
-          'application/json': unknown;
-        };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {
@@ -26007,8 +26531,12 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': unknown;
+          'application/json': components['schemas']['ReversiGameDetailed'];
         };
+      };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {

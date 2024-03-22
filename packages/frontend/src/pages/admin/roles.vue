@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -46,6 +46,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSwitch v-model="policies.canPublicNote">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
+							<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
+							<template #suffix>{{ policies.mentionLimit }}</template>
+							<MkInput v-model="policies.mentionLimit" type="number">
+							</MkInput>
 						</MkFolder>
 
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
@@ -270,10 +277,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.roles,
 	icon: 'ti ti-badges',
-})));
+}));
 </script>
 
 <style lang="scss" module>

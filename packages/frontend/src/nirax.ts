@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -373,7 +373,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		this.currentRoute.value = res.route;
 		this.currentKey = res.route.globalCacheKey ?? key ?? path;
 
-		if (emitChange) {
+		if (emitChange && res.route.path !== '/:(*)') {
 			this.emit('change', {
 				beforePath,
 				path,
@@ -408,13 +408,17 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			if (cancel) return;
 		}
 		const res = this.navigate(path, null);
-		this.emit('push', {
-			beforePath,
-			path: res._parsedRoute.fullPath,
-			route: res.route,
-			props: res.props,
-			key: this.currentKey,
-		});
+		if (res.route.path === '/:(*)') {
+			location.href = path;
+		} else {
+			this.emit('push', {
+				beforePath,
+				path: res._parsedRoute.fullPath,
+				route: res.route,
+				props: res.props,
+				key: this.currentKey,
+			});
+		}
 	}
 
 	public replace(path: string, key?: string | null) {

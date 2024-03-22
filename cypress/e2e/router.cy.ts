@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 describe('Router transition', () => {
 	describe('Redirect', () => {
 		// サーバの初期化。ルートのテストに関しては各describeごとに1度だけ実行で十分だと思う（使いまわした方が早い）
@@ -14,7 +19,7 @@ describe('Router transition', () => {
 
 			// アカウント初期設定ウィザード
 			// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-			cy.get('[data-cy-user-setup] [data-cy-modal-window-close]', { timeout: 12000 }).click();
+			cy.get('[data-cy-user-setup] [data-cy-modal-window-close]', { timeout: 30000 }).click();
 			cy.wait(500);
 			cy.get('[data-cy-modal-dialog-ok]').click();
 		});

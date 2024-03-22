@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -108,7 +108,7 @@ export class NoteEntityService implements OnModuleInit {
 				hide = false;
 			} else {
 				// フォロワーかどうか
-				const isFollowing = await this.followingsRepository.exist({
+				const isFollowing = await this.followingsRepository.exists({
 					where: {
 						followeeId: packedNote.userId,
 						followerId: meId,
@@ -333,6 +333,7 @@ export class NoteEntityService implements OnModuleInit {
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
+			reactionCount: Object.values(note.reactions).reduce((a, b) => a + b, 0),
 			reactions: this.reactionService.convertLegacyReactions(note.reactions),
 			reactionEmojis: this.customEmojiService.populateEmojis(reactionEmojiNames, host),
 			reactionAndUserPairCache: opts.withReactionAndUserPairCache ? note.reactionAndUserPairCache : undefined,
