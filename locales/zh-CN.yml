@@ -1238,6 +1238,7 @@ _bubbleGame:
     maxChain: "最高连击数"
     yen: "{yen} 日元"
     estimatedQty: "约 {qty} 个"
+    scoreSweets: "相当于 {onigiriQtyWithUnit} 饭团"
   _howToPlay:
     section1: "对准位置将Emoji投入盒子。"
     section2: "相同的Emoji相互接触合成后会得到新的Emoji，以此获得分数。"
@@ -2513,6 +2514,7 @@ _reversi:
   allGames: "所有对局"
   ended: "结束"
   playing: "对局中"
+  isLlotheo: "落子少的一方获胜（又名奥赛罗）"
   canPutEverywhere: "无限制放置模式"
   timeLimitForEachTurn: "1回合的时间限制"
   freeMatch: "自由匹配"
