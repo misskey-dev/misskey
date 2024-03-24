@@ -57,6 +57,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #value>{{ instance.maintainerEmail }}</template>
 							</MkKeyValue>
 						</FormSplit>
+						<FormLink to="https://portal.shahu.ski" external>
+							<template #icon><i class="ti ti-info-circle"></i></template>
+							{{ i18n.ts.shahuPortal }}
+						</FormLink>
 						<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>
 							<template #icon><i class="ti ti-user-shield"></i></template>
 							{{ i18n.ts.impressum }}
