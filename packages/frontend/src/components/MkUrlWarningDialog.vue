@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.icon">
 				<i :class="$style.iconInner" class="ti ti-alert-triangle"></i>
 			</div>
-			<header :class="$style.title">{{ i18n.ts._urlWarning.title }}</header>
-			<div><Mfm :text="i18n.ts._urlWarning.description"/></div>
+			<header :class="$style.title">{{ i18n.ts._externalNavigationWarning.title }}</header>
+			<div><Mfm :text="i18n.ts._externalNavigationWarning.description"/></div>
 			<div class="_monospace" :class="$style.urlAddress">{{ url }}</div>
 			<div>
-				<MkSwitch v-model="trustThisDomain">{{ i18n.tsx._urlWarning.trustThisDomain({ domain }) }}</MkSwitch>
+				<MkSwitch v-model="trustThisDomain">{{ i18n.tsx._externalNavigationWarning.trustThisDomain({ domain }) }}</MkSwitch>
 			</div>
 		</div>
 		<div :class="$style.buttons">

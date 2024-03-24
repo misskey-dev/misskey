@@ -9842,7 +9842,7 @@ export interface Locale extends ILocale {
          */
         "summaryProxyDescription2": string;
     };
-    "_urlWarning": {
+    "_externalNavigationWarning": {
         /**
          * 外部サイトに移動します
          */
