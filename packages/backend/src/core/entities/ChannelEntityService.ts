@@ -95,6 +95,7 @@ export class ChannelEntityService {
 
 			...(detailed ? {
 				pinnedNotes: (await this.noteEntityService.packMany(pinnedNotes, me)).sort((a, b) => channel.pinnedNoteIds.indexOf(a.id) - channel.pinnedNoteIds.indexOf(b.id)),
+				announcement: channel.announcement,
 			} : {}),
 		};
 	}

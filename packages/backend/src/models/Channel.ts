@@ -64,6 +64,12 @@ export class MiChannel {
 	public pinnedNoteIds: string[];
 
 	@Column('varchar', {
+		length: 2048,
+		nullable: true,
+	})
+	public announcement: string | null;
+
+	@Column('varchar', {
 		length: 16,
 		default: '#86b300',
 	})

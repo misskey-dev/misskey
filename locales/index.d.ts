@@ -4940,6 +4940,10 @@ export interface Locale extends ILocale {
      * このノートは{time}に削除されます
      */
     "noteDeletationAt": ParameterizedString<"time">;
+    /**
+     * このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。
+     */
+    "channelAnnouncementDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方

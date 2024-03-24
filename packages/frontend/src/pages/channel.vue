@@ -36,6 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="channel && tab === 'timeline'" key="timeline" class="_gaps">
 				<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
 
+				<MkInfo v-if="channel.announcement" :class="$style.clickable" @click="showAnnouncement">{{ channel.announcement.split('\n')[0] }} ({{ i18n.ts.clickToShow }})</MkInfo>
+
 				<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 				<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
@@ -240,6 +242,15 @@ const headerActions = computed(() => {
 	}
 });
 
+function showAnnouncement() {
+	if (!channel.value?.announcement) return;
+	const announce = channel.value.announcement.split('\n');
+	os.alert({
+		title: announce.shift(),
+		text: announce.join('\n'),
+	});
+}
+
 const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
@@ -337,5 +348,9 @@ definePageMetadata(() => ({
 	font-weight: bold;
 	font-size: 1em;
 	padding: 4px 7px;
+}
+
+.clickable {
+	cursor: pointer;
 }
 </style>

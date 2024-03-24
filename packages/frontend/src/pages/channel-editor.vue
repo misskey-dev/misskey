@@ -16,6 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
+			<MkTextarea v-model="announcement" mfmAutocomplete :mfmPreview="true">
+				<template #label>{{ i18n.ts.announcements }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<template #caption>{{ i18n.ts.channelAnnouncementDescription }}</template>
+			</MkTextarea>
+
 			<MkColorInput v-model="color">
 				<template #label>{{ i18n.ts.color }}</template>
 			</MkColorInput>
@@ -101,6 +106,7 @@ const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
 const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
+const announcement = ref<string | null>(null);
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {
@@ -127,6 +133,7 @@ async function fetchChannel() {
 	pinnedNotes.value = channel.value.pinnedNoteIds.map(id => ({
 		id,
 	}));
+	announcement.value = channel.value.announcement;
 	color.value = channel.value.color;
 	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
 }
@@ -156,6 +163,7 @@ function save() {
 		description: description.value,
 		bannerId: bannerId.value,
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
+		announcement: announcement.value,
 		color: color.value,
 		isSensitive: isSensitive.value,
 		allowRenoteToExternal: allowRenoteToExternal.value,

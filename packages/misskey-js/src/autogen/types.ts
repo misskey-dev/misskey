@@ -4409,6 +4409,7 @@ export type components = {
       isFollowing?: boolean;
       isFavorited?: boolean;
       pinnedNotes?: components['schemas']['Note'][];
+      annoucement: string | null;
     };
     QueueCount: {
       waiting: number;
@@ -11109,6 +11110,7 @@ export type operations = {
           bannerId?: string | null;
           isArchived?: boolean | null;
           pinnedNoteIds?: string[];
+          announcement?: string | null;
           color?: string;
           isSensitive?: boolean | null;
           allowRenoteToExternal?: boolean | null;
