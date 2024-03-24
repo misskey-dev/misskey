@@ -1223,6 +1223,8 @@ enableHorizontalSwipe: "Swipe to switch tabs"
 loading: "Loading"
 surrender: "Cancel"
 gameRetry: "Retry"
+scheduledNoteDelete: "Scheduled note deletion"
+noteDeletationAt: "This note will be deleted at {time}."
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"

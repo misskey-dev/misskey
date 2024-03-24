@@ -4917,14 +4917,6 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
-     * すぐ消す
-     */
-    "scheduledNoteDelete": string;
-    /**
-     * このノートは{time}に消去されます
-     */
-    "noteDeletationAt": ParameterizedString<"time">;
-		/**
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
@@ -4936,6 +4928,14 @@ export interface Locale extends ILocale {
      * バックアップコードを使う
      */
     "useBackupCode": string;
+    /**
+     * すぐ消す
+     */
+    "scheduledNoteDelete": string;
+    /**
+     * このノートは{time}に削除されます
+     */
+    "noteDeletationAt": ParameterizedString<"time">;
     "_bubbleGame": {
         /**
          * 遊び方
