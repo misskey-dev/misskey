@@ -153,7 +153,7 @@ export const paramDef = {
 			type: 'string', nullable: true,
 			description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
 		},
-		wellKnownWebsites: {
+		trustedLinkUrlPatterns: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
 			},
@@ -208,8 +208,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 			}
 			
-			if (Array.isArray(ps.wellKnownWebsites)) {
-				set.wellKnownWebsites = ps.wellKnownWebsites.filter(Boolean);
+			if (Array.isArray(ps.trustedLinkUrlPatterns)) {
+				set.trustedLinkUrlPatterns = ps.trustedLinkUrlPatterns.filter(Boolean);
 			}
 
 			if (ps.themeColor !== undefined) {

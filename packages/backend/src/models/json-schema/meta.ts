@@ -186,7 +186,7 @@ export const packedMetaLiteSchema = {
 				},
 			},
 		},
-		wellKnownWebsites: {
+		trustedLinkUrlPatterns: {
 			type: 'array',
 			optional: false, nullable: false,
 			items: {

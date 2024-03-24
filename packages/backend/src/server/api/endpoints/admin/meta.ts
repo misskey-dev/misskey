@@ -371,7 +371,7 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
-			wellKnownWebsites: {
+			trustedLinkUrlPatterns: {
 				type: 'array',
 				optional: false, nullable: false,
 				items: {
@@ -609,7 +609,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
-				wellKnownWebsites: instance.wellKnownWebsites,
+				trustedLinkUrlPatterns: instance.trustedLinkUrlPatterns,
 				notesPerOneAd: instance.notesPerOneAd,
 				summalyProxy: instance.urlPreviewSummaryProxyUrl,
 				urlPreviewEnabled: instance.urlPreviewEnabled,

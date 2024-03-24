@@ -15,7 +15,7 @@ const isRegExp = /^\/(.+)\/(.*)$/;
 export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 	const domain = extractDomain.exec(url)?.[4];
 	const self = !domain || url.startsWith(local);
-	const isWellKnownWebsite = self || instance.wellKnownWebsites.some(expression => {
+	const isTrustedByInstance = self || instance.trustedLinkUrlPatterns.some(expression => {
 		const r = isRegExp.exec(expression);
 		if (r) {
 			return new RegExp(r[1], r[2]).test(url);
@@ -24,7 +24,7 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 	});
 	const isTrustedByUser = defaultStore.reactiveState.trustedDomains.value.includes(domain);
 
-	if (!self && !isWellKnownWebsite && !isTrustedByUser) {
+	if (!self && !isTrustedByInstance && !isTrustedByUser) {
 		ev.preventDefault();
 		ev.stopPropagation();
 

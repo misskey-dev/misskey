@@ -7,10 +7,10 @@ export class ExternalWebsiteWarn1711008460816 {
     name = 'ExternalWebsiteWarn1711008460816'
 
     async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" ADD "wellKnownWebsites" character varying(3072) array NOT NULL DEFAULT '{}'`);
+        await queryRunner.query(`ALTER TABLE "meta" ADD "trustedLinkUrlPatterns" character varying(3072) array NOT NULL DEFAULT '{}'`);
     }
 
     async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "wellKnownWebsites"`);
+        await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "trustedLinkUrlPatterns"`);
     }
 }

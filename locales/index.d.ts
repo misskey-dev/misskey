@@ -4815,11 +4815,11 @@ export interface Locale extends ILocale {
     /**
      * よく知られたウェブサイト
      */
-    "wellKnownWebsites": string;
+    "trustedLinkUrlPatterns": string;
     /**
      * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。
      */
-    "wellKnownWebsitesDescription": string;
+    "trustedLinkUrlPatternsDescription": string;
     /**
      * コード
      */
