@@ -4737,6 +4737,10 @@ export interface Locale extends ILocale {
      */
     "impressumUrl": string;
     /**
+     * しゃふすきーポータル
+     */
+    "shahuPortal": string;
+    /**
      * ドイツなどの一部の国と地域では表示が義務付けられています(Impressum)。
      */
     "impressumDescription": string;
