@@ -57,7 +57,7 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { MFM_TAGS, MFM_PARAMS } from '@/const.js';
-import { searchEmoji, EmojiDef } from '@/scripts/search-emoji.js';
+import { searchEmoji, searchEmojiExact, EmojiDef } from '@/scripts/search-emoji.js';
 
 export type CompleteInfo = {
 	user: {
@@ -282,13 +282,7 @@ function exec() {
 
 		emojis.value = searchEmoji(props.q, emojiDb.value);
 	} else if (props.type === 'emojiComplete') {
-		if (!props.q || props.q === '') {
-			// 最近使った絵文字をサジェスト
-			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => unicodeEmojiDB.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
-			return;
-		}
-
-		emojis.value = searchEmoji(props.q, unicodeEmojiDB.value);
+		emojis.value = searchEmojiExact(props.q, unicodeEmojiDB.value);
 	} else if (props.type === 'mfmTag') {
 		if (!props.q || props.q === '') {
 			mfmTags.value = MFM_TAGS;
