@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:autocomplete="autocomplete"
 			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
+			:inputmode="inputmode"
 			:step="step"
 			:list="id"
 			:min="min"
@@ -63,6 +64,7 @@ const props = defineProps<{
 	mfmAutocomplete?: boolean | SuggestionType[],
 	autocapitalize?: string;
 	spellcheck?: boolean;
+	inputmode?: 'none' | 'text' | 'search' | 'email' | 'url' | 'numeric' | 'tel' | 'decimal';
 	step?: any;
 	datalist?: string[];
 	min?: number;
