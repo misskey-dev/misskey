@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
@@ -21,6 +20,7 @@ import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { genRSAAndEd25519KeyPair } from '@/misc/gen-key-pair.js';
 
 @Injectable()
 export class SignupService {
@@ -93,22 +93,7 @@ export class SignupService {
 			}
 		}
 
-		const keyPair = await new Promise<string[]>((res, rej) =>
-			generateKeyPair('rsa', {
-				modulusLength: 2048,
-				publicKeyEncoding: {
-					type: 'spki',
-					format: 'pem',
-				},
-				privateKeyEncoding: {
-					type: 'pkcs8',
-					format: 'pem',
-					cipher: undefined,
-					passphrase: undefined,
-				},
-			}, (err, publicKey, privateKey) =>
-				err ? rej(err) : res([publicKey, privateKey]),
-			));
+		const keyPair = await genRSAAndEd25519KeyPair();
 
 		let account!: MiUser;
 
@@ -131,9 +116,8 @@ export class SignupService {
 			}));
 
 			await transactionalEntityManager.save(new MiUserKeypair({
-				publicKey: keyPair[0],
-				privateKey: keyPair[1],
 				userId: account.id,
+				...keyPair,
 			}));
 
 			await transactionalEntityManager.save(new MiUserProfile({

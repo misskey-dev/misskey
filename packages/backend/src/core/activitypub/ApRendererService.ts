@@ -22,7 +22,6 @@ import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
@@ -31,6 +30,7 @@ import { IdService } from '@/core/IdService.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class ApRendererService {
@@ -250,15 +250,15 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: MiLocalUser, key: MiUserKeypair, postfix?: string): IKey {
+	public renderKey(user: MiLocalUser, publicKey: string, postfix?: string): IKey {
 		return {
-			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
+			id: `${this.userEntityService.genLocalUserUri(user.id)}${postfix ?? '/publickey'}`,
 			type: 'Key',
 			owner: this.userEntityService.genLocalUserUri(user.id),
-			publicKeyPem: createPublicKey(key.publicKey).export({
+			publicKeyPem: createPublicKey(publicKey).export({
 				type: 'spki',
 				format: 'pem',
-			}),
+			}) as string,
 		};
 	}
 
@@ -498,7 +498,10 @@ export class ApRendererService {
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
 			discoverable: user.isExplorable,
-			publicKey: this.renderKey(user, keypair, '#main-key'),
+			publicKey: this.renderKey(user, keypair.publicKey, '#main-key'),
+			additionalPublicKeys: [
+				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key')] : []),
+			],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 		};
@@ -645,6 +648,7 @@ export class ApRendererService {
 					'_misskey_votes': 'misskey:_misskey_votes',
 					'_misskey_summary': 'misskey:_misskey_summary',
 					'isCat': 'misskey:isCat',
+					additionalPublicKeys: 'misskey:additionalPublicKeys',
 					// vcard
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
@@ -653,12 +657,10 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
-		const keypair = await this.userKeypairService.getUserKeypair(user.id);
-
+	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }, key: PrivateKeyWithPem): Promise<IActivity> {
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
+		activity = await ldSignature.signRsaSignature2017(activity, key.privateKeyPem, key.keyId);
 
 		return activity;
 	}
