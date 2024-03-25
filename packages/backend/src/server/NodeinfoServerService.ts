@@ -120,6 +120,7 @@ export class NodeinfoServerService {
 					enableMcaptcha: meta.enableMcaptcha,
 					enableTurnstile: meta.enableTurnstile,
 					maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
+					maxReactionsPerAccount: 128,
 					enableEmail: meta.enableEmail,
 					enableServiceWorker: meta.enableServiceWorker,
 					proxyAccountName: proxyAccount ? proxyAccount.username : null,
