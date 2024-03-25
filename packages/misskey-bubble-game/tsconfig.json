@@ -6,7 +6,7 @@
 		"moduleResolution": "nodenext",
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true,
+		"sourceMap": false,
 		"outDir": "./built/",
 		"removeComments": true,
 		"strict": true,
