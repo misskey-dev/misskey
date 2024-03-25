@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<div>{{ i18n.ts._2fa.step3Title }}</div>
-							<MkInput v-model="token" autocomplete="one-time-code"></MkInput>
+							<MkInput v-model="token" autocomplete="one-time-code" inputmode="numeric"></MkInput>
 							<div>{{ i18n.ts._2fa.step3 }}</div>
 						</div>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
