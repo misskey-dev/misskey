@@ -51,8 +51,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.buttons">
 			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCodeAsLink()"><i class="ti ti-copy"></i> {{ i18n.ts.copyLink }}</MkButton>
 			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
+    <div v-if="!invite.used && !isExpired">
+			<div :class="$style.label">{{ i18n.ts.qrcode }}</div>
+      <vue-qrcode :value="inviteUrl" :options="option" tag="img"></vue-qrcode>
+    </div>
 	</div>
 </MkFolder>
 </template>
@@ -65,6 +70,7 @@ import MkButton from '@/components/MkButton.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 
 const props = defineProps<{
 	invite: Misskey.entities.InviteCode;
@@ -79,6 +85,8 @@ const isExpired = computed(() => {
 	return props.invite.expiresAt && new Date(props.invite.expiresAt) < new Date();
 });
 
+const inviteUrl = `${(new URL(window.location.href)).origin}/?invite=${props.invite.code}`
+
 function deleteCode() {
 	os.apiWithDialog('invite/delete', {
 		inviteId: props.invite.id,
@@ -90,6 +98,12 @@ function copyInviteCode() {
 	copyToClipboard(props.invite.code);
 	os.success();
 }
+
+function copyInviteCodeAsLink() {
+	copyToClipboard(inviteUrl);
+	os.success();
+}
+
 </script>
 
 <style lang="scss" module>

@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XServerRules @done="isAcceptedServerRule = true" @cancel="dialog?.close()"/>
 			</template>
 			<template v-else>
-				<XSignup :autoSet="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending"/>
+				<XSignup :autoSet="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending" :initialInvitationCode="invitecodeParam"/>
 			</template>
 		</Transition>
 	</div>
@@ -54,6 +54,10 @@ const emit = defineEmits<{
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const isAcceptedServerRule = ref(false);
+
+// URLからinvitecodeパラメータを取得
+const urlParams = new URLSearchParams(window.location.search);
+const invitecodeParam = urlParams.get('invite') || '';
 
 function onSignup(res: Misskey.entities.SigninResponse) {
 	emit('done', res);

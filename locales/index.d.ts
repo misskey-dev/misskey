@@ -4912,6 +4912,10 @@ export interface Locale extends ILocale {
      * リトライ
      */
     "gameRetry": string;
+    /**
+     * QRコード
+     */
+    "qrcode": string;
     "_bubbleGame": {
         /**
          * 遊び方
