@@ -53,6 +53,7 @@ const buttonEl = shallowRef<HTMLElement>();
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
+const isCustomEmoji = computed(() => props.reaction.includes(':'));
 
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
@@ -77,7 +78,7 @@ async function toggleReaction() {
 		}
 		misskeyApi('notes/reactions/delete', {
 			noteId: props.note.id,
-      reaction: (isCustomEmoji.value) ? `:${emoji.value.name}:` : props.reaction,
+			reaction: (isCustomEmoji.value) ? `:${emojiName.value}:` : props.reaction,
 		});
 	} else {
 		sound.playMisskeySfx('reaction');
