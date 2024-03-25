@@ -4813,11 +4813,11 @@ export interface Locale extends ILocale {
      */
     "doReaction": string;
     /**
-     * よく知られたウェブサイト
+     * 外部サイトへのリンク警告 除外リスト
      */
     "trustedLinkUrlPatterns": string;
     /**
-     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。ドメイン名だけ書くと後方一致になります。
      */
     "trustedLinkUrlPatternsDescription": string;
     /**
