@@ -77,7 +77,7 @@ const fetch = () => {
 	}
 };
 
-const actualFetch = () => {
+function actualFetch() {
 	if ($i == null) {
 		users.value = [];
 		fetching.value = false;
@@ -93,12 +93,12 @@ const actualFetch = () => {
 		userId: $i.id,
 	}).then(res => {
 		users.value = res;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			// 早すぎるとチカチカする
 			fetching.value = false;
 		}, 100);
 	});
-};
+}
 
 useInterval(fetch, 1000 * 60, {
 	immediate: true,
