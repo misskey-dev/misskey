@@ -15,6 +15,7 @@ export default (input: string): string[] => {
 export const aliases = {
 	'esc': 'Escape',
 	'enter': ['Enter', 'NumpadEnter'],
+	'space': [' ', 'Spacebar'],
 	'up': 'ArrowUp',
 	'down': 'ArrowDown',
 	'left': 'ArrowLeft',
