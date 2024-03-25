@@ -78,7 +78,7 @@ const fetch = () => {
 };
 
 const actualFetch = () => {
-	if (!$i) {
+	if ($i == null) {
 		users.value = [];
 		fetching.value = false;
 		return;
