@@ -90,7 +90,6 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
-		summalyProxy: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
 		enableEmail: { type: 'boolean' },
@@ -150,6 +149,16 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		summalyProxy: {
+			type: 'string', nullable: true,
+			description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
+		},
+		urlPreviewEnabled: { type: 'boolean' },
+		urlPreviewTimeout: { type: 'integer' },
+		urlPreviewMaximumContentLength: { type: 'integer' },
+		urlPreviewRequireContentLength: { type: 'boolean' },
+		urlPreviewUserAgent: { type: 'string', nullable: true },
+		urlPreviewSummaryProxyUrl: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
@@ -351,10 +360,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.langs)) {
 				set.langs = ps.langs.filter(Boolean);
-			}
-
-			if (ps.summalyProxy !== undefined) {
-				set.summalyProxy = ps.summalyProxy;
 			}
 
 			if (ps.enableEmail !== undefined) {
@@ -579,6 +584,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.bannedEmailDomains !== undefined) {
 				set.bannedEmailDomains = ps.bannedEmailDomains;
+			}
+
+			if (ps.urlPreviewEnabled !== undefined) {
+				set.urlPreviewEnabled = ps.urlPreviewEnabled;
+			}
+
+			if (ps.urlPreviewTimeout !== undefined) {
+				set.urlPreviewTimeout = ps.urlPreviewTimeout;
+			}
+
+			if (ps.urlPreviewMaximumContentLength !== undefined) {
+				set.urlPreviewMaximumContentLength = ps.urlPreviewMaximumContentLength;
+			}
+
+			if (ps.urlPreviewRequireContentLength !== undefined) {
+				set.urlPreviewRequireContentLength = ps.urlPreviewRequireContentLength;
+			}
+
+			if (ps.urlPreviewUserAgent !== undefined) {
+				const value = (ps.urlPreviewUserAgent ?? '').trim();
+				set.urlPreviewUserAgent = value === '' ? null : ps.urlPreviewUserAgent;
+			}
+
+			if (ps.summalyProxy !== undefined || ps.urlPreviewSummaryProxyUrl !== undefined) {
+				const value = ((ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy) ?? '').trim();
+				set.urlPreviewSummaryProxyUrl = value === '' ? null : value;
 			}
 
 			const before = await this.metaService.fetch(true);

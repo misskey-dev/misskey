@@ -75,27 +75,31 @@ export async function mainBoot() {
 			mainRouter.push('/search');
 		},
 	};
-
-	if (defaultStore.state.enableSeasonalScreenEffect) {
-		const month = new Date().getMonth() + 1;
-		if (defaultStore.state.hemisphere === 'S') {
-			// ▼南半球
-			if (month === 7 || month === 8) {
-				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect({}).render();
+	try {
+		if (defaultStore.state.enableSeasonalScreenEffect) {
+			const month = new Date().getMonth() + 1;
+			if (defaultStore.state.hemisphere === 'S') {
+				// ▼南半球
+				if (month === 7 || month === 8) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				}
+			} else {
+				// ▼北半球
+				if (month === 12 || month === 1) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				} else if (month === 3 || month === 4) {
+					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SakuraEffect({
+						sakura: true,
+					}).render();
+				}
 			}
-		} else {
-			// ▼北半球
-			if (month === 12 || month === 1) {
-				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect({}).render();
-			} else if (month === 3 || month === 4) {
-				const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SakuraEffect({
-					sakura: true,
-				}).render();
-			}
-		}
+		}	
+	} catch (error) {
+		// console.error(error);
+		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
 	}
 
 	if ($i) {
