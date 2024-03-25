@@ -85,7 +85,7 @@ const isExpired = computed(() => {
 	return props.invite.expiresAt && new Date(props.invite.expiresAt) < new Date();
 });
 
-const inviteUrl = `${(new URL(window.location.href)).origin}/?invite=${props.invite.code}`
+const inviteUrl = `${(new URL(window.location.href)).origin}/?invite=${props.invite.code}`;
 
 function deleteCode() {
 	os.apiWithDialog('invite/delete', {
