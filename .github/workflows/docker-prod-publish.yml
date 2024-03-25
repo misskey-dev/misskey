@@ -1,4 +1,4 @@
-name: Build Misskey Image(development) for gchr.io
+name: Build Misskey Image(production) for gchr.io
 
 on:
   release:
