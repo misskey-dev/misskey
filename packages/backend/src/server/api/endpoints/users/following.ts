@@ -6,6 +6,7 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
+import { birthdaySchema } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
@@ -66,7 +67,7 @@ export const paramDef = {
 			description: 'The local host is represented with `null`.',
 		},
 
-		birthday: { type: 'string', nullable: true },
+		birthday: { ...birthdaySchema, nullable: true },
 	},
 	anyOf: [
 		{ required: ['userId'] },
@@ -127,9 +128,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.birthday) {
 				try {
-					const d = new Date(ps.birthday);
-					d.setHours(0, 0, 0, 0);
-					const birthday = `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+					const birthday = ps.birthday.substring(5, 10);
 					const birthdayUserQuery = this.userProfilesRepository.createQueryBuilder('user_profile');
 					birthdayUserQuery.select('user_profile.userId')
 						.where(`SUBSTR(user_profile.birthday, 6, 5) = '${birthday}'`);
