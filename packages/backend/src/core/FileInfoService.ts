@@ -56,8 +56,7 @@ export class FileInfoService {
 		private aiService: AiService,
 		private loggerService: LoggerService,
 	) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		this.logger = this.loggerService?.getLogger('file-info'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
+		this.logger = this.loggerService.getLogger('file-info');
 	}
 
 	/**
