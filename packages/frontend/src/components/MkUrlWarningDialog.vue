@@ -7,10 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')">
 	<div :class="$style.root" class="_gaps">
 		<div class="_gaps_s">
-			<div :class="$style.icon">
-				<i :class="$style.iconInner" class="ti ti-alert-triangle"></i>
+			<div :class="$style.header">
+				<div :class="$style.icon">
+					<i class="ti ti-alert-triangle"></i>
+				</div>
+				<div :class="$style.title">{{ i18n.ts._externalNavigationWarning.title }}</div>
 			</div>
-			<header :class="$style.title">{{ i18n.ts._externalNavigationWarning.title }}</header>
 			<div><Mfm :text="i18n.ts._externalNavigationWarning.description"/></div>
 			<div class="_monospace" :class="$style.urlAddress">{{ url }}</div>
 			<div>
@@ -96,19 +98,19 @@ onBeforeUnmount(() => {
 	min-width: 320px;
 	max-width: 480px;
 	box-sizing: border-box;
-	text-align: center;
 	background: var(--panel);
 	border-radius: 16px;
 }
 
-.icon {
-	font-size: 24px;
-	color: var(--warn);
+.header {
+	display: flex;
+	align-items: center;
+	gap: 0.75em;
 }
 
-.iconInner {
-	display: block;
-	margin: 0 auto;
+.icon {
+	font-size: 18px;
+	color: var(--warn);
 }
 
 .title {
