@@ -85,6 +85,7 @@ const importEmoji = async (emojiName) => {
 	if (!localCheckResponse) {
 		const emoji = (await misskeyApi('admin/emoji/list-remote', {
 			query: emojiName,
+			host: props.host,
 		})).find((_emoji) => _emoji.name === emojiName);
 		await os.apiWithDialog('admin/emoji/copy', {
 			emojiId: emoji.id,

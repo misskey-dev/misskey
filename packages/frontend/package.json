@@ -17,6 +17,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
+		"@chenfengyuan/vue-qrcode": "^2.0.0",
 		"@discordapp/twemoji": "15.0.2",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
