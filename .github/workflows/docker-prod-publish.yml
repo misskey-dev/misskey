@@ -3,6 +3,7 @@ name: Build Misskey Image(production) for gchr.io
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
