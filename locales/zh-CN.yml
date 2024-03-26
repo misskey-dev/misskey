@@ -2515,6 +2515,7 @@ _reversi:
   ended: "结束"
   playing: "对局中"
   isLlotheo: "落子少的一方获胜（又名奥赛罗）"
+  loopedMap: "循环棋盘"
   canPutEverywhere: "无限制放置模式"
   timeLimitForEachTurn: "1回合的时间限制"
   freeMatch: "自由匹配"
