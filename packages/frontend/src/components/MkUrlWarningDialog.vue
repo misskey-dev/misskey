@@ -13,15 +13,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.title">{{ i18n.ts._externalNavigationWarning.title }}</div>
 			</div>
-			<div><Mfm :text="i18n.ts._externalNavigationWarning.description"/></div>
+			<div><Mfm :text="i18n.tsx._externalNavigationWarning.description({ host: instanceName })"/></div>
 			<div class="_monospace" :class="$style.urlAddress">{{ url }}</div>
 			<div>
-				<MkSwitch v-model="trustThisDomain">{{ i18n.tsx._externalNavigationWarning.trustThisDomain({ domain }) }}</MkSwitch>
+				<MkSwitch v-model="trustThisDomain">{{ i18n.ts._externalNavigationWarning.trustThisDomain }}</MkSwitch>
 			</div>
 		</div>
 		<div :class="$style.buttons">
-			<MkButton data-cy-modal-dialog-ok inline primary rounded @click="ok">{{ i18n.ts.ok }}</MkButton>
 			<MkButton data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+			<MkButton data-cy-modal-dialog-ok inline primary rounded @click="ok"><i class="ti ti-external-link"></i> {{ i18n.ts.open }}</MkButton>
 		</div>
 	</div>
 </MkModal>
@@ -34,6 +34,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
+import { instanceName } from '@/config';
 
 type Result = string | number | true | null;
 
@@ -119,8 +120,8 @@ onBeforeUnmount(() => {
 }
 
 .urlAddress {
-	padding: var(--margin);
-	border-radius: calc(var(--radius) / 2);
+	padding: 10px 14px;
+	border-radius: 8px;
 	border: 1px solid var(--divider);
 	overflow-x: auto;
 	white-space: nowrap;
@@ -130,6 +131,6 @@ onBeforeUnmount(() => {
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
-	justify-content: center;
+	justify-content: right;
 }
 </style>

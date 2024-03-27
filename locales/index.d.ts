@@ -4936,6 +4936,10 @@ export interface Locale extends ILocale {
      * バックアップコードを使う
      */
     "useBackupCode": string;
+    /**
+     * 開く
+     */
+    "open": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -9848,14 +9852,13 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
-         * 別のサイトに移動しようとしています。
-         * リンク先の安全性を十分に確認した上で進んでください。
+         * {host}を離れて外部サイトに移動します
          */
-        "description": string;
+        "description": ParameterizedString<"host">;
         /**
-         * 今後{domain}のリンクを信頼する
+         * このデバイスで今後このドメインを信頼する
          */
-        "trustThisDomain": ParameterizedString<"domain">;
+        "trustThisDomain": string;
     };
 }
 declare const locales: {

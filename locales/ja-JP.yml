@@ -1230,6 +1230,7 @@ gameRetry: "リトライ"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
+open: "開く"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2624,5 +2625,5 @@ _urlPreviewSetting:
 
 _externalNavigationWarning:
   title: "外部サイトに移動します"
-  description: "別のサイトに移動しようとしています。\nリンク先の安全性を十分に確認した上で進んでください。"
-  trustThisDomain: "今後{domain}のリンクを信頼する"
+  description: "{host}を離れて外部サイトに移動します"
+  trustThisDomain: "このデバイスで今後このドメインを信頼する"
