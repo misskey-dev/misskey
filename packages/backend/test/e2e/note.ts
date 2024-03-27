@@ -475,14 +475,14 @@ describe('Note', () => {
 						value: true,
 					},
 				} as any,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 			assert.strictEqual(file.body!.isSensitive, false);
@@ -510,11 +510,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 	});
 
@@ -646,7 +646,7 @@ describe('Note', () => {
 				sensitiveWords: [
 					'test',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(sensitive.status, 204);
 
@@ -665,7 +665,7 @@ describe('Note', () => {
 				sensitiveWords: [
 					'/Test/i',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(sensitive.status, 204);
 
@@ -682,7 +682,7 @@ describe('Note', () => {
 				sensitiveWords: [
 					'Test hoge',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(sensitive.status, 204);
 
@@ -699,7 +699,7 @@ describe('Note', () => {
 				prohibitedWords: [
 					'test',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
@@ -718,7 +718,7 @@ describe('Note', () => {
 				prohibitedWords: [
 					'/Test/i',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
@@ -735,7 +735,7 @@ describe('Note', () => {
 				prohibitedWords: [
 					'Test hoge',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
@@ -752,7 +752,7 @@ describe('Note', () => {
 				prohibitedWords: [
 					'test',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
@@ -787,7 +787,7 @@ describe('Note', () => {
 						value: 0,
 					},
 				} as any,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
@@ -796,7 +796,7 @@ describe('Note', () => {
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 
@@ -812,11 +812,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 
 		test('ダイレクト投稿もエラーになる', async () => {
@@ -841,7 +841,7 @@ describe('Note', () => {
 						value: 0,
 					},
 				} as any,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
@@ -850,7 +850,7 @@ describe('Note', () => {
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 
@@ -868,11 +868,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 
 		test('ダイレクトの宛先とメンションが同じ場合は重複してカウントしない', async () => {
@@ -897,7 +897,7 @@ describe('Note', () => {
 						value: 1,
 					},
 				} as any,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
@@ -906,7 +906,7 @@ describe('Note', () => {
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 
@@ -923,11 +923,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 	});
 
