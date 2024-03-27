@@ -35,6 +35,7 @@
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
+- Fix: エンドポイント`notes/translate`のエラーを改善
 
 ## 2024.3.1
 
