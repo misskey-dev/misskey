@@ -5613,6 +5613,10 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * 開く
+     */
+    "open": string;
     "_compression": {
         "_quality": {
             /**
@@ -11579,14 +11583,13 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
-         * 別のサイトに移動しようとしています。
-         * リンク先の安全性を十分に確認した上で進んでください。
+         * {host}を離れて外部サイトに移動します
          */
-        "description": string;
+        "description": ParameterizedString<"host">;
         /**
-         * 今後{domain}のリンクを信頼する
+         * このデバイスで今後このドメインを信頼する
          */
-        "trustThisDomain": ParameterizedString<"domain">;
+        "trustThisDomain": string;
     };
     "_mediaControls": {
         /**
