@@ -527,15 +527,27 @@ export class FileServerService {
 		const isWebpublic = file.webpublicAccessKey === key;
 
 		if (!file.storedInternal) {
-			if (!(file.isLink && file.uri)) return '204';
-			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
-			return {
-				...result,
-				url: file.uri,
-				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
-				file,
-				filename: file.name,
-			};
+			if (file.isLink && file.uri) {
+				const result = await this.downloadAndDetectTypeFromUrl(file.uri);
+				return {
+					...result,
+					url: file.uri,
+					fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
+					file,
+					filename: file.name,
+				};
+			} else if (file.createdByMicropub) {
+				const result = await this.downloadAndDetectTypeFromUrl(file.url);
+				return {
+					...result,
+					url: file.url,
+					fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
+					file,
+					filename: file.name,
+				};
+			} else {
+				return '204';
+			}
 		}
 
 		const path = this.internalStorageService.resolvePath(key);

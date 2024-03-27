@@ -188,4 +188,15 @@ export class MiDriveFile {
 		length: 128, nullable: true,
 	})
 	public requestIp: string | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public downloadedFrom: string | null;
+
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public createdByMicropub: boolean;
 }

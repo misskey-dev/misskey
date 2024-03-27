@@ -68,6 +68,8 @@ type AddFileArgs = {
 	/** Extension to force */
 	ext?: string | null;
 
+	micropub?: boolean;
+	downloadedFrom?: string | null;
 	requestIp?: string | null;
 	requestHeaders?: Record<string, string> | null;
 };
@@ -453,6 +455,8 @@ export class DriveService {
 		url = null,
 		uri = null,
 		sensitive = null,
+		micropub = false,
+		downloadedFrom = null,
 		requestIp = null,
 		requestHeaders = null,
 		ext = null,
@@ -572,6 +576,8 @@ export class DriveService {
 		file.properties = properties;
 		file.blurhash = info.blurhash ?? null;
 		file.isLink = isLink;
+		file.createdByMicropub = micropub;
+		file.downloadedFrom = downloadedFrom;
 		file.requestIp = requestIp;
 		file.requestHeaders = requestHeaders;
 		file.maybeSensitive = info.sensitive;
