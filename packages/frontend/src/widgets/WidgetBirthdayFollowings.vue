@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-bdayfollowings">
 	<template #icon><i class="ti ti-cake"></i></template>
 	<template #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="actualFetch()"><i class="ti ti-refresh"></i></button></template>
 
 	<div :class="$style.bdayFRoot">
 		<MkLoading v-if="fetching"/>
@@ -53,7 +54,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const users = ref<Misskey.entities.FollowingFolloweePopulated[]>([]);
+const users = ref<Misskey.Endpoints['users/following']['res']>([]);
 const fetching = ref(true);
 let lastFetchedAt = '1970-01-01';
 
@@ -70,18 +71,34 @@ const fetch = () => {
 	now.setHours(0, 0, 0, 0);
 
 	if (now > lfAtD) {
-		misskeyApi('users/following', {
-			limit: 18,
-			birthday: now.toISOString(),
-			userId: $i.id,
-		}).then(res => {
-			users.value = res;
-			fetching.value = false;
-		});
+		actualFetch();
 
 		lastFetchedAt = now.toISOString();
 	}
 };
+
+function actualFetch() {
+	if ($i == null) {
+		users.value = [];
+		fetching.value = false;
+		return;
+	}
+
+	const now = new Date();
+	now.setHours(0, 0, 0, 0);
+	fetching.value = true;
+	misskeyApi('users/following', {
+		limit: 18,
+		birthday: `${now.getFullYear().toString().padStart(4, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`,
+		userId: $i.id,
+	}).then(res => {
+		users.value = res;
+		window.setTimeout(() => {
+			// 早すぎるとチカチカする
+			fetching.value = false;
+		}, 100);
+	});
+}
 
 useInterval(fetch, 1000 * 60, {
 	immediate: true,

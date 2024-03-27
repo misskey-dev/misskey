@@ -1,8 +1,14 @@
 ## Unreleased
 
+### Note
+- コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
-  * β版として公開のため、旧画面も引き続き利用可能です
+	* β版として公開のため、旧画面も引き続き利用可能です
+- Enhance: URLプレビューの有効化・無効化を設定できるように #13569
+- Enhance: アンテナでBotによるノートを除外できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
@@ -12,7 +18,9 @@
 - Enhance: リアクション受け入れが「いいねのみ」の場合はリアクション絵文字一覧を表示しないように
 - Enhance: 設定>プラグインのページからプラグインの簡易的なログやエラーを見られるように
   - 実装の都合により、プラグインは１つエラーを起こした時に即時停止するようになりました
-- Enhance: ページのデザインを変更	
+- Enhance: ページのデザインを変更
+- Enhance: 2要素認証（ワンタイムパスワード）の入力欄を改善
+- Enhance: 「今日誕生日のフォロー中ユーザー」ウィジェットを手動でリロードできるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -22,9 +30,11 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/528)
 - Fix: コードブロックのシンタックスハイライトで使用される定義ファイルをCDNから取得するように #13177
   - CDNから取得せずMisskey本体にバンドルする場合は`pacakges/frontend/vite.config.ts`を修正してください。
+- Fix: タイムゾーンによっては、「今日誕生日のフォロー中ユーザー」ウィジェットが正しく動作しない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 
