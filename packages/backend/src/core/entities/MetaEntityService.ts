@@ -100,6 +100,7 @@ export class MetaEntityService {
 				imageUrl: ad.imageUrl,
 				dayOfWeek: ad.dayOfWeek,
 			})),
+			trustedLinkUrlPatterns: instance.trustedLinkUrlPatterns,
 			notesPerOneAd: instance.notesPerOneAd,
 			enableEmail: instance.enableEmail,
 			enableServiceWorker: instance.enableServiceWorker,

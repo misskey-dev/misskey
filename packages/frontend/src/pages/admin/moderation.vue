@@ -45,6 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
 					</MkTextarea>
 
+					<MkTextarea v-model="trustedLinkUrlPatterns">
+						<template #label>{{ i18n.ts.trustedLinkUrlPatterns }}</template>
+						<template #caption>{{ i18n.ts.trustedLinkUrlPatternsDescription }}</template>
+					</MkTextarea>
+
 					<MkTextarea v-model="hiddenTags">
 						<template #label>{{ i18n.ts.hiddenTags }}</template>
 						<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
@@ -86,6 +91,7 @@ const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
 const tosUrl = ref<string | null>(null);
 const privacyPolicyUrl = ref<string | null>(null);
+const trustedLinkUrlPatterns = ref<string>('');
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -97,6 +103,7 @@ async function init() {
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
 	tosUrl.value = meta.tosUrl;
 	privacyPolicyUrl.value = meta.privacyPolicyUrl;
+	trustedLinkUrlPatterns.value = meta.trustedLinkUrlPatterns.join('\n');
 }
 
 function save() {
@@ -109,6 +116,7 @@ function save() {
 		prohibitedWords: prohibitedWords.value.split('\n'),
 		hiddenTags: hiddenTags.value.split('\n'),
 		preservedUsernames: preservedUsernames.value.split('\n'),
+		trustedLinkUrlPatterns: trustedLinkUrlPatterns.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});

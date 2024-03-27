@@ -238,6 +238,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	checkRedirectingOtherHost: {
+		where: 'device',
+		default: true,
+	},
 	imageNewTab: {
 		where: 'device',
 		default: false,
@@ -441,6 +445,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	enableHorizontalSwipe: {
 		where: 'device',
 		default: true,
+	},
+	trustedDomains: {
+		where: 'device',
+		default: [] as string[],
 	},
 
 	sound_masterVolume: {

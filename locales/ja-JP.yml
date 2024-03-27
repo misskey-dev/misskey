@@ -1199,6 +1199,8 @@ useGroupedNotifications: "通知をグルーピングして表示する"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 doReaction: "リアクションする"
+trustedLinkUrlPatterns: "外部サイトへのリンク警告 除外リスト"
+trustedLinkUrlPatternsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。ドメイン名だけ書くと後方一致になります。"
 code: "コード"
 reloadRequiredToApplySettings: "設定の反映にはリロードが必要です。"
 remainingN: "残り: {n}"
@@ -1228,6 +1230,7 @@ gameRetry: "リトライ"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
+open: "開く"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2619,3 +2622,8 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_externalNavigationWarning:
+  title: "外部サイトに移動します"
+  description: "{host}を離れて外部サイトに移動します"
+  trustThisDomain: "このデバイスで今後このドメインを信頼する"

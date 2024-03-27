@@ -153,6 +153,11 @@ export const paramDef = {
 			type: 'string', nullable: true,
 			description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
 		},
+		trustedLinkUrlPatterns: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		urlPreviewEnabled: { type: 'boolean' },
 		urlPreviewTimeout: { type: 'integer' },
 		urlPreviewMaximumContentLength: { type: 'integer' },
@@ -202,6 +207,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
 				});
 			}
+			
+			if (Array.isArray(ps.trustedLinkUrlPatterns)) {
+				set.trustedLinkUrlPatterns = ps.trustedLinkUrlPatterns.filter(Boolean);
+			}
+
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}

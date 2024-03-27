@@ -4,6 +4,8 @@
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 
 ### General
+- Feat: 外部サイトへのリンクは移動の前に警告を表示するように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/558 and https://github.com/MisskeyIO/misskey/commit/f7ec503b9ceb34d61a0dbd658858915eb7399c5d)
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)

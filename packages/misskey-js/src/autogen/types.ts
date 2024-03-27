@@ -4804,6 +4804,7 @@ export type components = {
           imageUrl: string;
           dayOfWeek: number;
         }[];
+      trustedLinkUrlPatterns: string[];
       /** @default 0 */
       notesPerOneAd: number;
       enableEmail: boolean;
@@ -4948,6 +4949,7 @@ export type operations = {
             perUserHomeTimelineCacheMax: number;
             perUserListTimelineCacheMax: number;
             notesPerOneAd: number;
+            trustedLinkUrlPatterns: string[];
             backgroundImageUrl: string | null;
             deeplAuthKey: string | null;
             deeplIsPro: boolean;
@@ -8928,6 +8930,7 @@ export type operations = {
           silencedHosts?: string[] | null;
           /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
           summalyProxy?: string | null;
+          trustedLinkUrlPatterns?: string[] | null;
           urlPreviewEnabled?: boolean;
           urlPreviewTimeout?: number;
           urlPreviewMaximumContentLength?: number;

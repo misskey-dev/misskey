@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	@contextmenu.stop="() => {}"
+	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
+	@contextmenu.stop="() => {}" @click="(ev: MouseEvent) => warningExternalWebsite(ev, props.url)"
 >
 	<template v-if="!self">
 		<span :class="$style.schema">{{ schema }}//</span>
@@ -31,15 +31,18 @@ import * as os from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 import { isEnabledUrlPreview } from '@/instance.js';
+import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
 }>(), {
+	rel: 'nofollow noopener',
 	showUrlPreview: true,
 });
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 const self = props.url.startsWith(local);
 const url = new URL(props.url);
 if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
@@ -62,7 +65,7 @@ const pathname = safeURIDecode(url.pathname);
 const query = safeURIDecode(url.search);
 const hash = safeURIDecode(url.hash);
 const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
+const target = self ? undefined : '_blank';
 </script>
 
 <style lang="scss" module>
