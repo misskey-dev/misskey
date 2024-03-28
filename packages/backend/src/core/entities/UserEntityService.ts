@@ -642,8 +642,8 @@ export class UserEntityService implements OnModuleInit {
 
 		// -- 特に前提条件のない値群を取得
 
-		const profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
-			.then(profiles => new Map(profiles.map(p => [p.userId, p])));
+		const profilesMap = (options?.schema !== 'UserLite') ? await this.userProfilesRepository.findBy({ userId: In(_userIds) })
+			.then(profiles => new Map(profiles.map(p => [p.userId, p]))) : undefined;
 
 		// -- 実行者の有無や指定スキーマの種別によって要否が異なる値群を取得
 
@@ -680,7 +680,7 @@ export class UserEntityService implements OnModuleInit {
 			}
 		}
 
-		return (await Promise.allSettled(_users.map(u => this.pack(u, me, { ...options, userProfile: profilesMap.get(u.id), userRelations: userRelations, userMemos: userMemos, pinNotes: pinNotes }))))
+		return (await Promise.allSettled(_users.map(u => this.pack(u, me, { ...options, userProfile: profilesMap?.get(u.id), userRelations: userRelations, userMemos: userMemos, pinNotes: pinNotes }))))
 			.filter(result => result.status === 'fulfilled')
 			.map(result => (result as PromiseFulfilledResult<Packed<S>>).value);
 	}
