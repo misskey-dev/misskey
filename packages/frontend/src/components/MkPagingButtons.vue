@@ -58,9 +58,11 @@ const buttonRanges = computed(() => Array.from({ length: buttonCount.value }, (_
 const prevDotVisible = computed(() => (current.value - 1 > buttonCountHalf.value) && (max.value > buttonCount.value));
 const nextDotVisible = computed(() => (current.value < max.value - buttonCountHalf.value) && (max.value > buttonCount.value));
 
-console.log(current.value, max.value, buttonCount.value, buttonCountHalf.value);
-console.log(current.value < max.value - buttonCountHalf.value);
-console.log(max.value > buttonCount.value);
+if (_DEV_) {
+	console.log('[MkPagingButtons]', current.value, max.value, buttonCount.value, buttonCountHalf.value);
+	console.log('[MkPagingButtons]', current.value < max.value - buttonCountHalf.value);
+	console.log('[MkPagingButtons]', max.value > buttonCount.value);
+}
 
 function onNumberButtonClicked(pageNumber: number) {
 	emit('pageChanged', pageNumber);
