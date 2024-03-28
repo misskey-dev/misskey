@@ -639,8 +639,8 @@ export class UserEntityService implements OnModuleInit {
 
 		// -- 特に前提条件のない値群を取得
 
-		const profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
-			.then(profiles => new Map(profiles.map(p => [p.userId, p])));
+		const profilesMap = (options?.schema !== 'UserLite') ? await this.userProfilesRepository.findBy({ userId: In(_userIds) })
+			.then(profiles => new Map(profiles.map(p => [p.userId, p]))) : undefined;
 
 		// -- 実行者の有無や指定スキーマの種別によって要否が異なる値群を取得
 

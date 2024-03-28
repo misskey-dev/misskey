@@ -29,6 +29,7 @@ const users = ref<Misskey.entities.UserLite[]>([]);
 onMounted(async () => {
 	users.value = await misskeyApi('users/show', {
 		userIds: props.userIds,
+		detailed: false,
 	}) as unknown as Misskey.entities.UserLite[];
 });
 </script>

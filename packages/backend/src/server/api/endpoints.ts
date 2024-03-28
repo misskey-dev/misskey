@@ -336,6 +336,7 @@ import * as ep___users_clips from './endpoints/users/clips.js';
 import * as ep___users_followers from './endpoints/users/followers.js';
 import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
+import * as ep___users_getFollowingBirthdayUsers from './endpoints/users/get-following-birthday-users.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
 import * as ep___users_featuredNotes from './endpoints/users/featured-notes.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
@@ -706,6 +707,7 @@ const eps = [
 	['users/followers', ep___users_followers],
 	['users/following', ep___users_following],
 	['users/gallery/posts', ep___users_gallery_posts],
+	['users/get-following-birthday-users', ep___users_getFollowingBirthdayUsers],
 	['users/get-frequently-replied-users', ep___users_getFrequentlyRepliedUsers],
 	['users/featured-notes', ep___users_featuredNotes],
 	['users/lists/create', ep___users_lists_create],
