@@ -5,7 +5,7 @@
 
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
-  * β版として公開のため、旧画面も引き続き利用可能です
+	* β版として公開のため、旧画面も引き続き利用可能です
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)

@@ -2606,6 +2606,21 @@ _offlineScreen:
   title: "オフライン - サーバーに接続できません"
   header: "サーバーに接続できません"
 
+_urlPreviewSetting:
+  title: "URLプレビューの設定"
+  enable: "URLプレビューを有効にする"
+  timeout: "プレビュー取得時のタイムアウト(ms)"
+  timeoutDescription: "プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。"
+  maximumContentLength: "Content-Lengthの最大値(byte)"
+  maximumContentLengthDescription: "Content-Lengthがこの値を超えた場合、プレビューは生成されません。"
+  requireContentLength: "Content-Lengthが取得できた場合のみプレビューを生成"
+  requireContentLengthDescription: "相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。"
+  userAgent: "User-Agent"
+  userAgentDescription: "プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。"
+  summaryProxy: "プレビューを生成するプロキシのエンドポイント"
+  summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
+  summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
 _gridComponent:
   _error:
     requiredValue: "この値は必須項目です"
@@ -2668,18 +2683,3 @@ _customEmojisManager:
       confirmClearEmojisDescription: "編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？"
       confirmUploadEmojisTitle: "確認"
       confirmUploadEmojisDescription: "ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？"
-
-_urlPreviewSetting:
-  title: "URLプレビューの設定"
-  enable: "URLプレビューを有効にする"
-  timeout: "プレビュー取得時のタイムアウト(ms)"
-  timeoutDescription: "プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。"
-  maximumContentLength: "Content-Lengthの最大値(byte)"
-  maximumContentLengthDescription: "Content-Lengthがこの値を超えた場合、プレビューは生成されません。"
-  requireContentLength: "Content-Lengthが取得できた場合のみプレビューを生成"
-  requireContentLengthDescription: "相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。"
-  userAgent: "User-Agent"
-  userAgentDescription: "プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。"
-  summaryProxy: "プレビューを生成するプロキシのエンドポイント"
-  summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
-  summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"

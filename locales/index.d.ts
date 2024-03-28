@@ -9784,6 +9784,60 @@ export interface Locale extends ILocale {
          */
         "header": string;
     };
+    "_urlPreviewSetting": {
+        /**
+         * URLプレビューの設定
+         */
+        "title": string;
+        /**
+         * URLプレビューを有効にする
+         */
+        "enable": string;
+        /**
+         * プレビュー取得時のタイムアウト(ms)
+         */
+        "timeout": string;
+        /**
+         * プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。
+         */
+        "timeoutDescription": string;
+        /**
+         * Content-Lengthの最大値(byte)
+         */
+        "maximumContentLength": string;
+        /**
+         * Content-Lengthがこの値を超えた場合、プレビューは生成されません。
+         */
+        "maximumContentLengthDescription": string;
+        /**
+         * Content-Lengthが取得できた場合のみプレビューを生成
+         */
+        "requireContentLength": string;
+        /**
+         * 相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。
+         */
+        "requireContentLengthDescription": string;
+        /**
+         * User-Agent
+         */
+        "userAgent": string;
+        /**
+         * プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。
+         */
+        "userAgentDescription": string;
+        /**
+         * プレビューを生成するプロキシのエンドポイント
+         */
+        "summaryProxy": string;
+        /**
+         * Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
+         */
+        "summaryProxyDescription": string;
+        /**
+         * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
+         */
+        "summaryProxyDescription2": string;
+    };
     "_gridComponent": {
         "_error": {
             /**
@@ -10003,60 +10057,6 @@ export interface Locale extends ILocale {
                 "confirmUploadEmojisDescription": ParameterizedString<"count">;
             };
         };
-    };
-    "_urlPreviewSetting": {
-        /**
-         * URLプレビューの設定
-         */
-        "title": string;
-        /**
-         * URLプレビューを有効にする
-         */
-        "enable": string;
-        /**
-         * プレビュー取得時のタイムアウト(ms)
-         */
-        "timeout": string;
-        /**
-         * プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。
-         */
-        "timeoutDescription": string;
-        /**
-         * Content-Lengthの最大値(byte)
-         */
-        "maximumContentLength": string;
-        /**
-         * Content-Lengthがこの値を超えた場合、プレビューは生成されません。
-         */
-        "maximumContentLengthDescription": string;
-        /**
-         * Content-Lengthが取得できた場合のみプレビューを生成
-         */
-        "requireContentLength": string;
-        /**
-         * 相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。
-         */
-        "requireContentLengthDescription": string;
-        /**
-         * User-Agent
-         */
-        "userAgent": string;
-        /**
-         * プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。
-         */
-        "userAgentDescription": string;
-        /**
-         * プレビューを生成するプロキシのエンドポイント
-         */
-        "summaryProxy": string;
-        /**
-         * Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
-         */
-        "summaryProxyDescription": string;
-        /**
-         * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
-         */
-        "summaryProxyDescription2": string;
     };
 }
 declare const locales: {
