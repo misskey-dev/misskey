@@ -170,6 +170,12 @@ type AdminEmojiSetLicenseBulkRequest = operations['admin___emoji___set-license-b
 type AdminEmojiUpdateRequest = operations['admin___emoji___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiV2ListRequest = operations['admin___emoji___v2___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiV2ListResponse = operations['admin___emoji___v2___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminFederationDeleteAllFilesRequest = operations['admin___federation___delete-all-files']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1036,6 +1042,9 @@ type EmojiDeleted = {
 type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
+type EmojiDetailedAdmin = components['schemas']['EmojiDetailedAdmin'];
+
+// @public (undocumented)
 type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1173,6 +1182,8 @@ declare namespace entities {
         AdminEmojiSetCategoryBulkRequest,
         AdminEmojiSetLicenseBulkRequest,
         AdminEmojiUpdateRequest,
+        AdminEmojiV2ListRequest,
+        AdminEmojiV2ListResponse,
         AdminFederationDeleteAllFilesRequest,
         AdminFederationRefreshRemoteInstanceMetadataRequest,
         AdminFederationRemoveAllFollowingRequest,
@@ -1708,6 +1719,7 @@ declare namespace entities {
         GalleryPost,
         EmojiSimple,
         EmojiDetailed,
+        EmojiDetailedAdmin,
         Flash,
         Signin,
         RoleCondFormulaLogics,

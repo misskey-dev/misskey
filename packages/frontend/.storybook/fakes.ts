@@ -4,6 +4,7 @@
  */
 
 import type { entities } from 'misskey-js'
+import { imageDataUrl, text } from "./fake-utils.js";
 
 export function abuseUserReport() {
 	return {
@@ -147,5 +148,91 @@ export function inviteCode(isUsed = false, hasExpiration = false, isExpired = fa
 		usedBy: isUsed ? userDetailed('3i3r2znx1v') : null,
 		usedAt: isUsed ? date.toISOString() : null,
 		used: isUsed,
+	}
+}
+
+export function role(params: {
+	id?: string,
+	name?: string,
+	color?: string | null,
+	iconUrl?: string | null,
+	description?: string,
+	isModerator?: boolean,
+	isAdministrator?: boolean,
+	displayOrder?: number,
+	createdAt?: string,
+	updatedAt?: string,
+	target?: 'manual' | 'conditional',
+	isPublic?: boolean,
+	isExplorable?: boolean,
+	asBadge?: boolean,
+	canEditMembersByModerator?: boolean,
+	usersCount?: number,
+}): entities.Role {
+	const prefix = params.displayOrder ? params.displayOrder.toString().padStart(3, '0') + '-' : '';
+	const genId = Math.random().toString(36).substring(10);
+
+	return {
+		id: params.id ?? genId,
+		name: params.name ?? `${prefix}TestRole-${genId}`,
+		color: params.color ?? '#445566',
+		iconUrl: params.iconUrl ?? null,
+		description: params.description ?? '',
+		isModerator: params.isModerator ?? false,
+		isAdministrator: params.isAdministrator ?? false,
+		displayOrder: params.displayOrder ?? 0,
+		createdAt: params.createdAt ?? new Date().toISOString(),
+		updatedAt: params.updatedAt ?? new Date().toISOString(),
+		target: params.target ?? 'manual',
+		isPublic: params.isPublic ?? true,
+		isExplorable: params.isExplorable ?? true,
+		asBadge: params.asBadge ?? true,
+		canEditMembersByModerator: params.canEditMembersByModerator ?? false,
+		usersCount: params.usersCount ?? 10,
+		condFormula: {
+			id: '',
+			type: 'or',
+			values: []
+		},
+		policies: {},
+	}
+}
+
+export function emoji(params?: {
+	id?: string,
+	name?: string,
+	host?: string,
+	uri?: string,
+	publicUrl?: string,
+	originalUrl?: string,
+	type?: string,
+	aliases?: string[],
+	category?: string,
+	license?: string,
+	isSensitive?: boolean,
+	localOnly?: boolean,
+	roleIdsThatCanBeUsedThisEmojiAsReaction?: {id:string, name:string}[],
+	updatedAt?: string,
+}): entities.EmojiDetailedAdmin {
+	const id = params?.id ?? new Date().getTime().toString() + text(5);
+	const name = params?.name ?? text(8);
+
+	const image = imageDataUrl()
+
+	return {
+		id: id,
+		name: name,
+		host: params?.host ?? null,
+		uri: params?.uri ?? null,
+		publicUrl: params?.publicUrl ?? image,
+		originalUrl: params?.originalUrl ?? image,
+		type: params?.type ?? 'image/png',
+		aliases: params?.aliases ?? [`alias1-${name}`, `alias2-${name}`],
+		category: params?.category ?? null,
+		license: params?.license ?? null,
+		isSensitive: params?.isSensitive ?? false,
+		localOnly: params?.localOnly ?? false,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: params?.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+		updatedAt: params?.updatedAt ?? new Date().toISOString(),
 	}
 }
