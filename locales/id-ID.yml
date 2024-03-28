@@ -1328,8 +1328,17 @@ _initialTutorial:
     tryThisFile: "Coba tandai gambar yang dilampirkan pada form ini sebagai sensitif!"
     _exampleNote:
       note: "Ups, kesalahan banget buka penutup wadah natto..."
+    method: "Untuk menandai lampiran sebagai sensitif, klik gambar pada berkas, buka menu, lalu klik \"Tandai sebagai sensitif\"."
+    sensitiveSucceeded: "Ketika melampirkan berkas, mohon atur sensitifitas sesuai dengan panduan peladen."
+    doItToContinue: "Tandai berkas terlampir sebagai sensitif untuk melanjutkan."
   _done:
     title: "Kamu telah menyelesaikan tutorial! 🎉"
+    description: "Fungsi yang diperkenalkan di sini merupakan sebagian kecil dari fitur yang ada. Untuk pemahaman lebih detil dalam menggunakan Misskey, kamu dapat merujuk ke {link}."
+_timelineDescription:
+  home: "Pada linimasa Beranda, kamu dapat melihat catatan dari akun yang kamu ikuti."
+  local: "Pada linimasa Lokal, kamu dapat melihat catatan dari semua pengguna yang ada pada peladen ini."
+  social: "Linimasa sosial menampilkan catatan dari kedua linimasa Beranda dan Lokal."
+  global: "Pada linimasa Global, kamu dapat melihat catatan dari semua peladen yang terhubung."
 _serverRules:
   description: "Daftar peraturan akan ditampilkan sebelum pendaftaran. Mengatur ringkasan dari Syarat dan Ketentuan sangat direkomendasikan."
 _serverSettings:
@@ -1341,6 +1350,9 @@ _serverSettings:
   manifestJsonOverride: "Ambil alih manifest.json"
   shortName: "Nama pendek"
   shortNameDescription: "Inisial untuk nama instansi yang dapat ditampilkan apabila nama lengkap resmi terlalu panjang."
+  fanoutTimelineDescription: "Dapat meningkatkan performa dalam pengambilan data linimasa dan mengurangi beban pada database ketika dinyalakan. Sebagai gantinya, penggunaan memory pada Redis akan meningkan. Pertimbangkan untuk menonaktifkan fitur ini jika mengalami kekurangan memori pada server atau menyebabkan server tidak stabil."
+  fanoutTimelineDbFallback: "Fallback ke database"
+  fanoutTimelineDbFallbackDescription: "Ketika diaktifkan, lini masa akan fallback ke database untuk melakukan kueri tambahan apabila linimasa tidak disimpan dalam cache. Menonaktifkan ini dapat mengurangi beban server dengan mengeliminasi proses fallback, namun dapat berakibat membatasi jarak data dari lini masa yang dapat diambil."
 _accountMigration:
   moveFrom: "Pindahkan akun lain ke akun ini"
   moveFromSub: "Buat alias ke akun lain"
@@ -1598,6 +1610,16 @@ _achievements:
     _smashTestNotificationButton:
       title: "Tes overflow"
       description: "Picu tes notifikasi secara berulang dalam waktu yang sangat pendek"
+    _tutorialCompleted:
+      title: "Ijazah Sekolah Dasar Misskey"
+      description: "Tutorial selesai"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+      description: "Obyek paling terbesar di permainan gelembung"
+    _bubbleGameDoubleExplodingHead:
+      title: "Ganda 🤯"
+      description: "Dua dari obyek paling terbesar pada permainan gelembung di waktu yang sama"
+      flavor: "Kamu dapat mengisi kotak makan siang seperti ini 🤯 🤯."
 _role:
   new: "Buat peran"
   edit: "Sunting peran"
@@ -1608,7 +1630,9 @@ _role:
   assignTarget: "Tipe tugas"
   descriptionOfAssignTarget: "<b>Manual</b> untuk mengganti secara manual siapa yang mendapatkan peran ini dan siapa yang tidak.\n<b>Kondisional</b> untuk pengguna secara otomatis dimasukkan atau dihapus dari peran berdasarkan kondisi yang ditentukan."
   manual: "Manual"
+  manualRoles: "Peran manual"
   conditional: "Kondisional"
+  conditionalRoles: "Peran kondisional"
   condition: "Kondisi"
   isConditionalRole: "Ini adalah peran kondisional"
   isPublic: "Publikkan Peran"
@@ -1636,6 +1660,7 @@ _role:
     gtlAvailable: "Dapat melihat lini masa global"
     ltlAvailable: "Dapat melihat lini masa lokal"
     canPublicNote: "Dapat mengirim catatan publik"
+    mentionMax: "Jumlah maksimum sebutan dalam sebuah catatan"
     canInvite: "Dapat membuat kode undangan instansi"
     inviteLimit: "Batas jumlah undangan"
     inviteLimitCycle: "Interval Penerbitan Kode Undangan"
@@ -1657,7 +1682,9 @@ _role:
     canHideAds: "Dapat menyembunyikan iklan"
     canSearchNotes: "Penggunaan pencarian catatan"
     canUseTranslator: "Penggunaan penerjemah"
+    avatarDecorationLimit: "Jumlah maksimum dekorasi avatar yang dapat diterapkan"
   _condition:
+    roleAssignedTo: "Ditugaskan ke peran manual"
     isLocal: "Pengguna lokal"
     isRemote: "Pengguna remote"
     createdLessThan: "Telah berlalu kurang dari X sejak pembuatan akun"
@@ -1685,6 +1712,7 @@ _emailUnavailable:
   disposable: "Alamat surel temporer tidak dapat digunakan"
   mx: "Peladen alamat surel ini tidak valid"
   smtp: "Peladen alamat surel ini tidak merespon"
+  banned: "Kamu tidak dapat mendaftar dengan alamat surel ini"
 _ffVisibility:
   public: "Terbitkan"
   followers: "Tampil untuk pengikut saja"
@@ -1728,6 +1756,7 @@ _plugin:
   installWarn: "Mohon jangan memasang plugin yang tidak dapat dipercayai."
   manage: "Manajemen plugin"
   viewSource: "Lihat sumber"
+  viewLog: "Tampilkan log"
 _preferencesBackups:
   list: "Cadangan yang dibuat"
   saveNew: "Simpan cadangan baru"
@@ -1757,10 +1786,13 @@ _aboutMisskey:
   contributors: "Kontributor utama"
   allContributors: "Seluruh kontributor"
   source: "Sumber kode"
+  original: "Asli"
+  thisIsModifiedVersion: "{name} menggunakan versi modifikasi dari Misskey yang asli."
   translation: "Terjemahkan Misskey"
   donate: "Donasi ke Misskey"
   morePatrons: "Kami sangat mengapresiasi dukungan dari banyak penolong lain yang tidak tercantum disini. Terima kasih! 🥰"
   patrons: "Pendukung"
+  projectMembers: "Anggota proyek"
 _displayOfSensitiveMedia:
   respect: "Sembunyikan media yang ditandai sensitif"
   ignore: "Tampilkan media yang ditandai sensitif"
@@ -1785,6 +1817,7 @@ _channel:
   notesCount: "terdapat {n} catatan"
   nameAndDescription: "Nama dan deskripsi"
   nameOnly: "Hanya nama"
+  allowRenoteToExternal: "Perbolehkan catat ulang dan kutipan di luar dari kanal"
 _menuDisplay:
   sideFull: "Horisontal"
   sideIcon: "Horisontal (Ikon)"
@@ -2198,6 +2231,7 @@ _play:
   title: "Judul"
   script: "Script"
   summary: "Deskripsi"
+  visibilityDescription: "Membuat catatan ini privat berarti tidak akan terlihat pada profil kamu, namun siapapun yang memiliki URL dari catatan ini akan dapat mengaksesnya."
 _pages:
   newPage: "Buat halaman baru"
   editPage: "Sunting halaman"
@@ -2271,8 +2305,10 @@ _notification:
   sendTestNotification: "Kirim tes notifikasi"
   notificationWillBeDisplayedLikeThis: "Notifikasi akan terlihat seperti ini"
   reactedBySomeUsers: "{n} orang memberikan reaksi"
+  likedBySomeUsers: "{n} pengguna menyukai catatan kamu"
   renotedBySomeUsers: "{n} orang telah merenote"
   followedBySomeUsers: "{n} orang telah mengikuti"
+  flushNotification: "Bersihkan notifikasi"
   _types:
     all: "Semua"
     note: "Catatan baru"
@@ -2370,6 +2406,7 @@ _moderationLogTypes:
   resetPassword: "Atur ulang kata sandi"
   suspendRemoteInstance: "Instansi luar telah ditangguhkan"
   unsuspendRemoteInstance: "Instansi luar batal ditangguhkan"
+  updateRemoteInstanceNote: "Catatan moderasi telah diperbaharui untuk peladen luar."
   markSensitiveDriveFile: "Berkas ditandai sensitif"
   unmarkSensitiveDriveFile: "Berkas batal ditandai sensitif"
   resolveAbuseReport: "Laporan terselesaikan"
@@ -2481,5 +2518,22 @@ _reversi:
   isLlotheo: "Pemain dengan batu yang sedikit menang (Llotheo)"
   loopedMap: "Peta melingkar"
   canPutEverywhere: "Keping dapat ditaruh dimana saja"
+  timeLimitForEachTurn: "Batas waktu untuk gantian"
+  freeMatch: "Pertandingan bebas"
+  lookingForPlayer: "Mencari lawan..."
+  gameCanceled: "Permainan ini telah dibatalkan."
+  shareToTlTheGameWhenStart: "Bagikan permainan ke lini masa ketika dimulai"
+  iStartedAGame: "Permainan telah dimulai! #MisskeyReversi"
+  opponentHasSettingsChanged: "Lawan telah mengganti pengaturan mereka."
+  allowIrregularRules: "Aturan non-reguler (bebas sepenuhnya)"
+  disallowIrregularRules: "Tanpa aturan non-reguler"
+  showBoardLabels: "Tampilkan penomoran baris dan kolom pada papan"
+  useAvatarAsStone: "Ubah batu menjadi avatar pengguna"
+_offlineScreen:
+  title: "Luring - tidak dapat terhubung ke peladen"
+  header: "Tidak dapat tersambung ke server"
 _urlPreviewSetting:
+  title: "Pengaturan pratinjau URL"
+  enable: "Aktifkan pratinjau URL"
+  timeout: "Waktu timeout pratinjau URL (ms)"
   userAgent: "User-Agent"
