@@ -4865,7 +4865,7 @@ export interface Locale extends ILocale {
      */
     "wellKnownWebsites": string;
     /**
-     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。ドメイン名だけ書くと後方一致になります。一致した場合、外部サイトへのリダイレクトの警告を省略させることができます。
      */
     "wellKnownWebsitesDescription": string;
     /**
