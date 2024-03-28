@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryName"
 					type="search"
 					autocapitalize="off"
-					class="col1 row1"
+					:class="[$style.col1, $style.row1]"
 					@enter="onSearchRequest"
 				>
 					<template #label>name</template>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryCategory"
 					type="search"
 					autocapitalize="off"
-					class="col2 row1"
+					:class="[$style.col2, $style.row1]"
 					@enter="onSearchRequest"
 				>
 					<template #label>category</template>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryAliases"
 					type="search"
 					autocapitalize="off"
-					class="col3 row1"
+					:class="[$style.col3, $style.row1]"
 					@enter="onSearchRequest"
 				>
 					<template #label>aliases</template>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryType"
 					type="search"
 					autocapitalize="off"
-					class="col1 row2"
+					:class="[$style.col1, $style.row2]"
 					@enter="onSearchRequest"
 				>
 					<template #label>type</template>
@@ -55,14 +55,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryLicense"
 					type="search"
 					autocapitalize="off"
-					class="col2 row2"
+					:class="[$style.col2, $style.row2]"
 					@enter="onSearchRequest"
 				>
 					<template #label>license</template>
 				</MkInput>
 				<MkSelect
 					v-model="querySensitive"
-					class="col3 row2"
+					:class="[$style.col3, $style.row2]"
 				>
 					<template #label>sensitive</template>
 					<option :value="null">-</option>
@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkSelect
 					v-model="queryLocalOnly"
-					class="col1 row3"
+					:class="[$style.col1, $style.row3]"
 				>
 					<template #label>localOnly</template>
 					<option :value="null">-</option>
@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryUpdatedAtFrom"
 					type="date"
 					autocapitalize="off"
-					class="col2 row3"
+					:class="[$style.col2, $style.row3]"
 					@enter="onSearchRequest"
 				>
 					<template #label>updatedAt(from)</template>
@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="queryUpdatedAtTo"
 					type="date"
 					autocapitalize="off"
-					class="col3 row3"
+					:class="[$style.col3, $style.row3]"
 					@enter="onSearchRequest"
 				>
 					<template #label>updatedAt(to)</template>
@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					type="text"
 					readonly
 					autocapitalize="off"
-					class="col1 row4"
+					:class="[$style.col1, $style.row4]"
 					@click="onQueryRolesEditClicked"
 				>
 					<template #label>role</template>
@@ -152,7 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import {
@@ -199,6 +199,8 @@ type GridItem = {
 }
 
 function setupGrid(): GridSetting {
+	const $style = useCssModule();
+
 	const required = validators.required();
 	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
 	const unique = validators.unique();
@@ -212,12 +214,12 @@ function setupGrid(): GridSetting {
 				{
 					// 初期値から変わっていたら背景色を変更
 					condition: ({ row }) => JSON.stringify(gridItems.value[row.index]) !== JSON.stringify(originGridItems.value[row.index]),
-					applyStyle: { className: 'changedRow' },
+					applyStyle: { className: $style.changedRow },
 				},
 				{
 					// バリデーションに引っかかっていたら背景色を変更
 					condition: ({ cells }) => cells.some(it => !it.violation.valid),
-					applyStyle: { className: 'violationRow' },
+					applyStyle: { className: $style.violationRow },
 				},
 			],
 			// 行のコンテキストメニュー設定
@@ -610,7 +612,7 @@ onMounted(async () => {
 
 </script>
 
-<style lang="scss">
+<style module lang="scss">
 .violationRow {
 	background-color: var(--infoWarnBg);
 }
@@ -618,9 +620,7 @@ onMounted(async () => {
 .changedRow {
 	background-color: var(--infoBg);
 }
-</style>
 
-<style lang="scss">
 .editedRow {
 	background-color: var(--infoBg);
 }
@@ -652,9 +652,7 @@ onMounted(async () => {
 .col3 {
 	grid-column: 3 / 4;
 }
-</style>
 
-<style module lang="scss">
 .searchArea {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;

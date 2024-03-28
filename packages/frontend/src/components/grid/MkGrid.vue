@@ -1269,12 +1269,6 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss">
-.hidden {
-	background-color: yellow;
-}
-</style>
-
 <style module lang="scss">
 $borderSetting: solid 0.5px var(--divider);
 $borderRadius: var(--radius);

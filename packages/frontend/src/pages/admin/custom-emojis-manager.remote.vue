@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-model="queryName"
 						type="search"
 						autocapitalize="off"
-						class="col1 row1"
+						:class="[$style.col1, $style.row1]"
 						@enter="onSearchRequest"
 					>
 						<template #label>name</template>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-model="queryHost"
 						type="search"
 						autocapitalize="off"
-						class="col2 row1"
+						:class="[$style.col2, $style.row1]"
 						@enter="onSearchRequest"
 					>
 						<template #label>host</template>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-model="queryUri"
 						type="search"
 						autocapitalize="off"
-						class="col1 row2"
+						:class="[$style.col1, $style.row2]"
 						@enter="onSearchRequest"
 					>
 						<template #label>uri</template>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-model="queryPublicUrl"
 						type="search"
 						autocapitalize="off"
-						class="col2 row2"
+						:class="[$style.col2, $style.row2]"
 						@enter="onSearchRequest"
 					>
 						<template #label>publicUrl</template>
@@ -293,7 +293,7 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="scss">
+<style module lang="scss">
 .row1 {
 	grid-row: 1 / 2;
 }
@@ -309,10 +309,6 @@ onMounted(async () => {
 .col2 {
 	grid-column: 2 / 3;
 }
-
-</style>
-
-<style module lang="scss">
 
 .root {
 	--stickyTop: 0px;
