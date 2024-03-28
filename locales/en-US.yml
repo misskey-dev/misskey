@@ -2153,6 +2153,7 @@ _widgets:
     chooseList: "Select a list"
   clicker: "Clicker"
   birthdayFollowings: "Users who celebrate their birthday today"
+  birthdaySoon: "Users who will celebrate their birthday soon"
 _cw:
   hide: "Hide"
   show: "Show content"

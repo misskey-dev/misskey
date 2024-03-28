@@ -6,6 +6,7 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
+import { birthdaySchema } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
@@ -66,7 +67,10 @@ export const paramDef = {
 			description: 'The local host is represented with `null`.',
 		},
 
-		birthday: { type: 'string', nullable: true },
+		birthday: {
+			...birthdaySchema, nullable: true,
+			description: '@deprecated use get-following-birthday-users instead.',
+		},
 	},
 	anyOf: [
 		{ required: ['userId'] },
@@ -125,16 +129,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('following.followerId = :userId', { userId: user.id })
 				.innerJoinAndSelect('following.followee', 'followee');
 
+			// @deprecated use get-following-birthday-users instead.
 			if (ps.birthday) {
-				try {
-					const d = new Date(ps.birthday);
-					d.setHours(0, 0, 0, 0);
-					const birthday = `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-					const birthdayUserQuery = this.userProfilesRepository.createQueryBuilder('user_profile');
-					birthdayUserQuery.select('user_profile.userId')
-						.where(`SUBSTR(user_profile.birthday, 6, 5) = '${birthday}'`);
+				query.innerJoin(this.userProfilesRepository.metadata.targetName, 'followeeProfile', 'followeeProfile.userId = following.followeeId');
 
-					query.andWhere(`following.followeeId IN (${ birthdayUserQuery.getQuery() })`);
+				try {
+					const birthday = ps.birthday.split('-');
+					birthday.shift(); // 年の部分を削除
+					// なぜか get_birthday_date() = :birthday だとインデックスが効かないので、BETWEEN で対応
+					query.andWhere('get_birthday_date(followeeProfile.birthday) BETWEEN :birthday AND :birthday', { birthday: parseInt(birthday.join('')) });
 				} catch (err) {
 					throw new ApiError(meta.errors.birthdayInvalid);
 				}
