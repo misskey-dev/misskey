@@ -353,7 +353,7 @@ export type paths = {
      *
      * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
      */
-    post: operations['admin/emoji/v2/list'];
+    post: operations['admin___emoji___v2___list'];
   };
   '/admin/federation/delete-all-files': {
     /**
@@ -7216,7 +7216,7 @@ export type operations = {
    *
    * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
    */
-  'admin/emoji/v2/list': {
+  admin___emoji___v2___list: {
     requestBody: {
       content: {
         'application/json': {
