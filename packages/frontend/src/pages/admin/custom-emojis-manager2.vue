@@ -5,7 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkStickyContainer>
+	<!-- コンテナが入れ子になるのでz-indexが被らないよう大きめの数値を設定する-->
+	<MkStickyContainer :headerZIndex="2000">
 		<template #header>
 			<MkPageHeader v-model:tab="headerTab" :tabs="headerTabs"/>
 		</template>

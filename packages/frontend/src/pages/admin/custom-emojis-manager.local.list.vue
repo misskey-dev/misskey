@@ -4,139 +4,140 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps">
-	<MkFolder>
-		<template #icon><i class="ti ti-search"></i></template>
-		<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
-		<template #caption>
-			{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
-		</template>
+<div v-if="gridItems.length === 0" style="text-align: center">
+	{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
+</div>
 
+<MkStickyContainer v-else>
+	<template #default>
 		<div class="_gaps">
-			<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
-				<MkInput
-					v-model="queryName"
-					type="search"
-					autocapitalize="off"
-					:class="[$style.col1, $style.row1]"
-					@enter="onSearchRequest"
-				>
-					<template #label>name</template>
-				</MkInput>
-				<MkInput
-					v-model="queryCategory"
-					type="search"
-					autocapitalize="off"
-					:class="[$style.col2, $style.row1]"
-					@enter="onSearchRequest"
-				>
-					<template #label>category</template>
-				</MkInput>
-				<MkInput
-					v-model="queryAliases"
-					type="search"
-					autocapitalize="off"
-					:class="[$style.col3, $style.row1]"
-					@enter="onSearchRequest"
-				>
-					<template #label>aliases</template>
-				</MkInput>
+			<MkFolder>
+				<template #icon><i class="ti ti-search"></i></template>
+				<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
+				<template #caption>
+					{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
+				</template>
 
-				<MkInput
-					v-model="queryType"
-					type="search"
-					autocapitalize="off"
-					:class="[$style.col1, $style.row2]"
-					@enter="onSearchRequest"
-				>
-					<template #label>type</template>
-				</MkInput>
-				<MkInput
-					v-model="queryLicense"
-					type="search"
-					autocapitalize="off"
-					:class="[$style.col2, $style.row2]"
-					@enter="onSearchRequest"
-				>
-					<template #label>license</template>
-				</MkInput>
-				<MkSelect
-					v-model="querySensitive"
-					:class="[$style.col3, $style.row2]"
-				>
-					<template #label>sensitive</template>
-					<option :value="null">-</option>
-					<option :value="true">true</option>
-					<option :value="false">false</option>
-				</MkSelect>
+				<div class="_gaps">
+					<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
+						<MkInput
+							v-model="queryName"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col1, $style.row1]"
+							@enter="onSearchRequest"
+						>
+							<template #label>name</template>
+						</MkInput>
+						<MkInput
+							v-model="queryCategory"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col2, $style.row1]"
+							@enter="onSearchRequest"
+						>
+							<template #label>category</template>
+						</MkInput>
+						<MkInput
+							v-model="queryAliases"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col3, $style.row1]"
+							@enter="onSearchRequest"
+						>
+							<template #label>aliases</template>
+						</MkInput>
 
-				<MkSelect
-					v-model="queryLocalOnly"
-					:class="[$style.col1, $style.row3]"
-				>
-					<template #label>localOnly</template>
-					<option :value="null">-</option>
-					<option :value="true">true</option>
-					<option :value="false">false</option>
-				</MkSelect>
-				<MkInput
-					v-model="queryUpdatedAtFrom"
-					type="date"
-					autocapitalize="off"
-					:class="[$style.col2, $style.row3]"
-					@enter="onSearchRequest"
-				>
-					<template #label>updatedAt(from)</template>
-				</MkInput>
-				<MkInput
-					v-model="queryUpdatedAtTo"
-					type="date"
-					autocapitalize="off"
-					:class="[$style.col3, $style.row3]"
-					@enter="onSearchRequest"
-				>
-					<template #label>updatedAt(to)</template>
-				</MkInput>
+						<MkInput
+							v-model="queryType"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col1, $style.row2]"
+							@enter="onSearchRequest"
+						>
+							<template #label>type</template>
+						</MkInput>
+						<MkInput
+							v-model="queryLicense"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col2, $style.row2]"
+							@enter="onSearchRequest"
+						>
+							<template #label>license</template>
+						</MkInput>
+						<MkSelect
+							v-model="querySensitive"
+							:class="[$style.col3, $style.row2]"
+						>
+							<template #label>sensitive</template>
+							<option :value="null">-</option>
+							<option :value="true">true</option>
+							<option :value="false">false</option>
+						</MkSelect>
 
-				<MkInput
-					v-model="queryRolesText"
-					type="text"
-					readonly
-					autocapitalize="off"
-					:class="[$style.col1, $style.row4]"
-					@click="onQueryRolesEditClicked"
-				>
-					<template #label>role</template>
-					<template #suffix><span class="ti ti-pencil"/></template>
-				</MkInput>
+						<MkSelect
+							v-model="queryLocalOnly"
+							:class="[$style.col1, $style.row3]"
+						>
+							<template #label>localOnly</template>
+							<option :value="null">-</option>
+							<option :value="true">true</option>
+							<option :value="false">false</option>
+						</MkSelect>
+						<MkInput
+							v-model="queryUpdatedAtFrom"
+							type="date"
+							autocapitalize="off"
+							:class="[$style.col2, $style.row3]"
+							@enter="onSearchRequest"
+						>
+							<template #label>updatedAt(from)</template>
+						</MkInput>
+						<MkInput
+							v-model="queryUpdatedAtTo"
+							type="date"
+							autocapitalize="off"
+							:class="[$style.col3, $style.row3]"
+							@enter="onSearchRequest"
+						>
+							<template #label>updatedAt(to)</template>
+						</MkInput>
+
+						<MkInput
+							v-model="queryRolesText"
+							type="text"
+							readonly
+							autocapitalize="off"
+							:class="[$style.col1, $style.row4]"
+							@click="onQueryRolesEditClicked"
+						>
+							<template #label>role</template>
+							<template #suffix><span class="ti ti-pencil"/></template>
+						</MkInput>
+					</div>
+
+					<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
+
+					<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
+						<MkButton primary @click="onSearchRequest">
+							{{ i18n.ts.search }}
+						</MkButton>
+						<MkButton @click="onQueryResetButtonClicked">
+							{{ i18n.ts.reset }}
+						</MkButton>
+					</div>
+				</div>
+			</MkFolder>
+
+			<XRegisterLogsFolder :logs="requestLogs"/>
+
+			<div :class="$style.gridArea">
+				<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 			</div>
 
-			<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
+			<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
 
-			<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
-				<MkButton primary @click="onSearchRequest">
-					{{ i18n.ts.search }}
-				</MkButton>
-				<MkButton @click="onQueryResetButtonClicked">
-					{{ i18n.ts.reset }}
-				</MkButton>
-			</div>
-		</div>
-	</MkFolder>
-
-	<XRegisterLogsFolder :logs="requestLogs"/>
-
-	<div v-if="gridItems.length === 0" style="text-align: center">
-		{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
-	</div>
-	<template v-else>
-		<div :class="$style.gridArea">
-			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
-		</div>
-
-		<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-
-		<div class="_gaps">
 			<div :class="$style.buttons">
 				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">{{ i18n.ts.delete }}</MkButton>
 				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
@@ -148,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</template>
-</div>
+</MkStickyContainer>
 </template>
 
 <script setup lang="ts">
@@ -680,11 +681,8 @@ onMounted(async () => {
 }
 
 .gridArea {
-	overflow-x: auto;
-	overflow-y: hidden;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	resize: vertical;
 }
 
 .buttons {
@@ -699,4 +697,5 @@ onMounted(async () => {
 	margin: 8px 0;
 	border-top: solid 0.5px var(--divider);
 }
+
 </style>

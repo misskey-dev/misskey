@@ -452,11 +452,8 @@ onMounted(async () => {
 }
 
 .gridArea {
-	overflow-x: auto;
-	overflow-y: hidden;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	resize: vertical;
 }
 
 .buttons {
