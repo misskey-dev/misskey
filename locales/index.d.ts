@@ -4920,6 +4920,14 @@ export interface Locale extends ILocale {
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
+    /**
+     * ワンタイムパスワードを使う
+     */
+    "useTotp": string;
+    /**
+     * バックアップコードを使う
+     */
+    "useBackupCode": string;
     "_bubbleGame": {
         /**
          * 遊び方
