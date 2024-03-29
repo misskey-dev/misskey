@@ -59,7 +59,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="showReactionsCount">{{ i18n.ts.showReactionsCount }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
-				<MkSwitch v-model="checkRedirectingOtherHost">{{ i18n.ts.checkRedirectingOtherHost }}</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
 					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
 					<option value="small">{{ i18n.ts.small }}</option>
@@ -290,7 +289,6 @@ const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
-const checkRedirectingOtherHost = computed(defaultStore.makeGetterSetter('checkRedirectingOtherHost'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
