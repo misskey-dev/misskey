@@ -350,6 +350,7 @@ import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFollowingBirthdayUsers from './endpoints/users/get-following-birthday-users.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
+import * as ep___users_getSkebStatus from './endpoints/users/get-skeb-status.js';
 import * as ep___users_featuredNotes from './endpoints/users/featured-notes.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
@@ -736,6 +737,7 @@ const $users_following: Provider = { provide: 'ep:users/following', useClass: ep
 const $users_gallery_posts: Provider = { provide: 'ep:users/gallery/posts', useClass: ep___users_gallery_posts.default };
 const $users_getFollowingBirthdayUsers: Provider = { provide: 'ep:users/get-following-birthday-users', useClass: ep___users_getFollowingBirthdayUsers.default };
 const $users_getFrequentlyRepliedUsers: Provider = { provide: 'ep:users/get-frequently-replied-users', useClass: ep___users_getFrequentlyRepliedUsers.default };
+const $users_getSkebStatus: Provider = { provide: 'ep:users/get-skeb-status', useClass: ep___users_getSkebStatus.default };
 const $users_featuredNotes: Provider = { provide: 'ep:users/featured-notes', useClass: ep___users_featuredNotes.default };
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
 const $users_lists_delete: Provider = { provide: 'ep:users/lists/delete', useClass: ep___users_lists_delete.default };
@@ -1126,6 +1128,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_gallery_posts,
 		$users_getFollowingBirthdayUsers,
 		$users_getFrequentlyRepliedUsers,
+		$users_getSkebStatus,
 		$users_featuredNotes,
 		$users_lists_create,
 		$users_lists_delete,
@@ -1508,6 +1511,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_gallery_posts,
 		$users_getFollowingBirthdayUsers,
 		$users_getFrequentlyRepliedUsers,
+		$users_getSkebStatus,
 		$users_featuredNotes,
 		$users_lists_create,
 		$users_lists_delete,

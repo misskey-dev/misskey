@@ -2549,4 +2549,18 @@ _reversi:
 _offlineScreen:
   title: "오프라인 - 서버에 접속할 수 없습니다"
   header: "서버에 접속할 수 없습니다"
-
+_skebStatus:
+  _genres:
+    art: "작품"
+    comic: "만화"
+    voice: "음성"
+    novel: "텍스트"
+    video: "동영상"
+    music: "음악"
+    correction: "조언"
+  seeking: "모집 중"
+  stopped: "정지 중"
+  client: "클라이언트"
+  yenX: "JPY {x}"
+  nWorks: "납품 실적 {n}건"
+  nRequests: "거래 실적 {n}건"

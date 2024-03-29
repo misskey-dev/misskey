@@ -2575,4 +2575,18 @@ _reversi:
 _offlineScreen:
   title: "Offline - cannot connect to the server"
   header: "Unable to connect to the server"
-
+_skebStatus:
+  _genres:
+    art: "Artwork"
+    comic: "Comic"
+    voice: "Voice"
+    novel: "Text"
+    video: "Movie"
+    music: "Music"
+    correction: "Advice"
+  seeking: "Seeking"
+  stopped: "Stopped"
+  client: "Client"
+  yenX: "JPY {x}"
+  nWorks: "Delivered {n} works"
+  nRequests: "Requested {n} times"

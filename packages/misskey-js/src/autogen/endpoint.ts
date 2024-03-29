@@ -510,6 +510,8 @@ import type {
 	UsersGetFollowingBirthdayUsersResponse,
 	UsersGetFrequentlyRepliedUsersRequest,
 	UsersGetFrequentlyRepliedUsersResponse,
+	UsersGetSkebStatusRequest,
+	UsersGetSkebStatusResponse,
 	UsersFeaturedNotesRequest,
 	UsersFeaturedNotesResponse,
 	UsersListsCreateRequest,
@@ -920,6 +922,7 @@ export type Endpoints = {
 	'users/gallery/posts': { req: UsersGalleryPostsRequest; res: UsersGalleryPostsResponse };
 	'users/get-following-birthday-users': { req: UsersGetFollowingBirthdayUsersRequest; res: UsersGetFollowingBirthdayUsersResponse };
 	'users/get-frequently-replied-users': { req: UsersGetFrequentlyRepliedUsersRequest; res: UsersGetFrequentlyRepliedUsersResponse };
+	'users/get-skeb-status': { req: UsersGetSkebStatusRequest; res: UsersGetSkebStatusResponse };
 	'users/featured-notes': { req: UsersFeaturedNotesRequest; res: UsersFeaturedNotesResponse };
 	'users/lists/create': { req: UsersListsCreateRequest; res: UsersListsCreateResponse };
 	'users/lists/delete': { req: UsersListsDeleteRequest; res: EmptyResponse };

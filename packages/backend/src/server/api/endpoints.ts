@@ -350,6 +350,7 @@ import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFollowingBirthdayUsers from './endpoints/users/get-following-birthday-users.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
+import * as ep___users_getSkebStatus from './endpoints/users/get-skeb-status.js';
 import * as ep___users_featuredNotes from './endpoints/users/featured-notes.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
@@ -734,6 +735,7 @@ const eps = [
 	['users/gallery/posts', ep___users_gallery_posts],
 	['users/get-following-birthday-users', ep___users_getFollowingBirthdayUsers],
 	['users/get-frequently-replied-users', ep___users_getFrequentlyRepliedUsers],
+	['users/get-skeb-status', ep___users_getSkebStatus],
 	['users/featured-notes', ep___users_featuredNotes],
 	['users/lists/create', ep___users_lists_create],
 	['users/lists/delete', ep___users_lists_delete],

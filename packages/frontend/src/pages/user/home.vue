@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
 						</dl>
 					</div>
-					<div v-if="user.fields.length > 0" class="fields">
+					<div v-if="user.fields.length > 0 || userSkebStatus" class="fields">
 						<dl v-for="(field, i) in user.fields" :key="i" class="field">
 							<dt class="name">
 								<Mfm :text="field.name" :plain="true" :colored="false"/>
@@ -102,6 +102,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<dd class="value">
 								<Mfm :text="field.value" :author="user" :colored="false"/>
 								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
+							</dd>
+						</dl>
+						<dl v-if="userSkebStatus" class="field">
+							<dt class="name">
+								<a :href="`https://skeb.jp/@${userSkebStatus.screenName}`" target="_blank" rel="noopener">
+									<!--
+										*** LICENSE NOTICE ***
+										* This SVG is derived from the https://skeb.jp/ website, All rights reserved to *Skeb Inc.* https://skeb.co.jp/
+										* This resource SHOULD NOT be considered as a part of the this project that has licensed under AGPL-3.0-only
+									-->
+									<svg class="ti ti-fw" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+										<linearGradient id="a" x1="14.645309%" x2="85.354691%" y1="14.645309%" y2="85.363492%">
+											<stop offset=".2" stop-color="#30b396"/>
+											<stop offset="1" stop-color="#1e5e71"/>
+										</linearGradient>
+										<g fill="none">
+											<circle cx="19.99375" cy="19.98125" fill="url(#a)" r="17.753125"/>
+											<path d="m18.784375 13.9875-7.35625 21.546875c-.8125-.446875-1.58125-.959375-2.309375-1.525l1.134375-3.26875-2.528125-.86875.859375-2.56875 2.528125.86875 1.728125-5.05625-2.528125-.86875.86875-2.5375 2.528125.86875 1.728125-5.05625-2.528125-.86875.86875-2.5375 2.528125.86875 1.6875-4.99375-2.496875-.909375.440625-1.26875 5.05625 1.728125-.378125 1.1-1.76875 5.184375-.059375.159375zm-12.996875 16.640625c.6625.884375 1.40625 1.703125 2.21875 2.446875l.51875-1.515625zm3.29375-13.01875 3.8 1.296875.865625-2.534375-3.8-1.296875zm-2.590625 7.590625 3.8 1.296875.865625-2.534375-3.8-1.296875zm31.259375-5.21875c0-2.534375-.534375-4.940625-1.490625-7.11875l-13.325-4.559375-9.603125 28.134375c2.059375.834375 4.30625 1.3 6.665625 1.3 9.80625 0 17.753125-7.946875 17.753125-17.753125zm-26.071875-9.971875 3.8 1.296875.865625-2.534375-3.8-1.296875z" fill="#fff"/><path d="m19.99375 2.23125c9.80625 0 17.753125 7.946875 17.753125 17.753125s-7.946875 17.753125-17.753125 17.753125-17.753125-7.946875-17.753125-17.753125 7.946875-17.753125 17.753125-17.753125m0-2.228125c-11.034375 0-19.98125 8.946875-19.98125 19.98125s8.946875 19.98125 19.98125 19.98125 19.98125-8.946875 19.98125-19.98125-8.946875-19.98125-19.98125-19.98125z" fill="#1e5e71"/>
+										</g>
+									</svg>
+									Skeb
+								</a>
+							</dt>
+							<dd class="value" style="display: flex; gap: 8px; align-items: center;">
+								<span v-if="userSkebStatus.isAcceptable" :class="$style.skebAcceptable">
+									{{ i18n.ts._skebStatus.seeking }}
+								</span>
+								<span v-else-if="userSkebStatus.isCreator" :class="$style.skebStopped">
+									{{ i18n.ts._skebStatus.stopped }}
+								</span>
+								<span v-else :class="$style.skebClient">
+									{{ i18n.ts._skebStatus.client }}
+								</span>
+								<Mfm :text="buildSkebStatus()" :author="user" :nyaize="false" :colored="false"/>
 							</dd>
 						</dl>
 					</div>
@@ -167,10 +201,11 @@ import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -204,6 +239,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const user = ref(props.user);
+const userSkebStatus = ref<Misskey.Endpoints['users/get-skeb-status']['res'] | null>(null);
 const parallaxAnimationId = ref<null | number>(null);
 const narrow = ref<null | boolean>(null);
 const rootEl = ref<null | HTMLElement>(null);
@@ -273,8 +309,44 @@ async function updateMemo() {
 	isEditingMemo.value = false;
 }
 
+async function fetchSkebStatus() {
+	if (!instance.enableSkebStatus || !props.user.id) {
+		userSkebStatus.value = null;
+		return;
+	}
+
+	console.log('fetching skeb status');
+	userSkebStatus.value = await misskeyApiGet('users/get-skeb-status', { userId: props.user.id });
+}
+
+function buildSkebStatus(): string {
+	if (!userSkebStatus.value) return '';
+
+	if (userSkebStatus.value.isCreator) {
+		let status = '';
+
+		if (userSkebStatus.value.isAcceptable) {
+			status += `${i18n.ts._skebStatus._genres[userSkebStatus.value.skills[0].genre]} ${i18n.tsx._skebStatus.yenX({ x: userSkebStatus.value.skills[0].amount.toLocaleString() })}`;
+		}
+
+		if (userSkebStatus.value.creatorRequestCount > 0) {
+			if (userSkebStatus.value.isAcceptable) {
+				status += ' | ';
+			}
+			status += i18n.tsx._skebStatus.nWorks({ n: userSkebStatus.value.creatorRequestCount.toLocaleString() });
+		}
+
+		return status;
+	} else if (userSkebStatus.value.clientRequestCount > 0) {
+		return i18n.tsx._skebStatus.nRequests({ n: userSkebStatus.value.clientRequestCount.toLocaleString() });
+	}
+
+	return '';
+}
+
 watch([props.user], () => {
 	memoDraft.value = props.user.memo;
+	fetchSkebStatus();
 });
 
 onMounted(() => {
@@ -292,6 +364,7 @@ onMounted(() => {
 			});
 		}
 	}
+	fetchSkebStatus();
 	nextTick(() => {
 		adjustMemoTextarea();
 	});
@@ -684,5 +757,30 @@ onUnmounted(() => {
 .verifiedLink {
 	margin-left: 4px;
 	color: var(--success);
+}
+
+.skebAcceptable,
+.skebStopped,
+.skebClient {
+	display: inline-flex;
+	border: solid 1px;
+	border-radius: 6px;
+	padding: 2px 6px;
+	font-size: 85%;
+}
+
+.skebAcceptable {
+	color: rgb(255, 255, 255);
+	background-color: rgb(241, 70, 104);
+}
+
+.skebStopped {
+	color: rgb(255, 255, 255);
+	background-color: rgb(54, 54, 54);
+}
+
+.skebClient {
+	color: rgb(255, 255, 255);
+	background-color: rgb(54, 54, 54);
 }
 </style>

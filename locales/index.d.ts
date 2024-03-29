@@ -10113,6 +10113,62 @@ export interface Locale extends ILocale {
          */
         "summaryProxyDescription2": string;
     };
+    "_skebStatus": {
+        "_genres": {
+            /**
+             * イラスト
+             */
+            "art": string;
+            /**
+             * コミック
+             */
+            "comic": string;
+            /**
+             * ボイス
+             */
+            "voice": string;
+            /**
+             * テキスト
+             */
+            "novel": string;
+            /**
+             * ムービー
+             */
+            "video": string;
+            /**
+             * ミュージック
+             */
+            "music": string;
+            /**
+             * アドバイス
+             */
+            "correction": string;
+        };
+        /**
+         * 募集中
+         */
+        "seeking": string;
+        /**
+         * 停止中
+         */
+        "stopped": string;
+        /**
+         * クライアント
+         */
+        "client": string;
+        /**
+         * {x}円
+         */
+        "yenX": ParameterizedString<"x">;
+        /**
+         * 納品実績 {n}件
+         */
+        "nWorks": ParameterizedString<"n">;
+        /**
+         * 取引実績 {n}件
+         */
+        "nRequests": ParameterizedString<"n">;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

@@ -216,6 +216,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		enableSkebStatus: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		backgroundImageUrl: {
 			type: 'string',
 			optional: false, nullable: true,

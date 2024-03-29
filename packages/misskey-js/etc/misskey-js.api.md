@@ -1690,6 +1690,8 @@ declare namespace entities {
         UsersGetFollowingBirthdayUsersResponse,
         UsersGetFrequentlyRepliedUsersRequest,
         UsersGetFrequentlyRepliedUsersResponse,
+        UsersGetSkebStatusRequest,
+        UsersGetSkebStatusResponse,
         UsersFeaturedNotesRequest,
         UsersFeaturedNotesResponse,
         UsersListsCreateRequest,
@@ -3104,6 +3106,12 @@ type UsersGetFrequentlyRepliedUsersRequest = operations['users___get-frequently-
 
 // @public (undocumented)
 type UsersGetFrequentlyRepliedUsersResponse = operations['users___get-frequently-replied-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetSkebStatusRequest = operations['users___get-skeb-status']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetSkebStatusResponse = operations['users___get-skeb-status']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type UsersListsCreateFromPublicRequest = operations['users___lists___create-from-public']['requestBody']['content']['application/json'];

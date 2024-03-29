@@ -3831,6 +3831,17 @@ declare module '../api.js' {
      * 
      * **Credential required**: *No*
      */
+    request<E extends 'users/get-skeb-status', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *No*
+     */
     request<E extends 'users/featured-notes', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,

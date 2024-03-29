@@ -2693,3 +2693,19 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_skebStatus:
+  _genres:
+    art: "イラスト"
+    comic: "コミック"
+    voice: "ボイス"
+    novel: "テキスト"
+    video: "ムービー"
+    music: "ミュージック"
+    correction: "アドバイス"
+  seeking: "募集中"
+  stopped: "停止中"
+  client: "クライアント"
+  yenX: "{x}円"
+  nWorks: "納品実績 {n}件"
+  nRequests: "取引実績 {n}件"

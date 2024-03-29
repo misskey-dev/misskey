@@ -66,6 +66,14 @@ type Source = {
 		scope?: 'local' | 'global' | string[];
 	};
 
+	skebStatus?: {
+		method: string;
+		endpoint: string;
+		headers: { [x: string]: string };
+		parameters: { [x: string]: string };
+		userIdParameterName: string;
+	}
+
 	proxy?: string;
 	proxySmtp?: string;
 	proxyBypassHosts?: string[];
@@ -139,6 +147,13 @@ export type Config = {
 		ssl?: boolean;
 		index: string;
 		scope?: 'local' | 'global' | string[];
+	} | undefined;
+	skebStatus: {
+		method: string;
+		endpoint: string;
+		headers: { [x: string]: string };
+		parameters: { [x: string]: string };
+		userIdParameterName: string;
 	} | undefined;
 	proxy: string | undefined;
 	proxySmtp: string | undefined;
@@ -266,6 +281,7 @@ export function loadConfig(): Config {
 		redisForObjectStorageQueue: config.redisForObjectStorageQueue ? convertRedisOptions(config.redisForObjectStorageQueue, host) : redisForJobQueue,
 		redisForWebhookDeliverQueue: config.redisForWebhookDeliverQueue ? convertRedisOptions(config.redisForWebhookDeliverQueue, host) : redisForJobQueue,
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
+		skebStatus: config.skebStatus,
 		id: config.id,
 		proxy: config.proxy,
 		proxySmtp: config.proxySmtp,
