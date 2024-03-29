@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</dl>
 						<dl v-if="userSkebStatus" class="field">
 							<dt class="name">
-								<a :href="`https://skeb.jp/@${userSkebStatus.screenName}`" target="_blank" rel="noopener">
+								<a href="https://skeb.jp/" target="_blank" rel="noopener" style="display: flex; gap: 2px; align-items: center; justify-content: center;">
 									<!--
 										*** LICENSE NOTICE ***
 										* This SVG is derived from the https://skeb.jp/ website, All rights reserved to *Skeb Inc.* https://skeb.co.jp/
@@ -122,20 +122,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 											<path d="m18.784375 13.9875-7.35625 21.546875c-.8125-.446875-1.58125-.959375-2.309375-1.525l1.134375-3.26875-2.528125-.86875.859375-2.56875 2.528125.86875 1.728125-5.05625-2.528125-.86875.86875-2.5375 2.528125.86875 1.728125-5.05625-2.528125-.86875.86875-2.5375 2.528125.86875 1.6875-4.99375-2.496875-.909375.440625-1.26875 5.05625 1.728125-.378125 1.1-1.76875 5.184375-.059375.159375zm-12.996875 16.640625c.6625.884375 1.40625 1.703125 2.21875 2.446875l.51875-1.515625zm3.29375-13.01875 3.8 1.296875.865625-2.534375-3.8-1.296875zm-2.590625 7.590625 3.8 1.296875.865625-2.534375-3.8-1.296875zm31.259375-5.21875c0-2.534375-.534375-4.940625-1.490625-7.11875l-13.325-4.559375-9.603125 28.134375c2.059375.834375 4.30625 1.3 6.665625 1.3 9.80625 0 17.753125-7.946875 17.753125-17.753125zm-26.071875-9.971875 3.8 1.296875.865625-2.534375-3.8-1.296875z" fill="#fff"/><path d="m19.99375 2.23125c9.80625 0 17.753125 7.946875 17.753125 17.753125s-7.946875 17.753125-17.753125 17.753125-17.753125-7.946875-17.753125-17.753125 7.946875-17.753125 17.753125-17.753125m0-2.228125c-11.034375 0-19.98125 8.946875-19.98125 19.98125s8.946875 19.98125 19.98125 19.98125 19.98125-8.946875 19.98125-19.98125-8.946875-19.98125-19.98125-19.98125z" fill="#1e5e71"/>
 										</g>
 									</svg>
-									Skeb
+									<span>Skeb</span>
+									<i class="ti ti-external-link" style="font-size: .9em;"></i>
 								</a>
 							</dt>
-							<dd class="value" style="display: flex; gap: 8px; align-items: center;">
-								<span v-if="userSkebStatus.isAcceptable" :class="$style.skebAcceptable">
-									{{ i18n.ts._skebStatus.seeking }}
-								</span>
-								<span v-else-if="userSkebStatus.isCreator" :class="$style.skebStopped">
-									{{ i18n.ts._skebStatus.stopped }}
-								</span>
-								<span v-else :class="$style.skebClient">
-									{{ i18n.ts._skebStatus.client }}
-								</span>
-								<Mfm :text="buildSkebStatus()" :author="user" :nyaize="false" :colored="false"/>
+							<dd class="value">
+								<a :href="`https://skeb.jp/@${userSkebStatus.screenName}`" target="_blank" rel="noopener" style="display: flex; gap: 2px; align-items: center;">
+									<span v-if="userSkebStatus.isAcceptable" :class="$style.skebAcceptable">
+										{{ i18n.ts._skebStatus.seeking }}
+									</span>
+									<span v-else-if="userSkebStatus.isCreator" :class="$style.skebStopped">
+										{{ i18n.ts._skebStatus.stopped }}
+									</span>
+									<span v-else :class="$style.skebClient">
+										{{ i18n.ts._skebStatus.client }}
+									</span>
+									<Mfm :text="buildSkebStatus()" :author="user" :nyaize="false" :colored="false"/>
+									<i class="ti ti-external-link" style="font-size: .9em;"></i>
+								</a>
 							</dd>
 						</dl>
 					</div>
@@ -766,6 +770,7 @@ onUnmounted(() => {
 	border: solid 1px;
 	border-radius: 6px;
 	padding: 2px 6px;
+	margin-right: 4px;
 	font-size: 85%;
 }
 
