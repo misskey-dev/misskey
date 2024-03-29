@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type {
 	FollowingsRepository,
@@ -90,8 +91,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.innerJoin(this.userProfilesRepository.metadata.targetName, 'followeeProfile', 'followeeProfile.userId = following.followeeId');
 
 			if (Object.hasOwn(ps.birthday, 'begin') && Object.hasOwn(ps.birthday, 'end')) {
-				const { begin, end } = ps.birthday as { begin: { month: number; day: number }; end: { month: number; day: number }; };
-				query.andWhere('get_birthday_date(followeeProfile.birthday) BETWEEN :begin AND :end', { begin: begin.month * 100 + begin.day, end: end.month * 100 + end.day });
+				const range = ps.birthday as { begin: { month: number; day: number }; end: { month: number; day: number }; };
+				const begin = range.begin.month * 100 + range.begin.day;
+				const end = range.end.month * 100 + range.end.day;
+
+				if (begin <= end) {
+					query.andWhere('get_birthday_date(followeeProfile.birthday) BETWEEN :begin AND :end', { begin, end });
+				} else {
+					// 12/31 から 1/1 の範囲を取得するために OR で対応
+					query.andWhere(new Brackets(qb => {
+						qb.where('get_birthday_date(followeeProfile.birthday) BETWEEN :begin AND 1231', { begin });
+						qb.orWhere('get_birthday_date(followeeProfile.birthday) BETWEEN 101 AND :end', { end });
+					}));
+				}
 			} else {
 				const { month, day } = ps.birthday as { month: number; day: number };
 				// なぜか get_birthday_date() = :birthday だとインデックスが効かないので、BETWEEN で対応
