@@ -100,6 +100,7 @@ type Source = {
 
 	bypassRateLimit?: { header: string; value: string }[];
 
+	remapDriveFileUrlForActivityPub?: { target: string; replacement: string }[];
 	signToActivityPubGet?: boolean;
 
 	perChannelMaxNoteCacheCount?: number;
@@ -160,6 +161,7 @@ export type Config = {
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
 	proxyRemoteFiles: boolean | undefined;
+	remapDriveFileUrlForActivityPub: { target: string; replacement: string }[] | undefined;
 	signToActivityPubGet: boolean | undefined;
 
 	version: string;
@@ -285,6 +287,7 @@ export function loadConfig(): Config {
 		deliverJobMaxAttempts: config.deliverJobMaxAttempts,
 		inboxJobMaxAttempts: config.inboxJobMaxAttempts,
 		proxyRemoteFiles: config.proxyRemoteFiles,
+		remapDriveFileUrlForActivityPub: config.remapDriveFileUrlForActivityPub,
 		signToActivityPubGet: config.signToActivityPubGet,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
 		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,

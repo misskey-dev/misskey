@@ -314,7 +314,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
 
 				updates.avatarId = avatar.id;
-				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, { mode: 'avatar' });
 				updates.avatarBlurhash = avatar.blurhash;
 			} else if (ps.avatarId === null) {
 				updates.avatarId = null;

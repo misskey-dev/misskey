@@ -109,10 +109,10 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getPublicUrl(file: MiDriveFile, mode?: 'avatar'): string { // static = thumbnail
+	public getPublicUrl(file: MiDriveFile, option?: { mode?: 'avatar', remapActivityPub?: boolean }): string { // static = thumbnail
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
-			return this.getProxiedUrl(file.uri, mode);
+			return this.getProxiedUrl(file.uri, option?.mode);
 		}
 
 		// リモートかつ期限切れはローカルプロキシを試みる
@@ -121,17 +121,23 @@ export class DriveFileEntityService {
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
 				const url = `${this.config.url}/files/${key}`;
-				if (mode === 'avatar') return this.getProxiedUrl(file.uri, 'avatar');
+				if (option?.mode === 'avatar') return this.getProxiedUrl(file.uri, 'avatar');
 				return url;
 			}
 		}
 
-		const url = file.webpublicUrl ?? file.url;
-
-		if (mode === 'avatar') {
-			return this.getProxiedUrl(url, 'avatar');
+		let publicUrl = file.webpublicUrl ?? file.url;
+		if (option?.remapActivityPub) {
+			this.config.remapDriveFileUrlForActivityPub?.forEach(({ target, replacement }) => {
+				publicUrl = publicUrl.replace(target, replacement);
+			});
 		}
-		return url;
+
+		const url = new URL(publicUrl);
+		if (file.isSensitive) url.searchParams.set('sensitive', 'true');
+
+		if (option?.mode === 'avatar') return this.getProxiedUrl(url.href, 'avatar');
+		else return url.href;
 	}
 
 	@bindThis

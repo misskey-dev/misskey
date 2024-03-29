@@ -164,13 +164,20 @@ export class ApRendererService {
 		return {
 			type: 'Document',
 			mediaType: file.webpublicType ?? file.type,
-			url: this.driveFileEntityService.getPublicUrl(file),
+			url: this.driveFileEntityService.getPublicUrl(file, { remapActivityPub: true }),
 			name: file.comment,
 		};
 	}
 
 	@bindThis
 	public renderEmoji(emoji: MiEmoji): IApEmoji {
+		// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+		let url = emoji.publicUrl || emoji.originalUrl;
+
+		this.config.remapDriveFileUrlForActivityPub?.forEach(({ target, replacement }) => {
+			url = url.replace(target, replacement);
+		});
+
 		return {
 			id: `${this.config.url}/emojis/${emoji.name}`,
 			type: 'Emoji',
@@ -179,8 +186,7 @@ export class ApRendererService {
 			icon: {
 				type: 'Image',
 				mediaType: emoji.type ?? 'image/png',
-				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				url: emoji.publicUrl || emoji.originalUrl,
+				url: url,
 			},
 		};
 	}
@@ -243,7 +249,7 @@ export class ApRendererService {
 	public renderImage(file: MiDriveFile): IApImage {
 		return {
 			type: 'Image',
-			url: this.driveFileEntityService.getPublicUrl(file),
+			url: this.driveFileEntityService.getPublicUrl(file, { remapActivityPub: true }),
 			sensitive: file.isSensitive,
 			name: file.comment,
 		};
