@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
     <div v-if="!invite.used && !isExpired">
-			<div :class="$style.label">{{ i18n.ts.qrcode }}</div>
+			<div :class="$style.label">{{ i18n.ts.qrcode }} - {{ i18n.ts.qrcodeToInvite }}</div>
       <vue-qrcode :value="inviteUrl" :options="option" tag="img"></vue-qrcode>
     </div>
 	</div>
