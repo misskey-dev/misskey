@@ -8190,13 +8190,9 @@ export interface Locale extends ILocale {
          */
         "clicker": string;
         /**
-         * 今日誕生日のユーザー
-         */
-        "birthdayFollowings": string;
-        /**
          * もうすぐ誕生日のユーザー
          */
-        "birthdaySoon": string;
+        "birthdayFollowings": string;
     };
     "_cw": {
         /**

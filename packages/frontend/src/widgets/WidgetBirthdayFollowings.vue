@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :style="`height: ${widgetProps.height}px;`" :showHeader="widgetProps.showHeader" :scrollable="true" class="mkw-bdayfollowings">
 	<template #icon><i class="ti ti-cake"></i></template>
-	<template v-if="widgetProps.period === 'today'" #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
-	<template v-else #header>{{ i18n.ts._widgets.birthdaySoon }}</template>
+	<template #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch(true)"><i class="ti ti-refresh"></i></button></template>
 
 	<MkPagination ref="paginationEl" :pagination="birthdayUsersPagination">
@@ -50,7 +49,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
-const name = i18n.ts._widgets.birthdaySoon;
+const name = i18n.ts._widgets.birthdayFollowings;
 
 const widgetPropsDef = {
 	showHeader: {
@@ -155,6 +154,7 @@ useInterval(fetch, 1000 * 60, {
 	afterMounted: true,
 });
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 defineExpose<WidgetComponentExpose>({
 	name,
 	configure,
