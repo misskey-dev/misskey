@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div>{{ i18n.ts._2fa.step2 }}</div>
 							<div>
 								<a :class="$style.qr" :href="twoFactorData.url"><img :src="twoFactorData.qr"></a>
+								<!-- QRコード側にマージンが入っているので直下でOK -->
 								<div><MkButton inline rounded link :to="twoFactorData.url" :linkBehavior="'browser'">{{ i18n.ts.launchApp }}</MkButton></div>
 							</div>
 							<MkKeyValue :copy="twoFactorData.url">
