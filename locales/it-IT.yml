@@ -1942,7 +1942,6 @@ _2fa:
   registerTOTP: "Registra una App di autenticazione a due fattori (2FA/MFA)"
   step1: "Innanzitutto, installa sul dispositivo un'App di autenticazione come {a} o {b}."
   step2: "Quindi, tramite la App installata, scansiona questo codice QR."
-  step2Click: "Cliccando sul codice QR, puoi registrarlo con l'app di autenticazione o il portachiavi installato sul tuo dispositivo."
   step2Uri: "Inserisci il seguente URL se desideri utilizzare una App per PC"
   step3Title: "Inserisci il codice di verifica"
   step3: "Inserite il token visualizzato nell'app e il gioco è fatto."
