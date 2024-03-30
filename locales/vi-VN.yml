@@ -1508,7 +1508,6 @@ _2fa:
   registerTOTP: "Đăng ký ứng dụng xác thực"
   step1: "Trước tiên, hãy cài đặt một ứng dụng xác minh (chẳng hạn như {a} hoặc {b}) trên thiết bị của bạn."
   step2: "Sau đó, quét mã QR hiển thị trên màn hình này."
-  step2Click: "Quét mã QR trên ứng dụng xác thực (Authy, Google authenticator, v.v.)"
   step3Title: "Nhập mã xác thực"
   step3: "Nhập mã token do ứng dụng của bạn cung cấp để hoàn tất thiết lập."
   step4: "Kể từ bây giờ, những lần đăng nhập trong tương lai sẽ yêu cầu mã token đăng nhập đó."
