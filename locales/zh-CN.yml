@@ -1228,6 +1228,8 @@ gameRetry: "重试"
 notUsePleaseLeaveBlank: "如不使用请留空"
 useTotp: "使用一次性代码"
 useBackupCode: "使用备用代码"
+launchApp: "启动应用"
+useNativeUIForVideoAudioPlayer: "使用浏览器的 UI 播放动画及音频"
 _bubbleGame:
   howToPlay: "游戏说明"
   hold: "抓住"
@@ -2544,3 +2546,7 @@ _urlPreviewSetting:
   summaryProxy: "用来生成预览的代理的 endpoint。"
   summaryProxyDescription: "不使用 Misskey 本体，而是通过 Summaly Proxy 生成预览。"
   summaryProxyDescription2: "下面的参数将作为查询字符串发送至代理。代理侧如果不支持此设置，则忽略设定值。"
+_mediaControls:
+  pip: "画中画"
+  playbackRate: "播放速度"
+  loop: "循环播放"
