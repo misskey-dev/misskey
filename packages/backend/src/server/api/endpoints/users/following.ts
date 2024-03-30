@@ -66,11 +66,6 @@ export const paramDef = {
 			nullable: true,
 			description: 'The local host is represented with `null`.',
 		},
-
-		birthday: {
-			...birthdaySchema, nullable: true,
-			description: '@deprecated use get-following-birthday-users instead.',
-		},
 	},
 	anyOf: [
 		{ required: ['userId'] },
@@ -128,20 +123,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId)
 				.andWhere('following.followerId = :userId', { userId: user.id })
 				.innerJoinAndSelect('following.followee', 'followee');
-
-			// @deprecated use get-following-birthday-users instead.
-			if (ps.birthday) {
-				query.innerJoin(this.userProfilesRepository.metadata.targetName, 'followeeProfile', 'followeeProfile.userId = following.followeeId');
-
-				try {
-					const birthday = ps.birthday.split('-');
-					birthday.shift(); // 年の部分を削除
-					// なぜか get_birthday_date() = :birthday だとインデックスが効かないので、BETWEEN で対応
-					query.andWhere('get_birthday_date(followeeProfile.birthday) BETWEEN :birthday AND :birthday', { birthday: parseInt(birthday.join('')) });
-				} catch (err) {
-					throw new ApiError(meta.errors.birthdayInvalid);
-				}
-			}
 
 			const followings = await query
 				.limit(ps.limit)

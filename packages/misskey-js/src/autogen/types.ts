@@ -24430,8 +24430,6 @@ export type operations = {
           username?: string;
           /** @description The local host is represented with `null`. */
           host?: string | null;
-          /** @description @deprecated use get-following-birthday-users instead. */
-          birthday?: string | null;
         };
       };
     };
