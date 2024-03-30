@@ -110,6 +110,7 @@ const MOBILE_THRESHOLD = 500;
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 
 const self = props.url.startsWith(local);
+const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 const fetching = ref(true);
 const title = ref<string | null>(null);
