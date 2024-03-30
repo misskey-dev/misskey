@@ -33,8 +33,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
 								</template>
 							</I18n>
-							<div>{{ i18n.ts._2fa.step2 }}<br>{{ i18n.ts._2fa.step2Click }}</div>
-							<a :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
+							<div>{{ i18n.ts._2fa.step2 }}</div>
+							<div>
+								<a :class="$style.qr" :href="twoFactorData.url"><img :src="twoFactorData.qr"></a>
+								<div><MkButton inline rounded link :to="twoFactorData.url" :linkBehavior="'browser'">{{ i18n.ts.launchApp }}</MkButton></div>
+							</div>
 							<MkKeyValue :copy="twoFactorData.url">
 								<template #key>{{ i18n.ts._2fa.step2Uri }}</template>
 								<template #value>{{ twoFactorData.url }}</template>
@@ -178,7 +181,13 @@ function allDone() {
 }
 
 .qr {
+	display: block;
+	margin: 0 auto;
 	width: 200px;
 	max-width: 100%;
+
+	> img {
+		width: 100%;
+	}
 }
 </style>
