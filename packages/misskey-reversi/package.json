@@ -25,9 +25,9 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@types/node": "20.11.30",
-		"@typescript-eslint/eslint-plugin": "7.3.1",
-		"@typescript-eslint/parser": "7.3.1",
+		"@types/node": "20.12.2",
+		"@typescript-eslint/eslint-plugin": "7.4.0",
+		"@typescript-eslint/parser": "7.4.0",
 		"eslint": "8.57.0",
 		"nodemon": "3.1.0",
 		"typescript": "5.4.3"
@@ -35,7 +35,7 @@
 	"dependencies": {
 		"crc-32": "1.2.2",
 		"esbuild": "0.20.2",
-		"glob": "10.3.10"
+		"glob": "10.3.12"
 	},
 	"files": [
 		"built"
