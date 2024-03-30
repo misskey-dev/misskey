@@ -498,7 +498,7 @@ export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number], t
 	if ($i == null) return;
 	if ($i.movedTo) return;
 	// バックエンドにも実績を獲ったかどうかのチェックがあるのでtoken指定時は常に実績獲得を送信する
-	if (!token && claimedAchievements.includes(type)) return;
+	if ((!token || token === $i.token) && claimedAchievements.includes(type)) return;
 
 	claimingQueue.add({
 		name: type,
