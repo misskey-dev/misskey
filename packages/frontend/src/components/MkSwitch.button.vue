@@ -41,13 +41,15 @@ const toggle = () => {
 
 <style lang="scss" module>
 .button {
+	--height: 21px;
+
 	position: relative;
 	display: inline-flex;
 	flex-shrink: 0;
 	margin: 0;
 	box-sizing: border-box;
-	width: 32px;
-	height: 23px;
+	width: calc(var(--height) * 1.6);
+	height: calc(var(--height) + 2px); // 枠線
 	outline: none;
 	background: var(--switchOffBg);
 	background-clip: content-box;
@@ -69,9 +71,10 @@ const toggle = () => {
 
 .knob {
 	position: absolute;
+	box-sizing: border-box;
 	top: 3px;
-	width: 15px;
-	height: 15px;
+	width: calc(var(--height) - 6px);
+	height: calc(var(--height) - 6px);
 	border-radius: 999px;
 	transition: all 0.2s ease;
 
@@ -82,7 +85,7 @@ const toggle = () => {
 }
 
 .knobChecked {
-	left: 12px;
+	left: calc(calc(100% - var(--height)) + 3px);
 	background: var(--switchOnFg);
 }
 </style>
