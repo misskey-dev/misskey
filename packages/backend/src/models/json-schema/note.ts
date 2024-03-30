@@ -223,6 +223,10 @@ export const packedNoteSchema = {
 				}],
 			},
 		},
+		reactionCount: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
 		renoteCount: {
 			type: 'number',
 			optional: false, nullable: false,
