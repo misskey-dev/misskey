@@ -1228,6 +1228,8 @@ gameRetry: "再試一次"
 notUsePleaseLeaveBlank: "如不使用，請留空"
 useTotp: "使用一次性密碼"
 useBackupCode: "使用備用驗證碼"
+launchApp: "啟動 App"
+useNativeUIForVideoAudioPlayer: "使用瀏覽器的 UI 播放影片與音訊"
 _bubbleGame:
   howToPlay: "玩法說明"
   hold: "保留"
@@ -2545,3 +2547,7 @@ _urlPreviewSetting:
   summaryProxy: "產生預覽的代理端點"
   summaryProxyDescription: "使用摘要代理程式而不是 Misskey 本身產生預覽。"
   summaryProxyDescription2: "以下參數會作為查詢字串連結到代理。如果代理端不支援，這些設定將被忽略。"
+_mediaControls:
+  pip: "畫中畫"
+  playbackRate: "播放速度"
+  loop: "循環播放"
