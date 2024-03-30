@@ -58,11 +58,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<FormSection>
 					<div class="_gaps">
-						<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
-
-						<div>
-							<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
-						</div>
+						<MkFolder v-if="iAmModerator" defaultOpen>
+							<template #icon><i class="ti ti-shield"></i></template>
+							<template #label>{{ i18n.ts.moderation }}</template>
+							<div class="_gaps">
+								<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+								<MkButton v-if="user.host == null" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+								<MkButton inline danger @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
+								<MkButton inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
+							</div>
+						</MkFolder>
 
 						<MkFolder>
 							<template #icon><i class="ti ti-license"></i></template>
@@ -87,11 +92,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 						</MkFolder>
 
-						<div class="_buttons">
-							<MkButton v-if="iAmModerator" inline danger @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
-							<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
-						</div>
-						<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
+						<MkFolder v-if="$i.isAdmin">
+							<template #icon><i class="ti ti-user-x"></i></template>
+							<template #label>{{ i18n.ts.deleteAccount }}</template>
+							<div class="_gaps">
+								<MkButton inline danger @click="deleteAccount(true)"><i class="ti ti-user-x"></i> {{ i18n.ts.deleteAccount }}</MkButton>
+								<MkButton inline danger @click="deleteAccount(false)"><i class="ti ti-file-shredder"></i> {{ i18n.ts.deleteAccount }} ({{ i18n.ts.all }})</MkButton>
+							</div>
+						</MkFolder>
 					</div>
 				</FormSection>
 			</div>
@@ -380,7 +388,7 @@ async function deleteAllFiles() {
 	}
 }
 
-async function deleteAccount() {
+async function deleteAccount(soft: boolean) {
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.deleteAccountConfirm,
@@ -395,6 +403,7 @@ async function deleteAccount() {
 	if (typed.result === user.value?.username) {
 		await os.apiWithDialog('admin/accounts/delete', {
 			userId: user.value.id,
+			soft,
 		}).then(refreshUser);
 	} else {
 		os.alert({

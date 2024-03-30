@@ -37,6 +37,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		soft: { type: 'boolean', default: true, description: 'Since deletion by an administrator is a moderation action, the default is to soft delete.' },
 	},
 	required: ['userId'],
 } as const;
@@ -56,8 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (user == null) throw new ApiError(meta.errors.userNotFound);
 			if (await this.roleService.isModerator(user)) throw new ApiError(meta.errors.cannotDeleteModerator);
 
-			// 管理者からの削除ということはモデレーション行為なので、soft delete にする
-			await this.deleteAccountService.deleteAccount(user, true, me);
+			await this.deleteAccountService.deleteAccount(user, ps.soft, me);
 		});
 	}
 }
