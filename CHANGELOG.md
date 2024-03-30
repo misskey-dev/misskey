@@ -36,6 +36,7 @@
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
+- Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
 
 ## 2024.3.1
 
