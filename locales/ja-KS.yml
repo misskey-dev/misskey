@@ -2232,6 +2232,7 @@ _play:
   title: "タイトル"
   script: "スクリプト"
   summary: "説明"
+  visibilityDescription: "非公開に設定するとプロフィールに表示されへんくなるけど、URLを知っとる人は引き続きアクセスできるで。"
 _pages:
   newPage: "ページを作る"
   editPage: "ページの編集"
@@ -2532,3 +2533,21 @@ _reversi:
 _offlineScreen:
   title: "オフライン - サーバーに接続できひんで"
   header: "サーバーに接続できへんわ"
+_urlPreviewSetting:
+  title: "URLプレビューの設定"
+  enable: "URLプレビューを有効にする"
+  timeout: "プレビュー取得時のタイムアウト(ms)"
+  timeoutDescription: "プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されへんで。"
+  maximumContentLength: "Content-Lengthの最大値(byte)"
+  maximumContentLengthDescription: "Content-Lengthがこの値を超えた場合、プレビューは生成されへんで。"
+  requireContentLength: "Content-Lengthが取得できた場合のみプレビューを生成"
+  requireContentLengthDescription: "相手サーバがContent-Lengthを返さない場合、プレビューは生成されへんで。"
+  userAgent: "User-Agent"
+  userAgentDescription: "プレビュー取得時に使用されるUser-Agentを設定するで。空欄の場合、デフォルトのUser-Agentが使用されるで。"
+  summaryProxy: "プレビューを生成するプロキシのエンドポイント"
+  summaryProxyDescription: "Misskey本体やなく、サマリープロキシを使用してプレビューを生成するで。"
+  summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されるで。プロキシ側がこれらをサポートせえへんときは、設定値は無視されるで。"
+_mediaControls:
+  pip: "ピクチャインピクチャ"
+  playbackRate: "再生速度"
+  loop: "ループ再生"
