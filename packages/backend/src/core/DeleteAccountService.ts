@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
@@ -20,6 +21,8 @@ export class DeleteAccountService {
 	public logger: Logger;
 
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -29,7 +32,7 @@ export class DeleteAccountService {
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService.getLogger('delete-account');
+		this.logger = this.loggerService.getLogger('account:delete');
 	}
 
 	@bindThis
@@ -39,19 +42,38 @@ export class DeleteAccountService {
 		const _user = await this.usersRepository.findOneByOrFail({ id: user.id });
 		if (_user.isRoot) throw new Error('cannot delete a root account');
 
-		// 物理削除する前にDelete activityを送信する
-		await this.userSuspendService.doPostSuspend(user).catch(err => this.logger.error(err));
+		// 5分間の間に同じアカウントに対して削除リクエストが複数回来た場合、最初のリクエストのみを処理する
+		const lock = await this.redisClient.set(`account:delete:lock:${user.id}`, Date.now(), 'EX', 60 * 5, 'NX');
+		if (lock === null) {
+			this.logger.warn(`Delete account is already in progress for ${user.id}`);
+			return;
+		}
 
-		this.queueService.createDeleteAccountJob(user, {
-			force: me ? await this.roleService.isModerator(me) : false,
-			soft: soft,
-		});
+		// noinspection ES6MissingAwait APIで呼び出される際にタイムアウトされないように
+		(async () => {
+			try {
+				// 物理削除する前にDelete activityを送信する
+				await this.userSuspendService.doPostSuspend(user).catch(err => this.logger.error(err));
 
-		await this.usersRepository.update(user.id, {
-			isDeleted: true,
-		});
+				// noinspection ES6MissingAwait
+				this.queueService.createDeleteAccountJob(user, {
+					force: me ? await this.roleService.isModerator(me) : false,
+					soft: soft,
+				});
 
-		this.globalEventService.publishInternalEvent('userChangeDeletedState', { id: user.id, isDeleted: true });
+				await this.usersRepository.update(user.id, {
+					isDeleted: true,
+				});
+
+				this.globalEventService.publishInternalEvent('userChangeDeletedState', { id: user.id, isDeleted: true });
+			} catch (err) {
+				this.logger.error(`Failed to delete account ${user.id}, request by ${me ? me.id : 'remote'} (soft: ${soft})`, { error: err });
+				// すでにcallstackから離れてるので、ここでエラーをthrowしても意味がない
+			} finally {
+				// 成功・失敗に関わらずロックを解除
+				await this.redisClient.unlink(`account:delete:lock:${user.id}`);
+			}
+		})();
 	}
 
 	@bindThis

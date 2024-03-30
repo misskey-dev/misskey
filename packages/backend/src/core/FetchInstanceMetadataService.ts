@@ -41,11 +41,12 @@ export class FetchInstanceMetadataService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 		private federatedInstanceService: FederatedInstanceService,
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
 	) {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');
 	}
