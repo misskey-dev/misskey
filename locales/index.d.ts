@@ -4932,6 +4932,10 @@ export interface Locale extends ILocale {
      * アプリを起動
      */
     "launchApp": string;
+    /**
+     * 動画・音声の再生にブラウザのUIを使用する
+     */
+    "useNativeUIForVideoAudioPlayer": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -9833,6 +9837,20 @@ export interface Locale extends ILocale {
          * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
          */
         "summaryProxyDescription2": string;
+    };
+    "_mediaControls": {
+        /**
+         * ピクチャインピクチャ
+         */
+        "pip": string;
+        /**
+         * 再生速度
+         */
+        "playbackRate": string;
+        /**
+         * ループ再生
+         */
+        "loop": string;
     };
 }
 declare const locales: {

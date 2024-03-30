@@ -1229,6 +1229,7 @@ notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
 launchApp: "アプリを起動"
+useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2619,3 +2620,9 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_mediaControls:
+  pip: "ピクチャインピクチャ"
+  playbackRate: "再生速度"
+  loop: "ループ再生"
+  
