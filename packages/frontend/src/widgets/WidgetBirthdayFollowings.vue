@@ -20,13 +20,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template #default="{ items: users }">
 			<MkDateSeparatedList v-slot="{ item }" :items="toMisskeyEntity(users)" :noGap="true">
-				<div v-if="item.user" :key="item.id" style="display: flex; gap: 8px; padding-right: 16px">
-					<MkA :to="userPage(item.user)" style="flex-grow: 1;">
-						<MkUserCardMini :user="item.user" :withChart="false" style="background: inherit; border-radius: unset;"/>
+				<div v-if="item.user" :key="item.id" style="display: grid; grid-template-columns: auto 56px; grid-column-gap: 8px;">
+					<MkA :to="userPage(item.user)" style="overflow: hidden;">
+						<MkUserCardMini :user="item.user" :withChart="false" style="text-overflow: ellipsis; background: inherit; border-radius: unset;"/>
 					</MkA>
-					<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
-						<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
-					</button>
+					<div style="display: flex; margin-right: 16px;">
+						<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
+							<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
+						</button>
+					</div>
 				</div>
 			</MkDateSeparatedList>
 		</template>
