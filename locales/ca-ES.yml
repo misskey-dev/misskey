@@ -1928,7 +1928,6 @@ _2fa:
   registerTOTP: "Registrar una aplicació autenticadora"
   step1: "Primer instal·la una aplicació autenticadora (com {a} o {b}) al teu dispositiu."
   step2: "Després escaneja el codi QR que es mostra en aquesta pantalla."
-  step2Click: "Fent clic en aquest codi QR et permetrà registrar l'autenticació de doble factor a la teva clau de seguretat o en l'aplicació d'autenticació del teu dispositiu."
   step2Uri: "Escriu la següent URI si estàs fent servir una aplicació d'escriptori "
   step3Title: "Escriu un codi d'autenticació"
   step3: "Escriu el codi d'autenticació (token) que es mostra a la teva aplicació per finalitzar la configuració."
