@@ -2,8 +2,7 @@
 
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
-- `users/following` の `birthday` プロパティは廃止されました。代わりに `users/get-following-birthday-users` をご利用ください。
-  - 利用状況を鑑み、deprecatedでの移行対応は行いません
+- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
 
 ### General
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
