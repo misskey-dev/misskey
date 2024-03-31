@@ -281,13 +281,7 @@ function exec() {
 
 		emojis.value = searchEmoji(props.q, emojiDb.value);
 	} else if (props.type === 'emojiComplete') {
-		if (!props.q || props.q === '') {
-			// 最近使った絵文字をサジェスト
-			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => unicodeEmojiDB.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
-			return;
-		}
-
-		emojis.value = searchEmoji(props.q, unicodeEmojiDB.value);
+		emojis.value = searchEmoji(props.q, unicodeEmojiDB.value, true);
 	} else if (props.type === 'mfmTag') {
 		if (!props.q || props.q === '') {
 			mfmTags.value = MFM_TAGS;

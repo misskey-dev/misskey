@@ -16,7 +16,7 @@ export type EmojiDef = {
 };
 type EmojiScore = { emoji: EmojiDef, score: number };
 
-export function searchEmoji(query: string | null, emojiDb: EmojiDef[], max = 30): EmojiDef[] {
+export function searchEmoji(query: string | null, emojiDb: EmojiDef[], exact = false, max = 30): EmojiDef[] {
 	if (!query) {
 		return [];
 	}
@@ -38,6 +38,13 @@ export function searchEmoji(query: string | null, emojiDb: EmojiDef[], max = 30)
 			}
 			return matched.size === max;
 		});
+	}
+
+	if (exact) {
+		return [...matched.values()]
+			.sort((x, y) => y.score - x.score)
+			.slice(0, max)
+			.map(it => it.emoji);
 	}
 
 	// 前方一致（エイリアスなし）
