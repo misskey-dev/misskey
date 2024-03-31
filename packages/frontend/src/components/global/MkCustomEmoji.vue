@@ -87,14 +87,16 @@ const importEmoji = async (emojiName) => {
 			query: emojiName,
 			host: props.host,
 		})).find((_emoji) => _emoji.name === emojiName);
-		await os.apiWithDialog('admin/emoji/copy', {
-			emojiId: emoji.id,
-		});
+		if (emoji) {
+			await os.apiWithDialog('admin/emoji/copy', {
+				emojiId: emoji.id,
+			});
+		}
 	} else {
 		os.alert({
 			title: i18n.ts.error,
 			text: i18n.ts.emojiAlreadyExists,
-		})
+		});
 	}
 };
 
@@ -122,9 +124,9 @@ function onClick(ev: MouseEvent) {
 				icon: 'ti ti-plus',
 				action: () => {
 					importEmoji(props.name).then(() => {
-							// リアクション
-							react(`:${props.name}:`);
-							sound.playMisskeySfx('reaction');
+						// リアクション
+						react(`:${props.name}:`);
+						sound.playMisskeySfx('reaction');
 					});
 				},
 			}] : []),
