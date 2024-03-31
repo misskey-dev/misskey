@@ -2277,6 +2277,8 @@ _pages:
     section: "섹션"
     image: "이미지"
     button: "버튼"
+    dynamic: "동적 블록"
+    dynamicDescription: "이 블록은 폐지되었습니다. 이제부터 {play}에서 이용해 주세요."
     note: "노트필기"
     _note:
       id: "노트 ID"
