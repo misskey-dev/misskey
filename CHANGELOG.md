@@ -45,6 +45,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
+- Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
 
 ## 2024.3.1
 
