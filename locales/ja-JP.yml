@@ -2334,6 +2334,8 @@ _pages:
     section: "セクション"
     image: "画像"
     button: "ボタン"
+    dynamic: "動的ブロック"
+    dynamicDescription: "このブロックは廃止されています。今後は{play}を利用してください。"
 
     note: "ノート埋め込み"
     _note:
@@ -2633,4 +2635,3 @@ _externalNavigationWarning:
   title: "外部サイトに移動します"
   description: "{host}を離れて外部サイトに移動します"
   trustThisDomain: "このデバイスで今後このドメインを信頼する"
-  
