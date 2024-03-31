@@ -30,7 +30,7 @@ export const meta = {
 			optional: false, nullable: false,
 			properties: {
 				birthday: {
-					type: 'string', format: 'date-time',
+					type: 'string',
 					optional: false, nullable: false,
 				},
 				user: {
@@ -134,10 +134,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return birthdayUsers
 				.map(item => {
 					const birthday = new Date();
-					birthday.setMonth(Math.floor(item.birthday_date / 100) - 1, item.birthday_date % 100);
 					birthday.setHours(0, 0, 0, 0);
-					if (birthday.getTime() < Date.now()) birthday.setFullYear(new Date().getFullYear() + 1);
-					return { birthday: birthday.toISOString(), user: users.get(item.user_id) };
+					birthday.setMonth(Math.floor(item.birthday_date / 100) - 1, item.birthday_date % 100);
+
+					if (birthday.getTime() < new Date().setHours(0, 0, 0, 0)) {
+						birthday.setFullYear(new Date().getFullYear() + 1);
+					}
+
+					const birthdayStr = `${birthday.getFullYear()}-${(birthday.getMonth() + 1).toString().padStart(2, '0')}-${(birthday.getDate()).toString().padStart(2, '0')}`;
+					return { birthday: birthdayStr, user: users.get(item.user_id) };
 				})
 				.filter(item => item.user !== undefined)
 				.map(item => item as { birthday: string; user: Packed<'UserLite'> });

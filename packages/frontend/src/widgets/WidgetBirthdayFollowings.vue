@@ -142,11 +142,18 @@ function fetch(force = false) {
 }
 
 function toMisskeyEntity(items): MisskeyEntity[] {
-	const r = items.map((item: { userId: string, birthday: string, user: Misskey.entities.UserLite }) => ({
-		id: item.user.id,
-		createdAt: item.birthday,
-		user: item.user,
-	}));
+	const r = items.map((item: { userId: string, birthday: string, user: Misskey.entities.UserLite }) => {
+		const bday = new Date();
+		const parsedBday = item.birthday.split('-').map((x) => parseInt(x, 10));
+		bday.setFullYear(parsedBday[0], parsedBday[1] - 1, parsedBday[2]);
+		bday.setHours(0, 0, 0, 0);
+
+		return {
+			id: item.user.id,
+			createdAt: bday.toISOString(),
+			user: item.user,
+		};
+	});
 
 	return [{ id: '_', createdAt: begin.value.toISOString() }, ...r];
 }
