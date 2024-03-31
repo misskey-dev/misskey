@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkPagination ref="paginationEl" :pagination="birthdayUsersPagination">
 		<template #empty>
-			<div :class="$style.empty" :style="`height: ${widgetProps.showHeader ? widgetProps.height - 38 : widgetProps.height}px;`">
-				<img :src="infoImageUrl" class="_ghost"/>
+			<div :class="$style.emptyRoot" :style="`height: ${widgetProps.showHeader ? widgetProps.height - 38 : widgetProps.height}px;`">
+				<img :src="infoImageUrl" class="_ghost" :class="$style.emptyImg"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</template>
@@ -165,19 +165,19 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.empty {
+.emptyRoot {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
 
-	> img {
-		height: 96px;
-		width: auto;
-		max-width: 90%;
-		margin-bottom: 8px;
-		border-radius: var(--radius);
-	}
+.emptyImg {
+	height: 96px;
+	width: auto;
+	max-width: 90%;
+	margin-bottom: 8px;
+	border-radius: var(--radius);
 }
 
 .post {
