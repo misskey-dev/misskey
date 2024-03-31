@@ -64,7 +64,7 @@ const widgetPropsDef = {
 	},
 	period: {
 		type: 'radio' as const,
-		default: 'today',
+		default: '3day',
 		options: [{
 			value: 'today', label: i18n.ts.today,
 		}, {
