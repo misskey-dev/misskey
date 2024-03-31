@@ -326,7 +326,7 @@ async function fetchSkebStatus() {
 function buildSkebStatus(): string {
 	if (!userSkebStatus.value) return '';
 
-	if (userSkebStatus.value.isCreator) {
+	if (userSkebStatus.value.isAcceptable || userSkebStatus.value.isCreator) {
 		let status = '';
 
 		if (userSkebStatus.value.isAcceptable) {
