@@ -2277,6 +2277,8 @@ _pages:
     section: "區段"
     image: "圖片"
     button: "按鈕"
+    dynamic: "動態方塊"
+    dynamicDescription: "這個方塊已經廢止，現在開始請使用 {play}。"
     note: "嵌式貼文"
     _note:
       id: "貼文ID"
