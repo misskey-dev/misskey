@@ -24568,7 +24568,6 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-              /** Format: date-time */
               birthday: string;
               user: components['schemas']['UserLite'];
             }[];
