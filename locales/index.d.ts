@@ -4916,6 +4916,14 @@ export interface Locale extends ILocale {
      * QRコード
      */
     "qrcode": string;
+    /**
+     * このQRコードをスキャンすると、新規登録時の招待コードが自動で入力されます。
+     */
+    "qrcodeToInvite": string;
+    /**
+     * 指定された絵文字は既に存在します。
+     */
+    "emojiAlreadyExists": string;
     "_bubbleGame": {
         /**
          * 遊び方
