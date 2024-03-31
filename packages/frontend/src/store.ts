@@ -442,6 +442,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	useNativeUIForVideoAudioPlayer: {
+		where: 'device',
+		default: false,
+	},
 	trustedDomains: {
 		where: 'device',
 		default: [] as string[],
