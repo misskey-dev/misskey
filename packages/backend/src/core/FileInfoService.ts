@@ -372,7 +372,7 @@ export class FileInfoService {
 				return TYPE_SVG;
 			}
 
-			if (type.mime.startsWith('video') && !(await this.hasVideoTrackOnVideoFile(path))) {
+			if ((type.mime.startsWith('video') || type.mime === 'application/ogg') && !(await this.hasVideoTrackOnVideoFile(path))) {
 				const newMime = `audio/${type.mime.split('/')[1]}`;
 				if (newMime === 'audio/mp4') {
 					return {
