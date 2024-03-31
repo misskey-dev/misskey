@@ -126,13 +126,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				)
 			).map(u => [u.id, u]));
 
+			const now = new Date();
 			return birthdayUsers
 				.map(item => {
-					const birthday = new Date();
-					birthday.setMonth(Math.floor(item.birthday_date / 100) - 1);
-					birthday.setDate(item.birthday_date % 100);
-					birthday.setHours(0, 0, 0, 0);
-					if (birthday.getTime() < Date.now()) birthday.setFullYear(new Date().getFullYear() + 1);
+					const birthday = new Date(
+						now.getFullYear(),
+						Math.floor(item.birthday_date / 100) - 1,
+						item.birthday_date % 100,
+						0, 0, 0, 0,
+					);
+					if (birthday.getTime() < now.getTime()) birthday.setFullYear(now.getFullYear() + 1);
 					return { birthday: birthday.toISOString(), user: users.get(item.user_id) };
 				})
 				.filter(item => item.user !== undefined)
