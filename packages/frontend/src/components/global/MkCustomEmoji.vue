@@ -87,14 +87,17 @@ const importEmoji = async (emojiName) => {
 			query: emojiName,
 			host: props.host,
 		})).find((_emoji) => _emoji.name === emojiName);
-		await os.apiWithDialog('admin/emoji/copy', {
-			emojiId: emoji.id,
+		if (emoji) {
+			await os.apiWithDialog('admin/emoji/copy', {
+				emojiId: emoji.id,
+			});
+		}
+	} else {
+		os.alert({
+			title: i18n.ts.error,
+			text: i18n.ts.emojiAlreadyExists,
 		});
 	}
-
-	// リアクション
-	react(`:${emojiName}:`);
-	sound.playMisskeySfx('reaction');
 };
 
 function onClick(ev: MouseEvent) {
@@ -111,10 +114,20 @@ function onClick(ev: MouseEvent) {
 					os.success();
 				},
 			}, ...(props.menuImport && react ? [{
+				text: i18n.ts.import,
+				icon: 'ti ti-download',
+				action: () => {
+					importEmoji(props.name);
+				},
+			}, {
 				text: i18n.ts.doReaction,
 				icon: 'ti ti-plus',
 				action: () => {
-					importEmoji(props.name);
+					importEmoji(props.name).then(() => {
+						// リアクション
+						react(`:${props.name}:`);
+						sound.playMisskeySfx('reaction');
+					});
 				},
 			}] : []),
 			], ev.currentTarget ?? ev.target);
