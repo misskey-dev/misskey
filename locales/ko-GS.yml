@@ -808,5 +808,6 @@ _moderationLogTypes:
   resetPassword: "비밀번호 재설정"
   resolveAbuseReport: "신고 해겔하기"
 _reversi:
+  reversi: "리버시"
   chooseBoard: "보드 개리기"
   total: "합계"
