@@ -445,8 +445,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					createdNote: await this.noteEntityService.pack(note, me),
 				};
 			} catch (err) {
-				// エラーが発生した場合、リクエストの処理結果を削除
-				await this.redisForTimelines.unlink(`note:idempotent:${me.id}:${hash}`);
+				// エラーが発生した場合、まだ処理中として記録されている場合はリクエストの処理結果を削除
+				await this.redisForTimelines.unlinkIf(`note:idempotent:${me.id}:${hash}`, '_');
 
 				logger.error('Failed to create a note.', { error: err });
 

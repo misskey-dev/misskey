@@ -173,8 +173,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				logger.info('Successfully created drive file.', { fileId: driveFile.id });
 				return await this.driveFileEntityService.pack(driveFile, me, { self: true });
 			} catch (e) {
-				// エラーが発生した場合、リクエストの処理結果を削除
-				await this.redisClient.unlink(`drive:files:create:idempotent:${me.id}:${hash}`);
+				// エラーが発生した場合、まだ処理中として記録されている場合はリクエストの処理結果を削除
+				await this.redisClient.unlinkIf(`drive:files:create:idempotent:${me.id}:${hash}`, '_');
 
 				logger.error('Failed to create drive file.', { error: e });
 

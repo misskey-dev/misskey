@@ -117,8 +117,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					});
 				},
 				async err => {
-					// エラーが発生した場合、リクエストの処理結果を削除
-					await this.redisClient.unlink(`drive:files:upload-from-url:idempotent:${me.id}:${hash}`);
+					// エラーが発生した場合、まだ処理中として記録されている場合はリクエストの処理結果を削除
+					await this.redisClient.unlinkIf(`drive:files:upload-from-url:idempotent:${me.id}:${hash}`, '_');
 					logger.error('Failed to upload from URL.', { error: err });
 				},
 			);

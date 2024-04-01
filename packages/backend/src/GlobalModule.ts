@@ -47,7 +47,7 @@ const $meilisearch: Provider = {
 const $redis: Provider = {
 	provide: DI.redis,
 	useFactory: (config: Config) => {
-		return new Redis.Redis({
+		const redis = new Redis.Redis({
 			...config.redis,
 			reconnectOnError: (err: Error) => {
 				if ( err.message.includes('READONLY')
@@ -57,6 +57,27 @@ const $redis: Provider = {
 				return 1;
 			},
 		});
+		redis.defineCommand('setIf', {
+			numberOfKeys: 1,
+			lua: `
+				if redis.call('GET', KEYS[1]) == ARGV[1] then
+					return redis.call('SET', KEYS[1], ARGV[2])
+				else
+					return 0
+				end
+			`,
+		});
+		redis.defineCommand('unlinkIf', {
+			numberOfKeys: 1,
+			lua: `
+				if redis.call('GET', KEYS[1]) == ARGV[1] then
+					return redis.call('UNLINK', KEYS[1])
+				else
+					return 0
+				end
+			`,
+		});
+		return redis;
 	},
 	inject: [DI.config],
 };
@@ -101,7 +122,7 @@ const $redisForSub: Provider = {
 const $redisForTimelines: Provider = {
 	provide: DI.redisForTimelines,
 	useFactory: (config: Config) => {
-		return new Redis.Redis({
+		const redis = new Redis.Redis({
 			...config.redisForTimelines,
 			reconnectOnError: (err: Error) => {
 				if ( err.message.includes('READONLY')
@@ -111,6 +132,27 @@ const $redisForTimelines: Provider = {
 				return 1;
 			},
 		});
+		redis.defineCommand('setIf', {
+			numberOfKeys: 1,
+			lua: `
+				if redis.call('GET', KEYS[1]) == ARGV[1] then
+					return redis.call('SET', KEYS[1], ARGV[2])
+				else
+					return 0
+				end
+			`,
+		});
+		redis.defineCommand('unlinkIf', {
+			numberOfKeys: 1,
+			lua: `
+				if redis.call('GET', KEYS[1]) == ARGV[1] then
+					return redis.call('UNLINK', KEYS[1])
+				else
+					return 0
+				end
+			`,
+		});
+		return redis;
 	},
 	inject: [DI.config],
 };
