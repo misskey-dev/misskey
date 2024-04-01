@@ -55,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}
 	]"
 	:to="to ?? '#'"
+	:behavior="linkBehavior"
 	@mousedown="onMousedown"
 >
 	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
@@ -76,7 +77,7 @@ const props = defineProps<{
   inline?: boolean;
   link?: boolean;
   to?: string;
-  autofocus?: boolean;
+  linkBehavior?: null | 'window' | 'browser';autofocus?: boolean;
   wait?: boolean;
   danger?: boolean;
   full?: boolean;

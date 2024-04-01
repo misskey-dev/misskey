@@ -177,6 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave }}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
 				<MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
 				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
+				<MkSwitch v-model="useNativeUIForVideoAudioPlayer">{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -475,6 +476,7 @@ const remoteLocalTimelineName2 = ref(defaultStore.state['remoteLocalTimelineName
 const remoteLocalTimelineName3 = ref(defaultStore.state['remoteLocalTimelineName3']);
 const remoteLocalTimelineName4 = ref(defaultStore.state['remoteLocalTimelineName4']);
 const remoteLocalTimelineName5 = ref(defaultStore.state['remoteLocalTimelineName5']);
+const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
 
 const remoteLocalTimelineEnable1 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable1'));
 const remoteLocalTimelineEnable2 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable2'));
