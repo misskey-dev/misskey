@@ -134,16 +134,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (res.status > 299 || (json.error ?? json.ban_reason)) {
 				logger.error('Skeb status response error', { url: url.href, userId: ps.userId, status: res.status, statusText: res.statusText, error: json.error ?? json.ban_reason });
-				if (res.status === 404 && hasSkebRole) await this.roleService.unassign(ps.userId, this.config.skebStatus.roleId);
+				try {
+					if (res.status === 404 && hasSkebRole) await this.roleService.unassign(ps.userId, this.config.skebStatus.roleId);
+				} catch (err) {
+					logger.error('Failed to unassign role', { userId: ps.userId, roleId: this.config.skebStatus.roleId, error: err });
+				}
 				throw new ApiError(meta.errors.noSuchUser);
 			}
 
 			logger.info('Skeb status response', { url: url.href, userId: ps.userId, status: res.status, statusText: res.statusText, skebStatus: json });
 
-			if (json.is_acceptable) {
-				if (!hasSkebRole) await this.roleService.assign(ps.userId, this.config.skebStatus.roleId);
-			} else if (hasSkebRole) {
-				await this.roleService.unassign(ps.userId, this.config.skebStatus.roleId);
+			try {
+				if (json.is_acceptable) {
+					if (!hasSkebRole) await this.roleService.assign(ps.userId, this.config.skebStatus.roleId);
+				} else if (hasSkebRole) {
+					await this.roleService.unassign(ps.userId, this.config.skebStatus.roleId);
+				}
+			} catch (err) {
+				logger.error('Failed to assign/unassign role', { userId: ps.userId, roleId: this.config.skebStatus.roleId, error: err });
 			}
 
 			return {
