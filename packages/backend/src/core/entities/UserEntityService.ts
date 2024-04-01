@@ -484,6 +484,7 @@ export class UserEntityService implements OnModuleInit {
 				name: r.name,
 				iconUrl: r.iconUrl,
 				displayOrder: r.displayOrder,
+				behavior: r.badgeBehavior ?? undefined,
 			}))) : undefined,
 
 			...(isDetailed ? {

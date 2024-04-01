@@ -176,6 +176,10 @@ export const packedUserLiteSchema = {
 						type: 'number',
 						nullable: false, optional: false,
 					},
+					behavior: {
+						type: 'string',
+						nullable: false, optional: true,
+					}
 				},
 			},
 		},

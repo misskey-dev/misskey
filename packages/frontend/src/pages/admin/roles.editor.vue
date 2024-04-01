@@ -67,6 +67,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
 	</MkSwitch>
 
+	<MkInput v-if="role.asBadge" v-model="role.badgeBehavior" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.badgeBehavior }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfBadgeBehavior }}</template>
+	</MkInput>
+
 	<MkSwitch v-model="role.isExplorable" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.isExplorable }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfIsExplorable }}</template>
@@ -848,6 +853,7 @@ const save = throttle(100, () => {
 		isPublic: role.value.isPublic,
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,
+		badgeBehavior: role.value.badgeBehavior,
 		canEditMembersByModerator: role.value.canEditMembersByModerator,
 		policies: role.value.policies,
 	};

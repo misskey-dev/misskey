@@ -1695,6 +1695,8 @@ _role:
   iconUrl: "アイコン画像のURL"
   asBadge: "バッジとして表示"
   descriptionOfAsBadge: "オンにすると、ユーザー名の横にロールのアイコンが表示されます。"
+  badgeBehavior: "バッジの挙動"
+  descriptionOfBadgeBehavior: "バッジの挙動を設定します。"
   isExplorable: "ユーザーを見つけやすくする"
   descriptionOfIsExplorable: "オンにすると、「みつける」でメンバー一覧が公開されるほか、ロールのタイムラインが利用可能になります。"
   displayOrder: "表示順"

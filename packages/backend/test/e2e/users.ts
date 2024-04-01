@@ -651,11 +651,20 @@ describe('ユーザー', () => {
 	});
 	test('を取得することができ、バッヂロールがセットされていること', async () => {
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters: { userId: userRoleBadge.id }, user: alice });
-		assert.deepStrictEqual(response.badgeRoles, [{
-			name: roleBadge.name,
-			iconUrl: roleBadge.iconUrl,
-			displayOrder: roleBadge.displayOrder,
-		}]);
+		if (roleBadge.badgeBehavior) {
+			assert.deepStrictEqual(response.badgeRoles, [{
+				name: roleBadge.name,
+				iconUrl: roleBadge.iconUrl,
+				displayOrder: roleBadge.displayOrder,
+				behavior: roleBadge.badgeBehavior,
+			}]);
+		} else {
+			assert.deepStrictEqual(response.badgeRoles, [{
+				name: roleBadge.name,
+				iconUrl: roleBadge.iconUrl,
+				displayOrder: roleBadge.displayOrder,
+			}]);
+		}
 		assert.deepStrictEqual(response.roles, []); // バッヂだからといってrolesが取れるとは限らない
 	});
 	test('をID指定のリスト形式で取得することができる（空）', async () => {

@@ -1677,6 +1677,8 @@ _role:
   iconUrl: "Icon URL"
   asBadge: "Show as badge"
   descriptionOfAsBadge: "This role's icon will be displayed next to the username of users with this role if turned on."
+  badgeBehavior: "Badge behavior"
+  descriptionOfBadgeBehavior: "Set the behavior of the badge icon."
   isExplorable: "Make role explorable"
   descriptionOfIsExplorable: "This role's timeline and the list of users with this will be made public if enabled."
   displayOrder: "Position"

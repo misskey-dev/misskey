@@ -251,6 +251,7 @@ export const channel = async (user: UserToken, channel: Partial<misskey.entities
 export const role = async (user: UserToken, role: Partial<misskey.entities.Role> = {}, policies: any = {}): Promise<misskey.entities.Role> => {
 	const res = await api('admin/roles/create', {
 		asBadge: false,
+		badgeBehavior: null,
 		canEditMembersByModerator: false,
 		color: null,
 		condFormula: {

@@ -3748,6 +3748,7 @@ export type components = {
           name: string;
           iconUrl: string | null;
           displayOrder: number;
+          behavior?: string;
         })[];
     };
     UserDetailedNotMeOnly: {
@@ -4843,6 +4844,7 @@ export type components = {
       isExplorable: boolean;
       /** @example false */
       asBadge: boolean;
+      badgeBehavior: string | null;
       /** @example false */
       canEditMembersByModerator: boolean;
       policies: {
@@ -9827,6 +9829,7 @@ export type operations = {
           /** @default false */
           isExplorable?: boolean;
           asBadge: boolean;
+          badgeBehavior?: string | null;
           canEditMembersByModerator: boolean;
           displayOrder: number;
           policies: Record<string, never>;
@@ -10048,6 +10051,7 @@ export type operations = {
           isAdministrator: boolean;
           isExplorable?: boolean;
           asBadge: boolean;
+          badgeBehavior?: string | null;
           canEditMembersByModerator: boolean;
           displayOrder: number;
           policies: Record<string, never>;

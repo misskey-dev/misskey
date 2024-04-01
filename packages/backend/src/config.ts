@@ -72,6 +72,7 @@ type Source = {
 		headers: { [x: string]: string };
 		parameters: { [x: string]: string };
 		userIdParameterName: string;
+		roleId: string;
 	}
 
 	proxy?: string;
@@ -154,6 +155,7 @@ export type Config = {
 		headers: { [x: string]: string };
 		parameters: { [x: string]: string };
 		userIdParameterName: string;
+		roleId: string;
 	} | undefined;
 	proxy: string | undefined;
 	proxySmtp: string | undefined;

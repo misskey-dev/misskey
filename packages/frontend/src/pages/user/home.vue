@@ -319,7 +319,6 @@ async function fetchSkebStatus() {
 		return;
 	}
 
-	console.log('fetching skeb status');
 	userSkebStatus.value = await misskeyApiGet('users/get-skeb-status', { userId: props.user.id });
 }
 

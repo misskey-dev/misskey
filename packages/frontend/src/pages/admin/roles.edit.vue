@@ -63,6 +63,7 @@ if (props.id) {
 		isPublic: false,
 		isExplorable: false,
 		asBadge: false,
+		badgeBehavior: null,
 		canEditMembersByModerator: false,
 		displayOrder: 0,
 		policies: {},

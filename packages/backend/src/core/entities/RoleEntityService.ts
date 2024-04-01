@@ -68,6 +68,7 @@ export class RoleEntityService {
 			isModerator: role.isModerator,
 			isExplorable: role.isExplorable,
 			asBadge: role.asBadge,
+			badgeBehavior: role.badgeBehavior,
 			canEditMembersByModerator: role.canEditMembersByModerator,
 			displayOrder: role.displayOrder,
 			policies: policies,

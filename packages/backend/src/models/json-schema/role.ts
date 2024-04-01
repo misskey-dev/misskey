@@ -384,6 +384,10 @@ export const packedRoleSchema = {
 					optional: false, nullable: false,
 					example: false,
 				},
+				badgeBehavior: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 				canEditMembersByModerator: {
 					type: 'boolean',
 					optional: false, nullable: false,

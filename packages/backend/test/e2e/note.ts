@@ -467,6 +467,7 @@ describe('Note', () => {
 				isPublic: false,
 				isExplorable: false,
 				asBadge: false,
+				badgeBehavior: null,
 				canEditMembersByModerator: false,
 				policies: {
 					alwaysMarkNsfw: {
@@ -780,6 +781,7 @@ describe('Note', () => {
 				isPublic: false,
 				isExplorable: false,
 				asBadge: false,
+				badgeBehavior: null,
 				canEditMembersByModerator: false,
 				policies: {
 					mentionLimit: {
@@ -834,6 +836,7 @@ describe('Note', () => {
 				isPublic: false,
 				isExplorable: false,
 				asBadge: false,
+				badgeBehavior: null,
 				canEditMembersByModerator: false,
 				policies: {
 					mentionLimit: {
@@ -890,6 +893,7 @@ describe('Note', () => {
 				isPublic: false,
 				isExplorable: false,
 				asBadge: false,
+				badgeBehavior: null,
 				canEditMembersByModerator: false,
 				policies: {
 					mentionLimit: {

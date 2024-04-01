@@ -1661,6 +1661,8 @@ _role:
   iconUrl: "아이콘 URL"
   asBadge: "뱃지로 표시"
   descriptionOfAsBadge: "활성화하면 유저명 옆에 역할의 아이콘이 표시됩니다."
+  badgeBehavior: "뱃지 동작"
+  descriptionOfBadgeBehavior: "뱃지의 동작 방식을 설정합니다."
   isExplorable: "역할 타임라인 공개"
   descriptionOfIsExplorable: "활성화하면 역할 타임라인을 공개합니다. 비활성화 시 타임라인이 공개되지 않습니다."
   displayOrder: "표시 순서"

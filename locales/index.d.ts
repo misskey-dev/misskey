@@ -6559,6 +6559,14 @@ export interface Locale extends ILocale {
          */
         "descriptionOfAsBadge": string;
         /**
+         * バッジの挙動
+         */
+        "badgeBehavior": string;
+        /**
+         * バッジの挙動を設定します。
+         */
+        "descriptionOfBadgeBehavior": string;
+        /**
          * ユーザーを見つけやすくする
          */
         "isExplorable": string;
