@@ -1,9 +1,9 @@
 <template>
-<img ref="el" :src="role.iconUrl!" @click="onClick(role)"/>
+<img ref="el" :src="role.iconUrl!" :style="style" @click="onClick(role)"/>
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
@@ -29,7 +29,7 @@ async function fetchSkebStatus() {
 
 if (props.role.behavior === 'skeb') {
 	useTooltip(el, async (showing) => {
-		if (userSkebStatus.value == null) {
+		if (userSkebStatus.value === null) {
 			await fetchSkebStatus();
 		}
 
@@ -43,13 +43,21 @@ if (props.role.behavior === 'skeb') {
 	});
 }
 
+const style = computed(() => {
+	if (props.role.behavior === 'skeb' && userSkebStatus.value !== null) {
+		return 'cursor: pointer;';
+	} else {
+		return undefined;
+	}
+});
+
 async function onClick(role: { name: string, iconUrl: string | null, displayOrder: number, behavior?: string }) {
 	if (role.behavior === 'skeb') {
-		if (userSkebStatus.value == null) {
+		if (userSkebStatus.value === null) {
 			await fetchSkebStatus();
 		}
 
-		if (userSkebStatus.value != null) {
+		if (userSkebStatus.value !== null) {
 			window.open(`https://skeb.jp/@${userSkebStatus.value.screenName}`, '_blank', 'noopener');
 		}
 	}
