@@ -810,4 +810,6 @@ _moderationLogTypes:
 _reversi:
   reversi: "리버시"
   chooseBoard: "보드 개리기"
+  black: "꺼멍"
+  white: "허영"
   total: "합게"
