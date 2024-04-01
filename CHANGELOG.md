@@ -22,6 +22,7 @@
 - Enhance: 映像・音声の再生にブラウザのネイティブプレイヤーを使用できるように
 - Enhance: 映像・音声の再生メニューに「再生速度」「ループ再生」「ピクチャインピクチャ」を追加
 - Enhance: 映像・音声の再生にキーボードショートカットが使えるように
+- Enhance: ノートについているリアクションの「もっと！」から、リアクションの一覧を表示できるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -40,6 +41,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
+- Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
 
 ## 2024.3.1
 
