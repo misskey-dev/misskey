@@ -47,6 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { setFavIconDot } from '../../scripts/favicon-dot';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
@@ -65,74 +66,6 @@ const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 const dev = _DEV_;
 
 const notifications = ref<Misskey.entities.Notification[]>([]);
-
-class NotificationFavIconDot {
-	canvas : HTMLCanvasElement;
-	src : string | null = null;
-	ctx : CanvasRenderingContext2D | null = null;
-	favconImage : HTMLImageElement | null = null;
-	faviconEL : HTMLLinkElement;
-	hasLoaded : Promise;
-
-	constructor() {
-		this.canvas = document.createElement('canvas');
-		this.faviconEL = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
-
-		this.src = this.faviconEL.getAttribute('href');
-		this.ctx = this.canvas.getContext('2d');
-		
-		this.favconImage = document.createElement('img');
-		this.favconImage.src = this.faviconEL.href;
-		this.hasLoaded = new Promise((resolve, reject) => {
-			this.favconImage.onload = () => {
-				this.canvas.width = this.favconImage.width;
-				this.canvas.height = this.favconImage.height;
-
-				// resolve();
-				setTimeout(() => resolve(), 500);
-			};
-		});
-	}
-
-	private _createFaviconElem() {
-		const newLink = document.createElement('link');
-		newLink.rel = 'icon';
-		newLink.href = '/favicon.ico';
-		document.head.appendChild(newLink);
-		return newLink;
-	}
-
-	private _drawIcon() {
-		if (!this.ctx || !this.favconImage) return;
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.drawImage(this.favconImage, 0, 0, this.favconImage.width, this.favconImage.height);
-	}
-
-	private _drawDot() {
-		if (!this.ctx || !this.favconImage) return;
-		this.ctx.beginPath();
-		this.ctx.arc(this.favconImage.width - 10, 10, 10, 0, 2 * Math.PI);
-		this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--navIndicator');
-		this.ctx.strokeStyle = 'white';
-		this.ctx.fill();
-		this.ctx.stroke();
-	}
-
-	private _setFavicon() {
-		this.faviconEL.href = this.canvas.toDataURL('image/png');
-	}
-
-	async setVisible(isVisible : boolean) {
-		//Wait for it to have loaded the icon
-		await this.hasLoaded;
-		console.log(this.hasLoaded);
-		this._drawIcon();
-		if (isVisible) this._drawDot();
-		this._setFavicon();
-	}
-}
-
-const notificationDot = new NotificationFavIconDot();
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
 	if (document.visibilityState === 'visible') {
@@ -158,9 +91,10 @@ if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
 
-	watch(() => $i?.hasUnreadNotification, (hasAny) => notificationDot.setVisible((defaultStore.state.enableFaviconNotificationDot ? hasAny : false) ?? false));
+	//For the favicon notification dot
+	watch(() => $i?.hasUnreadNotification, (hasAny) => setFavIconDot((defaultStore.state.enableFaviconNotificationDot ? hasAny : false) ?? false));
 
-	if ($i.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot) notificationDot.setVisible(true);
+	if ($i.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot) setFavIconDot(true);
 	
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
