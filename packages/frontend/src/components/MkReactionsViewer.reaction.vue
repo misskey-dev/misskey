@@ -13,12 +13,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.prevent.stop="menu"
 >
 	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
-	<span :class="$style.count">{{ count }}</span>
+	<span :class="$style.count">
+	</span>
+	<div v-for="u in users" :key="u.id" :class="$style.avatars" style="height: 42px; width: auto">
+		<MkAvatar :class="$style.avatar" :user="u"/>
+	</div>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, shallowRef, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
@@ -59,6 +63,15 @@ const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
+
+const reactions = await misskeyApiGet('notes/reactions', {
+	noteId: props.note.id,
+	type: props.reaction,
+	limit: 10,
+	_cacheKey_: props.count,
+});
+
+const users = ref([])
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
@@ -124,10 +137,28 @@ function anime() {
 }
 
 watch(() => props.count, (newCount, oldCount) => {
+	console.log('count changed', oldCount, newCount);
+	misskeyApiGet('notes/reactions', {
+		noteId: props.note.id,
+		type: props.reaction,
+		limit: 10,
+		_cacheKey_: newCount,
+	}).then((reactions) => {
+		users.value = reactions.map(x => x.user);
+	});
+
 	if (oldCount < newCount) anime();
 });
 
 onMounted(() => {
+	misskeyApiGet('notes/reactions', {
+		noteId: props.note.id,
+		type: props.reaction,
+		limit: 10,
+	}).then((reactions) => {
+		users.value = reactions.map(x => x.user);
+	});
+
 	if (!props.isInitial) anime();
 });
 
@@ -154,6 +185,17 @@ if (!mock) {
 </script>
 
 <style lang="scss" module>
+.avatars {
+	display: flex;
+	align-items: center;
+}
+
+.avatar {
+	height: 20px;
+	width: 20px;
+	margin-left: 2px;
+}
+
 .root {
 	display: inline-flex;
 	height: 42px;
