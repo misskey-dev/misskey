@@ -64,12 +64,12 @@ const canToggle = computed(() => {
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
-const reactions = await misskeyApiGet('notes/reactions', {
-	noteId: props.note.id,
-	type: props.reaction,
-	limit: 10,
-	_cacheKey_: props.count,
-});
+// const reactions = await misskeyApiGet('notes/reactions', {
+// 	noteId: props.note.id,
+// 	type: props.reaction,
+// 	limit: 10,
+// 	_cacheKey_: props.count,
+// });
 
 const users = ref([])
 
