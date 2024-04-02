@@ -346,7 +346,7 @@ export class GlobalEventService {
 	public publishMainStream<K extends keyof MainEventTypes>(userId: MiUser['id'], type: K, value?: MainEventTypes[K]): void {
 		console.time('time GlobalEventService.publishMainStream');
 		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-		console.time('time GlobalEventService.publishMainStream');
+		console.timeEnd('time GlobalEventService.publishMainStream');
 	}
 
 	@bindThis
