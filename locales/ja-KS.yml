@@ -1773,8 +1773,8 @@ _preferencesBackups:
   deleteConfirm: "{name}を消すん？"
   renameConfirm: "「{old}」を「{new}」に変えるん？"
   noBackups: "バックアップはないで。「新しく保存」ってとこでこのクライアント設定を鯖に保存できるで。"
-  createdAt: "作った日時:{date}{time}"
-  updatedAt: "更新日時:{date}{time}"
+  createdAt: "作った日時: {date} {time}"
+  updatedAt: "更新日時: {date} {time}"
   cannotLoad: "読み込みできへん..."
   invalidFile: "ファイル形式が違うで？"
 _registry:
