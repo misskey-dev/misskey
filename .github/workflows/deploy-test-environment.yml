@@ -67,7 +67,7 @@ jobs:
     if: needs.get-pr-ref.outputs.is-allowed-user == 'true'
     uses: joinmisskey/misskey-tga/.github/workflows/deploy-test-environment.yml@main
     with:
-      repository: ${{ needs.get-pr-ref.outputs.pr-repo }}
+      repository: ${{ github.repository }}
       branch_or_hash: ${{ needs.get-pr-ref.outputs.pr-ref }}
       wait_time: ${{ needs.get-pr-ref.outputs.wait_time }}
     secrets:
