@@ -51,21 +51,35 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	public async tryLock(host: string): Promise<boolean> {
-		const mutex = await this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
-		return mutex !== '1';
+	// public for test
+	public async tryLock(host: string): Promise<string | null> {
+		// TODO: マイグレーションなのであとで消す (2024.3.1)
+		this.redisClient.del(`fetchInstanceMetadata:mutex:${host}`);
+
+		return await this.redisClient.set(
+			`fetchInstanceMetadata:mutex:v2:${host}`, '1',
+			'EX', 30, // 30秒したら自動でロック解除 https://github.com/misskey-dev/misskey/issues/13506#issuecomment-1975375395
+			'GET' // 古い値を返す（なかったらnull）
+		);
 	}
 
 	@bindThis
-	public unlock(host: string): Promise<'OK'> {
-		return this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
+	// public for test
+	public unlock(host: string): Promise<number> {
+		return this.redisClient.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 
 	@bindThis
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
-		// Acquire mutex to ensure no parallel runs
-		if (!await this.tryLock(host)) return;
+
+		// finallyでunlockされてしまうのでtry内でロックチェックをしない
+		// （returnであってもfinallyは実行される）
+		if (!force && await this.tryLock(host) === '1') {
+			// 1が返ってきていたらロックされているという意味なので、何もしない
+			return;
+		}
+
 		try {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetch(host);

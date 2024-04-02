@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.head">
 		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
+		<div v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'" :class="[$style.icon, $style.icon_reactionGroupHeart]"><i class="ti ti-heart" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
 		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
@@ -57,6 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<MkA v-else-if="notification.type === 'follow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: notification.reactions.length }) }}</span>
 			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: notification.reactions.length }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
 			<span v-else-if="notification.type === 'app'">{{ notification.header }}</span>
@@ -201,6 +203,7 @@ const rejectFollowRequest = () => {
 }
 
 .icon_reactionGroup,
+.icon_reactionGroupHeart,
 .icon_renoteGroup {
 	display: grid;
 	align-items: center;
@@ -213,11 +216,15 @@ const rejectFollowRequest = () => {
 }
 
 .icon_reactionGroup {
-	background: #e99a0b;
+	background: var(--eventReaction);
+}
+
+.icon_reactionGroupHeart {
+	background: var(--eventReactionHeart);
 }
 
 .icon_renoteGroup {
-	background: #36d298;
+	background: var(--eventRenote);
 }
 
 .icon_app {
@@ -246,49 +253,49 @@ const rejectFollowRequest = () => {
 
 .t_follow, .t_followRequestAccepted, .t_receiveFollowRequest {
 	padding: 3px;
-	background: #36aed2;
+	background: var(--eventFollow);
 	pointer-events: none;
 }
 
 .t_renote {
 	padding: 3px;
-	background: #36d298;
+	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_quote {
 	padding: 3px;
-	background: #36d298;
+	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_reply {
 	padding: 3px;
-	background: #007aff;
+	background: var(--eventReply);
 	pointer-events: none;
 }
 
 .t_mention {
 	padding: 3px;
-	background: #88a6b7;
+	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_pollEnded {
 	padding: 3px;
-	background: #88a6b7;
+	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_achievementEarned {
 	padding: 3px;
-	background: #cb9a11;
+	background: var(--eventAchievement);
 	pointer-events: none;
 }
 
 .t_roleAssigned {
 	padding: 3px;
-	background: #88a6b7;
+	background: var(--eventOther);
 	pointer-events: none;
 }
 

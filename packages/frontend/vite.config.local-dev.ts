@@ -48,6 +48,9 @@ const devConfig = {
 			},
 			'/url': httpUrl,
 			'/proxy': httpUrl,
+			'/_info_card_': httpUrl,
+			'/bios': httpUrl,
+			'/cli': httpUrl,
 		},
 	},
 	build: {

@@ -316,6 +316,98 @@ export const handlers = [
 
 Don't forget to re-run the `.storybook/generate.js` script after adding, editing, or removing the above files.
 
+## Nest
+
+### Nest Service Circular dependency / Nestでサービスの循環参照でエラーが起きた場合
+
+#### forwardRef
+まずは簡単に`forwardRef`を試してみる
+
+```typescript
+export class FooService {
+	constructor(
+		@Inject(forwardRef(() => BarService))
+		private barService: BarService
+	) {
+	}
+}
+```
+
+#### OnModuleInit
+できなければ`OnModuleInit`を使う
+
+```typescript
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { BarService } from '@/core/BarService';
+
+@Injectable()
+export class FooService implements OnModuleInit {
+	private barService: BarService // constructorから移動してくる
+
+	constructor(
+		private moduleRef: ModuleRef,
+	) {
+	}
+
+	async onModuleInit() {
+		this.barService = this.moduleRef.get(BarService.name);
+	}
+
+	public async niceMethod() {
+		return await this.barService.incredibleMethod({ hoge: 'fuga' });
+	}
+}
+```
+
+##### Service Unit Test
+テストで`onModuleInit`を呼び出す必要がある
+
+```typescript
+// import ...
+
+describe('test', () => {
+	let app: TestingModule;
+	let fooService: FooService; // for test case
+	let barService: BarService; // for test case
+
+	beforeEach(async () => {
+		app = await Test.createTestingModule({
+			imports: ...,
+			providers: [
+				FooService,
+				{ // mockする (mockは必須ではないかもしれない)
+					provide: BarService,
+					useFactory: () => ({
+						incredibleMethod: jest.fn(),
+					}),
+				},
+				{ // Provideにする
+					provide: BarService.name,
+					useExisting: BarService,
+				},
+			],
+		})
+			.useMocker(...
+			.compile();
+	
+		fooService = app.get<FooService>(FooService);
+		barService = app.get<BarService>(BarService) as jest.Mocked<BarService>;
+
+		// onModuleInitを実行する
+		await fooService.onModuleInit();
+	});
+
+	test('nice', () => {
+		await fooService.niceMethod();
+
+		expect(barService.incredibleMethod).toHaveBeenCalled();
+		expect(barService.incredibleMethod.mock.lastCall![0])
+			.toEqual({ hoge: 'fuga' });
+	});
+})
+```
+
 ## Notes
 
 ### Misskeyのドメイン固有の概念は`Mi`をprefixする
