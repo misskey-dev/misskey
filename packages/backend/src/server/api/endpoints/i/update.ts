@@ -289,6 +289,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			console.time('update');
 			if (ps.mutedWords !== undefined) {
 				checkMuteWordCount(ps.mutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
 				validateMuteWordRegex(ps.mutedWords);
@@ -432,7 +433,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const newName = updates.name === undefined ? user.name : updates.name;
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
-			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
+			const newFields = profileUpdates.fields ?? profile.fields;
 
 			if (newName != null) {
 				const tokens = mfm.parseSimple(newName);
@@ -478,7 +479,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const updatedProfile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-			this.cacheService.userProfileCache.set(user.id, updatedProfile);
+			await this.cacheService.userProfileCache.set(user.id, updatedProfile);
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
@@ -495,7 +496,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			for (const url of urls) {
 				this.verifyLink(url.value, user);
 			}
-
+			console.log('updateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdate');
+			console.timeEnd('update');
 			return iObj;
 		});
 	}
