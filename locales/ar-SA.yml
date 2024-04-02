@@ -1569,3 +1569,7 @@ _moderationLogTypes:
   createInvitation: "ولِّد دعوة"
 _reversi:
   total: "المجموع"
+  lookingForPlayer: "يبحث عن خصم..."
+  gameCanceled: "أُلغيت اللعبة."
+  opponentHasSettingsChanged: "غيَر الخصم إعدادته."
+  showBoardLabels: "اعرض ترقيم الصفوف والأعمدة على اللوح"
