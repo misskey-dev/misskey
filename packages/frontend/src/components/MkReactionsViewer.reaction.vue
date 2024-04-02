@@ -191,8 +191,8 @@ if (!mock) {
 }
 
 .avatar {
-	height: 20px;
-	width: 20px;
+	height: 14px;
+	width: 14px;
 	margin-left: 2px;
 }
 
