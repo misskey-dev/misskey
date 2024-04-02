@@ -334,7 +334,9 @@ export class GlobalEventService {
 
 	@bindThis
 	public publishInternalEvent<K extends keyof InternalEventTypes>(type: K, value?: InternalEventTypes[K]): void {
+		console.time('time GlobalEventService.publishInternalEvent');
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
+		console.timeEnd('time GlobalEventService.publishInternalEvent');
 	}
 
 	@bindThis
