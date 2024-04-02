@@ -289,7 +289,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			console.time('update');
 			if (ps.mutedWords !== undefined) {
 				checkMuteWordCount(ps.mutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
 				validateMuteWordRegex(ps.mutedWords);
@@ -496,8 +495,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			for (const url of urls) {
 				this.verifyLink(url.value, user);
 			}
-			console.log('updateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdate');
-			console.timeEnd('update');
 			return iObj;
 		});
 	}

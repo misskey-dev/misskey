@@ -28,6 +28,7 @@ export class AccountUpdateService {
 
 	@bindThis
 	public async publishToFollowers(userId: MiUser['id']) {
+		console.time('AccountUpdateService.publishToFollowers');
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 
@@ -37,5 +38,6 @@ export class AccountUpdateService {
 			this.apDeliverManagerService.deliverToFollowers(user, content);
 			this.relayService.deliverToRelays(user, content);
 		}
+		console.timeEnd('AccountUpdateService.publishToFollowers');
 	}
 }
