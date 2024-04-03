@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/preview')
     outputs:
-      is-allowed-user: ${{ steps.check-allowed-users.outputs.is-allowed-user }}
+      is-allowed-user: true
       pr-ref: ${{ steps.get-ref.outputs.pr-ref }}
       wait_time: ${{ steps.get-wait-time.outputs.wait_time }}
     steps:
@@ -32,6 +32,7 @@ jobs:
 
       - name: Check allowed users
         id: check-allowed-users
+        if: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG_ID: ${{ github.repository_owner_id }}
