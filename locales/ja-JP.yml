@@ -1228,6 +1228,8 @@ gameRetry: "リトライ"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
+launchApp: "アプリを起動"
+useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -1983,8 +1985,7 @@ _2fa:
   alreadyRegistered: "既に設定は完了しています。"
   registerTOTP: "認証アプリの設定を開始"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
-  step2: "次に、表示されているQRコードをアプリでスキャンします。"
-  step2Click: "QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。"
+  step2: "次に、表示されているQRコードをアプリでスキャンするか、ボタンをクリックして端末上でアプリを開きます。"
   step2Uri: "デスクトップアプリを使用する場合は次のURIを入力します"
   step3Title: "確認コードを入力"
   step3: "アプリに表示されている確認コード（トークン）を入力します。"
@@ -2330,6 +2331,8 @@ _pages:
     section: "セクション"
     image: "画像"
     button: "ボタン"
+    dynamic: "動的ブロック"
+    dynamicDescription: "このブロックは廃止されています。今後は{play}を利用してください。"
 
     note: "ノート埋め込み"
     _note:
@@ -2619,3 +2622,8 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_mediaControls:
+  pip: "ピクチャインピクチャ"
+  playbackRate: "再生速度"
+  loop: "ループ再生"

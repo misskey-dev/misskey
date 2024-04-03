@@ -21864,6 +21864,10 @@ export type operations = {
           };
         };
       };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
       /** @description Client error */
       400: {
         content: {

@@ -4928,6 +4928,14 @@ export interface Locale extends ILocale {
      * バックアップコードを使う
      */
     "useBackupCode": string;
+    /**
+     * アプリを起動
+     */
+    "launchApp": string;
+    /**
+     * 動画・音声の再生にブラウザのUIを使用する
+     */
+    "useNativeUIForVideoAudioPlayer": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -7542,13 +7550,9 @@ export interface Locale extends ILocale {
          */
         "step1": ParameterizedString<"a" | "b">;
         /**
-         * 次に、表示されているQRコードをアプリでスキャンします。
+         * 次に、表示されているQRコードをアプリでスキャンするか、ボタンをクリックして端末上でアプリを開きます。
          */
         "step2": string;
-        /**
-         * QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。
-         */
-        "step2Click": string;
         /**
          * デスクトップアプリを使用する場合は次のURIを入力します
          */
@@ -8827,6 +8831,14 @@ export interface Locale extends ILocale {
              */
             "button": string;
             /**
+             * 動的ブロック
+             */
+            "dynamic": string;
+            /**
+             * このブロックは廃止されています。今後は{play}を利用してください。
+             */
+            "dynamicDescription": ParameterizedString<"play">;
+            /**
              * ノート埋め込み
              */
             "note": string;
@@ -9833,6 +9845,20 @@ export interface Locale extends ILocale {
          * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
          */
         "summaryProxyDescription2": string;
+    };
+    "_mediaControls": {
+        /**
+         * ピクチャインピクチャ
+         */
+        "pip": string;
+        /**
+         * 再生速度
+         */
+        "playbackRate": string;
+        /**
+         * ループ再生
+         */
+        "loop": string;
     };
 }
 declare const locales: {
