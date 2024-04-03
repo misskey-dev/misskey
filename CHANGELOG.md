@@ -25,6 +25,7 @@
 - Enhance: 新しいMFM`$[overlap ... ...]`を追加
   - 要素を下から上に重ねて表示します
   - 要素はデフォルトでは空白区切りです。`.SEP`属性で区切り文字を`space`（空白）、`lf`（改行）、`semicolon`、`comma`から選べます。
+- Enhance: ノートについているリアクションの「もっと！」から、リアクションの一覧を表示できるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -43,6 +44,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
+- Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
 
 ## 2024.3.1
 

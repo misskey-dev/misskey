@@ -2331,6 +2331,8 @@ _pages:
     section: "セクション"
     image: "画像"
     button: "ボタン"
+    dynamic: "動的ブロック"
+    dynamicDescription: "このブロックは廃止されています。今後は{play}を利用してください。"
 
     note: "ノート埋め込み"
     _note:
@@ -2625,4 +2627,3 @@ _mediaControls:
   pip: "ピクチャインピクチャ"
   playbackRate: "再生速度"
   loop: "ループ再生"
-  
