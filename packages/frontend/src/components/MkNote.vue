@@ -70,6 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:enableEmojiMenu="true"
 							:enableEmojiMenuReaction="true"
 						/>
+						<MkPhishingCaution v-if="isSuspectPhishingLink" :cautionMessage="i18n.ts.shortPhishingCaution" />
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else-if="translation">
@@ -82,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkMediaList :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
-					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
+					<MkUrlPreview v-for="url in previewUrls" :key="url" :url="url.href" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
@@ -168,6 +169,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import MkPhishingCaution from '@/components/MkPhishingCaution.vue';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
@@ -250,7 +252,8 @@ const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entiti
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
-const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
+const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url.href && appearNote.value.renote?.uri !== url.href) : null);
+const previewUrls = computed(() => urls.value.filter(url => url.preview));
 const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
@@ -266,6 +269,43 @@ const renoteCollapsed = ref(
 		(appearNote.value.myReaction != null)
 	)
 );
+
+function isURL(str) {
+  try {
+    new URL(str);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function getDomain(url) {
+  try {
+    const domain = new URL(url).hostname;
+    return domain;
+  } catch (error) {
+    return null;
+  }
+}
+
+const isSuspectPhishingLink = computed(() => {
+  return urls.value.some(url => {
+    // url.textが配列でない場合、配列に変換
+    const text = Array.isArray(url.text) ? url.text.join('') : url.text;
+
+    // textがURLでない場合、すぐに次のurlへ
+		console.log(text);
+		if (!isURL((text.startsWith('https://') || text.startsWith('http://')) ? text : `https://${text}`)) return false;
+
+    // hrefとtextのドメインを比較
+    const hrefDomain = getDomain(url.href);
+    const textDomain = getDomain(text);
+		console.log(hrefDomain, textDomain);
+
+    // ドメインが一致しない場合、フィッシングの疑いあり
+    return hrefDomain !== textDomain && textDomain;
+  });
+});
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
