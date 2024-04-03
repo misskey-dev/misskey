@@ -1185,6 +1185,14 @@ export interface Locale extends ILocale {
      */
     "remoteUserCaution": string;
     /**
+     * 表示されているURLと実際のURLが異なります。フィッシング詐欺などに注意してください。
+     */
+    "phishingCaution": string;
+    /**
+     * 表示上と実際のURLが異なります。
+     */
+    "shortPhishingCaution": string;
+    /**
      * アクティビティ
      */
     "activity": string;
