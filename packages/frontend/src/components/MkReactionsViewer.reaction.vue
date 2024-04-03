@@ -71,7 +71,7 @@ const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction
 // 	_cacheKey_: props.count,
 // });
 
-const users = ref([])
+const users = ref([]);
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
