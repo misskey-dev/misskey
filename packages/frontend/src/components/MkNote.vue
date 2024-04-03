@@ -253,7 +253,7 @@ const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url.href && appearNote.value.renote?.uri !== url.href) : null);
-const previewUrls = computed(() => urls.value.filter(url => url.preview))
+const previewUrls = computed(() => urls.value.filter(url => url.preview));
 const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
@@ -269,35 +269,38 @@ const renoteCollapsed = ref(
 		(appearNote.value.myReaction != null)
 	)
 );
+
 function isURL(str) {
   try {
     new URL(str);
     return true;
-  } catch (e) {
+  } catch (error) {
     return false;
   }
 }
+
 function getDomain(url) {
   try {
     const domain = new URL(url).hostname;
     return domain;
-  } catch (e) {
+  } catch (error) {
     return null;
   }
 }
+
 const isSuspectPhishingLink = computed(() => {
   return urls.value.some(url => {
     // url.textが配列でない場合、配列に変換
     const text = Array.isArray(url.text) ? url.text.join('') : url.text;
 
     // textがURLでない場合、すぐに次のurlへ
-		console.log(text)
+		console.log(text);
 		if (!isURL((text.startsWith('https://') || text.startsWith('http://')) ? text : `https://${text}`)) return false;
 
     // hrefとtextのドメインを比較
     const hrefDomain = getDomain(url.href);
     const textDomain = getDomain(text);
-		console.log(hrefDomain, textDomain)
+		console.log(hrefDomain, textDomain);
 
     // ドメインが一致しない場合、フィッシングの疑いあり
     return hrefDomain !== textDomain && textDomain;

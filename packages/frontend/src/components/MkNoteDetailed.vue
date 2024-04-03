@@ -277,7 +277,7 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url.href && appearNote.value.renote?.uri !== url.href) : null;
-const previewUrls = urls.filter(url => url.preview)
+const previewUrls = urls.filter(url => url.preview);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
@@ -287,30 +287,32 @@ function isURL(str) {
   try {
     new URL(str);
     return true;
-  } catch (e) {
+  } catch (error) {
     return false;
   }
 }
+
 function getDomain(url) {
   try {
     const domain = new URL(url).hostname;
     return domain;
-  } catch (e) {
+  } catch (error) {
     return null;
   }
 }
+
 const isSuspectPhishingLink = urls.some(url => {
     // url.textが配列でない場合、配列に変換
     const text = Array.isArray(url.text) ? url.text.join('') : url.text;
 
     // textがURLでない場合、すぐに次のurlへ
-		console.log(text)
+		console.log(text);
 		if (!isURL((text.startsWith('https://') || text.startsWith('http://')) ? text : `https://${text}`)) return false;
 
     // hrefとtextのドメインを比較
     const hrefDomain = getDomain(url.href);
     const textDomain = getDomain(text);
-		console.log(hrefDomain, textDomain)
+		console.log(hrefDomain, textDomain);
 
     // ドメインが一致しない場合、フィッシングの疑いあり
     return hrefDomain !== textDomain && textDomain;

@@ -25,7 +25,7 @@ export function extractUrlFromMfm(nodes: mfm.MfmNode[], respectSilentFlag = true
 				href: x.props.url,
 				text: extractTextValues(x.children) ?? [],
 				preview: (!respectSilentFlag || !x.props.silent),
-			})
+			});
 	}));
 
 	return urls.reduce((array, url) => {
