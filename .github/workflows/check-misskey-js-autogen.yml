@@ -40,7 +40,7 @@ jobs:
         run: pnpm i --frozen-lockfile
 
       - name: wait get-api-diff
-        uses: lewagon/wait-on-check-action@v1.3.3
+        uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           check-regexp: get-from-misskey .+
