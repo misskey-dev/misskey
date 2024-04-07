@@ -25,7 +25,7 @@ const inputCompressKindMap = {
 	'image/svg+xml': 'lossless',
 } as const;
 
-const resizeSizeConfig = { maxWidth: 2048, maxHeight: 2048 } as const;
+const resizeSizeConfig = { maxWidth: 2560, maxHeight: 2560 } as const;
 const noResizeSizeConfig = { maxWidth: Number.MAX_SAFE_INTEGER, maxHeight: Number.MAX_SAFE_INTEGER } as const;
 
 async function isLosslessWebp(file: Blob): Promise<boolean> {
