@@ -1251,6 +1251,7 @@ selectCategory: "カテゴリを選択"
 reportComplete: "通報完了"
 blockThisUser: "このユーザーをブロックする"
 muteThisUser: "このユーザーをミュートする"
+here: "こちら"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2061,6 +2062,7 @@ _2fa:
   backupCodesDescription: "認証アプリが使用できなくなった場合、以下のバックアップコードを使ってアカウントにアクセスできます。これらのコードは必ず安全な場所に保管してください。各コードは一回だけ使用できます。"
   backupCodeUsedWarning: "バックアップコードが使用されました。認証アプリが使えなくなっている場合、なるべく早く認証アプリを再設定してください。"
   backupCodesExhaustedWarning: "バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。"
+  howto2fa: "設定方法でお困りの際は、{link}を参照してください。"
 
 _permissions:
   "read:account": "アカウントの情報を見る"

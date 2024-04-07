@@ -5023,6 +5023,10 @@ export interface Locale extends ILocale {
      * このユーザーをミュートする
      */
     "muteThisUser": string;
+    /**
+     * こちら
+     */
+    "here": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -7844,6 +7848,10 @@ export interface Locale extends ILocale {
          * バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。
          */
         "backupCodesExhaustedWarning": string;
+        /**
+         * 設定方法でお困りの際は、{link}を参照してください。
+         */
+        "howto2fa": ParameterizedString<"link">;
     };
     "_permissions": {
         /**

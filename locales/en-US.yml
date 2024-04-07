@@ -1242,6 +1242,7 @@ enableHorizontalSwipe: "Swipe to switch tabs"
 loading: "Loading"
 surrender: "Cancel"
 gameRetry: "Retry"
+here: "here"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"
@@ -2014,6 +2015,7 @@ _2fa:
   backupCodesDescription: "You can use these codes to gain access to your account in case of becoming unable to use your two-factor authentificator app. Each can only be used once. Please keep them in a safe place."
   backupCodeUsedWarning: "A backup code has been used. Please reconfigure two-factor authentification as soon as possible if you are no longer able to use it."
   backupCodesExhaustedWarning: "All backup codes have been used. Should you lose access to your two-factor authentification app, you will be unable to access this account. Please reconfigure two-factor authentification."
+  howto2fa: "If you are having trouble setting up, please refer to {link}."
 _permissions:
   "read:account": "View your account information"
   "write:account": "Edit your account information"

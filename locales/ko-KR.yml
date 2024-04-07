@@ -1235,6 +1235,7 @@ withSensitive: "민감한 파일이 포함된 노트 보기"
 userSaysSomethingSensitive: "{name}의 민감한 파일이 포함된 게시물"
 enableHorizontalSwipe: "스와이프하여 탭 전환"
 surrender: "그만두기"
+here: "여기"
 _bubbleGame:
   howToPlay: "설명"
   _howToPlay:
@@ -1992,6 +1993,7 @@ _2fa:
   backupCodesDescription: "인증 앱을 사용할 수 없게 된 경우 아래 백업 코드를 사용하여 계정에 액세스 할 수 있습니다.이 코드들은 반드시 안전한 장소에 보관하십시오.각 코드는 한 번만 사용할 수 있습니다."
   backupCodeUsedWarning: "백업 코드가 사용되었습니다.인증 앱을 사용할 수 없게 된 경우, 조속히 인증 앱을 다시 설정해 주십시오."
   backupCodesExhaustedWarning: "백업 코드가 모두 사용되었습니다.인증 앱을 사용할 수 없는 경우 더 이상 계정에 액세스하는 것이 불가능합니다.인증 앱을 다시 등록해 주세요."
+  howto2fa: "설정 방법에 대한 자세한 내용은 {link}를 참조하세요."
 _permissions:
   "read:account": "계정의 정보를 봅니다"
   "write:account": "계정의 정보를 변경합니다"

@@ -21,16 +21,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #caption>{{ i18n.ts.totpDescription }}</template>
 			<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--success)"></i></template>
 
-			<div v-if="$i.twoFactorEnabled" class="_gaps_s">
-				<div v-text="i18n.ts._2fa.alreadyRegistered"/>
-				<template v-if="$i.securityKeysList.length > 0">
-					<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
-					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
-				</template>
-				<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
-			</div>
+			<div class="_gaps_s">
+				<MkInfo>
+					<Mfm :text="i18n.tsx._2fa.howto2fa({ link: `[${i18n.ts.here}](https://go.misskey.io/howto-2fa)`})"/>
+				</MkInfo>
 
-			<MkButton v-else-if="!$i.twoFactorEnabled" primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
+				<div v-if="$i.twoFactorEnabled" class="_gaps_s">
+					<div v-text="i18n.ts._2fa.alreadyRegistered"/>
+					<template v-if="$i.securityKeysList.length > 0">
+						<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
+						<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
+					</template>
+					<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+				</div>
+
+				<MkButton v-else-if="!$i.twoFactorEnabled" primary gradate @click="registerTOTP">
+					{{ i18n.ts._2fa.registerTOTP }}
+				</MkButton>
+			</div>
 		</MkFolder>
 
 		<MkFolder>
