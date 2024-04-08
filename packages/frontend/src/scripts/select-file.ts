@@ -13,6 +13,12 @@ import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
 
+type SelectFileOptions = {
+	multiple?: boolean;
+	excludeSensitive?: boolean;
+	additionalMenu?: MenuItem[];
+};
+
 export function chooseFileFromPc(multiple: boolean, keepOriginal = false): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		const input = document.createElement('input');
@@ -81,12 +87,19 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: any, label: string | null, multiple: boolean, excludeSensitive = false, additionalMenu: MenuItem[] = []): Promise<Misskey.entities.DriveFile[]> {
+function select(src: any, label: string | null, options?: SelectFileOptions): Promise<Misskey.entities.DriveFile[]> {
+	const _options = {
+		multiple: false,
+		excludeSensitive: false,
+		additionalMenu: [],
+		...options,
+	};
+
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
 		function _resolve(files: Misskey.entities.DriveFile[]) {
-			if (excludeSensitive && files.some(file => file.isSensitive)) {
+			if (_options.excludeSensitive && files.some(file => file.isSensitive)) {
 				os.alert({
 					title: i18n.ts.cannotSelectSensitiveMedia,
 					text: i18n.ts.cannotSelectSensitiveMediaDescription,
@@ -108,23 +121,23 @@ function select(src: any, label: string | null, multiple: boolean, excludeSensit
 		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, keepOriginal.value).then(files => _resolve(files)),
+			action: () => chooseFileFromPc(_options.multiple, keepOriginal.value).then(files => _resolve(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
-			action: () => chooseFileFromDrive(multiple, excludeSensitive).then(files => _resolve(files)),
+			action: () => chooseFileFromDrive(_options.multiple, _options.excludeSensitive).then(files => _resolve(files)),
 		}, {
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
 			action: () => chooseFileFromUrl().then(file => _resolve([file])),
-		}, ...additionalMenu], src);
+		}, ..._options.additionalMenu], src);
 	});
 }
 
 export function selectFile(src: any, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile> {
-	return select(src, label, false, options?.excludeSensitive, options?.additionalMenu).then(files => files[0]);
+	return select(src, label, { ...options, multiple: false }).then(files => files[0]);
 }
 
 export function selectFiles(src: any, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile[]> {
-	return select(src, label, true, options?.excludeSensitive, options?.additionalMenu);
+	return select(src, label, { ...options, multiple: true });
 }
