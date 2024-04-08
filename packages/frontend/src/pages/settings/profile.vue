@@ -204,23 +204,26 @@ function save() {
 }
 
 function changeAvatar(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar, true, $i.avatarId ? [
-		{ type: 'divider' },
-		{
-			type: 'button',
-			text: i18n.ts.detach,
-			icon: 'ti ti-circle-x',
-			action: () => {
-				os.apiWithDialog('i/update', {
-					avatarId: null,
-				}).then(() => {
-					$i.avatarId = null;
-					$i.avatarUrl = null;
-					globalEvents.emit('requestClearPageCache');
-				});
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar, {
+		excludeSensitive: true,
+		additionalMenu: $i.avatarId ? [
+			{ type: 'divider' },
+			{
+				type: 'button',
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						avatarId: null,
+					}).then(() => {
+						$i.avatarId = null;
+						$i.avatarUrl = null;
+						globalEvents.emit('requestClearPageCache');
+					});
+				},
 			},
-		},
-	] : undefined).then(async (file) => {
+		] : undefined,
+	}).then(async (file) => {
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -247,23 +250,26 @@ function changeAvatar(ev) {
 }
 
 function changeBanner(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner, true, $i.bannerId ? [
-		{ type: 'divider' },
-		{
-			type: 'button',
-			text: i18n.ts.detach,
-			icon: 'ti ti-circle-x',
-			action: () => {
-				os.apiWithDialog('i/update', {
-					bannerId: null,
-				}).then(() => {
-					$i.bannerId = null;
-					$i.bannerUrl = null;
-					globalEvents.emit('requestClearPageCache');
-				});
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner, {
+		excludeSensitive: true,
+		additionalMenu: $i.bannerId ? [
+			{ type: 'divider' },
+			{
+				type: 'button',
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						bannerId: null,
+					}).then(() => {
+						$i.bannerId = null;
+						$i.bannerUrl = null;
+						globalEvents.emit('requestClearPageCache');
+					});
+				},
 			},
-		},
-	] : undefined).then(async (file) => {
+		] : undefined,
+	}).then(async (file) => {
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
