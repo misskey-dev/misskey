@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:class="[$style.root, { [$style.isSelected]: isSelected }]"
+	:class="[$style.root, { [$style.isSelected]: isSelected, [$style.isDisabled]: isDisabled }]"
 	draggable="true"
 	:title="title"
 	@click="onClick"
@@ -55,9 +55,11 @@ const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
 	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
+	isDisabled?: boolean;
 	selectMode?: boolean;
 }>(), {
 	isSelected: false,
+	isDisabled: false,
 	selectMode: false,
 });
 
@@ -72,6 +74,8 @@ const isDragging = ref(false);
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
 
 function onClick(ev: MouseEvent) {
+	if (props.isDisabled) return;
+
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
@@ -88,6 +92,8 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 function onDragstart(ev: DragEvent) {
+	if (props.isDisabled) return;
+
 	if (ev.dataTransfer) {
 		ev.dataTransfer.effectAllowed = 'move';
 		ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
@@ -172,6 +178,12 @@ function onDragend() {
 		> .thumbnail {
 			color: #fff;
 		}
+	}
+
+	&.isDisabled {
+		opacity: 0.5;
+		pointer-events: none;
+		cursor: not-allowed;
 	}
 }
 

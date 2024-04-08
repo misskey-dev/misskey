@@ -541,11 +541,12 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 	});
 }
 
-export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+export async function selectDriveFile(multiple: boolean, excludeSensitive: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',
 			multiple,
+			excludeSensitive,
 		}, {
 			done: files => {
 				if (files) {

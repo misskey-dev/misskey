@@ -39,9 +39,9 @@ export function chooseFileFromPc(multiple: boolean, keepOriginal = false): Promi
 	});
 }
 
-export function chooseFileFromDrive(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+export function chooseFileFromDrive(multiple: boolean, excludeSensitive: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		os.selectDriveFile(multiple).then(files => {
+		os.selectDriveFile(multiple, excludeSensitive).then(files => {
 			res(files);
 		});
 	});
@@ -80,9 +80,22 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: any, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+function select(src: any, label: string | null, multiple: boolean, excludeSensitive: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
+
+		function _resolve(files: Misskey.entities.DriveFile[]) {
+			if (excludeSensitive && files.some(file => file.isSensitive)) {
+				os.alert({
+					title: i18n.ts.cannotSelectSensitiveMedia,
+					text: i18n.ts.cannotSelectSensitiveMediaDescription,
+				});
+				rej();
+				return;
+			}
+
+			res(files);
+		}
 
 		os.popupMenu([label ? {
 			text: label,
@@ -94,23 +107,23 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Miss
 		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, keepOriginal.value).then(files => res(files)),
+			action: () => chooseFileFromPc(multiple, keepOriginal.value).then(files => _resolve(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
-			action: () => chooseFileFromDrive(multiple).then(files => res(files)),
+			action: () => chooseFileFromDrive(multiple, excludeSensitive).then(files => _resolve(files)),
 		}, {
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
-			action: () => chooseFileFromUrl().then(file => res([file])),
+			action: () => chooseFileFromUrl().then(file => _resolve([file])),
 		}], src);
 	});
 }
 
-export function selectFile(src: any, label: string | null = null): Promise<Misskey.entities.DriveFile> {
-	return select(src, label, false).then(files => files[0]);
+export function selectFile(src: any, label: string | null = null, excludeSensitive = false): Promise<Misskey.entities.DriveFile> {
+	return select(src, label, false, excludeSensitive).then(files => files[0]);
 }
 
-export function selectFiles(src: any, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
-	return select(src, label, true);
+export function selectFiles(src: any, label: string | null = null, excludeSensitive = false): Promise<Misskey.entities.DriveFile[]> {
+	return select(src, label, true, excludeSensitive);
 }
