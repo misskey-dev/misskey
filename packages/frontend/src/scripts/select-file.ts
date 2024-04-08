@@ -90,7 +90,7 @@ function select(src: any, label: string | null, multiple: boolean, excludeSensit
 					title: i18n.ts.cannotSelectSensitiveMedia,
 					text: i18n.ts.cannotSelectSensitiveMediaDescription,
 				});
-				rej();
+				rej(new Error('Sensitive media is selected'));
 				return;
 			}
 
