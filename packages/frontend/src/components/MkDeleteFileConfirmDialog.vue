@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 	<MkModal ref="modal" :preferType="'dialog'" @close="modal?.close()" @closed="emit('closed')">
 		<div :class="$style.root">
