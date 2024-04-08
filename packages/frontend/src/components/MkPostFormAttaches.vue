@@ -62,7 +62,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 	detachMedia(file.id);
 
 	await os.popup(defineAsyncComponent(() => import('@/components/MkDeleteFileConfirmDialog.vue')), {
-		file: file.value,
+		file: file,
 	}, {}, 'closed');
 }
 

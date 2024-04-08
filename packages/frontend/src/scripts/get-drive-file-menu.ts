@@ -65,7 +65,7 @@ function addApp() {
 */
 async function deleteFile(file: Misskey.entities.DriveFile) {
 	await os.popup(defineAsyncComponent(() => import('@/components/MkDeleteFileConfirmDialog.vue')), {
-		file: file.value,
+		file: file,
 	}, {}, 'closed');
 }
 
