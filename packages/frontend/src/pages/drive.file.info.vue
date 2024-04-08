@@ -178,17 +178,14 @@ function describe() {
 async function deleteFile() {
 	if (!file.value) return;
 
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.tsx.driveFileDeleteConfirm({ name: file.value.name }),
-	});
-
-	if (canceled) return;
-	await os.apiWithDialog('drive/files/delete', {
-		fileId: file.value.id,
-	});
-
-	router.push('/my/drive');
+	await os.popup(defineAsyncComponent(() => import('@/components/MkDeleteFileConfirmDialog.vue')), {
+		file: file.value,
+	}, {
+		done: async () => {
+			router.push('/my/drive');
+			await fetch();
+		},
+	}, 'closed');
 }
 
 onMounted(async () => {

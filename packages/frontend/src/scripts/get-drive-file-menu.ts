@@ -64,15 +64,9 @@ function addApp() {
 }
 */
 async function deleteFile(file: Misskey.entities.DriveFile) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
-	});
-
-	if (canceled) return;
-	misskeyApi('drive/files/delete', {
-		fileId: file.id,
-	});
+	await os.popup(defineAsyncComponent(() => import('@/components/MkDeleteFileConfirmDialog.vue')), {
+		file: file.value,
+	}, {}, 'closed');
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {

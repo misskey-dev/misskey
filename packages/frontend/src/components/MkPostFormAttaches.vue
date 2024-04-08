@@ -61,16 +61,9 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 
 	detachMedia(file.id);
 
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
-	});
-
-	if (canceled) return;
-
-	os.apiWithDialog('drive/files/delete', {
-		fileId: file.id,
-	});
+	await os.popup(defineAsyncComponent(() => import('@/components/MkDeleteFileConfirmDialog.vue')), {
+		file: file.value,
+	}, {}, 'closed');
 }
 
 function toggleSensitive(file) {
