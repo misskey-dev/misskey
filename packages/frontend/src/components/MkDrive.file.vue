@@ -181,9 +181,20 @@ function onDragend() {
 	}
 
 	&.isDisabled {
-		opacity: 0.5;
-		pointer-events: none;
 		cursor: not-allowed;
+
+		.thumbnail {
+			opacity: 0.5;
+		}
+
+		.name {
+			opacity: 0.5;
+		}
+
+		&:hover,
+		&:active {
+			background: none;
+		}
 	}
 }
 
