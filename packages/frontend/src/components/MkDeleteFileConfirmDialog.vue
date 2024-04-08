@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkModal ref="modal" :preferType="'dialog'" @close="modal?.close()" @closed="emit('closed')">
 		<div :class="$style.root">
 			<i class="ti ti-info-circle" :class="$style.icon" />
-			<div :class="$style.body" v-if="attachedNotes === null">
+			<div v-if="attachedNotes === null" :class="$style.body">
 				<MkLoading />
 			</div>
 			<div v-else>
