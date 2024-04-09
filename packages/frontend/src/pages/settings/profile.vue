@@ -128,6 +128,7 @@ import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const $i = signinRequired();
 
@@ -239,13 +240,27 @@ function changeAvatar(ev) {
 			});
 		}
 
-		const i = await os.apiWithDialog('i/update', {
+		const updatePromise = misskeyApi('i/update', {
 			avatarId: originalOrCropped.id,
 		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
-		globalEvents.emit('requestClearPageCache');
-		claimAchievement('profileFilled');
+
+		os.promiseDialog(updatePromise, (updatedUser) => {
+			os.success();
+			$i.avatarId = updatedUser.avatarId;
+			$i.avatarUrl = updatedUser.avatarUrl;
+			globalEvents.emit('requestClearPageCache');
+			claimAchievement('profileFilled');
+		}, (err) => {
+			if (err.code === 'AVATAR_IS_SENSITIVE') {
+				os.alert({
+					type: 'error',
+					title: i18n.ts.cannotSelectSensitiveMedia,
+					text: i18n.ts.cannotSelectSensitiveMediaDescription,
+				});
+			} else {
+				os.apiErrorAlert(err, 'i/update');
+			}
+		});
 	});
 }
 
@@ -285,12 +300,26 @@ function changeBanner(ev) {
 			});
 		}
 
-		const i = await os.apiWithDialog('i/update', {
+		const updatePromise = misskeyApi('i/update', {
 			bannerId: originalOrCropped.id,
 		});
-		$i.bannerId = i.bannerId;
-		$i.bannerUrl = i.bannerUrl;
-		globalEvents.emit('requestClearPageCache');
+
+		os.promiseDialog(updatePromise, (updatedUser) => {
+			os.success();
+			$i.bannerId = updatedUser.bannerId;
+			$i.bannerUrl = updatedUser.bannerUrl;
+			globalEvents.emit('requestClearPageCache');
+		}, (err) => {
+			if (err.code === 'BANNER_IS_SENSITIVE') {
+				os.alert({
+					type: 'error',
+					title: i18n.ts.cannotSelectSensitiveMedia,
+					text: i18n.ts.cannotSelectSensitiveMediaDescription,
+				});
+			} else {
+				os.apiErrorAlert(err, 'i/update');
+			}
+		});
 	});
 }
 

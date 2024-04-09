@@ -27,66 +27,78 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 
 export const openingWindowsCount = ref(0);
 
+export async function apiErrorAlert(err: Misskey.api.APIError, endpoint?: string) {
+	let title: string | undefined;
+	let text = err.message + '\n' + err.id;
+	if (err.code === 'INTERNAL_ERROR') {
+		title = i18n.ts.internalServerError;
+		text = i18n.ts.internalServerErrorDescription;
+		const date = new Date().toISOString();
+		const { result } = await actions({
+			type: 'error',
+			title,
+			text,
+			actions: [{
+				value: 'ok',
+				text: i18n.ts.gotIt,
+				primary: true,
+			}, {
+				value: 'copy',
+				text: i18n.ts.copyErrorInfo,
+			}],
+		});
+		if (result === 'copy') {
+			const errorReportText = [
+				`Info: ${JSON.stringify(err.info)}`,
+				`Date: ${date}`,
+			];
+			if (endpoint) errorReportText.unshift(`Endpoint: ${endpoint}`);
+
+			copyToClipboard(errorReportText.join('\n'));
+			success();
+		}
+		return;
+	} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
+		title = i18n.ts.cannotPerformTemporary;
+		text = i18n.ts.cannotPerformTemporaryDescription;
+	} else if (err.code === 'INVALID_PARAM') {
+		title = i18n.ts.invalidParamError;
+		text = i18n.ts.invalidParamErrorDescription;
+	} else if (err.code === 'ROLE_PERMISSION_DENIED') {
+		title = i18n.ts.permissionDeniedError;
+		text = i18n.ts.permissionDeniedErrorDescription;
+	} else if (err.code.startsWith('TOO_MANY')) {
+		title = i18n.ts.youCannotCreateAnymore;
+		text = `${i18n.ts.error}: ${err.id}`;
+	} else if (err.message.startsWith('Unexpected token')) {
+		title = i18n.ts.gotInvalidResponseError;
+		text = i18n.ts.gotInvalidResponseErrorDescription;
+	}
+	alert({
+		type: 'error',
+		title,
+		text,
+	});
+}
+
 export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
 	endpoint: E,
 	data: P = {} as any,
 	token?: string | null | undefined,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
-	promiseDialog(promise, null, async (err) => {
-		let title: string | undefined;
-		let text = err.message + '\n' + err.id;
-		if (err.code === 'INTERNAL_ERROR') {
-			title = i18n.ts.internalServerError;
-			text = i18n.ts.internalServerErrorDescription;
-			const date = new Date().toISOString();
-			const { result } = await actions({
-				type: 'error',
-				title,
-				text,
-				actions: [{
-					value: 'ok',
-					text: i18n.ts.gotIt,
-					primary: true,
-				}, {
-					value: 'copy',
-					text: i18n.ts.copyErrorInfo,
-				}],
-			});
-			if (result === 'copy') {
-				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
-				success();
-			}
-			return;
-		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
-			title = i18n.ts.cannotPerformTemporary;
-			text = i18n.ts.cannotPerformTemporaryDescription;
-		} else if (err.code === 'INVALID_PARAM') {
-			title = i18n.ts.invalidParamError;
-			text = i18n.ts.invalidParamErrorDescription;
-		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
-			title = i18n.ts.permissionDeniedError;
-			text = i18n.ts.permissionDeniedErrorDescription;
-		} else if (err.code.startsWith('TOO_MANY')) {
-			title = i18n.ts.youCannotCreateAnymore;
-			text = `${i18n.ts.error}: ${err.id}`;
-		} else if (err.message.startsWith('Unexpected token')) {
-			title = i18n.ts.gotInvalidResponseError;
-			text = i18n.ts.gotInvalidResponseErrorDescription;
-		}
-		alert({
-			type: 'error',
-			title,
-			text,
-		});
+	promiseDialog(promise, null, (err) => {
+		apiErrorAlert(err);
 	});
 
 	return promise;
 }) as typeof misskeyApi;
 
+type Unpromise<T> = T extends Promise<infer U> ? U : never;
+
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
-	onSuccess?: ((res: any) => void) | null,
+	onSuccess?: ((res: Unpromise<T>) => void) | null,
 	onFailure?: ((err: Misskey.api.APIError) => void) | null,
 	text?: string,
 ): T {

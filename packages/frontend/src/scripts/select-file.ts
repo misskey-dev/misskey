@@ -12,6 +12,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
+import { deepMerge } from '@/scripts/merge.js';
 
 type SelectFileOptions = {
 	multiple?: boolean;
@@ -88,28 +89,17 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 }
 
 function select(src: any, label: string | null, options?: SelectFileOptions): Promise<Misskey.entities.DriveFile[]> {
-	const _options = {
+	const _options = deepMerge(options ?? {}, {
 		multiple: false,
+
+		/** ドライブファイル選択時のみに適用 */
 		excludeSensitive: false,
-		additionalMenu: [],
-		...options,
-	};
+
+		additionalMenu: [] as MenuItem[],
+	});
 
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
-
-		function _resolve(files: Misskey.entities.DriveFile[]) {
-			if (_options.excludeSensitive && files.some(file => file.isSensitive)) {
-				os.alert({
-					title: i18n.ts.cannotSelectSensitiveMedia,
-					text: i18n.ts.cannotSelectSensitiveMediaDescription,
-				});
-				rej(new Error('Sensitive media is selected'));
-				return;
-			}
-
-			res(files);
-		}
 
 		os.popupMenu([label ? {
 			text: label,
@@ -121,23 +111,23 @@ function select(src: any, label: string | null, options?: SelectFileOptions): Pr
 		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(_options.multiple, keepOriginal.value).then(files => _resolve(files)),
+			action: () => chooseFileFromPc(_options.multiple, keepOriginal.value).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
-			action: () => chooseFileFromDrive(_options.multiple, _options.excludeSensitive).then(files => _resolve(files)),
+			action: () => chooseFileFromDrive(_options.multiple, _options.excludeSensitive).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
-			action: () => chooseFileFromUrl().then(file => _resolve([file])),
-		}, ..._options.additionalMenu], src);
+			action: () => chooseFileFromUrl().then(file => res([file])),
+		}, ...(_options.additionalMenu)], src);
 	});
 }
 
 export function selectFile(src: any, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile> {
-	return select(src, label, { ...options, multiple: false }).then(files => files[0]);
+	return select(src, label, { ...(options ? options : {}), multiple: false }).then(files => files[0]);
 }
 
 export function selectFiles(src: any, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile[]> {
-	return select(src, label, { ...options, multiple: true });
+	return select(src, label, { ...(options ? options : {}), multiple: true });
 }
