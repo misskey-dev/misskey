@@ -194,6 +194,7 @@ export class FileServerService {
 						reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
 						reply.header('Accept-Ranges', 'bytes');
 						reply.header('Content-Length', chunksize);
+						reply.code(206);
 					} else {
 						image = {
 							data: fs.createReadStream(file.path),
@@ -433,6 +434,7 @@ export class FileServerService {
 					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
 					reply.header('Accept-Ranges', 'bytes');
 					reply.header('Content-Length', chunksize);
+					reply.code(206);
 				} else {
 					image = {
 						data: fs.createReadStream(file.path),
