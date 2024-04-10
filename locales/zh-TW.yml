@@ -1971,6 +1971,7 @@ _2fa:
   backupCodesDescription: "如果驗證應用程式不能用了，可以使用以下的備用驗證碼存取您的帳戶。請務必妥善保管這個驗證碼。每個驗證碼只能使用一次。"
   backupCodeUsedWarning: "已使用備用驗證碼。如果無法使用驗證應用程式，請盡快重新設定。"
   backupCodesExhaustedWarning: "已使用所有備用驗證碼。如果無法使用驗證應用程式，則將無法再存取您的帳戶。請重新設定您的驗證應用程式。"
+  moreDetailedGuideHere: "請點擊此處查看詳細說明。"
 _permissions:
   "read:account": "查看我的帳戶資訊"
   "write:account": "更改我的帳戶資訊"
