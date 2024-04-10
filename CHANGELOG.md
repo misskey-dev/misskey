@@ -51,7 +51,7 @@
 ## 2024.3.1
 
 ### General
--
+- Feat: [Micropub](https://micropub.spec.indieweb.org/)のサポートを追加
 
 ### Client
 - Fix: 絵文字関係の不具合を修正 (#13485)

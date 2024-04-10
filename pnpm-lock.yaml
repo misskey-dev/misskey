@@ -107,6 +107,9 @@ importers:
       '@fastify/express':
         specifier: 2.3.0
         version: 2.3.0
+      '@fastify/formbody':
+        specifier: 7.4.0
+        version: 7.4.0
       '@fastify/http-proxy':
         specifier: 9.3.0
         version: 9.3.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
@@ -3979,6 +3982,13 @@ packages:
     resolution: {integrity: sha512-aZAXGYo6m22Fk1zZzEUKBvut/CIIQe/BapEORnxiD5Qr0kPHqqI69NtEMCme74h+at72sPhbkb4ZrLd1W3KRLA==}
     dependencies:
       fast-json-stringify: 5.8.0
+    dev: false
+
+  /@fastify/formbody@7.4.0:
+    resolution: {integrity: sha512-H3C6h1GN56/SMrZS8N2vCT2cZr7mIHzBHzOBa5OPpjfB/D6FzP9mMpE02ZzrFX0ANeh0BAJdoXKOF2e7IbV+Og==}
+    dependencies:
+      fast-querystring: 1.1.2
+      fastify-plugin: 4.5.0
     dev: false
 
   /@fastify/http-proxy@9.3.0(bufferutil@4.0.7)(utf-8-validate@6.0.3):

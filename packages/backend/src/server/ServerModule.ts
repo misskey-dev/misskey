@@ -27,6 +27,7 @@ import { ClientServerService } from './web/ClientServerService.js';
 import { FeedService } from './web/FeedService.js';
 import { UrlPreviewService } from './web/UrlPreviewService.js';
 import { ClientLoggerService } from './web/ClientLoggerService.js';
+import { MicropubServerService } from './micropub/MicropubServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 
 import { MainChannelService } from './api/stream/channels/main.js';
@@ -89,6 +90,7 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		ServerStatsChannelService,
 		UserListChannelService,
 		OpenApiServerService,
+		MicropubServerService,
 		OAuth2ProviderService,
 	],
 	exports: [
