@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { Brackets, SelectQueryBuilder } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -55,5 +56,18 @@ export class VkemoRelayTimelineService {
 		// assuming the current instance is joined to the i relay
 		if (host == null) return true;
 		return this.instanceHosts.has(host);
+	}
+
+	get hostNames (): string[] {
+		return Array.from(this.instanceHosts);
+	}
+
+	@bindThis
+	generateFilterQuery(query: SelectQueryBuilder<any>) {
+		query.andWhere(new Brackets(qb => {
+			qb
+				.andWhere('note.userHost IS NULL')
+				.orWhere('note.userHost IN (:...vkemoRelayInstances)', { vkemoRelayInstances: this.hostNames });
+		}));
 	}
 }
