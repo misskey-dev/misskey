@@ -1230,6 +1230,7 @@ useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
 launchApp: "アプリを起動"
 useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
+uploadAsRandomFilename: "アップロード時にファイル名をランダム文字列にする"
 
 _bubbleGame:
   howToPlay: "遊び方"
