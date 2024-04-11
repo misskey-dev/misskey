@@ -12,11 +12,15 @@ import type Logger from '@/logger.js';
 
 type VmimiInstanceList = { Url: string; }[];
 
+// one day
+const UpdateInterval = 1000 * 60 * 60 * 24;
+const RetryInterval = 1000 * 60 * 60 * 6;
+
 @Injectable()
 export class VmimiRelayTimelineService {
 	instanceHosts: Set<string>;
 	instanceHostsArray: string[];
-	lastUpdated: number;
+	nextUpdate: number;
 	updatePromise: Promise<void> | null;
 	private logger: Logger;
 
@@ -27,7 +31,7 @@ export class VmimiRelayTimelineService {
 		// Initialize with
 		this.instanceHosts = new Set<string>([]);
 		this.instanceHostsArray = [];
-		this.lastUpdated = 0;
+		this.nextUpdate = 0;
 		this.updatePromise = null;
 
 		this.logger = this.loggerService.getLogger('vmimi');
@@ -37,24 +41,25 @@ export class VmimiRelayTimelineService {
 
 	@bindThis
 	checkForUpdateInstanceList() {
-		// one day
-		const UpdateInterval = 60 * 60 * 24;
-
-		if (this.updatePromise == null && this.lastUpdated + UpdateInterval < Date.now()) {
-			this.updatePromise = this.updateInstanceList().then(() => {
-				this.updatePromise = null;
-			});
+		if (this.updatePromise == null && this.nextUpdate < Date.now()) {
+			this.updatePromise = this.updateInstanceList().finally(() => this.updatePromise = null);
 		}
 	}
 
 	@bindThis
 	async updateInstanceList() {
-		this.logger.info('Updating instance list');
-		const instanceList = await this.httpRequestService.getJson<VmimiInstanceList>('https://relay.virtualkemomimi.net/api/servers');
-		this.instanceHostsArray = instanceList.map(i => new URL(i.Url).host);
-		this.instanceHosts = new Set<string>(this.instanceHostsArray);
-		this.lastUpdated = Date.now();
-		this.logger.info(`Got instance list: ${this.instanceHostsArray}`);
+		try {
+			this.logger.info('Updating instance list');
+			const instanceList = await this.httpRequestService.getJson<VmimiInstanceList>('https://relay.virtualkemomimi.net/api/servers');
+			this.instanceHostsArray = instanceList.map(i => new URL(i.Url).host);
+			this.instanceHosts = new Set<string>(this.instanceHostsArray);
+			this.nextUpdate = Date.now() + UpdateInterval;
+			this.logger.info(`Got instance list: ${this.instanceHostsArray}`);
+		} catch (e) {
+			this.logger.error('Failed to update instance list', e as any);
+			this.nextUpdate = Date.now() + RetryInterval;
+			setTimeout(() => this.checkForUpdateInstanceList(), RetryInterval + 5);
+		}
 	}
 
 	@bindThis
@@ -73,9 +78,11 @@ export class VmimiRelayTimelineService {
 	@bindThis
 	generateFilterQuery(query: SelectQueryBuilder<any>) {
 		query.andWhere(new Brackets(qb => {
-			qb
-				.andWhere('note.userHost IS NULL')
-				.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances: this.hostNames });
+			qb.where('note.userHost IS NULL');
+			const names = this.hostNames;
+			if (names.length !== 0) {
+				qb.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances: names });
+			}
 		}));
 	}
 }
