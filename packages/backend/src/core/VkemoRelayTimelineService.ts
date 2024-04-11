@@ -6,60 +6,68 @@
 import { Injectable } from '@nestjs/common';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 import { bindThis } from '@/decorators.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
+
+type VkemoInstanceList = { Url: string; }[];
 
 @Injectable()
 export class VkemoRelayTimelineService {
 	instanceHosts: Set<string>;
+	instanceHostsArray: string[];
+	lastUpdated: number;
+	updatePromise: Promise<void> | null;
+	private logger: Logger;
 
-	constructor() {
-		// TODO: fetch instance list from https://relay.virtualkemomimi.net/api/servers
-		this.instanceHosts = new Set<string>([
-			'buicha.social',
-			'misskey.niri.la',
-			'metaskey.net',
-			'virtualkemomimi.net',
-			'kawaiivrc.site',
-			'misskey.pm',
-			'vrc-ins.net',
-			'misskey.shunrin.com',
-			'vrcjp.hostdon.ne.jp',
-			'key.hinasense.jp',
-			'mi.harumakizaemon.net',
-			'misskey.emymin.net',
-			'msky.summersweet.jp',
-			'misskey.nokotaro.com',
-			'mewl.me',
-			'mstdn.virtecam.net',
-			'inokashiraskey.jp',
-			'misskey.kakunpc.com',
-			'misskey.invr.chat',
-			'superneko.net',
-			'misskey.syuuta.net',
-			'mi.nyaa.app',
-			'nep.one',
-			'meron.cloud',
-			'misskey.tsukiyo.dev',
-			'mi-x500.i-0.io',
-			'misskey.yukkukomei.com',
-			'itsukey.net',
-			'misskey.narazaka.net',
-			'misskey.meglia.dev',
-			'misskey.makihiro.info',
-			'misskey.ayatovr.dev',
-			'atsuchan.page',
-			'mochitter.net',
-		]);
+	constructor(
+		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
+	) {
+		// Initialize with
+		this.instanceHosts = new Set<string>([]);
+		this.instanceHostsArray = [];
+		this.lastUpdated = 0;
+		this.updatePromise = null;
+
+		this.logger = this.loggerService.getLogger('vkemo');
+
+		this.checkForUpdateInstanceList();
+	}
+
+	@bindThis
+	checkForUpdateInstanceList() {
+		// one day
+		const UpdateInterval = 60 * 60 * 24;
+
+		if (this.updatePromise == null && this.lastUpdated + UpdateInterval < Date.now()) {
+			this.updatePromise = this.updateInstanceList().then(() => {
+				this.updatePromise = null;
+			});
+		}
+	}
+
+	@bindThis
+	async updateInstanceList() {
+		this.logger.info('Updating instance list');
+		const instanceList = await this.httpRequestService.getJson<VkemoInstanceList>('https://relay.virtualkemomimi.net/api/servers');
+		this.instanceHostsArray = instanceList.map(i => new URL(i.Url).host);
+		this.instanceHosts = new Set<string>(this.instanceHostsArray);
+		this.lastUpdated = Date.now();
+		this.logger.info(`Got instance list: ${this.instanceHostsArray}`);
 	}
 
 	@bindThis
 	isRelayedInstance(host: string | null): boolean {
+		this.checkForUpdateInstanceList();
 		// assuming the current instance is joined to the i relay
 		if (host == null) return true;
 		return this.instanceHosts.has(host);
 	}
 
 	get hostNames (): string[] {
-		return Array.from(this.instanceHosts);
+		this.checkForUpdateInstanceList();
+		return this.instanceHostsArray;
 	}
 
 	@bindThis
