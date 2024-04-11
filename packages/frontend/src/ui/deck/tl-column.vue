@@ -119,7 +119,7 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: withRenotes,
-}, props.column.tl === 'local' || props.column.tl === 'social' ? {
+}, props.column.tl === 'local' || props.column.tl === 'social' || props.column.tl === 'vmimi-relay' ? {
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: withReplies,

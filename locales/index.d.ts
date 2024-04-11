@@ -8570,7 +8570,7 @@ export interface Locale extends ILocale {
          */
         "global": string;
         /**
-         * Virtual Kemomimi リレー
+         * ぶいみみリレー
          */
         "vmimiRelay": string;
     };

@@ -20,6 +20,7 @@ class VmimiRelayTimelineChannel extends Channel {
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
 	private withFiles: boolean;
+	private withReplies: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -40,6 +41,7 @@ class VmimiRelayTimelineChannel extends Channel {
 
 		this.withRenotes = params.withRenotes ?? true;
 		this.withFiles = params.withFiles ?? false;
+		this.withReplies = params.withReplies ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -63,6 +65,9 @@ class VmimiRelayTimelineChannel extends Channel {
 
 		// Ignore notes from non-vmimi relay
 		if (!this.vmimiRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
+		if (!this.withReplies && note.reply) {
+			if (!this.vmimiRelayTimelineService.isRelayedInstance(note.reply.user.host ?? null)) return;
+		}
 		// Ignore notes from instances the user has muted
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
