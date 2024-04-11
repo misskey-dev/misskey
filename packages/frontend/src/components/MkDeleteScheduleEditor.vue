@@ -1,6 +1,7 @@
 <template>
-<div class="zmdxowus">
+<div :class="$style.root">
 	<span>{{ i18n.ts.scheduledNoteDelete }}</span>
+	<MkInfo v-if="!isValid" warn>{{ i18n.ts.cannotScheduleLaterThanOneYear }}</MkInfo>
 	<section>
 		<div>
 			<MkSelect v-model="expiration" small>
@@ -36,6 +37,7 @@
 import { ref, watch } from 'vue';
 import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
+import MkInfo from './MkInfo.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import { addTime } from '@/scripts/time.js';
 import { i18n } from '@/i18n.js';
@@ -43,7 +45,8 @@ import { i18n } from '@/i18n.js';
 export type DeleteScheduleEditorModelValue = {
 		deleteAt: number | null;
 		deleteAfter: number | null;
-	};
+		isValid: boolean;
+};
 
 const props = defineProps<{
 		modelValue: DeleteScheduleEditorModelValue;
@@ -52,11 +55,12 @@ const emit = defineEmits<{
 		(ev: 'update:modelValue', v: DeleteScheduleEditorModelValue): void;
 	}>();
 
-const expiration = ref('at');
+const expiration = ref<'at' | 'after'>('at');
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
 const unit = ref('second');
+const isValid = ref(true);
 
 if (props.modelValue.deleteAt) {
 	expiration.value = 'at';
@@ -68,40 +72,57 @@ if (props.modelValue.deleteAt) {
 	after.value = props.modelValue.deleteAfter / 1000;
 }
 
-function get(): DeleteScheduleEditorModelValue {
-	const calcAt = () => {
-		return new Date(`${atDate.value} ${atTime.value}`).getTime();
-	};
+const calcAt = () => {
+	return new Date(`${atDate.value} ${atTime.value}`).getTime();
+};
 
-	const calcAfter = () => {
-		let base = parseInt(after.value.toString());
-		switch (unit.value) {
+const calcAfter = () => {
+	let base = parseInt(after.value.toString());
+	switch (unit.value) {
+		// @ts-expect-error fallthrough
+		case 'day': base *= 24;
 			// @ts-expect-error fallthrough
-			case 'day': base *= 24;
-				// @ts-expect-error fallthrough
-			case 'hour': base *= 60;
-				// @ts-expect-error fallthrough
-			case 'minute': base *= 60;
-				// eslint-disable-next-line no-fallthrough
-			case 'second': return base *= 1000;
-			default: return null;
-		}
-	};
+		case 'hour': base *= 60;
+			// @ts-expect-error fallthrough
+		case 'minute': base *= 60;
+			// eslint-disable-next-line no-fallthrough
+		case 'second': return base *= 1000;
+		default: return null;
+	}
+};
 
-	return {
+const isValidTime = () => {
+	if (expiration.value === 'at') {
+		return calcAt() < Date.now() + (1000 * 60 * 60 * 24 * 365);
+	} else {
+		const afterMs = calcAfter();
+		if (afterMs === null) return false;
+		return afterMs < 1000 * 60 * 60 * 24 * 365;
+	}
+};
+
+isValid.value = isValidTime();
+
+watch([expiration, atDate, atTime, after, unit, isValid], () => {
+	const isValidTimeValue = isValidTime();
+	isValid.value = isValidTimeValue;
+
+	emit('update:modelValue', {
 		deleteAt: expiration.value === 'at' ? calcAt() : null,
 		deleteAfter: expiration.value === 'after' ? calcAfter() : null,
-	};
-}
-
-watch([expiration, atDate, atTime, after, unit], () => emit('update:modelValue', get()), {
+		isValid: isValidTimeValue,
+	});
+}, {
 	deep: true,
 });
 </script>
 
-	<style lang="scss" scoped>
-	.zmdxowus {
-		padding: 8px 16px;
+	<style lang="scss" module>
+	.root {
+		display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 8px 16px;
 
 		>span {
 			opacity: 0.7;
@@ -131,9 +152,7 @@ watch([expiration, atDate, atTime, after, unit], () => emit('update:modelValue',
 		}
 
 		>section {
-			margin: 16px 0 0 0;
-
-			>div {
+				>div {
 				margin: 0 8px;
 				display: flex;
 				flex-direction: row;

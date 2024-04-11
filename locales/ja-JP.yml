@@ -1318,6 +1318,7 @@ _delivery:
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
 scheduledNoteDelete: "時限爆弾"
 noteDeletationAt: "このノートは{time}に削除されます"
+cannotScheduleLaterThanOneYear: "1年以上先の日時を指定することはできません"
 hideActivity: "アクティビティを非公開にする"
 hideActivityDescription: "自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。"
 hideProfileFiles: "プロフィールのファイルを非公開にする"
