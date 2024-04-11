@@ -4936,6 +4936,10 @@ export interface Locale extends ILocale {
      * 動画・音声の再生にブラウザのUIを使用する
      */
     "useNativeUIForVideoAudioPlayer": string;
+    /**
+     * 説明文はありません
+     */
+    "noDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方
