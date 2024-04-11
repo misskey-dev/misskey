@@ -2262,7 +2262,7 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
-  vmimiRelay: "Virtual Kemomimi リレー"
+  vmimiRelay: "ぶいみみリレー"
 
 _play:
   new: "Playの作成"
