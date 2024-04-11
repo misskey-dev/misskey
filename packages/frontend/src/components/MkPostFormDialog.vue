@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkModal ref="modal" :preferType="'dialog'" @click="modal?.close()" @closed="onModalClosed()">
-	<MkPostForm ref="form" :class="$style.form" v-bind="props" autofocus freezeAfterPosted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
+	<MkPostForm ref="form" :class="$style.form" v-bind="props" autofocus freezeAfterPosted @posting="onPosting" @postError="onPostError" @cancel="modal?.close()" @esc="modal?.close()"/>
 </MkModal>
 </template>
 
@@ -14,6 +14,7 @@ import { shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	reply?: Misskey.entities.Note;
@@ -40,10 +41,14 @@ const emit = defineEmits<{
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 const form = shallowRef<InstanceType<typeof MkPostForm>>();
 
-function onPosted() {
+function onPosting() {
 	modal.value?.close({
 		useSendAnimation: true,
 	});
+}
+
+function onPostError() {
+	os.post();
 }
 
 function onModalClosed() {
