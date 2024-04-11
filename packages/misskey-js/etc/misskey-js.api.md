@@ -592,6 +592,16 @@ export type Channels = {
         };
         receives: null;
     };
+    vmimiRelayTimeline: {
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
     userList: {
         params: {
             listId: string;
@@ -1518,6 +1528,8 @@ declare namespace entities {
         NotesFeaturedResponse,
         NotesGlobalTimelineRequest,
         NotesGlobalTimelineResponse,
+        NotesVmimiRelayTimelineRequest,
+        NotesVmimiRelayTimelineResponse,
         NotesHybridTimelineRequest,
         NotesHybridTimelineResponse,
         NotesLocalTimelineRequest,
@@ -2563,6 +2575,12 @@ type NotesUserListTimelineRequest = operations['notes/user-list-timeline']['requ
 
 // @public (undocumented)
 type NotesUserListTimelineResponse = operations['notes/user-list-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayTimelineRequest = operations['notes/vmimi-relay-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayTimelineResponse = operations['notes/vmimi-relay-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
