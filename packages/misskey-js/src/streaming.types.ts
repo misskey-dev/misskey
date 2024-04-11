@@ -102,6 +102,16 @@ export type Channels = {
 		};
 		receives: null;
 	};
+	vkemoRelayTimeline: {
+		params: {
+			withRenotes?: boolean;
+			withFiles?: boolean;
+		};
+		events: {
+			note: (payload: Note) => void;
+		};
+		receives: null;
+	};
 	userList: {
 		params: {
 			listId: string;

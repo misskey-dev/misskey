@@ -8569,6 +8569,10 @@ export interface Locale extends ILocale {
          * グローバル
          */
         "global": string;
+        /**
+         * Virtual Kemomimi リレー
+         */
+        "vkemoRelay": string;
     };
     "_play": {
         /**

@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
+		<i v-else-if="column.tl === 'vkemo-relay'" class="ti ti-whirl"></i><!-- TODO: change icon -->
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
@@ -95,6 +96,8 @@ async function setType() {
 			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {
 			value: 'global' as const, text: i18n.ts._timelines.global,
+		}, {
+			value: 'vkemo-relay' as const, text: i18n.ts._timelines.vkemoRelay,
 		}],
 	});
 	if (canceled) {

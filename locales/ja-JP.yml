@@ -2262,6 +2262,7 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
+  vkemoRelay: "Virtual Kemomimi リレー"
 
 _play:
   new: "Playの作成"

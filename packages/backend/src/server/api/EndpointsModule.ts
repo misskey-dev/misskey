@@ -272,6 +272,7 @@ import * as ep___notes_favorites_create from './endpoints/notes/favorites/create
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
 import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
+import * as ep___notes_vkemoRelayTimeline from './endpoints/notes/vkemo-relay-timeline.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
@@ -644,6 +645,7 @@ const $notes_favorites_create: Provider = { provide: 'ep:notes/favorites/create'
 const $notes_favorites_delete: Provider = { provide: 'ep:notes/favorites/delete', useClass: ep___notes_favorites_delete.default };
 const $notes_featured: Provider = { provide: 'ep:notes/featured', useClass: ep___notes_featured.default };
 const $notes_globalTimeline: Provider = { provide: 'ep:notes/global-timeline', useClass: ep___notes_globalTimeline.default };
+const $notes_vkemoRelayTimeline: Provider = { provide: 'ep:notes/vkemo-relay-timeline', useClass: ep___notes_vkemoRelayTimeline.default };
 const $notes_hybridTimeline: Provider = { provide: 'ep:notes/hybrid-timeline', useClass: ep___notes_hybridTimeline.default };
 const $notes_localTimeline: Provider = { provide: 'ep:notes/local-timeline', useClass: ep___notes_localTimeline.default };
 const $notes_mentions: Provider = { provide: 'ep:notes/mentions', useClass: ep___notes_mentions.default };
@@ -1020,6 +1022,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_favorites_delete,
 		$notes_featured,
 		$notes_globalTimeline,
+		$notes_vkemoRelayTimeline,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
 		$notes_mentions,
@@ -1390,6 +1393,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_favorites_delete,
 		$notes_featured,
 		$notes_globalTimeline,
+		$notes_vkemoRelayTimeline,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
 		$notes_mentions,
