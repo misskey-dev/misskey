@@ -32,9 +32,7 @@ const props = defineProps<{
 
 const tab = ref<string | null>('all');
 const include = ref<string | null>('all');
-let collapseSensitiveChannel = ref(defaultStore.state.collapseSensitiveChannel);
-
-provide('collapseSensitiveChannel', collapseSensitiveChannel);
+provide<boolean>('collapseSensitiveChannel', defaultStore.state.collapseSensitiveChannel);
 
 const pagination = computed(() => tab.value === 'featured' ? {
 	endpoint: 'users/featured-notes' as const,
