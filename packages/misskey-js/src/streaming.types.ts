@@ -102,7 +102,7 @@ export type Channels = {
 		};
 		receives: null;
 	};
-	vkemoRelayTimeline: {
+	vmimiRelayTimeline: {
 		params: {
 			withRenotes?: boolean;
 			withFiles?: boolean;

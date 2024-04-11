@@ -306,7 +306,7 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	icon: 'ti ti-whirl',
 	iconOnly: true,
 }, {
-	key: 'vkemo-relay',
+	key: 'vmimi-relay',
 	title: i18n.ts._timelines.relay,
 	icon: 'ti ti-whirl', // TODO: update icon
 	iconOnly: true,

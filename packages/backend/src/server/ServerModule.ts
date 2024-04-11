@@ -35,7 +35,7 @@ import { AntennaChannelService } from './api/stream/channels/antenna.js';
 import { ChannelChannelService } from './api/stream/channels/channel.js';
 import { DriveChannelService } from './api/stream/channels/drive.js';
 import { GlobalTimelineChannelService } from './api/stream/channels/global-timeline.js';
-import { VkemoRelayTimelineChannelService } from './api/stream/channels/vkemo-relay-timeline.js';
+import { VmimiRelayTimelineChannelService } from './api/stream/channels/vmimi-relay-timeline.js';
 import { HashtagChannelService } from './api/stream/channels/hashtag.js';
 import { HomeTimelineChannelService } from './api/stream/channels/home-timeline.js';
 import { HybridTimelineChannelService } from './api/stream/channels/hybrid-timeline.js';
@@ -79,7 +79,7 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		ChannelChannelService,
 		DriveChannelService,
 		GlobalTimelineChannelService,
-		VkemoRelayTimelineChannelService,
+		VmimiRelayTimelineChannelService,
 		HashtagChannelService,
 		RoleTimelineChannelService,
 		ReversiChannelService,

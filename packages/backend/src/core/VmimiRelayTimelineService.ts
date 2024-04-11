@@ -10,10 +10,10 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 
-type VkemoInstanceList = { Url: string; }[];
+type VmimiInstanceList = { Url: string; }[];
 
 @Injectable()
-export class VkemoRelayTimelineService {
+export class VmimiRelayTimelineService {
 	instanceHosts: Set<string>;
 	instanceHostsArray: string[];
 	lastUpdated: number;
@@ -30,7 +30,7 @@ export class VkemoRelayTimelineService {
 		this.lastUpdated = 0;
 		this.updatePromise = null;
 
-		this.logger = this.loggerService.getLogger('vkemo');
+		this.logger = this.loggerService.getLogger('vmimi');
 
 		this.checkForUpdateInstanceList();
 	}
@@ -50,7 +50,7 @@ export class VkemoRelayTimelineService {
 	@bindThis
 	async updateInstanceList() {
 		this.logger.info('Updating instance list');
-		const instanceList = await this.httpRequestService.getJson<VkemoInstanceList>('https://relay.virtualkemomimi.net/api/servers');
+		const instanceList = await this.httpRequestService.getJson<VmimiInstanceList>('https://relay.virtualkemomimi.net/api/servers');
 		this.instanceHostsArray = instanceList.map(i => new URL(i.Url).host);
 		this.instanceHosts = new Set<string>(this.instanceHostsArray);
 		this.lastUpdated = Date.now();
@@ -75,7 +75,7 @@ export class VkemoRelayTimelineService {
 		query.andWhere(new Brackets(qb => {
 			qb
 				.andWhere('note.userHost IS NULL')
-				.orWhere('note.userHost IN (:...vkemoRelayInstances)', { vkemoRelayInstances: this.hostNames });
+				.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances: this.hostNames });
 		}));
 	}
 }

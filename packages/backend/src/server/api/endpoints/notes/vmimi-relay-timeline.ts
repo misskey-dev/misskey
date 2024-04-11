@@ -12,7 +12,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
-import { VkemoRelayTimelineService } from '@/core/VkemoRelayTimelineService.js';
+import { VmimiRelayTimelineService } from '@/core/VmimiRelayTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
-		private vkemoRelayTimelineService: VkemoRelayTimelineService,
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			this.vkemoRelayTimelineService.generateFilterQuery(query);
+			this.vmimiRelayTimelineService.generateFilterQuery(query);
 
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);

@@ -136,14 +136,14 @@ import { ApMentionService } from './activitypub/models/ApMentionService.js';
 import { ApNoteService } from './activitypub/models/ApNoteService.js';
 import { ApPersonService } from './activitypub/models/ApPersonService.js';
 import { ApQuestionService } from './activitypub/models/ApQuestionService.js';
+import { VmimiRelayTimelineService } from './VmimiRelayTimelineService.js';
 import { QueueModule } from './QueueModule.js';
 import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
 import type { Provider } from '@nestjs/common';
-import {VkemoRelayTimelineService} from "@/core/VkemoRelayTimelineService.js";
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
-const $VkemoRelayTimelineService: Provider = { provide: 'VkemoRelayTimelineService', useExisting: VkemoRelayTimelineService };
+const $VmimiRelayTimelineService: Provider = { provide: 'VmimiRelayTimelineService', useExisting: VmimiRelayTimelineService };
 const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
 const $AccountMoveService: Provider = { provide: 'AccountMoveService', useExisting: AccountMoveService };
 const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useExisting: AccountUpdateService };
@@ -284,7 +284,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueModule,
 	],
 	providers: [
-		VkemoRelayTimelineService,
+		VmimiRelayTimelineService,
 		LoggerService,
 		AccountMoveService,
 		AccountUpdateService,
@@ -421,7 +421,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueService,
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
-		$VkemoRelayTimelineService,
+		$VmimiRelayTimelineService,
 		$LoggerService,
 		$AccountMoveService,
 		$AccountUpdateService,
@@ -486,7 +486,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ChannelFollowingService,
 		$RegistryApiService,
 		$ReversiService,
-		$VkemoRelayTimelineService,
 
 		$ChartLoggerService,
 		$FederationChart,
@@ -559,7 +558,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#endregion
 	],
 	exports: [
-		VkemoRelayTimelineService,
+		VmimiRelayTimelineService,
 		QueueModule,
 		LoggerService,
 		AccountMoveService,
@@ -696,7 +695,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueService,
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
-		$VkemoRelayTimelineService,
+		$VmimiRelayTimelineService,
 		$LoggerService,
 		$AccountMoveService,
 		$AccountUpdateService,

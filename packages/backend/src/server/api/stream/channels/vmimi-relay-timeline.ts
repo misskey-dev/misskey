@@ -11,11 +11,11 @@ import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import { VkemoRelayTimelineService } from '@/core/VkemoRelayTimelineService.js';
+import { VmimiRelayTimelineService } from '@/core/VmimiRelayTimelineService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
-class VkemoRelayTimelineChannel extends Channel {
-	public readonly chName = 'vkemoRelayTimeline';
+class VmimiRelayTimelineChannel extends Channel {
+	public readonly chName = 'vmimiRelayTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
@@ -25,7 +25,7 @@ class VkemoRelayTimelineChannel extends Channel {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private vkemoRelayTimelineService: VkemoRelayTimelineService,
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -61,8 +61,8 @@ class VkemoRelayTimelineChannel extends Channel {
 
 		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
-		// Ignore notes from non-vkemo relay
-		if (!this.vkemoRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
+		// Ignore notes from non-vmimi relay
+		if (!this.vmimiRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
 		// Ignore notes from instances the user has muted
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
@@ -93,26 +93,26 @@ class VkemoRelayTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class VkemoRelayTimelineChannelService implements MiChannelService<false> {
-	public readonly shouldShare = VkemoRelayTimelineChannel.shouldShare;
-	public readonly requireCredential = VkemoRelayTimelineChannel.requireCredential;
-	public readonly kind = VkemoRelayTimelineChannel.kind;
+export class VmimiRelayTimelineChannelService implements MiChannelService<false> {
+	public readonly shouldShare = VmimiRelayTimelineChannel.shouldShare;
+	public readonly requireCredential = VmimiRelayTimelineChannel.requireCredential;
+	public readonly kind = VmimiRelayTimelineChannel.kind;
 
 	constructor(
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private vkemoRelayTimelineService: VkemoRelayTimelineService,
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 	) {
 	}
 
 	@bindThis
-	public create(id: string, connection: Channel['connection']): VkemoRelayTimelineChannel {
-		return new VkemoRelayTimelineChannel(
+	public create(id: string, connection: Channel['connection']): VmimiRelayTimelineChannel {
+		return new VmimiRelayTimelineChannel(
 			this.metaService,
 			this.roleService,
 			this.noteEntityService,
-			this.vkemoRelayTimelineService,
+			this.vmimiRelayTimelineService,
 			id,
 			connection,
 		);
