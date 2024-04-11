@@ -165,7 +165,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
 				<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
 				<MkSwitch v-model="enableHorizontalSwipe">{{ i18n.ts.enableHorizontalSwipe }}</MkSwitch>
-				<MkSwitch v-model="uploadAsRandomFilename">{{ i18n.ts.uploadAsRandomFilename }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -311,7 +310,6 @@ const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroup
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
 const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
 const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
-const uploadAsRandomFilename = computed(defaultStore.makeGetterSetter('uploadAsRandomFilename'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
