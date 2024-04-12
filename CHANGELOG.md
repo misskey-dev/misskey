@@ -16,7 +16,7 @@
 
 ### General
 - Enhance: ぶいみみリレータイムラインを追加しました
-  - ぶいみみリレータイムラインは、[Virtual Kemomimiリレー]に参加したサーバーのノートのみが流れるタイムラインです
+  - ぶいみみリレータイムラインは、[Virtual Kemomimiリレー]に参加しているサーバーからのノートのみが流れるタイムラインです
 
 [Virtual Kemomimiリレー]: https://relay.virtualkemomimi.net/
 
