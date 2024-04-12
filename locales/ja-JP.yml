@@ -1342,7 +1342,6 @@ _delivery:
     manuallySuspended: "手動停止中"
     goneSuspended: "サーバー削除のため停止中"
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
-
 selectReaction: "いいねボタンで使うリアクションを選択"
 showLikeButton: "いいねボタンを表示する"
 
@@ -2813,12 +2812,6 @@ _mediaControls:
   playbackRate: "再生速度"
   loop: "ループ再生"
 
-_hideReactionCount:
-  none: "非表示にしない"
-  self: "自分のノートのみ"
-  others: "自分以外のノートのみ"
-  all: "全てのノート"
-
 _profileHiddenSettings:
   hiddenProfile: "プロフィールを非表示にする機能"
   hiddenPinnedNotes: "プロフィール上からピン留めしたノートを非表示にします"
@@ -2856,6 +2849,11 @@ _embedCodeGen:
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
+_hideReactionCount:
+  none: "非表示にしない"
+  self: "自分のノートのみ"
+  others: "自分以外のノートのみ"
+  all: "全てのノート"
 schedulePost: "予約投稿"
 schedulePostList: "予約投稿一覧"
 
