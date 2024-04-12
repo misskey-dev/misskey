@@ -12,7 +12,7 @@
 
 -->
 
-## 202x.x.x-kinel.x (unreleased)
+## 2024.3.1-kinel.2
 
 ### General
 - Enhance: ぶいみみリレータイムラインを追加しました
