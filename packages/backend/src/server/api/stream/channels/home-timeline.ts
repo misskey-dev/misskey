@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
@@ -66,7 +67,7 @@ class HomeTimelineChannel extends Channel {
 		}
 
 		// 純粋なリノート（引用リノートでないリノート）の場合
-		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && note.poll == null) {
+		if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
 			if (!this.withRenotes) return;
 			if (note.renote.reply) {
 				const reply = note.renote.reply;
@@ -77,7 +78,7 @@ class HomeTimelineChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && note.renoteId && !note.text) {
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;

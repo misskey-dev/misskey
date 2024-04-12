@@ -8,6 +8,7 @@ import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HashtagChannel extends Channel {
@@ -44,7 +45,7 @@ class HashtagChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && note.renoteId && !note.text) {
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;

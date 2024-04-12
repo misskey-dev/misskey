@@ -9,6 +9,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
@@ -81,7 +82,7 @@ class HybridTimelineChannel extends Channel {
 			}
 		}
 
-		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
+		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
 
 		if (this.user && note.renoteId && !note.text) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
