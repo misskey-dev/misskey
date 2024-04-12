@@ -213,6 +213,10 @@ export interface Locale extends ILocale {
      */
     "deleteAndEditConfirm": string;
     /**
+     * ホーム投稿にする
+     */
+    "makeNoteHome": string;
+    /**
      * リストに追加
      */
     "addToList": string;
@@ -488,6 +492,10 @@ export interface Locale extends ILocale {
      * センシティブ
      */
     "sensitive": string;
+    /**
+     * センシティブチャンネル自動CW
+     */
+    "sensitiveChannelAutoCW": string;
     /**
      * 追加
      */
@@ -932,6 +940,10 @@ export interface Locale extends ILocale {
      * このノートを削除しますか？
      */
     "noteDeleteConfirm": string;
+    /**
+     * 本当にホーム投稿にしますか？
+     */
+    "makeNoteHomeConfirm": string;
     /**
      * これ以上ピン留めできません
      */
@@ -3201,6 +3213,10 @@ export interface Locale extends ILocale {
      */
     "useReactionPickerForContextMenu": string;
     /**
+     * ユーザページでセンシティブチャンネルの投稿を閉じる
+     */
+    "collapseSensitiveChannel": string;
+    /**
      * {users}が入力中
      */
     "typingUsers": ParameterizedString<"users">;
@@ -4892,6 +4908,10 @@ export interface Locale extends ILocale {
      * {name}のセンシティブなファイルを含む投稿
      */
     "userSaysSomethingSensitive": ParameterizedString<"name">;
+    /**
+     * {name}のセンシティブチャンネルでの投稿
+     */
+    "userSaysSomethingInSensitiveChannel": ParameterizedString<"name">;
     /**
      * スワイプしてタブを切り替える
      */
@@ -6939,6 +6959,14 @@ export interface Locale extends ILocale {
          * プロジェクトメンバー
          */
         "projectMembers": string;
+        /**
+         * このサーバーで使用しているforkの主要な開発者
+         */
+        "forkContributors": string;
+        /**
+         * このサーバーで使用しているforkの全てのコントリビューター
+         */
+        "allForkContributors": string;
     };
     "_displayOfSensitiveMedia": {
         /**
@@ -9198,7 +9226,41 @@ export interface Locale extends ILocale {
              * メンションされたとき
              */
             "mention": string;
+            /**
+             * 以下のユーザがnoteしたとき
+             */
+            "usersLabel": string;
+            /**
+             * このサーバーのユーザの@に挟まれた部分を改行で区切って指定します
+             */
+            "usersCaption": string;
         };
+    };
+    "_imageCompressionMode": {
+        /**
+         * 画像の圧縮形式
+         */
+        "title": string;
+        /**
+         * オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。縮小する場合は2560x2560より小さくなるように縮小されます。非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。
+         */
+        "description": string;
+        /**
+         * 縮小して再圧縮する
+         */
+        "resizeCompress": string;
+        /**
+         * 縮小せず再圧縮する
+         */
+        "noResizeCompress": string;
+        /**
+         * 縮小して非可逆圧縮する
+         */
+        "resizeCompressLossy": string;
+        /**
+         * 縮小せず非可逆圧縮する
+         */
+        "noResizeCompressLossy": string;
     };
     "_moderationLogTypes": {
         /**
@@ -9345,6 +9407,10 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         "unsetUserBanner": string;
+        /**
+         * ノートをホーム投稿に変更
+         */
+        "makeNoteHome": string;
     };
     "_fileViewer": {
         /**
