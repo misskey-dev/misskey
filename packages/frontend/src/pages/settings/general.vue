@@ -351,7 +351,6 @@ watch([
 	keepScreenOn,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
-	uploadAsRandomFilename,
 ], async () => {
 	await reloadAsk();
 });
