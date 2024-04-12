@@ -1302,6 +1302,7 @@ hideActivity: "アクティビティを非公開にする"
 hideActivityDescription: "自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。"
 hideReactionUsers: "誰がリアクションをしたのかを非表示にする"
 hideReactionUsersDescription: "リアクションをホバーした際のユーザー一覧と、ノート詳細ページのリアクションタブにあるリアクションをしたユーザー一覧を非表示にします"
+hideReactionCount: "リアクション数の非表示"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2788,3 +2789,8 @@ _embedCodeGen:
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
+_hideReactionCount:
+  none: "非表示にしない"
+  self: "自分のノートのみ"
+  others: "自分以外のノートのみ"
+  all: "全てのノート"

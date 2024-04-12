@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.prevent.stop="menu"
 >
 	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
-	<span :class="$style.count">{{ count }}</span>
+	<span v-if="!hideReactionCount" :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
@@ -56,10 +56,28 @@ const buttonEl = shallowRef<HTMLElement>();
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
+function getReactionName(reaction: string, formated = false) {
+	const r = reaction.replaceAll(':', '').replace(/@.*/, '');
+	return formated ? `:${r}:` : r;
+}
+
+const isLocal = computed(() => !props.reaction.match(/@\w/));
+const isAvailable = computed(() => isLocal.value ? true : customEmojisMap.has(getReactionName(props.reaction)));
+
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
+
+const hideReactionCount = computed(() => {
+	switch (defaultStore.state.hideReactionCount) {
+		case 'none': return false;
+		case 'all': return true;
+		case 'self': return props.note.userId === $i?.id;
+		case 'others': return props.note.userId !== $i?.id;
+		default: return false;
+	}
+});
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
