@@ -29,7 +29,7 @@ import { defaultStore } from '@/store.js';
 import { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
-	src: 'home' | 'local' | 'social' | 'global' | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
+	src: 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
 	list?: string;
 	antenna?: string;
 	channel?: string;
@@ -121,6 +121,12 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 		});
+	} else if (props.src === 'vmimi-relay') {
+		connection = stream.useChannel('vmimiRelayTimeline', {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+			withReplies: props.withReplies,
+		});
 	} else if (props.src === 'mentions') {
 		connection = stream.useChannel('main');
 		connection.on('mention', prepend);
@@ -192,6 +198,13 @@ function updatePaginationQuery() {
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'vmimi-relay') {
+		endpoint = 'notes/vmimi-relay-timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+			withReplies: props.withReplies,
 		};
 	} else if (props.src === 'mentions') {
 		endpoint = 'notes/mentions';

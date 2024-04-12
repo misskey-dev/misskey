@@ -67,7 +67,7 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>({
+const src = computed<'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | `list:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
@@ -199,7 +199,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | `list:${string}`): void {
 	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
 
 	if (newSrc.startsWith('userList:')) {
@@ -250,7 +250,7 @@ const headerActions = computed(() => {
 					type: 'switch',
 					text: i18n.ts.showRenotes,
 					ref: withRenotes,
-				}, src.value === 'local' || src.value === 'social' ? {
+				}, src.value === 'local' || src.value === 'social' || src.value === 'vmimi-relay' ? {
 					type: 'switch',
 					text: i18n.ts.showRepliesToOthersInTimeline,
 					ref: withReplies,
@@ -305,6 +305,11 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-whirl',
 	iconOnly: true,
+}, {
+	key: 'vmimi-relay',
+	title: i18n.ts._timelines.vmimiRelay,
+	icon: 'ti ti-circles-relation',
+	iconOnly: true,
 }] : []), {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
@@ -339,7 +344,7 @@ const headerTabsWhenNotLogin = computed(() => [
 
 definePageMetadata(() => ({
 	title: i18n.ts.timeline,
-	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : 'ti ti-home',
+	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : src.value === 'vmimi-relay' ? 'ti ti-circles-relation' : 'ti ti-home',
 }));
 </script>
 

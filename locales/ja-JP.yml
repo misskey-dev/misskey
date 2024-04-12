@@ -2269,6 +2269,7 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
+  vmimiRelay: "ぶいみみリレー"
 
 _play:
   new: "Playの作成"

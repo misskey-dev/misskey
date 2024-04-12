@@ -14,6 +14,12 @@
 
 ## 202x.x.x-kinel.x (unreleased)
 
+### General
+- Enhance: ぶいみみリレータイムラインを追加しました
+  - ぶいみみリレータイムラインは、[Virtual Kemomimiリレー]に参加しているサーバーからのノートのみが流れるタイムラインです
+
+[Virtual Kemomimiリレー]: https://relay.virtualkemomimi.net/
+
 ### Client
 - Enhance: 画像アップロード時に縮小する場合の大きさを2048x2048以下から2560x2560以下に変更しました
   - 既存のファイルは更新されず、新規アップロード分にのみ適用されます

@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
+		<i v-else-if="column.tl === 'vmimi-relay'" class="ti ti-circles-relation"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
@@ -95,6 +96,8 @@ async function setType() {
 			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {
 			value: 'global' as const, text: i18n.ts._timelines.global,
+		}, {
+			value: 'vmimi-relay' as const, text: i18n.ts._timelines.vmimiRelay,
 		}],
 	});
 	if (canceled) {
@@ -104,7 +107,7 @@ async function setType() {
 		return;
 	}
 	updateColumn(props.column.id, {
-		tl: src,
+		tl: src ?? undefined,
 	});
 }
 
@@ -116,7 +119,7 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: withRenotes,
-}, props.column.tl === 'local' || props.column.tl === 'social' ? {
+}, props.column.tl === 'local' || props.column.tl === 'social' || props.column.tl === 'vmimi-relay' ? {
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: withReplies,

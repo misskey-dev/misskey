@@ -29,7 +29,7 @@ export type Column = {
 	channelId?: string;
 	roleId?: string;
 	excludeTypes?: typeof notificationTypes[number][];
-	tl?: 'home' | 'local' | 'social' | 'global';
+	tl?: 'home' | 'local' | 'social' | 'global' | 'vmimi-relay';
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;

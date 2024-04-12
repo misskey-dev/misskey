@@ -8597,6 +8597,10 @@ export interface Locale extends ILocale {
          * グローバル
          */
         "global": string;
+        /**
+         * ぶいみみリレー
+         */
+        "vmimiRelay": string;
     };
     "_play": {
         /**
