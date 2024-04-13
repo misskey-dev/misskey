@@ -29,6 +29,26 @@ const mimeTypeMap = {
 	'image/png': 'png',
 } as const;
 
+// tar.gzなど、拡張子内にドットが含まれるものはここに追加
+const specialExtensions = [
+	'tar.gz',
+	'tar.bz2',
+	'tar.xz',
+	'tar.zst',
+	'tar.lz',
+	'tar.lz4',
+	'tar.sz',
+	'tar.z',
+] as const;
+
+function getExtension(filename: string): string {
+	for (const ext of specialExtensions) {
+		if (filename.endsWith('.' + ext)) return '.' + ext;
+	}
+	const parts = filename.split('.');
+	return parts.length > 1 ? '.' + parts.pop()! : '';
+}
+
 export function uploadFile(
 	file: File,
 	folder?: any,
@@ -45,7 +65,7 @@ export function uploadFile(
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
 			const filename = name ?? file.name ?? 'untitled';
-			const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+			const extension = getExtension(filename);
 
 			const ctx = reactive<Uploading>({
 				id,
