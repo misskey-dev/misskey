@@ -48,6 +48,7 @@
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
 - Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
+- Fix: チャンネルのフォロー一覧の結果が一部正しくないのを修正 (#12175)
 
 ## 2024.3.1
 
