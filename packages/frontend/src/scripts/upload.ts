@@ -29,24 +29,30 @@ const mimeTypeMap = {
 	'image/png': 'png',
 } as const;
 
-// tar.gzなど、拡張子内にドットが含まれるものはここに追加
+// tar.gzなど、拡張子内にドットを2つまで許容するものはここに追加
 const specialExtensions = [
-	'tar.gz',
-	'tar.bz2',
-	'tar.xz',
-	'tar.zst',
-	'tar.lz',
-	'tar.lz4',
-	'tar.sz',
-	'tar.z',
+	'gz',
+	'bz2',
+	'xz',
+	'zst',
+	'lz',
+	'lz4',
+	'sz',
+	'z',
+	'zstd',
 ] as const;
 
 function getExtension(filename: string): string {
-	for (const ext of specialExtensions) {
-		if (filename.endsWith('.' + ext)) return '.' + ext;
-	}
 	const parts = filename.split('.');
-	return parts.length > 1 ? '.' + parts.pop()! : '';
+
+	if (parts.length <= 1) return '';
+
+	for (const ext of specialExtensions) {
+		if (parts[parts.length - 1] === ext && parts.length > 2) {
+			return '.' + parts[parts.length - 2] + '.' + parts[parts.length - 1];
+		}
+	}
+	return '.' + parts.pop();
 }
 
 export function uploadFile(
