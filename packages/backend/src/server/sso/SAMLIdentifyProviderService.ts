@@ -440,9 +440,10 @@ export class SAMLIdentifyProviderService {
 										'#text': `${this.config.url}/sso/saml/${ssoServiceProvider.id}/metadata`,
 									},
 									'saml:Subject': {
-										'saml:NameID': profile.emailVerified
-											? { '@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress', '#text': normalizeEmailAddress(profile.email) }
-											: { '@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent', '#text': user.id },
+										'saml:NameID': {
+											'@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+											'#text': profile.emailVerified ? normalizeEmailAddress(profile.email) : `${user.username}@${this.config.hostname}`,
+										},
 										'saml:SubjectConfirmation': {
 											'@Method': 'urn:oasis:names:tc:SAML:2.0:cm:bearer',
 											'saml:SubjectConfirmationData': {
@@ -540,14 +541,14 @@ export class SAMLIdentifyProviderService {
 													'#text': user.avatarUrl,
 												},
 											}] : []),
-											...(profile.emailVerified ? [{
+											{
 												'@Name': 'email',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
-													'#text': normalizeEmailAddress(profile.email),
+													'#text': profile.emailVerified ? normalizeEmailAddress(profile.email) : `${user.username}@${this.config.hostname}`,
 												},
-											}] : []),
+											},
 											{
 												'@Name': 'email_verified',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',

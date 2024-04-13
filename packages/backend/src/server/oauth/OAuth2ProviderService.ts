@@ -44,6 +44,7 @@ import type { MiLocalUser } from '@/models/User.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
+import { normalizeEmailAddress } from '@/misc/normalize-email-address.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -508,25 +509,31 @@ export class OAuth2ProviderService {
 				return;
 			}
 
-			const accessToken = await this.accessTokensRepository.findOne({ where: { token }, relations: ['user'] });
+			const accessToken = await this.accessTokensRepository.findOneBy({ token });
 			if (!accessToken) {
 				reply.code(401);
 				return;
 			}
 
-			const user = await this.userProfilesRepository.findOneBy({ userId: accessToken.userId });
+			const user = await this.usersRepository.findOneBy({ id: accessToken.userId });
+			if (!user) {
+				reply.code(401);
+				return;
+			}
+
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 			reply.code(200);
 			return {
-				sub: accessToken.userId,
-				name: accessToken.user?.name,
-				preferred_username: accessToken.user?.username,
-				profile: accessToken.user ? `${this.config.url}/@${accessToken.user.username}` : undefined,
-				picture: accessToken.user?.avatarUrl,
-				email: user?.email,
-				email_verified: user?.emailVerified,
-				mfa_enabled: user?.twoFactorEnabled,
-				updated_at: Math.floor((accessToken.user?.updatedAt?.getTime() ?? accessToken.user?.createdAt.getTime() ?? 0) / 1000),
+				sub: user.id,
+				name: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
+				preferred_username: user.username,
+				profile: `${this.config.url}/@${user.username}`,
+				picture: user.avatarUrl ?? undefined,
+				email: profile.emailVerified ? normalizeEmailAddress(profile.email) : `${user.username}@${this.config.hostname}`,
+				email_verified: profile.emailVerified,
+				mfa_enabled: profile.twoFactorEnabled,
+				updated_at: Math.floor((user.updatedAt?.getTime() ?? user.createdAt.getTime()) / 1000),
 			};
 		});
 	}
