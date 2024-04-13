@@ -135,7 +135,8 @@ onMounted(() => {
 	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 9px 12px 9px 12px;
+	padding: 10px 14px;
+	font-size: .9em;
 	background: var(--buttonBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
@@ -157,22 +158,11 @@ onMounted(() => {
 	}
 }
 
-.headerUpper {
-	display: flex;
-	align-items: center;
-}
-
-.headerLower {
-	color: var(--fgTransparentWeak);
-	font-size: .85em;
-	padding-left: 4px;
-}
-
 .headerIcon {
 	margin-right: 0.75em;
 	flex-shrink: 0;
 	text-align: center;
-	opacity: 0.8;
+	color: var(--fgTransparentWeak);
 
 	&:empty {
 		display: none;
@@ -186,6 +176,7 @@ onMounted(() => {
 .headerText {
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	text-align: start;
 	overflow: hidden;
 	padding-right: 12px;
 }
