@@ -25,6 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="height: 100cqh; overflow: auto; text-align: center;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
+							<MkInfo><MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank">{{ i18n.ts._2fa.moreDetailedGuideHere }}</MkLink></MkInfo>
+
 							<I18n :src="i18n.ts._2fa.step1" tag="div">
 								<template #a>
 									<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
@@ -113,6 +115,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkLink from '@/components/MkLink.vue';
 import { confetti } from '@/scripts/confetti.js';
 import { signinRequired } from '@/account.js';
 
