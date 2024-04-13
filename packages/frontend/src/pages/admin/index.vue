@@ -38,6 +38,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
+import { iAmAdmin, iAmModerator } from '@/account';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -223,7 +224,8 @@ const menuDef = computed(() => [{
 		to: '/admin/database',
 		active: currentPage.value?.route.name === 'database',
 	}],
-}]);
+	// filter out when moderator operating
+}].filter(menu => iAmAdmin || (iAmModerator && (menu.title !== i18n.ts.info && menu.title !== i18n.ts.settings))));
 
 watch(narrow.value, () => {
 	if (currentPage.value?.route.name == null && !narrow.value) {
