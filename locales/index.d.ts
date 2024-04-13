@@ -4937,6 +4937,14 @@ export interface Locale extends ILocale {
      */
     "useNativeUIForVideoAudioPlayer": string;
     /**
+     * オリジナルのファイル名を保持
+     */
+    "keepOriginalFilename": string;
+    /**
+     * この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。
+     */
+    "keepOriginalFilenameDescription": string;
+    /**
      * センシティブなメディアは選択できません
      */
     "cannotSelectSensitiveMedia": string;
