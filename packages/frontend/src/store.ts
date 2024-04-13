@@ -446,9 +446,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	uploadAsRandomFilename: {
+	keepOriginalFilename: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 
 	sound_masterVolume: {

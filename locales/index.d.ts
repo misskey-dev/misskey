@@ -4937,9 +4937,13 @@ export interface Locale extends ILocale {
      */
     "useNativeUIForVideoAudioPlayer": string;
     /**
-     * アップロード時にファイル名をランダム文字列にする
+     * オリジナルのファイル名を保持
      */
-    "uploadAsRandomFilename": string;
+    "keepOriginalFilename": string;
+    /**
+     * この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。
+     */
+    "keepOriginalFilenameDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方

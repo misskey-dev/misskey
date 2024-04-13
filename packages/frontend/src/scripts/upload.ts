@@ -46,7 +46,7 @@ export function uploadFile(
 		reader.onload = async (): Promise<void> => {
 			const ctx = reactive<Uploading>({
 				id,
-				name: defaultStore.state.uploadAsRandomFilename ? id : name ?? file.name ?? 'untitled',
+				name: defaultStore.state.keepOriginalFilename ? name ?? file.name ?? 'untitled' : id,
 				progressMax: undefined,
 				progressValue: undefined,
 				img: window.URL.createObjectURL(file),
