@@ -3009,6 +3009,14 @@ export interface Locale extends ILocale {
      */
     "verificationEmailSent": string;
     /**
+     * メールアドレスの登録が必要です
+     */
+    "emailRegistrationRequired": string;
+    /**
+     * {instance}はメールアドレスの登録が必要です。ここをクリックしてメールアドレスを登録してください。
+     */
+    "emailRegistrationRequiredBanner": ParameterizedString<"instance">;
+    /**
      * 未設定
      */
     "notSet": string;
