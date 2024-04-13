@@ -48,6 +48,7 @@
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
 - Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
+- Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
 
 ## 2024.3.1
 
