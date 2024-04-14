@@ -1,4 +1,5 @@
 import { url as local } from '@/config.js';
+import { defaultStore } from '@/store.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -16,8 +17,9 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 		} else if (expression.includes(' ')) return expression.split(' ').every(keyword => url.includes(keyword));
 		else return domain.endsWith(expression);
 	});
+	const isTrusted = defaultStore.reactiveState.trustedExternalWebsites.value.includes(domain);
 
-	if (!self && !isWellKnownWebsite) {
+	if (!self && !isWellKnownWebsite && !isTrusted) {
 		ev.preventDefault();
 		ev.stopPropagation();
 
@@ -25,9 +27,14 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 			type: 'warning',
 			title: i18n.ts.warningRedirectingExternalWebsiteTitle,
 			text: i18n.tsx.warningRedirectingExternalWebsiteDescription({ url: `\`\`\`\n${url}\n\`\`\`` }),
+			switchLabel: i18n.ts.warningRedirectingExternalWebsiteTrustThisSite,
 		});
 
 		if (confirm.canceled) return false;
+
+		if (confirm.toggle) {
+			await defaultStore.set('trustedExternalWebsites', [...defaultStore.reactiveState.trustedExternalWebsites.value, domain]);
+		}
 
 		window.open(url, '_blank', 'noopener');
 	}

@@ -245,7 +245,7 @@ export function confirm(props: {
 	okWaitInitiate?: 'dialog' | 'input' | 'switch';
 	okWaitDuration?: number;
 	cancelText?: string;
-}): Promise<{ canceled: boolean }> {
+}): Promise<{ canceled: boolean, result?: string | number | true | null, toggle?: boolean }> {
 	return new Promise(resolve => {
 		popup(MkDialog, {
 			...props,

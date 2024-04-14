@@ -4888,6 +4888,10 @@ export interface Locale extends ILocale {
      */
     "warningRedirectingExternalWebsiteDescription": ParameterizedString<"url">;
     /**
+     * このサイトを信頼する
+     */
+    "warningRedirectingExternalWebsiteTrustThisSite": string;
+    /**
      * サムネイルの表示を制限するURL
      */
     "urlPreviewDenyList": string;
