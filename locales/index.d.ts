@@ -4945,6 +4945,10 @@ export interface Locale extends ILocale {
      */
     "keepOriginalFilenameDescription": string;
     /**
+     * 説明文はありません
+     */
+    "noDescription": string;
+    /**
      * センシティブなメディアは選択できません
      */
     "cannotSelectSensitiveMedia": string;
