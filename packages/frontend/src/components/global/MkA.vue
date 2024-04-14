@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
@@ -14,7 +14,7 @@ export type MkABehavior = 'window' | 'browser' | null;
 </script>
 
 <script lang="ts" setup>
-import { computed, inject } from 'vue';
+import { computed, inject, shallowRef } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
@@ -31,6 +31,10 @@ const props = withDefaults(defineProps<{
 });
 
 const linkBehaviour = props.behavior ?? inject<MkABehavior>('linkBehaviour', null);
+
+const el = shallowRef<HTMLElement>();
+
+defineExpose({ $el: el });
 
 const router = useRouter();
 

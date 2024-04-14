@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 describe('Router transition', () => {
 	describe('Redirect', () => {
 		// サーバの初期化。ルートのテストに関しては各describeごとに1度だけ実行で十分だと思う（使いまわした方が早い）

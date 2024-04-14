@@ -82,7 +82,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkMediaList :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
-					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
+					<div v-if="isEnabledUrlPreview">
+						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
+					</div>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
@@ -95,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
-					<div :class="$style.reactionOmitted">{{ i18n.ts.more }}</div>
+					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
@@ -165,6 +167,7 @@ import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
+import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
@@ -178,7 +181,7 @@ import { userPage } from '@/filters/user.js';
 import number from '@/filters/number.js';
 import * as os from '@/os.js';
 import * as sound from '@/scripts/sound.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { defaultStore, noteViewInterruptors } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
@@ -194,6 +197,7 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { isEnabledUrlPreview } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -238,6 +242,7 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = (
 	note.value.renote != null &&
+	note.value.reply == null &&
 	note.value.text == null &&
 	note.value.cw == null &&
 	note.value.fileIds && note.value.fileIds.length === 0 &&
@@ -268,7 +273,7 @@ const renoteCollapsed = ref(
 	defaultStore.state.collapseRenotes && isRenote && (
 		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
 		(appearNote.value.myReaction != null)
-	)
+	),
 );
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
@@ -337,6 +342,28 @@ if (!props.mock) {
 			targetElement: renoteButton.value,
 		}, {}, 'closed');
 	});
+
+	if (appearNote.value.reactionAcceptance === 'likeOnly') {
+		useTooltip(reactButton, async (showing) => {
+			const reactions = await misskeyApiGet('notes/reactions', {
+				noteId: appearNote.value.id,
+				limit: 10,
+				_cacheKey_: appearNote.value.reactionCount,
+			});
+
+			const users = reactions.map(x => x.user);
+
+			if (users.length < 1) return;
+
+			os.popup(MkReactionsViewerDetails, {
+				showing,
+				reaction: '❤️',
+				users,
+				count: appearNote.value.reactionCount,
+				targetElement: reactButton.value!,
+			}, {}, 'closed');
+		});
+	}
 }
 
 function renote(viaKeyboard = false) {
@@ -994,9 +1021,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .reactionOmitted {
 	display: inline-block;
-	height: 32px;
-	margin: 2px;
-	padding: 0 6px;
+	margin-left: 8px;
 	opacity: .8;
+	font-size: 95%;
 }
 </style>
