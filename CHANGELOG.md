@@ -48,6 +48,9 @@
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
 - Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
+- Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
+- Fix: 登録にメール認証が必須になっている場合、登録されているメールアドレスを削除できないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/606)
 
 ## 2024.3.1
 
