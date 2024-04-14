@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</section>
 	<!-- フォルダの中にはカスタム絵文字やフォルダがある -->
-	<section v-else style="border-radius: 6px; padding-top: 9px;">
+	<section v-else style="border-radius: 6px;">
 		<header class="_acrylic" @click="shown = !shown">
 			<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (フォルダー)
 		</header>
