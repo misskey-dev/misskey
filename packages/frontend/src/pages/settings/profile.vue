@@ -240,26 +240,18 @@ function changeAvatar(ev) {
 			});
 		}
 
-		const updatePromise = misskeyApi('i/update', {
+		await os.apiWithDialog('i/update', {
 			avatarId: originalOrCropped.id,
-		});
-
-		os.promiseDialog(updatePromise, (updatedUser) => {
-			os.success();
-			$i.avatarId = updatedUser.avatarId;
-			$i.avatarUrl = updatedUser.avatarUrl;
+		}, undefined, {
+			'AVATAR_IS_SENSITIVE': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).then(() => {
+			$i.avatarId = originalOrCropped.id;
+			$i.avatarUrl = originalOrCropped.url;
 			globalEvents.emit('requestClearPageCache');
 			claimAchievement('profileFilled');
-		}, (err) => {
-			if (err.code === 'AVATAR_IS_SENSITIVE') {
-				os.alert({
-					type: 'error',
-					title: i18n.ts.cannotSelectSensitiveMedia,
-					text: i18n.ts.cannotSelectSensitiveMediaDescription,
-				});
-			} else {
-				os.apiErrorAlert(err, 'i/update');
-			}
 		});
 	});
 }
@@ -300,25 +292,17 @@ function changeBanner(ev) {
 			});
 		}
 
-		const updatePromise = misskeyApi('i/update', {
+		await os.apiWithDialog('i/update', {
 			bannerId: originalOrCropped.id,
-		});
-
-		os.promiseDialog(updatePromise, (updatedUser) => {
-			os.success();
-			$i.bannerId = updatedUser.bannerId;
-			$i.bannerUrl = updatedUser.bannerUrl;
+		}, undefined, {
+			'BANNER_IS_SENSITIVE': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).then(() => {
+			$i.bannerId = originalOrCropped.id;
+			$i.bannerUrl = originalOrCropped.url;
 			globalEvents.emit('requestClearPageCache');
-		}, (err) => {
-			if (err.code === 'BANNER_IS_SENSITIVE') {
-				os.alert({
-					type: 'error',
-					title: i18n.ts.cannotSelectSensitiveMedia,
-					text: i18n.ts.cannotSelectSensitiveMediaDescription,
-				});
-			} else {
-				os.apiErrorAlert(err, 'i/update');
-			}
 		});
 	});
 }
