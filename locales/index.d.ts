@@ -5204,6 +5204,14 @@ export interface Locale extends ILocale {
      * 自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。
      */
     "hideActivityDescription": string;
+    /**
+     * 誰がリアクションをしたのかを非表示にする
+     */
+    "hideReactionUsers": string;
+    /**
+     * リアクションをホバーした際のユーザー一覧と、ノート詳細ページのリアクションタブにあるリアクションをしたユーザー一覧を非表示にします
+     */
+    "hideReactionUsersDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方
