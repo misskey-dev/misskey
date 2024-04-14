@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:key="`custom:${child.value}`"
 				:initialShown="false"
 				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).map(e => `:${e.name}:`))"
-				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value && !customEmojis.some(emoji => emoji.category !== null && emoji.category.includes(e.category+'/')) || e.category === child.category+'/'+child.category && !e.category)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
+				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -368,7 +368,7 @@ function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef | string
 }
 
 function filterCategory(emoji: Misskey.entities.EmojiSimple, category: string): boolean {
-	return category === '' ? (emoji.category === 'null' || !emoji.category) : emoji.category === category;
+	return category === '' ? (emoji.category === 'null' || !emoji.category) : emoji.category === category && !customEmojis.value.some(e => e.category !== null && e.category.includes(emoji.category + '/')) || emoji.category === category + '/' + category && !emoji.category;
 }
 
 function focus() {
