@@ -10,36 +10,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		$style.root,
 		{
 			[$style.inline]: inline,
-			[$style.large]: large,
 			'_button': !to,
 		},
 	]"
 >
-	<component
-		:is="to ? (external ? 'a' : 'MkA') : 'div'"
-		:class="[$style.main, { [$style.active]: active }]"
-		class="_button"
+	<MkHeaderButton
+		:tag="to ? (external ? 'a' : 'MkA') : 'div'"
+		:active="active"
+		:large="large"
 		v-bind="to ? (external ? { href: to, target: '_blank' } : { to, behavior }) : {}"
 	>
-		<span :class="$style.icon"><slot name="icon"></slot></span>
-		<div :class="$style.headerText">
-			<div>
-				<MkCondensedLine :minScale="2 / 3"><slot></slot></MkCondensedLine>
-			</div>
-			<div v-if="$slots.caption" :class="$style.headerTextSub">
-				<MkCondensedLine :minScale="2 / 3"><slot name="caption"></slot></MkCondensedLine>
-			</div>
-		</div>
-		<span :class="$style.suffix">
-			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
-			<i :class="to && external ? 'ti ti-external-link' : 'ti ti-chevron-right'"></i>
-		</span>
-	</component>
+		<template v-if="$slots.icon" #icon><slot name="icon"></slot></template>
+		<template #default><slot></slot></template>
+		<template v-if="$slots.caption" #caption><slot name="caption"></slot></template>
+		<template v-if="$slots.suffix" #suffix><slot name="suffix"></slot></template>
+		<template #suffixIcon><i :class="to && external ? 'ti ti-external-link' : 'ti ti-chevron-right'"></i></template>
+	</MkHeaderButton>
 </component>
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+import MkHeaderButton from '@/components/MkHeaderButton.vue';
+
+defineProps<{
 	to?: string;
 	active?: boolean;
 	external?: boolean;
@@ -55,69 +48,6 @@ const props = defineProps<{
 
 	&.inline {
 		display: inline-block;
-	}
-}
-
-.main {
-	display: flex;
-	align-items: center;
-	width: 100%;
-	box-sizing: border-box;
-	padding: 10px 14px;
-	background: var(--buttonBg);
-	border-radius: 6px;
-	font-size: 0.9em;
-
-	&.large {
-		font-size: 1em;
-	}
-
-	&:hover {
-		text-decoration: none;
-		background: var(--buttonHoverBg);
-	}
-
-	&.active {
-		color: var(--accent);
-		background: var(--buttonHoverBg);
-	}
-}
-
-.icon {
-	margin-right: 0.75em;
-	flex-shrink: 0;
-	text-align: center;
-	color: var(--fgTransparentWeak);
-
-	&:empty {
-		display: none;
-
-		& + .headerText {
-			padding-left: 4px;
-		}
-	}
-}
-
-.headerText {
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	text-align: start;
-	overflow: hidden;
-	padding-right: 12px;
-}
-
-.headerTextSub {
-	color: var(--fgTransparentWeak);
-	font-size: .85em;
-}
-
-.suffix {
-	margin-left: auto;
-	opacity: 0.7;
-	white-space: nowrap;
-
-	> .suffixText:not(:empty) {
-		margin-right: 0.75em;
 	}
 }
 </style>
