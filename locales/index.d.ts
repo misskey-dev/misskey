@@ -5168,6 +5168,18 @@ export interface Locale extends ILocale {
      * 動画・音声の再生にブラウザのUIを使用する
      */
     "useNativeUIForVideoAudioPlayer": string;
+    /**
+     * オリジナルのファイル名を保持
+     */
+    "keepOriginalFilename": string;
+    /**
+     * この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。
+     */
+    "keepOriginalFilenameDescription": string;
+    /**
+     * 説明文はありません
+     */
+    "noDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -7951,6 +7963,10 @@ export interface Locale extends ILocale {
          * バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。
          */
         "backupCodesExhaustedWarning": string;
+        /**
+         * 詳細なガイドはこちら
+         */
+        "moreDetailedGuideHere": string;
     };
     "_permissions": {
         /**

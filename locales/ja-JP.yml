@@ -1288,6 +1288,9 @@ useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
 launchApp: "アプリを起動"
 useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
+keepOriginalFilename: "オリジナルのファイル名を保持"
+keepOriginalFilenameDescription: "この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。"
+noDescription: "説明文はありません"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2087,6 +2090,7 @@ _2fa:
   backupCodesDescription: "認証アプリが使用できなくなった場合、以下のバックアップコードを使ってアカウントにアクセスできます。これらのコードは必ず安全な場所に保管してください。各コードは一回だけ使用できます。"
   backupCodeUsedWarning: "バックアップコードが使用されました。認証アプリが使えなくなっている場合、なるべく早く認証アプリを再設定してください。"
   backupCodesExhaustedWarning: "バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。"
+  moreDetailedGuideHere: "詳細なガイドはこちら"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
