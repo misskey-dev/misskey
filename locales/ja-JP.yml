@@ -2064,6 +2064,9 @@ _2fa:
   backupCodesDescription: "認証アプリが使用できなくなった場合、以下のバックアップコードを使ってアカウントにアクセスできます。これらのコードは必ず安全な場所に保管してください。各コードは一回だけ使用できます。"
   backupCodeUsedWarning: "バックアップコードが使用されました。認証アプリが使えなくなっている場合、なるべく早く認証アプリを再設定してください。"
   backupCodesExhaustedWarning: "バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。"
+  backupCodesSavedConfirmTitle: "バックアップコードを保存しましたか？"
+  backupCodesSavedConfirmDescription: "二要素認証アプリとバックアップコードの両方を紛失した場合、アカウントにアクセスできなくなります。\n誰とも共有せず、適切な方法で保管してください。\n\n$[x2 二要素認証設定は自分以外の誰にも変更できませんので、$[fg.color=red 運営チームも無効化することはできません。]]"
+  backupCodesSavedConfirmChecked: "バックアップコードを保存しました"
   howto2fa: "設定方法でお困りの際は、{link}を参照してください。"
 
 _permissions:

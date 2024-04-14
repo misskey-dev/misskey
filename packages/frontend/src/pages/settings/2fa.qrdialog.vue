@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="500"
-	:height="550"
+	:height="600"
 	@close="cancel"
 	@closed="emit('closed')"
 >
@@ -76,15 +76,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<div class="_gaps">
 									<MkInfo warn>{{ i18n.ts._2fa.backupCodesDescription }}</MkInfo>
+									<MkButton primary rounded gradate full @click="downloadBackupCodes"><i class="ti ti-download"></i> {{ i18n.ts.download }}</MkButton>
 
 									<div v-for="(code, i) in backupCodes" :key="code" class="_gaps_s">
-										<MkKeyValue :copy="code">
-											<template #key>#{{ i + 1 }}</template>
-											<template #value><code class="_monospace">{{ code }}</code></template>
-										</MkKeyValue>
+										<span style="text-align: center;">#{{ i + 1 }}. <code class="_monospace">{{ code }}</code></span>
 									</div>
-
-									<MkButton primary rounded gradate @click="downloadBackupCodes"><i class="ti ti-download"></i> {{ i18n.ts.download }}</MkButton>
 								</div>
 							</MkFolder>
 						</div>
@@ -107,6 +103,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import * as config from '@/config.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { confetti } from '@/scripts/confetti.js';
@@ -131,7 +128,8 @@ const token = ref<string | number | null>(null);
 const backupCodes = ref<string[]>();
 
 function cancel() {
-	dialog.value.close();
+	if (page.value !== 2) dialog.value?.close();
+	else allDone();
 }
 
 async function tokenDone() {
@@ -150,15 +148,27 @@ async function tokenDone() {
 
 function downloadBackupCodes() {
 	if (backupCodes.value !== undefined) {
-		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
+		const txtBlob = new Blob([backupCodes.value.reduce((acc, code, i) => `${acc}#${i + 1}. ${code}\r\n`, `${config.hostname} 2FA Backup Codes\r\n\r\n`)], { type: 'text/plain' });
 		const dummya = document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
+		dummya.download = `${config.hostname}-${$i.username}-2fa-backup-codes.txt`;
 		dummya.click();
 	}
 }
 
-function allDone() {
+async function allDone() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts._2fa.backupCodesSavedConfirmTitle,
+		text: i18n.ts._2fa.backupCodesSavedConfirmDescription,
+		switchLabel: i18n.ts._2fa.backupCodesSavedConfirmChecked,
+		okText: i18n.ts.gotIt,
+		okWaitInitiate: 'switch',
+		okWaitDuration: 5,
+	});
+
+	if (canceled) return;
+
 	dialog.value.close();
 }
 </script>
