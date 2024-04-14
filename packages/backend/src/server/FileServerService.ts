@@ -194,6 +194,7 @@ export class FileServerService {
 						reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
 						reply.header('Accept-Ranges', 'bytes');
 						reply.header('Content-Length', chunksize);
+						reply.code(206);
 					} else {
 						image = {
 							data: fs.createReadStream(file.path),
@@ -263,7 +264,6 @@ export class FileServerService {
 					const parts = range.replace(/bytes=/, '').split('-');
 					const start = parseInt(parts[0], 10);
 					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
-					console.log(end);
 					if (end > file.file.size) {
 						end = file.file.size - 1;
 					}
@@ -433,6 +433,7 @@ export class FileServerService {
 					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
 					reply.header('Accept-Ranges', 'bytes');
 					reply.header('Content-Length', chunksize);
+					reply.code(206);
 				} else {
 					image = {
 						data: fs.createReadStream(file.path),
@@ -529,6 +530,9 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (!(file.isLink && file.uri)) return '204';
 			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
+			if (!file.size) {
+				file.size = (await fs.promises.stat(result.path)).size;
+			}
 			return {
 				...result,
 				url: file.uri,
