@@ -7,9 +7,11 @@
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
+- Enhance: クリップのノート数を表示するように
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
+- Feat: アップロードするファイルの名前をランダム文字列にできるように
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
 - Enhance: リアクション・いいねの総数を表示するように
@@ -47,6 +49,10 @@
 - Fix: エンドポイント`notes/translate`のエラーを改善
 - Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
 - Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
+- Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
+- Fix: 登録にメール認証が必須になっている場合、登録されているメールアドレスを削除できないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/606)
+- Fix: nginx経由で/files/にRangeリクエストされた場合に正しく応答できないのを修正
 
 ## 2024.3.1
 
