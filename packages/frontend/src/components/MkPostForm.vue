@@ -388,7 +388,7 @@ function addMissingMention() {
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
 			misskeyApi('users/show', { username: x.username, host: x.host }).then(user => {
-				visibleUsers.value.push(user);
+				pushVisibleUser(user);
 			});
 		}
 	}
