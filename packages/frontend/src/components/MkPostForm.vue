@@ -963,7 +963,11 @@ onMounted(() => {
 				}
 				if (draft.data.visibleUserIds) {
 					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
-						users.forEach(pushVisibleUser);
+						for (let i = 0; i < users.length; i++) {
+							if (users[i].id === draft.data.visibleUserIds[i]) {
+								pushVisibleUser(users[i]);
+							}
+						}
 					});
 				}
 			}
