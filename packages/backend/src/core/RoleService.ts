@@ -32,6 +32,7 @@ import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 export type RolePolicies = {
+	vrtlAvailable: boolean;
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
@@ -60,6 +61,7 @@ export type RolePolicies = {
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
+	vrtlAvailable: true,
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
@@ -327,6 +329,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		}
 
 		return {
+			vrtlAvailable: calc('vrtlAvailable', vs => vs.some(v => v === true)),
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),

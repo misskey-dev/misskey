@@ -4659,6 +4659,7 @@ export type components = {
       usersCount: number;
     });
     RolePolicies: {
+      vrtlAvailable: boolean;
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
@@ -8916,6 +8917,7 @@ export type operations = {
           manifestJsonOverride?: string;
           enableFanoutTimeline?: boolean;
           enableFanoutTimelineDbFallback?: boolean;
+          vmimiRelayTimelineCacheMax?: number;
           perLocalUserUserTimelineCacheMax?: number;
           perRemoteUserUserTimelineCacheMax?: number;
           perUserHomeTimelineCacheMax?: number;
@@ -20800,6 +20802,8 @@ export type operations = {
           withReplies?: boolean;
           /** @default 10 */
           limit?: number;
+          /** @default true */
+          allowPartial?: boolean;
           /** Format: misskey:id */
           sinceId?: string;
           /** Format: misskey:id */

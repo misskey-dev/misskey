@@ -37,7 +37,7 @@ class VmimiRelayTimelineChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
-		if (!policies.gtlAvailable) return;
+		if (!policies.vrtlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
 		this.withFiles = params.withFiles ?? false;

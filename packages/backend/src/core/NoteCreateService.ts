@@ -50,6 +50,7 @@ import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { VmimiRelayTimelineService } from '@/core/VmimiRelayTimelineService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
@@ -193,6 +194,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
@@ -939,6 +941,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 						this.fanoutTimelineService.push(`localTimelineWithReplyTo:${note.replyUserId}`, note.id, 300 / 10, r);
 					}
 				}
+				if (note.visibility === 'public' && this.vmimiRelayTimelineService.isRelayedInstance(note.userHost)) {
+					this.fanoutTimelineService.push('vmimiRelayTimelineWithReplies', note.id, meta.vmimiRelayTimelineCacheMax, r);
+				}
 			} else {
 				this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
 				if (note.fileIds.length > 0) {
@@ -949,6 +954,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 					this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
 						this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+					}
+				}
+				if (note.visibility === 'public' && this.vmimiRelayTimelineService.isRelayedInstance(note.userHost)) {
+					this.fanoutTimelineService.push('vmimiRelayTimeline', note.id, meta.vmimiRelayTimelineCacheMax, r);
+					if (note.fileIds.length > 0) {
+						this.fanoutTimelineService.push('vmimiRelayTimelineWithFiles', note.id, meta.vmimiRelayTimelineCacheMax / 2, r);
 					}
 				}
 			}
