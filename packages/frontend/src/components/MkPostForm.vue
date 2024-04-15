@@ -679,6 +679,7 @@ function saveDraft() {
 			localOnly: localOnly.value,
 			files: files.value,
 			poll: poll.value,
+			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
 		},
 	};
 
@@ -959,6 +960,11 @@ onMounted(() => {
 				files.value = (draft.data.files || []).filter(draftFile => draftFile);
 				if (draft.data.poll) {
 					poll.value = draft.data.poll;
+				}
+				if (draft.data.visibleUserIds) {
+					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
+						users.forEach(pushVisibleUser);
+					});
 				}
 			}
 		}
