@@ -101,33 +101,24 @@ export class UserFollowingService implements OnModuleInit {
 		this.queueService.deliver(followee, content, follower.inbox, false);
 	}
 
-	/**
-	 * ThinUserでなくともユーザーの情報が最新でない場合はこちらを使うべき
-	 */
-	@bindThis
-	public async followByThinUser(
-		_follower: ThinUser,
-		_followee: ThinUser,
-		options: Parameters<typeof this.follow>[2] = {},
-	) {
-		const [follower, followee] = await Promise.all([
-			this.usersRepository.findOneByOrFail({ id: _follower.id }),
-			this.usersRepository.findOneByOrFail({ id: _followee.id }),
-		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
-
-		await this.follow(follower, followee, options);
-	}
-
 	@bindThis
 	public async follow(
-		follower: MiLocalUser | MiRemoteUser,
-		followee: MiLocalUser | MiRemoteUser,
+		_follower: ThinUser,
+		_followee: ThinUser,
 		{ requestId, silent = false, withReplies }: {
 			requestId?: string,
 			silent?: boolean,
 			withReplies?: boolean,
 		} = {},
 	): Promise<void> {
+		/**
+		 * 必ず最新のユーザー情報を取得する
+		 */
+		const [follower, followee] = await Promise.all([
+			this.usersRepository.findOneByOrFail({ id: _follower.id }),
+			this.usersRepository.findOneByOrFail({ id: _followee.id }),
+		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
+
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			// What?
 			throw new Error('Remote user cannot follow remote user.');

@@ -71,7 +71,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
-		withReplies: { type: 'boolean' }
+		withReplies: { type: 'boolean' },
 	},
 	required: ['userId'],
 } as const;
