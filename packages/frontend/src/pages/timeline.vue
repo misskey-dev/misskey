@@ -57,6 +57,7 @@ import { miLocalStorage } from '@/local-storage.js';
 provide('shouldOmitHeaderTitle', true);
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
+const isVmimiRelayTimelineAvailable = ($i == null && instance.policies.vrtlAvailable) || ($i != null && $i.policies.vrtlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 const keymap = {
 	't': focus,
@@ -67,7 +68,7 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | `list:${string}`>({
+const src = computed<'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'vmimi-relay-social' | `list:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
@@ -82,7 +83,7 @@ const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
 const withReplies = computed<boolean>({
 	get: () => {
 		if (!$i) return false;
-		if (['local', 'social', 'vmimi-relay'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
+		if (['local', 'social', 'vmimi-relay', 'vmimi-relay-social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.withReplies;
@@ -92,7 +93,7 @@ const withReplies = computed<boolean>({
 });
 const onlyFiles = computed<boolean>({
 	get: () => {
-		if (['local', 'social', 'vmimi-relay'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
+		if (['local', 'social', 'vmimi-relay', 'vmimi-relay-social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
@@ -199,7 +200,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | `list:${string}`): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'vmimi-relay-social' | `list:${string}`): void {
 	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
 
 	if (newSrc.startsWith('userList:')) {
@@ -250,7 +251,7 @@ const headerActions = computed(() => {
 					type: 'switch',
 					text: i18n.ts.showRenotes,
 					ref: withRenotes,
-				}, src.value === 'local' || src.value === 'social' || src.value === 'vmimi-relay' ? {
+				}, src.value === 'local' || src.value === 'social' || src.value === 'vmimi-relay' || src.value === 'vmimi-relay-social' ? {
 					type: 'switch',
 					text: i18n.ts.showRepliesToOthersInTimeline,
 					ref: withReplies,
@@ -263,7 +264,7 @@ const headerActions = computed(() => {
 					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
-					disabled: src.value === 'local' || src.value === 'social' || src.value === 'vmimi-relay' ? withReplies : false,
+					disabled: src.value === 'local' || src.value === 'social' || src.value === 'vmimi-relay' || src.value === 'vmimi-relay-social' ? withReplies : false,
 				}], ev.currentTarget ?? ev.target);
 			},
 		},
@@ -305,10 +306,15 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-whirl',
 	iconOnly: true,
-}, {
+}] : []), ...(isVmimiRelayTimelineAvailable ? [{
 	key: 'vmimi-relay',
 	title: i18n.ts._timelines.vmimiRelay,
 	icon: 'ti ti-circles-relation',
+	iconOnly: true,
+}, {
+	key: 'vmimi-relay-social',
+	title: i18n.ts._timelines.vmimiRelaySocial,
+	icon: 'ti ti-topology-full',
 	iconOnly: true,
 }] : []), {
 	icon: 'ti ti-list',
@@ -344,7 +350,7 @@ const headerTabsWhenNotLogin = computed(() => [
 
 definePageMetadata(() => ({
 	title: i18n.ts.timeline,
-	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : src.value === 'vmimi-relay' ? 'ti ti-circles-relation' : 'ti ti-home',
+	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : src.value === 'vmimi-relay' ? 'ti ti-circles-relation' : src.value === 'vmimi-relay-social' ? 'ti ti-topology-full' : 'ti ti-home',
 }));
 </script>
 
