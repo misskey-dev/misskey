@@ -1232,6 +1232,7 @@ launchApp: "アプリを起動"
 useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
 keepOriginalFilename: "オリジナルのファイル名を保持"
 keepOriginalFilenameDescription: "この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。"
+noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 
 _bubbleGame:

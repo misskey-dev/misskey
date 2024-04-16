@@ -4945,6 +4945,10 @@ export interface Locale extends ILocale {
      */
     "keepOriginalFilenameDescription": string;
     /**
+     * 説明文はありません
+     */
+    "noDescription": string;
+    /**
      * フォローの際常に確認する
      */
     "alwaysConfirmFollow": string;
