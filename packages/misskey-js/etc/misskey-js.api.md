@@ -603,6 +603,17 @@ export type Channels = {
         };
         receives: null;
     };
+    vmimiRelayHybridTimeline: {
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
     userList: {
         params: {
             listId: string;
@@ -1531,6 +1542,8 @@ declare namespace entities {
         NotesGlobalTimelineResponse,
         NotesVmimiRelayTimelineRequest,
         NotesVmimiRelayTimelineResponse,
+        NotesVmimiRelayHybridTimelineRequest,
+        NotesVmimiRelayHybridTimelineResponse,
         NotesHybridTimelineRequest,
         NotesHybridTimelineResponse,
         NotesLocalTimelineRequest,
@@ -2576,6 +2589,12 @@ type NotesUserListTimelineRequest = operations['notes/user-list-timeline']['requ
 
 // @public (undocumented)
 type NotesUserListTimelineResponse = operations['notes/user-list-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayHybridTimelineRequest = operations['notes/vmimi-relay-hybrid-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayHybridTimelineResponse = operations['notes/vmimi-relay-hybrid-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesVmimiRelayTimelineRequest = operations['notes/vmimi-relay-timeline']['requestBody']['content']['application/json'];
