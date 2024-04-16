@@ -93,6 +93,15 @@ type Source = {
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
 	pidFile: string;
+
+	nirila?: {
+		abuseDiscordHook?: string;
+		disableAbuseRepository?: boolean;
+		maxWebImageSize?: number;
+		withRepliesInHomeTL?: boolean;
+		withRepliesInUserList?: boolean;
+		blockMentionsFromUnfamiliarRemoteUsers?: boolean;
+	}
 };
 
 export type Config = {
@@ -170,6 +179,15 @@ export type Config = {
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
 	pidFile: string;
+
+	nirila: {
+		abuseDiscordHook?: string;
+		disableAbuseRepository?: boolean;
+		maxWebImageSize?: number;
+		withRepliesInHomeTL?: boolean,
+		withRepliesInUserList: boolean,
+		blockMentionsFromUnfamiliarRemoteUsers: boolean;
+	}
 };
 
 const _filename = fileURLToPath(import.meta.url);
@@ -211,6 +229,11 @@ export function loadConfig(): Config {
 	const redis = convertRedisOptions(config.redis, host);
 
 	return {
+		// to avoid merge conflict in the future, this is at top
+		nirila: Object.assign({
+			withRepliesInUserList: true,
+			blockMentionsFromUnfamiliarRemoteUsers: false,
+		}, config.nirila ?? {}),
 		version,
 		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
 		url: url.origin,

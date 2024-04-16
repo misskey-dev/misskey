@@ -27,6 +27,7 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
+import { AbuseDiscordHookService } from '@/core/AbuseDiscordHookService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
@@ -85,6 +86,7 @@ export class ApInboxService {
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
+		private abuseDiscordHookService: AbuseDiscordHookService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -526,14 +528,18 @@ export class ApInboxService {
 		});
 		if (users.length < 1) return 'skip';
 
+		const comment = `${activity.content}\n${JSON.stringify(uris, null, 2)}`;
+
 		await this.abuseUserReportsRepository.insert({
 			id: this.idService.gen(),
 			targetUserId: users[0].id,
 			targetUserHost: users[0].host,
 			reporterId: actor.id,
 			reporterHost: actor.host,
-			comment: `${activity.content}\n${JSON.stringify(uris, null, 2)}`,
+			comment,
 		});
+
+		this.abuseDiscordHookService.send(actor, users[0], comment);
 
 		return 'ok';
 	}

@@ -97,7 +97,13 @@ export function openInstanceMenu(ev: MouseEvent) {
 		action: () => {
 			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
 		},
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
+	} : undefined, {
+		text: 'NSFWガイドライン',
+		icon: 'ti ti-notebook',
+		action: () => {
+			window.open('https://kinel.notion.site/NSFW-39a3f0c8708e4e2594594a1c88099fe3', '_blank', 'noopener');
+		},
+	}, { type: 'divider' }, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
