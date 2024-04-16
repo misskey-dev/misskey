@@ -214,6 +214,8 @@ export class FileServerService {
 				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+				reply.header('Content-Length', file.file.size);
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition',
 					contentDisposition(
 						'inline',
@@ -256,6 +258,7 @@ export class FileServerService {
 				return fs.createReadStream(file.path);
 			} else {
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
+				reply.header('Content-Length', file.file.size);
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition', contentDisposition('inline', file.filename));
 
@@ -530,9 +533,7 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (!(file.isLink && file.uri)) return '204';
 			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
-			if (!file.size) {
-				file.size = (await fs.promises.stat(result.path)).size;
-			}
+			file.size = (await fs.promises.stat(result.path)).size;	// DB file.sizeは正確とは限らないので
 			return {
 				...result,
 				url: file.uri,
