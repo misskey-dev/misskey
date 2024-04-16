@@ -4,70 +4,75 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m rsljpzjq">
-	<div v-adaptive-border class="rfqxtzch _panel">
-		<div class="toggle">
-			<div class="toggleWrapper">
-				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-				<label for="dn" class="toggle">
-					<span class="before">{{ i18n.ts.light }}</span>
-					<span class="after">{{ i18n.ts.dark }}</span>
-					<span class="toggle__handler">
-						<span class="crater crater--1"></span>
-						<span class="crater crater--2"></span>
-						<span class="crater crater--3"></span>
-					</span>
-					<span class="star star--1"></span>
-					<span class="star star--2"></span>
-					<span class="star star--3"></span>
-					<span class="star star--4"></span>
-					<span class="star star--5"></span>
-					<span class="star star--6"></span>
-				</label>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m rsljpzjq">
+			<div v-adaptive-border class="rfqxtzch _panel">
+				<div class="toggle">
+					<div class="toggleWrapper">
+						<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
+						<label for="dn" class="toggle">
+							<span class="before">{{ i18n.ts.light }}</span>
+							<span class="after">{{ i18n.ts.dark }}</span>
+							<span class="toggle__handler">
+								<span class="crater crater--1"></span>
+								<span class="crater crater--2"></span>
+								<span class="crater crater--3"></span>
+							</span>
+							<span class="star star--1"></span>
+							<span class="star star--2"></span>
+							<span class="star star--3"></span>
+							<span class="star star--4"></span>
+							<span class="star star--5"></span>
+							<span class="star star--6"></span>
+						</label>
+					</div>
+				</div>
+				<div class="sync">
+					<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
+				</div>
 			</div>
-		</div>
-		<div class="sync">
-			<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
-		</div>
-	</div>
 
-	<div class="selects">
-		<MkSelect v-model="lightThemeId" large class="select">
-			<template #label>{{ i18n.ts.themeForLightMode }}</template>
-			<template #prefix><i class="ti ti-sun"></i></template>
-			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
-			<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</MkSelect>
-		<MkSelect v-model="darkThemeId" large class="select">
-			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
-			<template #prefix><i class="ti ti-moon"></i></template>
-			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
-			<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</MkSelect>
-	</div>
+			<div class="selects">
+				<MkSelect v-model="lightThemeId" large class="select">
+					<template #label>{{ i18n.ts.themeForLightMode }}</template>
+					<template #prefix><i class="ti ti-sun"></i></template>
+					<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
+					<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
+						<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
+					</optgroup>
+					<optgroup :label="i18n.ts._theme.builtinThemes">
+						<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
+					</optgroup>
+				</MkSelect>
+				<MkSelect v-model="darkThemeId" large class="select">
+					<template #label>{{ i18n.ts.themeForDarkMode }}</template>
+					<template #prefix><i class="ti ti-moon"></i></template>
+					<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
+					<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
+						<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
+					</optgroup>
+					<optgroup :label="i18n.ts._theme.builtinThemes">
+						<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
+					</optgroup>
+				</MkSelect>
+			</div>
 
-	<FormSection>
-		<div class="_formLinksGrid">
-			<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
-			<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
-			<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
+			<FormSection>
+				<div class="_formLinksGrid">
+					<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+					<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
+					<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
+					<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
+				</div>
+			</FormSection>
+
+			<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
+			<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
 		</div>
-	</FormSection>
-
-	<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
-	<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

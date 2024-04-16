@@ -4,17 +4,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<MkCodeEditor v-model="code" lang="is">
-		<template #label>{{ i18n.ts.code }}</template>
-	</MkCodeEditor>
+			<MkCodeEditor v-model="code" lang="is">
+				<template #label>{{ i18n.ts.code }}</template>
+			</MkCodeEditor>
 
-	<div>
-		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
-	</div>
-</div>
+			<div>
+				<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+			</div>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

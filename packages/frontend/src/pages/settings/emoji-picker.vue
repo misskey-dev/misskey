@@ -4,122 +4,127 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkFolder :defaultOpen="true">
-		<template #icon><i class="ti ti-pin"></i></template>
-		<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.reaction }})</template>
-		<template #caption>{{ i18n.ts.pinnedEmojisForReactionSettingDescription }}</template>
-
-		<div class="_gaps">
-			<div>
-				<div v-panel style="border-radius: 6px;">
-					<Sortable
-						v-model="pinnedEmojisForReaction"
-						:class="$style.emojis"
-						:itemKey="item => item"
-						:animation="150"
-						:delay="100"
-						:delayOnTouchOnly="true"
-					>
-						<template #item="{element}">
-							<button class="_button" :class="$style.emojisItem" @click="removeReaction(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-								<MkEmoji v-else :emoji="element" :normal="true"/>
-							</button>
-						</template>
-						<template #footer>
-							<button class="_button" :class="$style.emojisAdd" @click="chooseReaction">
-								<i class="ti ti-plus"></i>
-							</button>
-						</template>
-					</Sortable>
-				</div>
-				<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
-			</div>
-
-			<div class="_buttons">
-				<MkButton inline @click="previewReaction"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-				<MkButton inline danger @click="setDefaultReaction"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-				<MkButton inline danger @click="overwriteFromPinnedEmojis"><i class="ti ti-copy"></i> {{ i18n.ts.overwriteFromPinnedEmojis }}</MkButton>
-			</div>
-		</div>
-	</MkFolder>
-
-	<MkFolder>
-		<template #icon><i class="ti ti-pin"></i></template>
-		<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.general }})</template>
-		<template #caption>{{ i18n.ts.pinnedEmojisSettingDescription }}</template>
-
-		<div class="_gaps">
-			<div>
-				<div v-panel style="border-radius: 6px;">
-					<Sortable
-						v-model="pinnedEmojis"
-						:class="$style.emojis"
-						:itemKey="item => item"
-						:animation="150"
-						:delay="100"
-						:delayOnTouchOnly="true"
-					>
-						<template #item="{element}">
-							<button class="_button" :class="$style.emojisItem" @click="removeEmoji(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-								<MkEmoji v-else :emoji="element" :normal="true"/>
-							</button>
-						</template>
-						<template #footer>
-							<button class="_button" :class="$style.emojisAdd" @click="chooseEmoji">
-								<i class="ti ti-plus"></i>
-							</button>
-						</template>
-					</Sortable>
-				</div>
-				<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
-			</div>
-
-			<div class="_buttons">
-				<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-				<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-				<MkButton inline danger @click="overwriteFromPinnedEmojisForReaction"><i class="ti ti-copy"></i> {{ i18n.ts.overwriteFromPinnedEmojisForReaction }}</MkButton>
-			</div>
-		</div>
-	</MkFolder>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
-
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<MkRadios v-model="emojiPickerScale">
-				<template #label>{{ i18n.ts.size }}</template>
-				<option :value="1">{{ i18n.ts.small }}</option>
-				<option :value="2">{{ i18n.ts.medium }}</option>
-				<option :value="3">{{ i18n.ts.large }}</option>
-			</MkRadios>
+			<MkFolder :defaultOpen="true">
+				<template #icon><i class="ti ti-pin"></i></template>
+				<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.reaction }})</template>
+				<template #caption>{{ i18n.ts.pinnedEmojisForReactionSettingDescription }}</template>
 
-			<MkRadios v-model="emojiPickerWidth">
-				<template #label>{{ i18n.ts.numberOfColumn }}</template>
-				<option :value="1">5</option>
-				<option :value="2">6</option>
-				<option :value="3">7</option>
-				<option :value="4">8</option>
-				<option :value="5">9</option>
-			</MkRadios>
+				<div class="_gaps">
+					<div>
+						<div v-panel style="border-radius: 6px;">
+							<Sortable
+								v-model="pinnedEmojisForReaction"
+								:class="$style.emojis"
+								:itemKey="item => item"
+								:animation="150"
+								:delay="100"
+								:delayOnTouchOnly="true"
+							>
+								<template #item="{element}">
+									<button class="_button" :class="$style.emojisItem" @click="removeReaction(element, $event)">
+										<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
+										<MkEmoji v-else :emoji="element" :normal="true"/>
+									</button>
+								</template>
+								<template #footer>
+									<button class="_button" :class="$style.emojisAdd" @click="chooseReaction">
+										<i class="ti ti-plus"></i>
+									</button>
+								</template>
+							</Sortable>
+						</div>
+						<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
+					</div>
 
-			<MkRadios v-model="emojiPickerHeight">
-				<template #label>{{ i18n.ts.height }}</template>
-				<option :value="1">{{ i18n.ts.small }}</option>
-				<option :value="2">{{ i18n.ts.medium }}</option>
-				<option :value="3">{{ i18n.ts.large }}</option>
-				<option :value="4">{{ i18n.ts.large }}+</option>
-			</MkRadios>
+					<div class="_buttons">
+						<MkButton inline @click="previewReaction"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+						<MkButton inline danger @click="setDefaultReaction"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+						<MkButton inline danger @click="overwriteFromPinnedEmojis"><i class="ti ti-copy"></i> {{ i18n.ts.overwriteFromPinnedEmojis }}</MkButton>
+					</div>
+				</div>
+			</MkFolder>
 
-			<MkSwitch v-model="emojiPickerUseDrawerForMobile">
-				{{ i18n.ts.useDrawerReactionPickerForMobile }}
-				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-			</MkSwitch>
+			<MkFolder>
+				<template #icon><i class="ti ti-pin"></i></template>
+				<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.general }})</template>
+				<template #caption>{{ i18n.ts.pinnedEmojisSettingDescription }}</template>
+
+				<div class="_gaps">
+					<div>
+						<div v-panel style="border-radius: 6px;">
+							<Sortable
+								v-model="pinnedEmojis"
+								:class="$style.emojis"
+								:itemKey="item => item"
+								:animation="150"
+								:delay="100"
+								:delayOnTouchOnly="true"
+							>
+								<template #item="{element}">
+									<button class="_button" :class="$style.emojisItem" @click="removeEmoji(element, $event)">
+										<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
+										<MkEmoji v-else :emoji="element" :normal="true"/>
+									</button>
+								</template>
+								<template #footer>
+									<button class="_button" :class="$style.emojisAdd" @click="chooseEmoji">
+										<i class="ti ti-plus"></i>
+									</button>
+								</template>
+							</Sortable>
+						</div>
+						<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
+					</div>
+
+					<div class="_buttons">
+						<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+						<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+						<MkButton inline danger @click="overwriteFromPinnedEmojisForReaction"><i class="ti ti-copy"></i> {{ i18n.ts.overwriteFromPinnedEmojisForReaction }}</MkButton>
+					</div>
+				</div>
+			</MkFolder>
+
+			<FormSection>
+				<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
+
+				<div class="_gaps_m">
+					<MkRadios v-model="emojiPickerScale">
+						<template #label>{{ i18n.ts.size }}</template>
+						<option :value="1">{{ i18n.ts.small }}</option>
+						<option :value="2">{{ i18n.ts.medium }}</option>
+						<option :value="3">{{ i18n.ts.large }}</option>
+					</MkRadios>
+
+					<MkRadios v-model="emojiPickerWidth">
+						<template #label>{{ i18n.ts.numberOfColumn }}</template>
+						<option :value="1">5</option>
+						<option :value="2">6</option>
+						<option :value="3">7</option>
+						<option :value="4">8</option>
+						<option :value="5">9</option>
+					</MkRadios>
+
+					<MkRadios v-model="emojiPickerHeight">
+						<template #label>{{ i18n.ts.height }}</template>
+						<option :value="1">{{ i18n.ts.small }}</option>
+						<option :value="2">{{ i18n.ts.medium }}</option>
+						<option :value="3">{{ i18n.ts.large }}</option>
+						<option :value="4">{{ i18n.ts.large }}+</option>
+					</MkRadios>
+
+					<MkSwitch v-model="emojiPickerUseDrawerForMobile">
+						{{ i18n.ts.useDrawerReactionPickerForMobile }}
+						<template #caption>{{ i18n.ts.needReloadToApply }}</template>
+					</MkSwitch>
+				</div>
+			</FormSection>
 		</div>
-	</FormSection>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -236,6 +241,10 @@ watch(pinnedEmojis, () => {
 }, {
 	deep: true,
 });
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
 	title: i18n.ts.emojiPicker,

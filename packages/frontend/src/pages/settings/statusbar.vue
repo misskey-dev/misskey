@@ -4,14 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkFolder v-for="x in statusbars" :key="x.id">
-		<template #label>{{ x.type ?? i18n.ts.notSet }}</template>
-		<template #suffix>{{ x.name }}</template>
-		<XStatusbar :_id="x.id" :userLists="userLists"/>
-	</MkFolder>
-	<MkButton primary @click="add">{{ i18n.ts.add }}</MkButton>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<MkFolder v-for="x in statusbars" :key="x.id">
+				<template #label>{{ x.type ?? i18n.ts.notSet }}</template>
+				<template #suffix>{{ x.name }}</template>
+				<XStatusbar :_id="x.id" :userLists="userLists"/>
+			</MkFolder>
+			<MkButton primary @click="add">{{ i18n.ts.add }}</MkButton>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

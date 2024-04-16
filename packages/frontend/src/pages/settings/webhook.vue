@@ -4,32 +4,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormLink :to="`/settings/webhook/new`">
-		{{ i18n.ts._webhookSettings.createWebhook }}
-	</FormLink>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="900">
+		<div class="_gaps_m">
+			<FormLink :to="`/settings/webhook/new`">
+				{{ i18n.ts._webhookSettings.createWebhook }}
+			</FormLink>
 
-	<FormSection>
-		<MkPagination :pagination="pagination">
-			<template #default="{items}">
-				<div class="_gaps">
-					<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`">
-						<template #icon>
-							<i v-if="webhook.active === false" class="ti ti-player-pause"></i>
-							<i v-else-if="webhook.latestStatus === null" class="ti ti-circle"></i>
-							<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="ti ti-check" :style="{ color: 'var(--success)' }"></i>
-							<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--error)' }"></i>
-						</template>
-						{{ webhook.name || webhook.url }}
-						<template #suffix>
-							<MkTime v-if="webhook.latestSentAt" :time="webhook.latestSentAt"></MkTime>
-						</template>
-					</FormLink>
-				</div>
-			</template>
-		</MkPagination>
-	</FormSection>
-</div>
+			<FormSection>
+				<MkPagination :pagination="pagination">
+					<template #default="{items}">
+						<div class="_gaps">
+							<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`">
+								<template #icon>
+									<i v-if="webhook.active === false" class="ti ti-player-pause"></i>
+									<i v-else-if="webhook.latestStatus === null" class="ti ti-circle"></i>
+									<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="ti ti-check" :style="{ color: 'var(--success)' }"></i>
+									<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--error)' }"></i>
+								</template>
+								{{ webhook.name || webhook.url }}
+								<template #suffix>
+									<MkTime v-if="webhook.latestSentAt" :time="webhook.latestSentAt"></MkTime>
+								</template>
+							</FormLink>
+						</div>
+					</template>
+				</MkPagination>
+			</FormSection>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
-
+import { Ref, inject, onActivated, onMounted, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import { throttle } from 'throttle-debounce';
 import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
 
 const rootEl = shallowRef<HTMLElement>();
@@ -37,7 +37,7 @@ const childStickyBottom = ref(0);
 const parentStickyBottom = inject<Ref<number>>(CURRENT_STICKY_BOTTOM, ref(0));
 provide(CURRENT_STICKY_BOTTOM, childStickyBottom);
 
-const calc = () => {
+const calc = throttle(100, () => {
 	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
 	if (headerEl.value != null) {
 		childStickyTop.value = parentStickyTop.value + headerEl.value.offsetHeight;
@@ -49,50 +49,60 @@ const calc = () => {
 		childStickyBottom.value = parentStickyBottom.value + footerEl.value.offsetHeight;
 		footerHeight.value = footerEl.value.offsetHeight.toString();
 	}
-};
-
-const observer = new ResizeObserver(() => {
-	window.setTimeout(() => {
-		calc();
-	}, 100);
 });
+
+const ro = new ResizeObserver(() => {
+	calc();
+});
+
+const cleanups: (() => void)[] = [];
+const cleanup = () => {
+	for (const cl of cleanups) cl();
+};
 
 onMounted(() => {
 	calc();
 
-	watch([parentStickyTop, parentStickyBottom], calc);
+	cleanups.push(watch([parentStickyTop, parentStickyBottom], () => {
+		calc();
+	}));
 
-	watch(childStickyTop, () => {
+	cleanups.push(watch(childStickyTop, () => {
 		if (bodyEl.value == null) return;
 		bodyEl.value.style.setProperty('--stickyTop', `${childStickyTop.value}px`);
 	}, {
 		immediate: true,
-	});
+	}));
 
-	watch(childStickyBottom, () => {
+	cleanups.push(watch(childStickyBottom, () => {
 		if (bodyEl.value == null) return;
 		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
 	}, {
 		immediate: true,
-	});
+	}));
 
 	if (headerEl.value != null) {
 		headerEl.value.style.position = 'sticky';
 		headerEl.value.style.top = 'var(--stickyTop, 0)';
 		headerEl.value.style.zIndex = '1000';
-		observer.observe(headerEl.value);
+		ro.observe(headerEl.value);
 	}
 
 	if (footerEl.value != null) {
 		footerEl.value.style.position = 'sticky';
 		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
 		footerEl.value.style.zIndex = '1000';
-		observer.observe(footerEl.value);
+		ro.observe(footerEl.value);
 	}
 });
 
+onActivated(() => {
+	calc();
+});
+
 onUnmounted(() => {
-	observer.disconnect();
+	cleanup();
+	ro.disconnect();
 });
 
 defineExpose({

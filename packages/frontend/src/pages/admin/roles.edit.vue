@@ -4,28 +4,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
-			<XEditor v-if="data" v-model="data"/>
-		</MkSpacer>
-		<template #footer>
-			<div :class="$style.footer">
-				<MkSpacer :contentMax="600" :marginMin="16" :marginMax="16">
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</MkSpacer>
-			</div>
-		</template>
-	</MkStickyContainer>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
+		<XEditor v-if="data" v-model="data"/>
+	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :contentMax="600" :marginMin="16" :marginMax="16">
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</MkSpacer>
+		</div>
+	</template>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
-import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -84,6 +81,8 @@ async function save() {
 		router.push('/admin/roles/' + created.id);
 	}
 }
+
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 

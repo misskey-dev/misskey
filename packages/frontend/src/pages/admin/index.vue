@@ -4,78 +4,159 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
-	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-		<MkSpacer :contentMax="700" :marginMin="16">
-			<div class="lxpfedzu">
-				<div class="banner">
-					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
-				</div>
-
-				<MkInfo v-if="thereIsUnresolvedAbuseReport" warn class="info">{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
-				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-				<MkInfo v-if="noBotProtection" warn class="info">{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-				<MkInfo v-if="noEmailServer" warn class="info">{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-
-				<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
+<MkStickyContainer>
+	<template #header><MkPageHeader v-if="childPageMetadata == null"/></template>
+	<template #default>
+		<div ref="rootEl" :class="[$style.root, { [$style.wide]: isWide }]">
+			<div v-if="showNav" :class="$style.navRoot">
+				<MkSpacer :contentMax="700" :marginMin="16">
+					<div>
+						<div :class="$style.serverBanner">
+							<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.serverIcon"/>
+						</div>
+						<MkInfo v-if="thereIsUnresolvedAbuseReport" warn :class="$style.navInfo">{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
+						<MkInfo v-if="noMaintainerInformation" warn :class="$style.navInfo">{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkInfo v-if="noBotProtection" warn :class="$style.navInfo">{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkInfo v-if="noEmailServer" warn :class="$style.navInfo">{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkSuperMenu :def="menuDef" :grid="!isWide"></MkSuperMenu>
+					</div>
+				</MkSpacer>
 			</div>
-		</MkSpacer>
-	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-		<RouterView/>
-	</div>
-</div>
+			<div v-if="showMain" :class="$style.mainRoot">
+				<div style="container-type: inline-size;">
+					<RouterView/>
+				</div>
+			</div>
+		</div>
+		<MkFooterSpacer v-if="!isWide"/>
+	</template>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
+import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import { i18n } from '@/i18n.js';
-import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
+import MkInfo from '@/components/MkInfo.vue';
+import MkSuperMenu from '@/components/MkSuperMenu.vue';
 
-const isEmpty = (x: string | null) => x == null || x === '';
+const ROOT_PAGE_PATH = '/admin' as const;
+const INITIAL_PAGE_PATH = '/admin/overview' as const;
 
-const router = useRouter();
+const rootEl = shallowRef<HTMLElement | null>(null);
 
-const indexInfo = {
-	title: i18n.ts.controlPanel,
-	icon: 'ti ti-settings',
-	hideHeader: true,
-};
+const showNav = computed(() => {
+	if (isWide.value) return true; // wideなら常に表示
+	return isRoot.value; // rootなら表示
+});
+const showMain = computed(() => {
+	if (!isRoot.value) return true; // 非rootなら常に表示
+	return isWide.value; // wideなら表示
+});
 
-provide('shouldOmitHeaderTitle', false);
-
-const INFO = ref(indexInfo);
-const childInfo = ref<null | PageMetadata>(null);
-const narrow = ref(false);
-const view = ref(null);
-const el = ref<HTMLDivElement | null>(null);
-const pageProps = ref({});
-let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
-let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
-let noEmailServer = !instance.enableEmail;
 const thereIsUnresolvedAbuseReport = ref(false);
-const currentPage = computed(() => router.currentRef.value.child);
-
 misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,
 }).then(reports => {
 	if (reports.length > 0) thereIsUnresolvedAbuseReport.value = true;
 });
+const noMaintainerInformation = computed(() => {
+	const isEmpty = (x: unknown): boolean => x == null || x === '';
+	return isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
+});
+const noBotProtection = computed(() => !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile);
+const noEmailServer = computed(() => !instance.enableEmail);
 
-const NARROW_THRESHOLD = 600;
-const ro = new ResizeObserver((entries, observer) => {
-	if (entries.length === 0) return;
-	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+const router = useRouter();
+const currentPage = computed(() => router.currentRef.value.child);
+const isRoot = computed(() => currentPage.value?.route.name == null);
+
+watch(router.currentRef, (to) => {
+	if (to.route.path === ROOT_PAGE_PATH && to.child?.route.name == null) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
 });
 
+const isWide = ref(false);
+const WIDE_THRESHOLD = 600 as const;
+
+watch(isWide, () => {
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+const ro = new ResizeObserver((entries) => {
+	const inlineSize = entries.at(0)?.borderBoxSize.at(0)?.inlineSize;
+	if (inlineSize == null) return;
+	isWide.value = inlineSize >= WIDE_THRESHOLD;
+});
+
+onMounted(() => {
+	if (rootEl.value != null) {
+		isWide.value = rootEl.value.offsetWidth >= WIDE_THRESHOLD;
+		ro.observe(rootEl.value);
+	}
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+onActivated(() => {
+	if (rootEl.value != null) {
+		isWide.value = rootEl.value.offsetWidth >= WIDE_THRESHOLD;
+	}
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
+	}
+});
+
+onUnmounted(() => {
+	ro.disconnect();
+});
+
+const childPageMetadata = ref<null | PageMetadata>(null);
+const pageMetadata = computed<PageMetadata>(() => {
+	if (childPageMetadata.value != null) {
+		return childPageMetadata.value;
+	}
+	return {
+		title: i18n.ts.controlPanel,
+		icon: 'ti ti-settings',
+	};
+});
+
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+	childPageMetadata.value = info;
+});
+provideReactiveMetadata(pageMetadata);
+
+definePageMetadata(() => pageMetadata.value);
+
+//#region menuDef
 const menuDef = computed(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
@@ -225,49 +306,6 @@ const menuDef = computed(() => [{
 	}],
 }]);
 
-watch(narrow.value, () => {
-	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
-	}
-});
-
-onMounted(() => {
-	ro.observe(el.value);
-
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
-	}
-});
-
-onActivated(() => {
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
-	}
-});
-
-onUnmounted(() => {
-	ro.disconnect();
-});
-
-watch(router.currentRef, (to) => {
-	if (to.route.path === '/admin' && to.child?.route.name == null && !narrow.value) {
-		router.replace('/admin/overview');
-	}
-});
-
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	if (info == null) {
-		childInfo.value = null;
-	} else {
-		childInfo.value = info;
-		INFO.value.needWideArea = info.needWideArea ?? undefined;
-	}
-});
-provideReactiveMetadata(INFO);
-
 function invite() {
 	misskeyApi('admin/invite/create').then(x => {
 		os.alert({
@@ -315,59 +353,65 @@ function lookup(ev: MouseEvent) {
 		},
 	}], ev.currentTarget ?? ev.target);
 }
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
-
-definePageMetadata(() => INFO.value);
-
-defineExpose({
-	header: {
-		title: i18n.ts.controlPanel,
-	},
-});
+//#endregion
 </script>
 
-<style lang="scss" scoped>
-.hiyeyicy {
+<style lang="scss" module>
+.root {
 	&.wide {
-		display: flex;
-		margin: 0 auto;
 		height: 100%;
+		margin: 0 auto;
+		display: flex;
+		box-sizing: border-box;
 
-		> .nav {
-			width: 32%;
-			max-width: 280px;
-			box-sizing: border-box;
-			border-right: solid 0.5px var(--divider);
-			overflow: auto;
-			height: 100%;
+		@supports (height: 100cqh) {
+			height: 100cqh;
+			overflow: hidden; // fallback (overflow: clip)
+			overflow: clip;
+			contain: strict;
 		}
 
-		> .main {
+		> .navRoot {
+			width: 32%;
+			height: 100%;
+			max-width: 280px;
+			overflow: auto;
+			border-right: solid 0.5px var(--divider);
+			box-sizing: border-box;
+
+			@supports (height: 100cqh) {
+				overflow-y: scroll;
+				overscroll-behavior: contain;
+			}
+		}
+
+		> .mainRoot {
 			flex: 1;
 			min-width: 0;
-		}
-	}
+			height: 100%;
+			overflow: auto;
+			box-sizing: border-box;
 
-	> .nav {
-		.lxpfedzu {
-			> .info {
-				margin: 16px 0;
-			}
-
-			> .banner {
-				margin: 16px;
-
-				> .icon {
-					display: block;
-					margin: auto;
-					height: 42px;
-					border-radius: 8px;
-				}
+			@supports (height: 100cqh) {
+				overflow-y: scroll;
+				overscroll-behavior: contain;
 			}
 		}
 	}
+}
+
+.navInfo {
+	margin: 16px 0;
+}
+
+.serverBanner {
+	margin: 16px;
+}
+
+.serverIcon {
+	display: block;
+	margin: auto;
+	height: 42px;
+	border-radius: 8px;
 }
 </style>
