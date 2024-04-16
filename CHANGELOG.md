@@ -1,16 +1,32 @@
 ## Unreleased
 
+### Note
+- コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+
 ### General
+- Enhance: URLプレビューの有効化・無効化を設定できるように #13569
+- Enhance: アンテナでBotによるノートを除外できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
+- Enhance: クリップのノート数を表示するように
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 
 ### Client
+- Feat: アップロードするファイルの名前をランダム文字列にできるように
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
 - Enhance: リアクション・いいねの総数を表示するように
 - Enhance: リアクション受け入れが「いいねのみ」の場合はリアクション絵文字一覧を表示しないように
 - Enhance: 設定>プラグインのページからプラグインの簡易的なログやエラーを見られるように
   - 実装の都合により、プラグインは１つエラーを起こした時に即時停止するようになりました
-- Enhance: ページのデザインを変更	
+- Enhance: ページのデザインを変更
+- Enhance: 2要素認証（ワンタイムパスワード）の入力欄を改善
+- Enhance: 「今日誕生日のフォロー中ユーザー」ウィジェットを手動でリロードできるように
+- Enhance: 映像・音声の再生にブラウザのネイティブプレイヤーを使用できるように
+- Enhance: 映像・音声の再生メニューに「再生速度」「ループ再生」「ピクチャインピクチャ」を追加
+- Enhance: 映像・音声の再生にキーボードショートカットが使えるように
+- Enhance: ノートについているリアクションの「もっと！」から、リアクションの一覧を表示できるように
+- Enhance: リプライにて引用がある場合テキストが空でもノートできるように
+  - 引用したいノートのURLをコピーしリプライ投稿画面にペーストして添付することで達成できます
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -18,11 +34,26 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/459)
 - Fix: ページタイトルでローカルユーザーとリモートユーザーの区別がつかない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/528)
+- Fix: コードブロックのシンタックスハイライトで使用される定義ファイルをCDNから取得するように #13177
+  - CDNから取得せずMisskey本体にバンドルする場合は`pacakges/frontend/vite.config.ts`を修正してください。
+- Fix: タイムゾーンによっては、「今日誕生日のフォロー中ユーザー」ウィジェットが正しく動作しない問題を修正
+- Fix: CWのみの引用リノートが詳細ページで純粋なリノートとして誤って扱われてしまう問題を修正
+- Fix: ノート詳細ページにおいてCW付き引用リノートのCWボタンのラベルに「引用」が含まれていない問題を修正
+- Fix: ダイアログの入力で字数制限に違反していてもEnterキーが押せてしまう問題を修正
+- Fix: ダイレクト投稿の宛先が保存されない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
+- Fix: エンドポイント`notes/translate`のエラーを改善
+- Fix: CleanRemoteFilesProcessorService report progress from 100% (#13632)
+- Fix: 一部の音声ファイルが映像ファイルとして扱われる問題を修正
+- Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
+- Fix: 登録にメール認証が必須になっている場合、登録されているメールアドレスを削除できないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/606)
+- Fix: nginx経由で/files/にRangeリクエストされた場合に正しく応答できないのを修正
 
 ## 2024.3.1
 
