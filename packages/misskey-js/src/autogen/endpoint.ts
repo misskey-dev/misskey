@@ -400,6 +400,8 @@ import type {
 	NotesGlobalTimelineResponse,
 	NotesVmimiRelayTimelineRequest,
 	NotesVmimiRelayTimelineResponse,
+	NotesVmimiRelayHybridTimelineRequest,
+	NotesVmimiRelayHybridTimelineResponse,
 	NotesHybridTimelineRequest,
 	NotesHybridTimelineResponse,
 	NotesLocalTimelineRequest,
@@ -828,6 +830,7 @@ export type Endpoints = {
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };
 	'notes/global-timeline': { req: NotesGlobalTimelineRequest; res: NotesGlobalTimelineResponse };
 	'notes/vmimi-relay-timeline': { req: NotesVmimiRelayTimelineRequest; res: NotesVmimiRelayTimelineResponse };
+	'notes/vmimi-relay-hybrid-timeline': { req: NotesVmimiRelayHybridTimelineRequest; res: NotesVmimiRelayHybridTimelineResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };

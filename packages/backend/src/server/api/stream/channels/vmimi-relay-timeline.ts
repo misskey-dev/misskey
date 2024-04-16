@@ -37,7 +37,7 @@ class VmimiRelayTimelineChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
-		if (!policies.gtlAvailable) return;
+		if (!policies.vrtlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
 		this.withFiles = params.withFiles ?? false;
@@ -56,11 +56,15 @@ class VmimiRelayTimelineChannel extends Channel {
 
 		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
+		// 関係ない返信は除外
+		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
+			const reply = note.reply;
+			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
+		}
+
 		// Ignore notes from non-vmimi relay
 		if (!this.vmimiRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
-		if (!this.withReplies && note.reply) {
-			if (!this.vmimiRelayTimelineService.isRelayedInstance(note.reply.user.host ?? null)) return;
-		}
 
 		// Ignore notes from instances the user has muted
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;

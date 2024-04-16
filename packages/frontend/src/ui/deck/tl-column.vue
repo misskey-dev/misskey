@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
 		<i v-else-if="column.tl === 'vmimi-relay'" class="ti ti-circles-relation"></i>
+		<i v-else-if="column.tl === 'vmimi-relay-social'" class="ti ti-topology-full"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
@@ -98,6 +99,8 @@ async function setType() {
 			value: 'global' as const, text: i18n.ts._timelines.global,
 		}, {
 			value: 'vmimi-relay' as const, text: i18n.ts._timelines.vmimiRelay,
+		}, {
+			value: 'vmimi-relay-social' as const, text: i18n.ts._timelines.vmimiRelaySocial,
 		}],
 	});
 	if (canceled) {
@@ -119,7 +122,7 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: withRenotes,
-}, props.column.tl === 'local' || props.column.tl === 'social' || props.column.tl === 'vmimi-relay' ? {
+}, props.column.tl === 'local' || props.column.tl === 'social' || props.column.tl === 'vmimi-relay-social' || props.column.tl === 'vmimi-relay' ? {
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: withReplies,
@@ -128,7 +131,7 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
 	ref: onlyFiles,
-	disabled: props.column.tl === 'local' || props.column.tl === 'social' ? withReplies : false,
+	disabled: props.column.tl === 'local' || props.column.tl === 'social' || props.column.tl === 'vmimi-relay-social' || props.column.tl === 'vmimi-relay' ? withReplies : false,
 }];
 </script>
 

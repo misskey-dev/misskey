@@ -74,23 +74,4 @@ export class VmimiRelayTimelineService {
 		this.checkForUpdateInstanceList();
 		return this.instanceHostsArray;
 	}
-
-	@bindThis
-	generateFilterQuery(query: SelectQueryBuilder<any>, excludeReplies: boolean) {
-		const names = this.hostNames;
-		query.andWhere(new Brackets(qb => {
-			qb.where('note.userHost IS NULL');
-			if (names.length !== 0) {
-				qb.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances: names });
-			}
-		}));
-		if (excludeReplies) {
-			query.andWhere(new Brackets(qb => {
-				qb.where('note.replyUserHost IS NULL');
-				if (names.length !== 0) {
-					qb.orWhere('note.replyUserHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances: names });
-				}
-			}));
-		}
-	}
 }

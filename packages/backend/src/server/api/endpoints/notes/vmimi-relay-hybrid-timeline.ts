@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { NotesRepository } from '@/models/_.js';
+import type { ChannelFollowingsRepository, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -17,10 +17,15 @@ import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointServ
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { IdService } from '@/core/IdService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
+
+	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -33,15 +38,15 @@ export const meta = {
 	},
 
 	errors: {
-		vmimiRelayDisabled: {
-			message: 'Vmimi Relay timeline has been disabled.',
+		vmimiRelaySocialDisabled: {
+			message: 'Vmimi Relay Hybrid timeline has been disabled.',
 			code: 'VMIMI_RELAY_DISABLED',
-			id: '7f0064c3-59a0-4154-8c37-a8898c128ccc',
+			id: 'e7496627-8086-4294-b488-63323eb80145',
 		},
 		bothWithRepliesAndWithFiles: {
 			message: 'Specifying both withReplies and withFiles is not supported',
 			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
-			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793',
+			id: '8222638e-a5a9-495d-ae72-e825793e0a63',
 		},
 	},
 } as const;
@@ -68,12 +73,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: ChannelFollowingsRepository,
+
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private vmimiRelayTimelineService: VmimiRelayTimelineService,
+		private userFollowingService: UserFollowingService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 		private metaService: MetaService,
 	) {
@@ -81,9 +90,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 
-			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			const policies = await this.roleService.getUserPolicies(me.id);
 			if (!policies.vrtlAvailable) {
-				throw new ApiError(meta.errors.vmimiRelayDisabled);
+				throw new ApiError(meta.errors.vmimiRelaySocialDisabled);
 			}
 
 			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
@@ -96,30 +105,44 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					sinceId,
 					limit: ps.limit,
 					withFiles: ps.withFiles,
-					withRenotes: ps.withRenotes,
 					withReplies: ps.withReplies,
 				}, me);
 
 				process.nextTick(() => {
-					if (me) {
-						this.activeUsersChart.read(me);
-					}
+					this.activeUsersChart.read(me);
 				});
 
 				return await this.noteEntityService.packMany(timeline, me);
 			}
 
-			const timeline = await this.fanoutTimelineEndpointService.timeline({
+			let timelineConfig: FanoutTimelineName[];
+
+			if (ps.withFiles) {
+				timelineConfig = [
+					`homeTimelineWithFiles:${me.id}`,
+					'vmimiRelayTimelineWithFiles',
+				];
+			} else if (ps.withReplies) {
+				timelineConfig = [
+					`homeTimeline:${me.id}`,
+					'vmimiRelayTimeline',
+					'vmimiRelayTimelineWithReplies',
+				];
+			} else {
+				timelineConfig = [
+					`homeTimeline:${me.id}`,
+					'vmimiRelayTimeline',
+				];
+			}
+
+			const redisTimeline = await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
 				limit: ps.limit,
 				allowPartial: ps.allowPartial,
 				me,
+				redisTimelines: timelineConfig,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
-				redisTimelines:
-					ps.withFiles ? ['vmimiRelayTimelineWithFiles']
-					: ps.withReplies ? ['vmimiRelayTimeline', 'vmimiRelayTimelineWithReplies']
-					: ['vmimiRelayTimeline'],
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
@@ -127,46 +150,76 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					sinceId,
 					limit,
 					withFiles: ps.withFiles,
-					withRenotes: ps.withRenotes,
 					withReplies: ps.withReplies,
 				}, me),
 			});
 
 			process.nextTick(() => {
-				if (me) {
-					this.activeUsersChart.read(me);
-				}
+				this.activeUsersChart.read(me);
 			});
 
-			return timeline;
+			return redisTimeline;
 		});
 	}
 
 	private async getFromDb(ps: {
-		sinceId: string | null,
 		untilId: string | null,
+		sinceId: string | null,
 		limit: number,
 		withFiles: boolean,
-		withRenotes: boolean,
 		withReplies: boolean,
-	}, me: MiLocalUser | null) {
-		//#region Construct query
+	}, me: MiLocalUser) {
+		const followees = await this.userFollowingService.getFollowees(me.id);
+		const followingChannels = await this.channelFollowingsRepository.find({
+			where: {
+				followerId: me.id,
+			},
+		});
+		const vmimiRelayInstances = this.vmimiRelayTimelineService.hostNames;
+
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-			.andWhere('note.visibility = \'public\'')
-			.andWhere('note.channelId IS NULL')
+			.andWhere(new Brackets(qb => {
+				if (followees.length > 0) {
+					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
+					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+					qb.orWhere(new Brackets(qb => {
+						qb.where('note.visibility = \'public\'');
+						qb.andWhere(new Brackets(qb => {
+							qb.where('note.userHost IS NULL');
+							if (vmimiRelayInstances.length !== 0) {
+								qb.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances });
+							}
+						}));
+					}));
+				} else {
+					qb.where('note.userId = :meId', { meId: me.id });
+					qb.orWhere(new Brackets(qb => {
+						qb.where('note.visibility = \'public\'');
+						qb.andWhere(new Brackets(qb => {
+							qb.where('note.userHost IS NULL');
+							if (vmimiRelayInstances.length !== 0) {
+								qb.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances });
+							}
+						}));
+					}));
+				}
+			}))
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
-		const vmimiRelayInstances = this.vmimiRelayTimelineService.hostNames;
-		query.andWhere(new Brackets(qb => {
-			qb.where('note.userHost IS NULL');
-			if (vmimiRelayInstances.length !== 0) {
-				qb.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances });
-			}
-		}));
+		if (followingChannels.length > 0) {
+			const followingChannelIds = followingChannels.map(x => x.followeeId);
+
+			query.andWhere(new Brackets(qb => {
+				qb.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
+				qb.orWhere('note.channelId IS NULL');
+			}));
+		} else {
+			query.andWhere('note.channelId IS NULL');
+		}
 
 		if (!ps.withReplies) {
 			query.andWhere(new Brackets(qb => {
@@ -180,24 +233,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}));
 		}
 
-		if (me) {
-			this.queryService.generateMutedUserQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
-			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-		}
+		this.queryService.generateVisibilityQuery(query, me);
+		this.queryService.generateMutedUserQuery(query, me);
+		this.queryService.generateBlockedUserQuery(query, me);
+		this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 		if (ps.withFiles) {
 			query.andWhere('note.fileIds != \'{}\'');
-		}
-
-		if (!ps.withRenotes) {
-			query.andWhere(new Brackets(qb => {
-				qb.where('note.renoteId IS NULL');
-				qb.orWhere(new Brackets(qb => {
-					qb.where('note.text IS NOT NULL');
-					qb.orWhere('note.fileIds != \'{}\'');
-				}));
-			}));
 		}
 		//#endregion
 

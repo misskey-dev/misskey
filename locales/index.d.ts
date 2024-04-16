@@ -8601,6 +8601,10 @@ export interface Locale extends ILocale {
          * ぶいみみリレー
          */
         "vmimiRelay": string;
+        /**
+         * ぶいみみリレーソーシャル
+         */
+        "vmimiRelaySocial": string;
     };
     "_play": {
         /**
