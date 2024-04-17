@@ -253,7 +253,13 @@ const maxTextLength = computed((): number => {
 
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
-		(1 <= textLength.value || 1 <= files.value.length || !!poll.value || !!props.renote) &&
+		(
+			1 <= textLength.value ||
+			1 <= files.value.length ||
+			poll.value != null ||
+			props.renote != null ||
+			(props.reply != null && quoteId.value != null)
+		) &&
 		(textLength.value <= maxTextLength.value) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
@@ -382,7 +388,7 @@ function addMissingMention() {
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
 			misskeyApi('users/show', { username: x.username, host: x.host }).then(user => {
-				visibleUsers.value.push(user);
+				pushVisibleUser(user);
 			});
 		}
 	}
@@ -673,6 +679,7 @@ function saveDraft() {
 			localOnly: localOnly.value,
 			files: files.value,
 			poll: poll.value,
+			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
 		},
 	};
 
@@ -953,6 +960,15 @@ onMounted(() => {
 				files.value = (draft.data.files || []).filter(draftFile => draftFile);
 				if (draft.data.poll) {
 					poll.value = draft.data.poll;
+				}
+				if (draft.data.visibleUserIds) {
+					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
+						for (let i = 0; i < users.length; i++) {
+							if (users[i].id === draft.data.visibleUserIds[i]) {
+								pushVisibleUser(users[i]);
+							}
+						}
+					});
 				}
 			}
 		}
