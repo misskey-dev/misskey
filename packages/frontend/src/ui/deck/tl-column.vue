@@ -6,14 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => await timeline?.reloadTimeline()">
 	<template #header>
-		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
-		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
-		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
-		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
+		<i v-if="column.tl != null" :class="timelineIconClass(column.tl)"/>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="(((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
+	<div v-if="!isAvailableTimeline(column.tl)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-circle-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -39,20 +36,16 @@ import { removeColumn, updateColumn, Column } from './deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { hasWithReplies, isAvailableTimeline, timelineIconClass } from '@/timelines.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const disabled = ref(false);
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 
-const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
-const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
@@ -78,10 +71,6 @@ watch(onlyFiles, v => {
 onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
-	} else if ($i) {
-		disabled.value = (
-			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
-			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)));
 	}
 });
 
@@ -117,7 +106,7 @@ const menu = computed<MenuItem[]>(() => [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: withRenotes,
-}, props.column.tl === 'local' || props.column.tl === 'social' ? {
+}, hasWithReplies(props.column.tl) ? {
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: withReplies,
@@ -126,7 +115,7 @@ const menu = computed<MenuItem[]>(() => [{
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
 	ref: onlyFiles,
-	disabled: props.column.tl === 'local' || props.column.tl === 'social' ? withReplies : false,
+	disabled: hasWithReplies(props.column.tl) ? withReplies : false,
 }]);
 </script>
 
