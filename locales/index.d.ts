@@ -4944,6 +4944,14 @@ export interface Locale extends ILocale {
      * この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。
      */
     "keepOriginalFilenameDescription": string;
+    /**
+     * 説明文はありません
+     */
+    "noDescription": string;
+    /**
+     * フォローの際常に確認する
+     */
+    "alwaysConfirmFollow": string;
     "_bubbleGame": {
         /**
          * 遊び方
