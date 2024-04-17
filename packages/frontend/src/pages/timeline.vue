@@ -77,7 +77,11 @@ const withRenotes = computed<boolean>({
 });
 
 // computed内での無限ループを防ぐためのフラグ
-const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>('withReplies');
+const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
+	defaultStore.reactiveState.tl.value.filter.withReplies ? 'withReplies' :
+	defaultStore.reactiveState.tl.value.filter.onlyFiles ? 'onlyFiles' :
+	false,
+);
 
 const withReplies = computed<boolean>({
 	get: () => {
