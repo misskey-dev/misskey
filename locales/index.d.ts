@@ -6447,6 +6447,10 @@ export interface Locale extends ILocale {
              */
             "ltlAvailable": string;
             /**
+             * ぶいみみリレータイムラインの閲覧
+             */
+            "vrtlAvailable": string;
+            /**
              * パブリック投稿の許可
              */
             "canPublicNote": string;
