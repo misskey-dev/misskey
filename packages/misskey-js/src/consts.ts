@@ -9,6 +9,7 @@ export const followingVisibilities = ['public', 'followers', 'private'] as const
 export const followersVisibilities = ['public', 'followers', 'private'] as const;
 
 export const permissions = [
+	'read:admin:nirila-delete-user-log-access',
 	'read:account',
 	'write:account',
 	'read:blocks',
@@ -134,6 +135,7 @@ export const moderationLogTypes = [
 	'deleteAvatarDecoration',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'makeNoteHome',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -325,5 +327,12 @@ export type ModerationLogPayloads = {
 		userUsername: string;
 		userHost: string | null;
 		fileId: string;
+	};
+	makeNoteHome: {
+		noteId: string;
+		noteUserId: string;
+		noteUserUsername: string;
+		noteUserHost: string | null;
+		note: any;
 	};
 };

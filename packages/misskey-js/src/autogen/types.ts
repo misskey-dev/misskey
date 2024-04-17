@@ -12,6 +12,15 @@ type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> &
 type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
 
 export type paths = {
+  '/admin/nirila-delete-user-log-access': {
+    /**
+     * admin/nirila-delete-user-log-access
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:nirila-delete-user-log-access*
+     */
+    post: operations['admin/nirila-delete-user-log-access'];
+  };
   '/admin/meta': {
     /**
      * admin/meta
@@ -516,6 +525,15 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:admin:reset-password*
      */
     post: operations['admin/reset-password'];
+  };
+  '/admin/note-public-to-home': {
+    /**
+     * admin/note-public-to-home
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    post: operations['admin/note-public-to-home'];
   };
   '/admin/resolve-abuse-user-report': {
     /**
@@ -4870,6 +4888,68 @@ export type external = Record<string, never>;
 export type operations = {
 
   /**
+   * admin/nirila-delete-user-log-access
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:nirila-delete-user-log-access*
+   */
+  'admin/nirila-delete-user-log-access': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          email?: string;
+          username?: string;
+          /** Format: misskey:id */
+          userId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': Record<string, never> | Record<string, never>[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * admin/meta
    * @description No description provided.
    *
@@ -8150,6 +8230,58 @@ export type operations = {
             password: string;
           };
         };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/note-public-to-home
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:notes*
+   */
+  'admin/note-public-to-home': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          noteId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {
@@ -19067,7 +19199,7 @@ export type operations = {
           url: string;
           /** @default */
           secret?: string;
-          on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+          on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
         };
       };
     };
@@ -19081,7 +19213,7 @@ export type operations = {
             /** Format: misskey:id */
             userId: string;
             name: string;
-            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+            on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
             url: string;
             secret: string;
             active: boolean;
@@ -19140,7 +19272,7 @@ export type operations = {
               /** Format: misskey:id */
               userId: string;
               name: string;
-              on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+              on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
               url: string;
               secret: string;
               active: boolean;
@@ -19207,7 +19339,7 @@ export type operations = {
             /** Format: misskey:id */
             userId: string;
             name: string;
-            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+            on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
             url: string;
             secret: string;
             active: boolean;
@@ -19265,7 +19397,7 @@ export type operations = {
           url: string;
           /** @default */
           secret?: string;
-          on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+          on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
           active: boolean;
         };
       };
@@ -25465,6 +25597,7 @@ export type operations = {
           allowPartial?: boolean;
           /** @default false */
           withFiles?: boolean;
+          includeSensitiveChannel?: boolean;
         };
       };
     };

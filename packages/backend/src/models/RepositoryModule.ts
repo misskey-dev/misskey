@@ -5,9 +5,15 @@
 
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { MiAbuseUserReport, MiAccessToken, MiAd, MiAnnouncement, MiAnnouncementRead, MiAntenna, MiApp, MiAuthSession, MiAvatarDecoration, MiBlocking, MiChannel, MiChannelFavorite, MiChannelFollowing, MiClip, MiClipFavorite, MiClipNote, MiDriveFile, MiDriveFolder, MiEmoji, MiFlash, MiFlashLike, MiFollowRequest, MiFollowing, MiGalleryLike, MiGalleryPost, MiHashtag, MiInstance, MiMeta, MiModerationLog, MiMuting, MiNote, MiNoteFavorite, MiNoteReaction, MiNoteThreadMuting, MiNoteUnread, MiPage, MiPageLike, MiPasswordResetRequest, MiPoll, MiPollVote, MiPromoNote, MiPromoRead, MiRegistrationTicket, MiRegistryItem, MiRelay, MiRenoteMuting, MiRetentionAggregation, MiRole, MiRoleAssignment, MiSignin, MiSwSubscription, MiUsedUsername, MiUser, MiUserIp, MiUserKeypair, MiUserList, MiUserListFavorite, MiUserListMembership, MiUserMemo, MiUserNotePining, MiUserPending, MiUserProfile, MiUserPublickey, MiUserSecurityKey, MiWebhook, MiBubbleGameRecord, MiReversiGame } from './_.js';
+import { MiAbuseUserReport, MiAccessToken, MiAd, MiAnnouncement, MiAnnouncementRead, MiAntenna, MiApp, MiAuthSession, MiAvatarDecoration, MiBlocking, MiChannel, MiChannelFavorite, MiChannelFollowing, MiClip, MiClipFavorite, MiClipNote, MiDriveFile, MiDriveFolder, MiEmoji, MiFlash, MiFlashLike, MiFollowRequest, MiFollowing, MiGalleryLike, MiGalleryPost, MiHashtag, MiInstance, MiMeta, MiModerationLog, MiMuting, MiNote, MiNoteFavorite, MiNoteReaction, MiNoteThreadMuting, MiNoteUnread, MiPage, MiPageLike, MiPasswordResetRequest, MiPoll, MiPollVote, MiPromoNote, MiPromoRead, MiRegistrationTicket, MiRegistryItem, MiRelay, MiRenoteMuting, MiRetentionAggregation, MiRole, MiRoleAssignment, MiSignin, MiSwSubscription, MiUsedUsername, MiUser, MiUserIp, MiUserKeypair, MiUserList, MiUserListFavorite, MiUserListMembership, MiUserMemo, MiUserNotePining, MiUserPending, MiUserProfile, MiUserPublickey, MiUserSecurityKey, MiWebhook, MiBubbleGameRecord, MiReversiGame, NirilaDeleteUserLog } from './_.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
+
+const $nirilaDeleteUserLogRepository: Provider = {
+	provide: DI.nirilaDeleteUserLogRepository,
+	useFactory: (db: DataSource) => db.getRepository(NirilaDeleteUserLog),
+	inject: [DI.db],
+};
 
 const $usersRepository: Provider = {
 	provide: DI.usersRepository,
@@ -415,6 +421,7 @@ const $reversiGamesRepository: Provider = {
 	imports: [
 	],
 	providers: [
+		$nirilaDeleteUserLogRepository,
 		$usersRepository,
 		$notesRepository,
 		$announcementsRepository,
@@ -484,6 +491,7 @@ const $reversiGamesRepository: Provider = {
 		$reversiGamesRepository,
 	],
 	exports: [
+		$nirilaDeleteUserLogRepository,
 		$usersRepository,
 		$notesRepository,
 		$announcementsRepository,

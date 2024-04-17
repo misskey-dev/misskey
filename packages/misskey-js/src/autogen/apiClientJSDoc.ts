@@ -6,6 +6,17 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *Yes* / **Permission**: *read:admin:nirila-delete-user-log-access*
+     */
+    request<E extends 'admin/nirila-delete-user-log-access', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *read:admin:meta*
      */
     request<E extends 'admin/meta', P extends Endpoints[E]['req']>(
@@ -615,6 +626,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:admin:reset-password*
      */
     request<E extends 'admin/reset-password', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    request<E extends 'admin/note-public-to-home', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

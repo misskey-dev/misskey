@@ -6,6 +6,7 @@
 import { permissions } from 'misskey-js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
+import * as ep___admin_nirilaDeleteUserLogAccess from './endpoints/admin/nirila-delete-user-log-access.js';
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
@@ -62,6 +63,7 @@ import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
+import * as ep___admin_notePublicToHome from './endpoints/admin/note-public-to-home.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
@@ -378,6 +380,7 @@ import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
 import * as ep___reversi_verify from './endpoints/reversi/verify.js';
 
 const eps = [
+	['admin/nirila-delete-user-log-access', ep___admin_nirilaDeleteUserLogAccess],
 	['admin/meta', ep___admin_meta],
 	['admin/abuse-user-reports', ep___admin_abuseUserReports],
 	['admin/accounts/create', ep___admin_accounts_create],
@@ -434,6 +437,7 @@ const eps = [
 	['admin/relays/list', ep___admin_relays_list],
 	['admin/relays/remove', ep___admin_relays_remove],
 	['admin/reset-password', ep___admin_resetPassword],
+	['admin/note-public-to-home', ep___admin_notePublicToHome],
 	['admin/resolve-abuse-user-report', ep___admin_resolveAbuseUserReport],
 	['admin/send-email', ep___admin_sendEmail],
 	['admin/server-info', ep___admin_serverInfo],

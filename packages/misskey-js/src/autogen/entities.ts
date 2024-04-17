@@ -3,6 +3,8 @@ import { operations } from './types.js';
 export type EmptyRequest = Record<string, unknown> | undefined;
 export type EmptyResponse = Record<string, unknown> | undefined;
 
+export type AdminNirilaDeleteUserLogAccessRequest = operations['admin/nirila-delete-user-log-access']['requestBody']['content']['application/json'];
+export type AdminNirilaDeleteUserLogAccessResponse = operations['admin/nirila-delete-user-log-access']['responses']['200']['content']['application/json'];
 export type AdminMetaResponse = operations['admin/meta']['responses']['200']['content']['application/json'];
 export type AdminAbuseUserReportsRequest = operations['admin/abuse-user-reports']['requestBody']['content']['application/json'];
 export type AdminAbuseUserReportsResponse = operations['admin/abuse-user-reports']['responses']['200']['content']['application/json'];
@@ -75,6 +77,7 @@ export type AdminRelaysListResponse = operations['admin/relays/list']['responses
 export type AdminRelaysRemoveRequest = operations['admin/relays/remove']['requestBody']['content']['application/json'];
 export type AdminResetPasswordRequest = operations['admin/reset-password']['requestBody']['content']['application/json'];
 export type AdminResetPasswordResponse = operations['admin/reset-password']['responses']['200']['content']['application/json'];
+export type AdminNotePublicToHomeRequest = operations['admin/note-public-to-home']['requestBody']['content']['application/json'];
 export type AdminResolveAbuseUserReportRequest = operations['admin/resolve-abuse-user-report']['requestBody']['content']['application/json'];
 export type AdminSendEmailRequest = operations['admin/send-email']['requestBody']['content']['application/json'];
 export type AdminServerInfoResponse = operations['admin/server-info']['responses']['200']['content']['application/json'];

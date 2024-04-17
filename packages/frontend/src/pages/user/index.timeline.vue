@@ -18,17 +18,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, provide } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
 const tab = ref<string | null>('all');
+const include = ref<string | null>('all');
+provide<boolean>('collapseSensitiveChannel', defaultStore.state.collapseSensitiveChannel);
 
 const pagination = computed(() => tab.value === 'featured' ? {
 	endpoint: 'users/featured-notes' as const,
@@ -45,6 +49,7 @@ const pagination = computed(() => tab.value === 'featured' ? {
 		withReplies: tab.value === 'all',
 		withChannelNotes: tab.value === 'all',
 		withFiles: tab.value === 'files',
+		includeSensitiveChannel: $i != null,
 	},
 });
 </script>

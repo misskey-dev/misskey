@@ -13,6 +13,7 @@ export const DI = {
 	redisForTimelines: Symbol('redisForTimelines'),
 
 	//#region Repositories
+	nirilaDeleteUserLogRepository: Symbol('nirilaDeleteUserLogRepository'),
 	usersRepository: Symbol('usersRepository'),
 	notesRepository: Symbol('notesRepository'),
 	announcementsRepository: Symbol('announcementsRepository'),
