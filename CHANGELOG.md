@@ -46,6 +46,7 @@
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
+- Change: 実装されていなかったタイムラインの `includeMyRenotes` `includeRenotedMyNotes` `includeLocalRenotes` オプションを削除
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
