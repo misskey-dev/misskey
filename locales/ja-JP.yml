@@ -1671,6 +1671,7 @@ _role:
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
+    vrtlAvailable: "ぶいみみリレータイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
     canInvite: "サーバー招待コードの発行"

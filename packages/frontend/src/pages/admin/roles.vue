@@ -40,6 +40,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.vrtlAvailable, 'vrtlAvailable'])">
+							<template #label>{{ i18n.ts._role._options.vrtlAvailable }}</template>
+							<template #suffix>{{ policies.vrtlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.vrtlAvailable">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canPublicNote, 'canPublicNote'])">
 							<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
 							<template #suffix>{{ policies.canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
