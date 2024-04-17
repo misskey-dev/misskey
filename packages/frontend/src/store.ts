@@ -75,6 +75,8 @@ export const defaultStore = markRaw(new Storage('base', {
 			local: false,
 			social: false,
 			global: false,
+			'vmimi-relay': false,
+			'vmimi-relay-social': false,
 		},
 	},
 	keepCw: {
