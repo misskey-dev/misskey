@@ -266,7 +266,7 @@ export const packedMetaDetailedOnlySchema = {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
-				vrtlAvailable: {
+				vmimiRelayTimeline: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
