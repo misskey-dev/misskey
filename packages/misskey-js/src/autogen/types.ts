@@ -4858,7 +4858,7 @@ export type components = {
         emailRequiredForSignup: boolean;
         localTimeline: boolean;
         globalTimeline: boolean;
-        vrtlAvailable: boolean;
+        vmimiRelayTimeline: boolean;
         hcaptcha: boolean;
         turnstile: boolean;
         recaptcha: boolean;
