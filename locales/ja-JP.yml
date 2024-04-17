@@ -2263,7 +2263,7 @@ _timelines:
   social: "ソーシャル"
   global: "グローバル"
   vmimiRelay: "ぶいみみリレー"
-  vmimiRelaySocial: "ぶいみみリレーソーシャル"
+  vmimiRelaySocial: "ぶいみみソーシャル"
 
 _play:
   new: "Playの作成"

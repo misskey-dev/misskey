@@ -8574,7 +8574,7 @@ export interface Locale extends ILocale {
          */
         "vmimiRelay": string;
         /**
-         * ぶいみみリレーソーシャル
+         * ぶいみみソーシャル
          */
         "vmimiRelaySocial": string;
     };
