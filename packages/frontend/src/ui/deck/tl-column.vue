@@ -33,9 +33,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef } from 'vue';
+import { onMounted, watch, ref, shallowRef, computed } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store.js';
+import type { MenuItem } from '@/types/menu.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
@@ -108,7 +109,7 @@ async function setType() {
 	});
 }
 
-const menu = [{
+const menu = computed<MenuItem[]>(() => [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.timeline,
 	action: setType,
@@ -126,7 +127,7 @@ const menu = [{
 	text: i18n.ts.fileAttachedOnly,
 	ref: onlyFiles,
 	disabled: props.column.tl === 'local' || props.column.tl === 'social' ? withReplies : false,
-}];
+}]);
 </script>
 
 <style lang="scss" module>
