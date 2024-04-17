@@ -4948,6 +4948,10 @@ export interface Locale extends ILocale {
      * 説明文はありません
      */
     "noDescription": string;
+    /**
+     * フォローの際常に確認する
+     */
+    "alwaysConfirmFollow": string;
     "_bubbleGame": {
         /**
          * 遊び方
