@@ -6,20 +6,20 @@
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 
-export const timelineTypes = [
+export const basicTimelineTypes = [
 	'home',
 	'local',
 	'social',
 	'global',
 ] as const;
 
-export type TimelineType = typeof timelineTypes[number];
+export type BasicTimelineType = typeof basicTimelineTypes[number];
 
-export function isTimeline(timeline: string): timeline is TimelineType {
-	return timelineTypes.includes(timeline as TimelineType);
+export function isBasicTimeline(timeline: string): timeline is BasicTimelineType {
+	return basicTimelineTypes.includes(timeline as BasicTimelineType);
 }
 
-export function timelineIconClass(timeline: TimelineType): string {
+export function basicTimelineIconClass(timeline: BasicTimelineType): string {
 	switch (timeline) {
 		case 'home':
 			return 'ti ti-home';
@@ -32,7 +32,7 @@ export function timelineIconClass(timeline: TimelineType): string {
 	}
 }
 
-export function isAvailableTimeline(timeline: TimelineType | undefined | null): boolean {
+export function isAvailableBasicTimeline(timeline: BasicTimelineType | undefined | null): boolean {
 	switch (timeline) {
 		case 'home':
 			return $i != null;
@@ -47,10 +47,10 @@ export function isAvailableTimeline(timeline: TimelineType | undefined | null): 
 	}
 }
 
-export function availableTimelines(): TimelineType[] {
-	return timelineTypes.filter(isAvailableTimeline);
+export function availableBasicTimelines(): BasicTimelineType[] {
+	return basicTimelineTypes.filter(isAvailableBasicTimeline);
 }
 
-export function hasWithReplies(timeline: TimelineType | undefined | null): boolean {
+export function hasWithReplies(timeline: BasicTimelineType | undefined | null): boolean {
 	return timeline === 'local' || timeline === 'social';
 }

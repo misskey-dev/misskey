@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => await timeline?.reloadTimeline()">
 	<template #header>
-		<i v-if="column.tl != null" :class="timelineIconClass(column.tl)"/>
+		<i v-if="column.tl != null" :class="basicTimelineIconClass(column.tl)"/>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="!isAvailableTimeline(column.tl)" :class="$style.disabled">
+	<div v-if="!isAvailableBasicTimeline(column.tl)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-circle-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -37,7 +37,7 @@ import type { MenuItem } from '@/types/menu.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { hasWithReplies, isAvailableTimeline, timelineIconClass } from '@/timelines.js';
+import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 
 const props = defineProps<{
 	column: Column;

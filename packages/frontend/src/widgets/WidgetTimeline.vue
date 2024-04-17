@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" data-cy-mkw-timeline class="mkw-timeline">
 	<template #icon>
-		<i v-if="isTimeline(widgetProps.src)" :class="timelineIconClass(widgetProps.src)"></i>
+		<i v-if="isBasicTimeline(widgetProps.src)" :class="basicTimelineIconClass(widgetProps.src)"></i>
 		<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
 		<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
 	</template>
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</template>
 
-	<div v-if="isTimeline(widgetProps.src) && !isAvailableTimeline(widgetProps.src)" :class="$style.disabled">
+	<div v-if="isBasicTimeline(widgetProps.src) && !isAvailableBasicTimeline(widgetProps.src)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -39,7 +39,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { i18n } from '@/i18n.js';
-import { availableTimelines, isAvailableTimeline, isTimeline, timelineIconClass } from '@/timelines.js';
+import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 
 const name = 'timeline';
 
@@ -109,9 +109,9 @@ const choose = async (ev) => {
 			setSrc('list');
 		},
 	}));
-	os.popupMenu([...availableTimelines().map(tl => ({
+	os.popupMenu([...availableBasicTimelines().map(tl => ({
 		text: i18n.ts._timelines[tl],
-		icon: timelineIconClass(tl),
+		icon: basicTimelineIconClass(tl),
 		action: () => { setSrc(tl); },
 	})), antennaItems.length > 0 ? { type: 'divider' } : undefined, ...antennaItems, listItems.length > 0 ? { type: 'divider' } : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;

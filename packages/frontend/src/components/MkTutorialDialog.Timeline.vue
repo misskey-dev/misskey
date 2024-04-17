@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps">
 	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._timeline.description1 }}</div>
 	<div class="_gaps_s">
-		<div v-for="tl in timelineTypes">
-			<i :class="timelineIconClass(tl)"></i> <b>{{ i18n.ts._timelines[tl] }}</b> … {{ i18n.ts._initialTutorial._timeline[tl] }}
+		<div v-for="tl in basicTimelineTypes">
+			<i :class="basicTimelineIconClass(tl)"></i> <b>{{ i18n.ts._timelines[tl] }}</b> … {{ i18n.ts._initialTutorial._timeline[tl] }}
 		</div>
 	</div>
 	<div class="_gaps_s">
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { i18n } from '@/i18n.js';
-import { timelineIconClass, timelineTypes } from '@/timelines.js';
+import { basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
 </script>
 
 <style lang="scss" module>
