@@ -55,17 +55,17 @@
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.38",
 		"tar": "6.2.1",
-		"terser": "5.30.2",
-		"typescript": "5.4.4",
+		"terser": "5.30.3",
+		"typescript": "5.4.5",
 		"esbuild": "0.20.2",
 		"glob": "10.3.12"
 	},
 	"devDependencies": {
-		"@types/node": "20.12.3",
-		"@typescript-eslint/eslint-plugin": "7.5.0",
-		"@typescript-eslint/parser": "7.5.0",
+		"@types/node": "20.12.7",
+		"@typescript-eslint/eslint-plugin": "7.7.0",
+		"@typescript-eslint/parser": "7.7.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.7.2",
+		"cypress": "13.7.3",
 		"eslint": "8.57.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.3"
