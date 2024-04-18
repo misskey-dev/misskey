@@ -84,14 +84,14 @@ importers:
         specifier: 3.412.0
         version: 3.412.0(@aws-sdk/client-s3@3.412.0)
       '@bull-board/api':
-        specifier: 5.14.2
-        version: 5.14.2(@bull-board/ui@5.14.2)
+        specifier: 5.15.5
+        version: 5.15.5(@bull-board/ui@5.15.5)
       '@bull-board/fastify':
-        specifier: 5.14.2
-        version: 5.14.2
+        specifier: 5.15.5
+        version: 5.15.5
       '@bull-board/ui':
-        specifier: 5.14.2
-        version: 5.14.2
+        specifier: 5.15.5
+        version: 5.15.5
       '@discordapp/twemoji':
         specifier: 15.0.2
         version: 15.0.2
@@ -3265,29 +3265,29 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@bull-board/api@5.14.2(@bull-board/ui@5.14.2):
-    resolution: {integrity: sha512-0wppAGPU7ZMwWMpzkmtrlmm7ySI5immymyaRS1cVNJ54rUiGOZP5tnm+Sj7MwPdf63rxqIM843un8+PvQyARGg==}
+  /@bull-board/api@5.15.5(@bull-board/ui@5.15.5):
+    resolution: {integrity: sha512-s3x0f+0s4nwndBM+QSROMVKiDyE/vaaouQCsxRWOFqneLCkM+Ro2wF6fkhmFkZMjouoBbS8rCFGaIZ+8uttYtg==}
     peerDependencies:
-      '@bull-board/ui': 5.14.2
+      '@bull-board/ui': 5.15.5
     dependencies:
-      '@bull-board/ui': 5.14.2
+      '@bull-board/ui': 5.15.5
       redis-info: 3.1.0
     dev: false
 
-  /@bull-board/fastify@5.14.2:
-    resolution: {integrity: sha512-GQMK70tKOu2gjBi2pjWXMXcftzWRvQNSm+deLmGlJUgqUUbNlzIGRyvaTk7giT4CFzgKcP+hT+lphcAsGTKBQw==}
+  /@bull-board/fastify@5.15.5:
+    resolution: {integrity: sha512-gPpZqm4wizCSvPKgaOXyl4Y1wAFTzH6qk6TWPBLv+7OjMqoVVlF0h+O/n/1Pv0485mBJgtoyaxWvmwdiOxRMMg==}
     dependencies:
-      '@bull-board/api': 5.14.2(@bull-board/ui@5.14.2)
-      '@bull-board/ui': 5.14.2
+      '@bull-board/api': 5.15.5(@bull-board/ui@5.15.5)
+      '@bull-board/ui': 5.15.5
       '@fastify/static': 6.12.0
       '@fastify/view': 8.2.0
       ejs: 3.1.9
     dev: false
 
-  /@bull-board/ui@5.14.2:
-    resolution: {integrity: sha512-NiyKWLjKjy29I6ySCnSYbzGX4ZJyPE4xlS5/Z5dVsF2bJLoAV+yD1obflxteJMt60FiEgLV7tfs6tMSVa+Htew==}
+  /@bull-board/ui@5.15.5:
+    resolution: {integrity: sha512-TSXgqBDI3ig6ez6yHArGzpwCuA/rhQewv0KOUAvPzssgX4HqfkatrV7gTuTM+XJe7/sLiXnBiryV7SRV0hgRMg==}
     dependencies:
-      '@bull-board/api': 5.14.2(@bull-board/ui@5.14.2)
+      '@bull-board/api': 5.15.5(@bull-board/ui@5.15.5)
     dev: false
 
   /@bundled-es-modules/cookie@2.0.0:
@@ -6678,7 +6678,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.21(typescript@5.3.3)
-      vue-component-type-helpers: 2.0.10
+      vue-component-type-helpers: 2.0.13
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -7805,8 +7805,8 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@types/yauzl@2.10.0:
-    resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
+  /@types/yauzl@2.10.3:
+    resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     requiresBuild: true
     dependencies:
       '@types/node': 20.11.22
@@ -8262,7 +8262,7 @@ packages:
       '@vue/compiler-dom': 3.4.18
       '@vue/shared': 3.3.12
       computeds: 0.0.1
-      minimatch: 9.0.3
+      minimatch: 9.0.4
       muggle-string: 0.3.1
       path-browserify: 1.0.1
       typescript: 5.3.3
@@ -11437,7 +11437,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.10.0
+      '@types/yauzl': 2.10.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14777,6 +14777,13 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
+
+  /minimatch@9.0.4:
+    resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
 
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
@@ -19347,8 +19354,8 @@ packages:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
     dev: true
 
-  /vue-component-type-helpers@2.0.10:
-    resolution: {integrity: sha512-FC5fKJjDks3Ue/KRSYBdsiCaZa0kUPQfs8yQpb8W9mlO6BenV8G1z58xobeRMzevnmEcDa09LLwuXDwb4f6NMQ==}
+  /vue-component-type-helpers@2.0.13:
+    resolution: {integrity: sha512-xNO5B7DstNWETnoYflLkVgh8dK8h2ZDgxY1M2O0zrqGeBNq5yAZ8a10yCS9+HnixouNGYNX+ggU9MQQq86HTpg==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):
