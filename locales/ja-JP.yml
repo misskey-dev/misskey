@@ -1344,6 +1344,8 @@ _timelineDescription:
   local: "ローカルタイムラインでは、このサーバーにいるユーザー全員の投稿を見られます。"
   social: "ソーシャルタイムラインには、ホームタイムラインとローカルタイムラインの投稿が両方表示されます。"
   global: "グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。"
+  vmimi-relay: "ぶいみみリレータイムラインでは、バーチャルケモミミリレーサーバーに参加しているサーバーのユーザー全員の投稿を見られます。"
+  vmimi-relay-social: "ぶいみみソーシャルタイムラインには、ホームタイムラインとぶいみみリレータイムラインの投稿が両方表示されます。"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
@@ -1669,6 +1671,7 @@ _role:
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
+    vrtlAvailable: "ぶいみみリレータイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
     canInvite: "サーバー招待コードの発行"
@@ -2270,7 +2273,7 @@ _timelines:
   social: "ソーシャル"
   global: "グローバル"
   vmimiRelay: "ぶいみみリレー"
-  vmimiRelaySocial: "ぶいみみリレーソーシャル"
+  vmimiRelaySocial: "ぶいみみソーシャル"
 
 _play:
   new: "Playの作成"
