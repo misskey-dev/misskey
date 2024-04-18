@@ -33,10 +33,11 @@ export async function migrate(userId: string) {
 	if (!raw) return;
 
 	const drafts = JSON.parse(raw) as Record<string, NoteDraft>;
+	const keys = Object.keys(drafts);
 	const newDrafts: Record<string, NoteDraft> = {};
 
-	for (let i = 0; i < Object.keys(drafts).length; i++) {
-		const key = Object.keys(drafts)[i];
+	for (let i = 0; i < keys.length; i++) {
+		const key = keys[i];
 		const [type, id] = key.split(':');
 		if (type === 'note' && id !== userId) continue;
 		const keyType = type === 'renote' ? 'quote' : type as keyof NoteKeys;
@@ -52,6 +53,7 @@ export async function migrate(userId: string) {
 		delete drafts[key];
 	}
 
+	if (Object.keys(newDrafts).length === 0) return;
 	await idbSet(`drafts::${userId}`, newDrafts);
 	miLocalStorage.setItem('drafts', JSON.stringify(drafts));
 }
@@ -71,8 +73,8 @@ export async function getAll(userId: string) {
 
 export async function get<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
 	const key = getKey(type, uniqueId, ...args);
-	const draft = await getAll(userId)[key];
-	return draft ?? null;
+	const draft = await getAll(userId);
+	return draft[key] ?? null;
 }
 
 export async function set<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, draft: NoteDraft['data'], ...args: Parameters<NoteKeys[T]>) {
