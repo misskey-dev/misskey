@@ -1237,6 +1237,10 @@ addToEmojiPicker: "絵文字ピッカーに追加"
 channelAnnouncementDescription: "このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。"
 postForm: "投稿フォーム"
 postFormBottomSettingsDescription: "投稿フォームの下部に表示される項目の並び替えが出来ます。項目をクリックすると削除できます。"
+drafts: "下書き"
+draftSavingBehavior: "下書きの保存に関する動作"
+saveAsDraft: "下書きとして保存"
+draftOverwriteConfirm: "下書きを適用すると現在入力されている内容はリセットされます。よろしいですか？"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2628,3 +2632,7 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_draftSavingBehavior:
+  auto: "自動的に保存する"
+  manual: "都度確認する"

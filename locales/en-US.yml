@@ -1232,6 +1232,10 @@ addToEmojiPicker: "Add to Emoji Picker"
 channelAnnouncementDescription: "This announcement will appear at the top of the channel's timeline. The first line is displayed as the title, and the second and subsequent lines are displayed by tapping the announcement."
 postForm: "Post Form"
 postFormBottomSettingsDescription: "You can reorder the items displayed at the bottom of the submission form. Click on an item to delete it."
+drafts: "Drafts"
+draftSavingBehavior: "Behavior related to saving drafts."
+saveAsDraft: "Save as Drafts"
+draftOverwriteConfirm: "Applying a draft will reset what is currently entered. Are you sure?"
 
 _bubbleGame:
   howToPlay: "How to play"
@@ -2535,3 +2539,6 @@ _offlineScreen:
   title: "Offline - cannot connect to the server"
   header: "Unable to connect to the server"
 
+_draftSavingBehavior:
+  auto: "Automatically save"
+  manual: "confirm each time"

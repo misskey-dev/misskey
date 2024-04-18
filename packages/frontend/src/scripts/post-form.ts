@@ -37,4 +37,8 @@ export const bottomItemDef = {
 		title: i18n.ts.addMfmFunction,
 		icon: 'ti-palette',
 	},
+	saveAsDraft: {
+		title: i18n.ts.saveAsDraft,
+		icon: 'ti-note',
+	},
 };
