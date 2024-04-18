@@ -767,18 +767,19 @@ function chooseDraft() {
 
 async function applyDraft(draft: noteDrafts.NoteDraft, native = false) {
 	if (!native) {
+		reply.value = undefined;
+		renote.value = undefined;
+
 		switch (draft.type) {
 			case 'quote': {
 				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
 					renote.value = note;
-					reply.value = undefined;
 				});
 				break;
 			}
 			case 'reply': {
 				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
 					reply.value = note;
-					renote.value = undefined;
 				});
 				break;
 			}
