@@ -11,8 +11,8 @@
 	<div :class="$style.container">
 		<div v-if="notes === null" :class="$style.center">{{ i18n.ts.loading }}</div>
 		<div v-else-if="Object.keys(notes).length === 0" :class="$style.center">{{ i18n.ts.nothing }}</div>
-		<div v-for="(note, key) of notes" v-else :key="key" class="_panel" :class="$style.wrapper" :aria-disabled="!noteFilter(note)">
-			<div v-if="note" :class="$style.note" @click="() => select(note)">
+		<div v-for="(note, key) of notes" v-else :key="key" class="_panel" :class="$style.wrapper">
+			<div v-if="note" :class="$style.note" :aria-disabled="!noteFilter(note)" @click="() => select(note)">
 				<div v-if="note.type === 'quote'" :class="$style.subtext"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</div>
 				<div v-if="note.type === 'reply'" :class="$style.subtext"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.reply }}</div>
 				<div v-if="note.type === 'channel'" :class="$style.subtext"><i class="ti ti-device-tv"></i> {{ i18n.ts.channel }}</div>
@@ -99,17 +99,7 @@ onMounted(async () => {
 .wrapper {
 	display: flex;
 	border-radius: 12px;
-	background-color: var(--buttonBg);
 	cursor: pointer;
-
-	&:hover:not([aria-disabled="true"]) {
-		background-color: var(--buttonHoverBg);
-	}
-
-	&[aria-disabled="true"] {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
 }
 
 .note {
@@ -119,6 +109,16 @@ onMounted(async () => {
 	padding: 10px;
 	gap: 6px;
 	flex-grow: 1;
+	background-color: var(--buttonBg);
+
+	&:hover:not([aria-disabled="true"]) {
+		background-color: var(--buttonHoverBg);
+	}
+
+	&[aria-disabled="true"] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
 }
 
 .subtext {
@@ -145,6 +145,7 @@ onMounted(async () => {
 	align-items: center;
 	justify-content: center;
 	padding: 16px;
+	background-color: var(--buttonBg);
 	color: var(--error);
 
 	&:hover {
