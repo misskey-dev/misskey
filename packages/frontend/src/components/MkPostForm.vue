@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
 				</button>
 			</template>
+			<button v-click-anime v-tooltip="i18n.ts.drafts" class="_button" :class="$style.headerRightItem" @click="chooseDraft"><i class="ti ti-note"></i></button>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
@@ -115,6 +116,7 @@ import { extractMentions } from '@/scripts/extract-mentions.js';
 import { formatTimeString } from '@/scripts/format-time-string.js';
 import { Autocomplete } from '@/scripts/autocomplete.js';
 import * as os from '@/os.js';
+import * as noteDrafts from '@/scripts/note-drafts.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFiles } from '@/scripts/select-file.js';
 import { dateTimeFormat } from '@/scripts/intl-const.js';
@@ -197,6 +199,8 @@ let schedule = ref<{
     scheduledAt: string | null;
 }| null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
+const renote = ref(props.renote);
+const reply = ref(props.reply);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
@@ -219,24 +223,19 @@ const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 
-const draftKey = computed((): string => {
-	let key = props.channel ? `channel:${props.channel.id}` : '';
-
-	if (props.renote) {
-		key += `renote:${props.renote.id}`;
-	} else if (props.reply) {
-		key += `reply:${props.reply.id}`;
-	} else {
-		key += `note:${$i.id}`;
-	}
-
-	return key;
+const draftType = computed(() => {
+	if (props.channel) return 'channel';
+	if (renote.value) return 'quote';
+	if (reply.value) return 'reply';
+	return 'note';
 });
 
+const draftAuxId = computed<string | null>(() => props.channel ? props.channel.id : renote.value ? renote.value.id : reply.value ? reply.value.id : null);
+
 const placeholder = computed((): string => {
-	if (props.renote) {
+	if (renote.value) {
 		return i18n.ts._postForm.quotePlaceholder;
-	} else if (props.reply) {
+	} else if (reply.value) {
 		return i18n.ts._postForm.replyPlaceholder;
 	} else if (props.channel) {
 		return i18n.ts._postForm.channelPlaceholder;
@@ -254,9 +253,9 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return props.renote
+	return renote.value
 		? i18n.ts.quote
-		: props.reply
+		: reply.value
 			? i18n.ts.reply
 			: schedule.value
 				? i18n.ts._schedulePost.addSchedule
@@ -273,15 +272,9 @@ const maxTextLength = computed((): number => {
 
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
-      (
-      	1 <= textLength.value ||
-			1 <= files.value.length ||
-			poll.value != null ||
-			props.renote != null ||
-			(props.reply != null && quoteId.value != null)
-      ) &&
-      (textLength.value <= maxTextLength.value) &&
-      (!poll.value || poll.value.choices.length >= 2);
+		(1 <= textLength.value || 1 <= files.value.length || !!poll.value || !!renote.value) &&
+		(textLength.value <= maxTextLength.value) &&
+		(!poll.value || poll.value.choices.length >= 2);
 });
 
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
@@ -313,82 +306,86 @@ watch(visibleUsers, () => {
 	deep: true,
 });
 
-if (props.mention) {
-	text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
-	text.value += ' ';
-}
-
-if (props.reply && (props.reply.user.username !== $i.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
-	text.value = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
-}
-
-if (props.reply && props.reply.text != null) {
-	const ast = mfm.parse(props.reply.text);
-	const otherHost = props.reply.user.host;
-
-	for (const x of extractMentions(ast)) {
-		const mention = x.host ?
-			`@${x.username}@${toASCII(x.host)}` :
-			(otherHost == null || otherHost === host) ?
-				`@${x.username}` :
-				`@${x.username}@${toASCII(otherHost)}`;
-
-		// 自分は除外
-		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
-
-		// 重複は除外
-		if (text.value.includes(`${mention} `)) continue;
-
-		text.value += `${mention} `;
+function initialize() {
+	if (props.mention) {
+		text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
+		text.value += ' ';
 	}
-}
 
-if ($i.isSilenced && visibility.value === 'public') {
-	visibility.value = 'home';
-}
+	if (reply.value && (reply.value.user.username !== $i.username || (reply.value.user.host != null && reply.value.user.host !== host))) {
+		text.value = `@${reply.value.user.username}${reply.value.user.host != null ? '@' + toASCII(reply.value.user.host) : ''} `;
+	}
 
-if (props.channel) {
-	visibility.value = 'public';
-	localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-}
+	if (reply.value && reply.value.text != null) {
+		const ast = mfm.parse(reply.value.text);
+		const otherHost = reply.value.user.host;
 
-// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
-	if (props.reply.visibility === 'home' && visibility.value === 'followers') {
-		visibility.value = 'followers';
-	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility.value === 'specified') {
+		for (const x of extractMentions(ast)) {
+			const mention = x.host ?
+				`@${x.username}@${toASCII(x.host)}` :
+				(otherHost == null || otherHost === host) ?
+					`@${x.username}` :
+					`@${x.username}@${toASCII(otherHost)}`;
+
+			// 自分は除外
+			if ($i.username === x.username && (x.host == null || x.host === host)) continue;
+
+			// 重複は除外
+			if (text.value.includes(`${mention} `)) continue;
+
+			text.value += `${mention} `;
+		}
+	}
+
+	if ($i.isSilenced && visibility.value === 'public') {
+		visibility.value = 'home';
+	}
+
+	if (props.channel) {
+		visibility.value = 'public';
+		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
+	}
+
+	// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
+	if (reply.value && ['home', 'followers', 'specified'].includes(reply.value.visibility)) {
+		if (reply.value.visibility === 'home' && visibility.value === 'followers') {
+			visibility.value = 'followers';
+		} else if (['home', 'followers'].includes(reply.value.visibility) && visibility.value === 'specified') {
+			visibility.value = 'specified';
+		} else {
+			visibility.value = reply.value.visibility;
+		}
+
+		if (visibility.value === 'specified') {
+			if (reply.value.visibleUserIds) {
+				misskeyApi('users/show', {
+					userIds: reply.value.visibleUserIds.filter(uid => uid !== $i.id && uid !== reply.value?.userId),
+				}).then(users => {
+					users.forEach(pushVisibleUser);
+				});
+			}
+
+			if (reply.value.userId !== $i.id) {
+				misskeyApi('users/show', { userId: reply.value.userId }).then(user => {
+					pushVisibleUser(user);
+				});
+			}
+		}
+	}
+
+	if (props.specified) {
 		visibility.value = 'specified';
-	} else {
-		visibility.value = props.reply.visibility;
+		pushVisibleUser(props.specified);
 	}
 
-	if (visibility.value === 'specified') {
-		if (props.reply.visibleUserIds) {
-			misskeyApi('users/show', {
-				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
-			}).then(users => {
-				users.forEach(pushVisibleUser);
-			});
-		}
-
-		if (props.reply.userId !== $i.id) {
-			misskeyApi('users/show', { userId: props.reply.userId }).then(user => {
-				pushVisibleUser(user);
-			});
-		}
+	// keep cw when reply
+	if (defaultStore.state.keepCw && reply.value && reply.value.cw) {
+		useCw.value = true;
+		cw.value = reply.value.cw;
 	}
 }
 
-if (props.specified) {
-	visibility.value = 'specified';
-	pushVisibleUser(props.specified);
-}
-
-// keep cw when reply
-if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
-	useCw.value = true;
-	cw.value = props.reply.cw;
-}
+initialize();
 
 function watchForDraft() {
 	watch(text, () => saveDraft());
@@ -508,7 +505,7 @@ function setVisibility() {
 		currentVisibility: visibility.value,
 		isSilenced: $i.isSilenced, localOnly: localOnly.value,
 		src: visibilityButton.value,
-		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
+		...(reply.value ? { isReplyVisibilitySpecified: reply.value.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
@@ -635,7 +632,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -706,34 +703,73 @@ function onDrop(ev: DragEvent): void {
 	//#endregion
 }
 
-function saveDraft() {
+function saveDraft(auto = true) {
 	if (props.instant || props.mock) return;
 
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	if (!auto) {
+		// 手動での保存の場合は自動保存したものを削除した上で保存
+		noteDrafts.remove(draftType.value, $i.id, 'default', draftAuxId.value as string);
+	}
 
-	draftData[draftKey.value] = {
-		updatedAt: new Date(),
-		data: {
-			text: text.value,
-			useCw: useCw.value,
-			cw: cw.value,
-			visibility: visibility.value,
-			localOnly: localOnly.value,
-			files: files.value,
-			poll: poll.value,
-			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
-		},
-	};
-
-	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+	noteDrafts.set(draftType.value, $i.id, auto ? 'default' : Date.now().toString(), {
+		text: text.value,
+		useCw: useCw.value,
+		cw: cw.value,
+		visibility: visibility.value,
+		localOnly: localOnly.value,
+		files: files.value,
+		poll: poll.value,
+		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+	}, draftAuxId.value as string);
 }
 
 function deleteDraft() {
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	noteDrafts.remove(draftType.value, $i.id, 'default', draftAuxId.value as string);
+}
 
-	delete draftData[draftKey.value];
+function chooseDraft() {
+	os.popup(defineAsyncComponent(() => import('@/components/MkPostFormDrafts.vue')), {
+		channelId: props.channel?.id,
+	}, {
+		selected: async (res) => {
+			const draft = await res as noteDrafts.NoteDraft;
+			applyDraft(draft);
+		},
+	}, 'closed');
+}
 
-	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+async function applyDraft(draft: noteDrafts.NoteDraft, native = false) {
+	if (!native) {
+		switch (draft.type) {
+			case 'quote': {
+				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
+					renote.value = note;
+				});
+				break;
+			}
+			case 'reply': {
+				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
+					reply.value = note;
+				});
+				break;
+			}
+		}
+
+		initialize();
+	}
+
+	text.value = draft.data.text;
+	useCw.value = draft.data.useCw;
+	cw.value = draft.data.cw;
+	visibility.value = draft.data.visibility;
+	localOnly.value = draft.data.localOnly;
+	files.value = (draft.data.files || []).filter(draftFile => draftFile);
+	if (draft.data.poll) {
+		poll.value = draft.data.poll;
+	}
+	if (draft.data.scheduledNoteDelete) {
+		scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
+	}
 }
 
 async function post(ev?: MouseEvent) {
@@ -788,8 +824,8 @@ async function post(ev?: MouseEvent) {
 	let postData = {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
-		replyId: props.reply ? props.reply.id : undefined,
-		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
+		replyId: reply.value ? reply.value.id : undefined,
+		renoteId: renote.value ? renote.value.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
 		schedule: schedule.value,
 		poll: poll.value,
@@ -887,7 +923,7 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('brainDiver');
 			}
 
-			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+			if (renote.value && (renote.value.userId === $i.id) && text.length > 0) {
 				claimAchievement('selfQuote');
 			}
 
@@ -1033,30 +1069,13 @@ onMounted(() => {
 	if (cwInputEl.value) new Autocomplete(cwInputEl.value, cw);
 	if (hashtagsInputEl.value) new Autocomplete(hashtagsInputEl.value, hashtags);
 
-	nextTick(() => {
+	nextTick(async () => {
+		await noteDrafts.migrate($i.id);
+
 		// 書きかけの投稿を復元
-		if (!props.instant && !props.mention && !props.specified && !props.mock) {
-			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value];
-			if (draft) {
-				text.value = draft.data.text;
-				useCw.value = draft.data.useCw;
-				cw.value = draft.data.cw;
-				visibility.value = draft.data.visibility;
-				localOnly.value = draft.data.localOnly;
-				files.value = (draft.data.files || []).filter(draftFile => draftFile);
-				if (draft.data.poll) {
-					poll.value = draft.data.poll;
-				}
-				if (draft.data.visibleUserIds) {
-					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
-						for (let i = 0; i < users.length; i++) {
-							if (users[i].id === draft.data.visibleUserIds[i]) {
-								pushVisibleUser(users[i]);
-							}
-						}
-					});
-				}
-			}
+		if (!props.instant && !props.mention && !props.specified && !props.mock && !defaultStore.state.disableNoteDrafting) {
+			const draft = await noteDrafts.get(draftType.value, $i.id, 'default', draftAuxId.value as string);
+			if (draft) applyDraft(draft, true);
 		}
 
 		// 削除して編集
