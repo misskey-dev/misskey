@@ -9,80 +9,116 @@
 	<template #header>{{ i18n.ts.drafts }}</template>
 
 	<div :class="$style.container">
-		<template v-for="(note, key) of notes" :key="key">
-			<div v-if="note && noteFilter(key)" class="_panel" :class="$style.note" @click="() => select(key)">
-				<div v-if="key.startsWith('renote:')" :class="$style.subtext"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</div>
-				<div v-if="key.startsWith('reply:')" :class="$style.subtext"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.reply }}</div>
+		<div v-if="notes === null" :class="$style.center">{{ i18n.ts.loading }}</div>
+		<div v-else-if="Object.keys(notes).length === 0" :class="$style.center">{{ i18n.ts.nothing }}</div>
+		<div v-for="(note, key) of notes" v-else :key="key" class="_panel" :class="$style.wrapper" :aria-disabled="!noteFilter(note)">
+			<div v-if="note" :class="$style.note" @click="() => select(note)">
+				<div v-if="note.type === 'quote'" :class="$style.subtext"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</div>
+				<div v-if="note.type === 'reply'" :class="$style.subtext"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.reply }}</div>
+				<div v-if="note.type === 'channel'" :class="$style.subtext"><i class="ti ti-device-tv"></i> {{ i18n.ts.channel }}</div>
 				<Mfm v-if="note.data.text" :text="note.data.text" :nyaize="'respect'"/>
 				<div :class="[$style.subtext, $style.bottom]">
 					<MkTime :time="note.updatedAt"/>
 					<div v-if="note.data.files.length"><i class="ti ti-photo-plus" :class="$style.icon"></i>{{ note.data.files.length }}</div>
 				</div>
 			</div>
-		</template>
+			<div :class="$style.trash" @click="() => remove(note)"><i class="ti ti-trash"></i></div>
+		</div>
 	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
+import { shallowRef, ref, onMounted } from 'vue';
 import * as noteDrafts from '@/scripts/note-drafts.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account';
+import { signinRequired } from '@/account.js';
+import * as os from '@/os.js';
 
-const props = withDefaults(defineProps<{
-	channel: boolean;
-}>(), {
-	channel: false,
-});
+const $i = signinRequired();
+
+const props = defineProps<{
+	channelId?: string;
+}>();
 
 const emit = defineEmits<{
-	(ev: 'selected', res: string): void;
+	(ev: 'selected', res: noteDrafts.NoteDraft): void;
 	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
-const notes = computed(() => noteDrafts.getAll());
+const notes = ref<Record<string, noteDrafts.NoteDraft | undefined> | null>(null);
 
-function noteFilter(key: string) {
+function noteFilter(note: noteDrafts.NoteDraft | undefined) {
+	if (!note) return false;
+
 	// チャンネルモードの場合はチャンネル内での下書きのみを表示
-	if (props.channel) return key.startsWith('channel:');
+	if (props.channelId) return note.type === 'channel' && note.auxId === props.channelId;
 
 	// チャンネル外ならチャンネル内の下書きは表示しない
-	if (key.startsWith('channel:')) return false;
-	if (key.startsWith('note:')) return key.startsWith(`note:${$i?.id}`);
+	if (note.type === 'channel') return false;
 
 	return true;
 }
 
-function select(key: string) {
-	emit('selected', key);
+function select(note: noteDrafts.NoteDraft) {
+	if (!noteFilter(note)) return;
+	emit('selected', note);
 	dialog.value?.close();
 }
+
+async function remove(note: noteDrafts.NoteDraft | undefined) {
+	if (!note) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.deleteConfirm,
+	});
+
+	if (canceled) return;
+	await noteDrafts.remove(note.type, $i.id, note.uniqueId, note.auxId as string);
+	notes.value = await noteDrafts.getAll($i.id);
+}
+
+onMounted(async () => {
+	notes.value = await noteDrafts.getAll($i.id);
+});
 </script>
 
 <style lang="scss" module>
 .container {
 	display: flex;
 	flex-direction: column;
+	align-items: stretch;
 	gap: 16px;
 	overflow-x: clip;
 	padding: 16px;
 }
 
-.note {
+.wrapper {
 	display: flex;
-	flex-direction: column;
-	padding: 10px;
-	gap: 6px;
 	border-radius: 12px;
 	background-color: var(--buttonBg);
 	cursor: pointer;
 
-	&:hover {
+	&:hover:not([aria-disabled="true"]) {
 		background-color: var(--buttonHoverBg);
 	}
+
+	&[aria-disabled="true"] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+.note {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 10px;
+	gap: 6px;
+	flex-grow: 1;
 }
 
 .subtext {
@@ -98,5 +134,22 @@ function select(key: string) {
 
 .icon {
 	margin-right: 4px;
+}
+
+.center {
+	text-align: center;
+}
+
+.trash {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	color: var(--error);
+
+	&:hover {
+		background-color: var(--error);
+		color: white;
+	}
 }
 </style>
