@@ -1294,6 +1294,23 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
+scheduledNoteDelete: "ノートの自己消滅"
+noteDeletationAt: "このノートは{time}に消滅します"
+cannotScheduleLaterThanOneYear: "1年以上先の日時を指定することはできません"
+hideActivity: "アクティビティを非公開にする"
+hideActivityDescription: "自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。"
+channelAnnouncementDescription: "このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。"
+postForm: "投稿フォーム"
+postFormBottomSettingsDescription: "投稿フォームの下部に表示される項目の並び替えが出来ます。項目をクリックすると削除できます。"
+clearPost: "投稿フォームをリセット"
+addToEmojiPicker: "絵文字ピッカーに追加"
+hideReactionCount: "リアクション数の非表示"
+hideReactionUsers: "誰がリアクションをしたのかを非表示にする"
+hideReactionUsersDescription: "リアクションをホバーした際のユーザー一覧と、ノート詳細ページのリアクションタブにあるリアクションをしたユーザー一覧を非表示にします"
+drafts: "下書き"
+draftSavingBehavior: "下書きの保存に関する動作"
+saveAsDraft: "下書きとして保存"
+draftOverwriteConfirm: "下書きを適用すると現在入力されている内容はリセットされます。よろしいですか？"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2732,3 +2749,7 @@ _mediaControls:
   pip: "ピクチャインピクチャ"
   playbackRate: "再生速度"
   loop: "ループ再生"
+
+_draftSavingBehavior:
+  auto: "自動的に保存する"
+  manual: "都度確認する"
