@@ -42,7 +42,7 @@ export async function migrate(userId: string) {
 		const keyType = type === 'renote' ? 'quote' : type as keyof NoteKeys;
 		const keyId = type === 'note' ? null : id;
 		const uniqueId = Date.now().toString() + i.toString();
-		const newKey = getKey(keyType, uniqueId, false, keyId as string);
+		const newKey = getKey(keyType, uniqueId, keyId as string);
 		newDrafts[newKey] = {
 			...drafts[key],
 			uniqueId,
@@ -52,52 +52,46 @@ export async function migrate(userId: string) {
 		delete drafts[key];
 	}
 
-	await idbSet(`drafts::${userId}`, JSON.stringify(newDrafts));
+	await idbSet(`drafts::${userId}`, newDrafts);
 	miLocalStorage.setItem('drafts', JSON.stringify(drafts));
 }
 
-function getKey<T extends keyof NoteKeys, U extends boolean>(type: T, uniqueId: string | null, withUniqueId: U, ...args: Parameters<NoteKeys[T]>): U extends true ? { uniqueId: string, key: string } : string {
-	const id = uniqueId ?? Date.now();
-	let key = `${type}:${id}`;
+function getKey<T extends keyof NoteKeys>(type: T, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
+	let key = `${type}:${uniqueId}`;
 	for (const arg of args) {
 		if (arg != null) key += `:${arg}`;
 	}
-
-	if (withUniqueId) {
-		return { uniqueId: id, key } as any;
-	} else {
-		return key as any;
-	}
+	return key;
 }
 
 export async function getAll(userId: string) {
 	const drafts = await idbGet(`drafts::${userId}`);
-	if (!drafts) return {};
-	return JSON.parse(drafts) as Record<string, NoteDraft | undefined>;
+	return (drafts ?? {}) as Record<string, NoteDraft | undefined>;
 }
 
-export async function get<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string | null, ...args: Parameters<NoteKeys[T]>) {
-	const key = getKey(type, uniqueId, false, ...args);
+export async function get<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
+	const key = getKey(type, uniqueId, ...args);
 	const draft = await getAll(userId)[key];
 	return draft ?? null;
 }
 
-export async function set<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string | null, draft: NoteDraft['data'], ...args: Parameters<NoteKeys[T]>) {
+export async function set<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, draft: NoteDraft['data'], ...args: Parameters<NoteKeys[T]>) {
 	const drafts = await getAll(userId);
-	const keys = getKey(type, uniqueId, true, ...args);
-	drafts[keys.key] = {
+	const key = getKey(type, uniqueId, ...args);
+	drafts[key] = {
 		updatedAt: new Date(),
 		type,
-		uniqueId: uniqueId ?? keys.uniqueId,
+		uniqueId,
 		auxId: args[0] ?? null,
-		data: draft,
+		data: JSON.parse(JSON.stringify(draft)) as NoteDraft['data'],
 	};
-	await idbSet(`drafts::${userId}`, JSON.stringify(drafts));
+	console.log(drafts);
+	await idbSet(`drafts::${userId}`, drafts);
 }
 
-export async function remove<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string | null, ...args: Parameters<NoteKeys[T]>) {
+export async function remove<T extends keyof NoteKeys>(type: T, userId: string, uniqueId: string, ...args: Parameters<NoteKeys[T]>) {
 	const drafts = await getAll(userId);
-	const key = getKey(type, uniqueId, false, ...args);
+	const key = getKey(type, uniqueId, ...args);
 	delete drafts[key];
-	await idbSet(`drafts::${userId}`, JSON.stringify(drafts));
+	await idbSet(`drafts::${userId}`, drafts);
 }
