@@ -79,15 +79,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
-			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
-			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
-			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
-			<button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
+			<template v-for="item in defaultStore.state.postFormActions">
+				<button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]" v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}"><i class="ti" :class="bottomItemDef[item].icon"></i></button>
+			</template>
 		</div>
 		<div :class="$style.footerRight">
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
@@ -279,6 +273,48 @@ const canPost = computed((): boolean => {
 
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
 const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
+
+const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
+	hide?: boolean;
+	active?: any;
+	action?: any;
+}> = reactive({
+	attachFile: {
+		action: chooseFileFrom,
+	},
+	poll: {
+		active: poll,
+		action: togglePoll,
+	},
+	useCw: {
+		active: useCw,
+		action: () => useCw.value = !useCw.value,
+	},
+	mention: {
+		action: insertMention,
+	},
+	hashtags: {
+		active: withHashtags,
+		action: () => withHashtags.value = !withHashtags.value,
+	},
+	plugins: {
+		hide: postFormActions.length === 0,
+		action: showActions,
+	},
+	emoji: {
+		action: insertEmoji,
+	},
+	addMfmFunction: {
+		hide: computed(() => !showAddMfmFunction.value),
+		action: insertMfmFunction,
+	},
+	clearPost: {
+		action: clear,
+	},
+	saveAsDraft: {
+		action: () => saveDraft(false),
+	},
+});
 
 watch(text, () => {
 	checkMissingMention();
@@ -703,17 +739,17 @@ function onDrop(ev: DragEvent): void {
 	//#endregion
 }
 
-function saveDraft(auto = true) {
+async function saveDraft(auto = true) {
 	if (props.instant || props.mock) return;
 
 	if (auto && defaultStore.state.draftSavingBehavior !== 'auto') return;
 
 	if (!auto) {
 		// 手動での保存の場合は自動保存したものを削除した上で保存
-		noteDrafts.remove(draftType.value, $i.id, 'default', draftAuxId.value as string);
+		await noteDrafts.remove(draftType.value, $i.id, 'default', draftAuxId.value as string);
 	}
 
-	noteDrafts.set(draftType.value, $i.id, auto ? 'default' : Date.now().toString(), {
+	await noteDrafts.set(draftType.value, $i.id, auto ? 'default' : Date.now().toString(), {
 		text: text.value,
 		useCw: useCw.value,
 		cw: cw.value,
@@ -723,6 +759,10 @@ function saveDraft(auto = true) {
 		poll: poll.value,
 		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
 	}, draftAuxId.value as string);
+
+	if (!auto) {
+		clear();
+	}
 }
 
 function deleteDraft() {
@@ -768,9 +808,6 @@ async function applyDraft(draft: noteDrafts.NoteDraft, native = false) {
 	files.value = (draft.data.files || []).filter(draftFile => draftFile);
 	if (draft.data.poll) {
 		poll.value = draft.data.poll;
-	}
-	if (draft.data.scheduledNoteDelete) {
-		scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 	}
 }
 
@@ -955,7 +992,7 @@ function cancel() {
 }
 
 async function closed() {
-	if (defaultStore.state.draftSavingBehavior === 'manual' && text.value !== '') {
+	if (defaultStore.state.draftSavingBehavior === 'manual' && (text.value !== '' || files.value.length > 0)) {
 		os.confirm({
 			type: 'question',
 			text: i18n.ts.saveConfirm,
