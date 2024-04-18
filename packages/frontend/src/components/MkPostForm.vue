@@ -775,6 +775,15 @@ function chooseDraft() {
 	}, {
 		selected: async (res) => {
 			const draft = await res as noteDrafts.NoteDraft;
+
+			if (text.value !== '' || files.value.length > 0) {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: i18n.ts.draftOverwriteConfirm,
+				});
+				if (canceled) return;
+			}
+
 			applyDraft(draft);
 		},
 	}, 'closed');
@@ -786,12 +795,14 @@ async function applyDraft(draft: noteDrafts.NoteDraft, native = false) {
 			case 'quote': {
 				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
 					renote.value = note;
+					reply.value = undefined;
 				});
 				break;
 			}
 			case 'reply': {
 				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
 					reply.value = note;
+					renote.value = undefined;
 				});
 				break;
 			}
