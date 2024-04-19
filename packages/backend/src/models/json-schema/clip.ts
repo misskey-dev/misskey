@@ -52,5 +52,9 @@ export const packedClipSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		notesCount: {
+			type: 'integer',
+			optional: true, nullable: false,
+		},
 	},
 } as const;

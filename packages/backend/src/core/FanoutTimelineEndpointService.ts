@@ -13,7 +13,7 @@ import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
@@ -95,7 +95,7 @@ export class FanoutTimelineEndpointService {
 
 			if (ps.excludePureRenotes) {
 				const parentFilter = filter;
-				filter = (note) => !isPureRenote(note) && parentFilter(note);
+				filter = (note) => (!isRenote(note) || isQuote(note)) && parentFilter(note);
 			}
 
 			if (ps.me) {
@@ -116,7 +116,7 @@ export class FanoutTimelineEndpointService {
 				filter = (note) => {
 					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
-					if (isPureRenote(note) && isUserRelated(note, userIdsWhoMeMutingRenotes, ps.ignoreAuthorFromMute)) return false;
+					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
 
 					return parentFilter(note);
