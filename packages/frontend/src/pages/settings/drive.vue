@@ -44,14 +44,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
 			</MkSwitch>
-			<MkSelect v-model="imageCompressionMode">
-				<template #label>{{ i18n.ts._imageCompressionMode.title }}</template>
-				<option value="resizeCompress">{{ i18n.ts._imageCompressionMode.resizeCompress }}</option>
-				<option value="noResizeCompress">{{ i18n.ts._imageCompressionMode.noResizeCompress }}</option>
-				<option value="resizeCompressLossy">{{ i18n.ts._imageCompressionMode.resizeCompressLossy }}</option>
-				<option value="noResizeCompressLossy">{{ i18n.ts._imageCompressionMode.noResizeCompressLossy }}</option>
-				<template #caption>{{ i18n.ts._imageCompressionMode.description }}</template>
-			</MkSelect>
+			<MkSwitch v-model="imageResize">
+				<template #label>{{ i18n.ts.imageResize }}</template>
+				<template #caption>{{ i18n.ts.imageResizeDescription }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="imageCompressionLossy">
+				<template #label>{{ i18n.ts.imageCompressionLossy }}</template>
+				<template #caption>{{ i18n.ts.imageCompressionLossyDescription }}</template>
+			</MkSwitch>
 			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
 			</MkSwitch>
@@ -81,7 +81,6 @@ import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { signinRequired } from '@/account.js';
-import MkSelect from '@/components/MkSelect.vue';
 
 const $i = signinRequired();
 
@@ -105,7 +104,8 @@ const meterStyle = computed(() => {
 });
 
 const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
-const imageCompressionMode = computed(defaultStore.makeGetterSetter('imageCompressionMode'));
+const imageResize = computed(defaultStore.makeGetterSetter('imageResize'));
+const imageCompressionLossy = computed(defaultStore.makeGetterSetter('imageCompressionLossy'));
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;

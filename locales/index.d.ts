@@ -1121,6 +1121,22 @@ export interface Locale extends ILocale {
      */
     "keepOriginalUploadingDescription": string;
     /**
+     * 画像を縮小する
+     */
+    "imageResize": string;
+    /**
+     * 縮小する場合は2560x2560より小さくなるように縮小されます。
+     */
+    "imageResizeDescription": string;
+    /**
+     * 画像を常に非可逆圧縮する
+     */
+    "imageCompressionLossy": string;
+    /**
+     * 非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。
+     */
+    "imageCompressionLossyDescription": string;
+    /**
      * ドライブから
      */
     "fromDrive": string;
@@ -9251,32 +9267,6 @@ export interface Locale extends ILocale {
              */
             "usersCaption": string;
         };
-    };
-    "_imageCompressionMode": {
-        /**
-         * 画像の圧縮形式
-         */
-        "title": string;
-        /**
-         * オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。縮小する場合は2560x2560より小さくなるように縮小されます。非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。
-         */
-        "description": string;
-        /**
-         * 縮小して再圧縮する
-         */
-        "resizeCompress": string;
-        /**
-         * 縮小せず再圧縮する
-         */
-        "noResizeCompress": string;
-        /**
-         * 縮小して非可逆圧縮する
-         */
-        "resizeCompressLossy": string;
-        /**
-         * 縮小せず非可逆圧縮する
-         */
-        "noResizeCompressLossy": string;
     };
     "_moderationLogTypes": {
         /**
