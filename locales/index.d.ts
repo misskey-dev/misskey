@@ -321,6 +321,15 @@ export interface Locale extends ILocale {
      */
     "driveFileDeleteConfirm": ParameterizedString<"name">;
     /**
+     * ファイル「{name}」を削除しますか？
+     * 以下のノートに影響があります:
+     */
+    "theFollowingNotesAreAffected": ParameterizedString<"name">;
+    /**
+     * また、ページやギャラリーにも影響が出る可能性があります
+     */
+    "pagesAndGalleriesAreAlsoAffected": string;
+    /**
      * {name}のフォローを解除しますか？
      */
     "unfollowConfirm": ParameterizedString<"name">;
@@ -3084,6 +3093,10 @@ export interface Locale extends ILocale {
      * {n}ノート
      */
     "nNotes": ParameterizedString<"n">;
+    /**
+     * 他{n}ノート
+     */
+    "otherNNotes": ParameterizedString<"n">;
     /**
      * エラーリポートを送信
      */
