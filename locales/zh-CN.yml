@@ -1692,6 +1692,9 @@ _role:
     roleAssignedTo: "已分配给手动角色"
     isLocal: "是本地用户"
     isRemote: "是远程用户"
+    isBot: "机器人用户"
+    isSuspended: "停用的用户"
+    isExplorable: "启用“使账号可见”的用户"
     createdLessThan: "账户创建时间少于"
     createdMoreThan: "账户创建时间超过"
     followersLessThanOrEq: "关注者不多于"
@@ -1974,6 +1977,7 @@ _2fa:
   backupCodesDescription: "如果无法使用认证应用，可以使用以下的备用代码来访问账户。请务必将这些代码保存在安全的地方。每个代码仅可使用一次。"
   backupCodeUsedWarning: "已使用备用代码。如果无法使用认证应用，请尽快重新设定。"
   backupCodesExhaustedWarning: "已使用完所有的备用代码。如果无法使用认证应用，将无法再访问您的账户。请再次设定认证应用。"
+  moreDetailedGuideHere: "此处为详细指南"
 _permissions:
   "read:account": "查看账户信息"
   "write:account": "更改帐户信息"
@@ -2280,6 +2284,8 @@ _pages:
     section: "章节"
     image: "图片"
     button: "按钮"
+    dynamic: "动态区块"
+    dynamicDescription: "这个区块已经废弃。以后请使用{play}。"
     note: "嵌入的帖子"
     _note:
       id: "帖子 ID"
