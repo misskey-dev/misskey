@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
@@ -104,8 +104,15 @@ const meterStyle = computed(() => {
 });
 
 const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
-const imageResize = computed(defaultStore.makeGetterSetter('imageResize'));
-const imageCompressionLossy = computed(defaultStore.makeGetterSetter('imageCompressionLossy'));
+const imageCompressionMode = computed(defaultStore.makeGetterSetter('imageCompressionMode'));
+const imageResize = ref(!!imageCompressionMode.value?.startsWith('resize'));
+const imageCompressionLossy = ref(!!imageCompressionMode.value?.endsWith('CompressLossy'));
+
+watch([imageResize, imageCompressionLossy], ([imageResizeValue, imageCompressionLossyValue]) => {
+	const resizeMode: 'resize' | 'noResize' = imageResizeValue ? 'resize' : 'noResize';
+	const compressionMode: 'CompressLossy' | 'Compress' = imageCompressionLossyValue ? 'CompressLossy' : 'Compress';
+	imageCompressionMode.value = resizeMode + compressionMode;
+});
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;

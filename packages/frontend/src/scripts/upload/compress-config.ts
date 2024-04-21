@@ -60,8 +60,8 @@ export async function getCompressionConfig(file: File): Promise<BrowserImageResi
 	const inputCompressKind = await inputImageKind(file);
 	if (!inputCompressKind) return undefined;
 
-	const compressKind = defaultStore.state.imageCompressionLossy ? 'lossy' : 'lossless';
-	const resize = defaultStore.state.imageResize;
+	const resize = defaultStore.state.imageCompressionMode.startsWith('resize');
+	const compressKind = defaultStore.state.imageCompressionMode.endsWith('CompressLossy') ? 'lossy' : 'lossless';
 
 	const webpSupported = isWebpSupported();
 
