@@ -1225,6 +1225,9 @@ enableHorizontalSwipe: "Swipe to switch tabs"
 loading: "Loading"
 surrender: "Cancel"
 gameRetry: "Retry"
+useBackupCode: "Use the backup codes"
+launchApp: "Launch the app"
+noDescription: "There is not the explanation"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"
@@ -1684,6 +1687,8 @@ _role:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"
     isRemote: "Remote user"
+    isCat: "Cat Users"
+    isBot: "Bot Users"
     createdLessThan: "Less than X has passed since account creation"
     createdMoreThan: "More than X has passed since account creation"
     followersLessThanOrEq: "Has X or fewer followers"
@@ -2272,6 +2277,7 @@ _pages:
     section: "Section"
     image: "Images"
     button: "Button"
+    dynamic: "Dynamic Blocks"
     note: "Embedded note"
     _note:
       id: "Note ID"
@@ -2528,3 +2534,12 @@ _reversi:
 _offlineScreen:
   title: "Offline - cannot connect to the server"
   header: "Unable to connect to the server"
+_urlPreviewSetting:
+  title: "URL preview settings"
+  enable: "Enable URL preview"
+  maximumContentLength: "Maximum Content-Length (bytes)"
+  userAgent: "User-Agent"
+_mediaControls:
+  pip: "Picture in Picture"
+  playbackRate: "Playback Speed"
+  loop: "Loop playback"
