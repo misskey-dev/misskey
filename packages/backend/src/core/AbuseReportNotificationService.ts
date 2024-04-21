@@ -1,0 +1,376 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import { In, IsNull, Not } from 'typeorm';
+import * as Redis from 'ioredis';
+import sanitizeHtml from 'sanitize-html';
+import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
+import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
+import type {
+	AbuseReportNotificationRecipientRepository,
+	MiAbuseReportNotificationRecipient,
+	MiAbuseUserReport,
+} from '@/models/_.js';
+import { WebhookService } from '@/core/WebhookService.js';
+import { EmailService } from '@/core/EmailService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
+import { IdService } from './IdService.js';
+
+@Injectable()
+export class AbuseReportNotificationService implements OnApplicationShutdown {
+	constructor(
+		@Inject(DI.abuseReportNotificationRecipientRepository)
+		private abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
+		private idService: IdService,
+		private roleService: RoleService,
+		private webhookService: WebhookService,
+		private emailService: EmailService,
+		private metaService: MetaService,
+		private globalEventService: GlobalEventService,
+	) {
+		this.redisForSub.on('message', this.onMessage);
+	}
+
+	/**
+	 * {@link abuseReports}の内容を下記の手段で管理者各位に通知する.
+	 * - 管理者用Redisイベント
+	 * - EMail（モデレータ権限所有者ユーザ＋metaテーブルに設定されているメールアドレス）
+	 * - SystemWebhook
+	 *
+	 * @see GlobalEventService.publishAdminStream
+	 * @see EmailService.sendMail
+	 * @see WebhookService.enqueueSystemWebhook
+	 */
+	@bindThis
+	public async notify(abuseReports: MiAbuseUserReport[]) {
+		if (abuseReports.length <= 0) {
+			return;
+		}
+
+		await Promise.all([
+			this.publishAdminStream(abuseReports),
+			this.sendMail(abuseReports),
+			this.enqueueSendWebhook(abuseReports),
+		]);
+	}
+
+	@bindThis
+	private async publishAdminStream(abuseReports: MiAbuseUserReport[]) {
+		const moderatorIds = await this.roleService.getModeratorIds(true, true);
+
+		for (const moderatorId of moderatorIds) {
+			for (const abuseReport of abuseReports) {
+				this.globalEventService.publishAdminStream(
+					moderatorId,
+					'newAbuseUserReport',
+					{
+						id: abuseReport.id,
+						targetUserId: abuseReport.targetUserId,
+						reporterId: abuseReport.reporterId,
+						comment: abuseReport.comment,
+					},
+				);
+			}
+		}
+	}
+
+	@bindThis
+	private async sendMail(abuseReports: MiAbuseUserReport[]) {
+		const recipientEMailAddresses = await this.fetchEMailRecipients().then(it => it
+			.filter(it => it.userProfile?.emailVerified)
+			.map(it => it.userProfile?.email)
+			.filter(isNotNull),
+		);
+
+		// 送信先の鮮度を保つため、毎回取得する
+		const meta = await this.metaService.fetch(true);
+		recipientEMailAddresses.push(
+			...(meta.email ? [meta.email] : []),
+		);
+
+		if (recipientEMailAddresses.length <= 0) {
+			return;
+		}
+
+		for (const mailAddress of recipientEMailAddresses) {
+			await Promise.all(
+				abuseReports.map(it => {
+					// TODO: 送信処理はJobQueue化したい
+					return this.emailService.sendEmail(
+						mailAddress,
+						'New Abuse Report',
+						sanitizeHtml(it.comment),
+						sanitizeHtml(it.comment),
+					);
+				}),
+			);
+		}
+	}
+
+	@bindThis
+	private async enqueueSendWebhook(abuseReports: MiAbuseUserReport[]) {
+		const recipientWebhookIds = await this.fetchWebhookRecipients()
+			.then(it => it.map(it => it.systemWebhookId).filter(isNotNull));
+		const activeAbuseReportWebhooks = await this.webhookService.fetchActiveSystemWebhooks()
+			.then(it => it.filter(it => it.on.includes('abuseReport') && recipientWebhookIds.includes(it.id)));
+
+		for (const webhook of activeAbuseReportWebhooks) {
+			await Promise.all(
+				abuseReports.map(it => {
+					return this.webhookService.enqueueSystemWebhook(
+						webhook,
+						'abuseReport',
+						it,
+					);
+				}),
+			);
+		}
+	}
+
+	/**
+	 * 通報の通知先一覧を取得する.
+	 *
+	 * @param {Object} [params] クエリの取得条件
+	 * @param {Object} [params.method] 取得する通知先の通知方法
+	 * @param {Object} [opts] 動作時の詳細なオプション
+	 * @param {boolean} [opts.removeUnauthorized] 副作用としてモデレータ権限を持たない送信先ユーザをDBから削除するかどうか(default: true)
+	 * @param {boolean} [opts.joinUser] 通知先のユーザ情報をJOINするかどうか(default: false)
+	 * @param {boolean} [opts.joinSystemWebhook] 通知先のSystemWebhook情報をJOINするかどうか(default: false)
+	 * @see removeUnauthorizedRecipientUsers
+	 */
+	@bindThis
+	public async fetchRecipients(
+		params?: {
+			ids?: MiAbuseReportNotificationRecipient['id'][],
+			method?: RecipientMethod[],
+		},
+		opts?: {
+			removeUnauthorized?: boolean,
+			joinUser?: boolean,
+			joinSystemWebhook?: boolean,
+		},
+	): Promise<MiAbuseReportNotificationRecipient[]> {
+		const query = this.abuseReportNotificationRecipientRepository.createQueryBuilder('recipient');
+
+		if (opts?.joinUser) {
+			query.innerJoinAndSelect('user', 'user', 'recipient.userId = user.id');
+			query.innerJoinAndSelect('recipient.userProfile', 'userProfile');
+		}
+
+		if (opts?.joinSystemWebhook) {
+			query.innerJoinAndSelect('recipient.systemWebhook', 'systemWebhook');
+		}
+
+		if (params?.ids) {
+			query.andWhere({ id: In(params.ids) });
+		}
+
+		if (params?.method) {
+			if (params.method.includes('email')) {
+				query.orWhere({ method: 'email', userId: Not(IsNull()) });
+			}
+			if (params.method.includes('webhook')) {
+				query.orWhere({ method: 'webhook', userId: IsNull() });
+			}
+		}
+
+		const recipients = await query.getMany();
+		if (recipients.length <= 0) {
+			return [];
+		}
+
+		// アサイン有効期限切れはイベントで拾えないので、このタイミングでチェック及び削除（オプション）
+		return (opts?.removeUnauthorized ?? true)
+			? await this.removeUnauthorizedRecipientUsers(recipients)
+			: recipients;
+	}
+
+	/**
+	 * EMailの通知先一覧を取得する.
+	 * リレーション先の{@link MiUser}および{@link MiUserProfile}も同時に取得する.
+	 *
+	 * @param {Object} [opts]
+	 * @param {boolean} [opts.removeUnauthorized] 副作用としてモデレータ権限を持たない送信先ユーザをDBから削除するかどうか(default: true)
+	 * @see removeUnauthorizedRecipientUsers
+	 */
+	@bindThis
+	public async fetchEMailRecipients(opts?: {
+		removeUnauthorized?: boolean
+	}): Promise<MiAbuseReportNotificationRecipient[]> {
+		return this.fetchRecipients({ method: ['email'] }, { joinUser: true, ...opts });
+	}
+
+	/**
+	 * Webhookの通知先一覧を取得する.
+	 * リレーション先の{@link MiSystemWebhook}も同時に取得する.
+	 */
+	@bindThis
+	public fetchWebhookRecipients(): Promise<MiAbuseReportNotificationRecipient[]> {
+		return this.fetchRecipients({ method: ['webhook'] }, { joinSystemWebhook: true });
+	}
+
+	/**
+	 * 通知先を作成する.
+	 */
+	@bindThis
+	public async createRecipient(params: {
+		isActive: MiAbuseReportNotificationRecipient['isActive'];
+		name: MiAbuseReportNotificationRecipient['name'];
+		method: MiAbuseReportNotificationRecipient['method'];
+		userId: MiAbuseReportNotificationRecipient['userId'];
+		systemWebhookId: MiAbuseReportNotificationRecipient['systemWebhookId'];
+	}[]): Promise<MiAbuseReportNotificationRecipient[]> {
+		const entities = params.map(param => {
+			return {
+				id: this.idService.gen(),
+				isActive: param.isActive,
+				name: param.name,
+				method: param.method,
+				userId: param.userId,
+				systemWebhookId: param.systemWebhookId,
+			};
+		});
+
+		await this.abuseReportNotificationRecipientRepository.insert(entities);
+
+		return this.abuseReportNotificationRecipientRepository.findBy({ id: In(entities.map(it => it.id)) });
+	}
+
+	/**
+	 * 通知先を更新する.
+	 */
+	@bindThis
+	public async updateRecipients(params: {
+		id: MiAbuseReportNotificationRecipient['id'];
+		isActive: MiAbuseReportNotificationRecipient['isActive'];
+		name: MiAbuseReportNotificationRecipient['name'];
+		method: MiAbuseReportNotificationRecipient['method'];
+		userId: MiAbuseReportNotificationRecipient['userId'];
+		systemWebhookId: MiAbuseReportNotificationRecipient['systemWebhookId'];
+	}[]): Promise<MiAbuseReportNotificationRecipient[]> {
+		const entitiesMap = await this.abuseReportNotificationRecipientRepository
+			.findBy({ id: In(params.map(it => it.id)) })
+			.then(it => new Map(it.map(it => [it.id, it])));
+
+		// パラメータとentityのペアを作成（パラメータに対応するentityが存在しない場合はフィルタしておく
+		const paramEntityPairs = params
+			.map(param => {
+				const entity = entitiesMap.get(param.id);
+				if (!entity) {
+					return null;
+				}
+
+				return { entity, param };
+			})
+			.filter(isNotNull);
+
+		await Promise.all(
+			paramEntityPairs.map(({ entity, param }) => {
+				return this.abuseReportNotificationRecipientRepository.update(entity.id, {
+					isActive: param.isActive,
+					updatedAt: new Date(),
+					name: param.name,
+					method: param.method,
+					userId: param.userId,
+					systemWebhookId: param.systemWebhookId,
+				});
+			}),
+		);
+
+		return this.abuseReportNotificationRecipientRepository.findBy({ id: In(paramEntityPairs.map(it => it.entity.id)) });
+	}
+
+	/**
+	 * 通知先を削除する.
+	 */
+	@bindThis
+	public deleteRecipients(ids: MiAbuseReportNotificationRecipient['id'][]) {
+		return this.abuseReportNotificationRecipientRepository.delete(ids);
+	}
+
+	/**
+	 * モデレータ権限を持たない(*1)通知先ユーザを削除する.
+	 *
+	 * *1: 以下の両方を満たすものの事を言う
+	 * - 通知先にユーザIDが設定されている
+	 * - 付与ロールにモデレータ権限がない or アサインの有効期限が切れている
+	 *
+	 * @param recipients 通知先一覧の配列
+	 * @returns {@lisk recipients}からモデレータ権限を持たない通知先を削除した配列
+	 */
+	@bindThis
+	private async removeUnauthorizedRecipientUsers(recipients: MiAbuseReportNotificationRecipient[]): Promise<MiAbuseReportNotificationRecipient[]> {
+		const userRecipients = recipients.filter(it => it.userId !== null);
+		const recipientUserIds = new Set(userRecipients.map(it => it.userId).filter(isNotNull));
+		if (recipientUserIds.size <= 0) {
+			// ユーザが通知先として設定されていない場合、この関数での処理を行うべきレコードが無い
+			return recipients;
+		}
+
+		// モデレータ権限の有無で通知先設定を振り分ける
+		const authorizedUserIds = await this.roleService.getModeratorIds(true, true);
+		const authorizedUserRecipients = Array.of<MiAbuseReportNotificationRecipient>();
+		const unauthorizedUserRecipients = Array.of<MiAbuseReportNotificationRecipient>();
+		for (const recipient of userRecipients) {
+			// eslint-disable-next-line
+			if (authorizedUserIds.includes(recipient.userId!)) {
+				authorizedUserRecipients.push(recipient);
+			} else {
+				unauthorizedUserRecipients.push(recipient);
+			}
+		}
+
+		// モデレータ権限を持たない通知先をDBから削除する
+		if (unauthorizedUserRecipients.length > 0) {
+			await this.abuseReportNotificationRecipientRepository.delete(unauthorizedUserRecipients.map(it => it.id));
+		}
+		const nonUserRecipients = recipients.filter(it => it.userId === null);
+		return [...nonUserRecipients, ...authorizedUserRecipients].sort((a, b) => a.id.localeCompare(b.id));
+	}
+
+	@bindThis
+	private async onMessage(_: string, data: string): Promise<void> {
+		const obj = JSON.parse(data);
+		if (obj.channel !== 'internal') {
+			return;
+		}
+
+		const { type } = obj.message as GlobalEvents['internal']['payload'];
+		switch (type) {
+			case 'roleUpdated':
+			case 'roleDeleted':
+			case 'userRoleUnassigned': {
+				// 場合によってはキャッシュ更新よりも先にここが呼ばれてしまう可能性があるのでnextTickで遅延実行
+				process.nextTick(async () => {
+					const recipients = await this.abuseReportNotificationRecipientRepository.findBy({
+						userId: Not(IsNull()),
+					});
+					await this.removeUnauthorizedRecipientUsers(recipients);
+				});
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.redisForSub.off('message', this.onMessage);
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
+	}
+}

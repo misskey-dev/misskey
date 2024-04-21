@@ -1234,6 +1234,7 @@ keepOriginalFilename: "オリジナルのファイル名を保持"
 keepOriginalFilenameDescription: "この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。"
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
+systemWebhook: "SystemWebhook"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2448,6 +2449,7 @@ _drivecleaner:
 
 _webhookSettings:
   createWebhook: "Webhookを作成"
+  modifyWebhook: "Webhookを編集"
   name: "名前"
   secret: "シークレット"
   events: "Webhookを実行するタイミング"
@@ -2460,6 +2462,23 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+  _systemEvents:
+    abuseReport: "ユーザーから通報があったとき"
+  deleteConfirm: "Webhookを削除しますか？"
+
+_abuseReport:
+  _notificationRecipient:
+    active: "有効"
+    createRecipient: "通報の通知先を追加"
+    modifyRecipient: "通報の通知先を編集"
+    recipientType: "通知先の種類"
+    _recipientType:
+      mail: "メール"
+      webhook: "Webhook"
+    keywords: "キーワード"
+    notifiedUser: "通知先ユーザー"
+    notifiedWebhook: "使用するWebhook"
+    deleteConfirm: "通知先を削除しますか？"
 
 _moderationLogTypes:
   createRole: "ロールを作成"

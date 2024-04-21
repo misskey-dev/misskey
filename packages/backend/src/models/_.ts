@@ -4,6 +4,7 @@
  */
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
@@ -61,6 +62,7 @@ import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
 import { MiWebhook } from '@/models/Webhook.js';
+import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiChannel } from '@/models/Channel.js';
 import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
 import { MiRole } from '@/models/Role.js';
@@ -75,6 +77,7 @@ import type { Repository } from 'typeorm';
 
 export {
 	MiAbuseUserReport,
+	MiAbuseReportNotificationRecipient,
 	MiAccessToken,
 	MiAd,
 	MiAnnouncement,
@@ -132,6 +135,7 @@ export {
 	MiUserPublickey,
 	MiUserSecurityKey,
 	MiWebhook,
+	MiSystemWebhook,
 	MiChannel,
 	MiRetentionAggregation,
 	MiRole,
@@ -144,6 +148,7 @@ export {
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport>;
+export type AbuseReportNotificationRecipientRepository = Repository<MiAbuseReportNotificationRecipient>;
 export type AccessTokensRepository = Repository<MiAccessToken>;
 export type AdsRepository = Repository<MiAd>;
 export type AnnouncementsRepository = Repository<MiAnnouncement>;
@@ -201,6 +206,7 @@ export type UserProfilesRepository = Repository<MiUserProfile>;
 export type UserPublickeysRepository = Repository<MiUserPublickey>;
 export type UserSecurityKeysRepository = Repository<MiUserSecurityKey>;
 export type WebhooksRepository = Repository<MiWebhook>;
+export type SystemWebhooksRepository = Repository<MiSystemWebhook>;
 export type ChannelsRepository = Repository<MiChannel>;
 export type RetentionAggregationsRepository = Repository<MiRetentionAggregation>;
 export type RolesRepository = Repository<MiRole>;

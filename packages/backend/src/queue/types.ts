@@ -106,7 +106,21 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
-export type WebhookDeliverJobData = {
+export type WebhookDeliverJobData = SystemWebhookDeliverJobData | UserWebhookDeliverJobData;
+
+export type SystemWebhookDeliverJobData = {
+	publisher: 'system'
+	type: string;
+	content: unknown;
+	webhookId: MiWebhook['id'];
+	to: string;
+	secret: string;
+	createdAt: number;
+	eventId: string;
+};
+
+export type UserWebhookDeliverJobData = {
+	publisher: 'user'
 	type: string;
 	content: unknown;
 	webhookId: MiWebhook['id'];
@@ -115,6 +129,13 @@ export type WebhookDeliverJobData = {
 	secret: string;
 	createdAt: number;
 	eventId: string;
+};
+
+export type MailDeliverJobData = {
+	to: string;
+	subject: string;
+	text: string;
+	html: string;
 };
 
 export type ThinUser = {

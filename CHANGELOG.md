@@ -4,6 +4,7 @@
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 
 ### General
+- Feat: 通報を受けた際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)

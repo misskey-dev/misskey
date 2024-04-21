@@ -4952,6 +4952,10 @@ export interface Locale extends ILocale {
      * フォローの際常に確認する
      */
     "alwaysConfirmFollow": string;
+    /**
+     * SystemWebhook
+     */
+    "systemWebhook": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -9234,6 +9238,10 @@ export interface Locale extends ILocale {
          */
         "createWebhook": string;
         /**
+         * Webhookを編集
+         */
+        "modifyWebhook": string;
+        /**
          * 名前
          */
         "name": string;
@@ -9278,6 +9286,62 @@ export interface Locale extends ILocale {
              * メンションされたとき
              */
             "mention": string;
+        };
+        "_systemEvents": {
+            /**
+             * ユーザーから通報があったとき
+             */
+            "abuseReport": string;
+        };
+        /**
+         * Webhookを削除しますか？
+         */
+        "deleteConfirm": string;
+    };
+    "_abuseReport": {
+        "_notificationRecipient": {
+            /**
+             * 有効
+             */
+            "active": string;
+            /**
+             * 通報の通知先を追加
+             */
+            "createRecipient": string;
+            /**
+             * 通報の通知先を編集
+             */
+            "modifyRecipient": string;
+            /**
+             * 通知先の種類
+             */
+            "recipientType": string;
+            "_recipientType": {
+                /**
+                 * メール
+                 */
+                "mail": string;
+                /**
+                 * Webhook
+                 */
+                "webhook": string;
+            };
+            /**
+             * キーワード
+             */
+            "keywords": string;
+            /**
+             * 通知先ユーザー
+             */
+            "notifiedUser": string;
+            /**
+             * 使用するWebhook
+             */
+            "notifiedWebhook": string;
+            /**
+             * 通知先を削除しますか？
+             */
+            "deleteConfirm": string;
         };
     };
     "_moderationLogTypes": {

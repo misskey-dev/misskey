@@ -25,7 +25,15 @@ import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/core/MetaService.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/core/QueueModule.js';
+import type {
+	DbQueue,
+	DeliverQueue,
+	EndedPollNotificationQueue,
+	InboxQueue,
+	ObjectStorageQueue,
+	SystemQueue,
+	WebhookDeliverQueue,
+} from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
