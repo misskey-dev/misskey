@@ -462,7 +462,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			//#endregion
 			if (Object.keys(updates).length > 0) {
 				await this.usersRepository.update(user.id, updates);
-				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
+				//this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
 			await this.userProfilesRepository.update(user.id, {
