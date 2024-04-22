@@ -4949,6 +4949,10 @@ export interface Locale extends ILocale {
      */
     "noteDeletationAt": ParameterizedString<"time">;
     /**
+     * 絵文字ピッカーに追加
+     */
+    "addToEmojiPicker": string;
+    /**
      * このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。
      */
     "channelAnnouncementDescription": string;

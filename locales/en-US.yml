@@ -1228,6 +1228,7 @@ surrender: "Cancel"
 gameRetry: "Retry"
 scheduledNoteDelete: "Scheduled note deletion"
 noteDeletationAt: "This note will be deleted at {time}."
+addToEmojiPicker: "Add to Emoji Picker"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"

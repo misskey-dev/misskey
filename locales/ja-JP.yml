@@ -1233,6 +1233,7 @@ useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
 scheduledNoteDelete: "すぐ消す"
 noteDeletationAt: "このノートは{time}に削除されます"
+addToEmojiPicker: "絵文字ピッカーに追加"
 channelAnnouncementDescription: "このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。"
 
 _bubbleGame:

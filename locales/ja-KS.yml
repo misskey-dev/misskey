@@ -1214,6 +1214,7 @@ enableHorizontalSwipe: "スワイプしてタブを切り替える"
 surrender: "やめとく"
 scheduledNoteDelete: "ほな消す"
 noteDeletationAt: "このノートは{time}に削除されるで"
+addToEmojiPicker: "絵文字ピッカーに追加する"
 _bubbleGame:
   howToPlay: "遊び方"
   _howToPlay:
