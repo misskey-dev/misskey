@@ -334,9 +334,7 @@ export class GlobalEventService {
 
 	@bindThis
 	public publishInternalEvent<K extends keyof InternalEventTypes>(type: K, value?: InternalEventTypes[K]): void {
-		console.time('time GlobalEventService.publishInternalEvent');
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
-		console.timeEnd('time GlobalEventService.publishInternalEvent');
 	}
 
 	@bindThis
@@ -346,9 +344,7 @@ export class GlobalEventService {
 
 	@bindThis
 	public publishMainStream<K extends keyof MainEventTypes>(userId: MiUser['id'], type: K, value?: MainEventTypes[K]): void {
-		console.time('time GlobalEventService.publishMainStream');
 		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-		console.timeEnd('time GlobalEventService.publishMainStream');
 	}
 
 	@bindThis
