@@ -16,6 +16,7 @@
 ## 独自機能
 - ノートを一定期間で自動消去する「すぐ消す」機能
 - チャンネル内お知らせ機能
+- 他インスタンスの絵文字でもローカルに存在すればリアクションできるように
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)
