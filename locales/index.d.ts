@@ -2717,6 +2717,14 @@ export interface Locale extends ILocale {
      */
     "useGlobalSettingDesc": string;
     /**
+     * フォローリクエストを自動で拒否する
+     */
+    "autoRejectFollowRequest": string;
+    /**
+     * フォローリクエストを自動で拒否するようにします。「フォロー中ユーザーからのフォロリクを自動承認」がONになっている場合は、フォロー中ユーザーからのフォローリクエストは自動的に承認され、それ以外のユーザーからのフォローリクエストは自動的に拒否されるようになります。
+     */
+    "autoRejectFollowRequestDescription": string;
+    /**
      * その他
      */
     "other": string;
@@ -4998,8 +5006,6 @@ export interface Locale extends ILocale {
             "section3": string;
         };
     };
-    "autoRejectFollowRequest": string;
-    "autoRejectFollowRequestDescription": string;
     "_announcement": {
         /**
          * 既存ユーザーのみ

@@ -675,6 +675,8 @@ notificationSetting: "通知設定"
 notificationSettingDesc: "表示する通知の種別を選択してください。"
 useGlobalSetting: "グローバル設定を使う"
 useGlobalSettingDesc: "オンにすると、アカウントの通知設定が使用されます。オフにすると、個別に設定できるようになります。"
+autoRejectFollowRequest: "フォローリクエストを自動で拒否する"
+autoRejectFollowRequestDescription: "フォローリクエストを自動で拒否するようにします。「フォロー中ユーザーからのフォロリクを自動承認」がONになっている場合は、フォロー中ユーザーからのフォローリクエストは自動的に承認され、それ以外のユーザーからのフォローリクエストは自動的に拒否されるようになります。"
 other: "その他"
 regenerateLoginToken: "ログイントークンを再生成"
 regenerateLoginTokenDescription: "ログインに使用される内部トークンを再生成します。通常この操作を行う必要はありません。再生成すると、全てのデバイスでログアウトされます。"
@@ -1248,8 +1250,6 @@ _bubbleGame:
     section1: "位置を調整してハコにモノを落とします。"
     section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
     section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
-autoRejectFollowRequest: "フォローリクエストを自動で拒否する"
-autoRejectFollowRequestDescription: "フォローリクエストを自動で拒否するようにします。「フォロー中ユーザーからのフォロリクを自動承認」がONになっている場合は、フォロー中ユーザーからのフォローリクエストは自動的に承認され、それ以外のユーザーからのフォローリクエストは自動的に拒否されるようになります。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
