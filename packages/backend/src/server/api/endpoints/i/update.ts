@@ -460,10 +460,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// ハッシュタグ更新
 			this.hashtagService.updateUsertags(user, tags);
 			//#endregion
-
 			if (Object.keys(updates).length > 0) {
 				await this.usersRepository.update(user.id, updates);
-				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
+				//this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
 			await this.userProfilesRepository.update(user.id, {
@@ -481,7 +480,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.cacheService.userProfileCache.set(user.id, updatedProfile);
 
 			// Publish meUpdated event
-			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
+			//this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {
@@ -489,7 +488,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// フォロワーにUpdateを配信
-			this.accountUpdateService.publishToFollowers(user.id);
+			//this.accountUpdateService.publishToFollowers(user.id);
 
 			const urls = updatedProfile.fields.filter(x => x.value.startsWith('https://'));
 			for (const url of urls) {
