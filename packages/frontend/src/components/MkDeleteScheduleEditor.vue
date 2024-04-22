@@ -1,6 +1,6 @@
 <template>
 <div class="zmdxowus">
-	<span>{{ i18n.ts.scheduledNoteDelete }}</span>
+	<span>{{ i18n.ts.scheduledNoteDelete }}</span><span class="_beta">{{ i18n.ts.originalFeature }}</span>
 	<section>
 		<div>
 			<MkSelect v-model="expiration" small>
