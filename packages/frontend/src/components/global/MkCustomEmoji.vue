@@ -52,6 +52,7 @@ const react = inject<((name: string) => void) | null>('react', null);
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
+const canReact = computed(() => isLocal.value || customEmojisMap.has(customEmojiName.value));
 
 const rawUrl = computed(() => {
 	if (props.url) {
@@ -95,7 +96,7 @@ function onClick(ev: MouseEvent) {
 				copyToClipboard(`:${props.name}:`);
 				os.success();
 			},
-		}, ...(props.menuReaction && react ? [{
+		}, ...(props.menuReaction && canReact.value && react ? [{
 			text: i18n.ts.doReaction,
 			icon: 'ti ti-plus',
 			action: () => {
