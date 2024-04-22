@@ -2513,6 +2513,9 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+    reportCreated: "通報が登録されたとき"
+    reportResolved: "通報が解決されたとき"
+    reportAutoResolved: "通報が自動解決されたとき"
 
 _abuse:
   _resolver:

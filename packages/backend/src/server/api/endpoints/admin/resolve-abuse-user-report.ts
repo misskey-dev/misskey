@@ -11,6 +11,8 @@ import { QueueService } from '@/core/QueueService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { WebhookService } from '@/core/WebhookService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -44,6 +46,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private instanceActorService: InstanceActorService,
 		private apRendererService: ApRendererService,
 		private moderationLogService: ModerationLogService,
+		private webhookService: WebhookService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const report = await this.abuseUserReportsRepository.findOneBy({ id: ps.reportId });
@@ -59,11 +63,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queueService.deliver(actor, this.apRendererService.addContext(this.apRendererService.renderFlag(actor, targetUser.uri!, report.comment)), targetUser.inbox, false);
 			}
 
-			await this.abuseUserReportsRepository.update(report.id, {
+			const updatedReport = await this.abuseUserReportsRepository.update(report.id, {
 				resolved: true,
 				assigneeId: me.id,
 				forwarded: ps.forward && report.targetUserHost != null,
-			});
+			}).then(() => this.abuseUserReportsRepository.findOneBy({ id: ps.reportId }));
+
+			const activeWebhooks = await this.webhookService.getActiveWebhooks();
+			for (const webhook of activeWebhooks) {
+				const webhookUser = await this.usersRepository.findOneByOrFail({
+					id: webhook.userId,
+				});
+				const isAdmin = await this.roleService.isAdministrator(webhookUser);
+				if (webhook.on.includes('reportResolved') && isAdmin) {
+					this.queueService.webhookDeliver(webhook, 'reportResolved', {
+						updatedReport,
+					});
+				}
+			}
 
 			this.moderationLogService.log(me, 'resolveAbuseReport', {
 				reportId: report.id,

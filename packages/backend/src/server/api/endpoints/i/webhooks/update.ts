@@ -9,6 +9,7 @@ import type { WebhooksRepository } from '@/models/_.js';
 import { webhookEventTypes } from '@/models/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -24,6 +25,11 @@ export const meta = {
 			message: 'No such webhook.',
 			code: 'NO_SUCH_WEBHOOK',
 			id: 'fb0fea69-da18-45b1-828d-bd4fd1612518',
+		},
+		youAreNotAdmin: {
+			message: 'You are not an administrator.',
+			code: 'YOU_ARE_NOT_ADMIN',
+			id: 'a70c7643-1db5-4ebf-becd-ff4b4223cf23',
 		},
 	},
 
@@ -53,6 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private webhooksRepository: WebhooksRepository,
 
 		private globalEventService: GlobalEventService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const webhook = await this.webhooksRepository.findOneBy({
@@ -62,6 +69,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (webhook == null) {
 				throw new ApiError(meta.errors.noSuchWebhook);
+			}
+
+			if (ps.on.includes('reportCreated') || ps.on.includes('reportResolved') || ps.on.includes('reportAutoResolved')) {
+				if (!await this.roleService.isAdministrator(me)) {
+					throw new ApiError(meta.errors.youAreNotAdmin);
+				}
 			}
 
 			await this.webhooksRepository.update(webhook.id, {

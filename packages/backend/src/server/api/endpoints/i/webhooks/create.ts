@@ -27,6 +27,11 @@ export const meta = {
 			code: 'TOO_MANY_WEBHOOKS',
 			id: '87a9bb19-111e-4e37-81d3-a3e7426453b0',
 		},
+		youAreNotAdmin: {
+			message: 'You are not an administrator.',
+			code: 'YOU_ARE_NOT_ADMIN',
+			id: '26601bea-079b-4782-8dac-071febe2acf9',
+		},
 	},
 
 	res: {
@@ -88,6 +93,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 			if (currentWebhooksCount > (await this.roleService.getUserPolicies(me.id)).webhookLimit) {
 				throw new ApiError(meta.errors.tooManyWebhooks);
+			}
+
+			if (ps.on.includes('reportCreated') || ps.on.includes('reportResolved') || ps.on.includes('reportAutoResolved')) {
+				if (!await this.roleService.isAdministrator(me)) {
+					throw new ApiError(meta.errors.youAreNotAdmin);
+				}
 			}
 
 			const webhook = await this.webhooksRepository.insert({

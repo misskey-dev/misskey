@@ -29,6 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
 			<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
 			<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
+			<MkSwitch v-if="$i?.isAdmin" v-model="event_reportCreated">{{ i18n.ts._webhookSettings._events.reportCreated }}</MkSwitch>
+			<MkSwitch v-if="$i?.isAdmin" v-model="event_reportResolved">{{ i18n.ts._webhookSettings._events.reportResolved }}</MkSwitch>
+			<MkSwitch v-if="$i?.isAdmin" v-model="event_reportAutoResolved">{{ i18n.ts._webhookSettings._events.reportAutoResolved }}</MkSwitch>
 		</div>
 	</FormSection>
 
@@ -47,6 +50,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
 
 const name = ref('');
 const url = ref('');
@@ -59,6 +63,9 @@ const event_reply = ref(true);
 const event_renote = ref(true);
 const event_reaction = ref(true);
 const event_mention = ref(true);
+const event_reportCreated = ref(false);
+const event_reportResolved = ref(false);
+const event_reportAutoResolved = ref(false);
 
 async function create(): Promise<void> {
 	const events = [];
@@ -69,6 +76,9 @@ async function create(): Promise<void> {
 	if (event_renote.value) events.push('renote');
 	if (event_reaction.value) events.push('reaction');
 	if (event_mention.value) events.push('mention');
+	if (event_reportCreated.value) events.push('reportCreated');
+	if (event_reportResolved.value) events.push('reportResolved');
+	if (event_reportAutoResolved.value) events.push('reportAutoResolved');
 
 	os.apiWithDialog('i/webhooks/create', {
 		name: name.value,

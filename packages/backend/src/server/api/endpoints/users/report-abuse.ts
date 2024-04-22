@@ -5,13 +5,14 @@
 
 import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
-import type { AbuseUserReportsRepository } from '@/models/_.js';
+import type { AbuseUserReportsRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { QueueService } from '@/core/QueueService.js';
+import { WebhookService } from '@/core/WebhookService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -69,10 +70,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private idService: IdService,
 		private getterService: GetterService,
 		private roleService: RoleService,
 		private queueService: QueueService,
+		private webhookService: WebhookService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
@@ -94,6 +99,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				comment: ps.comment,
 				category: ps.category,
 			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
+
+			const activeWebhooks = await this.webhookService.getActiveWebhooks();
+			for (const webhook of activeWebhooks) {
+				const webhookUser = await this.usersRepository.findOneByOrFail({
+					id: webhook.userId,
+				});
+				const isAdmin = await this.roleService.isAdministrator(webhookUser);
+				if (webhook.on.includes('reportCreated') && isAdmin) {
+					this.queueService.webhookDeliver(webhook, 'reportCreated', {
+						report,
+					});
+				}
+			}
 
 			this.queueService.createReportAbuseJob(report);
 		});
