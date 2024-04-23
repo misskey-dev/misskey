@@ -21,6 +21,7 @@
 - 絵文字のクリックメニューに「絵文字ピッカーに追加」を追加
 - 投稿フォームのツールバーを任意にカスタマイズできるように
 - 下書き機能
+- 同じ音源が短時間で重複して流れないように
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)
