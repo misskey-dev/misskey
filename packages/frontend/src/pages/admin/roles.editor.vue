@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
 				<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 				<template #suffix>{{ role.policies.mentionLimit }}</template>
-				<MkInput v-model="role.policies.mentionLimit" type="number">
+				<MkInput v-model="role.policies.mentionLimit.value" type="number">
 				</MkInput>
 			</MkFolder>
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.gtlAvailable, 'gtlAvailable'])">
