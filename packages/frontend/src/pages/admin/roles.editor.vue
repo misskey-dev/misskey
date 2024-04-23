@@ -99,18 +99,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
-			<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionMax'])">
 				<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 				<template #suffix>
 					<span v-if="role.policies.mentionMax.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.mentionMax.value }}</span>
+					<span v-else>{{ role.policies.listPinnedLimit.value }}</span>
 					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.mentionMax)"></i></span>
 				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="role.policies.mentionMax.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.mentionMax.value" :disabled="role.policies.mentionMax.useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="role.policies.mentionMax.value" type="number" :min="0" :disabled="role.policies.mentionMax.useDefault" >
+						<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 					</MkInput>
 					<MkRange v-model="role.policies.mentionMax.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
