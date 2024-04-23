@@ -4,8 +4,6 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -46,12 +44,7 @@ class RoleTimelineChannel extends Channel {
 			}
 			if (note.visibility !== 'public') return;
 
-			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
-
-			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+			if (this.isNoteMutedOrBlocked(note)) return;
 
 			this.send('note', note);
 		} else {

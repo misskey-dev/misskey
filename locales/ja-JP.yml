@@ -1291,6 +1291,7 @@ useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを
 keepOriginalFilename: "オリジナルのファイル名を保持"
 keepOriginalFilenameDescription: "この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。"
 noDescription: "説明文はありません"
+alwaysConfirmFollow: "フォローの際常に確認する"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -1766,6 +1767,11 @@ _role:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
+    isCat: "猫ユーザー"
+    isBot: "botユーザー"
+    isSuspended: "サスペンド済みユーザー"
+    isLocked: "鍵アカウントユーザー"
+    isExplorable: "「アカウントを見つけやすくする」が有効なユーザー"
     createdLessThan: "アカウント作成から～以内"
     createdMoreThan: "アカウント作成から～経過"
     followersLessThanOrEq: "フォロワー数が～以下"
