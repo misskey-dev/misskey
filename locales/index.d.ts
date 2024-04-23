@@ -9266,7 +9266,7 @@ export interface Locale extends ILocale {
          */
         "imageResize": string;
         /**
-         * 縮小する場合は2560x2560より小さくなるように縮小されます。
+         * 縮小する場合は2560x2560以下になるように縮小されます。
          */
         "imageResizeDescription": string;
         /**
