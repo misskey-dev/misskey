@@ -1362,7 +1362,7 @@ _serverSettings:
 _accountMigration:
   moveFrom: "从别的账号迁移到此账户"
   moveFromSub: "为另一个账户建立别名"
-  moveFromLabel: "迁移前的账户"
+  moveFromLabel: "迁移前的账户 #{n}"
   moveFromDescription: "如果迁移时需要继承其他账户的关注者，你需要创建一个别名。此操作需要在迁移前完成！\n请像这样输入要迁移的账户：@username@server.example.com\n如果要删除，请将输入字段留空，并保存（不推荐）。"
   moveTo: "把这个账户迁移到新的账户"
   moveToLabel: "迁移后的账户"
