@@ -385,40 +385,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		let tags = data.apHashtags;
 		let emojis = data.apEmojis;
 		let mentionedUsers = data.apMentions;
-		let tmp:string | null = null;
 
-		if (mentionedUsers !== null && mentionedUsers !== undefined && mentionedUsers.length > 0) {
-			await Promise.all(mentionedUsers.map(async (u) => {
-				if (data.text != null) {
-					const regex = new RegExp(`@${u.username}@${u.host ?? this.config.host}`, 'g');
-					tmp = data.text.replace(regex, '');
-				}
-			}));
-			if ( tmp !== null && tmp.trim() === '') {
-				const { DiscordWebhookUrlWordBlock } = (await this.metaService.fetch());
-				if (DiscordWebhookUrlWordBlock) {
-					await fetch(DiscordWebhookUrlWordBlock, {
-						'method': 'post',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ 'username': 'ノートブロックお知らせ',
-																													'content':
-								'ユーザー名 :' + user.username + '\n' +
-								'url : ' + user.host + '\n' +
-								'contents : ' + data.text + '\n' +
-								'引っかかった原因 メンションしかない',
-
-																													'allowed_mentions': {
-																														'parse': [],
-																													},
-						}),
-					});
-				}
-				console.log('メンションしかない');
-				throw new NoteCreateService.ContainsProhibitedWordsError();
-			}
-		}
 		// Parse MFM if needed
 		if (!tags || !emojis || !mentionedUsers) {
 			const tokens = (data.text ? mfm.parse(data.text)! : []);
@@ -441,7 +408,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (user.host !== null && willCauseNotification) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
 			if ((userEntity?.followersCount ?? 0) === 0) {
-				throw new NoteCreateService.ContainsProhibitedWordsError();
+				throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 			}
 		}
 
