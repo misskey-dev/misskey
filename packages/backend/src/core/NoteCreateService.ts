@@ -308,7 +308,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					body: JSON.stringify(data_disc),
 				});
 			}
-			throw new NoteCreateService.ContainsProhibitedWordsError();
+			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
