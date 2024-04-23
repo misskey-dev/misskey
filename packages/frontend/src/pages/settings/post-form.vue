@@ -30,11 +30,6 @@
 		<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
 		<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
 	</MkSelect>
-	<MkSwitch v-model="disableNoteDrafting">
-		<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
-		{{ i18n.ts.disableNoteDrafting }}
-		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-	</MkSwitch>
 </div>
 </template>
 
@@ -51,7 +46,6 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
 const draftSavingBehavior = computed(defaultStore.makeGetterSetter('draftSavingBehavior'));
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
