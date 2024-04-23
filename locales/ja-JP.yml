@@ -2456,7 +2456,7 @@ _webhookSettings:
 
 _imageCompressionMode:
   title: "画像の圧縮形式"
-  description: "オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます"
+  description: "オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。"
   imageResize: "画像を縮小する"
   imageResizeDescription: "縮小する場合は2560x2560より小さくなるように縮小されます。"
   imageCompressionLossy: "画像を常に非可逆圧縮する"

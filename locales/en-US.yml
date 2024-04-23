@@ -2377,11 +2377,11 @@ _webhookSettings:
     mention: "When being mentioned"
 _imageCompressionMode:
   title: "Image compression format"
-  description: "If keep original image turn off, you can select the image compression format for web publication."
+  description: "If 'Keep original image' turned off, you can select the image compression format for web publication."
   imageResize: "Resize image"
   imageResizeDescription: "If turned on, the size will be reduced to be smaller than 2560x2560."
   imageCompressionLossy: "Always Lossy Compression"
-  imageCompressionLossyDescription: "If turned off, select mode lossy or lossless compression automatically depending on the original image."
+  imageCompressionLossyDescription: "If turned off, the compression mode is automatically selected to lossy or lossless depending on the original image."
 _moderationLogTypes:
   createRole: "Role created"
   deleteRole: "Role deleted"

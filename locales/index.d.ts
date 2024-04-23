@@ -9258,7 +9258,7 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
-         * オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます
+         * オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。
          */
         "description": string;
         /**
