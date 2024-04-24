@@ -388,7 +388,7 @@ let uiNotes = Arr:create(10).map(@() {
 			fgColor: "#fff"
 			padding: 10
 			rounded: true
-			children: [uiNoteUsername, uiNoteContent]
+			children: [uiUsername, uiContent]
 		})
 		update: @(username, content) {
 			uiUsername.update({ text: username })
@@ -429,7 +429,7 @@ let uiTl = [
 		// リノートもしくはメディア・投票のみで本文が無いノートに代替表示文を設定
 		let noteText = if Core:type(note.text) == "str" note.text else "（リノートもしくはメディア・投票のみのノート）"
 
-		uiNotes.update(userName, noteText)
+		uiNotes[i].update(userName, noteText)
 	}
 
 	// UIを表示
