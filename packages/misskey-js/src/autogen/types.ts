@@ -2626,7 +2626,7 @@ export type paths = {
      *
      * **Credential required**: *No*
      */
-    post: operations['notes/quotes'];
+    post: operations['notes___quotes'];
   };
   '/notes/reactions': {
     /**
@@ -21129,7 +21129,7 @@ export type operations = {
    *
    * **Credential required**: *No*
    */
-  'notes/quotes': {
+  notes___quotes: {
     requestBody: {
       content: {
         'application/json': {
