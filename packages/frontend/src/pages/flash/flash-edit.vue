@@ -361,84 +361,6 @@ const PRESET_TIMELINE = `/// @ 0.18.0
 fetch()
 `;
 
-const PRESET_PERFORMANT_TIMELINE = `/// @ 0.18.0
-// APIリクエストを行いローカルタイムラインを表示するプリセット
-// の、パフォーマンス重視版
-
-/*
-* UIコンポーネント
-* Ui:C:系の関数の呼び出し回数を減らすためにここで定数化する
-*/
-// 読み込み画面
-let uiLoading = [
-	Ui:C:container({
-		align: 'center'
-		children: [
-			Ui:C:text({ text: "読み込み中..." })
-		]
-	})
-]
-// 各ノートのコンポーネントと更新関数
-let uiNotes = Arr:create(10).map(@() {
-	let uiUsername = Ui:C:mfm({ text: '', bold: true })
-	let uiContent = Ui:C:mfm({ text: '' })
-	return {
-		ui: Ui:C:container({
-			bgColor: "#444"
-			fgColor: "#fff"
-			padding: 10
-			rounded: true
-			children: [uiUsername, uiContent]
-		})
-		update: @(username, content) {
-			uiUsername.update({ text: username })
-			uiContent.update({ text: content })
-		}
-	}
-})
-// タイムライン画面
-let uiTl = [
-	Ui:C:text({ text: "ローカル タイムライン" })
-	Ui:C:button({
-		text: "更新"
-		onClick: @() {
-			fetch()
-		}
-	})
-	Ui:C:container({
-		children: uiNotes.map(@(v) { v.ui })
-	})
-]
-
-@fetch() {
-	Ui:render(uiLoading)
-
-	// タイムライン取得（10ノート）
-	let notes = Mk:api("notes/local-timeline", { limit: 10 })
-
-	// それぞれのノートをUIに反映
-	for (let i=0, 10) {
-		if (notes.len <= i) {
-			uiNotes[i].update('', 'ノート無し')
-	 		continue
-		}
-
-		let note = notes[i]
-		// 表示名を設定していないアカウントはidを表示
-		let userName = if Core:type(note.user.name) == "str" note.user.name else note.user.username
-		// リノートもしくはメディア・投票のみで本文が無いノートに代替表示文を設定
-		let noteText = if Core:type(note.text) == "str" note.text else "（リノートもしくはメディア・投票のみのノート）"
-
-		uiNotes[i].update(userName, noteText)
-	}
-
-	// UIを表示
-	Ui:render(uiTl)
-}
-
-fetch()
-`;
-
 const router = useRouter();
 
 const props = defineProps<{
@@ -479,11 +401,6 @@ function selectPreset(ev: MouseEvent) {
 		text: 'Timeline viewer',
 		action: () => {
 			script.value = PRESET_TIMELINE;
-		},
-	}, {
-		text: 'Timeline viewer(performant)',
-		action: () => {
-			script.value = PRESET_PERFORMANT_TIMELINE;
 		},
 	}], ev.currentTarget ?? ev.target);
 }
