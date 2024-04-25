@@ -707,8 +707,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(rollup@4.12.0)
       '@syuilo/aiscript':
-        specifier: 0.17.0
-        version: 0.17.0
+        specifier: 0.18.0
+        version: 0.18.0
       '@tabler/icons-webfont':
         specifier: 2.44.0
         version: 2.44.0
@@ -6678,7 +6678,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.21(typescript@5.3.3)
-      vue-component-type-helpers: 2.0.10
+      vue-component-type-helpers: 2.0.14
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -6944,8 +6944,8 @@ packages:
     dev: false
     optional: true
 
-  /@syuilo/aiscript@0.17.0:
-    resolution: {integrity: sha512-3JtQ1rWJHMxQ3153zLCXMUOwrOgjPPYGBl0dPHhR0ohm4tn7okMQRugxMCT0t3YxByemb9FfiM6TUjd0tEGxdA==}
+  /@syuilo/aiscript@0.18.0:
+    resolution: {integrity: sha512-/iY9Vv4LLjtW/KUzId1QwXC4BlpIEPCMcoT7dyRhYdyxtwhS3Hx4b/4j1HYP+n3Pq9XKyW5zvkY72/+DNu4g6Q==}
     dependencies:
       seedrandom: 3.0.5
       stringz: 2.1.0
@@ -19347,8 +19347,8 @@ packages:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
     dev: true
 
-  /vue-component-type-helpers@2.0.10:
-    resolution: {integrity: sha512-FC5fKJjDks3Ue/KRSYBdsiCaZa0kUPQfs8yQpb8W9mlO6BenV8G1z58xobeRMzevnmEcDa09LLwuXDwb4f6NMQ==}
+  /vue-component-type-helpers@2.0.14:
+    resolution: {integrity: sha512-DInfgOyXlMyliyqAAD9frK28tTfch0+tMi4qoWJcZlRxUf+NFAtraJBnAsKLep+FOyLMiajkhfyEb3xLK08i7w==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):
