@@ -487,6 +487,7 @@ usernameInvalidFormat: "You can use upper- and lowercase letters, numbers, and u
 tooShort: "Too short"
 tooLong: "Too long"
 weakPassword: "Weak password"
+leakedPassword: "This password has been leaked {n} times in other services"
 normalPassword: "Average password"
 strongPassword: "Strong password"
 passwordMatched: "Matches"

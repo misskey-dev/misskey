@@ -1965,6 +1965,10 @@ export interface Locale extends ILocale {
      */
     "weakPassword": string;
     /**
+     * このパスワードは他のサービスで{n}回以上流出しています
+     */
+    "leakedPassword": ParameterizedString<"n">;
+    /**
      * 普通のパスワード
      */
     "normalPassword": string;
