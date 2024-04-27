@@ -10,7 +10,6 @@
 
 import { createCanvas } from '@napi-rs/canvas';
 import gen from 'random-seed';
-import type { WriteStream } from 'node:fs';
 
 const size = 128; // px
 const n = 5; // resolution
