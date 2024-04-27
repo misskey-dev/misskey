@@ -66,11 +66,17 @@ export class FanoutTimelineEndpointService {
 
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
+		// 取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
+		shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
+
+		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
+		const thresholdId = redisResult.map(ids => ids[0]).sort()[0];
+
 		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
-		const redisResultIds = Array.from(new Set(redisResult.flat(1)));
+		const redisResultIds = shouldFallbackToDb ? [] : Array.from(new Set(redisResult.flat(1)));
 
 		redisResultIds.sort(idCompare);
-		noteIds = redisResultIds.slice(0, ps.limit);
+		noteIds = redisResultIds.filter(id => id >= thresholdId).slice(0, ps.limit);
 
 		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
 
