@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/MisskeyIO/misskey.git"
 	},
-	"packageManager": "pnpm@8.15.6",
+	"packageManager": "pnpm@9.0.6",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -46,7 +46,7 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"@tensorflow/tfjs-core": "4.17.0",
+		"@tensorflow/tfjs-core": "4.18.0",
 		"chokidar": "3.6.0",
 		"lodash": "4.17.21",
 		"sharp": "0.33.3"
@@ -56,20 +56,20 @@
 		"execa": "8.0.1",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.38",
-		"terser": "5.30.3",
+		"terser": "5.30.4",
 		"typescript": "5.4.5"
 	},
 	"devDependencies": {
 		"@types/node": "20.12.7",
-		"@typescript-eslint/eslint-plugin": "7.6.0",
-		"@typescript-eslint/parser": "7.6.0",
+		"@typescript-eslint/eslint-plugin": "7.7.1",
+		"@typescript-eslint/parser": "7.7.1",
 		"cross-env": "7.0.3",
-		"cypress": "13.7.3",
+		"cypress": "13.8.1",
 		"eslint": "8.57.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.3"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.17.0"
+		"@tensorflow/tfjs-core": "4.18.0"
 	}
 }

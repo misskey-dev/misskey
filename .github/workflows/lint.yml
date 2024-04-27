@@ -30,7 +30,7 @@ jobs:
         submodules: true
     - uses: pnpm/action-setup@v3
       with:
-        version: 8
+        version: 9
         run_install: false
     - uses: actions/setup-node@v4.0.2
       with:
@@ -57,7 +57,7 @@ jobs:
         submodules: true
     - uses: pnpm/action-setup@v3
       with:
-        version: 8
+        version: 9
         run_install: false
     - uses: actions/setup-node@v4.0.2
       with:
@@ -83,7 +83,7 @@ jobs:
         submodules: true
     - uses: pnpm/action-setup@v3
       with:
-        version: 8
+        version: 9
         run_install: false
     - uses: actions/setup-node@v4.0.2
       with:

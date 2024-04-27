@@ -9485,7 +9485,7 @@ export interface Locale extends ILocale {
              */
             "mention": string;
             /**
-             * 通報が作成されたとき
+             * 通報が登録されたとき
              */
             "reportCreated": string;
             /**
