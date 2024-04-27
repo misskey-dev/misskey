@@ -46,26 +46,26 @@ const devConfig = {
 					return path.replace('@localhost:5173', '');
 				},
 			},
-			'/url': 'http://localhost:3000',
-			'/proxy': 'http://localhost:3000',
+			'/url': httpUrl,
+			'/proxy': httpUrl,
       '/_info_card_': httpUrl,
 			'/bios': httpUrl,
 			'/cli': httpUrl,
-			'/inbox': 'http://localhost:3000',
+			'/inbox': httpUrl,
 			'/notes': {
-				target: 'http://localhost:3000/',
+				target: httpUrl',
 				headers: {
 					'Accept': 'application/activity+json',
 				},
 			},
 			'/users': {
-				target: 'http://localhost:3000/',
+				target: httpUrl',
 				headers: {
 					'Accept': 'application/activity+json',
 				},
 			},
 			'/.well-known': {
-				target: 'http://localhost:3000/',
+				target: httpUrl,
 			},
 		},
 	},
