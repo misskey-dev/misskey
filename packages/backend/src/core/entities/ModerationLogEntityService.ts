@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,7 +37,7 @@ export class ModerationLogEntityService {
 			info: log.info,
 			userId: log.userId,
 			user: this.userEntityService.pack(log.user ?? log.userId, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}

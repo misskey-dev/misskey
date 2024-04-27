@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -33,7 +33,7 @@ export const meta = {
 		properties: {
 			id: {
 				type: 'string',
-				format: 'misskey:id'
+				format: 'misskey:id',
 			},
 			userId: {
 				type: 'string',
@@ -45,7 +45,7 @@ export const meta = {
 				items: {
 					type: 'string',
 					enum: webhookEventTypes,
-				}
+				},
 			},
 			url: { type: 'string' },
 			secret: { type: 'string' },
@@ -108,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				url: webhook.url,
 				secret: webhook.secret,
 				active: webhook.active,
-				latestSentAt: webhook.latestSentAt?.toISOString(),
+				latestSentAt: webhook.latestSentAt ? webhook.latestSentAt.toISOString() : null,
 				latestStatus: webhook.latestStatus,
 			};
 		});

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,7 @@ export default (input: string): string[] => {
 export const aliases = {
 	'esc': 'Escape',
 	'enter': ['Enter', 'NumpadEnter'],
+	'space': [' ', 'Spacebar'],
 	'up': 'ArrowUp',
 	'down': 'ArrowDown',
 	'left': 'ArrowLeft',

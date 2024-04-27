@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -94,7 +94,7 @@ import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -258,10 +258,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-search',
 }]);
 
-definePageMetadata(computed(() => channel.value ? {
-	title: channel.value.name,
+definePageMetadata(() => ({
+	title: channel.value ? channel.value.name : i18n.ts.channel,
 	icon: 'ti ti-device-tv',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

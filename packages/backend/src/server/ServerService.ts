@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -120,12 +120,20 @@ export class ServerService implements OnApplicationShutdown {
 				return;
 			}
 
-			const name = path.split('@')[0].replace(/\.webp$/i, '');
-			const host = path.split('@')[1]?.replace(/\.webp$/i, '');
+			const emojiPath = path.replace(/\.webp$/i, '');
+			const pathChunks = emojiPath.split('@');
+
+			if (pathChunks.length > 2) {
+				reply.code(400);
+				return;
+			}
+
+			const name = pathChunks.shift();
+			const host = pathChunks.pop();
 
 			const emoji = await this.emojisRepository.findOneBy({
 				// `@.` is the spec of ReactionService.decodeReaction
-				host: (host == null || host === '.') ? IsNull() : host,
+				host: (host === undefined || host === '.') ? IsNull() : host,
 				name: name,
 			});
 
@@ -204,7 +212,7 @@ export class ServerService implements OnApplicationShutdown {
 				});
 
 				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-					detail: true,
+					schema: 'MeDetailed',
 					includeSecrets: true,
 				}));
 

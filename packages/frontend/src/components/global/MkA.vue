@@ -1,21 +1,21 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, shallowRef } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -25,6 +25,10 @@ const props = withDefaults(defineProps<{
 	activeClass: null,
 	behavior: null,
 });
+
+const el = shallowRef<HTMLElement>();
+
+defineExpose({ $el: el });
 
 const router = useRouter();
 

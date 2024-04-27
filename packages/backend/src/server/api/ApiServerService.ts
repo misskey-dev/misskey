@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -157,7 +157,7 @@ export class ApiServerService {
 				return {
 					ok: true,
 					token: token.token,
-					user: await this.userEntityService.pack(token.userId, null, { detail: true }),
+					user: await this.userEntityService.pack(token.userId, null, { schema: 'UserDetailedNotMe' }),
 				};
 			} else {
 				return {

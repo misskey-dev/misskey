@@ -919,6 +919,7 @@ youFollowing: "Sledované"
 icon: "Avatar"
 replies: "Odpovedať"
 renotes: "Preposlať"
+sourceCode: "Zdrojový kód"
 flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
 _role:

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -53,7 +53,7 @@ export class GalleryPostEntityService {
 			tags: post.tags.length > 0 ? post.tags : undefined,
 			isSensitive: post.isSensitive,
 			likedCount: post.likedCount,
-			isLiked: meId ? await this.galleryLikesRepository.exist({ where: { postId: post.id, userId: meId } }) : undefined,
+			isLiked: meId ? await this.galleryLikesRepository.exists({ where: { postId: post.id, userId: meId } }) : undefined,
 		});
 	}
 

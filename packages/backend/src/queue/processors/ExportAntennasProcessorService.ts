@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -81,6 +81,7 @@ export class ExportAntennasProcessorService {
 					}) : null,
 					caseSensitive: antenna.caseSensitive,
 					localOnly: antenna.localOnly,
+					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
 					notify: antenna.notify,

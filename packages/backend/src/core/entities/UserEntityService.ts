@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import _Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -14,9 +15,30 @@ import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/User.js';
-import { MiNotification } from '@/models/Notification.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, MiUserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/_.js';
+import {
+	birthdaySchema,
+	descriptionSchema,
+	localUsernameSchema,
+	locationSchema,
+	nameSchema,
+	passwordSchema,
+} from '@/models/User.js';
+import type {
+	BlockingsRepository,
+	FollowingsRepository,
+	FollowRequestsRepository,
+	MiFollowing,
+	MiUserNotePining,
+	MiUserProfile,
+	MutingsRepository,
+	NoteUnreadsRepository,
+	RenoteMutingsRepository,
+	UserMemoRepository,
+	UserNotePiningsRepository,
+	UserProfilesRepository,
+	UserSecurityKeysRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -25,18 +47,11 @@ import { IdService } from '@/core/IdService.js';
 import type { AnnouncementService } from '@/core/AnnouncementService.js';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
-
-type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
-type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
-	Detailed extends true ?
-		ExpectsMe extends true ? Packed<'MeDetailed'> :
-		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
-		Packed<'UserDetailed'> :
-	Packed<'UserLite'>;
 
 const Ajv = _Ajv.default;
 const ajv = new Ajv();
@@ -53,11 +68,23 @@ function isRemoteUser(user: MiUser | { host: MiUser['host'] }): boolean {
 	return !isLocalUser(user);
 }
 
+export type UserRelation = {
+	id: MiUser['id']
+	following: MiFollowing | null,
+	isFollowing: boolean
+	isFollowed: boolean
+	hasPendingFollowRequestFromYou: boolean
+	hasPendingFollowRequestToYou: boolean
+	isBlocking: boolean
+	isBlocked: boolean
+	isMuted: boolean
+	isRenoteMuted: boolean
+}
+
 @Injectable()
 export class UserEntityService implements OnModuleInit {
 	private apPersonService: ApPersonService;
 	private noteEntityService: NoteEntityService;
-	private driveFileEntityService: DriveFileEntityService;
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private announcementService: AnnouncementService;
@@ -96,9 +123,6 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
-
 		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: NoteUnreadsRepository,
 
@@ -108,12 +132,6 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		@Inject(DI.announcementReadsRepository)
-		private announcementReadsRepository: AnnouncementReadsRepository,
-
-		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
-
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
 	) {
@@ -122,7 +140,6 @@ export class UserEntityService implements OnModuleInit {
 	onModuleInit() {
 		this.apPersonService = this.moduleRef.get('ApPersonService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
-		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.announcementService = this.moduleRef.get('AnnouncementService');
@@ -145,7 +162,7 @@ export class UserEntityService implements OnModuleInit {
 	public isRemoteUser = isRemoteUser;
 
 	@bindThis
-	public async getRelation(me: MiUser['id'], target: MiUser['id']) {
+	public async getRelation(me: MiUser['id'], target: MiUser['id']): Promise<UserRelation> {
 		const [
 			following,
 			isFollowed,
@@ -160,43 +177,43 @@ export class UserEntityService implements OnModuleInit {
 				followerId: me,
 				followeeId: target,
 			}),
-			this.followingsRepository.exist({
+			this.followingsRepository.exists({
 				where: {
 					followerId: target,
 					followeeId: me,
 				},
 			}),
-			this.followRequestsRepository.exist({
+			this.followRequestsRepository.exists({
 				where: {
 					followerId: me,
 					followeeId: target,
 				},
 			}),
-			this.followRequestsRepository.exist({
+			this.followRequestsRepository.exists({
 				where: {
 					followerId: target,
 					followeeId: me,
 				},
 			}),
-			this.blockingsRepository.exist({
+			this.blockingsRepository.exists({
 				where: {
 					blockerId: me,
 					blockeeId: target,
 				},
 			}),
-			this.blockingsRepository.exist({
+			this.blockingsRepository.exists({
 				where: {
 					blockerId: target,
 					blockeeId: me,
 				},
 			}),
-			this.mutingsRepository.exist({
+			this.mutingsRepository.exists({
 				where: {
 					muterId: me,
 					muteeId: target,
 				},
 			}),
-			this.renoteMutingsRepository.exist({
+			this.renoteMutingsRepository.exists({
 				where: {
 					muterId: me,
 					muteeId: target,
@@ -219,11 +236,64 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
+	public async getRelations(me: MiUser['id'], targets: MiUser['id'][]): Promise<Map<MiUser['id'], UserRelation>> {
+		const [
+			followers,
+			followees,
+			followersRequests,
+			followeesRequests,
+			blockers,
+			blockees,
+			muters,
+			renoteMuters,
+		] = await Promise.all([
+			this.followingsRepository.findBy({ followerId: me })
+				.then(f => new Map(f.map(it => [it.followeeId, it]))),
+			this.followingsRepository.findBy({ followeeId: me })
+				.then(it => it.map(it => it.followerId)),
+			this.followRequestsRepository.findBy({ followerId: me })
+				.then(it => it.map(it => it.followeeId)),
+			this.followRequestsRepository.findBy({ followeeId: me })
+				.then(it => it.map(it => it.followerId)),
+			this.blockingsRepository.findBy({ blockerId: me })
+				.then(it => it.map(it => it.blockeeId)),
+			this.blockingsRepository.findBy({ blockeeId: me })
+				.then(it => it.map(it => it.blockerId)),
+			this.mutingsRepository.findBy({ muterId: me })
+				.then(it => it.map(it => it.muteeId)),
+			this.renoteMutingsRepository.findBy({ muterId: me })
+				.then(it => it.map(it => it.muteeId)),
+		]);
+
+		return new Map(
+			targets.map(target => {
+				const following = followers.get(target) ?? null;
+
+				return [
+					target,
+					{
+						id: target,
+						following: following,
+						isFollowing: following != null,
+						isFollowed: followees.includes(target),
+						hasPendingFollowRequestFromYou: followersRequests.includes(target),
+						hasPendingFollowRequestToYou: followeesRequests.includes(target),
+						isBlocking: blockers.includes(target),
+						isBlocked: blockees.includes(target),
+						isMuted: muters.includes(target),
+						isRenoteMuted: renoteMuters.includes(target),
+					},
+				];
+			}),
+		);
+	}
+
+	@bindThis
 	public async getHasUnreadAntenna(userId: MiUser['id']): Promise<boolean> {
 		/*
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
-		const isUnread = (myAntennas.length > 0 ? await this.antennaNotesRepository.exist({
+		const isUnread = (myAntennas.length > 0 ? await this.antennaNotesRepository.exists({
 			where: {
 				antennaId: In(myAntennas.map(x => x.id)),
 				read: false,
@@ -303,33 +373,65 @@ export class UserEntityService implements OnModuleInit {
 		return `${this.config.url}/users/${userId}`;
 	}
 
-	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
+	public async pack<S extends 'MeDetailed' | 'UserDetailedNotMe' | 'UserDetailed' | 'UserLite' = 'UserLite'>(
 		src: MiUser['id'] | MiUser,
 		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
-			detail?: D,
+			schema?: S,
 			includeSecrets?: boolean,
 			userProfile?: MiUserProfile,
+			userRelations?: Map<MiUser['id'], UserRelation>,
+			userMemos?: Map<MiUser['id'], string | null>,
+			pinNotes?: Map<MiUser['id'], MiUserNotePining[]>,
 		},
-	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
+	): Promise<Packed<S>> {
 		const opts = Object.assign({
-			detail: false,
+			schema: 'UserLite',
 			includeSecrets: false,
 		}, options);
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
 
+		const isDetailed = opts.schema !== 'UserLite';
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
 
-		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
-		const pins = opts.detail ? await this.userNotePiningsRepository.createQueryBuilder('pin')
-			.where('pin.userId = :userId', { userId: user.id })
-			.innerJoinAndSelect('pin.note', 'note')
-			.orderBy('pin.id', 'DESC')
-			.getMany() : [];
-		const profile = opts.detail ? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id })) : null;
+		const profile = isDetailed
+			? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id }))
+			: null;
+
+		let relation: UserRelation | null = null;
+		if (meId && !isMe && isDetailed) {
+			if (opts.userRelations) {
+				relation = opts.userRelations.get(user.id) ?? null;
+			} else {
+				relation = await this.getRelation(meId, user.id);
+			}
+		}
+
+		let memo: string | null = null;
+		if (isDetailed && meId) {
+			if (opts.userMemos) {
+				memo = opts.userMemos.get(user.id) ?? null;
+			} else {
+				memo = await this.userMemosRepository.findOneBy({ userId: meId, targetUserId: user.id })
+					.then(row => row?.memo ?? null);
+			}
+		}
+
+		let pins: MiUserNotePining[] = [];
+		if (isDetailed) {
+			if (opts.pinNotes) {
+				pins = opts.pinNotes.get(user.id) ?? [];
+			} else {
+				pins = await this.userNotePiningsRepository.createQueryBuilder('pin')
+					.where('pin.userId = :userId', { userId: user.id })
+					.innerJoinAndSelect('pin.note', 'note')
+					.orderBy('pin.id', 'DESC')
+					.getMany();
+			}
+		}
 
 		const followingCount = profile == null ? null :
 			(profile.followingVisibility === 'public') || isMe ? user.followingCount :
@@ -341,15 +443,15 @@ export class UserEntityService implements OnModuleInit {
 			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
-		const unreadAnnouncements = isMe && opts.detail ?
+		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : null;
+		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : null;
+		const unreadAnnouncements = isMe && isDetailed ?
 			(await this.announcementService.getUnreadAnnouncements(user)).map((announcement) => ({
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
 				...announcement,
 			})) : null;
 
-		const notificationsInfo = isMe && opts.detail ? await this.getNotificationsInfo(user.id) : null;
+		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
 
 		const packed = {
 			id: user.id,
@@ -385,13 +487,13 @@ export class UserEntityService implements OnModuleInit {
 				displayOrder: r.displayOrder,
 			}))) : undefined,
 
-			...(opts.detail ? {
+			...(isDetailed ? {
 				url: profile!.url,
 				uri: user.uri,
 				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
 				alsoKnownAs: user.alsoKnownAs
 					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
-						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
+						.then(xs => xs.length === 0 ? null : xs.filter(isNotNull))
 					: null,
 				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
@@ -416,15 +518,13 @@ export class UserEntityService implements OnModuleInit {
 				}),
 				pinnedPageId: profile!.pinnedPageId,
 				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,
-				publicReactions: profile!.publicReactions,
+				publicReactions: this.isLocalUser(user) ? profile!.publicReactions : false, // https://github.com/misskey-dev/misskey/issues/12964
 				followersVisibility: profile!.followersVisibility,
 				followingVisibility: profile!.followingVisibility,
 				twoFactorEnabled: profile!.twoFactorEnabled,
 				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled
-					? this.userSecurityKeysRepository.countBy({
-						userId: user.id,
-					}).then(result => result >= 1)
+					? this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1)
 					: false,
 				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
 					id: role.id,
@@ -436,14 +536,11 @@ export class UserEntityService implements OnModuleInit {
 					isAdministrator: role.isAdministrator,
 					displayOrder: role.displayOrder,
 				}))),
-				memo: meId == null ? null : await this.userMemosRepository.findOneBy({
-					userId: meId,
-					targetUserId: user.id,
-				}).then(row => row?.memo ?? null),
+				memo: memo,
 				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
 			} : {}),
 
-			...(opts.detail && isMe ? {
+			...(isDetailed && isMe ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				isModerator: isModerator,
@@ -515,19 +612,83 @@ export class UserEntityService implements OnModuleInit {
 				notify: relation.following?.notify ?? 'none',
 				withReplies: relation.following?.withReplies ?? false,
 			} : {}),
-		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
+		} as Promiseable<Packed<S>>;
 
 		return await awaitAll(packed);
 	}
 
-	public packMany<D extends boolean = false>(
+	public async packMany<S extends 'MeDetailed' | 'UserDetailedNotMe' | 'UserDetailed' | 'UserLite' = 'UserLite'>(
 		users: (MiUser['id'] | MiUser)[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
-			detail?: D,
+			schema?: S,
 			includeSecrets?: boolean,
 		},
-	): Promise<IsUserDetailed<D>[]> {
-		return Promise.all(users.map(u => this.pack(u, me, options)));
+	): Promise<Packed<S>[]> {
+		// -- IDのみの要素を補完して完全なエンティティ一覧を作る
+
+		const _users = users.filter((user): user is MiUser => typeof user !== 'string');
+		if (_users.length !== users.length) {
+			_users.push(
+				...await this.usersRepository.findBy({
+					id: In(users.filter((user): user is string => typeof user === 'string')),
+				}),
+			);
+		}
+		const _userIds = _users.map(u => u.id);
+
+		// -- 特に前提条件のない値群を取得
+
+		const profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
+			.then(profiles => new Map(profiles.map(p => [p.userId, p])));
+
+		// -- 実行者の有無や指定スキーマの種別によって要否が異なる値群を取得
+
+		let userRelations: Map<MiUser['id'], UserRelation> = new Map();
+		let userMemos: Map<MiUser['id'], string | null> = new Map();
+		let pinNotes: Map<MiUser['id'], MiUserNotePining[]> = new Map();
+
+		if (options?.schema !== 'UserLite') {
+			const meId = me ? me.id : null;
+			if (meId) {
+				userMemos = await this.userMemosRepository.findBy({ userId: meId })
+					.then(memos => new Map(memos.map(memo => [memo.targetUserId, memo.memo])));
+
+				if (_userIds.length > 0) {
+					userRelations = await this.getRelations(meId, _userIds);
+					pinNotes = await this.userNotePiningsRepository.createQueryBuilder('pin')
+						.where('pin.userId IN (:...userIds)', { userIds: _userIds })
+						.innerJoinAndSelect('pin.note', 'note')
+						.getMany()
+						.then(pinsNotes => {
+							const map = new Map<MiUser['id'], MiUserNotePining[]>();
+							for (const note of pinsNotes) {
+								const notes = map.get(note.userId) ?? [];
+								notes.push(note);
+								map.set(note.userId, notes);
+							}
+							for (const [, notes] of map.entries()) {
+								// pack側ではDESCで取得しているので、それに合わせて降順に並び替えておく
+								notes.sort((a, b) => b.id.localeCompare(a.id));
+							}
+							return map;
+						});
+				}
+			}
+		}
+
+		return Promise.all(
+			_users.map(u => this.pack(
+				u,
+				me,
+				{
+					...options,
+					userProfile: profilesMap.get(u.id),
+					userRelations: userRelations,
+					userMemos: userMemos,
+					pinNotes: pinNotes,
+				},
+			)),
+		);
 	}
 }

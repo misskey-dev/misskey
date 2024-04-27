@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 
-		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null, overflow: maxHeight ? `auto` : null }" :aria-hidden="!opened">
+		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
 			<Transition
 				:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
 				:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
@@ -109,7 +109,7 @@ function toggle() {
 
 onMounted(() => {
 	const computedStyle = getComputedStyle(document.documentElement);
-	const parentBg = getBgColor(rootEl.value.parentElement);
+	const parentBg = getBgColor(rootEl.value!.parentElement!);
 	const myBg = computedStyle.getPropertyValue('--panel');
 	bgSame.value = parentBg === myBg;
 });

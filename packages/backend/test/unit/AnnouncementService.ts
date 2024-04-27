@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -51,7 +51,7 @@ describe('AnnouncementService', () => {
 
 	function createAnnouncement(data: Partial<MiAnnouncement & { createdAt: Date }> = {}) {
 		return announcementsRepository.insert({
-			id: genAidx(data.createdAt ?? new Date()),
+			id: genAidx(data.createdAt?.getTime() ?? Date.now()),
 			updatedAt: null,
 			title: 'Title',
 			text: 'Text',

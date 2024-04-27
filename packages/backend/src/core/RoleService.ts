@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -35,6 +35,7 @@ export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
+	mentionLimit: number;
 	canInvite: boolean;
 	inviteLimit: number;
 	inviteLimitCycle: number;
@@ -62,6 +63,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
+	mentionLimit: 20,
 	canInvite: false,
 	inviteLimit: 0,
 	inviteLimitCycle: 60 * 24 * 7,
@@ -200,45 +202,82 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private evalCond(user: MiUser, value: RoleCondFormulaValue): boolean {
+	private evalCond(user: MiUser, roles: MiRole[], value: RoleCondFormulaValue): boolean {
 		try {
 			switch (value.type) {
+				// ～かつ～
 				case 'and': {
-					return value.values.every(v => this.evalCond(user, v));
+					return value.values.every(v => this.evalCond(user, roles, v));
 				}
+				// ～または～
 				case 'or': {
-					return value.values.some(v => this.evalCond(user, v));
+					return value.values.some(v => this.evalCond(user, roles, v));
 				}
+				// ～ではない
 				case 'not': {
-					return !this.evalCond(user, value.value);
+					return !this.evalCond(user, roles, value.value);
 				}
+				// マニュアルロールがアサインされている
+				case 'roleAssignedTo': {
+					return roles.some(r => r.id === value.roleId);
+				}
+				// ローカルユーザのみ
 				case 'isLocal': {
 					return this.userEntityService.isLocalUser(user);
 				}
+				// リモートユーザのみ
 				case 'isRemote': {
 					return this.userEntityService.isRemoteUser(user);
 				}
+				// サスペンド済みユーザである
+				case 'isSuspended': {
+					return user.isSuspended;
+				}
+				// 鍵アカウントユーザである
+				case 'isLocked': {
+					return user.isLocked;
+				}
+				// botユーザである
+				case 'isBot': {
+					return user.isBot;
+				}
+				// 猫である
+				case 'isCat': {
+					return user.isCat;
+				}
+				// 「ユーザを見つけやすくする」が有効なアカウント
+				case 'isExplorable': {
+					return user.isExplorable;
+				}
+				// ユーザが作成されてから指定期間経過した
 				case 'createdLessThan': {
 					return this.idService.parse(user.id).date.getTime() > (Date.now() - (value.sec * 1000));
 				}
+				// ユーザが作成されてから指定期間経っていない
 				case 'createdMoreThan': {
 					return this.idService.parse(user.id).date.getTime() < (Date.now() - (value.sec * 1000));
 				}
+				// フォロワー数が指定値以下
 				case 'followersLessThanOrEq': {
 					return user.followersCount <= value.value;
 				}
+				// フォロワー数が指定値以上
 				case 'followersMoreThanOrEq': {
 					return user.followersCount >= value.value;
 				}
+				// フォロー数が指定値以下
 				case 'followingLessThanOrEq': {
 					return user.followingCount <= value.value;
 				}
+				// フォロー数が指定値以上
 				case 'followingMoreThanOrEq': {
 					return user.followingCount >= value.value;
 				}
+				// ノート数が指定値以下
 				case 'notesLessThanOrEq': {
 					return user.notesCount <= value.value;
 				}
+				// ノート数が指定値以上
 				case 'notesMoreThanOrEq': {
 					return user.notesCount >= value.value;
 				}
@@ -272,7 +311,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		const assigns = await this.getUserAssigns(userId);
 		const assignedRoles = roles.filter(r => assigns.map(x => x.roleId).includes(r.id));
 		const user = roles.some(r => r.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
-		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, r.condFormula));
+		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, assignedRoles, r.condFormula));
 		return [...assignedRoles, ...matchedCondRoles];
 	}
 
@@ -285,13 +324,13 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
 		// 期限切れのロールを除外
 		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
-		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const assignedBadgeRoles = roles.filter(r => r.asBadge && assignedRoleIds.includes(r.id));
+		const assignedRoles = roles.filter(r => assigns.map(x => x.roleId).includes(r.id));
+		const assignedBadgeRoles = assignedRoles.filter(r => r.asBadge);
 		const badgeCondRoles = roles.filter(r => r.asBadge && (r.target === 'conditional'));
 		if (badgeCondRoles.length > 0) {
 			const user = roles.some(r => r.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
-			const matchedBadgeCondRoles = badgeCondRoles.filter(r => this.evalCond(user!, r.condFormula));
+			const matchedBadgeCondRoles = badgeCondRoles.filter(r => this.evalCond(user!, assignedRoles, r.condFormula));
 			return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
 		} else {
 			return assignedBadgeRoles;
@@ -325,6 +364,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
 			inviteLimit: calc('inviteLimit', vs => Math.max(...vs)),
 			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),

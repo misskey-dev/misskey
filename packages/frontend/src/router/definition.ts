@@ -1,14 +1,15 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { App, AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
+import type { RouteDef } from '@/nirax.js';
 import { IRouter, Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import { setMainRouter } from '@/global/router/main.js';
+import { setMainRouter } from '@/router/main.js';
 
 const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loader: loader,
@@ -16,7 +17,7 @@ const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	errorComponent: MkError,
 });
 
-const routes = [{
+const routes: RouteDef[] = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
 }, {
@@ -34,7 +35,7 @@ const routes = [{
 	component: page(() => import('@/pages/user/index.vue')),
 }, {
 	name: 'note',
-	path: '/notes/:noteId',
+	path: '/notes/:noteId/:initialTab?',
 	component: page(() => import('@/pages/note.vue')),
 }, {
 	name: 'list',
@@ -333,8 +334,7 @@ const routes = [{
 	component: page(() => import('@/pages/registry.vue')),
 }, {
 	path: '/install-extentions',
-	// Note: This path is kept for compatibility. It may be deleted.
-	component: page(() => import('@/pages/install-extensions.vue')),
+	redirect: '/install-extensions',
 	loginRequired: true,
 }, {
 	path: '/install-extensions',
@@ -558,6 +558,11 @@ const routes = [{
 	component: $i ? page(() => import('@/pages/timeline.vue')) : page(() => import('@/pages/welcome.vue')),
 	globalCacheKey: 'index',
 }, {
+	// テスト用リダイレクト設定。ログイン中ユーザのプロフィールにリダイレクトする
+	path: '/redirect-test',
+	redirect: $i ? `@${$i.username}` : '/',
+	loginRequired: true,
+}, {
 	path: '/:(*)',
 	component: page(() => import('@/pages/not-found.vue')),
 }];
@@ -575,8 +580,6 @@ export function setupRouter(app: App) {
 
 	const mainRouter = createRouterImpl(location.pathname + location.search + location.hash);
 
-	window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
-
 	window.addEventListener('popstate', (event) => {
 		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
 	});
@@ -584,6 +587,12 @@ export function setupRouter(app: App) {
 	mainRouter.addListener('push', ctx => {
 		window.history.pushState({ key: ctx.key }, '', ctx.path);
 	});
+
+	mainRouter.addListener('replace', ctx => {
+		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.init();
 
 	setMainRouter(mainRouter);
 }

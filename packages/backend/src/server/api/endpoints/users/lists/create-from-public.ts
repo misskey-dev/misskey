@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const listExist = await this.userListsRepository.exist({
+			const listExist = await this.userListsRepository.exists({
 				where: {
 					id: ps.listId,
 					isPublic: true,
@@ -121,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 
 				if (currentUser.id !== me.id) {
-					const blockExist = await this.blockingsRepository.exist({
+					const blockExist = await this.blockingsRepository.exists({
 						where: {
 							blockerId: currentUser.id,
 							blockeeId: me.id,
@@ -132,7 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 
-				const exist = await this.userListMembershipsRepository.exist({
+				const exist = await this.userListMembershipsRepository.exists({
 					where: {
 						userListId: userList.id,
 						userId: currentUser.id,

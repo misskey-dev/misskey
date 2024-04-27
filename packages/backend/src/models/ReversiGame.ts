@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
@@ -105,6 +110,11 @@ export class MiReversiGame {
 		length: 32,
 	})
 	public bw: string;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public noIrregularRules: boolean;
 
 	@Column('boolean', {
 		default: false,

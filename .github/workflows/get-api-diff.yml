@@ -32,12 +32,12 @@ jobs:
         ref: ${{ matrix.ref }}
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v3
       with:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.1
+      uses: actions/setup-node@v4.0.2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

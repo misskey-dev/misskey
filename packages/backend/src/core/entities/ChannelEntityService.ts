@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -51,14 +51,14 @@ export class ChannelEntityService {
 
 		const banner = channel.bannerId ? await this.driveFilesRepository.findOneBy({ id: channel.bannerId }) : null;
 
-		const isFollowing = meId ? await this.channelFollowingsRepository.exist({
+		const isFollowing = meId ? await this.channelFollowingsRepository.exists({
 			where: {
 				followerId: meId,
 				followeeId: channel.id,
 			},
 		}) : false;
 
-		const isFavorited = meId ? await this.channelFavoritesRepository.exist({
+		const isFavorited = meId ? await this.channelFavoritesRepository.exists({
 			where: {
 				userId: meId,
 				channelId: channel.id,

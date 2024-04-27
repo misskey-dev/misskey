@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -80,7 +80,7 @@ function show(file) {
 async function find() {
 	const { canceled, result: q } = await os.inputText({
 		title: i18n.ts.fileIdOrUrl,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 
@@ -108,8 +108,8 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.files,
 	icon: 'ti ti-cloud',
-})));
+}));
 </script>

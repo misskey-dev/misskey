@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -62,17 +62,17 @@ export const meta = {
 				reporter: {
 					type: 'object',
 					nullable: false, optional: false,
-					ref: 'User',
+					ref: 'UserDetailedNotMe',
 				},
 				targetUser: {
 					type: 'object',
 					nullable: false, optional: false,
-					ref: 'User',
+					ref: 'UserDetailedNotMe',
 				},
 				assignee: {
 					type: 'object',
 					nullable: true, optional: true,
-					ref: 'User',
+					ref: 'UserDetailedNotMe',
 				},
 			},
 		},

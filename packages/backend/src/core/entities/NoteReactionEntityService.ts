@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -68,5 +68,20 @@ export class NoteReactionEntityService implements OnModuleInit {
 				note: await this.noteEntityService.pack(reaction.note ?? reaction.noteId, me),
 			} : {}),
 		};
+	}
+
+	@bindThis
+	public async packMany(
+		reactions: MiNoteReaction[],
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			withNote: boolean;
+		},
+	): Promise<Packed<'NoteReaction'>[]> {
+		const opts = Object.assign({
+			withNote: false,
+		}, options);
+
+		return Promise.all(reactions.map(reaction => this.pack(reaction, me, opts)));
 	}
 }

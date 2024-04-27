@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -37,6 +38,7 @@ export class SignupService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
+		private instanceActorService: InstanceActorService,
 		private usersChart: UsersChart,
 	) {
 	}
@@ -72,16 +74,16 @@ export class SignupService {
 		const secret = generateUserToken();
 
 		// Check username duplication
-		if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
+		if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 			throw new Error('DUPLICATED_USERNAME');
 		}
 
 		// Check deleted username duplication
-		if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
+		if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
 			throw new Error('USED_USERNAME');
 		}
 
-		const isTheFirstUser = (await this.usersRepository.countBy({ host: IsNull() })) === 0;
+		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
 
 		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
 			const instance = await this.metaService.fetch(true);

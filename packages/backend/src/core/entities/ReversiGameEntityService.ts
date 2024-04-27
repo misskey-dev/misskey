@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -61,6 +61,7 @@ export class ReversiGameEntityService {
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
 			timeLimitForEachTurn: game.timeLimitForEachTurn,
+			noIrregularRules: game.noIrregularRules,
 			logs: game.logs,
 			map: game.map,
 		});
@@ -105,6 +106,7 @@ export class ReversiGameEntityService {
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
 			timeLimitForEachTurn: game.timeLimitForEachTurn,
+			noIrregularRules: game.noIrregularRules,
 		});
 	}
 

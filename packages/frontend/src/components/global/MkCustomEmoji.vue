@@ -1,10 +1,16 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<span v-if="errored">:{{ customEmojiName }}:</span>
+<img
+	v-if="errored && fallbackToImage"
+	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
+	src="/client-assets/dummy.png"
+	:title="alt"
+/>
+<span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
 	v-else
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
@@ -39,6 +45,7 @@ const props = defineProps<{
 	useOriginalSize?: boolean;
 	menu?: boolean;
 	menuReaction?: boolean;
+	fallbackToImage?: boolean;
 }>();
 
 const react = inject<((name: string) => void) | null>('react', null);
@@ -57,7 +64,7 @@ const rawUrl = computed(() => {
 });
 
 const url = computed(() => {
-	if (rawUrl.value == null) return null;
+	if (rawUrl.value == null) return undefined;
 
 	const proxied =
 		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))

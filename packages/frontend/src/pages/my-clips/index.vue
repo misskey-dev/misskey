@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,16 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="tab === 'my'" key="my" class="_gaps">
 				<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
-				<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="_gaps">
-					<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`">
-						<MkClipPreview :clip="item"/>
-					</MkA>
+				<MkPagination v-slot="{ items }" ref="pagingComponent" :pagination="pagination" class="_gaps">
+					<MkClipPreview v-for="item in items" :key="item.id" :clip="item"/>
 				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'favorites'" key="favorites" class="_gaps">
-				<MkA v-for="item in favorites" :key="item.id" :to="`/clips/${item.id}`">
-					<MkClipPreview :clip="item"/>
-				</MkA>
+				<MkClipPreview v-for="item in favorites" :key="item.id" :clip="item"/>
 			</div>
 		</MkHorizontalSwipe>
 	</MkSpacer>
@@ -104,14 +100,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-heart',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.clip,
 	icon: 'ti ti-paperclip',
-	action: {
-		icon: 'ti ti-plus',
-		handler: create,
-	},
-});
+}));
 </script>
 
 <style lang="scss" module>

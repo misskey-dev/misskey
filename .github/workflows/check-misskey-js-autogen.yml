@@ -1,36 +1,36 @@
 name: Check Misskey JS autogen
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - master
       - develop
+      - improve-misskey-js-autogen-check
     paths:
       - packages/backend/**
 
 jobs:
-  check-misskey-js-autogen:
+  # pull_request_target safety: permissions: read-all, and there are no secrets used in this job
+  generate-misskey-js:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
-
-    env:
-      api_json_names: "api-base.json api-head.json"
-
+      contents: read
+    if: ${{ github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
         with:
           submodules: true
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: 8
 
       - name: setup node
         id: setup-node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.2
         with:
           node-version-file: '.node-version'
           cache: pnpm
@@ -38,74 +38,81 @@ jobs:
       - name: install dependencies
         run: pnpm i --frozen-lockfile
 
-      - name: wait get-api-diff
-        uses: lewagon/wait-on-check-action@v1.3.3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          check-regexp: get-from-misskey .+
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 30
+      # generate api.json
+      - name: Copy Config
+        run: cp .config/example.yml .config/default.yml
+      - name: Build
+        run: pnpm build
+      - name: Generate API JSON
+        run: pnpm --filter backend generate-api-json
 
-      - name: Download artifact
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-
-            const workflows = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha: `${{ github.event.pull_request.head.sha }}`
-            }).then(x => x.data.workflow_runs);
-
-            console.log(workflows.map(x => ({name: x.name, title: x.display_title})));
-
-            const run_id = workflows.find(x => x.name.includes("Get api.json from Misskey")).id;
-
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: run_id,
-            });
-
-            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name.startsWith("api-artifact-") || artifact.name == "api-artifact"
-            });
-
-            await Promise.all(matchArtifacts.map(async (artifact) => {
-              let download = await github.rest.actions.downloadArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: artifact.id,
-                archive_format: 'zip',
-              });
-              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
-            }));
-
-      - name: unzip artifacts
+      # build misskey js
+      - name: Build misskey-js
         run: |-
-          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d . ';'
-          ls -la
+          cp packages/backend/built/api.json packages/misskey-js/generator/api.json
+          pnpm run --filter misskey-js-type-generator generate
 
-      - name: build autogen
-        run: |-
-          for name in $(echo $api_json_names)
-          do
-            checksum=$(mktemp)
-            mv $name packages/misskey-js/generator/api.json
+      # packages/misskey-js/generator/built/autogen
+      - name: Upload Generated
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-misskey-js
+          path: packages/misskey-js/generator/built/autogen
 
-            cd packages/misskey-js/generator
-            pnpm run generate
-            find built -type f -exec sh -c 'echo $(sed -E "s/^\s+\*\s+generatedAt:.+$//" {} | sha256sum | cut -d" " -f 1) {}' \; > $checksum
-            cd ../../..
-            cp $checksum ${name}_checksum
-          done
+  # pull_request_target safety: permissions: read-all, and there are no secrets used in this job
+  get-actual-misskey-js:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
-      - name: check update for type definitions
-        run: diff $(echo -n ${api_json_names} | awk -v RS=" " '{ printf "%s_checksum ", $0 }')
+      - name: Upload From Merged
+        uses: actions/upload-artifact@v4
+        with:
+          name: actual-misskey-js
+          path: packages/misskey-js/src/autogen
+
+  # pull_request_target safety: nothing is cloned from repository
+  comment-misskey-js-autogen:
+    runs-on: ubuntu-latest
+    needs: [generate-misskey-js, get-actual-misskey-js]
+    permissions:
+      pull-requests: write
+    steps:
+      - name: download generated-misskey-js
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-misskey-js
+          path: misskey-js-generated
+
+      - name: download actual-misskey-js
+        uses: actions/download-artifact@v4
+        with:
+          name: actual-misskey-js
+          path: misskey-js-actual
+
+      - name: check misskey-js changes
+        id: check-changes
+        run: |
+          diff -r -u --label=generated --label=on-tree ./misskey-js-generated ./misskey-js-actual > misskey-js.diff || true
+
+          if [ -s misskey-js.diff ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Print full diff
+        run: cat ./misskey-js.diff
 
       - name: send message
-        if: failure()
+        if: steps.check-changes.outputs.changes == 'true'
         uses: thollander/actions-comment-pull-request@v2
         with:
           comment_tag: check-misskey-js-autogen
@@ -119,9 +126,10 @@ jobs:
             ```
 
       - name: send message
-        if: success()
+        if: steps.check-changes.outputs.changes == 'false'
         uses: thollander/actions-comment-pull-request@v2
         with:
           comment_tag: check-misskey-js-autogen
           mode: delete
           message: "Thank you!"
+          create_if_not_exists: false

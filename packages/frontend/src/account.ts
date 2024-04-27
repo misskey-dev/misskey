@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -290,7 +290,7 @@ export async function openAccountMenu(opts: {
 			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,
 			avatar: $i,
-		}, { type: 'divider' }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+		}, { type: 'divider' as const }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent' as const,
 			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,
