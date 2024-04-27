@@ -120,12 +120,20 @@ export class ServerService implements OnApplicationShutdown {
 				return;
 			}
 
-			const name = path.split('@')[0].replace(/\.webp$/i, '');
-			const host = path.split('@')[1]?.replace(/\.webp$/i, '');
+			const emojiPath = path.replace(/\.webp$/i, '');
+			const pathChunks = emojiPath.split('@');
+
+			if (pathChunks.length > 2) {
+				reply.code(400);
+				return;
+			}
+
+			const name = pathChunks.shift();
+			const host = pathChunks.pop();
 
 			const emoji = await this.emojisRepository.findOneBy({
 				// `@.` is the spec of ReactionService.decodeReaction
-				host: (host == null || host === '.') ? IsNull() : host,
+				host: (host === undefined || host === '.') ? IsNull() : host,
 				name: name,
 			});
 
