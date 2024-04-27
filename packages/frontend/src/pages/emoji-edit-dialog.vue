@@ -165,6 +165,8 @@ const emit = defineEmits<{
 
 async function changeImage(ev) {
 	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
+	if (name.value) return;
+
 	const candidate = file.value.name.replace(/\.(.+)$/, '');
 	if (candidate.match(/^[a-z0-9_]+$/)) {
 		name.value = candidate;
