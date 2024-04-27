@@ -62,6 +62,7 @@
 - Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
 - Fix: 登録にメール認証が必須になっている場合、登録されているメールアドレスを削除できないように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/606)
+- Fix: Add Cache-Control to Bull Board
 - Fix: nginx経由で/files/にRangeリクエストされた場合に正しく応答できないのを修正
 - Fix: 一部のタイムラインのストリーミングでインスタンスミュートが効かない問題を修正
 - Fix: グローバルタイムラインで返信が表示されないことがある問題を修正
