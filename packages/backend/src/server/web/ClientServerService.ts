@@ -202,6 +202,10 @@ export class ClientServerService {
 			// %71ueueとかでリクエストされたら困るため
 			const url = decodeURI(request.routeOptions.url);
 			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
+				if (!url.startsWith(bullBoardPath + '/static/')) {
+					reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
+				}
+
 				const token = request.cookies.token;
 				if (token == null) {
 					reply.code(401).send('Login required');

@@ -3,7 +3,7 @@ extends ./base
 block vars
 	- const user = page.user;
 	- const title = page.title;
-	- const url = `${config.url}/@${user.username}/${page.name}`;
+	- const url = `${config.url}/@${user.username}/pages/${page.name}`;
 
 block title
 	= `${title} | ${instanceName}`

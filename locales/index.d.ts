@@ -6593,6 +6593,26 @@ export interface Locale extends ILocale {
              */
             "isRemote": string;
             /**
+             * 猫ユーザー
+             */
+            "isCat": string;
+            /**
+             * botユーザー
+             */
+            "isBot": string;
+            /**
+             * サスペンド済みユーザー
+             */
+            "isSuspended": string;
+            /**
+             * 鍵アカウントユーザー
+             */
+            "isLocked": string;
+            /**
+             * 「アカウントを見つけやすくする」が有効なユーザー
+             */
+            "isExplorable": string;
+            /**
              * アカウント作成から～以内
              */
             "createdLessThan": string;
