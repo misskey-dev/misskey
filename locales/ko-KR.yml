@@ -2411,6 +2411,9 @@ _webhookSettings:
     renote: "누군가 내 글을 리노트했을 때"
     reaction: "누군가 내 노트에 리액션했을 때"
     mention: "누군가 나를 멘션했을 때"
+    reportCreated: "신고가 생성되었을 때"
+    reportResolved: "신고가 해결되었을 때"
+    reportAutoResolved: "신고가 자동으로 해결되었을 때"
 _moderationLogTypes:
   createRole: "역할 생성"
   deleteRole: "역할 삭제"

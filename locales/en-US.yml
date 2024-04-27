@@ -2435,6 +2435,9 @@ _webhookSettings:
     renote: "When renoted"
     reaction: "When receiving a reaction"
     mention: "When being mentioned"
+    reportCreated: "When abuse report is created"
+    reportResolved: "When abuse report is resolved"
+    reportAutoResolved: "When abuse report is automatically resolved"
 _moderationLogTypes:
   createRole: "Role created"
   deleteRole: "Role deleted"
