@@ -41,6 +41,22 @@ const devConfig = {
 			},
 			'/url': 'http://localhost:3000',
 			'/proxy': 'http://localhost:3000',
+			'/inbox': 'http://localhost:3000',
+			'/notes': {
+				target: 'http://localhost:3000/',
+				headers: {
+					'Accept': 'application/activity+json',
+				},
+			},
+			'/users': {
+				target: 'http://localhost:3000/',
+				headers: {
+					'Accept': 'application/activity+json',
+				},
+			},
+			'/.well-known': {
+				target: 'http://localhost:3000/',
+			},
 		},
 	},
 	build: {
