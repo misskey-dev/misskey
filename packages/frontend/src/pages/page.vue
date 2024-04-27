@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveActiveClass="defaultStore.state.animation ? $style.fadeLeaveActive : ''"
 			:enterFromClass="defaultStore.state.animation ? $style.fadeEnterFrom : ''"
 			:leaveToClass="defaultStore.state.animation ? $style.fadeLeaveTo : ''"
+			mode="out-in"
 		>
 			<div v-if="page" :key="page.id" class="_gaps">
 				<div :class="$style.pageMain">
@@ -41,8 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div :class="$style.pageBannerTitle" class="_gaps_s">
 							<h1>{{ page.title || page.name }}</h1>
-							<div v-if="page.user" :class="$style.pageBannerTitleUser">
-								<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
+							<div :class="$style.pageBannerTitleSub">
+								<div v-if="page.user" :class="$style.pageBannerTitleUser">
+									<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
+								</div>
+								<div :class="$style.pageBannerTitleSubActions">
+									<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
+									<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -355,8 +362,15 @@ definePageMetadata(() => ({
 			margin: 0;
 		}
 
+		.pageBannerTitleSub {
+			display: flex;
+			align-items: center;
+			width: 100%;
+		}
+
 		.pageBannerTitleUser {
 			--height: 32px;
+			flex-shrink: 0;
 
 			.avatar {
 				height: var(--height);
@@ -364,6 +378,14 @@ definePageMetadata(() => ({
 			}
 
 			line-height: var(--height);
+		}
+
+		.pageBannerTitleSubActions {
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+			gap: var(--marginHalf);
+			margin-left: auto;
 		}
 	}
 }
