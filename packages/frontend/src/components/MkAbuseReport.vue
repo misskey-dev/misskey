@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div class="detail">
 		<div>
-			<Mfm :text="report.comment"/>
+			<Mfm :text="report.comment" :linkBehavior="'window'"/>
 		</div>
 		<hr/>
 		<div>{{ i18n.ts.reporter }}: <MkA :to="`/admin/user/${report.reporter.id}`" class="_link" :behavior="'window'">@{{ report.reporter.username }}</MkA></div>
@@ -41,16 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { provide, ref } from 'vue';
+import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
-import { MkABehavior } from '@/components/global/MkA.vue';
-
-provide<MkABehavior>('linkBehaviour', 'window');
 
 const props = defineProps<{
 	report: any;
