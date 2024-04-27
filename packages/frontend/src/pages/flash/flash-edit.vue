@@ -163,11 +163,11 @@ var cursor = 0
 						text: "←"
 						disabled: !(results.len > 1 && (results.len - cursor) > 1)
 						onClick: back
-					} {
+					}, {
 						text: "→"
 						disabled: !(results.len > 1 && cursor > 0)
 						onClick: forward
-					} {
+					}, {
 						text: "引き直す"
 						onClick: do
 					}]
@@ -196,17 +196,17 @@ let qas = [{
 	choices: ['シドニー', 'キャンベラ', 'メルボルン']
 	a: 'キャンベラ'
 	aDescription: '最大の都市はシドニーですが首都はキャンベラです。'
-} {
+}, {
 	q: '国土面積2番目の国は？'
 	choices: ['カナダ', 'アメリカ', '中国']
 	a: 'カナダ'
 	aDescription: '大きい順にロシア、カナダ、アメリカ、中国です。'
-} {
+}, {
 	q: '二重内陸国ではないのは？'
 	choices: ['リヒテンシュタイン', 'ウズベキスタン', 'レソト']
 	a: 'レソト'
 	aDescription: 'レソトは(一重)内陸国です。'
-} {
+}, {
 	q: '閘門がない運河は？'
 	choices: ['キール運河', 'スエズ運河', 'パナマ運河']
 	a: 'スエズ運河'
@@ -244,9 +244,9 @@ each (let qa, qas) {
 			})
 			Ui:C:container({
 				children: []
-			} \`{qa.id}:a\`)
+			}, \`{qa.id}:a\`)
 		]
-	} qa.id))
+	}, qa.id))
 }
 
 @finish() {
