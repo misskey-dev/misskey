@@ -125,6 +125,9 @@ importers:
       '@misskey-dev/summaly':
         specifier: 5.1.0
         version: 5.1.0
+      '@napi-rs/canvas':
+        specifier: ^0.1.52
+        version: 0.1.52
       '@nestjs/common':
         specifier: 10.3.8
         version: 10.3.8(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -341,9 +344,6 @@ importers:
       punycode:
         specifier: 2.3.1
         version: 2.3.1
-      pureimage:
-        specifier: 0.3.17
-        version: 0.3.17
       qrcode:
         specifier: 1.5.3
         version: 1.5.3
@@ -5264,6 +5264,102 @@ packages:
       outvariant: 1.4.2
       strict-event-emitter: 0.5.1
     dev: true
+
+  /@napi-rs/canvas-android-arm64@0.1.52:
+    resolution: {integrity: sha512-x/K471KbASPVh5mfBUxokza66J0FNIlOgMNANWAf5C8HiATb487KecEhSkUQvvTS3WLYC9uSqIPHFgwF+tir3w==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-darwin-arm64@0.1.52:
+    resolution: {integrity: sha512-4OgVRD7TW02q5Q7lWLLjT+pYJ9ZHkQUTBOuXbPQ5wB0Wnh3RIq/aMY6thoXDZDzdR5vV3a5TUtbZUJ0aqLq3NA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-darwin-x64@0.1.52:
+    resolution: {integrity: sha512-3fgeGJ3j2X6Mtmn0QYf3iA+A6y1ePnsayakc2emEokzf03ErrPczONw3vjnTQo53JLPMzEnfPGAffdktU/ssPA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-linux-arm-gnueabihf@0.1.52:
+    resolution: {integrity: sha512-aaDEEK5XwHUrPt0q4SR8l7Va0vtn50KmSs+itxP+o7RNk3Nuch8fINHOXyhMyhwNYgv1tfiJVyHsJhD0E6lXGA==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-linux-arm64-gnu@0.1.52:
+    resolution: {integrity: sha512-tzuwM7Amt5mkrp4csQjYWkFzwFdiCm7RNdJ5usX8syzKSXmozqWzLHjzo/2ozdSQNUy6wyzRrxkG4Rh6g0OpOA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-linux-arm64-musl@0.1.52:
+    resolution: {integrity: sha512-HQCtJlDT0dFp3uUZVzZOZ1VLMO7lbLRc548MjMxPpojit2ZdGopFzJ8jDSr4iszHrTO1SM1AxPaCM3pRvCAtjw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-linux-x64-gnu@0.1.52:
+    resolution: {integrity: sha512-z5sBEw0PVWPH/MIQL8hOR8C3YYVlu8lqtRUcYajigMfXAhbMiNqDWTjuIWGMz3nIydDjZmn8KTxw/D4a0HFPqQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-linux-x64-musl@0.1.52:
+    resolution: {integrity: sha512-G1+JdWFhHLyHhULJS51xTEhB7EL0ZiAUQwQaRi4/w75OOYDQ91O+o4miaxDHiV0hZuxBhHtZU6ftV2Zl3RMguw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas-win32-x64-msvc@0.1.52:
+    resolution: {integrity: sha512-hMI626VsCC/wv29qHF78N7TSG+auatOp08DHln0Zdif5y1NJ14NU/rNUhzlTW8Zc6ssw+AMDJ3KKYYWYYg1aoA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/canvas@0.1.52:
+    resolution: {integrity: sha512-xeW9EghZLDPZuqWJ4l1+eG3ld0i9J7SpV2zlgi34MPt/FE9K2XWGCfnLr0gHGOBkcI3YOVhI13I0HqRAkMPdVw==}
+    engines: {node: '>= 10'}
+    optionalDependencies:
+      '@napi-rs/canvas-android-arm64': 0.1.52
+      '@napi-rs/canvas-darwin-arm64': 0.1.52
+      '@napi-rs/canvas-darwin-x64': 0.1.52
+      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.52
+      '@napi-rs/canvas-linux-arm64-gnu': 0.1.52
+      '@napi-rs/canvas-linux-arm64-musl': 0.1.52
+      '@napi-rs/canvas-linux-x64-gnu': 0.1.52
+      '@napi-rs/canvas-linux-x64-musl': 0.1.52
+      '@napi-rs/canvas-win32-x64-msvc': 0.1.52
+    dev: false
 
   /@ndelangen/get-tarball@3.0.7:
     resolution: {integrity: sha512-NqGfTZIZpRFef1GoVaShSSRwDC3vde3ThtTeqFdcYd6ipKqnfEVhjK2hUeHjCQUcptyZr2TONqcloFXM+5QBrQ==}
@@ -14469,10 +14565,6 @@ packages:
     resolution: {integrity: sha512-9IXdWudL61npZjvLuVe/ktHiA41iE8qFyLB+4VDTblEsWBzeg8WQTlktdUK4CdncUqtUgUg0bbOmTE2bKBKaBQ==}
     dev: false
 
-  /jpeg-js@0.4.4:
-    resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==}
-    dev: false
-
   /js-beautify@1.14.9:
     resolution: {integrity: sha512-coM7xq1syLcMyuVGyToxcj2AlzhkDjmfklL8r0JgJ7A76wyGMpJ1oA35mr4APdYNO/o/4YY8H54NQIJzhMbhBg==}
     engines: {node: '>=12'}
@@ -16404,11 +16496,6 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /opentype.js@0.4.11:
-    resolution: {integrity: sha512-GthxucX/6aftfLdeU5Ho7o7zmQcC8uVtqdcelVq12X++ndxwBZG8Xb5rFEKT7nEcWDD2P1x+TNuJ70jtj1Mbpw==}
-    hasBin: true
-    dev: false
-
   /optionator@0.9.3:
     resolution: {integrity: sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==}
     engines: {node: '>= 0.8.0'}
@@ -17559,15 +17646,6 @@ packages:
   /pure-rand@6.0.0:
     resolution: {integrity: sha512-rLSBxJjP+4DQOgcJAx6RZHT2he2pkhQdSnofG5VWyVl6GRq/K02ISOuOLcsMOrtKDIJb8JN2zm3FFzWNbezdPw==}
     dev: true
-
-  /pureimage@0.3.17:
-    resolution: {integrity: sha512-JV4hfYF1BXxDwbSR8hjhVEhVTxwmAXos8uIXQ7Bw2eWrUEpLDJnQoQ8WLlWAO4TMGJ7mp9n6gvLKJ6MSaGUkXQ==}
-    engines: {node: '>=0.8'}
-    dependencies:
-      jpeg-js: 0.4.4
-      opentype.js: 0.4.11
-      pngjs: 3.4.0
-    dev: false
 
   /pvtsutils@1.3.5:
     resolution: {integrity: sha512-ARvb14YB9Nm2Xi6nBq1ZX6dAM0FsJnuk+31aUp4TrcZEdKUlSqOqsxJHUPJDNE3qiIp+iUPEIeR6Je/tgV7zsA==}
