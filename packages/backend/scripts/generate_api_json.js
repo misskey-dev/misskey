@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { loadConfig } from './built/config.js'
-import { genOpenapiSpec } from './built/server/api/openapi/gen-spec.js'
+import { loadConfig } from '../built/config.js'
+import { genOpenapiSpec } from '../built/server/api/openapi/gen-spec.js'
 import { writeFileSync } from "node:fs";
 
 const config = loadConfig();
