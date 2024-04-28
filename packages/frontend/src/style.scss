@@ -540,6 +540,14 @@ html[data-color-mode=dark] ._woodenFrame {
 	}
 }
 
+.mfm-tada {
+	font-size: 150%;
+}
+
+.mfm-tada:has(.mfm-tada)  {
+	font-size: 100%;
+}
+
 .mfm-x2 {
 	--mfm-zoom-size: 200%;
 }
