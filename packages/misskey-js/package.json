@@ -3,21 +3,23 @@
 	"name": "misskey-js",
 	"version": "2024.3.1",
 	"description": "Misskey SDK for JavaScript",
-	"main": "./built/index.js",
-	"types": "./built/index.d.ts",
+	"types": "./built/dts/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./built/index.js",
-			"types": "./built/index.d.ts"
+			"import": "./built/esm/index.js",
+			"types": "./built/dts/index.d.ts"
 		},
 		"./*": {
-			"import": "./built/*",
-			"types": "./built/*"
+			"import": "./built/esm/*",
+			"types": "./built/dts/*"
 		}
 	},
 	"scripts": {
-		"build": "node ./build.js",
-		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"build": "npm run ts",
+		"ts": "npm run ts-esm && npm run ts-dts",
+		"ts-esm": "tsc --outDir built/esm",
+		"ts-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
+		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run ts\"",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
@@ -47,16 +49,17 @@
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.0",
-		"execa": "8.0.1",
 		"tsd": "0.30.7",
-		"typescript": "5.3.3",
-		"esbuild": "0.19.11",
-		"glob": "10.3.10"
+		"typescript": "5.3.3"
 	},
 	"files": [
-		"built"
+		"built",
+		"built/esm",
+		"built/dts"
 	],
 	"dependencies": {
+		"@swc/cli": "0.1.63",
+		"@swc/core": "1.3.105",
 		"eventemitter3": "5.0.1",
 		"reconnecting-websocket": "4.4.0"
 	}

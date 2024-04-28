@@ -1,18 +1,15 @@
-import { type Endpoints } from './api.types.js';
+import { Endpoints } from './api.types.js';
 import Stream, { Connection } from './streaming.js';
-import { type Channels } from './streaming.types.js';
-import { type Acct } from './acct.js';
+import { Channels } from './streaming.types.js';
+import { Acct } from './acct.js';
 import * as consts from './consts.js';
 
-export type {
-	Endpoints,
-	Channels,
-	Acct,
-};
-
 export {
+	Endpoints,
 	Stream,
 	Connection as ChannelConnection,
+	Channels,
+	Acct,
 };
 
 export const permissions = consts.permissions;

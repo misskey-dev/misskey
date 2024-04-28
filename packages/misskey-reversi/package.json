@@ -2,21 +2,24 @@
 	"type": "module",
 	"name": "misskey-reversi",
 	"version": "0.0.1",
-	"main": "./built/index.js",
-	"types": "./built/index.d.ts",
+	"types": "./built/dts/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./built/index.js",
-			"types": "./built/index.d.ts"
+			"import": "./built/esm/index.js",
+			"types": "./built/dts/index.d.ts"
 		},
 		"./*": {
-			"import": "./built/*",
-			"types": "./built/*"
+			"import": "./built/esm/*",
+			"types": "./built/dts/*"
 		}
 	},
 	"scripts": {
 		"build": "node ./build.js",
-		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"build:tsc": "npm run tsc",
+		"tsc": "npm run tsc-esm && npm run tsc-dts",
+		"tsc-esm": "tsc --outDir built/esm",
+		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
+		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build:tsc\"",
 		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -27,16 +30,15 @@
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
 		"eslint": "8.57.0",
-		"execa": "8.0.1",
 		"nodemon": "3.0.2",
-		"typescript": "5.3.3",
-		"esbuild": "0.19.11",
-		"glob": "10.3.10"
+		"typescript": "5.3.3"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
-		"crc-32": "1.2.2"
+		"crc-32": "1.2.2",
+		"esbuild": "0.19.11",
+		"glob": "10.3.10"
 	}
 }
