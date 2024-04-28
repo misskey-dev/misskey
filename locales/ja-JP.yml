@@ -1250,6 +1250,12 @@ gameRetry: "リトライ"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
+launchApp: "アプリを起動"
+useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
+keepOriginalFilename: "オリジナルのファイル名を保持"
+keepOriginalFilenameDescription: "この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。"
+noDescription: "説明文はありません"
+alwaysConfirmFollow: "フォローの際常に確認する"
 abuseReportCategory: "通報の種類"
 selectCategory: "カテゴリを選択"
 reportComplete: "通報完了"
@@ -1754,6 +1760,11 @@ _role:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
+    isCat: "猫ユーザー"
+    isBot: "botユーザー"
+    isSuspended: "サスペンド済みユーザー"
+    isLocked: "鍵アカウントユーザー"
+    isExplorable: "「アカウントを見つけやすくする」が有効なユーザー"
     createdLessThan: "アカウント作成から～以内"
     createdMoreThan: "アカウント作成から～経過"
     followersLessThanOrEq: "フォロワー数が～以下"
@@ -2041,8 +2052,7 @@ _2fa:
   alreadyRegistered: "既に設定は完了しています。"
   registerTOTP: "認証アプリの設定を開始"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
-  step2: "次に、表示されているQRコードをアプリでスキャンします。"
-  step2Click: "QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。"
+  step2: "次に、表示されているQRコードをアプリでスキャンするか、ボタンをクリックして端末上でアプリを開きます。"
   step2Uri: "デスクトップアプリを使用する場合は次のURIを入力します"
   step3Title: "確認コードを入力"
   step3: "アプリに表示されている確認コード（トークン）を入力します。"
@@ -2069,7 +2079,7 @@ _2fa:
   backupCodesSavedConfirmTitle: "バックアップコードを保存しましたか？"
   backupCodesSavedConfirmDescription: "二要素認証アプリとバックアップコードの両方を紛失した場合、アカウントにアクセスできなくなります。\n誰とも共有せず、適切な方法で保管してください。\n\n$[x2 二要素認証設定は自分以外の誰にも変更できませんので、$[fg.color=red 運営チームも無効化することはできません。]]"
   backupCodesSavedConfirmChecked: "バックアップコードを保存しました"
-  howto2fa: "設定方法でお困りの際は、{link}を参照してください。"
+  detailedGuide: "設定方法でお困りの際は、{link}を参照してください。"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
@@ -2397,6 +2407,8 @@ _pages:
     section: "セクション"
     image: "画像"
     button: "ボタン"
+    dynamic: "動的ブロック"
+    dynamicDescription: "このブロックは廃止されています。今後は{play}を利用してください。"
 
     note: "ノート埋め込み"
     _note:
@@ -2707,6 +2719,11 @@ _urlPreviewSetting:
   summaryProxy: "プレビューを生成するプロキシのエンドポイント"
   summaryProxyDescription: "Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。"
   summaryProxyDescription2: "プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。"
+
+_mediaControls:
+  pip: "ピクチャインピクチャ"
+  playbackRate: "再生速度"
+  loop: "ループ再生"
 
 _skebStatus:
   _genres:

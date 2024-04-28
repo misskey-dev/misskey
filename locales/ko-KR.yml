@@ -2000,7 +2000,7 @@ _2fa:
   backupCodesSavedConfirmTitle: "백업 코드를 저장했습니까?"
   backupCodesSavedConfirmDescription: "인증 앱과 백업 코드를 모두 분실하면\n계정에 액세스할 수 없게 됩니다.\n자신만이 알 수 있도록 안전한 장소에 보관해 주십시오.\n\n$[x2 2단계 인증 설정은\n본인만이 변경할 수 있으며, $[fg.color=red 운영팀도 해제할 수 없습니다.]]"
   backupCodesSavedConfirmChecked: "백업 코드를 저장했습니다"
-  howto2fa: "설정 방법에 대한 자세한 내용은 {link}를 참조하세요."
+  detailedGuide: "설정 방법에 대한 자세한 내용은 {link}를 참조하세요."
 _permissions:
   "read:account": "계정의 정보를 봅니다"
   "write:account": "계정의 정보를 변경합니다"
