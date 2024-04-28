@@ -31,14 +31,15 @@ export class AbuseReportNotification1713656541000 {
 				"method" varchar(64) NOT NULL,
 				"userId" varchar(32) NULL DEFAULT NULL,
 				"systemWebhookId" varchar(32) NULL DEFAULT NULL,
-				PRIMARY KEY ("id"),
-				FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE,
-				FOREIGN KEY ("systemWebhookId") REFERENCES "system_webhook"("id") ON DELETE CASCADE
+				PRIMARY KEY ("id")
 			);
 			CREATE INDEX "IDX_abuse_report_notification_recipient_isActive" ON "abuse_report_notification_recipient" ("isActive");
 			CREATE INDEX "IDX_abuse_report_notification_recipient_method" ON "abuse_report_notification_recipient" ("method");
 			CREATE INDEX "IDX_abuse_report_notification_recipient_userId" ON "abuse_report_notification_recipient" ("userId");
 			CREATE INDEX "IDX_abuse_report_notification_recipient_systemWebhookId" ON "abuse_report_notification_recipient" ("systemWebhookId");
+
+			ALTER TABLE "abuse_report_notification_recipient" ADD CONSTRAINT "FK_abuse_report_notification_recipient_userId" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+		  ALTER TABLE "abuse_report_notification_recipient" ADD CONSTRAINT "FK_abuse_report_notification_recipient_systemWebhookId" FOREIGN KEY ("systemWebhookId") REFERENCES "system_webhook"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 		`);
 	}
 
