@@ -54,7 +54,7 @@ class RoleTimelineChannel extends Channel {
 			}
 
 			// 純粋なリノート（引用リノートでないリノート）の場合
-			if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
+			if (note.renote && isRenotePacked(note) && !isQuotePacked(note)) {
 				if (note.renote.reply) {
 					const reply = note.renote.reply;
 					// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く

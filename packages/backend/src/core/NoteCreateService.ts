@@ -791,7 +791,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private isQuote(note: Option): note is Option & { renote: MiNote } & (
 		{ text: string } | { cw: string } | { reply: MiNote } | { poll: IPoll } | { files: MiDriveFile[] }
 		) {
-		// NOTE: SYNC WITH misc/is-quote.ts
+		// NOTE: SYNC WITH misc/is-renote.ts
 		return note.renote != null && (
 			note.text != null ||
 			note.reply != null ||

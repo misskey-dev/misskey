@@ -110,7 +110,7 @@ class UserListChannel extends Channel {
 		}
 
 		// 純粋なリノート（引用リノートでないリノート）の場合
-		if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
+		if (note.renote && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (!this.withRenotes) return;
 			if (note.renote.reply) {
 				const reply = note.renote.reply;

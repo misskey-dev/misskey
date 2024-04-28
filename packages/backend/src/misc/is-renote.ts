@@ -29,11 +29,13 @@ export function isRenote(note: MiNote): note is Renote {
 
 export function isQuote(note: Renote): note is Quote {
 	// NOTE: SYNC WITH NoteCreateService.isQuote
-	return note.text != null ||
+	return note.renoteId != null && (
+		note.text != null ||
 		note.cw != null ||
 		note.replyId != null ||
 		note.hasPoll ||
-		note.fileIds.length > 0;
+		note.fileIds.length > 0
+	);
 }
 
 type PackedRenote =
@@ -59,9 +61,11 @@ export function isRenotePacked(note: Packed<'Note'>): note is PackedRenote {
 }
 
 export function isQuotePacked(note: PackedRenote): note is PackedQuote {
-	return note.text != null ||
+	return note.renoteId != null && (
+		note.text != null ||
 		note.cw != null ||
 		note.replyId != null ||
 		note.poll != null ||
-		(note.fileIds != null && note.fileIds.length > 0);
+		(note.fileIds != null && note.fileIds.length > 0)
+	);
 }
