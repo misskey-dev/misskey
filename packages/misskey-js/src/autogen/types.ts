@@ -5357,16 +5357,14 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          items: ({
-              isActive: boolean;
-              name: string;
-              /** @enum {string} */
-              method: 'email' | 'webhook';
-              /** Format: misskey:id */
-              userId?: string;
-              /** Format: misskey:id */
-              systemWebhookId?: string;
-            })[];
+          isActive: boolean;
+          name: string;
+          /** @enum {string} */
+          method: 'email' | 'webhook';
+          /** Format: misskey:id */
+          userId?: string;
+          /** Format: misskey:id */
+          systemWebhookId?: string;
         };
       };
     };
@@ -5374,7 +5372,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['AbuseReportNotificationRecipient'][];
+          'application/json': components['schemas']['AbuseReportNotificationRecipient'];
         };
       };
       /** @description Client error */
@@ -5420,18 +5418,16 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          items: ({
-              /** Format: misskey:id */
-              id: string;
-              isActive: boolean;
-              name: string;
-              /** @enum {string} */
-              method: 'email' | 'webhook';
-              /** Format: misskey:id */
-              userId?: string;
-              /** Format: misskey:id */
-              systemWebhookId?: string;
-            })[];
+          /** Format: misskey:id */
+          id: string;
+          isActive: boolean;
+          name: string;
+          /** @enum {string} */
+          method: 'email' | 'webhook';
+          /** Format: misskey:id */
+          userId?: string;
+          /** Format: misskey:id */
+          systemWebhookId?: string;
         };
       };
     };
@@ -5439,7 +5435,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['AbuseReportNotificationRecipient'][];
+          'application/json': components['schemas']['AbuseReportNotificationRecipient'];
         };
       };
       /** @description Client error */
@@ -5485,7 +5481,8 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          ids: string[];
+          /** Format: misskey:id */
+          id: string;
         };
       };
     };
@@ -10026,13 +10023,11 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          items: {
-              isActive: boolean;
-              name: string;
-              on: 'abuseReport'[];
-              url: string;
-              secret: string;
-            }[];
+          isActive: boolean;
+          name: string;
+          on: 'abuseReport'[];
+          url: string;
+          secret: string;
         };
       };
     };
@@ -10040,7 +10035,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['SystemWebhook'][];
+          'application/json': components['schemas']['SystemWebhook'];
         };
       };
       /** @description Client error */
@@ -10086,7 +10081,8 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          ids: string[];
+          /** Format: misskey:id */
+          id: string;
         };
       };
     };
@@ -10248,15 +10244,13 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
-          items: {
-              /** Format: misskey:id */
-              id: string;
-              isActive: boolean;
-              name: string;
-              on: 'abuseReport'[];
-              url: string;
-              secret: string;
-            }[];
+          /** Format: misskey:id */
+          id: string;
+          isActive: boolean;
+          name: string;
+          on: 'abuseReport'[];
+          url: string;
+          secret: string;
         };
       };
     };
@@ -10264,7 +10258,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['SystemWebhook'][];
+          'application/json': components['schemas']['SystemWebhook'];
         };
       };
       /** @description Client error */

@@ -19,16 +19,13 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		ids: {
-			type: 'array',
-			items: {
-				type: 'string',
-				format: 'misskey:id',
-			},
+		id: {
+			type: 'string',
+			format: 'misskey:id',
 		},
 	},
 	required: [
-		'ids',
+		'id',
 	],
 } as const;
 
@@ -37,9 +34,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private abuseReportNotificationService: AbuseReportNotificationService,
 	) {
-		super(meta, paramDef, async (ps) => {
-			await this.abuseReportNotificationService.deleteRecipients(
-				ps.ids,
+		super(meta, paramDef, async (ps, me) => {
+			await this.abuseReportNotificationService.deleteRecipient(
+				ps.id,
+				me,
 			);
 		});
 	}

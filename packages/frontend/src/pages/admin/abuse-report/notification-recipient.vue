@@ -102,7 +102,7 @@ async function onDeleteButtonClicked(id: string) {
 		title: i18n.ts._abuseReport._notificationRecipient.deleteConfirm,
 	});
 	if (!res.canceled) {
-		await misskeyApi('admin/abuse-report/notification-recipient/delete', { ids: [id] });
+		await misskeyApi('admin/abuse-report/notification-recipient/delete', { id: id });
 		await fetchRecipients();
 	}
 }

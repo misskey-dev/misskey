@@ -111,13 +111,13 @@ async function onSubmitClicked() {
 		try {
 			switch (mode.value) {
 				case 'create': {
-					const result = await misskeyApi('admin/system-webhook/create', { items: [params] });
+					const result = await misskeyApi('admin/system-webhook/create', params);
 					emit('submitted', result[0]);
 					break;
 				}
 				case 'edit': {
 					// eslint-disable-next-line
-					const result = await misskeyApi('admin/system-webhook/update', { items: [{ id: id.value!, ...params }] });
+					const result = await misskeyApi('admin/system-webhook/update', { id: id.value!, ...params });
 					emit('submitted', result[0]);
 					break;
 				}

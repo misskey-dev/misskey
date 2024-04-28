@@ -120,12 +120,12 @@ async function onSubmitClicked() {
 		try {
 			switch (mode.value) {
 				case 'create': {
-					await misskeyApi('admin/abuse-report/notification-recipient/create', { items: [params] });
+					await misskeyApi('admin/abuse-report/notification-recipient/create', params);
 					break;
 				}
 				case 'edit': {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					await misskeyApi('admin/abuse-report/notification-recipient/update', { items: [{ id: id.value!, ...params }] });
+					await misskeyApi('admin/abuse-report/notification-recipient/update', { id: id.value!, ...params });
 					break;
 				}
 			}

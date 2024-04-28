@@ -18,64 +18,52 @@ export const meta = {
 	kind: 'write:admin:system-webhook',
 
 	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			ref: 'SystemWebhook',
-		},
+		type: 'object',
+		ref: 'SystemWebhook',
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
-		items: {
+		id: {
+			type: 'string',
+			format: 'misskey:id',
+		},
+		isActive: {
+			type: 'boolean',
+		},
+		name: {
+			type: 'string',
+			minLength: 1,
+			maxLength: 255,
+		},
+		on: {
 			type: 'array',
 			items: {
-				type: 'object',
-				properties: {
-					id: {
-						type: 'string',
-						format: 'misskey:id',
-					},
-					isActive: {
-						type: 'boolean',
-					},
-					name: {
-						type: 'string',
-						minLength: 1,
-						maxLength: 255,
-					},
-					on: {
-						type: 'array',
-						items: {
-							type: 'string',
-							enum: systemWebhookEventTypes,
-						},
-					},
-					url: {
-						type: 'string',
-						minLength: 1,
-						maxLength: 1024,
-					},
-					secret: {
-						type: 'string',
-						minLength: 1,
-						maxLength: 1024,
-					},
-				},
-				required: [
-					'id',
-					'isActive',
-					'name',
-					'on',
-					'url',
-					'secret',
-				],
+				type: 'string',
+				enum: systemWebhookEventTypes,
 			},
 		},
+		url: {
+			type: 'string',
+			minLength: 1,
+			maxLength: 1024,
+		},
+		secret: {
+			type: 'string',
+			minLength: 1,
+			maxLength: 1024,
+		},
 	},
-	required: ['items'],
+	required: [
+		'id',
+		'isActive',
+		'name',
+		'on',
+		'url',
+		'secret',
+	],
 } as const;
 
 @Injectable()
@@ -84,19 +72,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private webhookService: WebhookService,
 		private systemWebhookEntityService: SystemWebhookEntityService,
 	) {
-		super(meta, paramDef, async (ps) => {
-			const result = await this.webhookService.updateSystemWebhooks(
-				ps.items.map(it => ({
-					id: it.id,
-					isActive: it.isActive,
-					name: it.name,
-					on: it.on,
-					url: it.url,
-					secret: it.secret,
-				})),
+		super(meta, paramDef, async (ps, me) => {
+			const result = await this.webhookService.updateSystemWebhook(
+				{
+					id: ps.id,
+					isActive: ps.isActive,
+					name: ps.name,
+					on: ps.on,
+					url: ps.url,
+					secret: ps.secret,
+				},
+				me,
 			);
 
-			return this.systemWebhookEntityService.packMany(result);
+			return this.systemWebhookEntityService.pack(result);
 		});
 	}
 }

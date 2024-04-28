@@ -5,16 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { In } from 'typeorm';
-import type { SystemWebhooksRepository, WebhooksRepository } from '@/models/_.js';
+import type { MiUser, SystemWebhooksRepository, WebhooksRepository } from '@/models/_.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueService } from '@/core/QueueService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -33,9 +32,9 @@ export class WebhookService implements OnApplicationShutdown {
 		private systemWebhooksRepository: SystemWebhooksRepository,
 		private idService: IdService,
 		private queueService: QueueService,
+		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		//this.onMessage = this.onMessage.bind(this);
 		this.redisForSub.on('message', this.onMessage);
 	}
 
@@ -92,30 +91,30 @@ export class WebhookService implements OnApplicationShutdown {
 	 * SystemWebhook を作成する.
 	 */
 	@bindThis
-	public async createSystemWebhooks(params: {
-		isActive: MiSystemWebhook['isActive'];
-		name: MiSystemWebhook['name'];
-		on: MiSystemWebhook['on'];
-		url: MiSystemWebhook['url'];
-		secret: MiSystemWebhook['secret'];
-	}[]): Promise<MiSystemWebhook[]> {
-		const entities = params.map(param => {
-			return {
-				id: this.idService.gen(),
-				isActive: param.isActive,
-				name: param.name,
-				on: param.on,
-				url: param.url,
-				secret: param.secret,
-			};
+	public async createSystemWebhook(
+		params: {
+			isActive: MiSystemWebhook['isActive'];
+			name: MiSystemWebhook['name'];
+			on: MiSystemWebhook['on'];
+			url: MiSystemWebhook['url'];
+			secret: MiSystemWebhook['secret'];
+		},
+		updater: MiUser,
+	): Promise<MiSystemWebhook> {
+		const id = this.idService.gen();
+		await this.systemWebhooksRepository.insert({
+			...params,
+			id,
 		});
 
-		await this.systemWebhooksRepository.insert(entities);
-
-		const webhook = await this.systemWebhooksRepository.findBy({ id: In(entities.map(it => it.id)) });
-		for (const w of webhook) {
-			this.globalEventService.publishInternalEvent('systemWebhookCreated', w);
-		}
+		const webhook = await this.systemWebhooksRepository.findOneByOrFail({ id });
+		this.globalEventService.publishInternalEvent('systemWebhookCreated', webhook);
+		this.moderationLogService
+			.log(updater, 'createSystemWebhook', {
+				systemWebhookId: webhook.id,
+				webhook: webhook,
+			})
+			.then();
 
 		return webhook;
 	}
@@ -124,58 +123,55 @@ export class WebhookService implements OnApplicationShutdown {
 	 * SystemWebhook を更新する.
 	 */
 	@bindThis
-	public async updateSystemWebhooks(params: {
-		id: MiSystemWebhook['id'];
-		isActive: MiSystemWebhook['isActive'];
-		name: MiSystemWebhook['name'];
-		on: MiSystemWebhook['on'];
-		url: MiSystemWebhook['url'];
-		secret: MiSystemWebhook['secret'];
-	}[]): Promise<MiSystemWebhook[]> {
-		const entitiesMap = await this.systemWebhooksRepository
-			.findBy({ id: In(params.map(it => it.id)) })
-			.then(it => new Map(it.map(it => [it.id, it])));
+	public async updateSystemWebhook(
+		params: {
+			id: MiSystemWebhook['id'];
+			isActive: MiSystemWebhook['isActive'];
+			name: MiSystemWebhook['name'];
+			on: MiSystemWebhook['on'];
+			url: MiSystemWebhook['url'];
+			secret: MiSystemWebhook['secret'];
+		},
+		updater: MiUser,
+	): Promise<MiSystemWebhook> {
+		const beforeEntity = await this.systemWebhooksRepository.findOneByOrFail({ id: params.id });
+		await this.systemWebhooksRepository.update(beforeEntity.id, {
+			updatedAt: new Date(),
+			isActive: params.isActive,
+			name: params.name,
+			on: params.on,
+			url: params.url,
+			secret: params.secret,
+		});
 
-		// パラメータとentityのペアを作成（パラメータに対応するentityが存在しない場合はフィルタしておく）
-		const paramEntityPairs = params
-			.map(param => {
-				const entity = entitiesMap.get(param.id);
-				return entity ? { entity, param } : null;
+		const afterEntity = await this.systemWebhooksRepository.findOneByOrFail({ id: beforeEntity.id });
+		this.globalEventService.publishInternalEvent('systemWebhookUpdated', afterEntity);
+		this.moderationLogService
+			.log(updater, 'updateSystemWebhook', {
+				systemWebhookId: beforeEntity.id,
+				before: afterEntity,
+				after: afterEntity,
 			})
-			.filter(isNotNull);
+			.then();
 
-		await Promise.all(
-			paramEntityPairs.map(({ entity, param }) => {
-				return this.systemWebhooksRepository.update(entity.id, {
-					updatedAt: new Date(),
-					isActive: param.isActive,
-					name: param.name,
-					on: param.on,
-					url: param.url,
-					secret: param.secret,
-				});
-			}),
-		);
-
-		const webhook = await this.systemWebhooksRepository.findBy({ id: In(paramEntityPairs.map(it => it.entity.id)) });
-		for (const w of webhook) {
-			this.globalEventService.publishInternalEvent('systemWebhookUpdated', w);
-		}
-
-		return webhook;
+		return afterEntity;
 	}
 
 	/**
 	 * SystemWebhook を削除する.
 	 */
 	@bindThis
-	public async deleteSystemWebhooks(ids: MiSystemWebhook['id'][]) {
-		const webhook = await this.systemWebhooksRepository.findBy({ id: In(ids) });
-		await this.systemWebhooksRepository.delete(ids);
+	public async deleteSystemWebhook(id: MiSystemWebhook['id'], updater: MiUser) {
+		const webhook = await this.systemWebhooksRepository.findOneByOrFail({ id });
+		await this.systemWebhooksRepository.delete(id);
 
-		for (const w of webhook) {
-			this.globalEventService.publishInternalEvent('systemWebhookDeleted', w);
-		}
+		this.globalEventService.publishInternalEvent('systemWebhookDeleted', webhook);
+		this.moderationLogService
+			.log(updater, 'deleteSystemWebhook', {
+				systemWebhookId: webhook.id,
+				webhook,
+			})
+			.then();
 	}
 
 	/**

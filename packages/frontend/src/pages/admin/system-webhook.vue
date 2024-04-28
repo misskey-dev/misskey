@@ -67,7 +67,7 @@ async function onDeleteButtonClicked(webhook: entities.SystemWebhook) {
 	});
 	if (!result.canceled) {
 		await misskeyApi('admin/system-webhook/delete', {
-			ids: [webhook.id],
+			id: webhook.id,
 		});
 		await fetchWebhooks();
 	}

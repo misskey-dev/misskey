@@ -15,12 +15,14 @@ import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
 	MiAbuseUserReport,
+	MiUser,
 } from '@/models/_.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { IdService } from './IdService.js';
 
 @Injectable()
@@ -35,6 +37,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		private webhookService: WebhookService,
 		private emailService: EmailService,
 		private metaService: MetaService,
+		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
@@ -222,79 +225,91 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	 * 通知先を作成する.
 	 */
 	@bindThis
-	public async createRecipient(params: {
-		isActive: MiAbuseReportNotificationRecipient['isActive'];
-		name: MiAbuseReportNotificationRecipient['name'];
-		method: MiAbuseReportNotificationRecipient['method'];
-		userId: MiAbuseReportNotificationRecipient['userId'];
-		systemWebhookId: MiAbuseReportNotificationRecipient['systemWebhookId'];
-	}[]): Promise<MiAbuseReportNotificationRecipient[]> {
-		const entities = params.map(param => {
-			return {
-				id: this.idService.gen(),
-				isActive: param.isActive,
-				name: param.name,
-				method: param.method,
-				userId: param.userId,
-				systemWebhookId: param.systemWebhookId,
-			};
+	public async createRecipient(
+		params: {
+			isActive: MiAbuseReportNotificationRecipient['isActive'];
+			name: MiAbuseReportNotificationRecipient['name'];
+			method: MiAbuseReportNotificationRecipient['method'];
+			userId: MiAbuseReportNotificationRecipient['userId'];
+			systemWebhookId: MiAbuseReportNotificationRecipient['systemWebhookId'];
+		},
+		updater: MiUser,
+	): Promise<MiAbuseReportNotificationRecipient> {
+		const id = this.idService.gen();
+		await this.abuseReportNotificationRecipientRepository.insert({
+			...params,
+			id,
 		});
 
-		await this.abuseReportNotificationRecipientRepository.insert(entities);
+		const created = await this.abuseReportNotificationRecipientRepository.findOneByOrFail({ id: id });
 
-		return this.abuseReportNotificationRecipientRepository.findBy({ id: In(entities.map(it => it.id)) });
+		this.moderationLogService
+			.log(updater, 'createAbuseReportNotificationRecipient', {
+				recipientId: id,
+				recipient: created,
+			})
+			.then();
+
+		return created;
 	}
 
 	/**
 	 * 通知先を更新する.
 	 */
 	@bindThis
-	public async updateRecipients(params: {
-		id: MiAbuseReportNotificationRecipient['id'];
-		isActive: MiAbuseReportNotificationRecipient['isActive'];
-		name: MiAbuseReportNotificationRecipient['name'];
-		method: MiAbuseReportNotificationRecipient['method'];
-		userId: MiAbuseReportNotificationRecipient['userId'];
-		systemWebhookId: MiAbuseReportNotificationRecipient['systemWebhookId'];
-	}[]): Promise<MiAbuseReportNotificationRecipient[]> {
-		const entitiesMap = await this.abuseReportNotificationRecipientRepository
-			.findBy({ id: In(params.map(it => it.id)) })
-			.then(it => new Map(it.map(it => [it.id, it])));
+	public async updateRecipient(
+		params: {
+			id: MiAbuseReportNotificationRecipient['id'];
+			isActive: MiAbuseReportNotificationRecipient['isActive'];
+			name: MiAbuseReportNotificationRecipient['name'];
+			method: MiAbuseReportNotificationRecipient['method'];
+			userId: MiAbuseReportNotificationRecipient['userId'];
+			systemWebhookId: MiAbuseReportNotificationRecipient['systemWebhookId'];
+		},
+		updater: MiUser,
+	): Promise<MiAbuseReportNotificationRecipient> {
+		const beforeEntity = await this.abuseReportNotificationRecipientRepository.findOneByOrFail({ id: params.id });
 
-		// パラメータとentityのペアを作成（パラメータに対応するentityが存在しない場合はフィルタしておく
-		const paramEntityPairs = params
-			.map(param => {
-				const entity = entitiesMap.get(param.id);
-				if (!entity) {
-					return null;
-				}
+		await this.abuseReportNotificationRecipientRepository.update(params.id, {
+			isActive: params.isActive,
+			updatedAt: new Date(),
+			name: params.name,
+			method: params.method,
+			userId: params.userId,
+			systemWebhookId: params.systemWebhookId,
+		});
 
-				return { entity, param };
+		const afterEntity = await this.abuseReportNotificationRecipientRepository.findOneByOrFail({ id: params.id });
+
+		this.moderationLogService
+			.log(updater, 'updateAbuseReportNotificationRecipient', {
+				recipientId: params.id,
+				before: beforeEntity,
+				after: afterEntity,
 			})
-			.filter(isNotNull);
+			.then();
 
-		await Promise.all(
-			paramEntityPairs.map(({ entity, param }) => {
-				return this.abuseReportNotificationRecipientRepository.update(entity.id, {
-					isActive: param.isActive,
-					updatedAt: new Date(),
-					name: param.name,
-					method: param.method,
-					userId: param.userId,
-					systemWebhookId: param.systemWebhookId,
-				});
-			}),
-		);
-
-		return this.abuseReportNotificationRecipientRepository.findBy({ id: In(paramEntityPairs.map(it => it.entity.id)) });
+		return afterEntity;
 	}
 
 	/**
 	 * 通知先を削除する.
 	 */
 	@bindThis
-	public deleteRecipients(ids: MiAbuseReportNotificationRecipient['id'][]) {
-		return this.abuseReportNotificationRecipientRepository.delete(ids);
+	public async deleteRecipient(
+		id: MiAbuseReportNotificationRecipient['id'],
+		updater: MiUser,
+	) {
+		const entity = await this.abuseReportNotificationRecipientRepository.findBy({ id });
+
+		await this.abuseReportNotificationRecipientRepository.delete(id);
+
+		this.moderationLogService
+			.log(updater, 'deleteAbuseReportNotificationRecipient', {
+				recipientId: id,
+				recipient: entity,
+			})
+			.then();
 	}
 
 	/**
