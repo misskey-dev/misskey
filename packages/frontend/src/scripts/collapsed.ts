@@ -10,9 +10,11 @@ import { safeParseFloat } from './safe-parse.js';
 export function shouldCollapsed(note: Misskey.entities.Note, ast?: mfm.MfmNode[] | null, urls?: string[]): boolean {
 	if (note.cw != null) return false;
 	if (note.text == null) return false;
-	if (ast == null) return false;
 	if (note.files && note.files.length >= 5) return true;
 	if (urls && urls.length >= 4) return true;
+
+	// ASTが提供されていない場合はパースしちゃう
+	const _ast = ast ?? mfm.parse(note.text);
 
 	// しきい値（X方向の文字数は半角換算）
 	const limitX = 55;
@@ -197,7 +199,7 @@ export function shouldCollapsed(note: Misskey.entities.Note, ast?: mfm.MfmNode[]
 		return vHeight;
 	}
 
-	const virtualHeight = getHeight(ast);
+	const virtualHeight = getHeight(_ast);
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	return forceCollapsed || virtualHeight > limitY;
