@@ -2022,7 +2022,7 @@ _2fa:
   backupCodesSavedConfirmTitle: "Did you save your backup codes?"
   backupCodesSavedConfirmDescription: "If you lose both your two-factor authentication app and backup codes, YOU WILL LOSE ACCESS TO YOUR ACCOUNT.\nKeep them safe and secure, and do not share them with anyone.\n\n$[x2 Two-factor authentication settings CANNOT be changed by anyone other than yourself, $[fg.color=red AND THE ADMINISTRATOR CANNOT DISABLE IT EITHER.]]"
   backupCodesSavedConfirmChecked: "I have saved my backup codes"
-  howto2fa: "If you are having trouble setting up, please refer to {link}."
+  detailedGuide: "If you are having trouble setting up, please refer to {link}."
 _permissions:
   "read:account": "View your account information"
   "write:account": "Edit your account information"

@@ -26,9 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="clips && clips.length > 0" class="_margin">
 							<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
 							<div class="_gaps">
-								<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`">
-									<MkClipPreview :clip="item"/>
-								</MkA>
+								<MkClipPreview v-for="item in clips" :key="item.id" :clip="item"/>
 							</div>
 						</div>
 						<div v-if="!showPrev" class="_buttons" :class="$style.loadPrev">

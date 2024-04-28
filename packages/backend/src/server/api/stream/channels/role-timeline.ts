@@ -4,12 +4,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class RoleTimelineChannel extends Channel {
@@ -54,14 +53,18 @@ class RoleTimelineChannel extends Channel {
 				if (reply.visibility === 'specified' && !reply.visibleUserIds!.includes(this.user!.id)) return;
 			}
 
-			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+			// 純粋なリノート（引用リノートでないリノート）の場合
+			if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
+				if (note.renote.reply) {
+					const reply = note.renote.reply;
+					// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く
+					if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+				}
+			}
 
-			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+			if (this.isNoteMutedOrBlocked(note)) return;
 
-			if (this.user && note.renoteId && !note.text) {
+			if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 				if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 					const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 					note.renote.myReaction = myRenoteReaction;

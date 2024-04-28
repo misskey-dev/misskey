@@ -8,13 +8,12 @@ import * as mfm from 'mfm-js';
 import { In, DataSource, IsNull, LessThan } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import RE2 from 're2';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -23,11 +22,8 @@ import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { IPoll } from '@/models/Poll.js';
 import { MiPoll } from '@/models/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { checkWordMute } from '@/misc/check-word-mute.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { MemorySingleCache } from '@/misc/cache.js';
-import type { MiUserProfile } from '@/models/UserProfile.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -75,7 +71,6 @@ class NotificationManager {
 	}[];
 
 	constructor(
-		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
 		notifier: { id: MiUser['id']; },
 		note: MiNote,
@@ -172,9 +167,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
@@ -266,7 +258,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
 				data.visibility = 'home';
 				this.logger.warn('Visibility changed to home because sensitive words are included', { user: user.id, note: data });
-			} else if (policies.canPublicNote === false) {
+			} else if (!policies.canPublicNote) {
 				data.visibility = 'home';
 			}
 		}
@@ -318,7 +310,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Check blocking
-		if (data.renote && !this.isQuote(data)) {
+		if (this.isRenote(data) && !this.isQuote(data)) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
@@ -389,7 +381,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (policies.canInitiateConversation === false) {
+		if (!policies.canInitiateConversation) {
 			if (
 				mentionedUsers.some(u => u.id !== user.id)
 				|| (data.reply && data.reply.userId !== user.id)
@@ -648,7 +640,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			});
 
-			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+			const nm = new NotificationManager(this.notificationService, user, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 
@@ -678,7 +670,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// If it is renote
-			if (data.renote) {
+			if (this.isRenote(data)) {
 				const type = this.isQuote(data) ? 'quote' : 'renote';
 
 				// Notify
@@ -791,9 +783,22 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private isQuote(note: Option): note is Option & { renote: MiNote } {
-		// sync with misc/is-quote.ts
-		return !!note.renote && (!!note.text || !!note.cw || (!!note.files && !!note.files.length) || !!note.poll);
+	private isRenote(note: Option): note is Option & { renote: MiNote } {
+		return note.renote != null;
+	}
+
+	@bindThis
+	private isQuote(note: Option): note is Option & { renote: MiNote } & (
+		{ text: string } | { cw: string } | { reply: MiNote } | { poll: IPoll } | { files: MiDriveFile[] }
+		) {
+		// NOTE: SYNC WITH misc/is-quote.ts
+		return note.renote != null && (
+			note.text != null ||
+			note.reply != null ||
+			note.cw != null ||
+			note.poll != null ||
+			(note.files != null && note.files.length > 0)
+		);
 	}
 
 	@bindThis
@@ -862,7 +867,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
 		if (data.localOnly) return null;
 
-		const content = data.renote && !this.isQuote(data)
+		const content = this.isRenote(data) && !this.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 

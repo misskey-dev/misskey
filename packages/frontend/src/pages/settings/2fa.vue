@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_gaps_s">
 				<MkInfo>
-					<Mfm :text="i18n.tsx._2fa.howto2fa({ link: `[${i18n.ts.here}](https://go.misskey.io/howto-2fa)`})"/>
+					<Mfm :text="i18n.tsx._2fa.detailedGuide({ link: `[${i18n.ts.here}](https://go.misskey.io/howto-2fa)`})"/>
 				</MkInfo>
 				<MkInfo v-if="$i.securityKeysList.length > 0">{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 

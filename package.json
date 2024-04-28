@@ -52,7 +52,7 @@
 		"sharp": "0.33.3"
 	},
 	"dependencies": {
-		"cssnano": "6.1.2",
+		"cssnano": "7.0.1",
 		"execa": "8.0.1",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.38",

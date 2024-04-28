@@ -18,7 +18,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
-import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { ApiError } from '../../error.js';
@@ -314,7 +314,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (renote == null) {
 					logger.error('No such renote target.', { renoteId: ps.renoteId });
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (isPureRenote(renote)) {
+				} else if (isRenote(renote) && !isQuote(renote)) {
 					logger.error('Cannot Renote a pure Renote.', { renoteId: ps.renoteId });
 					throw new ApiError(meta.errors.cannotReRenote);
 				}
@@ -367,7 +367,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (reply == null) {
 					logger.error('No such reply target.', { replyId: ps.replyId });
 					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (isPureRenote(reply)) {
+				} else if (isRenote(reply) && !isQuote(reply)) {
 					logger.error('Cannot reply to a pure Renote.', { replyId: ps.replyId });
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {

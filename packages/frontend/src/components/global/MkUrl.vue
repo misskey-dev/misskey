@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:[attr]="self ? props.url.substring(local.length) : props.url"
 	:rel="rel ?? 'nofollow noopener'"
 	:target="target"
+	:behavior = "props.behavior"
 	@click="(ev: MouseEvent) => warningExternalWebsite(ev, props.url)"
 	@contextmenu.stop="() => {}"
 >
@@ -39,11 +40,13 @@ import { useTooltip } from '@/scripts/use-tooltip.js';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
 import { isEnabledUrlPreview } from '@/instance.js';
+import { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
+	behavior?: MkABehavior;
 }>(), {
 	showUrlPreview: true,
 });

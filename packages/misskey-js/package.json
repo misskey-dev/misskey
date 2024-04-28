@@ -58,8 +58,8 @@
 		"built/dts"
 	],
 	"dependencies": {
-		"@swc/cli": "0.1.65",
-		"@swc/core": "1.3.107",
+		"@swc/cli": "0.3.12",
+		"@swc/core": "1.4.17",
 		"eventemitter3": "5.0.1",
 		"reconnecting-websocket": "4.4.0"
 	}
