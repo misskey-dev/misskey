@@ -48,6 +48,7 @@ export function shouldCollapsed(note: Misskey.entities.Note, ast?: mfm.MfmNode[]
 		}
 
 		// 半角は1、全角は2として文字数をカウント
+		// https://zenn.dev/terrierscript/articles/2020-09-19-multibyte-count
 		function getCharCount(str: string): number {
 			return str.split('').reduce((count, char) => count + Math.min(new Blob([char]).size, 2), 0);
 		}
