@@ -14,9 +14,7 @@ import { afterAll, beforeAll, describe, test } from '@jest/globals';
 import { GlobalModule } from '@/GlobalModule.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
-//import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
-import { LoggerService } from '@/core/LoggerService.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
