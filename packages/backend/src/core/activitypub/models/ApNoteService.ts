@@ -211,11 +211,6 @@ export class ApNoteService {
 		const files: MiDriveFile[] = [];
 
 		for (const attach of toArray(note.attachment)) {
-			// もしattachment.sensitiveが存在するならそれに従う。なければnote.sensitiveに従う。
-			// もしattach.sensitive === falseなのにnote.sensitiveを参照してしまうと、
-			// note.sensitiveが立っているMisskey[^1]から来たノートにおいて、
-			// リモートサーバーでsensitiveではないと明示されているsensitiveではないファイルもsensitiveとして連合されてしまい、不都合。
-			// [^1]: NoteRenderServiceでCWが設定されていたりセンシティブなファイルが存在したりする状況でnote.sensitiveをtrueにする
 			attach.sensitive ??= note.sensitive;
 			const file = await this.apImageService.resolveImage(actor, attach);
 			if (file) files.push(file);
