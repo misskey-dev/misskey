@@ -14,10 +14,13 @@ import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWeb
 import { IdService } from '@/core/IdService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import Logger from '@/logger.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class WebhookService implements OnApplicationShutdown {
+	private logger: Logger;
 	private activeWebhooksFetched = false;
 	private activeWebhooks: MiWebhook[] = [];
 	private activeSystemWebhooksFetched = false;
@@ -33,9 +36,11 @@ export class WebhookService implements OnApplicationShutdown {
 		private idService: IdService,
 		private queueService: QueueService,
 		private moderationLogService: ModerationLogService,
+		private loggerService: LoggerService,
 		private globalEventService: GlobalEventService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
+		this.logger = this.loggerService.getLogger('webhook');
 	}
 
 	@bindThis
@@ -179,8 +184,19 @@ export class WebhookService implements OnApplicationShutdown {
 	 * @see QueueService.systemWebhookDeliver
 	 */
 	@bindThis
-	public enqueueSystemWebhook(webhook: MiSystemWebhook, type: SystemWebhookEventType, content: unknown) {
-		return this.queueService.systemWebhookDeliver(webhook, type, content);
+	public enqueueSystemWebhook(webhook: MiSystemWebhook | MiSystemWebhook['id'], type: SystemWebhookEventType, content: unknown) {
+		const webhookEntity = typeof webhook === 'string' ? this.activeSystemWebhooks.find(a => a.id === webhook) : webhook;
+		if (!webhookEntity) {
+			this.logger.warn(`Webhook not found : ${webhook}`);
+			return;
+		}
+
+		if (!webhookEntity.isActive || !webhookEntity.on.includes(type)) {
+			this.logger.info(`Webhook ${webhookEntity.id} is not active or not listening to ${type}`);
+			return;
+		}
+
+		return this.queueService.systemWebhookDeliver(webhookEntity, type, content);
 	}
 
 	@bindThis

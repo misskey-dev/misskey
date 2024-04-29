@@ -126,14 +126,11 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 				.filter(it => it.systemWebhookId && it.method === 'webhook')
 				.map(it => it.systemWebhookId)
 				.filter(isNotNull));
-		const activeAbuseReportWebhooks = await this.webhookService.fetchActiveSystemWebhooks()
-			.then(it => it.filter(it => it.on.includes('abuseReport') && recipientWebhookIds.includes(it.id)));
-
-		for (const webhook of activeAbuseReportWebhooks) {
+		for (const webhookId of recipientWebhookIds) {
 			await Promise.all(
 				abuseReports.map(it => {
 					return this.webhookService.enqueueSystemWebhook(
-						webhook,
+						webhookId,
 						'abuseReport',
 						it,
 					);
