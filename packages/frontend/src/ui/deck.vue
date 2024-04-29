@@ -138,7 +138,12 @@ mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
 	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
 	if (deckStore.state.navWindow || noMainColumn) {
-		os.pageWindow(path);
+		const res = mainRouter.resolve(path);
+		if (res?.route.path === '/:(*)') {
+			window.open(path, '_blank', 'noopener');
+		} else {
+			os.pageWindow(path);
+		}
 		return true;
 	}
 	return false;
