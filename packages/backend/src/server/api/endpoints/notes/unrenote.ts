@@ -5,7 +5,7 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, NotesRepository } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
@@ -45,9 +45,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -66,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			for (const note of renotes) {
-				this.noteDeleteService.delete(await this.usersRepository.findOneByOrFail({ id: me.id }), note);
+				this.noteDeleteService.delete(me, note);
 			}
 		});
 	}

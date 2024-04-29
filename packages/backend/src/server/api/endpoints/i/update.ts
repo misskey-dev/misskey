@@ -248,8 +248,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private httpRequestService: HttpRequestService,
 		private avatarDecorationService: AvatarDecorationService,
 	) {
-		super(meta, paramDef, async (ps, _user, token) => {
-			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
+		super(meta, paramDef, async (ps, user, token) => {
 			const isSecure = token == null;
 
 			const updates = {} as Partial<MiUser>;
@@ -389,7 +388,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.alsoKnownAs) {
-				if (_user.movedToUri) {
+				if (user.movedToUri) {
 					throw new ApiError({
 						message: 'You have moved your account.',
 						code: 'YOUR_ACCOUNT_MOVED',
@@ -409,7 +408,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						this.apiLoggerService.logger.warn(`failed to resolve dstination user: ${e}`);
 						throw new ApiError(meta.errors.noSuchUser);
 					});
-					if (knownAs.id === _user.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
+					if (knownAs.id === user.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
 
 					const toUrl = this.userEntityService.getUserUri(knownAs);
 					if (!toUrl) throw new ApiError(meta.errors.uriNull);

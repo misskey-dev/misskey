@@ -6,7 +6,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, BlockingsRepository } from '@/models/_.js';
+import type { BlockingsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
@@ -63,9 +63,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
@@ -74,8 +71,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
-
 			// Check if the blockee is yourself
 			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.blockeeIsYourself);
@@ -90,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Check not blocking
 			const exist = await this.blockingsRepository.exists({
 				where: {
-					blockerId: blocker.id,
+					blockerId: me.id,
 					blockeeId: blockee.id,
 				},
 			});
@@ -100,9 +95,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// Delete blocking
-			await this.userBlockingService.unblock(blocker, blockee);
+			await this.userBlockingService.unblock(me, blockee);
 
-			return await this.userEntityService.pack(blockee.id, blocker, {
+			return await this.userEntityService.pack(blockee.id, me, {
 				schema: 'UserDetailedNotMe',
 			});
 		});
