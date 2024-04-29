@@ -18,10 +18,10 @@ export class AbuseReportNotification1713656541000 {
 				"on" varchar(128) [] NOT NULL DEFAULT '{}'::character varying[],
 				"url" varchar(1024) NOT NULL,
 				"secret" varchar(1024) NOT NULL,
-				PRIMARY KEY ("id")
+				CONSTRAINT "PK_system_webhook_id" PRIMARY KEY ("id")
 			);
-			CREATE INDEX "IDX_webhook_system_isActive" ON "system_webhook" ("isActive");
-			CREATE INDEX "IDX_webhook_system_on" ON "system_webhook" ("on");
+			CREATE INDEX "IDX_system_webhook_isActive" ON "system_webhook" ("isActive");
+			CREATE INDEX "IDX_system_webhook_on" ON "system_webhook" ("on");
 
 			CREATE TABLE "abuse_report_notification_recipient" (
 				"id" varchar(32) NOT NULL,
@@ -31,20 +31,32 @@ export class AbuseReportNotification1713656541000 {
 				"method" varchar(64) NOT NULL,
 				"userId" varchar(32) NULL DEFAULT NULL,
 				"systemWebhookId" varchar(32) NULL DEFAULT NULL,
-				PRIMARY KEY ("id")
+				CONSTRAINT "PK_abuse_report_notification_recipient_id" PRIMARY KEY ("id"),
+				CONSTRAINT "FK_abuse_report_notification_recipient_userId1" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+				CONSTRAINT "FK_abuse_report_notification_recipient_userId2" FOREIGN KEY ("userId") REFERENCES "user_profile"("userId") ON DELETE CASCADE ON UPDATE NO ACTION,
+				CONSTRAINT "FK_abuse_report_notification_recipient_systemWebhookId" FOREIGN KEY ("systemWebhookId") REFERENCES "system_webhook"("id") ON DELETE CASCADE ON UPDATE NO ACTION
 			);
 			CREATE INDEX "IDX_abuse_report_notification_recipient_isActive" ON "abuse_report_notification_recipient" ("isActive");
 			CREATE INDEX "IDX_abuse_report_notification_recipient_method" ON "abuse_report_notification_recipient" ("method");
 			CREATE INDEX "IDX_abuse_report_notification_recipient_userId" ON "abuse_report_notification_recipient" ("userId");
 			CREATE INDEX "IDX_abuse_report_notification_recipient_systemWebhookId" ON "abuse_report_notification_recipient" ("systemWebhookId");
-
-			ALTER TABLE "abuse_report_notification_recipient" ADD CONSTRAINT "FK_abuse_report_notification_recipient_userId" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
-		  ALTER TABLE "abuse_report_notification_recipient" ADD CONSTRAINT "FK_abuse_report_notification_recipient_systemWebhookId" FOREIGN KEY ("systemWebhookId") REFERENCES "system_webhook"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 		`);
 	}
 
 	async down(queryRunner) {
-		await queryRunner.query(`DROP TABLE "system_webhook";`);
-		await queryRunner.query(`DROP TABLE "abuse_report_notification_recipient";`);
+		await queryRunner.query(`
+			ALTER TABLE "abuse_report_notification_recipient" DROP CONSTRAINT "FK_abuse_report_notification_recipient_userId1";
+			ALTER TABLE "abuse_report_notification_recipient" DROP CONSTRAINT "FK_abuse_report_notification_recipient_userId2";
+			ALTER TABLE "abuse_report_notification_recipient" DROP CONSTRAINT "FK_abuse_report_notification_recipient_systemWebhookId";
+			DROP INDEX "IDX_abuse_report_notification_recipient_isActive";
+			DROP INDEX "IDX_abuse_report_notification_recipient_method";
+			DROP INDEX "IDX_abuse_report_notification_recipient_userId";
+			DROP INDEX "IDX_abuse_report_notification_recipient_systemWebhookId";
+			DROP TABLE "abuse_report_notification_recipient";
+
+			DROP INDEX "IDX_system_webhook_isActive";
+			DROP INDEX "IDX_system_webhook_on";
+			DROP TABLE "system_webhook";
+		`);
 	}
 }

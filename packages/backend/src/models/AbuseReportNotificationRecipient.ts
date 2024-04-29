@@ -22,6 +22,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 有効かどうか.
 	 */
+	@Index()
 	@Column('boolean', {
 		default: true,
 	})
@@ -44,6 +45,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知方法.
 	 */
+	@Index()
 	@Column('varchar', {
 		length: 64,
 	})
@@ -64,14 +66,14 @@ export class MiAbuseReportNotificationRecipient {
 	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+	@JoinColumn({ name: 'userId', referencedColumnName: 'id', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_userId1' })
 	public user: MiUser | null;
 
 	/**
 	 * 通知先のユーザプロフィール.
 	 */
 	@ManyToOne(type => MiUserProfile, {})
-	@JoinColumn({ name: 'userId', referencedColumnName: 'userId' })
+	@JoinColumn({ name: 'userId', referencedColumnName: 'userId', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_userId2' })
 	public userProfile: MiUserProfile | null;
 
 	/**
