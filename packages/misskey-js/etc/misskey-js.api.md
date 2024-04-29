@@ -2374,6 +2374,15 @@ type ModerationLog = {
 } | {
     type: 'unsetUserBanner';
     info: ModerationLogPayloads['unsetUserBanner'];
+} | {
+    type: 'deletePage';
+    info: ModerationLogPayloads['deletePage'];
+} | {
+    type: 'deleteFlash';
+    info: ModerationLogPayloads['deleteFlash'];
+} | {
+    type: 'deleteGalleryPost';
+    info: ModerationLogPayloads['deleteGalleryPost'];
 });
 
 // @public (undocumented)
