@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkDivider/>
 
 			<MkSwitch v-model="isActive">
-				<template #label>{{ }}</template>
+				<template #label>{{ i18n.ts.enable }}</template>
 			</MkSwitch>
 
 			<div :class="$style.footer" class="_buttonsCenter">
@@ -112,13 +112,13 @@ async function onSubmitClicked() {
 			switch (mode.value) {
 				case 'create': {
 					const result = await misskeyApi('admin/system-webhook/create', params);
-					emit('submitted', result[0]);
+					emit('submitted', result);
 					break;
 				}
 				case 'edit': {
 					// eslint-disable-next-line
 					const result = await misskeyApi('admin/system-webhook/update', { id: id.value!, ...params });
-					emit('submitted', result[0]);
+					emit('submitted', result);
 					break;
 				}
 			}

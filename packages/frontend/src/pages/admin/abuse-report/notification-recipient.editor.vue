@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkDivider/>
 
 				<MkSwitch v-model="isActive">
-					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.active }}</template>
+					<template #label>{{ i18n.ts.enable }}</template>
 				</MkSwitch>
 			</div>
 		</MkSpacer>
