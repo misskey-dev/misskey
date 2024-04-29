@@ -31,7 +31,9 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 更新日時.
 	 */
-	@Column('timestamp with time zone', {})
+	@Column('timestamp with time zone', {
+		default: () => 'CURRENT_TIMESTAMP',
+	})
 	public updatedAt: Date;
 
 	/**
@@ -57,6 +59,7 @@ export class MiAbuseReportNotificationRecipient {
 	@Index()
 	@Column({
 		...id(),
+		nullable: true,
 	})
 	public userId: MiUser['id'] | null;
 
@@ -82,6 +85,7 @@ export class MiAbuseReportNotificationRecipient {
 	@Index()
 	@Column({
 		...id(),
+		nullable: true,
 	})
 	public systemWebhookId: string | null;
 

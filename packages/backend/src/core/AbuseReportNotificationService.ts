@@ -122,7 +122,10 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	@bindThis
 	private async enqueueSendWebhook(abuseReports: MiAbuseUserReport[]) {
 		const recipientWebhookIds = await this.fetchWebhookRecipients()
-			.then(it => it.map(it => it.systemWebhookId).filter(isNotNull));
+			.then(it => it
+				.filter(it => it.systemWebhookId && it.method === 'webhook')
+				.map(it => it.systemWebhookId)
+				.filter(isNotNull));
 		const activeAbuseReportWebhooks = await this.webhookService.fetchActiveSystemWebhooks()
 			.then(it => it.filter(it => it.on.includes('abuseReport') && recipientWebhookIds.includes(it.id)));
 
