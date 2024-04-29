@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div :class="$style.other">
-							<button v-if="$i && $i.id === page.userId" v-tooltip="i18n.ts.edit" v-click-anime class="_button" :class="$style.generalActionButton" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
+							<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
 							<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
 							<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
 							<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
@@ -238,12 +238,6 @@ function pin(pin) {
 	os.apiWithDialog('i/update', {
 		pinnedPageId: pin ? page.value.id : null,
 	});
-}
-
-function edit() {
-	if (!page.value) return;
-
-	router.push(`/pages/edit/${page.value.id}`);
 }
 
 function reportAbuse() {
