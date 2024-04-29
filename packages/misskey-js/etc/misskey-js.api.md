@@ -1078,7 +1078,7 @@ export type Endpoints = Overwrite<Endpoints_2, {
                     {
                     userIds?: string[];
                 },
-                UserDetailed[]
+                ((UserDetailed | null)[])
                 ]
                 ];
                 $default: UserDetailed;

@@ -86,8 +86,8 @@ async function init() {
 	}
 
 	if ($i.alsoKnownAs && $i.alsoKnownAs.length > 0) {
-		const alsoKnownAs = await misskeyApi('users/show', { userIds: $i.alsoKnownAs });
-		accountAliases.value = (alsoKnownAs && alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${Misskey.acct.toString(user)}`) : [''];
+		const alsoKnownAs = (await misskeyApi('users/show', { userIds: $i.alsoKnownAs })).filter(u => u != null);
+		accountAliases.value = (alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${Misskey.acct.toString(user)}`) : [''];
 	} else {
 		accountAliases.value = [''];
 	}

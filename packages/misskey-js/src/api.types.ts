@@ -58,7 +58,7 @@ export type Endpoints = Overwrite<
 					$cases: [[
 						{
 							userIds?: string[];
-						}, UserDetailed[],
+						}, ((UserDetailed | null)[]),
 					]];
 					$default: UserDetailed;
 				};

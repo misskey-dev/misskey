@@ -41,7 +41,7 @@ const init = async () => {
 			userIds: storedAccounts.value.map(x => x.id),
 		});
 	}).then(response => {
-		accounts.value = response;
+		accounts.value = response.filter(u => u != null);
 	});
 };
 

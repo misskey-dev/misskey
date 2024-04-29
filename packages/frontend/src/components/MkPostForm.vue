@@ -536,7 +536,8 @@ async function toggleReactionAcceptance() {
 	reactionAcceptance.value = select.result;
 }
 
-function pushVisibleUser(user: Misskey.entities.UserDetailed) {
+function pushVisibleUser(user: Misskey.entities.UserDetailed | null) {
+	if (user == null) return;
 	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.value.push(user);
 	}
@@ -963,11 +964,7 @@ onMounted(() => {
 				}
 				if (draft.data.visibleUserIds) {
 					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
-						for (let i = 0; i < users.length; i++) {
-							if (users[i].id === draft.data.visibleUserIds[i]) {
-								pushVisibleUser(users[i]);
-							}
-						}
+						users.forEach(pushVisibleUser);
 					});
 				}
 			}

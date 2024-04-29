@@ -93,7 +93,7 @@ const fetch = () => {
 		misskeyApi('users/show', {
 			userIds: list.value.userIds,
 		}).then(_users => {
-			users.value = _users;
+			users.value = _users.filter(u => u != null);
 			fetching.value = false;
 		});
 	});

@@ -62,7 +62,7 @@ function fetchList(): void {
 		misskeyApi('users/show', {
 			userIds: list.value.userIds,
 		}).then(_users => {
-			users.value = _users;
+			users.value = _users.filter(u => u != null);
 		});
 	}).catch(err => {
 		error.value = err;
