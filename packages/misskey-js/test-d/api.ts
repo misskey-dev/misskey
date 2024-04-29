@@ -40,6 +40,6 @@ describe('API', () => {
 		expectType<Misskey.entities.UserDetailed>(res);
 
 		const res2 = await cli.request('users/show', { userIds: ['xxxxxxxx'] });
-		expectType<Misskey.entities.UserDetailed[]>(res2);
+		expectType<(Misskey.entities.UserDetailed | null)[]>(res2);
 	});
 });
