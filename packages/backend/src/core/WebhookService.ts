@@ -154,7 +154,7 @@ export class WebhookService implements OnApplicationShutdown {
 		this.moderationLogService
 			.log(updater, 'updateSystemWebhook', {
 				systemWebhookId: beforeEntity.id,
-				before: afterEntity,
+				before: beforeEntity,
 				after: afterEntity,
 			})
 			.then();

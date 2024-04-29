@@ -2468,7 +2468,6 @@ _webhookSettings:
 
 _abuseReport:
   _notificationRecipient:
-    active: "有効"
     createRecipient: "通報の通知先を追加"
     modifyRecipient: "通報の通知先を編集"
     recipientType: "通知先の種類"
@@ -2517,6 +2516,12 @@ _moderationLogTypes:
   deleteAvatarDecoration: "アイコンデコレーションを削除"
   unsetUserAvatar: "ユーザーのアイコンを解除"
   unsetUserBanner: "ユーザーのバナーを解除"
+  createSystemWebhook: "SystemWebhookを作成"
+  updateSystemWebhook: "SystemWebhookを更新"
+  deleteSystemWebhook: "SystemWebhookを削除"
+  createAbuseReportNotificationRecipient: "通報の通知先を作成"
+  updateAbuseReportNotificationRecipient: "通報の通知先を更新"
+  deleteAbuseReportNotificationRecipient: "通報の通知先を削除"
 
 _fileViewer:
   title: "ファイルの詳細"

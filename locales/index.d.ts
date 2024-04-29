@@ -9301,10 +9301,6 @@ export interface Locale extends ILocale {
     "_abuseReport": {
         "_notificationRecipient": {
             /**
-             * 有効
-             */
-            "active": string;
-            /**
              * 通報の通知先を追加
              */
             "createRecipient": string;
@@ -9489,6 +9485,30 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         "unsetUserBanner": string;
+        /**
+         * SystemWebhookを作成
+         */
+        "createSystemWebhook": string;
+        /**
+         * SystemWebhookを更新
+         */
+        "updateSystemWebhook": string;
+        /**
+         * SystemWebhookを削除
+         */
+        "deleteSystemWebhook": string;
+        /**
+         * 通報の通知先を作成
+         */
+        "createAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を更新
+         */
+        "updateAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を削除
+         */
+        "deleteAbuseReportNotificationRecipient": string;
     };
     "_fileViewer": {
         /**
