@@ -536,8 +536,7 @@ async function toggleReactionAcceptance() {
 	reactionAcceptance.value = select.result;
 }
 
-function pushVisibleUser(user: Misskey.entities.UserDetailed | null) {
-	if (user == null) return;
+function pushVisibleUser(user: Misskey.entities.UserDetailed) {
 	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.value.push(user);
 	}

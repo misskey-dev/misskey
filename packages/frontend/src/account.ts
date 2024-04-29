@@ -271,7 +271,7 @@ export async function openAccountMenu(opts: {
 
 	const accountItemPromises = storedAccounts.map(a => new Promise<ReturnType<typeof createItem> | MenuButton>(res => {
 		accountsPromise.then(accounts => {
-			const account = accounts.find(x => x?.id === a.id);
+			const account = accounts.find(x => x.id === a.id);
 			if (account == null) return res({
 				type: 'button' as const,
 				text: a.id,

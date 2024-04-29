@@ -141,7 +141,6 @@ onMounted(() => {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(foundUsers => {
 		let _users = foundUsers;
-		_users = _users.filter(u => u != null);
 		_users = _users.filter((u) => {
 			if (props.localOnly) {
 				return u.host == null;

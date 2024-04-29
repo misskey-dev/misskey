@@ -25900,7 +25900,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['UserDetailed'] | ((components['schemas']['UserDetailed'] | null)[]);
+          'application/json': components['schemas']['UserDetailed'] | components['schemas']['UserDetailed'][];
         };
       };
       /** @description Client error */
