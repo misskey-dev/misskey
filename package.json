@@ -56,9 +56,12 @@
 		"postcss": "8.4.35",
 		"tar": "6.2.0",
 		"terser": "5.28.1",
-		"typescript": "5.3.3"
+		"typescript": "5.3.3",
+		"esbuild": "0.19.11",
+		"glob": "10.3.10"
 	},
 	"devDependencies": {
+		"@types/node": "^20.11.28",
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
 		"cross-env": "7.0.3",

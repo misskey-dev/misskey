@@ -248,7 +248,7 @@ export class DriveFileEntityService {
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
-			userId: opts.withUser ? file.userId : null,
+			userId: file.userId,
 			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
 		});
 	}
