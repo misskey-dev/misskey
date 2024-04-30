@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.detail">
 		<div>
-			<Mfm :text="report.comment"/>
+			<Mfm :text="report.comment" :linkBehavior="'window'"/>
 			<MkFolder v-if="report.notes.length !== 0" :class="$style.notes">
 				<template #label>{{ i18n.ts.reportedNote }}</template>
 				<div v-for="note in report.notes" :class="$style.notes">
