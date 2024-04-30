@@ -14,7 +14,7 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/activitypub/type.js';
+import { getApId, IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
@@ -52,7 +52,7 @@ export class InboxProcessorService {
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
 		const signature = job.data.signature;	// HTTP-signature
-		const activity = job.data.activity;
+		let activity = job.data.activity;
 
 		//#region Log
 		const info = Object.assign({}, activity);
@@ -110,20 +110,21 @@ export class InboxProcessorService {
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
-			if (activity.signature) {
-				if (activity.signature.type !== 'RsaSignature2017') {
-					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${activity.signature.type}`);
+			const activitySignature = activity.signature;
+			if (activitySignature) {
+				if (activitySignature.type !== 'RsaSignature2017') {
+					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${activitySignature.type}`);
 				}
 
-				// activity.signature.creator: https://example.oom/users/user#main-key
+				// activitySignature.creator: https://example.oom/users/user#main-key
 				// みたいになっててUserを引っ張れば公開キーも入ることを期待する
-				if (activity.signature.creator) {
-					const candicate = activity.signature.creator.replace(/#.*/, '');
+				if (activitySignature.creator) {
+					const candicate = activitySignature.creator.replace(/#.*/, '');
 					await this.apPersonService.resolvePerson(candicate).catch(() => null);
 				}
 
 				// keyIdからLD-Signatureのユーザーを取得
-				authUser = await this.apDbResolverService.getAuthUserFromKeyId(activity.signature.creator);
+				authUser = await this.apDbResolverService.getAuthUserFromKeyId(activitySignature.creator);
 				if (authUser == null) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureのユーザーが取得できませんでした');
 				}
@@ -138,6 +139,18 @@ export class InboxProcessorService {
 				if (!verified) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
 				}
+
+				// アクティビティを正規化
+				delete activity.signature;
+				try {
+					activity = await ldSignature.compact(activity) as IActivity;
+				} catch (e) {
+					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${e}`);
+				}
+
+				// TODO: 元のアクティビティと非互換な形に正規化される場合は転送をスキップする
+				// https://github.com/mastodon/mastodon/blob/664b0ca/app/services/activitypub/process_collection_service.rb#L24-L29
+				activity.signature = activitySignature;
 
 				// もう一度actorチェック
 				if (authUser.user.uri !== activity.actor) {

@@ -7,12 +7,12 @@ import * as crypto from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { CONTEXTS } from './misc/contexts.js';
+import { CONTEXTS, PRELOADED_CONTEXTS } from './misc/contexts.js';
 import { validateContentTypeSetAsJsonLD } from './misc/validator.js';
 import type { JsonLdDocument } from 'jsonld';
 import type { JsonLd, RemoteDocument } from 'jsonld/jsonld-spec.js';
 
-// RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
+// RsaSignature2017 implementation is based from https://github.com/transmute-industries/RsaSignature2017
 
 class LdSignature {
 	public debug = false;
@@ -89,10 +89,18 @@ class LdSignature {
 	}
 
 	@bindThis
-	public async normalize(data: JsonLdDocument): Promise<string> {
+	public async compact(data: any, context: any = CONTEXTS): Promise<JsonLdDocument> {
 		const customLoader = this.getLoader();
 		// XXX: Importing jsonld dynamically since Jest frequently fails to import it statically
 		// https://github.com/misskey-dev/misskey/pull/9894#discussion_r1103753595
+		return (await import('jsonld')).default.compact(data, context, {
+			documentLoader: customLoader,
+		});
+	}
+
+	@bindThis
+	public async normalize(data: JsonLdDocument): Promise<string> {
+		const customLoader = this.getLoader();
 		return (await import('jsonld')).default.normalize(data, {
 			documentLoader: customLoader,
 		});
@@ -104,11 +112,11 @@ class LdSignature {
 			if (!/^https?:\/\//.test(url)) throw new Error(`Invalid URL ${url}`);
 
 			if (this.preLoad) {
-				if (url in CONTEXTS) {
+				if (url in PRELOADED_CONTEXTS) {
 					if (this.debug) console.debug(`HIT: ${url}`);
 					return {
 						contextUrl: undefined,
-						document: CONTEXTS[url],
+						document: PRELOADED_CONTEXTS[url],
 						documentUrl: url,
 					};
 				}
