@@ -94,6 +94,11 @@ export class NotificationService implements OnApplicationShutdown {
 	): Promise<MiNotification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 
+		// 通知対象がリモートユーザーなら通知しない
+		if (profile.userHost != null) {
+			return null;
+		}
+
 		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const recieveConfig = (profile.notificationRecieveConfig ?? {})[type];
