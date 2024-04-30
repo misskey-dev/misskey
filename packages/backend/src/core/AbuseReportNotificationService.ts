@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
-import { In, IsNull, Not } from 'typeorm';
+import { Brackets, In, IsNull, Not } from 'typeorm';
 import * as Redis from 'ioredis';
 import sanitizeHtml from 'sanitize-html';
 import { DI } from '@/di-symbols.js';
@@ -178,12 +178,14 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		}
 
 		if (params?.method) {
-			if (params.method.includes('email')) {
-				query.orWhere({ method: 'email', userId: Not(IsNull()) });
-			}
-			if (params.method.includes('webhook')) {
-				query.orWhere({ method: 'webhook', userId: IsNull() });
-			}
+			query.andWhere(new Brackets(qb => {
+				if (params.method?.includes('email')) {
+					qb.orWhere({ method: 'email', userId: Not(IsNull()) });
+				}
+				if (params.method?.includes('webhook')) {
+					qb.orWhere({ method: 'webhook', userId: IsNull() });
+				}
+			}));
 		}
 
 		const recipients = await query.getMany();
