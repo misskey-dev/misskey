@@ -45,27 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.error }}</span>
 				</template>
 			</MkInput>
-			<MkInput v-model="password" :debounce="true" type="password" autocomplete="new-password" required data-cy-signup-password @update:modelValue="onChangePassword">
-				<template #label>
-					{{ i18n.ts.password }} <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="nofollow noopener"><span :class="$style.hibpLogo">leak checked by <span>';--hibp?</span></span></a>
-				</template>
-				<template #prefix><i class="ti ti-lock"></i></template>
-				<template #caption>
-					<span v-if="passwordStrength == 'wait'" style="color:#999"><MkLoading :em="true"/> {{ i18n.ts.checking }}</span>
-					<span v-if="passwordStrength == 'low' && isLeaked" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.tsx.leakedPassword({ n: leakedCount }) }}</span>
-					<span v-else-if="passwordStrength == 'low'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.weakPassword }}</span>
-					<span v-if="passwordStrength == 'medium'" style="color: var(--warn)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.normalPassword }}</span>
-					<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.strongPassword }}</span>
-				</template>
-			</MkInput>
-			<MkInput v-model="retypedPassword" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
-				<template #label>{{ i18n.ts.password }} ({{ i18n.ts.retype }})</template>
-				<template #prefix><i class="ti ti-lock"></i></template>
-				<template #caption>
-					<span v-if="passwordRetypeState == 'match'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.passwordMatched }}</span>
-					<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
-				</template>
-			</MkInput>
+			<MkNewPassword ref="password" :label="i18n.ts.password"/>
 			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
 			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
@@ -82,11 +62,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, shallowRef } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
+import MkNewPassword from '@/components/MkNewPassword.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 import * as config from '@/config.js';
 import * as os from '@/os.js';
@@ -113,16 +94,11 @@ const recaptcha = ref<Captcha | undefined>();
 const turnstile = ref<Captcha | undefined>();
 
 const username = ref<string>('');
-const password = ref<string>('');
-const retypedPassword = ref<string>('');
+const password = shallowRef<InstanceType<typeof MkNewPassword> | null>(null);
 const invitationCode = ref<string>('');
 const email = ref('');
 const usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
 const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:banned' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
-const passwordStrength = ref<'' | 'wait' | 'low' | 'medium' | 'high'>('');
-const isLeaked = ref(false);
-const leakedCount = ref(0);
-const passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
 const submitting = ref<boolean>(false);
 const hCaptchaResponse = ref<string | null>(null);
 const mCaptchaResponse = ref<string | null>(null);
@@ -130,7 +106,6 @@ const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
 const emailAbortController = ref<null | AbortController>(null);
-const passwordAbortController = ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
@@ -139,74 +114,9 @@ const shouldDisableSubmitting = computed((): boolean => {
 		instance.enableRecaptcha && !reCaptchaResponse.value ||
 		instance.enableTurnstile && !turnstileResponse.value ||
 		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
-		(passwordStrength.value !== 'medium' && passwordStrength.value !== 'high') ||
 		usernameState.value !== 'ok' ||
-		passwordRetypeState.value !== 'match';
+		!password.value?.isValid;
 });
-
-async function getPasswordStrength(source: string): Promise<number> {
-	let strength = 0;
-	let power = 0.018;
-
-	// 英数字
-	if (/[a-zA-Z]/.test(source) && /[0-9]/.test(source)) {
-		power += 0.020;
-	}
-
-	// 大文字と小文字が混ざってたら
-	if (/[a-z]/.test(source) && /[A-Z]/.test(source)) {
-		power += 0.015;
-	}
-
-	// 記号が混ざってたら
-	if (/[!\x22\#$%&@'()*+,-./_]/.test(source)) {
-		power += 0.02;
-	}
-
-	strength = power * source.length;
-
-	// check HIBP 3 chars or more
-	if (passwordAbortController.value != null) {
-		passwordAbortController.value.abort();
-	}
-
-	if (source.length >= 3) {
-		passwordStrength.value = 'wait';
-		passwordAbortController.value = new AbortController();
-
-		const hash = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(source));
-		const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-		const hashPrefix = hashHex.slice(0, 5).toUpperCase();
-		const hashSuffix = hashHex.slice(5).toUpperCase();
-		await fetch(`https://api.pwnedpasswords.com/range/${hashPrefix}`, { signal: passwordAbortController.value.signal })
-			.then(response => {
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-				return response.text();
-			})
-			.then(text => {
-				const lines = text.split('\n');
-				const line = lines.find(l => l.startsWith(hashSuffix));
-				if (line) {
-					leakedCount.value = parseInt(line.split(':')[1]);
-					isLeaked.value = true;
-					strength = 0;
-				} else {
-					isLeaked.value = false;
-				}
-			})
-			.catch(() => {
-				leakedCount.value = 0;
-				isLeaked.value = false;
-			});
-	} else {
-		leakedCount.value = 0;
-		isLeaked.value = false;
-	}
-
-	return Math.max(0, Math.min(1, strength));
-}
 
 function onChangeUsername(): void {
 	if (username.value === '') {
@@ -274,35 +184,14 @@ function onChangeEmail(): void {
 	});
 }
 
-async function onChangePassword(): Promise<void> {
-	if (password.value === '') {
-		passwordStrength.value = '';
-		return;
-	}
-
-	const strength = await getPasswordStrength(password.value);
-	passwordStrength.value = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
-
-	if (passwordRetypeState.value === 'match') onChangePasswordRetype();
-}
-
-function onChangePasswordRetype(): void {
-	if (retypedPassword.value === '') {
-		passwordRetypeState.value = null;
-		return;
-	}
-
-	passwordRetypeState.value = password.value === retypedPassword.value ? 'match' : 'not-match';
-}
-
 async function onSubmit(): Promise<void> {
-	if (submitting.value) return;
+	if (!password.value?.isValid || submitting.value) return;
 	submitting.value = true;
 
 	try {
 		await misskeyApi('signup', {
 			username: username.value,
-			password: password.value,
+			password: password.value.password,
 			emailAddress: email.value,
 			invitationCode: invitationCode.value,
 			'hcaptcha-response': hCaptchaResponse.value,
@@ -320,7 +209,7 @@ async function onSubmit(): Promise<void> {
 		} else {
 			const res = await misskeyApi('signin', {
 				username: username.value,
-				password: password.value,
+				password: password.value.password,
 			});
 			emit('signup', res);
 
@@ -353,27 +242,5 @@ async function onSubmit(): Promise<void> {
 
 .captcha {
 	margin: 16px 0;
-}
-
-.hibpLogo {
-	background: linear-gradient(45deg, #616c70, #626262);
-	color: #fefefe;
-	display: inline-flex;
-	padding-left: 8px;
-	margin-left: 4px;
-	font-size: 0.8em;
-	border-radius: 6px;
-	overflow: hidden;
-	align-items: center;
-	transform: translateY(-1px);
-
-	span {
-		background: linear-gradient(45deg, #255e81, #338cac);
-		font-size: 1.4em;
-		padding: 2px 8px;
-		height: auto;
-		margin-left: 8px;
-		font-weight: bold;
-	}
 }
 </style>

@@ -7,7 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts.password }}</template>
-		<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
+		<MkFolder key="changePasswordKey">
+			<template #icon><i class="ti ti-key"></i></template>
+			<template #label>{{ i18n.ts.changePassword }}</template>
+			<div class="_gaps_s">
+				<MkNewPassword ref="newPassword" :label="i18n.ts.newPassword"/>
+				<MkButton primary :disabled="!newPassword?.isValid" @click="changePassword">{{ i18n.ts.save }}</MkButton>
+			</div>
+		</MkFolder>
 	</FormSection>
 
 	<X2fa/>
@@ -40,10 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkNewPassword from '@/components/MkNewPassword.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
@@ -51,33 +60,16 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
+const changePasswordKey = ref(Date.now());
+const newPassword = shallowRef<InstanceType<typeof MkNewPassword> | null>(null);
+
 const pagination = {
 	endpoint: 'i/signin-history' as const,
 	limit: 5,
 };
 
-async function change() {
-	const { canceled: canceled2, result: newPassword } = await os.inputText({
-		title: i18n.ts.newPassword,
-		type: 'password',
-		autocomplete: 'new-password',
-	});
-	if (canceled2) return;
-
-	const { canceled: canceled3, result: newPassword2 } = await os.inputText({
-		title: i18n.ts.newPasswordRetype,
-		type: 'password',
-		autocomplete: 'new-password',
-	});
-	if (canceled3) return;
-
-	if (newPassword !== newPassword2) {
-		os.alert({
-			type: 'error',
-			text: i18n.ts.retypedNotMatch,
-		});
-		return;
-	}
+async function changePassword() {
+	if (!newPassword.value?.isValid) return;
 
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
@@ -85,7 +77,9 @@ async function change() {
 	os.apiWithDialog('i/change-password', {
 		currentPassword: auth.result.password,
 		token: auth.result.token,
-		newPassword,
+		newPassword: newPassword.value.password,
+	}).then(() => {
+		changePasswordKey.value = Date.now();
 	});
 }
 

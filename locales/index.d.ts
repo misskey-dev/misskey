@@ -7905,10 +7905,6 @@ export interface Locale extends ILocale {
          */
         "backupCodesExhaustedWarning": string;
         /**
-         * 詳細なガイドはこちら
-         */
-        "moreDetailedGuideHere": string;
-        /**
          * バックアップコードを保存しましたか？
          */
         "backupCodesSavedConfirmTitle": string;

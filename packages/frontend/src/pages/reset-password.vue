@@ -8,20 +8,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="token" :contentMax="700" :marginMin="16" :marginMax="32">
 		<div class="_gaps_m">
-			<MkInput v-model="password" type="password">
-				<template #prefix><i class="ti ti-lock"></i></template>
-				<template #label>{{ i18n.ts.newPassword }}</template>
-			</MkInput>
-
-			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
+			<MkNewPassword ref="newPassword" :label="i18n.ts.newPassword"/>
+			<MkButton primary :disabled="shouldDisableSubmitting" @click="save">{{ i18n.ts.save }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, ref, computed } from 'vue';
-import MkInput from '@/components/MkInput.vue';
+import { defineAsyncComponent, onMounted, ref, computed, shallowRef } from 'vue';
+import MkNewPassword from '@/components/MkNewPassword.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -32,12 +28,20 @@ const props = defineProps<{
 	token?: string;
 }>();
 
-const password = ref('');
+const newPassword = shallowRef<InstanceType<typeof MkNewPassword> | null>(null);
+const submitting = ref<boolean>(false);
+
+const shouldDisableSubmitting = computed((): boolean => {
+	return submitting.value || !newPassword.value?.isValid;
+});
 
 async function save() {
+	if (!newPassword.value?.isValid || submitting.value) return;
+	submitting.value = true;
+
 	await os.apiWithDialog('reset-password', {
 		token: props.token,
-		password: password.value,
+		password: newPassword.value.password,
 	});
 	mainRouter.push('/');
 }
