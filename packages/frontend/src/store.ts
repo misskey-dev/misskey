@@ -94,7 +94,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultNoteVisibility: {
 		where: 'account',
-		default: 'public',
+		default: 'public' as 'public' | 'home' | 'followers' | 'specified',
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
