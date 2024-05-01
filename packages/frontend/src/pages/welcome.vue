@@ -11,14 +11,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { fetchInstance } from '@/instance.js';
 
-const instance = await fetchInstance(true);
+const instance = ref<Misskey.entities.MetaDetailed | null>(null);
+
+fetchInstance(true).then((res) => {
+	instance.value = res;
+});
 
 const headerActions = computed(() => []);
 
