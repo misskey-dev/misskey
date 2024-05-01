@@ -71,7 +71,7 @@
 		"typescript": "5.3.3",
 		"uuid": "9.0.1",
 		"v-code-diff": "1.9.0",
-		"vite": "5.1.4",
+		"vite": "5.1.7",
 		"vue": "3.4.21",
 		"vuedraggable": "next"
 	},
