@@ -4,19 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="meta" :class="$style.root">
+<div v-if="instance" :class="$style.root">
 	<div :class="[$style.main, $style.panel]">
 		<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.mainIcon"/>
 		<button class="_button _acrylic" :class="$style.mainMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 		<div :class="$style.mainFg">
 			<h1 :class="$style.mainTitle">
 				<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
-				<!-- <img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span> -->
+				<!-- <img class="logo" v-if="instance.logoImageUrl" :src="instance.logoImageUrl"><span v-else class="text">{{ instanceName }}</span> -->
 				<span>{{ instanceName }}</span>
 			</h1>
 			<div :class="$style.mainAbout">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div v-html="meta.description || i18n.ts.headlineMisskey"></div>
+				<div v-html="instance.description || i18n.ts.headlineMisskey"></div>
 			</div>
 			<div v-if="instance.disableRegistration" :class="$style.mainWarn">
 				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
@@ -66,12 +66,7 @@ import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
-const meta = ref<Misskey.entities.MetaResponse | null>(null);
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
-
-misskeyApi('meta', { detail: true }).then(_meta => {
-	meta.value = _meta;
-});
 
 misskeyApi('stats', {}).then((res) => {
 	stats.value = res;
