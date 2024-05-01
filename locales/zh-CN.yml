@@ -1234,6 +1234,7 @@ keepOriginalFilename: "保持原文件名"
 keepOriginalFilenameDescription: "若关闭此设置，上传文件时文件名将被替换为随机字符。"
 noDescription: "没有描述"
 alwaysConfirmFollow: "总是确认关注"
+inquiry: "联系我们"
 _bubbleGame:
   howToPlay: "游戏说明"
   hold: "抓住"
