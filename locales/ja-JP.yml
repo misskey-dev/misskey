@@ -1234,6 +1234,7 @@ keepOriginalFilename: "オリジナルのファイル名を保持"
 keepOriginalFilenameDescription: "この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。"
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
+inquiry: "お問い合わせ"
 
 _bubbleGame:
   howToPlay: "遊び方"
