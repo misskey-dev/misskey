@@ -38,7 +38,7 @@ export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFA
 
 export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
 
-export async function fetchInstance(force = false): Promise<void> {
+export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
 	if (!force) {
 		const cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
 
@@ -57,4 +57,6 @@ export async function fetchInstance(force = false): Promise<void> {
 
 	miLocalStorage.setItem('instance', JSON.stringify(instance));
 	miLocalStorage.setItem('instanceCachedAt', Date.now().toString());
+
+	return instance;
 }

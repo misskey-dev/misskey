@@ -16,7 +16,9 @@ import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { instance } from '@/instance.js';
+import { fetchInstance } from '@/instance.js';
+
+const instance = await fetchInstance(true);
 
 const headerActions = computed(() => []);
 
