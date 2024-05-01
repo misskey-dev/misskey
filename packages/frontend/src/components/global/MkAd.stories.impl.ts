@@ -57,12 +57,10 @@ const common = {
 			await expect(a).not.toBeInTheDocument();
 			await expect(i).not.toBeInTheDocument();
 			buttons = canvas.getAllByRole<HTMLButtonElement>('button');
-			// @ts-expect-error __hasReduce is for test
-			await expect(buttons).toHaveLength(args.__hasReduce ? 2 : 1);
-			// @ts-expect-error __hasReduce is for test
-			const reduce = args.__hasReduce ? buttons[0] : null;
-			// @ts-expect-error __hasReduce is for test
-			const back = buttons[args.__hasReduce ? 1 : 0];
+			const hasReduceFrequency = args.specify?.ratio !== 0;
+			await expect(buttons).toHaveLength(hasReduceFrequency ? 2 : 1);
+			const reduce = hasReduceFrequency ? buttons[0] : null;
+			const back = buttons[hasReduceFrequency ? 1 : 0];
 			if (reduce) {
 				await expect(reduce).toBeInTheDocument();
 				await expect(reduce).toHaveTextContent(i18n.ts._ad.reduceFrequencyOfThisAd);
@@ -94,8 +92,6 @@ const common = {
 			imageUrl: '',
 			dayOfWeek: 7,
 		},
-		// @ts-expect-error __hasReduce is for test
-		__hasReduce: true,
 	},
 	parameters: {
 		layout: 'centered',
@@ -145,7 +141,5 @@ export const ZeroRatio = {
 			...Square.args.specify,
 			ratio: 0,
 		},
-		// @ts-expect-error __hasReduce is for test
-		__hasReduce: false,
 	},
 } satisfies StoryObj<typeof MkAd>;
