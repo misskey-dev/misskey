@@ -28,7 +28,7 @@ if (providedAt > cachedAt) {
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.MetaResponse = reactive(cachedMeta ?? {});
+export const instance: Misskey.entities.MetaDetailed = reactive(cachedMeta ?? {});
 
 export const serverErrorImageUrl = computed(() => instance.serverErrorImageUrl ?? DEFAULT_SERVER_ERROR_IMAGE_URL);
 
@@ -48,7 +48,7 @@ export async function fetchInstance(force = false): Promise<void> {
 	}
 
 	const meta = await misskeyApi('meta', {
-		detail: false,
+		detail: true,
 	});
 
 	for (const [k, v] of Object.entries(meta)) {
