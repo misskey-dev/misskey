@@ -43,7 +43,7 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 		const cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
 
 		if (Date.now() - cachedAt < 1000 * 60 * 60) {
-			return;
+			return instance;
 		}
 	}
 
