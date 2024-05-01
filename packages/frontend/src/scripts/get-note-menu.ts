@@ -492,7 +492,7 @@ export function getNoteMenu(props: {
 	};
 }
 
-type Visibility = 'public' | 'home' | 'followers' | 'specified';
+type Visibility = (typeof Misskey.noteVisibilities)[number];
 
 function smallerVisibility(a: Visibility, b: Visibility): Visibility {
 	if (a === 'specified' || b === 'specified') return 'specified';
