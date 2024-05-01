@@ -84,14 +84,14 @@ importers:
         specifier: 3.412.0
         version: 3.412.0(@aws-sdk/client-s3@3.412.0)
       '@bull-board/api':
-        specifier: 5.14.2
-        version: 5.14.2(@bull-board/ui@5.14.2)
+        specifier: 5.16.0
+        version: 5.16.0(@bull-board/ui@5.16.0)
       '@bull-board/fastify':
-        specifier: 5.14.2
-        version: 5.14.2
+        specifier: 5.16.0
+        version: 5.16.0
       '@bull-board/ui':
-        specifier: 5.14.2
-        version: 5.14.2
+        specifier: 5.16.0
+        version: 5.16.0
       '@discordapp/twemoji':
         specifier: 15.0.2
         version: 15.0.2
@@ -3385,29 +3385,29 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@bull-board/api@5.14.2(@bull-board/ui@5.14.2):
-    resolution: {integrity: sha512-0wppAGPU7ZMwWMpzkmtrlmm7ySI5immymyaRS1cVNJ54rUiGOZP5tnm+Sj7MwPdf63rxqIM843un8+PvQyARGg==}
+  /@bull-board/api@5.16.0(@bull-board/ui@5.16.0):
+    resolution: {integrity: sha512-JnPi2M11At/4lxDP267k20AqUBZdVv+82nNMcO80dPJAEKpzbvhLqAl4H3nDSEowmzgzVVlD+/eFOMjg07h9Zg==}
     peerDependencies:
-      '@bull-board/ui': 5.14.2
+      '@bull-board/ui': 5.16.0
     dependencies:
-      '@bull-board/ui': 5.14.2
+      '@bull-board/ui': 5.16.0
       redis-info: 3.1.0
     dev: false
 
-  /@bull-board/fastify@5.14.2:
-    resolution: {integrity: sha512-GQMK70tKOu2gjBi2pjWXMXcftzWRvQNSm+deLmGlJUgqUUbNlzIGRyvaTk7giT4CFzgKcP+hT+lphcAsGTKBQw==}
+  /@bull-board/fastify@5.16.0:
+    resolution: {integrity: sha512-hXAAcQEafHANPJ3cKCxfCt4bMygmb+3SYbzU/AICWYQtkQl8DpT/UmafdeUm+GW1UjZgzEkUHfYFltiUvFRm6Q==}
     dependencies:
-      '@bull-board/api': 5.14.2(@bull-board/ui@5.14.2)
-      '@bull-board/ui': 5.14.2
+      '@bull-board/api': 5.16.0(@bull-board/ui@5.16.0)
+      '@bull-board/ui': 5.16.0
       '@fastify/static': 6.12.0
       '@fastify/view': 8.2.0
       ejs: 3.1.9
     dev: false
 
-  /@bull-board/ui@5.14.2:
-    resolution: {integrity: sha512-NiyKWLjKjy29I6ySCnSYbzGX4ZJyPE4xlS5/Z5dVsF2bJLoAV+yD1obflxteJMt60FiEgLV7tfs6tMSVa+Htew==}
+  /@bull-board/ui@5.16.0:
+    resolution: {integrity: sha512-XJoHVKUDWCjOb0kMTKs1wTqn5p9mvFUFurTVNcbhPuqkIPoPJLuKhE8a7FvpTIK+HA5NhFRllaRK3K9/Y8JzIA==}
     dependencies:
-      '@bull-board/api': 5.14.2(@bull-board/ui@5.14.2)
+      '@bull-board/api': 5.16.0(@bull-board/ui@5.16.0)
     dev: false
 
   /@bundled-es-modules/cookie@2.0.0:
@@ -7933,8 +7933,8 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@types/yauzl@2.10.0:
-    resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
+  /@types/yauzl@2.10.3:
+    resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     requiresBuild: true
     dependencies:
       '@types/node': 20.11.22
@@ -8418,7 +8418,7 @@ packages:
       '@vue/compiler-dom': 3.4.18
       '@vue/shared': 3.3.12
       computeds: 0.0.1
-      minimatch: 9.0.3
+      minimatch: 9.0.4
       muggle-string: 0.3.1
       path-browserify: 1.0.1
       typescript: 5.3.3
@@ -8437,7 +8437,7 @@ packages:
       '@vue/compiler-dom': 3.4.21
       '@vue/shared': 3.4.21
       computeds: 0.0.1
-      minimatch: 9.0.3
+      minimatch: 9.0.4
       path-browserify: 1.0.1
       typescript: 5.3.3
       vue-template-compiler: 2.7.14
@@ -11608,7 +11608,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.10.0
+      '@types/yauzl': 2.10.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14940,6 +14940,13 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
+
+  /minimatch@9.0.4:
+    resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
 
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
