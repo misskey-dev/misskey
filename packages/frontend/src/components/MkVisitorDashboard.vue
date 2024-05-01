@@ -65,6 +65,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
+import { openInstanceMenu } from '@/ui/_common_/common';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
@@ -85,43 +86,7 @@ function signup() {
 }
 
 function showMenu(ev) {
-	os.popupMenu([{
-		text: i18n.ts.instanceInfo,
-		icon: 'ti ti-info-circle',
-		action: () => {
-			os.pageWindow('/about');
-		},
-	}, {
-		text: i18n.ts.aboutMisskey,
-		icon: 'ti ti-info-circle',
-		action: () => {
-			os.pageWindow('/about-misskey');
-		},
-	}, { type: 'divider' }, (instance.impressumUrl) ? {
-		text: i18n.ts.impressum,
-		icon: 'ti ti-file-invoice',
-		action: () => {
-			window.open(instance.impressumUrl!, '_blank', 'noopener');
-		},
-	} : undefined, (instance.tosUrl) ? {
-		text: i18n.ts.termsOfService,
-		icon: 'ti ti-notebook',
-		action: () => {
-			window.open(instance.tosUrl!, '_blank', 'noopener');
-		},
-	} : undefined, (instance.privacyPolicyUrl) ? {
-		text: i18n.ts.privacyPolicy,
-		icon: 'ti ti-shield-lock',
-		action: () => {
-			window.open(instance.privacyPolicyUrl!, '_blank', 'noopener');
-		},
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
-		text: i18n.ts.help,
-		icon: 'ti ti-help-circle',
-		action: () => {
-			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
-		},
-	}], ev.currentTarget ?? ev.target);
+	openInstanceMenu(ev);
 }
 
 function exploreOtherServers() {
