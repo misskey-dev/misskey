@@ -19,7 +19,6 @@ class FavIconDot {
 		this.ctx = this.canvas.getContext('2d');
 			
 		this.faviconImage = document.createElement('img');
-		this.faviconImage.src = this.faviconEL.href;
 	
 		this.hasLoaded = new Promise((resolve, reject) => {
 			(this.faviconImage as HTMLImageElement).onload = () => {
@@ -32,20 +31,20 @@ class FavIconDot {
 				reject('Failed to create favicon img element');
 			};
 		});
+
+		this.faviconImage.src = this.faviconEL.href;
 	}
 
 	private async getOrMakeFaviconElement() : Promise<HTMLLinkElement> {
 		return new Promise((resolve, reject) => {
 			const favicon = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
-			if (favicon === document.querySelector<HTMLLinkElement>('link[rel$=icon]')) {
-				favicon.onload = () => {
-					resolve(favicon);
-				};
+			favicon.onload = () => {
+				resolve(favicon);
+			};
 
-				favicon.onerror = () => {
-					reject('Failed to load favicon');
-				};
-			}
+			favicon.onerror = () => {
+				reject('Failed to load favicon');
+			};
 			resolve(favicon);
 		});
 	}
