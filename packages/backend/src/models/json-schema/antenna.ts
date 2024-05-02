@@ -76,6 +76,11 @@ export const packedAntennaSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		excludeBots: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			default: false,
+		},
 		withReplies: {
 			type: 'boolean',
 			optional: false, nullable: false,

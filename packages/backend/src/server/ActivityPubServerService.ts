@@ -27,7 +27,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
-import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -98,7 +98,7 @@ export class ActivityPubServerService {
 	 */
 	@bindThis
 	private async packActivity(note: MiNote): Promise<any> {
-		if (isPureRenote(note)) {
+		if (isRenote(note) && !isQuote(note)) {
 			const renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
 			return this.apRendererService.renderAnnounce(renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`, note);
 		}

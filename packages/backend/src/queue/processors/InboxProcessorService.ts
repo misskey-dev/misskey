@@ -15,6 +15,7 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import { getApId } from '@/core/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
@@ -22,7 +23,7 @@ import { StatusError } from '@/misc/status-error.js';
 import * as Acct from '@/misc/acct.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
+import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -39,7 +40,7 @@ export class InboxProcessorService {
 		private apInboxService: ApInboxService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		private ldSignatureService: LdSignatureService,
+		private jsonLdService: JsonLdService,
 		private apPersonService: ApPersonService,
 		private apDbResolverService: ApDbResolverService,
 		private instanceChart: InstanceChart,
@@ -59,8 +60,8 @@ export class InboxProcessorService {
 			// RFC 9401はsignatureが配列になるが、とりあえずエラーにする
 			throw new Error('signature is array');
 		}
-		const activity = job.data.activity;
-		const actorUri = getApId(activity.actor);
+		let activity = job.data.activity;
+		let actorUri = getApId(activity.actor);
 
 		//#region Log
 		const info = Object.assign({}, activity);
@@ -121,34 +122,37 @@ export class InboxProcessorService {
 			authUser.user.uri !== actorUri // 一応チェック
 		) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
-			if (activity.signature?.creator) {
-				if (activity.signature.type !== 'RsaSignature2017') {
-					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${activity.signature.type}`);
+			const ldSignature = activity.signature;
+
+			if (ldSignature && ldSignature.creator) {
+				if (ldSignature.type !== 'RsaSignature2017') {
+					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${ldSignature.type}`);
 				}
 
-				if (activity.signature.creator.toLowerCase().startsWith('acct:')) {
-					throw new Bull.UnrecoverableError(`old key not supported ${activity.signature.creator}`);
+				if (ldSignature.creator.toLowerCase().startsWith('acct:')) {
+					throw new Bull.UnrecoverableError(`old key not supported ${ldSignature.creator}`);
 				}
 
-				authUser = await this.apDbResolverService.getAuthUserFromApId(actorUri, activity.signature.creator);
+				authUser = await this.apDbResolverService.getAuthUserFromApId(actorUri, ldSignature.creator);
 
 				if (authUser == null) {
-					throw new Bull.UnrecoverableError(`skip: LD-Signatureのactorとcreatorが一致しませんでした uri=${actorUri} creator=${activity.signature.creator}`);
+					throw new Bull.UnrecoverableError(`skip: LD-Signatureのactorとcreatorが一致しませんでした uri=${actorUri} creator=${ldSignature.creator}`);
 				}
 				if (authUser.user == null) {
-					throw new Bull.UnrecoverableError(`skip: LD-Signatureのユーザーが取得できませんでした uri=${actorUri} creator=${activity.signature.creator}`);
+					throw new Bull.UnrecoverableError(`skip: LD-Signatureのユーザーが取得できませんでした uri=${actorUri} creator=${ldSignature.creator}`);
 				}
 				// 一応actorチェック
 				if (authUser.user.uri !== actorUri) {
 					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${actorUri})`);
 				}
 				if (authUser.key == null) {
-					throw new Bull.UnrecoverableError(`skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした uri=${actorUri} creator=${activity.signature.creator}`);
+					throw new Bull.UnrecoverableError(`skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした uri=${actorUri} creator=${ldSignature.creator}`);
 				}
 
+				const jsonLd = this.jsonLdService.use();
+
 				// LD-Signature検証
-				const ldSignature = this.ldSignatureService.use();
-				const verified = await ldSignature.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
+				const verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
 				if (!verified) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
 				}
@@ -158,6 +162,31 @@ export class InboxProcessorService {
 				if (this.utilityService.isBlockedHost(meta.blockedHosts, ldHost)) {
 					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
 				}
+
+				// アクティビティを正規化
+				// GHSA-2vxv-pv3m-3wvj
+				delete activity.signature;
+				try {
+					activity = await jsonLd.compact(activity) as IActivity;
+				} catch (e) {
+					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${e}`);
+				}
+
+				// actorが正規化前後で一致しているか確認
+				actorUri = getApId(activity.actor);
+				if (authUser.user.uri !== actorUri) {
+					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity(after normalization).actor(${actorUri})`);
+				}
+
+				// TODO: 元のアクティビティと非互換な形に正規化される場合は転送をスキップする
+				// https://github.com/mastodon/mastodon/blob/664b0ca/app/services/activitypub/process_collection_service.rb#L24-L29
+				activity.signature = ldSignature;
+
+				//#region Log
+				const compactedInfo = Object.assign({}, activity);
+				delete compactedInfo['@context'];
+				this.logger.debug(`compacted: ${JSON.stringify(compactedInfo, null, 2)}`);
+				//#endregion
 			} else {
 				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
 			}
