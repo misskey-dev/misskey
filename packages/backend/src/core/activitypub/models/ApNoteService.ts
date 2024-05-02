@@ -4,7 +4,6 @@
  */
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository } from '@/models/_.js';
@@ -209,15 +208,13 @@ export class ApNoteService {
 		}
 
 		// 添付ファイル
-		// TODO: attachmentは必ずしもImageではない
-		// TODO: attachmentは必ずしも配列ではない
-		const limit = promiseLimit<MiDriveFile>(2);
-		const files = (await Promise.all(toArray(note.attachment).map(attach => (
-			limit(() => this.apImageService.resolveImage(actor, {
-				...attach,
-				sensitive: note.sensitive, // Noteがsensitiveなら添付もsensitiveにする
-			}))
-		))));
+		const files: MiDriveFile[] = [];
+
+		for (const attach of toArray(note.attachment)) {
+			attach.sensitive ??= note.sensitive;
+			const file = await this.apImageService.resolveImage(actor, attach);
+			if (file) files.push(file);
+		}
 
 		// リプライ
 		const reply: MiNote | null = note.inReplyTo
