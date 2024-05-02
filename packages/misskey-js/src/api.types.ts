@@ -70,10 +70,10 @@ export type Endpoints = Overwrite<
 				$switch: {
 					$cases: [[
 						{
-							detail: true;
-						}, MetaDetailed,
+							detail: false;
+						}, MetaLite,
 					]];
-					$default: MetaLite;
+					$default: MetaDetailed;
 				}
 			}
 		},
