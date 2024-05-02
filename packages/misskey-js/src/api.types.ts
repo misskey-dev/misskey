@@ -1,6 +1,6 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
-import { UserDetailed } from './autogen/models.js';
-import { UsersShowRequest } from './autogen/entities.js';
+import { MetaDetailed, MetaLite, UserDetailed } from './autogen/models.js';
+import { MetaRequest, UsersShowRequest } from './autogen/entities.js';
 import {
 	SigninRequest,
 	SigninResponse,
@@ -63,6 +63,19 @@ export type Endpoints = Overwrite<
 					$default: UserDetailed;
 				};
 			};
+		},
+		'meta': {
+			req: MetaRequest;
+			res: {
+				$switch: {
+					$cases: [[
+						{
+							detail: true;
+						}, MetaDetailed,
+					]];
+					$default: MetaLite;
+				}
+			}
 		},
 		// api.jsonには載せないものなのでここで定義
 		'signup': {
