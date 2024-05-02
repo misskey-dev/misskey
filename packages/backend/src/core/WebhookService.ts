@@ -85,7 +85,7 @@ export class WebhookService implements OnApplicationShutdown {
 				query.andWhere('systemWebhook.isActive = :isActive', { isActive: params.isActive });
 			}
 			if (params.on && params.on.length > 0) {
-				query.andWhere('systemWebhook.on IN (:...on)', { on: params.on });
+				query.andWhere(':on <@ systemWebhook.on', { on: params.on });
 			}
 		}
 
@@ -184,15 +184,17 @@ export class WebhookService implements OnApplicationShutdown {
 	 * @see QueueService.systemWebhookDeliver
 	 */
 	@bindThis
-	public enqueueSystemWebhook(webhook: MiSystemWebhook | MiSystemWebhook['id'], type: SystemWebhookEventType, content: unknown) {
-		const webhookEntity = typeof webhook === 'string' ? this.activeSystemWebhooks.find(a => a.id === webhook) : webhook;
-		if (!webhookEntity) {
-			this.logger.warn(`Webhook not found : ${webhook}`);
+	public async enqueueSystemWebhook(webhook: MiSystemWebhook | MiSystemWebhook['id'], type: SystemWebhookEventType, content: unknown) {
+		const webhookEntity = typeof webhook === 'string'
+			? (await this.fetchActiveSystemWebhooks()).find(a => a.id === webhook)
+			: webhook;
+		if (!webhookEntity || !webhookEntity.isActive) {
+			this.logger.warn(`Webhook is not active or not found : ${webhook}`);
 			return;
 		}
 
-		if (!webhookEntity.isActive || !webhookEntity.on.includes(type)) {
-			this.logger.info(`Webhook ${webhookEntity.id} is not active or not listening to ${type}`);
+		if (!webhookEntity.on.includes(type)) {
+			this.logger.info(`Webhook ${webhookEntity.id} is not listening to ${type}`);
 			return;
 		}
 

@@ -21,7 +21,7 @@ export class AbuseReportNotification1713656541000 {
 				CONSTRAINT "PK_system_webhook_id" PRIMARY KEY ("id")
 			);
 			CREATE INDEX "IDX_system_webhook_isActive" ON "system_webhook" ("isActive");
-			CREATE INDEX "IDX_system_webhook_on" ON "system_webhook" ("on");
+			CREATE INDEX "IDX_system_webhook_on" ON "system_webhook" USING gin ("on");
 
 			CREATE TABLE "abuse_report_notification_recipient" (
 				"id" varchar(32) NOT NULL,
