@@ -1234,6 +1234,7 @@ keepOriginalFilename: "Keep original file name"
 keepOriginalFilenameDescription: "If you turn off this setting, files names will be replaced with random string automatically when you upload files."
 noDescription: "There is not the explanation"
 alwaysConfirmFollow: "Always confirm when following"
+inquiry: "Contact"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"
@@ -2557,6 +2558,7 @@ _urlPreviewSetting:
   userAgent: "User-Agent"
   userAgentDescription: "Sets the User-Agent to be used when retrieving previews. If left blank, the default User-Agent will be used."
   summaryProxy: "Proxy endpoints that generate previews"
+  summaryProxyDescription2: "The following parameters are linked to the proxy as a query string. If the proxy does not support them, the values are ignored."
 _mediaControls:
   pip: "Picture in Picture"
   playbackRate: "Playback Speed"
