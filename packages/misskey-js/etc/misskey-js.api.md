@@ -398,6 +398,13 @@ class APIClient {
     // (undocumented)
     fetch: FetchLike;
     // (undocumented)
+    getMiAuthURL(options: {
+        name?: string;
+        icon?: string;
+        callback?: string;
+        permission?: typeof permissions_2[number][];
+    }, sessionId?: string): string;
+    // (undocumented)
     origin: string;
 }
 
@@ -1085,6 +1092,22 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
+    'meta': {
+        req: MetaRequest;
+        res: {
+            $switch: {
+                $cases: [
+                [
+                    {
+                    detail: true;
+                },
+                MetaDetailed
+                ]
+                ];
+                $default: MetaLite;
+            };
+        };
+    };
     'signup': {
         req: SignupRequest;
         res: SignupResponse;
@@ -1096,6 +1119,10 @@ export type Endpoints = Overwrite<Endpoints_2, {
     'signin': {
         req: SigninRequest;
         res: SigninResponse;
+    };
+    'miauth/placeholder/check': {
+        req: EmptyRequest;
+        res: MiAuthCheckResponse;
     };
 }>;
 
@@ -1122,6 +1149,7 @@ declare namespace entities {
         SignupPendingResponse,
         SigninRequest,
         SigninResponse,
+        MiAuthCheckResponse,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -2249,6 +2277,12 @@ type MetaRequest = operations['meta']['requestBody']['content']['application/jso
 type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type MiAuthCheckResponse = {
+    token: string;
+    user: UserDetailedNotMe;
+};
+
+// @public (undocumented)
 type MiauthGenTokenRequest = operations['miauth___gen-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3110,6 +3144,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
+// src/api.ts:90:3 - (ae-forgotten-export) The symbol "permissions_2" needs to be exported by the entry point index.d.ts
 // src/entities.ts:25:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
