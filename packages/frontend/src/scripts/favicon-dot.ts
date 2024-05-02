@@ -2,29 +2,52 @@ class FavIconDot {
 	canvas : HTMLCanvasElement;
 	src : string | null = null;
 	ctx : CanvasRenderingContext2D | null = null;
-	favconImage : HTMLImageElement | null = null;
-	faviconEL : HTMLLinkElement;
-	hasLoaded : Promise<void>;
+	faviconImage : HTMLImageElement | null = null;
+	faviconEL : HTMLLinkElement | undefined;
+	hasLoaded : Promise<void> | undefined;
 
 	constructor() {
 		this.canvas = document.createElement('canvas');
-		this.faviconEL = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
+	}
 
+	//MUST BE CALLED BEFORE CALLING ANY OTHER FUNCTIONS
+	public async setup() {
+		const element : HTMLLinkElement = await this.getOrMakeFaviconElement();
+		
+		this.faviconEL = element;
 		this.src = this.faviconEL.getAttribute('href');
 		this.ctx = this.canvas.getContext('2d');
-		
-		this.favconImage = document.createElement('img');
-		this.hasLoaded = new Promise((resolve, _reject) => {
-			if (this.favconImage != null) {
-				this.favconImage.onload = () => {
-					this.canvas.width = (this.favconImage as HTMLImageElement).width;
-					this.canvas.height = (this.favconImage as HTMLImageElement).height;
-					// resolve();
-					setTimeout(() => resolve(), 200);
+			
+		this.faviconImage = document.createElement('img');
+		this.faviconImage.src = this.faviconEL.href;
+	
+		this.hasLoaded = new Promise((resolve, reject) => {
+			(this.faviconImage as HTMLImageElement).onload = () => {
+				this.canvas.width = (this.faviconImage as HTMLImageElement).width;
+				this.canvas.height = (this.faviconImage as HTMLImageElement).height;
+				resolve();
+			};
+	
+			(this.faviconImage as HTMLImageElement).onerror = () => {
+				reject('Failed to create favicon img element');
+			};
+		});
+	}
+
+	private async getOrMakeFaviconElement() : Promise<HTMLLinkElement> {
+		return new Promise((resolve, reject) => {
+			const favicon = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
+			if (favicon === document.querySelector<HTMLLinkElement>('link[rel$=icon]')) {
+				favicon.onload = () => {
+					resolve(favicon);
+				};
+
+				favicon.onerror = () => {
+					reject('Failed to load favicon');
 				};
 			}
+			resolve(favicon);
 		});
-		this.favconImage.src = this.faviconEL.href;
 	}
 
 	private _createFaviconElem() {
@@ -36,15 +59,15 @@ class FavIconDot {
 	}
 
 	private _drawIcon() {
-		if (!this.ctx || !this.favconImage) return;
+		if (!this.ctx || !this.faviconImage) return;
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.drawImage(this.favconImage, 0, 0, this.favconImage.width, this.favconImage.height);
+		this.ctx.drawImage(this.faviconImage, 0, 0, this.faviconImage.width, this.faviconImage.height);
 	}
 
 	private _drawDot() {
-		if (!this.ctx || !this.favconImage) return;
+		if (!this.ctx || !this.faviconImage) return;
 		this.ctx.beginPath();
-		this.ctx.arc(this.favconImage.width - 10, 10, 10, 0, 2 * Math.PI);
+		this.ctx.arc(this.faviconImage.width - 10, 10, 10, 0, 2 * Math.PI);
 		this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--navIndicator');
 		this.ctx.strokeStyle = 'white';
 		this.ctx.fill();
@@ -52,7 +75,7 @@ class FavIconDot {
 	}
 
 	private _setFavicon() {
-		this.faviconEL.href = this.canvas.toDataURL('image/png');
+		if (this.faviconEL) this.faviconEL.href = this.canvas.toDataURL('image/png');
 	}
 
 	async setVisible(isVisible : boolean) {
@@ -65,11 +88,23 @@ class FavIconDot {
 	}
 }
 
-let icon: FavIconDot = new FavIconDot();
+let icon: FavIconDot | undefined = undefined;
 
 export function setFavIconDot(visible: boolean) {
-	if (!icon) {
-		icon = new FavIconDot();
+	const setIconVisibility = async () => {
+		if (!icon) {
+			icon = new FavIconDot();
+			await icon.setup();
+		}
+		
+		(icon as FavIconDot).setVisible(visible);
+	};
+
+	// If document is already loaded, set visibility immediately
+	if (document.readyState === 'complete') {
+		setIconVisibility();
+	} else {
+		// Otherwise, set visibility when window loads
+		window.onload = setIconVisibility;
 	}
-	icon.setVisible(visible);
 }
