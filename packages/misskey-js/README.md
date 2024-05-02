@@ -37,8 +37,42 @@ import * as Misskey from 'misskey-js';
 import { api as misskeyApi } from 'misskey-js';
 ```
 
-## Authenticate
-todo
+## Authenticate (MiAuth)
+MiAuthでの認証に対応しています。
+
+### Step 1: 認証URLを生成
+`APIClient`クラスの`getMiAuthURL`メソッドを使用して認証URLを生成します（これは同期関数です）。生成したURLにユーザーを誘導し、認可させてください。
+
+``` ts
+const cli = new Misskey.api.APIClient({
+	origin: 'https://misskey.test',
+});
+
+const { url } = cli.getMiAuthURL({
+	name: 'My app',
+	callback: 'https://example.com/callback',
+	permission: ['read:account'],
+});
+
+// URLに飛ばす（例）
+location.href = url;
+```
+
+### Step 2: セッションIDからアクセストークンを取得
+`APIClient`クラスの`authWithMiAuth`メソッドを使用してセッションIDからアクセストークンを取得します。アクセストークンは返却されるほか、以降同一のインスタンスを利用したリクエストに自動で設定されます（この挙動は第２引数に`false`を与えることで回避できます）。
+
+コールバックURLを指定した場合、セッションIDはURLパラメータの`session`から取得できます。
+
+``` ts
+const cli = new Misskey.api.APIClient({
+	origin: 'https://misskey.test',
+});
+
+const { token } = await cli.authWithMiAuth(sessionId);
+
+// 以後、同じAPIClientを使い続ける場合はトークンが自動で設定されます
+const i = await cli.request('i');
+```
 
 ## API request
 APIを利用する際は、利用するサーバーの情報とアクセストークンを与えて`APIClient`クラスのインスタンスを初期化し、そのインスタンスの`request`メソッドを呼び出してリクエストを行います。

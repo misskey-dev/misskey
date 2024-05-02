@@ -221,3 +221,8 @@ export type SigninResponse = {
 	id: User['id'],
 	i: string,
 };
+
+export type MiAuthCheckResponse = {
+	token: string,
+	user: UserDetailedNotMe,
+};

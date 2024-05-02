@@ -1,7 +1,10 @@
 import './autogen/apiClientJSDoc.js';
 
+import { v4 as uuid } from 'uuid';
 import { SwitchCaseResponseType } from './api.types.js';
+import { permissions } from './consts.js';
 import type { Endpoints } from './api.types.js';
+import type { MiAuthCheckResponse } from './entities.js';
 
 export type {
 	SwitchCaseResponseType,
@@ -71,6 +74,57 @@ export class APIClient {
 
 				if (res.status === 200 || res.status === 204) {
 					resolve(body);
+				} else {
+					reject({
+						[MK_API_ERROR]: true,
+						...body.error,
+					});
+				}
+			}).catch(reject);
+		});
+	}
+
+	public getMiAuthURL(options: {
+		name?: string;
+		icon?: string;
+		callback?: string;
+		permission?: typeof permissions[number][];
+	}, sessionId?: string): {
+		sessionId: string;
+		url: string;
+	} {
+		const params = new URLSearchParams();
+		if (options.name) params.set('name', options.name);
+		if (options.icon) params.set('icon', options.icon);
+		if (options.callback) params.set('callback', options.callback);
+		if (options.permission) params.set('permission', options.permission.join(','));
+
+		const _sessionId = sessionId ?? uuid();
+
+		return {
+			sessionId: _sessionId,
+			url: `${this.origin}/miauth/${_sessionId}?${params.toString()}`,
+		};
+	}
+
+	public authWithMiAuth(sessionId: string, setToken = true): Promise<MiAuthCheckResponse> {
+		return new Promise((resolve, reject) => {
+			this.fetch(`${this.origin}/api/miauth/${sessionId}/check`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'omit',
+				cache: 'no-cache',
+			}).then(async (res) => {
+				const body = res.status === 204 ? null : await res.json();
+
+				if (res.status === 200 && body) {
+					if (setToken) {
+						this.credential = body.token;
+					}
+
+					resolve(body as MiAuthCheckResponse);
 				} else {
 					reject({
 						[MK_API_ERROR]: true,

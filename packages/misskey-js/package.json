@@ -38,26 +38,28 @@
 		"@swc/jest": "0.2.31",
 		"@types/jest": "29.5.12",
 		"@types/node": "20.11.22",
+		"@types/uuid": "9.0.8",
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
+		"esbuild": "0.19.11",
 		"eslint": "8.57.0",
+		"execa": "8.0.1",
+		"glob": "10.3.10",
 		"jest": "29.7.0",
 		"jest-fetch-mock": "3.0.3",
 		"jest-websocket-mock": "2.5.0",
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.0",
-		"execa": "8.0.1",
 		"tsd": "0.30.7",
-		"typescript": "5.3.3",
-		"esbuild": "0.19.11",
-		"glob": "10.3.10"
+		"typescript": "5.3.3"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
 		"eventemitter3": "5.0.1",
-		"reconnecting-websocket": "4.4.0"
+		"reconnecting-websocket": "4.4.0",
+		"uuid": "9.0.1"
 	}
 }
