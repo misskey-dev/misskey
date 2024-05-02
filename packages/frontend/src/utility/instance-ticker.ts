@@ -23,26 +23,23 @@ export const getTickerInfo = (props: TickerProps): TickerInfo => {
 	if (props.channel != null) {
 		return {
 			name: props.channel.name,
-			iconUrl: getProxiedIconUrl(localInstance) ?? '/favicon.ico',
+			iconUrl: getProxiedImageUrlNullable(localInstance.iconUrl, 'preview') ?? '/favicon.ico',
 			themeColor: props.channel.color,
 		} as const satisfies TickerInfo;
 	}
 	if (props.instance != null) {
 		return {
 			name: props.instance.name ?? '',
-			iconUrl: getProxiedIconUrl(props.instance) ?? '/client-assets/dummy.png',
+			// NOTE: リモートサーバーにおいてiconUrlを参照すると意図した画像にならない https://github.com/taiyme/misskey/issues/210
+			iconUrl: getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png',
 			themeColor: props.instance.themeColor ?? TICKER_BG_COLOR_DEFAULT,
 		} as const satisfies TickerInfo;
 	}
 	return {
 		name: localInstance.name ?? host,
-		iconUrl: getProxiedIconUrl(localInstance) ?? '/favicon.ico',
+		iconUrl: getProxiedImageUrlNullable(localInstance.iconUrl, 'preview') ?? '/favicon.ico',
 		themeColor: localInstance.themeColor ?? document.querySelector<HTMLMetaElement>('meta[name="theme-color-orig"]')?.content ?? TICKER_BG_COLOR_DEFAULT,
 	} as const satisfies TickerInfo;
-};
-
-const getProxiedIconUrl = (instance: NonNullable<TickerProps['instance']>): string | null => {
-	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? null;
 };
 //#endregion ticker info
 
