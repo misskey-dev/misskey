@@ -149,7 +149,7 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 		icon: 'ti ti-link',
 		text,
 		action: (): void => {
-			copyToClipboard(`${url}/notes/${note.id}`);
+			copyToClipboard(note.url ?? note.uri ?? `${url}/notes/${note.id}`);
 			os.success();
 		},
 	};
@@ -224,11 +224,6 @@ export function getNoteMenu(props: {
 
 	function copyContent(): void {
 		copyToClipboard(appearNote.text);
-		os.success();
-	}
-
-	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 
