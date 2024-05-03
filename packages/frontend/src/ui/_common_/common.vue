@@ -92,7 +92,7 @@ if ($i) {
 	connection.on('notification', onNotification);
 
 	//For the favicon notification dot
-	watch(() => $i?.hasUnreadNotification, (hasAny) => setFavIconDot((defaultStore.state.enableFaviconNotificationDot ? hasAny : false) ?? false));
+	watch(() => $i?.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot, (hasAny) => setFavIconDot(hasAny as boolean));
 
 	if ($i.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot) setFavIconDot(true);
 	

@@ -21,15 +21,14 @@ class FavIconDot {
 		this.faviconImage = document.createElement('img');
 	
 		this.hasLoaded = new Promise((resolve, reject) => {
-			(this.faviconImage as HTMLImageElement).onload = () => {
+			(this.faviconImage as HTMLImageElement).addEventListener('load', () => {
 				this.canvas.width = (this.faviconImage as HTMLImageElement).width;
 				this.canvas.height = (this.faviconImage as HTMLImageElement).height;
 				resolve();
-			};
-	
-			(this.faviconImage as HTMLImageElement).onerror = () => {
+			});
+			(this.faviconImage as HTMLImageElement).addEventListener('error', () => {
 				reject('Failed to create favicon img element');
-			};
+			});
 		});
 
 		this.faviconImage.src = this.faviconEL.href;
@@ -38,9 +37,9 @@ class FavIconDot {
 	private async getOrMakeFaviconElement() : Promise<HTMLLinkElement> {
 		return new Promise((resolve, reject) => {
 			const favicon = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
-			favicon.onload = () => {
+			favicon.addEventListener('load', () => {
 				resolve(favicon);
-			};
+			});
 
 			favicon.onerror = () => {
 				reject('Failed to load favicon');
@@ -80,7 +79,6 @@ class FavIconDot {
 	async setVisible(isVisible : boolean) {
 		//Wait for it to have loaded the icon
 		await this.hasLoaded;
-		console.log(this.hasLoaded);
 		this._drawIcon();
 		if (isVisible) this._drawDot();
 		this._setFavicon();
@@ -104,6 +102,6 @@ export function setFavIconDot(visible: boolean) {
 		setIconVisibility();
 	} else {
 		// Otherwise, set visibility when window loads
-		window.onload = setIconVisibility;
+		window.addEventListener('load', setIconVisibility);
 	}
 }
