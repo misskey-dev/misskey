@@ -6,7 +6,6 @@
 import { Module } from '@nestjs/common';
 import { CoreModule } from '@/core/CoreModule.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { MailDeliverProcessorService } from '@/queue/processors/MailDeliverProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QueueProcessorService } from './QueueProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
@@ -78,7 +77,6 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		InboxProcessorService,
 		AggregateRetentionProcessorService,
 		QueueProcessorService,
-		MailDeliverProcessorService,
 	],
 	exports: [
 		QueueProcessorService,

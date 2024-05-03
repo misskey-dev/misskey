@@ -7,15 +7,14 @@ import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { QUEUE, baseQueueOptions } from '@/queue/const.js';
+import { baseQueueOptions, QUEUE } from '@/queue/const.js';
 import { allSettled } from '@/misc/promise-tracker.js';
 import {
 	DeliverJobData,
-	InboxJobData,
 	EndedPollNotificationJobData,
-	WebhookDeliverJobData,
+	InboxJobData,
 	RelationshipJobData,
-	MailDeliverJobData,
+	WebhookDeliverJobData,
 } from '../queue/types.js';
 import type { Provider } from '@nestjs/common';
 

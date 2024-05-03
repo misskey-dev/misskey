@@ -131,13 +131,6 @@ export type UserWebhookDeliverJobData = {
 	eventId: string;
 };
 
-export type MailDeliverJobData = {
-	to: string;
-	subject: string;
-	text: string;
-	html: string;
-};
-
 export type ThinUser = {
 	id: MiUser['id'];
 };

@@ -9,7 +9,6 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { MailDeliverProcessorService } from '@/queue/processors/MailDeliverProcessorService.js';
 import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
@@ -80,7 +79,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private relationshipQueueWorker: Bull.Worker;
 	private objectStorageQueueWorker: Bull.Worker;
 	private endedPollNotificationQueueWorker: Bull.Worker;
-	private mailDeliverQueueWorker: Bull.Worker;
 
 	constructor(
 		@Inject(DI.config)
@@ -117,7 +115,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private aggregateRetentionProcessorService: AggregateRetentionProcessorService,
 		private checkExpiredMutingsProcessorService: CheckExpiredMutingsProcessorService,
 		private cleanProcessorService: CleanProcessorService,
-		private mailDeliverProcessorService: MailDeliverProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
 
@@ -331,23 +328,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			...baseQueueOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 			autorun: false,
 		});
-		//#endregion
-
-		//#region mail deliver
-		this.mailDeliverQueueWorker = new Bull.Worker(QUEUE.MAIL_DELIVER, (job) => this.mailDeliverProcessorService.process(job), {
-			...baseQueueOptions(this.config, QUEUE.MAIL_DELIVER),
-			autorun: false,
-			concurrency: 16,
-		});
-
-		const mailDeliverLogger = this.logger.createSubLogger('mailDeliver');
-
-		this.mailDeliverQueueWorker
-			.on('active', (job) => mailDeliverLogger.debug(`active id=${job.id}`))
-			.on('completed', (job, result) => mailDeliverLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => mailDeliverLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => mailDeliverLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-			.on('stalled', (jobId) => mailDeliverLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 	}
 
