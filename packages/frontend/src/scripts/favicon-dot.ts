@@ -50,8 +50,10 @@ class FavIconDot {
 
 	private _createFaviconElem() {
 		const newLink = document.createElement('link');
-		newLink.rel = 'icon';
-		newLink.href = '/favicon.ico';
+		newLink.setAttribute('rel', 'icon');
+		newLink.setAttribute('href', '/favicon.ico');
+		newLink.setAttribute('type', 'image/x-icon');
+
 		document.head.appendChild(newLink);
 		return newLink;
 	}
