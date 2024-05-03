@@ -6,14 +6,14 @@
 import { entities } from 'misskey-js';
 import { beforeEach, describe, test } from '@jest/globals';
 import Fastify from 'fastify';
-import { api, initTestDb, randomString, role, signup, startJobQueue, UserToken } from '../utils.js';
+import { api, randomString, role, signup, startJobQueue, UserToken } from '../../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 const WEBHOOK_HOST = 'http://localhost:15080';
 const WEBHOOK_PORT = 15080;
 process.env.NODE_ENV = 'test';
 
-describe('webhook', () => {
+describe('[シナリオ] ユーザ通報 -> SystemWebhook発信 -> 立てたサーバで受信', () => {
 	let queue: INestApplicationContext;
 	let admin: entities.SignupResponse;
 	let alice: entities.SignupResponse;
