@@ -36,7 +36,7 @@ class FavIconDot {
 
 	private async getOrMakeFaviconElement() : Promise<HTMLLinkElement> {
 		return new Promise((resolve, reject) => {
-			const favicon = document.querySelector<HTMLLinkElement>('link[rel$=icon]') ?? this._createFaviconElem();
+			const favicon = (document.querySelector('link[rel=icon]') ?? this._createFaviconElem()) as HTMLLinkElement;
 			favicon.addEventListener('load', () => {
 				resolve(favicon);
 			});
