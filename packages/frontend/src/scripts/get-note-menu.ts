@@ -227,17 +227,6 @@ export function getNoteMenu(props: {
 		os.success();
 	}
 
-	async function copyNoteLinkOnRemoteServer(): Promise<void> {
-		// TODO: 何が違う？
-		copyToClipboard(appearNote.url ?? appearNote.uri);
-		return os.success();
-	}
-
-	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
-		os.success();
-	}
-
 	function togglePin(pin: boolean): void {
 		os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 			noteId: appearNote.id,
@@ -305,7 +294,7 @@ export function getNoteMenu(props: {
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,
-				}, { type: 'divider' }] : []
+				}, { type: 'divider' as const }] : []
 			), {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
@@ -314,20 +303,22 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
-			}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-			, (appearNote.url || appearNote.uri) ? {
+			},
+			getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink),
+			...((appearNote.url != null || appearNote.uri != null) ? [{
+				icon: 'ti ti-link',
+				text: `${i18n.ts.copyLink} (${i18n.ts.remote})`,
+				action: () => {
+					copyToClipboard(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			} : undefined,
-			// リモートのリンクをコピー
-			(appearNote.url || appearNote.uri) ? {
-				icon: 'ti ti-external-link',
-				text: i18n.ts.showOnRemote,
-				action: () => copyNoteLinkOnRemoteServer,
-			} : undefined,
+			}] : []),
 			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
@@ -338,7 +329,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
-			{ type: 'divider' },
+			{ type: 'divider' as const },
 			statePromise.then(state => state.isFavorited ? {
 				icon: 'ti ti-star-off',
 				text: i18n.ts.unfavorite,
@@ -394,13 +385,13 @@ export function getNoteMenu(props: {
 			: []
 		),*/
 			...(appearNote.userId !== $i.id ? [
-				{ type: 'divider' },
+				{ type: 'divider' as const },
 				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
 			]
 			: []
 			),
 			...(appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin) ? [
-				{ type: 'divider' },
+				{ type: 'divider' as const },
 				{
 					type: 'parent' as const,
 					icon: 'ti ti-device-tv',
@@ -436,7 +427,7 @@ export function getNoteMenu(props: {
 			: []
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
-				{ type: 'divider' },
+				{ type: 'divider' as const },
 				appearNote.userId === $i.id ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
