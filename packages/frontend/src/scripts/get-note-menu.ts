@@ -237,17 +237,6 @@ export function getNoteMenu(props: {
 		os.success();
 	}
 
-	async function copyNoteLinkOnRemoteServer(): Promise<void> {
-		// TODO: 何が違う？
-		copyToClipboard(appearNote.url ?? appearNote.uri);
-		return os.success();
-	}
-
-	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
-		os.success();
-	}
-
 	function togglePin(pin: boolean): void {
 		os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 			noteId: appearNote.id,
@@ -313,7 +302,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.unclip,
 				danger: true,
 				action: unclip,
-			}, { type: 'divider' });
+			}, { type: 'divider' as const });
 		}
 
 		menuItems.push({
@@ -327,16 +316,19 @@ export function getNoteMenu(props: {
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
 
 		if (appearNote.url || appearNote.uri) {
-			menuItems.push({
+			menuItems.push({ // リモートのリンクをコピー
+				icon: 'ti ti-external-link',
+				text: i18n.ts.showOnRemote,
+				action: () => {
+					copyToClipboard(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			}, { // リモートのリンクをコピー
-				icon: 'ti ti-external-link',
-				text: i18n.ts.showOnRemote,
-				action: () => copyNoteLinkOnRemoteServer,
 			});
 		} else {
 			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
@@ -358,7 +350,7 @@ export function getNoteMenu(props: {
 			});
 		}
 
-		menuItems.push({ type: 'divider' });
+		menuItems.push({ type: 'divider' as const });
 
 		menuItems.push(statePromise.then(state => state.isFavorited ? {
 			icon: 'ti ti-star-off',
@@ -416,12 +408,12 @@ export function getNoteMenu(props: {
 		});
 
 		if (appearNote.userId !== $i.id) {
-			menuItems.push({ type: 'divider' });
+			menuItems.push({ type: 'divider' as const });
 			menuItems.push(getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse));
 		}
 
 		if (appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin)) {
-			menuItems.push({ type: 'divider' });
+			menuItems.push({ type: 'divider' as const });
 			menuItems.push({
 				type: 'parent',
 				icon: 'ti ti-device-tv',
@@ -456,7 +448,7 @@ export function getNoteMenu(props: {
 		}
 
 		if (appearNote.userId === $i.id || $i.isModerator || $i.isAdmin) {
-			menuItems.push({ type: 'divider' });
+			menuItems.push({ type: 'divider' as const });
 			if (appearNote.userId === $i.id) {
 				menuItems.push({
 					icon: 'ti ti-edit',
