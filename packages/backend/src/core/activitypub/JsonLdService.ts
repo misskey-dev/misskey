@@ -10,11 +10,11 @@ import { bindThis } from '@/decorators.js';
 import { CONTEXTS, PRELOADED_CONTEXTS } from './misc/contexts.js';
 import { validateContentTypeSetAsJsonLD } from './misc/validator.js';
 import type { JsonLdDocument } from 'jsonld';
-import type { JsonLd, RemoteDocument } from 'jsonld/jsonld-spec.js';
+import type { JsonLd as JsonLdObject, RemoteDocument } from 'jsonld/jsonld-spec.js';
 
-// RsaSignature2017 implementation is based from https://github.com/transmute-industries/RsaSignature2017
+// RsaSignature2017 implementation is based on https://github.com/transmute-industries/RsaSignature2017
 
-class LdSignature {
+class JsonLd {
 	public debug = false;
 	public preLoad = true;
 	public loderTimeout = 5000;
@@ -133,7 +133,7 @@ class LdSignature {
 	}
 
 	@bindThis
-	private async fetchDocument(url: string): Promise<JsonLd> {
+	private async fetchDocument(url: string): Promise<JsonLdObject> {
 		const json = await this.httpRequestService.send(
 			url,
 			{
@@ -154,7 +154,7 @@ class LdSignature {
 			}
 		});
 
-		return json as JsonLd;
+		return json as JsonLdObject;
 	}
 
 	@bindThis
@@ -166,14 +166,14 @@ class LdSignature {
 }
 
 @Injectable()
-export class LdSignatureService {
+export class JsonLdService {
 	constructor(
 		private httpRequestService: HttpRequestService,
 	) {
 	}
 
 	@bindThis
-	public use(): LdSignature {
-		return new LdSignature(this.httpRequestService);
+	public use(): JsonLd {
+		return new JsonLd(this.httpRequestService);
 	}
 }

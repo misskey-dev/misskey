@@ -28,7 +28,7 @@ import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
-import { LdSignatureService } from './LdSignatureService.js';
+import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXTS } from './misc/contexts.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
@@ -57,7 +57,7 @@ export class ApRendererService {
 		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
-		private ldSignatureService: LdSignatureService,
+		private jsonLdService: JsonLdService,
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
@@ -167,6 +167,7 @@ export class ApRendererService {
 			mediaType: file.webpublicType ?? file.type,
 			url: this.driveFileEntityService.getPublicUrl(file, { remapActivityPub: true }),
 			name: file.comment,
+			sensitive: file.isSensitive,
 		};
 	}
 
@@ -631,9 +632,9 @@ export class ApRendererService {
 	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const ldSignature = this.ldSignatureService.use();
-		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
+		const jsonLd = this.jsonLdService.use();
+		jsonLd.debug = false;
+		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 
 		return activity;
 	}

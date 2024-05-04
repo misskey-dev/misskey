@@ -14,14 +14,15 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId, IActivity } from '@/core/activitypub/type.js';
+import { getApId } from '@/core/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
+import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -38,7 +39,7 @@ export class InboxProcessorService {
 		private apInboxService: ApInboxService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		private ldSignatureService: LdSignatureService,
+		private jsonLdService: JsonLdService,
 		private apPersonService: ApPersonService,
 		private apDbResolverService: ApDbResolverService,
 		private instanceChart: InstanceChart,
@@ -133,9 +134,10 @@ export class InboxProcessorService {
 					throw new Bull.UnrecoverableError('skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした');
 				}
 
+				const jsonLd = this.jsonLdService.use();
+
 				// LD-Signature検証
-				const ldSignature = this.ldSignatureService.use();
-				const verified = await ldSignature.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
+				const verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
 				if (!verified) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
 				}
@@ -143,7 +145,7 @@ export class InboxProcessorService {
 				// アクティビティを正規化
 				delete activity.signature;
 				try {
-					activity = await ldSignature.compact(activity) as IActivity;
+					activity = await jsonLd.compact(activity) as IActivity;
 				} catch (e) {
 					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${e}`);
 				}

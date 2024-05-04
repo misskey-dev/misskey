@@ -5044,6 +5044,10 @@ export interface Locale extends ILocale {
      */
     "alwaysConfirmFollow": string;
     /**
+     * お問い合わせ
+     */
+    "inquiry": string;
+    /**
      * 通報の種類
      */
     "abuseReportCategory": string;
