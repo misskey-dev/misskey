@@ -2,6 +2,7 @@
 
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+- 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
 
 ### General
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
@@ -37,6 +38,7 @@
 - Enhance: フォローするかどうかの確認ダイアログを出せるように
 - Enhance: Playを手動でリロードできるように
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
+- Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
 - Chore: AiScriptを0.18.0にバージョンアップ
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
@@ -56,10 +58,12 @@
 - Fix: ページのOGP URLが間違っているのを修正
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
+- Fix: 連合なしの状態の読み書きができない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
+- Fix: リモートから配送されたアクティビティにJSON-LD compactionをかける
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
@@ -74,6 +78,8 @@
 - Fix: グローバルタイムラインで返信が表示されないことがある問題を修正
 - Fix: リノートをミュートしたユーザの投稿のリノートがミュートされる問題を修正
 - Fix: AP Link等は添付ファイル扱いしないようになど (#13754)
+- Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
+  - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
 
 ## 2024.3.1
 
