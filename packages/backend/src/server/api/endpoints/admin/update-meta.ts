@@ -172,6 +172,10 @@ export const paramDef = {
 		proxyCheckioApiKey: {
 			type: 'string', nullable: true,
 		},
+		iconLight: { type: 'string', nullable: true },
+		iconDark: { type: 'string', nullable: true },
+		bannerLight: { type: 'string', nullable: true },
+		bannerDark: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
@@ -650,7 +654,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const value = ((ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy) ?? '').trim();
 				set.urlPreviewSummaryProxyUrl = value === '' ? null : value;
 			}
-
+			if (ps.bannerDark !== undefined) {
+				set.bannerDark = ps.bannerDark;
+			}
+			if (ps.bannerLight !== undefined) {
+				set.bannerLight = ps.bannerLight;
+			}
+			if (ps.iconDark !== undefined) {
+				set.iconDark = ps.iconDark;
+			}
+			if (ps.iconLight !== undefined) {
+				set.iconLight = ps.iconLight;
+			}
 			const before = await this.metaService.fetch(true);
 
 			await this.metaService.update(set);

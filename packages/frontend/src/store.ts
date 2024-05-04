@@ -9,6 +9,7 @@ import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 interface PostFormAction {
 	title: string,
@@ -52,17 +53,14 @@ export type SoundStore = {
 
 	volume: number;
 }
-
+import { instance } from '@/instance.js';
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
-export const bannerDark = 'https://files.prismisskey.space/misskey/e088c6d1-b07f-4312-8d41-fee2f64071e9.png';
-export const bannerLight = 'https://files.prismisskey.space/misskey/85500d2f-41a9-48ff-a737-65d6fdf74604.png';
-export const iconDark = 'https://files.prismisskey.space/misskey/484efc68-de41-4786-b2b6-e5085c31c2c4.webp';
-export const iconLight = 'https://files.prismisskey.space/misskey/c3d722fe-379f-4c85-9414-90c232d53237.webp';
+export const { bannerDark, bannerLight, iconDark, iconLight } = instance;
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない

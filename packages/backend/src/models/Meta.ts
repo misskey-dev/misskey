@@ -437,6 +437,30 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public bannerDark: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public bannerLight: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public iconDark: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public iconLight: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public objectStorageEndpoint: string | null;
 
 	@Column('varchar', {

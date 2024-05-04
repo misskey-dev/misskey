@@ -496,6 +496,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			iconLight: { type: 'string', nullable: true },
+			iconDark: { type: 'string', nullable: true },
+			bannerLight: { type: 'string', nullable: true },
+			bannerDark: { type: 'string', nullable: true },
 		},
 	},
 } as const;
@@ -636,6 +640,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
 				urlPreviewUserAgent: instance.urlPreviewUserAgent,
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
+				iconLight: instance.iconLight,
+				iconDark: instance.iconDark,
+				bannerLight: instance.bannerLight,
+				bannerDark: instance.bannerDark,
 			};
 		});
 	}
