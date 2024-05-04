@@ -20,13 +20,188 @@ export const meta = {
 	res: {
 		type: 'object',
 		properties: {
+			image: {
+				type: 'object',
+				optional: true,
+				properties: {
+					link: {
+						type: 'string',
+						optional: true,
+					},
+					url: {
+						type: 'string',
+						optional: false,
+					},
+					title: {
+						type: 'string',
+						optional: true,
+					},
+				},
+			},
+			paginationLinks: {
+				type: 'object',
+				optional: true,
+				properties: {
+					self: {
+						type: 'string',
+						optional: true,
+					},
+					first: {
+						type: 'string',
+						optional: true,
+					},
+					next: {
+						type: 'string',
+						optional: true,
+					},
+					last: {
+						type: 'string',
+						optional: true,
+					},
+					prev: {
+						type: 'string',
+						optional: true,
+					},
+				},
+			},
+			link: {
+				type: 'string',
+				optional: true,
+			},
+			title: {
+				type: 'string',
+				optional: true,
+			},
 			items: {
 				type: 'array',
+				optional: false,
 				items: {
 					type: 'object',
+					properties: {
+						link: {
+							type: 'string',
+							optional: true,
+						},
+						guid: {
+							type: 'string',
+							optional: true,
+						},
+						title: {
+							type: 'string',
+							optional: true,
+						},
+						pubDate: {
+							type: 'string',
+							optional: true,
+						},
+						creator: {
+							type: 'string',
+							optional: true,
+						},
+						summary: {
+							type: 'string',
+							optional: true,
+						},
+						content: {
+							type: 'string',
+							optional: true,
+						},
+						isoDate: {
+							type: 'string',
+							optional: true,
+						},
+						categories: {
+							type: 'array',
+							optional: true,
+							items: {
+								type: 'string',
+							},
+						},
+						contentSnippet: {
+							type: 'string',
+							optional: true,
+						},
+						enclosure: {
+							type: 'object',
+							optional: true,
+							properties: {
+								url: {
+									type: 'string',
+									optional: false,
+								},
+								length: {
+									type: 'number',
+									optional: true,
+								},
+								type: {
+									type: 'string',
+									optional: true,
+								},
+							},
+						},
+					},
 				},
-			}
-		}
+			},
+			feedUrl: {
+				type: 'string',
+				optional: true,
+			},
+			description: {
+				type: 'string',
+				optional: true,
+			},
+			itunes: {
+				type: 'object',
+				optional: true,
+				additionalProperties: true,
+				properties: {
+					image: {
+						type: 'string',
+						optional: true,
+					},
+					owner: {
+						type: 'object',
+						optional: true,
+						properties: {
+							name: {
+								type: 'string',
+								optional: true,
+							},
+							email: {
+								type: 'string',
+								optional: true,
+							},
+						},
+					},
+					author: {
+						type: 'string',
+						optional: true,
+					},
+					summary: {
+						type: 'string',
+						optional: true,
+					},
+					explicit: {
+						type: 'string',
+						optional: true,
+					},
+					categories: {
+						type: 'array',
+						optional: true,
+						items: {
+							type: 'string',
+						},
+					},
+					keywords: {
+						type: 'array',
+						optional: true,
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
+		},
 	},
 } as const;
 
