@@ -50,12 +50,9 @@ jobs:
 
       - name: Get PR ref
         id: get-ref
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
-          PR_REF=$(gh pr view $PR_NUMBER --json headRefName -q '.headRefName')
-          echo "pr-ref=$PR_REF" > $GITHUB_OUTPUT
+          PR_REF="refs/pull/${{ github.event.issue.number }}/head"
+          echo "pr-ref=$PR_REF" >> $GITHUB_OUTPUT
 
       - name: Extract wait time
         id: get-wait-time
