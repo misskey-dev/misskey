@@ -1,4 +1,4 @@
-name: On Release Created (Publish misskey-js)
+name: On Release Created (Publish Docker Image)
 
 on:
   release:
