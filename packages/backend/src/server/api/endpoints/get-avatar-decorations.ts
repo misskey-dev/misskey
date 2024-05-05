@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -70,10 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const decorations = await this.avatarDecorationService.getAll(true);
 			const allRoles = await this.roleService.getRoles();
 
-			// Filter decorations where host is null
-			const filteredDecorations = decorations.filter(decoration => decoration.host === null);
-
-			return filteredDecorations.map(decoration => ({
+			return decorations.map(decoration => ({
 				id: decoration.id,
 				name: decoration.name,
 				description: decoration.description,

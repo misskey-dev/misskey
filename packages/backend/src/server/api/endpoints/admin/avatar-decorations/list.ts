@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -88,9 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const avatarDecorations = await this.avatarDecorationService.getAll(true);
 
-			const filteredAvatarDecorations = avatarDecorations.filter(avatarDecoration => avatarDecoration.host === null);
-			console.log(filteredAvatarDecorations);
-			return filteredAvatarDecorations.map(avatarDecoration => ({
+			return avatarDecorations.map(avatarDecoration => ({
 				id: avatarDecoration.id,
 				createdAt: this.idService.parse(avatarDecoration.id).date.toISOString(),
 				updatedAt: avatarDecoration.updatedAt?.toISOString() ?? null,

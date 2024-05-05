@@ -39,8 +39,6 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { isNotNull } from '@/misc/is-not-null.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -79,8 +77,6 @@ export class ApPersonService implements OnModuleInit {
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
 	private logger: Logger;
-	private httpRequestService: HttpRequestService;
-	private avatarDecorationService: AvatarDecorationService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -130,8 +126,6 @@ export class ApPersonService implements OnModuleInit {
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
 		this.logger = this.apLoggerService.logger;
-		this.httpRequestService = this.moduleRef.get('HttpRequestService');
-		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 	}
 
 	private punyHost(url: string): string {
@@ -233,73 +227,21 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
-	private async resolveAvatarAndBanner(user: MiRemoteUser, host: string | null, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>>> {
-		if (user == null) throw new Error('failed to create user: user is null');
-
+	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>> {
 		const [avatar, banner] = await Promise.all([icon, image].map(img => {
-			// if we have an explicitly missing image, return an
-			// explicitly-null set of values
-			if ((img == null) || (typeof img === 'object' && img.url == null)) {
-				return { id: null, url: null, blurhash: null };
-			}
+			if (img == null) return null;
+			if (user == null) throw new Error('failed to create user: user is null');
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
 
-		/*
-			we don't want to return nulls on errors! if the database fields
-			are already null, nothing changes; if the database has old
-			values, we should keep those. The exception is if the remote has
-			actually removed the images: in that case, the block above
-			returns the special {id:null}&c value, and we return those
-		*/
 		return {
-			...( avatar ? {
-				avatarId: avatar.id,
-				avatarUrl: avatar.url ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
-				avatarBlurhash: avatar.blurhash,
-			} : {}),
-			...( banner ? {
-				bannerId: banner.id,
-				bannerUrl: banner.url ? this.driveFileEntityService.getPublicUrl(banner) : null,
-				bannerBlurhash: banner.blurhash,
-			} : {}),
+			avatarId: avatar?.id ?? null,
+			bannerId: banner?.id ?? null,
+			avatarUrl: avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
+			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
+			avatarBlurhash: avatar?.blurhash ?? null,
+			bannerBlurhash: banner?.blurhash ?? null,
 		};
-
-		if (host) {
-			const i = await this.federatedInstanceService.fetch(host);
-			console.log('avatarDecorationFetch: start');
-			if (i.softwareName === 'misskey') {
-				const remoteUserId = user.uri.split('/users/')[1];
-				const userMetaRequest = await this.httpRequestService.send(`https://${i.host}/api/users/show`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						'userId': remoteUserId,
-					}),
-				});
-				const res: any = await userMetaRequest.json();
-				if (res.avatarDecorations) {
-					const localDecos = await this.avatarDecorationService.getAll();
-					// ローカルのデコレーションとして登録する
-					for (const deco of res.avatarDecorations) {
-						if (localDecos.some((v) => v.id === deco.id)) continue;
-						await this.avatarDecorationService.create({
-							id: deco.id,
-							updatedAt: null,
-							url: deco.url,
-							name: `import_${host}_${deco.id}`,
-							description: `Imported from ${host}`,
-							host: host,
-						});
-					}
-					Object.assign(returnData, { avatarDecorations: res.avatarDecorations });
-				}
-			}
-		}
-
-		return returnData;
 	}
 
 	/**
