@@ -22,6 +22,7 @@
 - 投稿フォームのツールバーを任意にカスタマイズできるように
 - 下書き機能
 - 同じ音源が短時間で重複して流れないように
+- 通知にフォロバボタンを表示
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)
