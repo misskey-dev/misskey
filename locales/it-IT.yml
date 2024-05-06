@@ -1361,7 +1361,7 @@ _serverSettings:
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"
-  moveFromLabel: "Profilo da cui migrare:"
+  moveFromLabel: "Profilo da cui migrare #{n}"
   moveFromDescription: "Se desideri spostare i profili follower da un altro profilo a questo, devi prima creare un alias qui. Assicurati averlo creato PRIMA di eseguire l'attività! Inserisci l'indirizzo del profilo mittente in questo modo: @persona@istanza.it"
   moveTo: "Migrare questo profilo verso un un altro"
   moveToLabel: "Profilo verso cui migrare"
