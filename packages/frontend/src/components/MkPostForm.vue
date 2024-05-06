@@ -988,7 +988,7 @@ function cancel() {
 }
 
 async function closed() {
-	if (defaultStore.state.draftSavingBehavior === 'manual' && (text.value !== '' || files.value.length > 0)) {
+	if (defaultStore.state.draftSavingBehavior === 'manual' && !posted.value && (text.value !== '' || files.value.length > 0)) {
 		os.confirm({
 			type: 'question',
 			text: i18n.ts.saveConfirm,
