@@ -1361,7 +1361,7 @@ _serverSettings:
 _accountMigration:
   moveFrom: "Trasladar de otra cuenta a ésta"
   moveFromSub: "Crear un alias para otra cuenta."
-  moveFromLabel: "Cuenta desde la que se realiza el traslado:"
+  moveFromLabel: "Cuenta desde la que se realiza el traslado #{n}"
   moveFromDescription: "Si quieres transferir seguidores de otra cuenta a esta cuenta y trasladarlos, tendrás que crear un alias aquí. Asegúrate de crearlo antes de realizar el traslado. Introduce la cuenta desde la que estás moviendo los seguidores así: @person@instance.com"
   moveTo: "Mover esta cuenta a una nueva"
   moveToLabel: "Cuenta destino:"
