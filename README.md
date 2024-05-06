@@ -23,6 +23,7 @@
 - 下書き機能
 - 同じ音源が短時間で重複して流れないように
 - 通知にフォロバボタンを表示
+- 二要素認証のバックアップコードを保存するように促すダイアログを表示するように
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)
