@@ -1,18 +1,20 @@
 class FavIconDot {
-	canvas : HTMLCanvasElement;
-	src : string | null = null;
-	ctx : CanvasRenderingContext2D | null = null;
-	faviconImage : HTMLImageElement | null = null;
-	faviconEL : HTMLLinkElement | undefined;
-	hasLoaded : Promise<void> | undefined;
+	canvas: HTMLCanvasElement;
+	src: string | null = null;
+	ctx: CanvasRenderingContext2D | null = null;
+	faviconImage: HTMLImageElement | null = null;
+	faviconEL: HTMLLinkElement | undefined;
+	hasLoaded: Promise<void> | undefined;
 
 	constructor() {
 		this.canvas = document.createElement('canvas');
 	}
 
-	//MUST BE CALLED BEFORE CALLING ANY OTHER FUNCTIONS
+	/**
+	 * Must be called before calling any other functions
+	 */
 	public async setup() {
-		const element : HTMLLinkElement = await this.getOrMakeFaviconElement();
+		const element: HTMLLinkElement = await this.getOrMakeFaviconElement();
 		
 		this.faviconEL = element;
 		this.src = this.faviconEL.getAttribute('href');
@@ -34,9 +36,9 @@ class FavIconDot {
 		this.faviconImage.src = this.faviconEL.href;
 	}
 
-	private async getOrMakeFaviconElement() : Promise<HTMLLinkElement> {
+	private async getOrMakeFaviconElement(): Promise<HTMLLinkElement> {
 		return new Promise((resolve, reject) => {
-			const favicon = (document.querySelector('link[rel=icon]') ?? this._createFaviconElem()) as HTMLLinkElement;
+			const favicon = (document.querySelector('link[rel=icon]') ?? this.createFaviconElem()) as HTMLLinkElement;
 			favicon.addEventListener('load', () => {
 				resolve(favicon);
 			});
@@ -48,7 +50,7 @@ class FavIconDot {
 		});
 	}
 
-	private _createFaviconElem() {
+	private createFaviconElem() {
 		const newLink = document.createElement('link');
 		newLink.setAttribute('rel', 'icon');
 		newLink.setAttribute('href', '/favicon.ico');
@@ -58,13 +60,13 @@ class FavIconDot {
 		return newLink;
 	}
 
-	private _drawIcon() {
+	private drawIcon() {
 		if (!this.ctx || !this.faviconImage) return;
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		this.ctx.drawImage(this.faviconImage, 0, 0, this.faviconImage.width, this.faviconImage.height);
 	}
 
-	private _drawDot() {
+	private drawDot() {
 		if (!this.ctx || !this.faviconImage) return;
 		this.ctx.beginPath();
 		this.ctx.arc(this.faviconImage.width - 10, 10, 10, 0, 2 * Math.PI);
@@ -74,16 +76,16 @@ class FavIconDot {
 		this.ctx.stroke();
 	}
 
-	private _setFavicon() {
+	private setFavicon() {
 		if (this.faviconEL) this.faviconEL.href = this.canvas.toDataURL('image/png');
 	}
 
-	async setVisible(isVisible : boolean) {
-		//Wait for it to have loaded the icon
+	async setVisible(isVisible: boolean) {
+		// Wait for it to have loaded the icon
 		await this.hasLoaded;
-		this._drawIcon();
-		if (isVisible) this._drawDot();
-		this._setFavicon();
+		this.drawIcon();
+		if (isVisible) this.drawDot();
+		this.setFavicon();
 	}
 }
 

@@ -91,7 +91,7 @@ if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
 
-	//For the favicon notification dot
+	// For the favicon notification dot
 	watch(() => $i?.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot, (hasAny) => setFavIconDot(hasAny as boolean));
 
 	if ($i.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot) setFavIconDot(true);
