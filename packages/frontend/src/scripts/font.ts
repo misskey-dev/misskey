@@ -74,6 +74,26 @@ export const fontList = {
 		fontFamily: 'DotGothic16',
 		importUrl: 'https://fonts.googleapis.com/css2?family=DotGothic16&display=swap',
 	},
+	'hachi-maru-pop-regular': {
+		name: 'Hachi Maru Pop',
+		fontFamily: 'Hachi Maru Pop',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap',
+	},
+	'stick-regular': {
+		name: 'Stick',
+		fontFamily: 'Stick',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Stick&display=swap',
+	},
+	'tsukimi-rounded-regular': {
+		name: 'Tsukimi Rounded',
+		fontFamily: 'Tsukimi Rounded',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Tsukimi+Rounded&display=swap',
+	},
+	'yusei-magic-regular': {
+		name: 'Yusei Magic',
+		fontFamily: 'Yusei Magic',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap',
+	},
 };
 
 export function applyFont(fontname: null | string) {
