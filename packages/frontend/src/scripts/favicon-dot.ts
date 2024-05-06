@@ -1,3 +1,5 @@
+import tinycolor from 'tinycolor2';
+
 class FavIconDot {
 	canvas: HTMLCanvasElement;
 	src: string | null = null;
@@ -70,7 +72,8 @@ class FavIconDot {
 		if (!this.ctx || !this.faviconImage) return;
 		this.ctx.beginPath();
 		this.ctx.arc(this.faviconImage.width - 10, 10, 10, 0, 2 * Math.PI);
-		this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--navIndicator');
+		const computedStyle = getComputedStyle(document.documentElement);
+		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--navIndicator')).toHexString();
 		this.ctx.strokeStyle = 'white';
 		this.ctx.fill();
 		this.ctx.stroke();
