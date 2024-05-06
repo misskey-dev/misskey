@@ -19,7 +19,8 @@
 		content="default-src 'self' https://newassets.hcaptcha.com/ https://challenges.cloudflare.com/ http://localhost:7493/;
 			worker-src 'self';
 			script-src 'self' 'unsafe-eval' https://*.hcaptcha.com https://challenges.cloudflare.com https://esm.sh;
-			style-src 'self' 'unsafe-inline';
+			style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+			font-src 'self' https://fonts.gstatic.com;
 			img-src 'self' data: blob: www.google.com xn--931a.moe localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
 			media-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
 			connect-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000 https://newassets.hcaptcha.com;
