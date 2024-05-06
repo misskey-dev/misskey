@@ -34,10 +34,35 @@ export const fontList = {
 		fontFamily: 'Klee One',
 		importUrl: 'https://fonts.googleapis.com/css2?family=Klee+One&display=swap',
 	},
+	'kosugi-maru': {
+		name: 'Kosugi Maru',
+		fontFamily: 'Kosugi Maru',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap',
+	},
+	'kosugi': {
+		name: 'Kosugi',
+		fontFamily: 'Kosugi',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Kosugi&display=swap',
+	},
+	'kiwi-maru': {
+		name: 'Kiwi Maru',
+		fontFamily: 'Kiwi Maru',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Kiwi+Maru&display=swap',
+	},
 	'zen-maru-gothic': {
 		name: 'Zen Maru Gothic',
 		fontFamily: 'Zen Maru Gothic',
 		importUrl: 'https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap',
+	},
+	'zen-kaku-gothic-new': {
+		name: 'Zen Kaku Gothic New',
+		fontFamily: 'Zen Kaku Gothic New',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New&display=swap',
+	},
+	'zen-kurenaido': {
+		name: 'Zen Kurenaido',
+		fontFamily: 'Zen Kurenaido',
+		importUrl: 'https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap',
 	},
 	'kaisei-decol': {
 		name: 'Kaisei Decol',
@@ -52,7 +77,6 @@ export const fontList = {
 };
 
 export function applyFont(fontname: null | string) {
-	console.log('called');
 	let style = document.getElementById('custom-font');
 
 	if (!fontname) {
