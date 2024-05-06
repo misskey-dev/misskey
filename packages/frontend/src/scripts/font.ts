@@ -95,9 +95,8 @@ export function applyFont(fontname: null | string) {
 
 	style.innerHTML = `
 		@import url('${font.importUrl}');
-		body * {
-			font-family: '${font.fontFamily}', sans-serif !important;
-			font-weight: 400;
+		body {
+			font-family: '${font.fontFamily}', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', Roboto, HelveticaNeue, Arial, sans-serif !important;
 			font-style: normal;
 		}
 	`;
