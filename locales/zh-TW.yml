@@ -1363,7 +1363,7 @@ _serverSettings:
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
-  moveFromLabel: "要遷移過來的帳戶："
+  moveFromLabel: "要遷移過來的帳戶 #{n}"
   moveFromDescription: "如果你想把追隨者從別的帳戶遷移過來，必須先在這裡建立別名。請務必在執行遷移之前建立別名！請像這樣輸入要遷移的帳戶：@person@instance.com"
   moveTo: "將這個帳戶遷移至新的帳戶"
   moveToLabel: "要遷移到的帳戶："
