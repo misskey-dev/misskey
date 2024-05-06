@@ -6,6 +6,7 @@
 import { utils, values } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import { ref, Ref } from 'vue';
+import * as Misskey from 'misskey-js';
 
 export type AsUiComponentBase = {
 	id: string;
@@ -115,23 +116,24 @@ export type AsUiFolder = AsUiComponentBase & {
 	opened?: boolean;
 };
 
+type PostFormPropsForAsUi = {
+	text: string;
+	cw?: string;
+	visibility?: (typeof Misskey.noteVisibilities)[number];
+	localOnly?: boolean;
+};
+
 export type AsUiPostFormButton = AsUiComponentBase & {
 	type: 'postFormButton';
 	text?: string;
 	primary?: boolean;
 	rounded?: boolean;
-	form?: {
-		text: string;
-		cw?: string;
-	};
+	form?: PostFormPropsForAsUi;
 };
 
 export type AsUiPostForm = AsUiComponentBase & {
 	type: 'postForm';
-	form?: {
-		text: string;
-		cw?: string;
-	};
+	form?: PostFormPropsForAsUi;
 };
 
 export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton | AsUiPostForm;
@@ -447,6 +449,24 @@ function getFolderOptions(def: values.Value | undefined): Omit<AsUiFolder, 'id' 
 	};
 }
 
+function getPostFormProps(form: values.VObj): PostFormPropsForAsUi {
+	const text = form.value.get('text');
+	utils.assertString(text);
+	const cw = form.value.get('cw');
+	if (cw) utils.assertString(cw);
+	const visibility = form.value.get('visibility');
+	if (visibility) utils.assertString(visibility);
+	const localOnly = form.value.get('localOnly');
+	if (localOnly) utils.assertBoolean(localOnly);
+
+	return {
+		text: text.value,
+		cw: cw?.value,
+		visibility: (visibility?.value && (Misskey.noteVisibilities as readonly string[]).includes(visibility.value)) ? visibility.value as typeof Misskey.noteVisibilities[number] : undefined,
+		localOnly: localOnly?.value,
+	};
+}
+
 function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiPostFormButton, 'id' | 'type'> {
 	utils.assertObject(def);
 
@@ -459,22 +479,11 @@ function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: valu
 	const form = def.value.get('form');
 	if (form) utils.assertObject(form);
 
-	const getForm = () => {
-		const text = form!.value.get('text');
-		utils.assertString(text);
-		const cw = form!.value.get('cw');
-		if (cw) utils.assertString(cw);
-		return {
-			text: text.value,
-			cw: cw?.value,
-		};
-	};
-
 	return {
 		text: text?.value,
 		primary: primary?.value,
 		rounded: rounded?.value,
-		form: form ? getForm() : {
+		form: form ? getPostFormProps(form) : {
 			text: '',
 		},
 	};
@@ -486,19 +495,8 @@ function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn
 	const form = def.value.get('form');
 	if (form) utils.assertObject(form);
 
-	const getForm = () => {
-		const text = form!.value.get('text');
-		utils.assertString(text);
-		const cw = form!.value.get('cw');
-		if (cw) utils.assertString(cw);
-		return {
-			text: text.value,
-			cw: cw?.value,
-		};
-	};
-
 	return {
-		form: form ? getForm() : {
+		form: form ? getPostFormProps(form) : {
 			text: '',
 		},
 	};
