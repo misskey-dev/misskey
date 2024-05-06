@@ -26,6 +26,8 @@
 - 二要素認証のバックアップコードを保存するように促すダイアログを表示するように
 
 ## Special Thanks
-- [Misskey](https://github.com/misskey-dev/misskey)
-- [にる村](https://github.com/n1lsqn/misskey)
-- [隠れ家](https://github.com/hideki0403/kakurega.app)
+- [Misskey](https://github.com/misskey-dev/misskey)  
+- [にる村](https://github.com/n1lsqn/misskey)  
+- [隠れ家](https://github.com/hideki0403/kakurega.app)  
+- [Misskey.io](https://github.com/MisskeyIO/misskey)  
+
