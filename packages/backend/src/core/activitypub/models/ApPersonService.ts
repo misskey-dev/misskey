@@ -382,7 +382,7 @@ export class ApPersonService implements OnModuleInit {
 
 		//#region アバターとヘッダー画像をフェッチ
 		try {
-			const updates = await this.resolveAvatarAndBanner(user, host, person.icon, person.image);
+			const updates = await this.resolveAvatarAndBanner(user, person.icon, person.image);
 			await this.usersRepository.update(user.id, updates);
 			user = { ...user, ...updates };
 
