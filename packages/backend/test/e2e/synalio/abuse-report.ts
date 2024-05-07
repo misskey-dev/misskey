@@ -13,7 +13,7 @@ const WEBHOOK_HOST = 'http://localhost:15080';
 const WEBHOOK_PORT = 15080;
 process.env.NODE_ENV = 'test';
 
-describe('[シナリオ] ユーザ通報 -> SystemWebhook発信 -> 立てたサーバで受信', () => {
+describe('[シナリオ] ユーザ通報', () => {
 	let queue: INestApplicationContext;
 	let admin: entities.SignupResponse;
 	let alice: entities.SignupResponse;
@@ -27,6 +27,8 @@ describe('[シナリオ] ユーザ通報 -> SystemWebhook発信 -> 立てたサ�
 		type: string;
 		body: any;
 	}
+
+	// -------------------------------------------------------------------------------------------
 
 	async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>): Promise<T> {
 		const fastify = Fastify();
@@ -117,6 +119,8 @@ describe('[シナリオ] ユーザ通報 -> SystemWebhook発信 -> 立てたサ�
 		return res.body;
 	}
 
+	// -------------------------------------------------------------------------------------------
+
 	beforeAll(async () => {
 		queue = await startJobQueue();
 		admin = await signup({ username: 'admin' });
@@ -130,152 +134,225 @@ describe('[シナリオ] ユーザ通報 -> SystemWebhook発信 -> 立てたサ�
 		await queue.close();
 	});
 
-	beforeEach(async () => {
-		const webhooks = await api('admin/system-webhook/list', {}, admin);
-		for (const webhook of webhooks.body) {
-			await api('admin/system-webhook/delete', { id: webhook.id }, admin);
-		}
-	});
+	// -------------------------------------------------------------------------------------------
 
-	test('通報を受けた -> Webhookが送出される', async () => {
-		const webhook = await createSystemWebhook({
-			on: ['abuseReport'],
-			isActive: true,
-		});
-		await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
-
-		// 通報(bob -> alice)
-		const abuse = {
-			userId: alice.id,
-			comment: randomString(),
-		};
-		const webhookBody = await captureWebhook(async () => {
-			await createAbuseReport(abuse, bob);
+	describe('SystemWebhook', () => {
+		beforeEach(async () => {
+			const webhooks = await api('admin/system-webhook/list', {}, admin);
+			for (const webhook of webhooks.body) {
+				await api('admin/system-webhook/delete', { id: webhook.id }, admin);
+			}
 		});
 
-		console.log(JSON.stringify(webhookBody, null, 2));
+		test('通報を受けた -> abuseReportが送出される', async () => {
+			const webhook = await createSystemWebhook({
+				on: ['abuseReport'],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
 
-		expect(webhookBody.hookId).toBe(webhook.id);
-		expect(webhookBody.type).toBe('abuseReport');
-		expect(webhookBody.body.targetUserId).toBe(alice.id);
-		expect(webhookBody.body.reporterId).toBe(bob.id);
-		expect(webhookBody.body.comment).toBe(abuse.comment);
-	});
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			});
 
-	test('通報を受けた -> Webhookが送出される -> 解決 -> Webhookが送出される', async () => {
-		const webhook = await createSystemWebhook({
-			on: ['abuseReport', 'abuseReportResolved'],
-			isActive: true,
-		});
-		await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
+			console.log(JSON.stringify(webhookBody, null, 2));
 
-		// 通報(bob -> alice)
-		const abuse = {
-			userId: alice.id,
-			comment: randomString(),
-		};
-		const webhookBody1 = await captureWebhook(async () => {
-			await createAbuseReport(abuse, bob);
-		});
-
-		console.log(JSON.stringify(webhookBody1, null, 2));
-		expect(webhookBody1.hookId).toBe(webhook.id);
-		expect(webhookBody1.type).toBe('abuseReport');
-		expect(webhookBody1.body.targetUserId).toBe(alice.id);
-		expect(webhookBody1.body.reporterId).toBe(bob.id);
-		expect(webhookBody1.body.assigneeId).toBeNull();
-		expect(webhookBody1.body.resolved).toBe(false);
-		expect(webhookBody1.body.comment).toBe(abuse.comment);
-
-		// 解決
-		const webhookBody2 = await captureWebhook(async () => {
-			await resolveAbuseReport({
-				reportId: webhookBody1.body.id,
-				forward: false,
-			}, admin);
+			expect(webhookBody.hookId).toBe(webhook.id);
+			expect(webhookBody.type).toBe('abuseReport');
+			expect(webhookBody.body.targetUserId).toBe(alice.id);
+			expect(webhookBody.body.reporterId).toBe(bob.id);
+			expect(webhookBody.body.comment).toBe(abuse.comment);
 		});
 
-		console.log(JSON.stringify(webhookBody2, null, 2));
-		expect(webhookBody2.hookId).toBe(webhook.id);
-		expect(webhookBody2.type).toBe('abuseReportResolved');
-		expect(webhookBody2.body.targetUserId).toBe(alice.id);
-		expect(webhookBody2.body.reporterId).toBe(bob.id);
-		expect(webhookBody2.body.assigneeId).toBe(admin.id);
-		expect(webhookBody2.body.resolved).toBe(true);
-		expect(webhookBody2.body.comment).toBe(abuse.comment);
-	});
+		test('通報を受けた -> abuseReportが送出される -> 解決 -> abuseReportResolvedが送出される', async () => {
+			const webhook = await createSystemWebhook({
+				on: ['abuseReport', 'abuseReportResolved'],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
 
-	test('通報を受けた -> abuseReportが未許可の場合は送出されない', async () => {
-		const webhook = await createSystemWebhook({
-			on: [],
-			isActive: true,
-		});
-		await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody1 = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			});
 
-		// 通報(bob -> alice)
-		const abuse = {
-			userId: alice.id,
-			comment: randomString(),
-		};
-		const webhookBody = await captureWebhook(async () => {
-			await createAbuseReport(abuse, bob);
-		}).catch(e => e.message);
+			console.log(JSON.stringify(webhookBody1, null, 2));
+			expect(webhookBody1.hookId).toBe(webhook.id);
+			expect(webhookBody1.type).toBe('abuseReport');
+			expect(webhookBody1.body.targetUserId).toBe(alice.id);
+			expect(webhookBody1.body.reporterId).toBe(bob.id);
+			expect(webhookBody1.body.assigneeId).toBeNull();
+			expect(webhookBody1.body.resolved).toBe(false);
+			expect(webhookBody1.body.comment).toBe(abuse.comment);
 
-		expect(webhookBody).toBe('timeout');
-	});
+			// 解決
+			const webhookBody2 = await captureWebhook(async () => {
+				await resolveAbuseReport({
+					reportId: webhookBody1.body.id,
+					forward: false,
+				}, admin);
+			});
 
-	test('通報を受けた -> Webhookが送出される -> 解決 -> abuseReportResolvedが未許可の場合は送出されない', async () => {
-		const webhook = await createSystemWebhook({
-			on: ['abuseReport'],
-			isActive: true,
-		});
-		await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
-
-		// 通報(bob -> alice)
-		const abuse = {
-			userId: alice.id,
-			comment: randomString(),
-		};
-		const webhookBody1 = await captureWebhook(async () => {
-			await createAbuseReport(abuse, bob);
+			console.log(JSON.stringify(webhookBody2, null, 2));
+			expect(webhookBody2.hookId).toBe(webhook.id);
+			expect(webhookBody2.type).toBe('abuseReportResolved');
+			expect(webhookBody2.body.targetUserId).toBe(alice.id);
+			expect(webhookBody2.body.reporterId).toBe(bob.id);
+			expect(webhookBody2.body.assigneeId).toBe(admin.id);
+			expect(webhookBody2.body.resolved).toBe(true);
+			expect(webhookBody2.body.comment).toBe(abuse.comment);
 		});
 
-		console.log(JSON.stringify(webhookBody1, null, 2));
-		expect(webhookBody1.hookId).toBe(webhook.id);
-		expect(webhookBody1.type).toBe('abuseReport');
-		expect(webhookBody1.body.targetUserId).toBe(alice.id);
-		expect(webhookBody1.body.reporterId).toBe(bob.id);
-		expect(webhookBody1.body.assigneeId).toBeNull();
-		expect(webhookBody1.body.resolved).toBe(false);
-		expect(webhookBody1.body.comment).toBe(abuse.comment);
+		test('通報を受けた -> abuseReportが未許可の場合は送出されない', async () => {
+			const webhook = await createSystemWebhook({
+				on: [],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
 
-		// 解決
-		const webhookBody2 = await captureWebhook(async () => {
-			await resolveAbuseReport({
-				reportId: webhookBody1.body.id,
-				forward: false,
-			}, admin);
-		}).catch(e => e.message);
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			}).catch(e => e.message);
 
-		expect(webhookBody2).toBe('timeout');
-	});
-
-	test('通報を受けた -> Webhookが無効の場合は送出されない', async () => {
-		const webhook = await createSystemWebhook({
-			on: ['abuseReport'],
-			isActive: false,
+			expect(webhookBody).toBe('timeout');
 		});
-		await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
 
-		// 通報(bob -> alice)
-		const abuse = {
-			userId: alice.id,
-			comment: randomString(),
-		};
-		const webhookBody = await captureWebhook(async () => {
-			await createAbuseReport(abuse, bob);
-		}).catch(e => e.message);
+		test('通報を受けた -> abuseReportが未許可の場合は送出されない -> 解決 -> abuseReportResolvedが送出される', async () => {
+			const webhook = await createSystemWebhook({
+				on: ['abuseReportResolved'],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
 
-		expect(webhookBody).toBe('timeout');
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody1 = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			}).catch(e => e.message);
+
+			expect(webhookBody1).toBe('timeout');
+
+			const abuseReportId = (await api('admin/abuse-user-reports', {}, admin)).body[0].id;
+
+			// 解決
+			const webhookBody2 = await captureWebhook(async () => {
+				await resolveAbuseReport({
+					reportId: abuseReportId,
+					forward: false,
+				}, admin);
+			});
+
+			console.log(JSON.stringify(webhookBody2, null, 2));
+			expect(webhookBody2.hookId).toBe(webhook.id);
+			expect(webhookBody2.type).toBe('abuseReportResolved');
+			expect(webhookBody2.body.targetUserId).toBe(alice.id);
+			expect(webhookBody2.body.reporterId).toBe(bob.id);
+			expect(webhookBody2.body.assigneeId).toBe(admin.id);
+			expect(webhookBody2.body.resolved).toBe(true);
+			expect(webhookBody2.body.comment).toBe(abuse.comment);
+		});
+
+		test('通報を受けた -> abuseReportが送出される -> 解決 -> abuseReportResolvedが未許可の場合は送出されない', async () => {
+			const webhook = await createSystemWebhook({
+				on: ['abuseReport'],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
+
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody1 = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			});
+
+			console.log(JSON.stringify(webhookBody1, null, 2));
+			expect(webhookBody1.hookId).toBe(webhook.id);
+			expect(webhookBody1.type).toBe('abuseReport');
+			expect(webhookBody1.body.targetUserId).toBe(alice.id);
+			expect(webhookBody1.body.reporterId).toBe(bob.id);
+			expect(webhookBody1.body.assigneeId).toBeNull();
+			expect(webhookBody1.body.resolved).toBe(false);
+			expect(webhookBody1.body.comment).toBe(abuse.comment);
+
+			// 解決
+			const webhookBody2 = await captureWebhook(async () => {
+				await resolveAbuseReport({
+					reportId: webhookBody1.body.id,
+					forward: false,
+				}, admin);
+			}).catch(e => e.message);
+
+			expect(webhookBody2).toBe('timeout');
+		});
+
+		test('通報を受けた -> abuseReportが未許可の場合は送出されない -> 解決 -> abuseReportResolvedが未許可の場合は送出されない', async () => {
+			const webhook = await createSystemWebhook({
+				on: [],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
+
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody1 = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			}).catch(e => e.message);
+
+			expect(webhookBody1).toBe('timeout');
+
+			const abuseReportId = (await api('admin/abuse-user-reports', {}, admin)).body[0].id;
+
+			// 解決
+			const webhookBody2 = await captureWebhook(async () => {
+				await resolveAbuseReport({
+					reportId: abuseReportId,
+					forward: false,
+				}, admin);
+			}).catch(e => e.message);
+
+			expect(webhookBody2).toBe('timeout');
+		});
+
+		test('通報を受けた -> Webhookが無効の場合は送出されない', async () => {
+			const webhook = await createSystemWebhook({
+				on: ['abuseReport', 'abuseReportResolved'],
+				isActive: false,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id });
+
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			}).catch(e => e.message);
+
+			expect(webhookBody).toBe('timeout');
+		});
 	});
 });
