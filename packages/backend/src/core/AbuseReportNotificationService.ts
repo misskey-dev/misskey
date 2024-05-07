@@ -89,7 +89,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		}
 
 		const recipientEMailAddresses = await this.fetchEMailRecipients().then(it => it
-			.filter(it => it.userProfile?.emailVerified)
+			.filter(it => it.isActive && it.userProfile?.emailVerified)
 			.map(it => it.userProfile?.email)
 			.filter(isNotNull),
 		);
@@ -136,7 +136,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 		const recipientWebhookIds = await this.fetchWebhookRecipients()
 			.then(it => it
-				.filter(it => it.systemWebhookId && it.method === 'webhook')
+				.filter(it => it.isActive && it.systemWebhookId && it.method === 'webhook')
 				.map(it => it.systemWebhookId)
 				.filter(isNotNull));
 		for (const webhookId of recipientWebhookIds) {
