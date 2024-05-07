@@ -348,11 +348,54 @@ describe('[シナリオ] ユーザ通報', () => {
 				userId: alice.id,
 				comment: randomString(),
 			};
-			const webhookBody = await captureWebhook(async () => {
+			const webhookBody1 = await captureWebhook(async () => {
 				await createAbuseReport(abuse, bob);
 			}).catch(e => e.message);
 
-			expect(webhookBody).toBe('timeout');
+			expect(webhookBody1).toBe('timeout');
+
+			const abuseReportId = (await api('admin/abuse-user-reports', {}, admin)).body[0].id;
+
+			// 解決
+			const webhookBody2 = await captureWebhook(async () => {
+				await resolveAbuseReport({
+					reportId: abuseReportId,
+					forward: false,
+				}, admin);
+			}).catch(e => e.message);
+
+			expect(webhookBody2).toBe('timeout');
+		});
+
+		test('通報を受けた -> 通知設定が無効の場合は送出されない', async () => {
+			const webhook = await createSystemWebhook({
+				on: ['abuseReport', 'abuseReportResolved'],
+				isActive: true,
+			});
+			await createAbuseReportNotificationRecipient({ systemWebhookId: webhook.id, isActive: false });
+
+			// 通報(bob -> alice)
+			const abuse = {
+				userId: alice.id,
+				comment: randomString(),
+			};
+			const webhookBody1 = await captureWebhook(async () => {
+				await createAbuseReport(abuse, bob);
+			}).catch(e => e.message);
+
+			expect(webhookBody1).toBe('timeout');
+
+			const abuseReportId = (await api('admin/abuse-user-reports', {}, admin)).body[0].id;
+
+			// 解決
+			const webhookBody2 = await captureWebhook(async () => {
+				await resolveAbuseReport({
+					reportId: abuseReportId,
+					forward: false,
+				}, admin);
+			}).catch(e => e.message);
+
+			expect(webhookBody2).toBe('timeout');
 		});
 	});
 });
