@@ -9329,6 +9329,16 @@ export interface Locale extends ILocale {
                  * Webhook
                  */
                 "webhook": string;
+                "_captions": {
+                    /**
+                     * モデレーター権限を持つユーザーのメールアドレスに通知を送ります(通報を受けた時のみ)
+                     */
+                    "mail": string;
+                    /**
+                     * 指定したSystemWebhookに通知を送ります(通報を受けた時と通報を解決した時にそれぞれ発信)
+                     */
+                    "webhook": string;
+                };
             };
             /**
              * キーワード

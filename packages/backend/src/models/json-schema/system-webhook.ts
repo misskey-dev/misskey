@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { systemWebhookEventTypes } from '@/models/SystemWebhook.js';
+
 export const packedSystemWebhookSchema = {
 	type: 'object',
 	properties: {
@@ -37,7 +39,7 @@ export const packedSystemWebhookSchema = {
 			items: {
 				type: 'string',
 				optional: false, nullable: false,
-				enum: ['abuseReport'],
+				enum: systemWebhookEventTypes,
 			},
 		},
 		url: {

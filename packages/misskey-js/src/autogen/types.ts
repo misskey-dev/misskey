@@ -4955,7 +4955,7 @@ export type components = {
       latestSentAt: string | null;
       latestStatus: number | null;
       name: string;
-      on: 'abuseReport'[];
+      on: ('abuseReport' | 'abuseReportResolved')[];
       url: string;
       secret: string;
     };

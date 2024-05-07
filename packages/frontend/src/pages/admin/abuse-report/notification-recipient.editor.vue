@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	:height="450"
+	:height="490"
 	:withOkButton="false"
 	:okButtonDisabled="false"
 	@close="onCancelClicked"
@@ -26,6 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.recipientType }}</template>
 					<option value="email">{{ i18n.ts._abuseReport._notificationRecipient._recipientType.mail }}</option>
 					<option value="webhook">{{ i18n.ts._abuseReport._notificationRecipient._recipientType.webhook }}</option>
+					<template #caption>
+						{{ methodCaption }}
+					</template>
 				</MkSelect>
 				<div>
 					<MkSelect v-if="method === 'email'" v-model="userId">
@@ -37,12 +40,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-else-if="method === 'webhook'" :class="$style.systemWebhook">
 						<MkSelect v-model="systemWebhookId" style="flex: 1">
 							<template #label>{{ i18n.ts._abuseReport._notificationRecipient.notifiedWebhook }}</template>
-							<option v-for="webhook in abuseReportWebhooks" :key="webhook.id" :value="webhook.id">
+							<option v-for="webhook in systemWebhooks" :key="webhook.id ?? undefined" :value="webhook.id">
 								{{ webhook.name }}
 							</option>
 						</MkSelect>
-						<MkButton rounded @click="onCreateSystemWebhookClicked">
-							<i class="ti ti-plus"></i>
+						<MkButton rounded @click="onEditSystemWebhookClicked">
+							<span v-if="systemWebhookId === null" class="ti ti-plus" style="line-height: normal"/>
+							<span v-else class="ti ti-settings" style="line-height: normal"/>
 						</MkButton>
 					</div>
 				</div>
@@ -56,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 
 		<div :class="$style.footer" class="_buttonsCenter">
-			<MkButton primary @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
+			<MkButton primary :disabled="disableSubmitButton" @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
 			<MkButton @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 		</div>
 	</div>
@@ -67,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs } from 'vue';
 import { entities } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -75,7 +79,7 @@ import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkSelect from '@/components/MkSelect.vue';
-import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
+import { MkSystemWebhookResult, showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkDivider from '@/components/MkDivider.vue';
 import * as os from '@/os.js';
@@ -103,7 +107,39 @@ const systemWebhookId = ref<string | null>(null);
 const isActive = ref<boolean>(true);
 
 const moderators = ref<entities.User[]>([]);
-const abuseReportWebhooks = ref<(entities.SystemWebhook)[]>([]);
+const systemWebhooks = ref<(entities.SystemWebhook | { id: null, name: string })[]>([]);
+
+const methodCaption = computed(() => {
+	switch (method.value) {
+		case 'email': {
+			return i18n.ts._abuseReport._notificationRecipient._recipientType._captions.mail;
+		}
+		case 'webhook': {
+			return i18n.ts._abuseReport._notificationRecipient._recipientType._captions.webhook;
+		}
+		default: {
+			return '';
+		}
+	}
+});
+
+const disableSubmitButton = computed(() => {
+	if (!title.value) {
+		return true;
+	}
+
+	switch (method.value) {
+		case 'email': {
+			return userId.value === null;
+		}
+		case 'webhook': {
+			return systemWebhookId.value === null;
+		}
+		default: {
+			return true;
+		}
+	}
+});
 
 async function onSubmitClicked() {
 	await loadingScope(async () => {
@@ -131,14 +167,11 @@ async function onSubmitClicked() {
 			}
 
 			emit('submitted');
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// eslint-disable-next-line
 		} catch (ex: any) {
-			console.error(ex);
-			await os.alert({
-				type: 'error',
-				title: i18n.ts.error,
-				text: ex?.message ?? i18n.ts.internalServerErrorDescription,
-			});
+			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
+			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+			emit('closed');
 		}
 	});
 }
@@ -147,25 +180,32 @@ function onCancelClicked() {
 	emit('closed');
 }
 
-async function onCreateSystemWebhookClicked() {
-	const result = await showSystemWebhookEditorDialog({
-		mode: 'create',
-		requiredEvents: ['abuseReport'],
-	});
+async function onEditSystemWebhookClicked() {
+	let result: MkSystemWebhookResult | null;
+	if (systemWebhookId.value === null) {
+		result = await showSystemWebhookEditorDialog({
+			mode: 'create',
+		});
+	} else {
+		result = await showSystemWebhookEditorDialog({
+			mode: 'edit',
+			id: systemWebhookId.value,
+		});
+	}
 	if (!result) {
 		return;
 	}
 
-	await fetchAbuseReportWebhooks();
+	await fetchSystemWebhooks();
 	systemWebhookId.value = result.id ?? null;
 }
 
-async function fetchAbuseReportWebhooks() {
+async function fetchSystemWebhooks() {
 	await loadingScope(async () => {
-		abuseReportWebhooks.value = await misskeyApi('admin/system-webhook/list', {
-			isActive: true,
-			type: ['abuseReport'],
-		});
+		systemWebhooks.value = [
+			{ id: null, name: i18n.ts.createNew },
+			...await misskeyApi('admin/system-webhook/list', { }),
+		];
 	});
 }
 
@@ -203,23 +243,30 @@ async function loadingScope<T>(fn: () => Promise<T>): Promise<T> {
 onMounted(async () => {
 	await loadingScope(async () => {
 		await fetchModerators();
-		await fetchAbuseReportWebhooks();
+		await fetchSystemWebhooks();
 
 		if (mode.value === 'edit') {
 			if (!id.value) {
 				throw new Error('id is required');
 			}
 
-			const res = await misskeyApi('admin/abuse-report/notification-recipient/show', { id: id.value });
+			try {
+				const res = await misskeyApi('admin/abuse-report/notification-recipient/show', { id: id.value });
 
-			title.value = res.name;
-			method.value = res.method;
-			userId.value = res.userId ?? null;
-			systemWebhookId.value = res.systemWebhookId ?? null;
-			isActive.value = res.isActive;
+				title.value = res.name;
+				method.value = res.method;
+				userId.value = res.userId ?? null;
+				systemWebhookId.value = res.systemWebhookId ?? null;
+				isActive.value = res.isActive;
+				// eslint-disable-next-line
+			} catch (ex: any) {
+				const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
+				await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+				emit('closed');
+			}
 		} else {
 			userId.value = moderators.value[0]?.id ?? null;
-			systemWebhookId.value = abuseReportWebhooks.value[0]?.id ?? null;
+			systemWebhookId.value = systemWebhooks.value[0]?.id ?? null;
 		}
 	});
 });

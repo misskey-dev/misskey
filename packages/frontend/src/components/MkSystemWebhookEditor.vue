@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkModalWindow
 	:width="450"
-	:height="560"
+	:height="590"
 	:canClose="true"
 	:withOkButton="false"
 	:okButtonDisabled="false"
@@ -49,7 +49,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 
 			<div :class="$style.footer" class="_buttonsCenter">
-				<MkButton primary @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
+				<MkButton primary :disabled="disableSubmitButton" @click="onSubmitClicked">
+					<i class="ti ti-check"></i>
+					{{ i18n.ts.ok }}
+				</MkButton>
 				<MkButton @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 			</div>
 		</div>
@@ -58,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -94,14 +97,28 @@ const title = ref<string>('');
 const url = ref<string>('');
 const secret = ref<string>('');
 const events = ref<EventType>({
-	abuseReport: false,
-	abuseReportResolved: false,
+	abuseReport: true,
+	abuseReportResolved: true,
 });
 const isActive = ref<boolean>(true);
 
 const disabledEvents = ref<EventType>({
 	abuseReport: false,
 	abuseReportResolved: false,
+});
+
+const disableSubmitButton = computed(() => {
+	if (!title.value) {
+		return true;
+	}
+	if (!url.value) {
+		return true;
+	}
+	if (!secret.value) {
+		return true;
+	}
+
+	return false;
 });
 
 async function onSubmitClicked() {
@@ -128,14 +145,11 @@ async function onSubmitClicked() {
 					break;
 				}
 			}
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// eslint-disable-next-line
 		} catch (ex: any) {
-			console.error(ex);
-			await os.alert({
-				type: 'error',
-				title: i18n.ts.error,
-				text: ex?.error?.message ?? i18n.ts.internalServerErrorDescription,
-			});
+			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
+			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+			emit('closed');
 		}
 	});
 }
@@ -155,24 +169,33 @@ async function loadingScope<T>(fn: () => Promise<T>): Promise<T> {
 
 onMounted(async () => {
 	await loadingScope(async () => {
-		if (mode.value === 'edit') {
-			if (!id.value) {
-				throw new Error('id is required');
-			}
+		switch (mode.value) {
+			case 'edit': {
+				if (!id.value) {
+					throw new Error('id is required');
+				}
 
-			const res = await misskeyApi('admin/system-webhook/show', { id: id.value });
+				try {
+					const res = await misskeyApi('admin/system-webhook/show', { id: id.value });
 
-			title.value = res.name;
-			url.value = res.url;
-			secret.value = res.secret;
-			isActive.value = res.isActive;
-			for (const ev of Object.keys(events.value)) {
-				events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
+					title.value = res.name;
+					url.value = res.url;
+					secret.value = res.secret;
+					isActive.value = res.isActive;
+					for (const ev of Object.keys(events.value)) {
+						events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
+					}
+					// eslint-disable-next-line
+				} catch (ex: any) {
+					const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
+					await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+					emit('closed');
+				}
+				break;
 			}
 		}
 
 		for (const ev of requiredEvents.value ?? []) {
-			events.value[ev] = true;
 			disabledEvents.value[ev] = true;
 		}
 	});
