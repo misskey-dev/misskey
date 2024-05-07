@@ -48,3 +48,18 @@ export const Missing = {
 		name: Default.args.name,
 	},
 } satisfies StoryObj<typeof MkCustomEmoji>;
+export const ErrorToText = {
+	...Default,
+	args: {
+		url: 'https://example.com/404',
+		name: Default.args.name,
+	},
+} satisfies StoryObj<typeof MkCustomEmoji>;
+export const ErrorToImage = {
+	...Default,
+	args: {
+		url: 'https://example.com/404',
+		name: Default.args.name,
+		fallbackToImage: true,
+	},
+} satisfies StoryObj<typeof MkCustomEmoji>;

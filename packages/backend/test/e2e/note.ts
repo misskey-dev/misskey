@@ -176,6 +176,87 @@ describe('Note', () => {
 		assert.strictEqual(deleteRes.status, 204);
 	});
 
+	test('visibility: followersなノートに対してフォロワーはリプライできる', async () => {
+		await api('/following/create', {
+			userId: alice.id,
+		}, bob);
+
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'followers',
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const replyId = aliceNote.body.createdNote.id;
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note',
+			replyId,
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 200);
+		assert.strictEqual(bobReply.body.createdNote.replyId, replyId);
+
+		await api('/following/delete', {
+			userId: alice.id,
+		}, bob);
+	});
+
+	test('visibility: followersなノートに対してフォロワーでないユーザーがリプライしようとすると怒られる', async () => {
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'followers',
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note',
+			replyId: aliceNote.body.createdNote.id,
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 400);
+		assert.strictEqual(bobReply.body.error.code, 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE');
+	});
+
+	test('visibility: specifiedなノートに対してvisibility: specifiedで返信できる', async () => {
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'specified',
+			visibleUserIds: [bob.id],
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note',
+			replyId: aliceNote.body.createdNote.id,
+			visibility: 'specified',
+			visibleUserIds: [alice.id],
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 200);
+	});
+
+	test('visibility: specifiedなノートに対してvisibility: follwersで返信しようとすると怒られる', async () => {
+		const aliceNote = await api('/notes/create', {
+			text: 'direct note to bob',
+			visibility: 'specified',
+			visibleUserIds: [bob.id],
+		}, alice);
+
+		assert.strictEqual(aliceNote.status, 200);
+
+		const bobReply = await api('/notes/create', {
+			text: 'reply to alice note with visibility: followers',
+			replyId: aliceNote.body.createdNote.id,
+			visibility: 'followers',
+		}, bob);
+
+		assert.strictEqual(bobReply.status, 400);
+		assert.strictEqual(bobReply.body.error.code, 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY');
+	});
+
 	test('文字数ぎりぎりで怒られない', async () => {
 		const post = {
 			text: '!'.repeat(MAX_NOTE_TEXT_LENGTH), // 3000文字
@@ -679,6 +760,171 @@ describe('Note', () => {
 			}, tom);
 
 			assert.strictEqual(note1.status, 400);
+		});
+
+		test('メンションの数が上限を超えるとエラーになる', async () => {
+			const res = await api('admin/roles/create', {
+				name: 'test',
+				description: '',
+				color: null,
+				iconUrl: null,
+				displayOrder: 0,
+				target: 'manual',
+				condFormula: {},
+				isAdministrator: false,
+				isModerator: false,
+				isPublic: false,
+				isExplorable: false,
+				asBadge: false,
+				canEditMembersByModerator: false,
+				policies: {
+					mentionLimit: {
+						useDefault: false,
+						priority: 1,
+						value: 0,
+					},
+				},
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const assign = await api('admin/roles/assign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			}, alice);
+
+			assert.strictEqual(assign.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note = await api('/notes/create', {
+				text: '@bob potentially annoying text',
+			}, alice);
+
+			assert.strictEqual(note.status, 400);
+			assert.strictEqual(note.body.error.code, 'CONTAINS_TOO_MANY_MENTIONS');
+
+			await api('admin/roles/unassign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			});
+
+			await api('admin/roles/delete', {
+				roleId: res.body.id,
+			}, alice);
+		});
+
+		test('ダイレクト投稿もエラーになる', async () => {
+			const res = await api('admin/roles/create', {
+				name: 'test',
+				description: '',
+				color: null,
+				iconUrl: null,
+				displayOrder: 0,
+				target: 'manual',
+				condFormula: {},
+				isAdministrator: false,
+				isModerator: false,
+				isPublic: false,
+				isExplorable: false,
+				asBadge: false,
+				canEditMembersByModerator: false,
+				policies: {
+					mentionLimit: {
+						useDefault: false,
+						priority: 1,
+						value: 0,
+					},
+				},
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const assign = await api('admin/roles/assign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			}, alice);
+
+			assert.strictEqual(assign.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note = await api('/notes/create', {
+				text: 'potentially annoying text',
+				visibility: 'specified',
+				visibleUserIds: [ bob.id ],
+			}, alice);
+
+			assert.strictEqual(note.status, 400);
+			assert.strictEqual(note.body.error.code, 'CONTAINS_TOO_MANY_MENTIONS');
+
+			await api('admin/roles/unassign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			});
+
+			await api('admin/roles/delete', {
+				roleId: res.body.id,
+			}, alice);
+		});
+
+		test('ダイレクトの宛先とメンションが同じ場合は重複してカウントしない', async () => {
+			const res = await api('admin/roles/create', {
+				name: 'test',
+				description: '',
+				color: null,
+				iconUrl: null,
+				displayOrder: 0,
+				target: 'manual',
+				condFormula: {},
+				isAdministrator: false,
+				isModerator: false,
+				isPublic: false,
+				isExplorable: false,
+				asBadge: false,
+				canEditMembersByModerator: false,
+				policies: {
+					mentionLimit: {
+						useDefault: false,
+						priority: 1,
+						value: 1,
+					},
+				},
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const assign = await api('admin/roles/assign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			}, alice);
+
+			assert.strictEqual(assign.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note = await api('/notes/create', {
+				text: '@bob potentially annoying text',
+				visibility: 'specified',
+				visibleUserIds: [ bob.id ],
+			}, alice);
+
+			assert.strictEqual(note.status, 200);
+
+			await api('admin/roles/unassign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			});
+
+			await api('admin/roles/delete', {
+				roleId: res.body.id,
+			}, alice);
 		});
 	});
 

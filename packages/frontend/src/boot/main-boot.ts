@@ -11,7 +11,7 @@ import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i, signout, updateAccount } from '@/account.js';
-import { fetchInstance, instance } from '@/instance.js';
+import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -235,12 +235,10 @@ export async function mainBoot() {
 			}
 		}
 
-		fetchInstance().then(() => {
-			const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
-			if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
-				popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
-			}
-		});
+		const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
+		if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
+			popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
+		}
 
 		if ('Notification' in window) {
 			// 許可を得ていなかったらリクエスト

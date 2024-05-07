@@ -110,7 +110,7 @@ function save() {
 		hiddenTags: hiddenTags.value.split('\n'),
 		preservedUsernames: preservedUsernames.value.split('\n'),
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

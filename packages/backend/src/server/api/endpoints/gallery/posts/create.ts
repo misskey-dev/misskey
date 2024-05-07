@@ -12,6 +12,7 @@ import type { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -69,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: fileId,
 					userId: me.id,
 				}),
-			))).filter((file): file is MiDriveFile => file != null);
+			))).filter(isNotNull);
 
 			if (files.length === 0) {
 				throw new Error();

@@ -191,7 +191,7 @@ export class WebAuthnService {
 			if (cert[0] === 0x04) { // 前の実装ではいつも 0x04 で始まっていた
 				const halfLength = (cert.length - 1) / 2;
 
-				const cborMap = new Map<number, number | ArrayBufferLike>();
+				const cborMap = new Map<number, number | Uint8Array>();
 				cborMap.set(1, 2); // kty, EC2
 				cborMap.set(3, -7); // alg, ES256
 				cborMap.set(-1, 1); // crv, P256

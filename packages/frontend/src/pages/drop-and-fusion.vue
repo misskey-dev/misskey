@@ -15,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer v-if="!gameStarted" :contentMax="800">
 		<div :class="$style.root">
 			<div class="_gaps">
-				<div :class="$style.frame" style="text-align: center;">
-					<div :class="$style.frameInner">
+				<div class="_woodenFrame" style="text-align: center;">
+					<div class="_woodenFrameInner">
 						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 					</div>
 				</div>
-				<div :class="$style.frame" style="text-align: center;">
-					<div :class="$style.frameInner">
+				<div class="_woodenFrame" style="text-align: center;">
+					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<MkSelect v-model="gameMode">
 								<option value="normal">NORMAL</option>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
 					</div>
-					<div :class="$style.frameInner">
+					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
 							<MkSwitch v-model="mute">
@@ -42,10 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</div>
-				<div :class="$style.frame">
-					<div :class="$style.frameInner">
+				<div class="_woodenFrame">
+					<div class="_woodenFrameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
+							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode.toUpperCase() }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
@@ -57,8 +57,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</div>
-				<div :class="$style.frame">
-					<div :class="$style.frameInner" style="padding: 16px;">
+				<div class="_woodenFrame">
+					<div class="_woodenFrameInner" style="padding: 16px;">
 						<div style="font-weight: bold;">{{ i18n.ts._bubbleGame.howToPlay }}</div>
 						<ol>
 							<li>{{ i18n.ts._bubbleGame._howToPlay.section1 }}</li>
@@ -67,8 +67,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</ol>
 					</div>
 				</div>
-				<div :class="$style.frame">
-					<div :class="$style.frameInner">
+				<div class="_woodenFrame">
+					<div class="_woodenFrameInner">
 						<div class="_gaps_s" style="padding: 16px;">
 							<div><b>Credit</b></div>
 							<div>
@@ -147,38 +147,6 @@ definePageMetadata(() => ({
 	* {
 		user-select: none;
 	}
-}
-
-.frame {
-	padding: 7px;
-	background: #8C4F26;
-	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
-	border-radius: 10px;
-}
-
-.frameH {
-	display: flex;
-	gap: 6px;
-}
-
-.frameInner {
-	padding: 8px;
-	margin-top: 8px;
-	background: #F1E8DC;
-	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
-	border-radius: 6px;
-	color: #693410;
-
-	&:first-child {
-		margin-top: 0;
-	}
-}
-
-.frameDivider {
-	height: 0;
-	border: none;
-	border-top: 1px solid #693410;
-	border-bottom: 1px solid #ce8a5c;
 }
 
 .rankingRecord {

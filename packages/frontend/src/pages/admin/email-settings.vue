@@ -124,7 +124,7 @@ function save() {
 		smtpUser: smtpUser.value,
 		smtpPass: smtpPass.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

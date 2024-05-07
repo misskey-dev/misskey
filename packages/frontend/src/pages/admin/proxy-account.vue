@@ -56,7 +56,7 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		proxyAccountId: proxyAccountId.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

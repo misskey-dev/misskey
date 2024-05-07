@@ -99,7 +99,6 @@ export class UserPreview {
 		this.el.removeEventListener('mouseover', this.onMouseover);
 		this.el.removeEventListener('mouseleave', this.onMouseleave);
 		this.el.removeEventListener('click', this.onClick);
-		window.clearInterval(this.checkTimer);
 	}
 }
 

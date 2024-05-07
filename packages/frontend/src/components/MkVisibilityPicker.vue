@@ -9,21 +9,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts.visibility }}
 		</div>
-		<button key="public" :disabled="isSilenced" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
+		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
-		<button key="home" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
+		<button key="home" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
-		<button key="followers" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' }]" data-index="3" @click="choose('followers')">
+		<button key="followers" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</span>
@@ -54,6 +54,7 @@ const props = withDefaults(defineProps<{
 	isSilenced: boolean;
 	localOnly: boolean;
 	src?: HTMLElement;
+	isReplyVisibilitySpecified?: boolean;
 }>(), {
 });
 

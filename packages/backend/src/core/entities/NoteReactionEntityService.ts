@@ -69,4 +69,19 @@ export class NoteReactionEntityService implements OnModuleInit {
 			} : {}),
 		};
 	}
+
+	@bindThis
+	public async packMany(
+		reactions: MiNoteReaction[],
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			withNote: boolean;
+		},
+	): Promise<Packed<'NoteReaction'>[]> {
+		const opts = Object.assign({
+			withNote: false,
+		}, options);
+
+		return Promise.all(reactions.map(reaction => this.pack(reaction, me, opts)));
+	}
 }

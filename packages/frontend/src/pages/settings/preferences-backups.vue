@@ -203,6 +203,7 @@ async function saveNew(): Promise<void> {
 
 	const { canceled, result: name } = await os.inputText({
 		title: ts._preferencesBackups.inputName,
+		default: '',
 	});
 	if (canceled) return;
 
@@ -371,6 +372,7 @@ async function rename(id: string): Promise<void> {
 
 	const { canceled: cancel1, result: name } = await os.inputText({
 		title: ts._preferencesBackups.inputName,
+		default: '',
 	});
 	if (cancel1 || profiles.value[id].name === name) return;
 

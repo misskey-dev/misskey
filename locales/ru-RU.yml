@@ -1085,6 +1085,7 @@ loadReplies: "Показать ответы"
 sourceCode: "Исходный код"
 flip: "Переворот"
 lastNDays: "Последние {n} сут"
+surrender: "Этот пост не может быть отменен."
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
   letsStartAccountSetup: "Давайте настроим вашу учётную запись."

@@ -117,6 +117,8 @@ export class NodeinfoServerService {
 					emailRequiredForSignup: meta.emailRequiredForSignup,
 					enableHcaptcha: meta.enableHcaptcha,
 					enableRecaptcha: meta.enableRecaptcha,
+					enableMcaptcha: meta.enableMcaptcha,
+					enableTurnstile: meta.enableTurnstile,
 					maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 					enableEmail: meta.enableEmail,
 					enableServiceWorker: meta.enableServiceWorker,

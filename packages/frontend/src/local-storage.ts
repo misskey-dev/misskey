@@ -7,6 +7,7 @@ type Keys =
 	'v' |
 	'lastVersion' |
 	'instance' |
+	'instanceCachedAt' |
 	'account' |
 	'accounts' |
 	'latestDonationInfoShownAt' |

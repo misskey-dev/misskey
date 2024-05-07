@@ -417,6 +417,39 @@ rt {
 	transition-timing-function: cubic-bezier(0,.5,.5,1);
 }
 
+._woodenFrame {
+	padding: 7px;
+	background: #8C4F26;
+	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
+	border-radius: 10px;
+
+	--bg: #F1E8DC;
+	--panel: #fff;
+	--fg: #693410;
+	--switchOffBg: rgba(0, 0, 0, 0.1);
+	--switchOffFg: rgb(255, 255, 255);
+	--switchOnBg: var(--accent);
+	--switchOnFg: rgb(255, 255, 255);
+}
+
+._woodenFrameH {
+	display: flex;
+	gap: 6px;
+}
+
+._woodenFrameInner {
+	padding: 8px;
+	margin-top: 8px;
+	background: var(--bg);
+	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
+	border-radius: 6px;
+	color: var(--fg);
+
+	&:first-child {
+		margin-top: 0;
+	}
+}
+
 ._transition_zoom-enter-active, ._transition_zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }

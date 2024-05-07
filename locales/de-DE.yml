@@ -1184,6 +1184,7 @@ decorate: "Dekorieren"
 addMfmFunction: "MFM hinzufügen"
 sfx: "Soundeffekte"
 lastNDays: "Letzten {n} Tage"
+surrender: "Abbrechen"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."

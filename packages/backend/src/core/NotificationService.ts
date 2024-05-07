@@ -126,6 +126,14 @@ export class NotificationService implements OnApplicationShutdown {
 					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
 					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
 				]);
+				if (!(isFollowing && isFollower)) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'followingOrFollower') {
+				const [isFollowing, isFollower] = await Promise.all([
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
+				]);
 				if (!isFollowing && !isFollower) {
 					return null;
 				}
@@ -154,6 +162,8 @@ export class NotificationService implements OnApplicationShutdown {
 			'data', JSON.stringify(notification));
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
+
+		if (packed == null) return null;
 
 		// Publish notification event
 		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
@@ -202,6 +212,15 @@ export class NotificationService implements OnApplicationShutdown {
 		// TODO: render user information html
 		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
 		*/
+	}
+
+	@bindThis
+	public async flushAllNotifications(userId: MiUser['id']) {
+		await Promise.all([
+			this.redisClient.del(`notificationTimeline:${userId}`),
+			this.redisClient.del(`latestReadNotification:${userId}`),
+		]);
+		this.globalEventService.publishMainStream(userId, 'notificationFlushed');
 	}
 
 	@bindThis

@@ -50,7 +50,7 @@ function save() {
 		silencedHosts: silencedHosts.value.split('\n') || [],
 
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 

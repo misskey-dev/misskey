@@ -355,7 +355,7 @@ export const uploadUrl = async (user: UserToken, url: string): Promise<Packed<'D
 	return catcher;
 };
 
-export function connectStream(user: UserToken, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
+export function connectStream<C extends keyof misskey.Channels>(user: UserToken, channel: C, listener: (message: Record<string, any>) => any, params?: misskey.Channels[C]['params']): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const url = new URL(`ws://127.0.0.1:${port}/streaming`);
 		const options: ClientOptions = {};
@@ -390,7 +390,7 @@ export function connectStream(user: UserToken, channel: string, listener: (messa
 	});
 }
 
-export const waitFire = async (user: UserToken, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
+export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken, channel: C, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: misskey.Channels[C]['params']) => {
 	return new Promise<boolean>(async (res, rej) => {
 		let timer: NodeJS.Timeout | null = null;
 
@@ -435,7 +435,7 @@ export const waitFire = async (user: UserToken, channel: string, trgr: () => any
  */
 export function makeStreamCatcher<T>(
 	user: UserToken,
-	channel: string,
+	channel: keyof misskey.Channels,
 	cond: (message: Record<string, any>) => boolean,
 	extractor: (message: Record<string, any>) => T,
 	timeout = 60 * 1000): Promise<T> {

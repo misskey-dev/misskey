@@ -38,6 +38,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -636,7 +637,7 @@ export class ApPersonService implements OnModuleInit {
 
 			// とりあえずidを別の時間で生成して順番を維持
 			let td = 0;
-			for (const note of featuredNotes.filter((note): note is MiNote => note != null)) {
+			for (const note of featuredNotes.filter(isNotNull)) {
 				td -= 1000;
 				transactionalEntityManager.insert(MiUserNotePining, {
 					id: this.idService.gen(Date.now() + td),

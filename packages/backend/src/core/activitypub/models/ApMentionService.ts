@@ -8,6 +8,7 @@ import promiseLimit from 'promise-limit';
 import type { MiUser } from '@/models/_.js';
 import { toArray, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { isMention } from '../type.js';
 import { Resolver } from '../ApResolverService.js';
 import { ApPersonService } from './ApPersonService.js';
@@ -27,7 +28,7 @@ export class ApMentionService {
 		const limit = promiseLimit<MiUser | null>(2);
 		const mentionedUsers = (await Promise.all(
 			hrefs.map(x => limit(() => this.apPersonService.resolvePerson(x, resolver).catch(() => null))),
-		)).filter((x): x is MiUser => x != null);
+		)).filter(isNotNull);
 
 		return mentionedUsers;
 	}

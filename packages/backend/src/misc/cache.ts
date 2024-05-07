@@ -187,6 +187,10 @@ export class RedisSingleCache<T> {
 // TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
 
 export class MemoryKVCache<T> {
+	/**
+	 * データを持つマップ
+	 * @deprecated これを直接操作するべきではない
+	 */
 	public cache: Map<string, { date: number; value: T; }>;
 	private lifetime: number;
 	private gcIntervalHandle: NodeJS.Timeout;
@@ -201,6 +205,10 @@ export class MemoryKVCache<T> {
 	}
 
 	@bindThis
+	/**
+	 * Mapにキャッシュをセットします
+	 * @deprecated これを直接呼び出すべきではない。InternalEventなどで変更を全てのプロセス/マシンに通知するべき
+	 */
 	public set(key: string, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),

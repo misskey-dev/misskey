@@ -172,7 +172,7 @@ const emit = defineEmits<{
 const textareaEl = shallowRef<HTMLTextAreaElement | null>(null);
 const cwInputEl = shallowRef<HTMLInputElement | null>(null);
 const hashtagsInputEl = shallowRef<HTMLInputElement | null>(null);
-const visibilityButton = shallowRef<HTMLElement | null>(null);
+const visibilityButton = shallowRef<HTMLElement>();
 
 const posting = ref(false);
 const posted = ref(false);
@@ -461,6 +461,7 @@ function setVisibility() {
 		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
+		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;

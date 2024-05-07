@@ -7,9 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkSpacer :contentMax="800">
 	<div :class="$style.root">
 		<div v-if="!gameLoaded" :class="$style.loadingScreen">
-			<div>
-				Loading...
-			</div>
+			<div>{{ i18n.ts.loading }}<MkEllipsis/></div>
 		</div>
 		<!-- ↓に対してTransitionコンポーネントを使うと何故かkeyを指定していてもキャッシュが効かず様々なコンポーネントが都度再評価されてパフォーマンスが低下する -->
 		<div v-show="gameLoaded" class="_gaps_s">
@@ -32,18 +30,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</Transition>
 
 			<div :class="$style.header">
-				<div :class="[$style.frame, $style.headerTitle]">
-					<div :class="$style.frameInner">
-						<b>BUBBLE GAME</b>
-						<div>- {{ gameMode }} -</div>
+				<div class="_woodenFrame" :class="[$style.headerTitle]">
+					<div class="_woodenFrameInner">
+						<b>{{ i18n.ts.bubbleGame }}</b>
+						<div>- {{ gameMode.toUpperCase() }} -</div>
 					</div>
 				</div>
-				<div :class="[$style.frame, $style.frameH]">
-					<div :class="$style.frameInner">
-						<MkButton inline small @click="hold">HOLD</MkButton>
+				<div class="_woodenFrame _woodenFrameH">
+					<div class="_woodenFrameInner">
+						<MkButton inline small @click="hold">{{ i18n.ts._bubbleGame.hold }}</MkButton>
 						<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
 					</div>
-					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
+					<div class="_woodenFrameInner" :class="$style.stock" style="text-align: center;">
 						<TransitionGroup
 							:enterActiveClass="$style.transition_stock_enterActive"
 							:leaveActiveClass="$style.transition_stock_leaveActive"
@@ -90,58 +88,74 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>SCORE: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
-						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
-						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
-						<div v-if="gameMode === 'sweets'"><b>おにぎり<MkNumber :value="score / 130"/>個分</b></div>
+						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
+						<div>{{ i18n.ts._bubbleGame._score.maxChain }}: <MkNumber :value="maxCombo"/></div>
+						<div v-if="gameMode === 'yen'">
+							{{ i18n.ts._bubbleGame._score.scoreYen }}:
+							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
+								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
+							</I18n>
+						</div>
+						<I18n v-if="gameMode === 'sweets'" :src="i18n.ts._bubbleGame._score.scoreSweets" tag="div">
+							<template #onigiriQtyWithUnit>
+								<I18n :src="i18n.ts._bubbleGame._score.estimatedQty" tag="b">
+									<template #qty><MkNumber :value="score / 130"/></template>
+								</I18n>
+							</template>
+						</I18n>
 					</div>
 				</div>
 				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
 			</div>
 
-			<div v-if="replaying" :class="$style.frame">
-				<div :class="$style.frameInner">
+			<div v-if="replaying" class="_woodenFrame">
+				<div class="_woodenFrameInner">
 					<div style="background: #0004;">
 						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
 					</div>
 				</div>
-				<div :class="$style.frameInner">
+				<div class="_woodenFrameInner">
 					<div class="_buttonsCenter">
-						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
+						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> {{ i18n.ts.endReplay }}</MkButton>
 						<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
 						<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
 					</div>
 				</div>
 			</div>
 
-			<div v-if="isGameOver" :class="$style.frame">
-				<div :class="$style.frameInner">
+			<div v-if="isGameOver" class="_woodenFrame">
+				<div class="_woodenFrameInner">
 					<div class="_buttonsCenter">
 						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
 						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
 						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
-						<MkButton rounded @click="exportLog">Copy replay data</MkButton>
+						<MkButton rounded @click="exportLog">{{ i18n.ts.copyReplayData }}</MkButton>
 					</div>
 				</div>
 			</div>
 
 			<div style="display: flex;">
-				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
-					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</b></div>
-						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
-						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
+				<div class="_woodenFrame" style="flex: 1; margin-right: 10px;">
+					<div class="_woodenFrameInner">
+						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
+						<div>{{ i18n.ts._bubbleGame._score.highScore }}: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
+						<div v-if="gameMode === 'yen'">
+							{{ i18n.ts._bubbleGame._score.scoreYen }}:
+							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
+								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
+							</I18n>
+						</div>
 					</div>
 				</div>
-				<div :class="[$style.frame]" style="margin-left: auto;">
-					<div :class="$style.frameInner" style="text-align: center;">
+				<div class="_woodenFrame" style="margin-left: auto;">
+					<div class="_woodenFrameInner" style="text-align: center;">
 						<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
 					</div>
 				</div>
 			</div>
 
-			<div v-if="showConfig" :class="$style.frame">
-				<div :class="$style.frameInner">
+			<div v-if="showConfig" class="_woodenFrame">
+				<div class="_woodenFrameInner">
 					<div class="_gaps">
 						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
 							<template #label>BGM {{ i18n.ts.volume }}</template>
@@ -153,8 +167,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<div :class="$style.frame">
-				<div :class="$style.frameInner">
+			<div class="_woodenFrame">
+				<div class="_woodenFrameInner">
 					<div>FUSION RECIPE</div>
 					<div>
 						<div v-for="(mono, i) in game.monoDefinitions.sort((a, b) => a.level - b.level)" :key="mono.id" style="display: inline-block;">
@@ -165,10 +179,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<div :class="$style.frame">
-				<div :class="$style.frameInner">
-					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
-					<MkButton v-else full @click="restart">Retry</MkButton>
+			<div class="_woodenFrame">
+				<div class="_woodenFrameInner">
+					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">{{ i18n.ts.surrender }}</MkButton>
+					<MkButton v-else full @click="restart">{{ i18n.ts.gameRetry }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -1311,38 +1325,6 @@ definePageMetadata(() => ({
 	display: block;
 	width: 250px;
 	max-width: 100%;
-}
-
-.frame {
-	padding: 7px;
-	background: #8C4F26;
-	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
-	border-radius: 10px;
-}
-
-.frameH {
-	display: flex;
-	gap: 6px;
-}
-
-.frameInner {
-	padding: 8px;
-	margin-top: 8px;
-	background: #F1E8DC;
-	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
-	border-radius: 6px;
-	color: #693410;
-
-	&:first-child {
-		margin-top: 0;
-	}
-}
-
-.frameDivider {
-	height: 0;
-	border: none;
-	border-top: 1px solid #693410;
-	border-bottom: 1px solid #ce8a5c;
 }
 
 .header {

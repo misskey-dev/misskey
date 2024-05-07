@@ -40,9 +40,9 @@ describe('Streaming', () => {
 		let chinatsu: misskey.entities.SignupResponse;
 		let takumi: misskey.entities.SignupResponse;
 
-		let kyokoNote: any;
-		let kanakoNote: any;
-		let takumiNote: any;
+		let kyokoNote: misskey.entities.Note;
+		let kanakoNote: misskey.entities.Note;
+		let takumiNote: misskey.entities.Note;
 		let list: any;
 
 		beforeAll(async () => {
@@ -67,6 +67,9 @@ describe('Streaming', () => {
 
 			// Follow: ayano => akari
 			await follow(ayano, akari);
+
+			// Follow: kyoko => chitose
+			await api('following/create', { userId: chitose.id }, kyoko);
 
 			// Mute: chitose => kanako
 			await api('mute/create', { userId: kanako.id }, chitose);
@@ -170,7 +173,28 @@ describe('Streaming', () => {
 			*/
 
 			test('フォローしているユーザーのフォローしていないユーザーの visibility: followers な投稿への返信が流れない', async () => {
-				// TODO
+				const chitoseNote = await post(chitose, { text: 'followers-only post', visibility: 'followers' });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'reply to chitose\'s followers-only post', replyId: chitoseNote.id }, kyoko),	// kyoko's reply to chitose's followers-only post
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('フォローしているユーザーのフォローしていないユーザーの visibility: followers な投稿への返信のリノートが流れない', async () => {
+				const chitoseNote = await post(chitose, { text: 'followers-only post', visibility: 'followers' });
+				const kyokoReply = await post(kyoko, { text: 'reply to followers-only post', replyId: chitoseNote.id });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { renoteId: kyokoReply.id }, kyoko),	// kyoko's renote of kyoko's reply to chitose's followers-only post
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, false);
 			});
 
 			test('フォローしていないユーザーの投稿は流れない', async () => {
@@ -201,6 +225,79 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, false);
+			});
+
+			/**
+			 * TODO: 落ちる
+			 * @see https://github.com/misskey-dev/misskey/issues/13474
+			test('visibility: specified なノートで visibleUserIds に自分が含まれているときそのノートへのリプライが流れてくる', async () => {
+				const chitoseToKyokoAndAyano = await post(chitose, { text: 'direct note from chitose to kyoko and ayano', visibility: 'specified', visibleUserIds: [kyoko.id, ayano.id] });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'direct reply from kyoko to chitose and ayano', replyId: chitoseToKyokoAndAyano.id, visibility: 'specified', visibleUserIds: [chitose.id, ayano.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, true);
+			});
+			 */
+
+			test('visibility: specified な投稿に対するリプライで visibleUserIds が拡張されたとき、その拡張されたユーザーの HTL にはそのリプライが流れない', async () => {
+				const chitoseToKyoko = await post(chitose, { text: 'direct note from chitose to kyoko', visibility: 'specified', visibleUserIds: [kyoko.id] });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'direct reply from kyoko to chitose and ayano', replyId: chitoseToKyoko.id, visibility: 'specified', visibleUserIds: [chitose.id, ayano.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('visibility: specified な投稿に対するリプライで visibleUserIds が収縮されたとき、その収縮されたユーザーの HTL にはそのリプライが流れない', async () => {
+				const chitoseToKyokoAndAyano = await post(chitose, { text: 'direct note from chitose to kyoko and ayano', visibility: 'specified', visibleUserIds: [kyoko.id, ayano.id] });
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'direct reply from kyoko to chitose', replyId: chitoseToKyokoAndAyano.id, visibility: 'specified', visibleUserIds: [chitose.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('withRenotes: false のときリノートが流れない', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { renoteId: kyokoNote.id }, kyoko),	// kyoko renote
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('withRenotes: false のとき引用リノートが流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'quote', renoteId: kyokoNote.id }, kyoko),	// kyoko quote
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withRenotes: false のとき投票のみのリノートが流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { poll: { choices: ['kinoko', 'takenoko'] }, renoteId: kyokoNote.id }, kyoko),	// kyoko renote with poll
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, true);
 			});
 		});	// Home
 

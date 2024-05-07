@@ -315,7 +315,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter((item): item is MiDriveFile => item != null);
+			return ids.map(id => items.find(item => item.id === id)).filter(isNotNull);
 		};
 
 		let inReplyTo;

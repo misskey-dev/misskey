@@ -12,29 +12,37 @@ export type FormItem = {
 	label?: string;
 	type: 'string';
 	default: string | null;
+	description?: string;
+	required?: boolean;
 	hidden?: boolean;
 	multiline?: boolean;
+	treatAsMfm?: boolean;
 } | {
 	label?: string;
 	type: 'number';
 	default: number | null;
+	description?: string;
+	required?: boolean;
 	hidden?: boolean;
 	step?: number;
 } | {
 	label?: string;
 	type: 'boolean';
 	default: boolean | null;
+	description?: string;
 	hidden?: boolean;
 } | {
 	label?: string;
 	type: 'enum';
 	default: string | null;
+	required?: boolean;
 	hidden?: boolean;
 	enum: EnumItem[];
 } | {
 	label?: string;
 	type: 'radio';
 	default: unknown | null;
+	required?: boolean;
 	hidden?: boolean;
 	options: {
 		label: string;
@@ -44,9 +52,12 @@ export type FormItem = {
 	label?: string;
 	type: 'range';
 	default: number | null;
-	step: number;
+	description?: string;
+	required?: boolean;
+	step?: number;
 	min: number;
 	max: number;
+	textConverter?: (value: number) => string;
 } | {
 	label?: string;
 	type: 'object';
@@ -57,6 +68,10 @@ export type FormItem = {
 	type: 'array';
 	default: unknown[] | null;
 	hidden: boolean;
+} | {
+	type: 'button';
+	content?: string;
+	action: (ev: MouseEvent, v: any) => void;
 };
 
 export type Form = Record<string, FormItem>;
