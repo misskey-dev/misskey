@@ -123,7 +123,7 @@ describe('WebhookService', () => {
 				});
 				const webhook3 = await createWebhook({
 					isActive: true,
-					on: [],
+					on: ['abuseReportResolved'],
 				});
 				const webhook4 = await createWebhook({
 					isActive: false,
@@ -145,7 +145,7 @@ describe('WebhookService', () => {
 				});
 				const webhook3 = await createWebhook({
 					isActive: true,
-					on: [],
+					on: ['abuseReportResolved'],
 				});
 				const webhook4 = await createWebhook({
 					isActive: false,
@@ -167,7 +167,7 @@ describe('WebhookService', () => {
 				});
 				const webhook3 = await createWebhook({
 					isActive: true,
-					on: [],
+					on: ['abuseReportResolved'],
 				});
 				const webhook4 = await createWebhook({
 					isActive: false,
@@ -189,7 +189,7 @@ describe('WebhookService', () => {
 				});
 				const webhook3 = await createWebhook({
 					isActive: true,
-					on: [],
+					on: ['abuseReportResolved'],
 				});
 				const webhook4 = await createWebhook({
 					isActive: false,
@@ -211,7 +211,7 @@ describe('WebhookService', () => {
 				});
 				const webhook3 = await createWebhook({
 					isActive: true,
-					on: [],
+					on: ['abuseReportResolved'],
 				});
 				const webhook4 = await createWebhook({
 					isActive: false,
@@ -233,7 +233,7 @@ describe('WebhookService', () => {
 				});
 				const webhook3 = await createWebhook({
 					isActive: true,
-					on: [],
+					on: ['abuseReportResolved'],
 				});
 				const webhook4 = await createWebhook({
 					isActive: false,
@@ -328,11 +328,16 @@ describe('WebhookService', () => {
 			});
 
 			test('未許可のイベント種別が渡された場合はWebhookはキューに追加されない', async () => {
-				const webhook = await createWebhook({
+				const webhook1 = await createWebhook({
 					isActive: true,
 					on: [],
 				});
-				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' });
+				const webhook2 = await createWebhook({
+					isActive: true,
+					on: ['abuseReportResolved'],
+				});
+				await service.enqueueSystemWebhook(webhook1.id, 'abuseReport', { foo: 'bar' });
+				await service.enqueueSystemWebhook(webhook2.id, 'abuseReport', { foo: 'bar' });
 
 				expect(queueService.systemWebhookDeliver).not.toHaveBeenCalled();
 			});
