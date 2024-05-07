@@ -2465,6 +2465,7 @@ _webhookSettings:
     mention: "メンションされたとき"
   _systemEvents:
     abuseReport: "ユーザーから通報があったとき"
+    abuseReportResolved: "ユーザーからの通報を処理したとき"
   deleteConfirm: "Webhookを削除しますか？"
 
 _abuseReport:

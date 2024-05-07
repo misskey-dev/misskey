@@ -10025,7 +10025,7 @@ export type operations = {
         'application/json': {
           isActive: boolean;
           name: string;
-          on: 'abuseReport'[];
+          on: ('abuseReport' | 'abuseReportResolved')[];
           url: string;
           secret: string;
         };
@@ -10135,7 +10135,7 @@ export type operations = {
       content: {
         'application/json': {
           isActive?: boolean;
-          on?: 'abuseReport'[];
+          on?: ('abuseReport' | 'abuseReportResolved')[];
         };
       };
     };
@@ -10248,7 +10248,7 @@ export type operations = {
           id: string;
           isActive: boolean;
           name: string;
-          on: 'abuseReport'[];
+          on: ('abuseReport' | 'abuseReportResolved')[];
           url: string;
           secret: string;
         };

@@ -6,7 +6,7 @@
 import { defineAsyncComponent } from 'vue';
 import * as os from '@/os.js';
 
-export type SystemWebhookEventType = 'abuseReport';
+export type SystemWebhookEventType = 'abuseReport' | 'abuseReportResolved';
 
 export type MkSystemWebhookEditorProps = {
 	mode: 'create' | 'edit';

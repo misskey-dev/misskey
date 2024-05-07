@@ -44,30 +44,18 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	}
 
 	/**
-	 * {@link abuseReports}の内容を下記の手段で管理者各位に通知する.
-	 * - 管理者用Redisイベント
-	 * - EMail（モデレータ権限所有者ユーザ＋metaテーブルに設定されているメールアドレス）
-	 * - SystemWebhook
+	 * 管理者用Redisイベントを用いて{@link abuseReports}の内容を管理者各位に通知する.
+	 * 通知先ユーザは{@link RoleService.getModeratorIds}の取得結果に依る.
 	 *
+	 * @see RoleService.getModeratorIds
 	 * @see GlobalEventService.publishAdminStream
-	 * @see EmailService.sendMail
-	 * @see WebhookService.enqueueSystemWebhook
 	 */
 	@bindThis
-	public async notify(abuseReports: MiAbuseUserReport[]) {
+	public async notifyAdminStream(abuseReports: MiAbuseUserReport[]) {
 		if (abuseReports.length <= 0) {
 			return;
 		}
 
-		await Promise.all([
-			this.publishAdminStream(abuseReports),
-			this.sendMail(abuseReports),
-			this.enqueueSendWebhook(abuseReports),
-		]);
-	}
-
-	@bindThis
-	private async publishAdminStream(abuseReports: MiAbuseUserReport[]) {
 		const moderatorIds = await this.roleService.getModeratorIds(true, true);
 
 		for (const moderatorId of moderatorIds) {
@@ -86,8 +74,20 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		}
 	}
 
+	/**
+	 * Mailを用いて{@link abuseReports}の内容を管理者各位に通知する.
+	 * メールアドレスの送信先は以下の通り.
+	 * - モデレータ権限所有者ユーザ(設定画面からメールアドレスの設定を行っているユーザに限る)
+	 * - metaテーブルに設定されているメールアドレス
+	 *
+	 * @see EmailService.sendEmail
+	 */
 	@bindThis
-	private async sendMail(abuseReports: MiAbuseUserReport[]) {
+	public async notifyMail(abuseReports: MiAbuseUserReport[]) {
+		if (abuseReports.length <= 0) {
+			return;
+		}
+
 		const recipientEMailAddresses = await this.fetchEMailRecipients().then(it => it
 			.filter(it => it.userProfile?.emailVerified)
 			.map(it => it.userProfile?.email)
@@ -119,8 +119,21 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		}
 	}
 
+	/**
+	 * SystemWebhookを用いて{@link abuseReports}の内容を管理者各位に通知する.
+	 * ここではJobQueueへのエンキューのみを行うため、即時実行されない.
+	 *
+	 * @see WebhookService.enqueueSystemWebhook
+	 */
 	@bindThis
-	private async enqueueSendWebhook(abuseReports: MiAbuseUserReport[]) {
+	public async notifySystemWebhook(
+		abuseReports: MiAbuseUserReport[],
+		type: 'abuseReport' | 'abuseReportResolved',
+	) {
+		if (abuseReports.length <= 0) {
+			return;
+		}
+
 		const recipientWebhookIds = await this.fetchWebhookRecipients()
 			.then(it => it
 				.filter(it => it.systemWebhookId && it.method === 'webhook')
@@ -131,7 +144,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 				abuseReports.map(it => {
 					return this.webhookService.enqueueSystemWebhook(
 						webhookId,
-						'abuseReport',
+						type,
 						it,
 					);
 				}),

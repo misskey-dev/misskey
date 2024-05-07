@@ -10,6 +10,8 @@ import { id } from './util/id.js';
 export const systemWebhookEventTypes = [
 	// ユーザからの通報を受けたとき
 	'abuseReport',
+	// 通報を処理したとき
+	'abuseReportResolved',
 ] as const;
 export type SystemWebhookEventType = typeof systemWebhookEventTypes[number];
 

@@ -189,7 +189,7 @@ export class WebhookService implements OnApplicationShutdown {
 			? (await this.fetchActiveSystemWebhooks()).find(a => a.id === webhook)
 			: webhook;
 		if (!webhookEntity || !webhookEntity.isActive) {
-			this.logger.warn(`Webhook is not active or not found : ${webhook}`);
+			this.logger.info(`Webhook is not active or not found : ${webhook}`);
 			return;
 		}
 
