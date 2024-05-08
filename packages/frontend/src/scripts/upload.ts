@@ -1,11 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { readAndCompressImage } from 'browser-image-resizer';
+import { v4 as uuid } from 'uuid';
+import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { getCompressionConfig } from './upload/compress-config.js';
 import { defaultStore } from '@/store.js';
 import { apiUrl } from '@/config.js';
@@ -39,13 +40,16 @@ export function uploadFile(
 	if (folder && typeof folder === 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
-		const id = Math.random().toString();
+		const id = uuid();
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
+			const filename = name ?? file.name ?? 'untitled';
+			const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+
 			const ctx = reactive<Uploading>({
-				id: id,
-				name: name ?? file.name ?? 'untitled',
+				id,
+				name: defaultStore.state.keepOriginalFilename ? filename : id + extension,
 				progressMax: undefined,
 				progressValue: undefined,
 				img: window.URL.createObjectURL(file),

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -71,6 +71,11 @@ export class MiAntenna {
 		default: false,
 	})
 	public caseSensitive: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public excludeBots: boolean;
 
 	@Column('boolean', {
 		default: false,

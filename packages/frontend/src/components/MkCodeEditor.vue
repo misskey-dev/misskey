@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.codeEditorScroller">
 			<textarea
 				ref="inputEl"
-				v-model="vModel"
+				v-model="v"
 				:class="[$style.textarea]"
 				:disabled="disabled"
 				:required="required"
@@ -58,7 +58,6 @@ const emit = defineEmits<{
 }>();
 
 const { modelValue } = toRefs(props);
-const vModel = ref<string>(modelValue.value ?? '');
 const v = ref<string>(modelValue.value ?? '');
 const focused = ref(false);
 const changed = ref(false);
@@ -79,15 +78,14 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	if (ev.code === 'Enter') {
 		const pos = inputEl.value?.selectionStart ?? 0;
-		const posEnd = inputEl.value?.selectionEnd ?? vModel.value.length;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
 		if (pos === posEnd) {
-			const lines = vModel.value.slice(0, pos).split('\n');
+			const lines = v.value.slice(0, pos).split('\n');
 			const currentLine = lines[lines.length - 1];
 			const currentLineSpaces = currentLine.match(/^\s+/);
 			const posDelta = currentLineSpaces ? currentLineSpaces[0].length : 0;
 			ev.preventDefault();
-			vModel.value = vModel.value.slice(0, pos) + '\n' + (currentLineSpaces ? currentLineSpaces[0] : '') + vModel.value.slice(pos);
-			v.value = vModel.value;
+			v.value = v.value.slice(0, pos) + '\n' + (currentLineSpaces ? currentLineSpaces[0] : '') + v.value.slice(pos);
 			nextTick(() => {
 				inputEl.value?.setSelectionRange(pos + 1 + posDelta, pos + 1 + posDelta);
 			});
@@ -97,9 +95,8 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	if (ev.key === 'Tab') {
 		const pos = inputEl.value?.selectionStart ?? 0;
-		const posEnd = inputEl.value?.selectionEnd ?? vModel.value.length;
-		vModel.value = vModel.value.slice(0, pos) + '\t' + vModel.value.slice(posEnd);
-		v.value = vModel.value;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
+		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
 		nextTick(() => {
 			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
 		});
@@ -199,10 +196,11 @@ watch(v, newValue => {
 	resize: none;
 	text-align: left;
 	color: transparent;
-	caret-color: rgb(225, 228, 232);
+	caret-color: var(--fg);
 	background-color: transparent;
 	border: 0;
 	border-radius: 6px;
+	box-sizing: border-box;
 	outline: 0;
 	min-width: calc(100% - 24px);
 	height: 100%;
@@ -213,6 +211,6 @@ watch(v, newValue => {
 }
 
 .textarea::selection {
-	color: #fff;
+	color: var(--bg);
 }
 </style>

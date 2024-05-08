@@ -356,6 +356,7 @@ _profile:
   username: "Όνομα μέλους"
 _exportOrImport:
   allNotes: "Όλα τα σημειώματα"
+  clips: "Κλιπ"
   followingList: "Ακολουθεί"
   muteList: "Μέλη σε σίγαση"
   blockingList: "Μπλοκαρισμένα μέλη"
@@ -395,3 +396,6 @@ _webhookSettings:
   name: "Όνομα"
 _moderationLogTypes:
   suspend: "Αποβολή"
+_reversi:
+  total: "Σύνολο"
+

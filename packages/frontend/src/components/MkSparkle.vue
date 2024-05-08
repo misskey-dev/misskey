@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -89,10 +89,11 @@ let ro: ResizeObserver | undefined;
 
 onMounted(() => {
 	ro = new ResizeObserver((entries, observer) => {
-		width.value = el.value?.offsetWidth + 64;
-		height.value = el.value?.offsetHeight + 64;
+		if (el.value == null) return;
+		width.value = el.value.offsetWidth + 64;
+		height.value = el.value.offsetHeight + 64;
 	});
-	ro.observe(el.value);
+	if (el.value) ro.observe(el.value);
 	const add = () => {
 		if (stop) return;
 		const x = (Math.random() * (width.value - 64));

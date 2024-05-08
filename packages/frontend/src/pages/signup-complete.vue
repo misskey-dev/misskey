@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-user-check"></i>
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
-				<div>{{ i18n.t('clickToFinishEmailVerification', { ok: i18n.ts.gotIt }) }}</div>
+				<div>{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
 				<div>
 					<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
 						{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
@@ -31,6 +31,7 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const submitting = ref(false);
 
@@ -42,7 +43,7 @@ function submit() {
 	if (submitting.value) return;
 	submitting.value = true;
 
-	os.api('signup-pending', {
+	misskeyApi('signup-pending', {
 		code: props.code,
 	}).then(res => {
 		return login(res.i, '/');

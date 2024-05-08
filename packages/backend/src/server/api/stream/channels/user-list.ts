@@ -1,16 +1,15 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class UserListChannel extends Channel {
@@ -21,6 +20,7 @@ class UserListChannel extends Channel {
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
 	private withFiles: boolean;
+	private withRenotes: boolean;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
@@ -39,9 +39,10 @@ class UserListChannel extends Channel {
 	public async init(params: any) {
 		this.listId = params.listId as string;
 		this.withFiles = params.withFiles ?? false;
+		this.withRenotes = params.withRenotes ?? true;
 
 		// Check existence and owner
-		const listExist = await this.userListsRepository.exist({
+		const listExist = await this.userListsRepository.exists({
 			where: {
 				id: this.listId,
 				userId: this.user!.id,
@@ -104,22 +105,16 @@ class UserListChannel extends Channel {
 			}
 		}
 
-		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
 
-		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && note.renoteId && !note.text) {
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;
 			}
 		}
-
-		// 流れてきたNoteがミュートしているインスタンスに関わるものだったら無視する
-		if (isInstanceMuted(note, this.userMutedInstances)) return;
 
 		this.connection.cacheNote(note);
 

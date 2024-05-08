@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -59,7 +59,7 @@ const error = ref();
 const visible = ref(false);
 
 watch(() => props.role, () => {
-	os.api('roles/show', {
+	misskeyApi('roles/show', {
 		roleId: props.role,
 	}).then(res => {
 		role.value = res;
@@ -93,10 +93,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.timeline,
 }]);
 
-definePageMetadata(computed(() => ({
-	title: role.value?.name,
+definePageMetadata(() => ({
+	title: role.value ? role.value.name : i18n.ts.role,
 	icon: 'ti ti-badge',
-})));
+}));
 </script>
 
 <style lang="scss" module>

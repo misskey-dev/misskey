@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XAntenna from './editor.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -32,12 +32,12 @@ function onAntennaUpdated() {
 	router.push('/my/antennas');
 }
 
-os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
 	antenna.value = antennaResponse;
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.manageAntennas,
 	icon: 'ti ti-antenna',
-});
+}));
 </script>

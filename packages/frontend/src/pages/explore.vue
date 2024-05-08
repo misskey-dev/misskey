@@ -1,22 +1,22 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<div>
-		<div v-if="tab === 'featured'">
+	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<div v-if="tab === 'featured'" key="featured">
 			<XFeatured/>
 		</div>
-		<div v-else-if="tab === 'users'">
+		<div v-else-if="tab === 'users'" key="users">
 			<XUsers/>
 		</div>
-		<div v-else-if="tab === 'roles'">
+		<div v-else-if="tab === 'roles'" key="roles">
 			<XRoles/>
 		</div>
-	</div>
+	</MkHorizontalSwipe>
 </MkStickyContainer>
 </template>
 
@@ -26,6 +26,7 @@ import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
 import XRoles from './explore.roles.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 
@@ -59,8 +60,8 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.roles,
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.explore,
 	icon: 'ti ti-hash',
-})));
+}));
 </script>

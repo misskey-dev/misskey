@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -73,7 +73,7 @@ const props = withDefaults(defineProps<{
 		leaveFromClass?: string;
 	} | null;
 	src?: string | null;
-	hash?: string;
+	hash?: string | null;
 	alt?: string | null;
 	title?: string | null;
 	height?: number;

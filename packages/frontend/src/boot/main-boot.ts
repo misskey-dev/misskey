@@ -1,25 +1,26 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createApp, markRaw, defineAsyncComponent } from 'vue';
+import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { common } from './common.js';
 import { ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
-import { confirm, alert, post, popup, toast } from '@/os.js';
+import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, updateAccount, signout } from '@/account.js';
-import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { $i, signout, updateAccount } from '@/account.js';
+import { instance } from '@/instance.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { mainRouter } from '@/router/main.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -74,13 +75,31 @@ export async function mainBoot() {
 			mainRouter.push('/search');
 		},
 	};
-
-	if (defaultStore.state.enableSeasonalScreenEffect) {
-		const month = new Date().getMonth() + 1;
-		if (month === 12 || month === 1) {
-			const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-			new SnowfallEffect().render();
-		}
+	try {
+		if (defaultStore.state.enableSeasonalScreenEffect) {
+			const month = new Date().getMonth() + 1;
+			if (defaultStore.state.hemisphere === 'S') {
+				// ▼南半球
+				if (month === 7 || month === 8) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				}
+			} else {
+				// ▼北半球
+				if (month === 12 || month === 1) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				} else if (month === 3 || month === 4) {
+					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SakuraEffect({
+						sakura: true,
+					}).render();
+				}
+			}
+		}	
+	} catch (error) {
+		// console.error(error);
+		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
 	}
 
 	if ($i) {
@@ -172,14 +191,26 @@ export async function mainBoot() {
 		if ($i.followersCount >= 500) claimAchievement('followers500');
 		if ($i.followersCount >= 1000) claimAchievement('followers1000');
 
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365) {
-			claimAchievement('passedSinceAccountCreated1');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 2) {
-			claimAchievement('passedSinceAccountCreated2');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 3) {
+		const createdAt = new Date($i.createdAt);
+		const createdAtThreeYearsLater = new Date($i.createdAt);
+		createdAtThreeYearsLater.setFullYear(createdAtThreeYearsLater.getFullYear() + 3);
+		if (now >= createdAtThreeYearsLater) {
 			claimAchievement('passedSinceAccountCreated3');
+			claimAchievement('passedSinceAccountCreated2');
+			claimAchievement('passedSinceAccountCreated1');
+		} else {
+			const createdAtTwoYearsLater = new Date($i.createdAt);
+			createdAtTwoYearsLater.setFullYear(createdAtTwoYearsLater.getFullYear() + 2);
+			if (now >= createdAtTwoYearsLater) {
+				claimAchievement('passedSinceAccountCreated2');
+				claimAchievement('passedSinceAccountCreated1');
+			} else {
+				const createdAtOneYearLater = new Date($i.createdAt);
+				createdAtOneYearLater.setFullYear(createdAtOneYearLater.getFullYear() + 1);
+				if (now >= createdAtOneYearLater) {
+					claimAchievement('passedSinceAccountCreated1');
+				}
+			}
 		}
 
 		if (claimedAchievements.length >= 30) {
@@ -205,7 +236,7 @@ export async function mainBoot() {
 			const lastUsedDate = parseInt(lastUsed, 10);
 			// 二時間以上前なら
 			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.t('welcomeBackWithName', {
+				toast(i18n.tsx.welcomeBackWithName({
 					name: $i.name || $i.username,
 				}));
 			}
@@ -214,10 +245,15 @@ export async function mainBoot() {
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
 			}
+		}
+
+		const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
+		if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
+			popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
 		}
 
 		if ('Notification' in window) {
@@ -271,7 +307,7 @@ export async function mainBoot() {
 
 		main.on('unreadAntenna', () => {
 			updateAccount({ hasUnreadAntenna: true });
-			sound.play('antenna');
+			sound.playMisskeySfx('antenna');
 		});
 
 		main.on('readAllAnnouncements', () => {

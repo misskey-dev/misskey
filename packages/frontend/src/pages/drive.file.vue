@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,13 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 
-	<MkSpacer v-if="tab === 'info'" :contentMax="800">
-		<XFileInfo :fileId="fileId"/>
-	</MkSpacer>
+	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<MkSpacer v-if="tab === 'info'" key="info" :contentMax="800">
+			<XFileInfo :fileId="fileId"/>
+		</MkSpacer>
 
-	<MkSpacer v-else-if="tab === 'notes'" :contentMax="800">
-		<XNotes :fileId="fileId"/>
-	</MkSpacer>
+		<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800">
+			<XNotes :fileId="fileId"/>
+		</MkSpacer>
+	</MkHorizontalSwipe>
 </MkStickyContainer>
 </template>
 
@@ -23,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const props = defineProps<{
 	fileId: string;
@@ -45,8 +48,8 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-pencil',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts._fileViewer.title,
 	icon: 'ti ti-file',
-})));
+}));
 </script>

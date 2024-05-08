@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:readonly="readonly"
 			:placeholder="placeholder"
 			:pattern="pattern"
-			:autocomplete="props.autocomplete"
+			:autocomplete="autocomplete"
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
@@ -76,9 +76,9 @@ const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
 const inputEl = shallowRef<HTMLTextAreaElement>();
 const preview = ref(false);
-let autocomplete: Autocomplete;
+let autocompleteWorker: Autocomplete | null = null;
 
-const focus = () => inputEl.value.focus();
+const focus = () => inputEl.value?.focus();
 const onInput = (ev) => {
 	changed.value = true;
 	emit('change', ev);
@@ -111,10 +111,10 @@ const updated = () => {
 const debouncedUpdated = debounce(1000, updated);
 
 watch(modelValue, newValue => {
-	v.value = newValue;
+	v.value = newValue ?? '';
 });
 
-watch(v, newValue => {
+watch(v, () => {
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -123,7 +123,7 @@ watch(v, newValue => {
 		}
 	}
 
-	invalid.value = inputEl.value.validity.badInput;
+	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
 
 onMounted(() => {
@@ -133,14 +133,14 @@ onMounted(() => {
 		}
 	});
 
-	if (props.mfmAutocomplete) {
-		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
+	if (props.mfmAutocomplete && inputEl.value) {
+		autocompleteWorker = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? undefined : props.mfmAutocomplete);
 	}
 });
 
 onUnmounted(() => {
-	if (autocomplete) {
-		autocomplete.detach();
+	if (autocompleteWorker) {
+		autocompleteWorker.detach();
 	}
 });
 </script>

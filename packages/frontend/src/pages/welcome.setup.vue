@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -40,6 +40,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import { host, version } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
@@ -52,7 +53,7 @@ function submit() {
 	if (submitting.value) return;
 	submitting.value = true;
 
-	os.api('admin/accounts/create', {
+	misskeyApi('admin/accounts/create', {
 		username: username.value,
 		password: password.value,
 	}).then(res => {

@@ -81,7 +81,17 @@ module.exports = {
 	// ],
 
 	// A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-	// moduleNameMapper: {},
+	moduleNameMapper: {
+		// Do not resolve .wasm.js to .wasm by the rule below
+		'^(.+)\\.wasm\\.js$': '$1.wasm.js',
+		// SWC converts @/foo/bar.js to `../../src/foo/bar.js`, and then this rule
+		// converts it again to `../../src/foo/bar` which then can be resolved to
+		// `.ts` files.
+		// See https://github.com/swc-project/jest/issues/64#issuecomment-1029753225
+		// TODO: Use `--allowImportingTsExtensions` on TypeScript 5.0 so that we can
+		// directly import `.ts` files without this hack.
+		'^((?:\\.{1,2}|[A-Z:])*/.*)\\.js$': '$1',
+	},
 
 	// An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
 	// modulePathIgnorePatterns: [],

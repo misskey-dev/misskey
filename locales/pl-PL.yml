@@ -345,6 +345,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Włącz hCaptcha"
 hcaptchaSiteKey: "Klucz strony"
 hcaptchaSecretKey: "Tajny klucz"
+mcaptchaSiteKey: "Klucz strony"
+mcaptchaSecretKey: "Tajny klucz"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Włącz reCAPTCHA"
 recaptchaSiteKey: "Klucz strony"
@@ -869,6 +871,7 @@ youFollowing: "Śledzeni"
 icon: "Awatar"
 replies: "Odpowiedz"
 renotes: "Udostępnij"
+sourceCode: "Kod źródłowy"
 flip: "Odwróć"
 _role:
   priority: "Priorytet"
@@ -1232,6 +1235,7 @@ _profile:
 _exportOrImport:
   allNotes: "Wszystkie wpisy"
   favoritedNotes: "Ulubione wpisy"
+  clips: "Klip"
   followingList: "Obserwowani"
   muteList: "Wycisz"
   blockingList: "Zablokuj"
@@ -1394,3 +1398,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Zawieś"
   resetPassword: "Zresetuj hasło"
+_reversi:
+  total: "Łącznie"
+

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement } from '@/scripts/achievements.js';
@@ -144,7 +145,7 @@ function onDrop(ev: DragEvent) {
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
-		os.api('drive/files/update', {
+		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			folderId: props.folder.id,
 		});
@@ -160,7 +161,7 @@ function onDrop(ev: DragEvent) {
 		if (folder.id === props.folder.id) return;
 
 		emit('removeFolder', folder.id);
-		os.api('drive/folders/update', {
+		misskeyApi('drive/folders/update', {
 			folderId: folder.id,
 			parentId: props.folder.id,
 		}).then(() => {
@@ -204,7 +205,7 @@ function onDragend() {
 }
 
 function go() {
-	emit('move', props.folder.id);
+	emit('move', props.folder);
 }
 
 function rename() {
@@ -214,7 +215,7 @@ function rename() {
 		default: props.folder.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
-		os.api('drive/folders/update', {
+		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
 			name: name,
 		});
@@ -222,7 +223,7 @@ function rename() {
 }
 
 function deleteFolder() {
-	os.api('drive/folders/delete', {
+	misskeyApi('drive/folders/delete', {
 		folderId: props.folder.id,
 	}).then(() => {
 		if (defaultStore.state.uploadFolder === props.folder.id) {

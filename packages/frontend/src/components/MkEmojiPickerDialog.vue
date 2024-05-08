@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:showPinned="showPinned"
 		:pinnedEmojis="pinnedEmojis"
 		:asReactionPicker="asReactionPicker"
+		:targetNote="targetNote"
 		:asDrawer="type === 'drawer'"
 		:max-height="maxHeight"
 		@chosen="chosen"
@@ -32,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
@@ -43,6 +45,7 @@ const props = withDefaults(defineProps<{
 	showPinned?: boolean;
   pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
+	targetNote?: Misskey.entities.Note;
   choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
@@ -53,7 +56,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: any): void;
+	(ev: 'done', v: string): void;
 	(ev: 'close'): void;
 	(ev: 'closed'): void;
 }>();
@@ -61,7 +64,7 @@ const emit = defineEmits<{
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
-function chosen(emoji: any) {
+function chosen(emoji: string) {
 	emit('done', emoji);
 	if (props.choseAndClose) {
 		modal.value?.close();

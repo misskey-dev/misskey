@@ -1,5 +1,5 @@
 import WS from 'jest-websocket-mock';
-import Stream from '../src/streaming';
+import Stream from '../src/streaming.js';
 
 describe('Streaming', () => {
 	test('useChannel', async () => {

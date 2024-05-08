@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -33,7 +33,15 @@ export const notificationTypes = [
 	'roleAssigned',
 	'achievementEarned',
 	'app',
-	'test'] as const;
+	'test',
+] as const;
+
+export const groupedNotificationTypes = [
+	...notificationTypes,
+	'reaction:grouped',
+	'renote:grouped',
+] as const;
+
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
@@ -69,6 +77,7 @@ export const moderationLogTypes = [
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
+	'updateRemoteInstanceNote',
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
@@ -209,6 +218,12 @@ export type ModerationLogPayloads = {
 		id: string;
 		host: string;
 	};
+	updateRemoteInstanceNote: {
+		id: string;
+		host: string;
+		before: string | null;
+		after: string | null;
+	};
 	markSensitiveDriveFile: {
 		fileId: string;
 		fileUserId: string | null;
@@ -277,7 +292,11 @@ export type Serialized<T> = {
 				? (string | null)
 				: T[K] extends Record<string, any>
 					? Serialized<T[K]>
-					: T[K];
+					: T[K] extends (Record<string, any> | null)
+					? (Serialized<T[K]> | null)
+						: T[K] extends (Record<string, any> | undefined)
+						? (Serialized<T[K]> | undefined)
+							: T[K];
 };
 
 export type FilterUnionByProperty<

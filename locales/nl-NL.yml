@@ -348,6 +348,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Inschakelen hCaptcha"
 hcaptchaSiteKey: "Site sleutel"
 hcaptchaSecretKey: "Geheime sleutel"
+mcaptchaSiteKey: "Site sleutel"
+mcaptchaSecretKey: "Geheime sleutel"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Inschakelen reCAPTCHA"
 recaptchaSiteKey: "Site sleutel"
@@ -495,3 +497,4 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Opschorten"
   resetPassword: "Wachtwoord terugzetten"
+

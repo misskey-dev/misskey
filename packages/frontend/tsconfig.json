@@ -33,6 +33,7 @@
 		],
 		"types": [
 			"vite/client",
+			"vitest/importMeta",
 		],
 		"lib": [
 			"esnext",

@@ -94,4 +94,8 @@
 		X16: ':alpha<0.7<@panel',
 		X17: ':alpha<0.8<@bg',
 	},
+
+	codeHighlighter: {
+		base: 'one-dark-pro',
+	},
 }

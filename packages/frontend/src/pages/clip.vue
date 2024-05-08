@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,11 +9,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<div v-if="clip" class="_gaps">
 			<div class="_panel">
-				<div v-if="clip.description" :class="$style.description">
-					<Mfm :text="clip.description" :isNote="false"/>
+				<div class="_gaps_s" :class="$style.description">
+					<div v-if="clip.description">
+						<Mfm :text="clip.description" :isNote="false"/>
+					</div>
+					<div v-else>({{ i18n.ts.noDescription }})</div>
+					<div>
+						<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+						<MkButton v-else v-tooltip="i18n.ts.favorite" asLike rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+					</div>
 				</div>
-				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
-				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
 				<div :class="$style.user">
 					<MkAvatar :user="clip.user" :class="$style.avatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
 				</div>
@@ -32,6 +37,7 @@ import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
@@ -56,7 +62,7 @@ const pagination = {
 const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
 watch(() => props.clipId, async () => {
-	clip.value = await os.api('clips/show', {
+	clip.value = await misskeyApi('clips/show', {
 		clipId: props.clipId,
 	});
 	favorited.value = clip.value.isFavorited;
@@ -144,7 +150,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	handler: async (): Promise<void> => {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.t('deleteAreYouSure', { x: clip.value.name }),
+			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),
 		});
 		if (canceled) return;
 
@@ -156,10 +162,10 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	},
 }] : null);
 
-definePageMetadata(computed(() => clip.value ? {
-	title: clip.value.name,
+definePageMetadata(() => ({
+	title: clip.value ? clip.value.name : i18n.ts.clip,
 	icon: 'ti ti-paperclip',
-} : null));
+}));
 </script>
 
 <style lang="scss" module>

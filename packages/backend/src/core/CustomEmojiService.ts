@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,7 +20,7 @@ import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
-const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
+const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
 @Injectable()
 export class CustomEmojiService implements OnApplicationShutdown {
@@ -385,12 +385,17 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public checkDuplicate(name: string): Promise<boolean> {
-		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
+		return this.emojisRepository.exists({ where: { name, host: IsNull() } });
 	}
 
 	@bindThis
 	public getEmojiById(id: string): Promise<MiEmoji | null> {
 		return this.emojisRepository.findOneBy({ id });
+	}
+
+	@bindThis
+	public getEmojiByName(name: string): Promise<MiEmoji | null> {
+		return this.emojisRepository.findOneBy({ name, host: IsNull() });
 	}
 
 	@bindThis

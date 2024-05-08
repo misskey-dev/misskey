@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormLink from '@/components/form/link.vue';
@@ -54,7 +55,7 @@ const scope = computed(() => props.path ? props.path.split('/') : []);
 const keys = ref<any>(null);
 
 function fetchKeys() {
-	os.api('i/registry/keys-with-type', {
+	misskeyApi('i/registry/keys-with-type', {
 		scope: scope.value,
 		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
@@ -95,8 +96,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.registry,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,7 +22,7 @@ import XPie from './pie.vue';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: any,
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
 	meta: Misskey.entities.ServerInfoResponse
 }>();
 
@@ -31,7 +31,7 @@ const total = ref<number>(0);
 const used = ref<number>(0);
 const free = ref<number>(0);
 
-function onStats(stats) {
+function onStats(stats: Misskey.entities.ServerStats) {
 	usage.value = stats.mem.active / props.meta.mem.total;
 	total.value = props.meta.mem.total;
 	used.value = stats.mem.active;

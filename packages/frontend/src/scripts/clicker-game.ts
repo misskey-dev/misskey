@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ref, computed } from 'vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 type SaveData = {
 	gameVersion: number;
@@ -23,7 +23,7 @@ let prev = '';
 
 export async function load() {
 	try {
-		saveData.value = await os.api('i/registry/get', {
+		saveData.value = await misskeyApi('i/registry/get', {
 			scope: ['clickerGame'],
 			key: 'saveData',
 		});
@@ -63,7 +63,7 @@ export async function save() {
 	const current = JSON.stringify(saveData.value);
 	if (current === prev) return;
 
-	await os.api('i/registry/set', {
+	await misskeyApi('i/registry/set', {
 		scope: ['clickerGame'],
 		key: 'saveData',
 		value: saveData.value,

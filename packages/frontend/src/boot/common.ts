@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,6 +22,7 @@ import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
+import { setupRouter } from '@/router/definition.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -58,12 +59,6 @@ export async function common(createVue: () => App<Element>) {
 			*/
 		});
 	}
-
-	const splash = document.getElementById('splash');
-	// 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
-	if (splash) splash.addEventListener('transitionend', () => {
-		splash.remove();
-	});
 
 	let isClientUpdated = false;
 
@@ -150,7 +145,10 @@ export async function common(createVue: () => App<Element>) {
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
+		document.documentElement.dataset.colorMode = darkMode ? 'dark' : 'light';
 	}, { immediate: miLocalStorage.getItem('theme') == null });
+
+	document.documentElement.dataset.colorMode = defaultStore.state.darkMode ? 'dark' : 'light';
 
 	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
@@ -241,6 +239,8 @@ export async function common(createVue: () => App<Element>) {
 
 	const app = createVue();
 
+	setupRouter(app);
+
 	if (_DEV_) {
 		app.config.performance = true;
 	}
@@ -286,5 +286,10 @@ function removeSplash() {
 	if (splash) {
 		splash.style.opacity = '0';
 		splash.style.pointerEvents = 'none';
+
+		// transitionendイベントが発火しない場合があるため
+		window.setTimeout(() => {
+			splash.remove();
+		}, 1000);
 	}
 }

@@ -1,5 +1,5 @@
 import { expectType } from 'tsd';
-import * as Misskey from '../src';
+import * as Misskey from '../src/index.js';
 
 describe('Streaming', () => {
 	test('emit type', async () => {

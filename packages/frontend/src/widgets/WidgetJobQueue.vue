@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,19 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="values">
 			<div>
 				<div>Process</div>
-				<div :class="{ inc: current.inbox.activeSincePrevTick > prev.inbox.activeSincePrevTick, dec: current.inbox.activeSincePrevTick < prev.inbox.activeSincePrevTick }">{{ number(current.inbox.activeSincePrevTick) }}</div>
+				<div :class="{ inc: current.inbox.activeSincePrevTick > prev.inbox.activeSincePrevTick, dec: current.inbox.activeSincePrevTick < prev.inbox.activeSincePrevTick }" :title="`${current.inbox.activeSincePrevTick}`">{{ kmg(current.inbox.activeSincePrevTick, 2) }}</div>
 			</div>
 			<div>
 				<div>Active</div>
-				<div :class="{ inc: current.inbox.active > prev.inbox.active, dec: current.inbox.active < prev.inbox.active }">{{ number(current.inbox.active) }}</div>
+				<div :class="{ inc: current.inbox.active > prev.inbox.active, dec: current.inbox.active < prev.inbox.active }" :title="`${current.inbox.active}`">{{ kmg(current.inbox.active, 2) }}</div>
 			</div>
 			<div>
 				<div>Delayed</div>
-				<div :class="{ inc: current.inbox.delayed > prev.inbox.delayed, dec: current.inbox.delayed < prev.inbox.delayed }">{{ number(current.inbox.delayed) }}</div>
+				<div :class="{ inc: current.inbox.delayed > prev.inbox.delayed, dec: current.inbox.delayed < prev.inbox.delayed }" :title="`${current.inbox.delayed}`">{{ kmg(current.inbox.delayed, 2) }}</div>
 			</div>
 			<div>
 				<div>Waiting</div>
-				<div :class="{ inc: current.inbox.waiting > prev.inbox.waiting, dec: current.inbox.waiting < prev.inbox.waiting }">{{ number(current.inbox.waiting) }}</div>
+				<div :class="{ inc: current.inbox.waiting > prev.inbox.waiting, dec: current.inbox.waiting < prev.inbox.waiting }" :title="`${current.inbox.waiting}`">{{ kmg(current.inbox.waiting, 2) }}</div>
 			</div>
 		</div>
 	</div>
@@ -31,19 +31,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="values">
 			<div>
 				<div>Process</div>
-				<div :class="{ inc: current.deliver.activeSincePrevTick > prev.deliver.activeSincePrevTick, dec: current.deliver.activeSincePrevTick < prev.deliver.activeSincePrevTick }">{{ number(current.deliver.activeSincePrevTick) }}</div>
+				<div :class="{ inc: current.deliver.activeSincePrevTick > prev.deliver.activeSincePrevTick, dec: current.deliver.activeSincePrevTick < prev.deliver.activeSincePrevTick }" :title="`${current.deliver.activeSincePrevTick}`">{{ kmg(current.deliver.activeSincePrevTick, 2) }}</div>
 			</div>
 			<div>
 				<div>Active</div>
-				<div :class="{ inc: current.deliver.active > prev.deliver.active, dec: current.deliver.active < prev.deliver.active }">{{ number(current.deliver.active) }}</div>
+				<div :class="{ inc: current.deliver.active > prev.deliver.active, dec: current.deliver.active < prev.deliver.active }" :title="`${current.deliver.active}`">{{ kmg(current.deliver.active, 2) }}</div>
 			</div>
 			<div>
 				<div>Delayed</div>
-				<div :class="{ inc: current.deliver.delayed > prev.deliver.delayed, dec: current.deliver.delayed < prev.deliver.delayed }">{{ number(current.deliver.delayed) }}</div>
+				<div :class="{ inc: current.deliver.delayed > prev.deliver.delayed, dec: current.deliver.delayed < prev.deliver.delayed }" :title="`${current.deliver.delayed}`">{{ kmg(current.deliver.delayed, 2) }}</div>
 			</div>
 			<div>
 				<div>Waiting</div>
-				<div :class="{ inc: current.deliver.waiting > prev.deliver.waiting, dec: current.deliver.waiting < prev.deliver.waiting }">{{ number(current.deliver.waiting) }}</div>
+				<div :class="{ inc: current.deliver.waiting > prev.deliver.waiting, dec: current.deliver.waiting < prev.deliver.waiting }" :title="`${current.deliver.waiting}`">{{ kmg(current.deliver.waiting, 2) }}</div>
 			</div>
 		</div>
 	</div>
@@ -55,7 +55,7 @@ import { onUnmounted, reactive, ref } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { useStream } from '@/stream.js';
-import number from '@/filters/number.js';
+import kmg from '@/filters/kmg.js';
 import * as sound from '@/scripts/sound.js';
 import { deepClone } from '@/scripts/clone.js';
 import { defaultStore } from '@/store.js';
@@ -104,10 +104,7 @@ const jammedAudioBuffer = ref<AudioBuffer | null>(null);
 const jammedSoundNodePlaying = ref<boolean>(false);
 
 if (defaultStore.state.sound_masterVolume) {
-	sound.loadAudio({
-		type: 'syuilo/queue-jammed',
-		volume: 1,
-	}).then(buf => {
+	sound.loadAudio('/client-assets/sounds/syuilo/queue-jammed.mp3').then(buf => {
 		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
 		jammedAudioBuffer.value = buf;
 	});
@@ -126,7 +123,7 @@ const onStats = (stats) => {
 		current[domain].delayed = stats[domain].delayed;
 
 		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
-			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, 1);
+			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, {}).soundSource;
 			if (soundNode) {
 				jammedSoundNodePlaying.value = true;
 				soundNode.onended = () => jammedSoundNodePlaying.value = false;

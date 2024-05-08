@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -94,6 +94,29 @@ type ToJsonSchema<S> = {
 };
 
 export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+	const unflatten = (str: string, parent: Record<string, any>) => {
+		const keys = str.split('.');
+		const key = keys.shift();
+		const nextKey = keys[0];
+
+		if (key == null) return;
+
+		if (parent.properties[key] == null) {
+			parent.properties[key] = nextKey ? {
+				type: 'object',
+				properties: {},
+				required: [],
+			} : {
+				type: 'array',
+				items: {
+					type: 'number',
+				},
+			};
+		}
+
+		if (nextKey) unflatten(keys.join('.'), parent.properties[key] as Record<string, any>);
+	};
+
 	const jsonSchema = {
 		type: 'object',
 		properties: {} as Record<string, unknown>,
@@ -101,10 +124,7 @@ export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatt
 	};
 
 	for (const k in schema) {
-		jsonSchema.properties[k] = {
-			type: 'array',
-			items: { type: 'number' },
-		};
+		unflatten(k, jsonSchema);
 	}
 
 	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;
@@ -439,13 +459,15 @@ export default abstract class Chart<T extends Schema> {
 				}
 			}
 
-			// bake unique count
+			// bake cardinality
 			for (const [k, v] of Object.entries(finalDiffs)) {
 				if (this.schema[k].uniqueIncrement) {
 					const name = COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof Columns<T>;
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
-					queryForHour[name] = new Set([...(v as string[]), ...(logHour[tempColumnName] as unknown as string[])]).size;
-					queryForDay[name] = new Set([...(v as string[]), ...(logDay[tempColumnName] as unknown as string[])]).size;
+					const cardinalityOfHour = new Set([...(v as string[]), ...(logHour[tempColumnName] as unknown as string[])]).size;
+					const cardinalityOfDay = new Set([...(v as string[]), ...(logDay[tempColumnName] as unknown as string[])]).size;
+					queryForHour[name] = cardinalityOfHour;
+					queryForDay[name] = cardinalityOfDay;
 				}
 			}
 
@@ -617,7 +639,7 @@ export default abstract class Chart<T extends Schema> {
 		// 要求された範囲にログがひとつもなかったら
 		if (logs.length === 0) {
 			// もっとも新しいログを持ってくる
-			// (すくなくともひとつログが無いと隙間埋めできないため)
+			// (すくなくともひとつログが無いと補間できないため)
 			const recentLog = await repository.findOne({
 				where: group ? {
 					group: group,
@@ -634,7 +656,7 @@ export default abstract class Chart<T extends Schema> {
 		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
 		} else if (!isTimeSame(new Date(logs.at(-1)!.date * 1000), gt)) {
 			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
-			// (隙間埋めできないため)
+			// (補間できないため)
 			const outdatedLog = await repository.findOne({
 				where: {
 					date: LessThan(Chart.dateToTimestamp(gt)),
@@ -663,7 +685,7 @@ export default abstract class Chart<T extends Schema> {
 			if (log) {
 				chart.unshift(this.convertRawRecord(log));
 			} else {
-				// 隙間埋め
+				// 補間
 				const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
 				const data = latest ? this.convertRawRecord(latest) : null;
 				chart.unshift(this.getNewLog(data));

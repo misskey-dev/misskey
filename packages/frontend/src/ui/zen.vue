@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,24 +22,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { provide, ComputedRef, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 import XCommon from './_common_/common.vue';
-import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName, ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
+import { mainRouter } from '@/router/main.js';
 
-const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
+
+const pageMetadata = ref<null | PageMetadata>(null);
 
 const showBottom = !(new URLSearchParams(location.search)).has('zen') && ui === 'deck';
 
 provide('router', mainRouter);
-provideMetadataReceiver((info) => {
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	pageMetadata.value = info;
-	if (pageMetadata.value.value) {
-		document.title = `${pageMetadata.value.value.title} | ${instanceName}`;
+	if (pageMetadata.value) {
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
+			document.title = pageMetadata.value.title;
+		} else {
+			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
 	}
 });
+provideReactiveMetadata(pageMetadata);
 
 function goToMisskey() {
 	window.location.href = '/';

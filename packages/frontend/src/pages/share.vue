@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -37,6 +37,7 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { postMessageToParentWindow } from '@/scripts/post-message.js';
 import { i18n } from '@/i18n.js';
@@ -55,7 +56,7 @@ const renote = ref<Misskey.entities.Note | undefined>();
 const visibility = ref(Misskey.noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
 const localOnly = ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
 const files = ref([] as Misskey.entities.DriveFile[]);
-const visibleUsers = ref([] as Misskey.entities.User[]);
+const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
 
 async function init() {
 	let noteText = '';
@@ -76,7 +77,7 @@ async function init() {
 			]
 			// TypeScriptの指示通りに変換する
 				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
-				.map(q => os.api('users/show', q)
+				.map(q => misskeyApi('users/show', q)
 					.then(user => {
 						visibleUsers.value.push(user);
 					}, () => {
@@ -91,11 +92,11 @@ async function init() {
 		const replyId = urlParams.get('replyId');
 		const replyUri = urlParams.get('replyUri');
 		if (replyId) {
-			reply.value = await os.api('notes/show', {
+			reply.value = await misskeyApi('notes/show', {
 				noteId: replyId,
 			});
 		} else if (replyUri) {
-			const obj = await os.api('ap/show', {
+			const obj = await misskeyApi('ap/show', {
 				uri: replyUri,
 			});
 			if (obj.type === 'Note') {
@@ -108,11 +109,11 @@ async function init() {
 		const renoteId = urlParams.get('renoteId');
 		const renoteUri = urlParams.get('renoteUri');
 		if (renoteId) {
-			renote.value = await os.api('notes/show', {
+			renote.value = await misskeyApi('notes/show', {
 				noteId: renoteId,
 			});
 		} else if (renoteUri) {
-			const obj = await os.api('ap/show', {
+			const obj = await misskeyApi('ap/show', {
 				uri: renoteUri,
 			});
 			if (obj.type === 'Note') {
@@ -126,7 +127,7 @@ async function init() {
 		if (fileIds) {
 			await Promise.all(
 				fileIds.split(',')
-					.map(fileId => os.api('drive/files/show', { fileId })
+					.map(fileId => misskeyApi('drive/files/show', { fileId })
 						.then(file => {
 							files.value.push(file);
 						}, () => {
@@ -171,8 +172,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.share,
 	icon: 'ti ti-share',
-});
+}));
 </script>

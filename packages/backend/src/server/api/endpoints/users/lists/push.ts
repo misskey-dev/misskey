@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -104,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Check blocking
 			if (user.id !== me.id) {
-				const blockExist = await this.blockingsRepository.exist({
+				const blockExist = await this.blockingsRepository.exists({
 					where: {
 						blockerId: user.id,
 						blockeeId: me.id,
@@ -115,7 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const exist = await this.userListMembershipsRepository.exist({
+			const exist = await this.userListMembershipsRepository.exists({
 				where: {
 					userListId: userList.id,
 					userId: user.id,

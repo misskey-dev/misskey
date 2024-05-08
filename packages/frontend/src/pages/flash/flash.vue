@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,17 +15,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkAsUi v-if="root" :component="root" :components="components"/>
 						</div>
 						<div class="actions _panel">
-							<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" asLike class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts.like" asLike class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
-							<MkButton v-tooltip="i18n.ts.shareWithNote" class="button" rounded @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></MkButton>
-							<MkButton v-tooltip="i18n.ts.copyLink" class="button" rounded @click="copyLink"><i class="ti ti-link ti-fw"></i></MkButton>
-							<MkButton v-if="isSupportShare()" v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
+							<div class="items">
+								<MkButton v-tooltip="i18n.ts.reload" class="button" rounded @click="reset"><i class="ti ti-reload"></i></MkButton>
+							</div>
+							<div class="items">
+								<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" asLike class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash?.likedCount && flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
+								<MkButton v-else v-tooltip="i18n.ts.like" asLike class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash?.likedCount && flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
+								<MkButton v-tooltip="i18n.ts.copyLink" class="button" rounded @click="copyLink"><i class="ti ti-link ti-fw"></i></MkButton>
+								<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
+							</div>
 						</div>
 					</div>
 					<div v-else :class="$style.ready">
 						<div class="_panel main">
 							<div class="title">{{ flash.title }}</div>
-							<div class="summary">{{ flash.summary }}</div>
+							<div class="summary"><Mfm :text="flash.summary"/></div>
 							<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
 							<div class="info">
 								<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
@@ -37,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
-					<MkCode :code="flash.script" lang="is" :inline="false" class="_monospace"/>
+					<MkCode :code="flash.script" lang="is" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
@@ -49,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--accent);">{{ i18n.ts._play.editThisPage }}</MkA>
 				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			</div>
-			<MkError v-else-if="error" @retry="fetchPage()"/>
+			<MkError v-else-if="error" @retry="fetchFlash()"/>
 			<MkLoading v-else/>
 		</Transition>
 	</MkSpacer>
@@ -62,12 +66,13 @@ import * as Misskey from 'misskey-js';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store.js';
@@ -84,7 +89,7 @@ const error = ref<any>(null);
 
 function fetchFlash() {
 	flash.value = null;
-	os.api('flash/show', {
+	misskeyApi('flash/show', {
 		flashId: props.id,
 	}).then(_flash => {
 		flash.value = _flash;
@@ -93,12 +98,33 @@ function fetchFlash() {
 	});
 }
 
+function share(ev: MouseEvent) {
+	if (!flash.value) return;
+
+	os.popupMenu([
+		{
+			text: i18n.ts.shareWithNote,
+			icon: 'ti ti-pencil',
+			action: shareWithNote,
+		},
+		...(isSupportShare() ? [{
+			text: i18n.ts.share,
+			icon: 'ti ti-share',
+			action: shareWithNavigator,
+		}] : []),
+	], ev.currentTarget ?? ev.target);
+}
+
 function copyLink() {
+	if (!flash.value) return;
+
 	copyToClipboard(`${url}/play/${flash.value.id}`);
 	os.success();
 }
 
-function share() {
+function shareWithNavigator() {
+	if (!flash.value) return;
+
 	navigator.share({
 		title: flash.value.title,
 		text: flash.value.summary,
@@ -107,21 +133,28 @@ function share() {
 }
 
 function shareWithNote() {
+	if (!flash.value) return;
+
 	os.post({
-		initialText: `${flash.value.title} ${url}/play/${flash.value.id}`,
+		initialText: `${flash.value.title}\n${url}/play/${flash.value.id}`,
+		instant: true,
 	});
 }
 
 function like() {
+	if (!flash.value) return;
+
 	os.apiWithDialog('flash/like', {
 		flashId: flash.value.id,
 	}).then(() => {
-		flash.value.isLiked = true;
-		flash.value.likedCount++;
+		flash.value!.isLiked = true;
+		flash.value!.likedCount++;
 	});
 }
 
 async function unlike() {
+	if (!flash.value) return;
+
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.unlikeConfirm,
@@ -130,8 +163,8 @@ async function unlike() {
 	os.apiWithDialog('flash/unlike', {
 		flashId: flash.value.id,
 	}).then(() => {
-		flash.value.isLiked = false;
-		flash.value.likedCount--;
+		flash.value!.isLiked = false;
+		flash.value!.likedCount--;
 	});
 }
 
@@ -151,6 +184,7 @@ function start() {
 
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
+	if (!flash.value) return;
 
 	aiscript.value = new Interpreter({
 		...createAiScriptEnv({
@@ -162,15 +196,7 @@ async function run() {
 		THIS_ID: values.STR(flash.value.id),
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
-		in: (q) => {
-			return new Promise(ok => {
-				os.inputText({
-					title: q,
-				}).then(({ result: a }) => {
-					ok(a ?? '');
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value) => {
 			// nop
 		},
@@ -200,27 +226,34 @@ async function run() {
 	}
 }
 
-onDeactivated(() => {
+function reset() {
 	if (aiscript.value) aiscript.value.abort();
+	started.value = false;
+}
+
+onDeactivated(() => {
+	reset();
 });
 
 onUnmounted(() => {
-	if (aiscript.value) aiscript.value.abort();
+	reset();
 });
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash.value ? {
-	title: flash.value.title,
-	avatar: flash.value.user,
-	path: `/play/${flash.value.id}`,
-	share: {
-		title: flash.value.title,
-		text: flash.value.summary,
-	},
-} : null));
+definePageMetadata(() => ({
+	title: flash.value ? flash.value.title : 'Play',
+	...flash.value ? {
+		avatar: flash.value.user,
+		path: `/play/${flash.value.id}`,
+		share: {
+			title: flash.value.title,
+			text: flash.value.summary,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" module>
@@ -270,11 +303,19 @@ definePageMetadata(computed(() => flash.value ? {
 		}
 
 		> .actions {
-			display: flex;
-			justify-content: center;
-			gap: 12px;
 			margin-top: 16px;
-			padding: 16px;
+
+			> .items {
+				display: flex;
+				justify-content: center;
+				gap: 12px;
+				padding: 16px;
+				border-bottom: 1px solid var(--divider);
+
+				&:last-child {
+					border-bottom: none;
+				}
+			}
 		}
 	}
 }

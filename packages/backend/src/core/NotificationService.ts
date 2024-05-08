@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,6 +20,7 @@ import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { UserListService } from '@/core/UserListService.js';
 import type { FilterUnionByProperty } from '@/types.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -74,7 +75,18 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async createNotification<T extends MiNotification['type']>(
+	public createNotification<T extends MiNotification['type']>(
+		notifieeId: MiUser['id'],
+		type: T,
+		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
+		notifierId?: MiUser['id'] | null,
+	) {
+		trackPromise(
+			this.#createNotificationInternal(notifieeId, type, data, notifierId),
+		);
+	}
+
+	async #createNotificationInternal<T extends MiNotification['type']>(
 		notifieeId: MiUser['id'],
 		type: T,
 		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
@@ -114,6 +126,14 @@ export class NotificationService implements OnApplicationShutdown {
 					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
 					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
 				]);
+				if (!(isFollowing && isFollower)) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'followingOrFollower') {
+				const [isFollowing, isFollower] = await Promise.all([
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
+				]);
 				if (!isFollowing && !isFollower) {
 					return null;
 				}
@@ -142,6 +162,8 @@ export class NotificationService implements OnApplicationShutdown {
 			'data', JSON.stringify(notification));
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
+
+		if (packed == null) return null;
 
 		// Publish notification event
 		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
@@ -190,6 +212,15 @@ export class NotificationService implements OnApplicationShutdown {
 		// TODO: render user information html
 		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
 		*/
+	}
+
+	@bindThis
+	public async flushAllNotifications(userId: MiUser['id']) {
+		await Promise.all([
+			this.redisClient.del(`notificationTimeline:${userId}`),
+			this.redisClient.del(`latestReadNotification:${userId}`),
+		]);
+		this.globalEventService.publishMainStream(userId, 'notificationFlushed');
 	}
 
 	@bindThis

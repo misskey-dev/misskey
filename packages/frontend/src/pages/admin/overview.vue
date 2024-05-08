@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -79,6 +79,7 @@ import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -117,14 +118,14 @@ onMounted(async () => {
 	magicGrid.listen();
 	*/
 
-	os.apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
+	misskeyApiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
 		federationPubActive.value = chart.pubActive[0];
 		federationPubActiveDiff.value = chart.pubActive[0] - chart.pubActive[1];
 		federationSubActive.value = chart.subActive[0];
 		federationSubActiveDiff.value = chart.subActive[0] - chart.subActive[1];
 	});
 
-	os.apiGet('federation/stats', { limit: 10 }).then(res => {
+	misskeyApiGet('federation/stats', { limit: 10 }).then(res => {
 		topSubInstancesForPie.value = [
 			...res.topSubInstances.map(x => ({
 				name: x.host,
@@ -149,18 +150,18 @@ onMounted(async () => {
 		];
 	});
 
-	os.api('admin/server-info').then(serverInfoResponse => {
+	misskeyApi('admin/server-info').then(serverInfoResponse => {
 		serverInfo.value = serverInfoResponse;
 	});
 
-	os.api('admin/show-users', {
+	misskeyApi('admin/show-users', {
 		limit: 5,
 		sort: '+createdAt',
 	}).then(res => {
 		newUsers.value = res;
 	});
 
-	os.api('federation/instances', {
+	misskeyApi('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {
@@ -183,10 +184,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.dashboard,
 	icon: 'ti ti-dashboard',
-});
+}));
 </script>
 
 <style lang="scss" module>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
-	<section style="padding: 0 16px 0 16px;">
+	<section style="padding: 16px;" class="_gaps_s">
 		<MkInput v-model="id">
 			<template #label>{{ i18n.ts._pages.blocks._note.id }}</template>
 			<template #caption>{{ i18n.ts._pages.blocks._note.idDescription }}</template>
@@ -30,7 +30,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -53,7 +53,7 @@ watch(id, async () => {
 		...props.modelValue,
 		note: id.value,
 	});
-	note.value = await os.api('notes/show', { noteId: id.value });
+	note.value = await misskeyApi('notes/show', { noteId: id.value });
 }, {
 	immediate: true,
 });

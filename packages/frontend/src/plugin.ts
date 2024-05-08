@@ -1,15 +1,17 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ref } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import { inputText } from '@/os.js';
 import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
+export const pluginLogs = ref(new Map<string, string[]>());
 
 export async function install(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
@@ -19,36 +21,30 @@ export async function install(plugin: Plugin): Promise<void> {
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.id,
 	}), {
-		in: (q): Promise<string> => {
-			return new Promise(ok => {
-				inputText({
-					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value): void => {
 			console.log(value);
+			pluginLogs.value.get(plugin.id).push(utils.reprValue(value));
 		},
 		log: (): void => {
+		},
+		err: (err): void => {
+			pluginLogs.value.get(plugin.id).push(`${err}`);
+			throw err; // install時のtry-catchに反応させる
 		},
 	});
 
 	initPlugin({ plugin, aiscript });
 
-	try {
-		await aiscript.exec(parser.parse(plugin.src));
-	} catch (err) {
-		console.error('Plugin install failed:', plugin.name, 'v' + plugin.version);
-		return;
-	}
-
-	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+	aiscript.exec(parser.parse(plugin.src)).then(
+		() => {
+			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+		},
+		(err) => {
+			console.error('Plugin install failed:', plugin.name, 'v' + plugin.version);
+			throw err;
+		},
+	);
 }
 
 function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
@@ -104,6 +100,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 
 function initPlugin({ plugin, aiscript }): void {
 	pluginContexts.set(plugin.id, aiscript);
+	pluginLogs.value.set(plugin.id, []);
 }
 
 function registerPostFormAction({ pluginId, title, handler }): void {

@@ -17,16 +17,32 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  # PNPM has an issue with dependabot. See:
-  # https://github.com/dependabot/dependabot-core/issues/7258
-  # https://github.com/pnpm/pnpm/issues/6530
-  # TODO: Restore this when the issue is solved
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 10
+  # List dependencies required to be updated together, sharing the same version numbers.
+  # Those who simply have the common owner (e.g. @fastify) don't need to be listed.
   groups:
-    swc:
+    aws-sdk:
       patterns:
-        - "@swc/*"
+        - "@aws-sdk/*"
+    bull-board:
+      patterns:
+        - "@bull-board/*"
+    nestjs:
+      patterns:
+        - "@nestjs/*"
+    slacc:
+      patterns:
+        - "slacc-*"
     storybook:
       patterns:
         - "storybook*"
         - "@storybook/*"
+    swc-core:
+      patterns:
+        - "@swc/core*"
+    typescript-eslint:
+      patterns:
+        - "@typescript-eslint/*"
+    tensorflow:
+      patterns:
+        - "@tensorflow/*"

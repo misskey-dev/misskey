@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,12 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
-import { SectionBlock } from './block.type.js';
 
 const XBlock = defineAsyncComponent(() => import('./page.block.vue'));
 
 defineProps<{
-	block: SectionBlock,
+	block: Misskey.entities.PageBlock,
 	h: number,
 	page: Misskey.entities.Page,
 }>();

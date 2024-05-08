@@ -1,28 +1,20 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { host, origin, relativeFetch, signup, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { host, origin, relativeFetch, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('.well-known', () => {
-	let app: INestApplicationContext;
 	let alice: misskey.entities.User;
 
 	beforeAll(async () => {
-		app = await startServer();
-
 		alice = await signup({ username: 'alice' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	test('nodeinfo', async () => {
 		const res = await relativeFetch('.well-known/nodeinfo');

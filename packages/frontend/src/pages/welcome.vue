@@ -1,11 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="meta">
-	<XSetup v-if="meta.requireSetup"/>
+<div v-if="instance">
+	<XSetup v-if="instance.requireSetup"/>
 	<XEntrance v-else/>
 </div>
 </template>
@@ -16,21 +16,21 @@ import * as Misskey from 'misskey-js';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
-import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { fetchInstance } from '@/instance.js';
 
-const meta = ref<Misskey.entities.MetaResponse | null>(null);
+const instance = ref<Misskey.entities.MetaDetailed | null>(null);
 
-os.api('meta', { detail: true }).then(res => {
-	meta.value = res;
+fetchInstance(true).then((res) => {
+	instance.value = res;
 });
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: instanceName,
 	icon: null,
-})));
+}));
 </script>

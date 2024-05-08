@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -18,6 +18,9 @@ export default defineComponent({
 		watch(value, () => {
 			context.emit('update:modelValue', value.value);
 		});
+		watch(() => props.modelValue, v => {
+			value.value = v;
+		});
 		if (!context.slots.default) return null;
 		let options = context.slots.default();
 		const label = context.slots.label && context.slots.label();
@@ -35,7 +38,7 @@ export default defineComponent({
 			h('div', {
 				class: 'body',
 			}, options.map(option => h(MkRadio, {
-				key: option.key,
+				key: option.key as string,
 				value: option.props?.value,
 				modelValue: value.value,
 				'onUpdate:modelValue': _v => value.value = _v,

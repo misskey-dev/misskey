@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" data-cy-widget-select>
 				<template #label>{{ i18n.ts.selectWidget }}</template>
-				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
+				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.ts._widgets[widget] }}</option>
 			</MkSelect>
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
@@ -97,19 +97,21 @@ const updateWidget = (id, data) => {
 };
 
 function onContextmenu(widget: Widget, ev: MouseEvent) {
-	const isLink = (el: HTMLElement) => {
+	const element = ev.target as HTMLElement | null;
+	const isLink = (el: HTMLElement): boolean => {
 		if (el.tagName === 'A') return true;
 		if (el.parentElement) {
 			return isLink(el.parentElement);
 		}
+		return false;
 	};
-	if (isLink(ev.target)) return;
-	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+	if (element && isLink(element)) return;
+	if (element && (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(element.tagName) || element.attributes['contenteditable'])) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	os.contextMenu([{
 		type: 'label',
-		text: i18n.t(`_widgets.${widget.name}`),
+		text: i18n.ts._widgets[widget.name],
 	}, {
 		icon: 'ti ti-settings',
 		text: i18n.ts.settings,

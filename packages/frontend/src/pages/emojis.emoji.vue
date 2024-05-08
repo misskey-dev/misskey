@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,18 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import * as os from '@/os.js';
+import * as Misskey from 'misskey-js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
-	emoji: {
-		name: string;
-		aliases: string[];
-		category: string;
-		url: string;
-	};
+  emoji: Misskey.entities.EmojiSimple;
 }>();
 
 function menu(ev) {
@@ -42,12 +39,13 @@ function menu(ev) {
 	}, {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
-		action: () => {
-			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
-				os.alert({
-					type: 'info',
-					text: `Name: ${res.name}\nAliases: ${res.aliases.join(' ')}\nCategory: ${res.category}\nisSensitive: ${res.isSensitive}\nlocalOnly: ${res.localOnly}\nLicense: ${res.license}\nURL: ${res.url}`,
-				});
+		action: async () => {
+			os.popup(MkCustomEmojiDetailedDialog, {
+				emoji: await misskeyApiGet('emoji', {
+					name: props.emoji.name,
+				})
+			}, {
+				anchor: ev.target,
 			});
 		},
 	}], ev.currentTarget ?? ev.target);

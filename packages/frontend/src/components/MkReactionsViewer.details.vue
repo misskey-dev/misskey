@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -44,7 +44,7 @@ function getReactionName(reaction: string): string {
 	if (trimLocal.startsWith(':')) {
 		return trimLocal;
 	}
-	return getEmojiName(reaction) ?? reaction;
+	return getEmojiName(reaction);
 }
 </script>
 

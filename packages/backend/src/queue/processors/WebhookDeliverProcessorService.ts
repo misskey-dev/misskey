@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -71,7 +71,7 @@ export class WebhookDeliverProcessorService {
 
 			if (res instanceof StatusError) {
 				// 4xx
-				if (res.isClientError) {
+				if (!res.isRetryable) {
 					throw new Bull.UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
 				}
 

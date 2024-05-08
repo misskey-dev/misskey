@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,6 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="height: 100cqh; overflow: auto; text-align: center;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
+							<MkInfo><MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank">{{ i18n.ts._2fa.moreDetailedGuideHere }}</MkLink></MkInfo>
+
 							<I18n :src="i18n.ts._2fa.step1" tag="div">
 								<template #a>
 									<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
@@ -33,8 +35,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
 								</template>
 							</I18n>
-							<div>{{ i18n.ts._2fa.step2 }}<br>{{ i18n.ts._2fa.step2Click }}</div>
-							<a :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
+							<div>{{ i18n.ts._2fa.step2 }}</div>
+							<div>
+								<a :class="$style.qrRoot" :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
+								<!-- QRコード側にマージンが入っているので直下でOK -->
+								<div><MkButton inline rounded link :to="twoFactorData.url" :linkBehavior="'browser'">{{ i18n.ts.launchApp }}</MkButton></div>
+							</div>
 							<MkKeyValue :copy="twoFactorData.url">
 								<template #key>{{ i18n.ts._2fa.step2Uri }}</template>
 								<template #value>{{ twoFactorData.url }}</template>
@@ -52,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<div>{{ i18n.ts._2fa.step3Title }}</div>
-							<MkInput v-model="token" autocomplete="one-time-code"></MkInput>
+							<MkInput v-model="token" autocomplete="one-time-code" inputmode="numeric"></MkInput>
 							<div>{{ i18n.ts._2fa.step3 }}</div>
 						</div>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -109,8 +115,11 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkLink from '@/components/MkLink.vue';
 import { confetti } from '@/scripts/confetti.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 defineProps<{
 	twoFactorData: {
@@ -151,7 +160,7 @@ function downloadBackupCodes() {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
 		const dummya = document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i?.username}-2fa-backup-codes.txt`;
+		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
 		dummya.click();
 	}
 }
@@ -175,8 +184,14 @@ function allDone() {
 	transform: translateX(-50px);
 }
 
-.qr {
+.qrRoot {
+	display: block;
+	margin: 0 auto;
 	width: 200px;
 	max-width: 100%;
+}
+
+.qr {
+	width: 100%;
 }
 </style>

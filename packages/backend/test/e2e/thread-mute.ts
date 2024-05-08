@@ -1,43 +1,35 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, post, connectStream, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, connectStream, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Note thread mute', () => {
-	let app: INestApplicationContext;
-
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
 
-	afterAll(async () => {
-		await app.close();
-	});
-
 	test('notes/mentions にミュートしているスレッドの投稿が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
 
-		const res = await api('/notes/mentions', {}, alice);
+		const res = await api('notes/mentions', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
@@ -48,15 +40,15 @@ describe('Note thread mute', () => {
 
 	test('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
 		// 状態リセット
-		await api('/i/read-all-unread-notes', {}, alice);
+		await api('i/read-all-unread-notes', {}, alice);
 
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 
-		const res = await api('/i', {}, alice);
+		const res = await api('i', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.hasUnreadMentions, false);
@@ -64,11 +56,11 @@ describe('Note thread mute', () => {
 
 	test('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise<void>(async done => {
 		// 状態リセット
-		await api('/i/read-all-unread-notes', {}, alice);
+		await api('i/read-all-unread-notes', {}, alice);
 
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		let fired = false;
 
@@ -92,12 +84,12 @@ describe('Note thread mute', () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
 
-		const res = await api('/i/notifications', {}, alice);
+		const res = await api('i/notifications', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -43,20 +44,20 @@ async function ok() {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.t('_announcement.readConfirmText', { title: props.announcement.title }),
+			text: i18n.tsx._announcement.readConfirmText({ title: props.announcement.title }),
 		});
 		if (confirm.canceled) return;
 	}
 
-	modal.value.close();
-	os.api('i/read-announcement', { announcementId: props.announcement.id });
+	modal.value?.close();
+	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
 	});
 }
 
 function onBgClick() {
-	rootEl.value.animate([{
+	rootEl.value?.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {

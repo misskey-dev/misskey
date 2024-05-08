@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,19 +8,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div>
 		<div v-if="user">
-			<XHome v-if="tab === 'home'" :user="user"/>
-			<MkSpacer v-else-if="tab === 'notes'" :contentMax="800" style="padding-top: 0">
-				<XTimeline :user="user"/>
-			</MkSpacer>
-			<XActivity v-else-if="tab === 'activity'" :user="user"/>
-			<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
-			<XReactions v-else-if="tab === 'reactions'" :user="user"/>
-			<XClips v-else-if="tab === 'clips'" :user="user"/>
-			<XLists v-else-if="tab === 'lists'" :user="user"/>
-			<XPages v-else-if="tab === 'pages'" :user="user"/>
-			<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
-			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
-			<XRaw v-else-if="tab === 'raw'" :user="user"/>
+			<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+				<XHome v-if="tab === 'home'" key="home" :user="user"/>
+				<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800" style="padding-top: 0">
+					<XTimeline :user="user"/>
+				</MkSpacer>
+				<XActivity v-else-if="tab === 'activity'" key="activity" :user="user"/>
+				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
+				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
+				<XClips v-else-if="tab === 'clips'" key="clips" :user="user"/>
+				<XLists v-else-if="tab === 'lists'" key="lists" :user="user"/>
+				<XPages v-else-if="tab === 'pages'" key="pages" :user="user"/>
+				<XFlashs v-else-if="tab === 'flashs'" key="flashs" :user="user"/>
+				<XGallery v-else-if="tab === 'gallery'" key="gallery" :user="user"/>
+				<XRaw v-else-if="tab === 'raw'" key="raw" :user="user"/>
+			</MkHorizontalSwipe>
 		</div>
 		<MkError v-else-if="error" @retry="fetchUser()"/>
 		<MkLoading v-else/>
@@ -32,10 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
@@ -57,13 +60,14 @@ const props = withDefaults(defineProps<{
 });
 
 const tab = ref(props.page);
+
 const user = ref<null | Misskey.entities.UserDetailed>(null);
 const error = ref<any>(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user.value = null;
-	os.api('users/show', Misskey.acct.parse(props.acct)).then(u => {
+	misskeyApi('users/show', Misskey.acct.parse(props.acct)).then(u => {
 		user.value = u;
 	}).catch(err => {
 		error.value = err;
@@ -92,7 +96,7 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
-}] : []), ...($i && ($i.id === user.value.id)) || user.value.publicReactions ? [{
+}] : []), ...($i && ($i.id === user.value.id || $i.isAdmin || $i.isModerator)) || user.value.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',
@@ -122,15 +126,18 @@ const headerTabs = computed(() => user.value ? [{
 	icon: 'ti ti-code',
 }] : []);
 
-definePageMetadata(computed(() => user.value ? {
+definePageMetadata(() => ({
+	title: i18n.ts.user,
 	icon: 'ti ti-user',
-	title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
-	subtitle: `@${getAcct(user.value)}`,
-	userName: user.value,
-	avatar: user.value,
-	path: `/@${user.value.username}`,
-	share: {
-		title: user.value.name,
-	},
-} : null));
+	...user.value ? {
+		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
+		subtitle: `@${getAcct(user.value)}`,
+		userName: user.value,
+		avatar: user.value,
+		path: `/@${user.value.username}`,
+		share: {
+			title: user.value.name,
+		},
+	} : {},
+}));
 </script>

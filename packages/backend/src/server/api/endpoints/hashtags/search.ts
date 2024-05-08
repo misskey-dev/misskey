@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const hashtags = await this.hashtagsRepository.createQueryBuilder('tag')
 				.where('tag.name like :q', { q: sqlLikeEscape(ps.query.toLowerCase()) + '%' })
-				.orderBy('tag.count', 'DESC')
+				.orderBy('tag.mentionedLocalUsersCount', 'DESC')
 				.groupBy('tag.id')
 				.limit(ps.limit)
 				.offset(ps.offset)

@@ -349,6 +349,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Zapnúť hCaptchu"
 hcaptchaSiteKey: "Site key"
 hcaptchaSecretKey: "Secret key"
+mcaptchaSiteKey: "Site key"
+mcaptchaSecretKey: "Secret key"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Zapnúť ReCAPTCHA"
 recaptchaSiteKey: "Site key"
@@ -917,7 +919,9 @@ youFollowing: "Sledované"
 icon: "Avatar"
 replies: "Odpovedať"
 renotes: "Preposlať"
+sourceCode: "Zdrojový kód"
 flip: "Preklopiť"
+lastNDays: "Posledných {n} dní"
 _role:
   priority: "Priorita"
   _priority:
@@ -1284,6 +1288,7 @@ _profile:
   changeBanner: "Zmeniť banner"
 _exportOrImport:
   allNotes: "Všetky poznámky"
+  clips: "Klip"
   followingList: "Sledujete"
   muteList: "Vypnúť zvuk"
   blockingList: "Zablokovať"
@@ -1441,3 +1446,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Zmraziť"
   resetPassword: "Resetovať heslo"
+_reversi:
+  total: "Celkom"
+

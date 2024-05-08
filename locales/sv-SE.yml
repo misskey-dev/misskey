@@ -345,6 +345,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Aktivera hCaptcha"
 hcaptchaSiteKey: "Webbplatsnyckel"
 hcaptchaSecretKey: "Hemlig nyckel"
+mcaptchaSiteKey: "Webbplatsnyckel"
+mcaptchaSecretKey: "Hemlig nyckel"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Aktivera reCAPTCHA"
 recaptchaSiteKey: "Webbplatsnyckel"
@@ -574,3 +576,4 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendera"
   resetPassword: "Återställ Lösenord"
+

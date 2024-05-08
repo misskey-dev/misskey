@@ -1,16 +1,16 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { expect } from '@storybook/jest';
+import { expect } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
 import MkTime from './MkTime.vue';
 import { i18n } from '@/i18n.js';
 import { dateTimeFormat } from '@/scripts/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
-const future = new Date(8640000000000000);
+const future = new Date('2024-04-01T00:00:00.000Z');
 const oneHourAgo = new Date(now.getTime() - 3600000);
 const oneDayAgo = new Date(now.getTime() - 86400000);
 const oneWeekAgo = new Date(now.getTime() - 604800000);
@@ -49,17 +49,18 @@ export const Empty = {
 export const RelativeFuture = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.ts._ago.future);
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 1 })); // n (1) = future (2024) - now (2023)
 	},
 	args: {
 		...Empty.args,
 		time: future,
+		origin: now,
 	},
 } satisfies StoryObj<typeof MkTime>;
 export const AbsoluteFuture = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -96,7 +97,7 @@ export const RelativeNow = {
 export const AbsoluteNow = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -123,7 +124,7 @@ export const DetailNow = {
 export const RelativeOneHourAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.hoursAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.hoursAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -135,7 +136,7 @@ export const RelativeOneHourAgo = {
 export const AbsoluteOneHourAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -162,7 +163,7 @@ export const DetailOneHourAgo = {
 export const RelativeOneDayAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.daysAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.daysAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -174,7 +175,7 @@ export const RelativeOneDayAgo = {
 export const AbsoluteOneDayAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -201,7 +202,7 @@ export const DetailOneDayAgo = {
 export const RelativeOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.weeksAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.weeksAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -213,7 +214,7 @@ export const RelativeOneWeekAgo = {
 export const AbsoluteOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -240,7 +241,7 @@ export const DetailOneWeekAgo = {
 export const RelativeOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.monthsAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.monthsAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -252,7 +253,7 @@ export const RelativeOneMonthAgo = {
 export const AbsoluteOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -279,7 +280,7 @@ export const DetailOneMonthAgo = {
 export const RelativeOneYearAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.t('_ago.yearsAgo', { n: 1 }));
+		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.yearsAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -291,7 +292,7 @@ export const RelativeOneYearAgo = {
 export const AbsoluteOneYearAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
