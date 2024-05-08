@@ -79,7 +79,7 @@
 		"@fastify/multipart": "8.2.0",
 		"@fastify/static": "7.0.3",
 		"@fastify/view": "9.1.0",
-		"@misskey-dev/node-http-message-signatures": "0.0.8",
+		"@misskey-dev/node-http-message-signatures": "0.0.10",
 		"@misskey-dev/sharp-read-bmp": "1.2.0",
 		"@misskey-dev/summaly": "5.1.0",
 		"@napi-rs/canvas": "^0.1.52",
