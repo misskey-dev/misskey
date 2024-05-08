@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:[attr]="self ? url.substring(local.length) : url"
 	:rel="rel ?? 'nofollow noopener'"
 	:target="target"
-	:behavior="props.behavior"
+	:behavior="props.navigationBehavior"
 	:title="url"
 	@click="(ev: MouseEvent) => warningExternalWebsite(ev, url)"
 >
@@ -33,7 +33,7 @@ import { MkABehavior } from '@/components/global/MkA.vue';
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
-	behavior?: MkABehavior;
+	navigationBehavior?: MkABehavior;
 }>(), {
 });
 

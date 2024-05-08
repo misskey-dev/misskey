@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }" :behavior="behavior">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
 	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
@@ -26,7 +26,7 @@ import { MkABehavior } from '@/components/global/MkA.vue';
 const props = defineProps<{
 	username: string;
 	host: string;
-	behavior?: MkABehavior;
+	navigationBehavior?: MkABehavior;
 }>();
 
 const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
