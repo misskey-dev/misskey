@@ -189,7 +189,7 @@ const localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.reme
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
-	props.initialVisibleUsers.forEach(pushVisibleUser);
+	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
 const autocomplete = ref(null);
@@ -335,7 +335,7 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 			misskeyApi('users/show', {
 				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
 			}).then(users => {
-				users.forEach(pushVisibleUser);
+				users.forEach(u => pushVisibleUser(u));
 			});
 		}
 
@@ -963,7 +963,7 @@ onMounted(() => {
 				}
 				if (draft.data.visibleUserIds) {
 					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
-						users.forEach(pushVisibleUser);
+						users.forEach(u => pushVisibleUser(u));
 					});
 				}
 			}
