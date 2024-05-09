@@ -8,12 +8,13 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { api, initTestDb, post, signup, uploadFile, uploadUrl } from '../utils.js';
+import { api, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
 	let Notes: any;
 
+	let root: misskey.entities.SignupResponse;
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 	let tom: misskey.entities.SignupResponse;
@@ -21,6 +22,7 @@ describe('Note', () => {
 	beforeAll(async () => {
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(MiNote);
+		root = await signup({ username: 'root' });
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		tom = await signup({ username: 'tom', host: 'example.com' });
@@ -31,7 +33,7 @@ describe('Note', () => {
 			text: 'test',
 		};
 
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -41,7 +43,7 @@ describe('Note', () => {
 	test('ファイルを添付できる', async () => {
 		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
-		const res = await api('/notes/create', {
+		const res = await api('notes/create', {
 			fileIds: [file.id],
 		}, alice);
 
@@ -53,7 +55,7 @@ describe('Note', () => {
 	test('他人のファイルで怒られる', async () => {
 		const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
-		const res = await api('/notes/create', {
+		const res = await api('notes/create', {
 			text: 'test',
 			fileIds: [file.id],
 		}, alice);
@@ -64,7 +66,7 @@ describe('Note', () => {
 	}, 1000 * 10);
 
 	test('存在しないファイルで怒られる', async () => {
-		const res = await api('/notes/create', {
+		const res = await api('notes/create', {
 			text: 'test',
 			fileIds: ['000000000000000000000000'],
 		}, alice);
@@ -75,7 +77,7 @@ describe('Note', () => {
 	});
 
 	test('不正なファイルIDで怒られる', async () => {
-		const res = await api('/notes/create', {
+		const res = await api('notes/create', {
 			fileIds: ['kyoppie'],
 		}, alice);
 		assert.strictEqual(res.status, 400);
@@ -93,7 +95,7 @@ describe('Note', () => {
 			replyId: bobPost.id,
 		};
 
-		const res = await api('/notes/create', alicePost, alice);
+		const res = await api('notes/create', alicePost, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -111,7 +113,7 @@ describe('Note', () => {
 			renoteId: bobPost.id,
 		};
 
-		const res = await api('/notes/create', alicePost, alice);
+		const res = await api('notes/create', alicePost, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -129,7 +131,7 @@ describe('Note', () => {
 			renoteId: bobPost.id,
 		};
 
-		const res = await api('/notes/create', alicePost, alice);
+		const res = await api('notes/create', alicePost, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -142,7 +144,7 @@ describe('Note', () => {
 		const bobPost = await post(bob, {
 			text: 'test',
 		});
-		const res = await api('/notes/create', {
+		const res = await api('notes/create', {
 			text: ' ',
 			renoteId: bobPost.id,
 		}, alice);
@@ -152,7 +154,7 @@ describe('Note', () => {
 	});
 
 	test('visibility: followersでrenoteできる', async () => {
-		const createRes = await api('/notes/create', {
+		const createRes = await api('notes/create', {
 			text: 'test',
 			visibility: 'followers',
 		}, alice);
@@ -160,7 +162,7 @@ describe('Note', () => {
 		assert.strictEqual(createRes.status, 200);
 
 		const renoteId = createRes.body.createdNote.id;
-		const renoteRes = await api('/notes/create', {
+		const renoteRes = await api('notes/create', {
 			visibility: 'followers',
 			renoteId,
 		}, alice);
@@ -169,7 +171,7 @@ describe('Note', () => {
 		assert.strictEqual(renoteRes.body.createdNote.renoteId, renoteId);
 		assert.strictEqual(renoteRes.body.createdNote.visibility, 'followers');
 
-		const deleteRes = await api('/notes/delete', {
+		const deleteRes = await api('notes/delete', {
 			noteId: renoteRes.body.createdNote.id,
 		}, alice);
 
@@ -177,11 +179,11 @@ describe('Note', () => {
 	});
 
 	test('visibility: followersなノートに対してフォロワーはリプライできる', async () => {
-		await api('/following/create', {
+		await api('following/create', {
 			userId: alice.id,
 		}, bob);
 
-		const aliceNote = await api('/notes/create', {
+		const aliceNote = await api('notes/create', {
 			text: 'direct note to bob',
 			visibility: 'followers',
 		}, alice);
@@ -189,7 +191,7 @@ describe('Note', () => {
 		assert.strictEqual(aliceNote.status, 200);
 
 		const replyId = aliceNote.body.createdNote.id;
-		const bobReply = await api('/notes/create', {
+		const bobReply = await api('notes/create', {
 			text: 'reply to alice note',
 			replyId,
 		}, bob);
@@ -197,20 +199,20 @@ describe('Note', () => {
 		assert.strictEqual(bobReply.status, 200);
 		assert.strictEqual(bobReply.body.createdNote.replyId, replyId);
 
-		await api('/following/delete', {
+		await api('following/delete', {
 			userId: alice.id,
 		}, bob);
 	});
 
 	test('visibility: followersなノートに対してフォロワーでないユーザーがリプライしようとすると怒られる', async () => {
-		const aliceNote = await api('/notes/create', {
+		const aliceNote = await api('notes/create', {
 			text: 'direct note to bob',
 			visibility: 'followers',
 		}, alice);
 
 		assert.strictEqual(aliceNote.status, 200);
 
-		const bobReply = await api('/notes/create', {
+		const bobReply = await api('notes/create', {
 			text: 'reply to alice note',
 			replyId: aliceNote.body.createdNote.id,
 		}, bob);
@@ -220,7 +222,7 @@ describe('Note', () => {
 	});
 
 	test('visibility: specifiedなノートに対してvisibility: specifiedで返信できる', async () => {
-		const aliceNote = await api('/notes/create', {
+		const aliceNote = await api('notes/create', {
 			text: 'direct note to bob',
 			visibility: 'specified',
 			visibleUserIds: [bob.id],
@@ -228,7 +230,7 @@ describe('Note', () => {
 
 		assert.strictEqual(aliceNote.status, 200);
 
-		const bobReply = await api('/notes/create', {
+		const bobReply = await api('notes/create', {
 			text: 'reply to alice note',
 			replyId: aliceNote.body.createdNote.id,
 			visibility: 'specified',
@@ -239,7 +241,7 @@ describe('Note', () => {
 	});
 
 	test('visibility: specifiedなノートに対してvisibility: follwersで返信しようとすると怒られる', async () => {
-		const aliceNote = await api('/notes/create', {
+		const aliceNote = await api('notes/create', {
 			text: 'direct note to bob',
 			visibility: 'specified',
 			visibleUserIds: [bob.id],
@@ -247,7 +249,7 @@ describe('Note', () => {
 
 		assert.strictEqual(aliceNote.status, 200);
 
-		const bobReply = await api('/notes/create', {
+		const bobReply = await api('notes/create', {
 			text: 'reply to alice note with visibility: followers',
 			replyId: aliceNote.body.createdNote.id,
 			visibility: 'followers',
@@ -261,7 +263,7 @@ describe('Note', () => {
 		const post = {
 			text: '!'.repeat(MAX_NOTE_TEXT_LENGTH), // 3000文字
 		};
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 		assert.strictEqual(res.status, 200);
 	});
 
@@ -269,7 +271,7 @@ describe('Note', () => {
 		const post = {
 			text: '!'.repeat(MAX_NOTE_TEXT_LENGTH + 1), // 3001文字
 		};
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -278,7 +280,7 @@ describe('Note', () => {
 			text: 'test',
 			replyId: '000000000000000000000000',
 		};
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -286,7 +288,7 @@ describe('Note', () => {
 		const post = {
 			renoteId: '000000000000000000000000',
 		};
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -295,7 +297,7 @@ describe('Note', () => {
 			text: 'test',
 			replyId: 'foo',
 		};
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -303,7 +305,7 @@ describe('Note', () => {
 		const post = {
 			renoteId: 'foo',
 		};
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -312,7 +314,7 @@ describe('Note', () => {
 			text: '@ghost yo',
 		};
 
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -324,7 +326,7 @@ describe('Note', () => {
 			text: '@bob @bob @bob yo',
 		};
 
-		const res = await api('/notes/create', post, alice);
+		const res = await api('notes/create', post, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -337,25 +339,25 @@ describe('Note', () => {
 	describe('添付ファイル情報', () => {
 		test('ファイルを添付した場合、投稿成功時にファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
-			const res = await api('/notes/create', {
-				fileIds: [file.body.id],
+			const res = await api('notes/create', {
+				fileIds: [file.body!.id],
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.createdNote.files.length, 1);
-			assert.strictEqual(res.body.createdNote.files[0].id, file.body.id);
+			assert.strictEqual(res.body.createdNote.files[0].id, file.body!.id);
 		});
 
 		test('ファイルを添付した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
-			const createdNote = await api('/notes/create', {
-				fileIds: [file.body.id],
+			const createdNote = await api('notes/create', {
+				fileIds: [file.body!.id],
 			}, alice);
 
 			assert.strictEqual(createdNote.status, 200);
 
-			const res = await api('/notes', {
+			const res = await api('notes', {
 				withFiles: true,
 			}, alice);
 
@@ -364,23 +366,23 @@ describe('Note', () => {
 			const myNote = res.body.find((note: { id: string; files: { id: string }[] }) => note.id === createdNote.body.createdNote.id);
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.files.length, 1);
-			assert.strictEqual(myNote.files[0].id, file.body.id);
+			assert.strictEqual(myNote.files[0].id, file.body!.id);
 		});
 
 		test('ファイルが添付されたノートをリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
-			const createdNote = await api('/notes/create', {
-				fileIds: [file.body.id],
+			const createdNote = await api('notes/create', {
+				fileIds: [file.body!.id],
 			}, alice);
 
 			assert.strictEqual(createdNote.status, 200);
 
-			const renoted = await api('/notes/create', {
+			const renoted = await api('notes/create', {
 				renoteId: createdNote.body.createdNote.id,
 			}, alice);
 			assert.strictEqual(renoted.status, 200);
 
-			const res = await api('/notes', {
+			const res = await api('notes', {
 				renote: true,
 			}, alice);
 
@@ -389,24 +391,24 @@ describe('Note', () => {
 			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.renote.files.length, 1);
-			assert.strictEqual(myNote.renote.files[0].id, file.body.id);
+			assert.strictEqual(myNote.renote.files[0].id, file.body!.id);
 		});
 
 		test('ファイルが添付されたノートに返信した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
-			const createdNote = await api('/notes/create', {
-				fileIds: [file.body.id],
+			const createdNote = await api('notes/create', {
+				fileIds: [file.body!.id],
 			}, alice);
 
 			assert.strictEqual(createdNote.status, 200);
 
-			const reply = await api('/notes/create', {
+			const reply = await api('notes/create', {
 				replyId: createdNote.body.createdNote.id,
 				text: 'this is reply',
 			}, alice);
 			assert.strictEqual(reply.status, 200);
 
-			const res = await api('/notes', {
+			const res = await api('notes', {
 				reply: true,
 			}, alice);
 
@@ -415,29 +417,29 @@ describe('Note', () => {
 			const myNote = res.body.find((note: { id: string }) => note.id === reply.body.createdNote.id);
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.reply.files.length, 1);
-			assert.strictEqual(myNote.reply.files[0].id, file.body.id);
+			assert.strictEqual(myNote.reply.files[0].id, file.body!.id);
 		});
 
 		test('ファイルが添付されたノートへの返信をリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
-			const createdNote = await api('/notes/create', {
-				fileIds: [file.body.id],
+			const createdNote = await api('notes/create', {
+				fileIds: [file.body!.id],
 			}, alice);
 
 			assert.strictEqual(createdNote.status, 200);
 
-			const reply = await api('/notes/create', {
+			const reply = await api('notes/create', {
 				replyId: createdNote.body.createdNote.id,
 				text: 'this is reply',
 			}, alice);
 			assert.strictEqual(reply.status, 200);
 
-			const renoted = await api('/notes/create', {
+			const renoted = await api('notes/create', {
 				renoteId: reply.body.createdNote.id,
 			}, alice);
 			assert.strictEqual(renoted.status, 200);
 
-			const res = await api('/notes', {
+			const res = await api('notes', {
 				renote: true,
 			}, alice);
 
@@ -446,7 +448,7 @@ describe('Note', () => {
 			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.renote.reply.files.length, 1);
-			assert.strictEqual(myNote.renote.reply.files[0].id, file.body.id);
+			assert.strictEqual(myNote.renote.reply.files[0].id, file.body!.id);
 		});
 
 		test('NSFWが強制されている場合変更できない', async () => {
@@ -472,26 +474,26 @@ describe('Note', () => {
 						priority: 0,
 						value: true,
 					},
-				},
-			}, alice);
+				} as any,
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
-			assert.strictEqual(file.body.isSensitive, false);
+			assert.strictEqual(file.body!.isSensitive, false);
 
 			const nsfwfile = await uploadFile(alice);
 
 			assert.strictEqual(nsfwfile.status, 200);
-			assert.strictEqual(nsfwfile.body.isSensitive, true);
+			assert.strictEqual(nsfwfile.body!.isSensitive, true);
 
 			const liftnsfw = await api('drive/files/update', {
-				fileId: nsfwfile.body.id,
+				fileId: nsfwfile.body!.id,
 				isSensitive: false,
 			}, alice);
 
@@ -499,7 +501,7 @@ describe('Note', () => {
 			assert.strictEqual(liftnsfw.body.error.code, 'RESTRICTED_BY_ROLE');
 
 			const oldaddnsfw = await api('drive/files/update', {
-				fileId: file.body.id,
+				fileId: file.body!.id,
 				isSensitive: true,
 			}, alice);
 
@@ -508,17 +510,17 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 	});
 
 	describe('notes/create', () => {
 		test('投票を添付できる', async () => {
-			const res = await api('/notes/create', {
+			const res = await api('notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['foo', 'bar'],
@@ -531,14 +533,15 @@ describe('Note', () => {
 		});
 
 		test('投票の選択肢が無くて怒られる', async () => {
-			const res = await api('/notes/create', {
+			const res = await api('notes/create', {
+				// @ts-expect-error poll must not be empty
 				poll: {},
 			}, alice);
 			assert.strictEqual(res.status, 400);
 		});
 
 		test('投票の選択肢が無くて怒られる (空の配列)', async () => {
-			const res = await api('/notes/create', {
+			const res = await api('notes/create', {
 				poll: {
 					choices: [],
 				},
@@ -547,7 +550,7 @@ describe('Note', () => {
 		});
 
 		test('投票の選択肢が1つで怒られる', async () => {
-			const res = await api('/notes/create', {
+			const res = await api('notes/create', {
 				poll: {
 					choices: ['Strawberry Pasta'],
 				},
@@ -556,14 +559,14 @@ describe('Note', () => {
 		});
 
 		test('投票できる', async () => {
-			const { body } = await api('/notes/create', {
+			const { body } = await api('notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
 				},
 			}, alice);
 
-			const res = await api('/notes/polls/vote', {
+			const res = await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 1,
 			}, alice);
@@ -572,19 +575,19 @@ describe('Note', () => {
 		});
 
 		test('複数投票できない', async () => {
-			const { body } = await api('/notes/create', {
+			const { body } = await api('notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
 				},
 			}, alice);
 
-			await api('/notes/polls/vote', {
+			await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 0,
 			}, alice);
 
-			const res = await api('/notes/polls/vote', {
+			const res = await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 2,
 			}, alice);
@@ -593,7 +596,7 @@ describe('Note', () => {
 		});
 
 		test('許可されている場合は複数投票できる', async () => {
-			const { body } = await api('/notes/create', {
+			const { body } = await api('notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
@@ -601,17 +604,17 @@ describe('Note', () => {
 				},
 			}, alice);
 
-			await api('/notes/polls/vote', {
+			await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 0,
 			}, alice);
 
-			await api('/notes/polls/vote', {
+			await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 1,
 			}, alice);
 
-			const res = await api('/notes/polls/vote', {
+			const res = await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 2,
 			}, alice);
@@ -620,7 +623,7 @@ describe('Note', () => {
 		});
 
 		test('締め切られている場合は投票できない', async () => {
-			const { body } = await api('/notes/create', {
+			const { body } = await api('notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
@@ -630,7 +633,7 @@ describe('Note', () => {
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const res = await api('/notes/polls/vote', {
+			const res = await api('notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 1,
 			}, alice);
@@ -643,13 +646,13 @@ describe('Note', () => {
 				sensitiveWords: [
 					'test',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(sensitive.status, 204);
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note1 = await api('/notes/create', {
+			const note1 = await api('notes/create', {
 				text: 'hogetesthuge',
 			}, alice);
 
@@ -662,11 +665,11 @@ describe('Note', () => {
 				sensitiveWords: [
 					'/Test/i',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(sensitive.status, 204);
 
-			const note2 = await api('/notes/create', {
+			const note2 = await api('notes/create', {
 				text: 'hogetesthuge',
 			}, alice);
 
@@ -679,11 +682,11 @@ describe('Note', () => {
 				sensitiveWords: [
 					'Test hoge',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(sensitive.status, 204);
 
-			const note2 = await api('/notes/create', {
+			const note2 = await api('notes/create', {
 				text: 'hogeTesthuge',
 			}, alice);
 
@@ -696,13 +699,13 @@ describe('Note', () => {
 				prohibitedWords: [
 					'test',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note1 = await api('/notes/create', {
+			const note1 = await api('notes/create', {
 				text: 'hogetesthuge',
 			}, alice);
 
@@ -715,11 +718,11 @@ describe('Note', () => {
 				prohibitedWords: [
 					'/Test/i',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
-			const note2 = await api('/notes/create', {
+			const note2 = await api('notes/create', {
 				text: 'hogetesthuge',
 			}, alice);
 
@@ -732,11 +735,11 @@ describe('Note', () => {
 				prohibitedWords: [
 					'Test hoge',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
-			const note2 = await api('/notes/create', {
+			const note2 = await api('notes/create', {
 				text: 'hogeTesthuge',
 			}, alice);
 
@@ -749,13 +752,13 @@ describe('Note', () => {
 				prohibitedWords: [
 					'test',
 				],
-			}, alice);
+			}, root);
 
 			assert.strictEqual(prohibited.status, 204);
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note1 = await api('/notes/create', {
+			const note1 = await api('notes/create', {
 				text: 'hogetesthuge',
 			}, tom);
 
@@ -783,8 +786,8 @@ describe('Note', () => {
 						priority: 1,
 						value: 0,
 					},
-				},
-			}, alice);
+				} as any,
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
@@ -793,13 +796,13 @@ describe('Note', () => {
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note = await api('/notes/create', {
+			const note = await api('notes/create', {
 				text: '@bob potentially annoying text',
 			}, alice);
 
@@ -809,11 +812,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 
 		test('ダイレクト投稿もエラーになる', async () => {
@@ -837,8 +840,8 @@ describe('Note', () => {
 						priority: 1,
 						value: 0,
 					},
-				},
-			}, alice);
+				} as any,
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
@@ -847,16 +850,16 @@ describe('Note', () => {
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note = await api('/notes/create', {
+			const note = await api('notes/create', {
 				text: 'potentially annoying text',
 				visibility: 'specified',
-				visibleUserIds: [ bob.id ],
+				visibleUserIds: [bob.id],
 			}, alice);
 
 			assert.strictEqual(note.status, 400);
@@ -865,11 +868,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 
 		test('ダイレクトの宛先とメンションが同じ場合は重複してカウントしない', async () => {
@@ -893,8 +896,8 @@ describe('Note', () => {
 						priority: 1,
 						value: 1,
 					},
-				},
-			}, alice);
+				} as any,
+			}, root);
 
 			assert.strictEqual(res.status, 200);
 
@@ -903,16 +906,16 @@ describe('Note', () => {
 			const assign = await api('admin/roles/assign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 
 			assert.strictEqual(assign.status, 204);
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const note = await api('/notes/create', {
+			const note = await api('notes/create', {
 				text: '@bob potentially annoying text',
 				visibility: 'specified',
-				visibleUserIds: [ bob.id ],
+				visibleUserIds: [bob.id],
 			}, alice);
 
 			assert.strictEqual(note.status, 200);
@@ -920,11 +923,11 @@ describe('Note', () => {
 			await api('admin/roles/unassign', {
 				userId: alice.id,
 				roleId: res.body.id,
-			});
+			}, root);
 
 			await api('admin/roles/delete', {
 				roleId: res.body.id,
-			}, alice);
+			}, root);
 		});
 	});
 
@@ -957,6 +960,63 @@ describe('Note', () => {
 			assert.strictEqual(deleteTwoRes.status, 204);
 			mainNote = await Notes.findOneBy({ id: mainNoteRes.body.createdNote.id });
 			assert.strictEqual(mainNote.repliesCount, 0);
+		});
+	});
+
+	describe('notes/translate', () => {
+		describe('翻訳機能の利用が許可されていない場合', () => {
+			let cannotTranslateRole: misskey.entities.Role;
+
+			beforeAll(async () => {
+				cannotTranslateRole = await role(root, {}, { canUseTranslator: false });
+				await api('admin/roles/assign', { roleId: cannotTranslateRole.id, userId: alice.id }, root);
+			});
+
+			test('翻訳機能の利用が許可されていない場合翻訳できない', async () => {
+				const aliceNote = await post(alice, { text: 'Hello' });
+				const res = await api('notes/translate', {
+					noteId: aliceNote.id,
+					targetLang: 'ja',
+				}, alice);
+
+				assert.strictEqual(res.status, 400);
+				assert.strictEqual(res.body.error.code, 'UNAVAILABLE');
+			});
+
+			afterAll(async () => {
+				await api('admin/roles/unassign', { roleId: cannotTranslateRole.id, userId: alice.id }, root);
+			});
+		});
+
+		test('存在しないノートは翻訳できない', async () => {
+			const res = await api('notes/translate', { noteId: 'foo', targetLang: 'ja' }, alice);
+
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.body.error.code, 'NO_SUCH_NOTE');
+		});
+
+		test('不可視なノートは翻訳できない', async () => {
+			const aliceNote = await post(alice, { visibility: 'followers', text: 'Hello' });
+			const bobTranslateAttempt = await api('notes/translate', { noteId: aliceNote.id, targetLang: 'ja' }, bob);
+
+			assert.strictEqual(bobTranslateAttempt.status, 400);
+			assert.strictEqual(bobTranslateAttempt.body.error.code, 'CANNOT_TRANSLATE_INVISIBLE_NOTE');
+		});
+
+		test('text: null なノートを翻訳すると空のレスポンスが返ってくる', async () => {
+			const aliceNote = await post(alice, { text: null, poll: { choices: ['kinoko', 'takenoko'] } });
+			const res = await api('notes/translate', { noteId: aliceNote.id, targetLang: 'ja' }, alice);
+
+			assert.strictEqual(res.status, 204);
+		});
+
+		test('サーバーに DeepL 認証キーが登録されていない場合翻訳できない', async () => {
+			const aliceNote = await post(alice, { text: 'Hello' });
+			const res = await api('notes/translate', { noteId: aliceNote.id, targetLang: 'ja' }, alice);
+
+			// NOTE: デフォルトでは登録されていないので落ちる
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.body.error.code, 'UNAVAILABLE');
 		});
 	});
 });
