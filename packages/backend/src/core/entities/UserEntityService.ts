@@ -249,20 +249,41 @@ export class UserEntityService implements OnModuleInit {
 		] = await Promise.all([
 			this.followingsRepository.findBy({ followerId: me })
 				.then(f => new Map(f.map(it => [it.followeeId, it]))),
-			this.followingsRepository.findBy({ followeeId: me })
-				.then(it => it.map(it => it.followerId)),
-			this.followRequestsRepository.findBy({ followerId: me })
-				.then(it => it.map(it => it.followeeId)),
-			this.followRequestsRepository.findBy({ followeeId: me })
-				.then(it => it.map(it => it.followerId)),
-			this.blockingsRepository.findBy({ blockerId: me })
-				.then(it => it.map(it => it.blockeeId)),
-			this.blockingsRepository.findBy({ blockeeId: me })
-				.then(it => it.map(it => it.blockerId)),
-			this.mutingsRepository.findBy({ muterId: me })
-				.then(it => it.map(it => it.muteeId)),
-			this.renoteMutingsRepository.findBy({ muterId: me })
-				.then(it => it.map(it => it.muteeId)),
+			this.followingsRepository.createQueryBuilder('f')
+				.select('f.followerId')
+				.where('f.followeeId = :me', { me })
+				.getRawMany<{ f_followerId: string }>()
+				.then(it => it.map(it => it.f_followerId)),
+			this.followRequestsRepository.createQueryBuilder('f')
+				.select('f.followeeId')
+				.where('f.followerId = :me', { me })
+				.getRawMany<{ f_followeeId: string }>()
+				.then(it => it.map(it => it.f_followeeId)),
+			this.followRequestsRepository.createQueryBuilder('f')
+				.select('f.followerId')
+				.where('f.followeeId = :me', { me })
+				.getRawMany<{ f_followerId: string }>()
+				.then(it => it.map(it => it.f_followerId)),
+			this.blockingsRepository.createQueryBuilder('b')
+				.select('b.blockeeId')
+				.where('b.blockerId = :me', { me })
+				.getRawMany<{ b_blockeeId: string }>()
+				.then(it => it.map(it => it.b_blockeeId)),
+			this.blockingsRepository.createQueryBuilder('b')
+				.select('b.blockerId')
+				.where('b.blockeeId = :me', { me })
+				.getRawMany<{ b_blockerId: string }>()
+				.then(it => it.map(it => it.b_blockerId)),
+			this.mutingsRepository.createQueryBuilder('m')
+				.select('m.muteeId')
+				.where('m.muterId = :me', { me })
+				.getRawMany<{ m_muteeId: string }>()
+				.then(it => it.map(it => it.m_muteeId)),
+			this.renoteMutingsRepository.createQueryBuilder('m')
+				.select('m.muteeId')
+				.where('m.muterId = :me', { me })
+				.getRawMany<{ m_muteeId: string }>()
+				.then(it => it.map(it => it.m_muteeId)),
 		]);
 
 		return new Map(
@@ -637,18 +658,17 @@ export class UserEntityService implements OnModuleInit {
 		}
 		const _userIds = _users.map(u => u.id);
 
-		// -- 特に前提条件のない値群を取得
-
-		const profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
-			.then(profiles => new Map(profiles.map(p => [p.userId, p])));
-
 		// -- 実行者の有無や指定スキーマの種別によって要否が異なる値群を取得
 
+		let profilesMap: Map<MiUser['id'], MiUserProfile> = new Map();
 		let userRelations: Map<MiUser['id'], UserRelation> = new Map();
 		let userMemos: Map<MiUser['id'], string | null> = new Map();
 		let pinNotes: Map<MiUser['id'], MiUserNotePining[]> = new Map();
 
 		if (options?.schema !== 'UserLite') {
+			profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
+				.then(profiles => new Map(profiles.map(p => [p.userId, p])));
+
 			const meId = me ? me.id : null;
 			if (meId) {
 				userMemos = await this.userMemosRepository.findBy({ userId: meId })
