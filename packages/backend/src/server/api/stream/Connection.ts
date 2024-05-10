@@ -4,6 +4,7 @@
  */
 
 import * as WebSocket from 'ws';
+import { Inject } from '@nestjs/common';
 import type { MiUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -11,9 +12,10 @@ import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { MiFollowing, MiUserProfile } from '@/models/_.js';
+import { MiFollowing, MiUserProfile, type UserProfilesRepository } from '@/models/_.js';
 import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { DI } from '@/di-symbols.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
@@ -45,7 +47,8 @@ export default class Connection {
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 		private channelFollowingService: ChannelFollowingService,
-
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 		user: MiUser | null | undefined,
 		token: MiAccessToken | null | undefined,
 	) {
@@ -57,7 +60,7 @@ export default class Connection {
 	public async fetch() {
 		if (this.user == null) return;
 		const [userProfile, following, followingChannels, userIdsWhoMeMuting, userIdsWhoBlockingMe, userIdsWhoMeMutingRenotes] = await Promise.all([
-			this.cacheService.userProfileCache.fetch(this.user.id),
+			await this.userProfilesRepository.findOneByOrFail({ userId: this.user.id }),
 			this.cacheService.userFollowingsCache.fetch(this.user.id),
 			this.channelFollowingService.userFollowingChannelsCache.fetch(this.user.id),
 			this.cacheService.userMutingsCache.fetch(this.user.id),

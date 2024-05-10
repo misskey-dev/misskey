@@ -7,7 +7,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, NotesRepository, MiUser, UsersRepository } from '@/models/_.js';
+import type {
+	FollowRequestsRepository,
+	NotesRepository,
+	MiUser,
+	UsersRepository,
+	UserProfilesRepository,
+} from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiGroupedNotification, MiNotification } from '@/models/Notification.js';
 import type { MiNote } from '@/models/Note.js';
@@ -42,7 +48,8 @@ export class NotificationEntityService implements OnModuleInit {
 		private followRequestsRepository: FollowRequestsRepository,
 
 		private cacheService: CacheService,
-
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,
 	) {
@@ -302,7 +309,7 @@ export class NotificationEntityService implements OnModuleInit {
 			userMutedInstances,
 		] = await Promise.all([
 			this.cacheService.userMutingsCache.fetch(meId),
-			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
+			await this.userProfilesRepository.findOneByOrFail({ userId: meId }).then(p => new Set(p.mutedInstances)),
 		]);
 
 		const notifierIds = notifications.map(notification => 'notifierId' in notification ? notification.notifierId : null).filter(isNotNull);
