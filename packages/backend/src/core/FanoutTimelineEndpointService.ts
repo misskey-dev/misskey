@@ -9,7 +9,7 @@ import { bindThis } from '@/decorators.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import { Packed } from '@/misc/json-schema.js';
-import type { NotesRepository, UserProfilesRepository } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
@@ -41,8 +41,6 @@ export class FanoutTimelineEndpointService {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
 
 		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
@@ -111,7 +109,7 @@ export class FanoutTimelineEndpointService {
 					this.cacheService.userMutingsCache.fetch(ps.me.id),
 					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
 					this.cacheService.userBlockedCache.fetch(ps.me.id),
-					(await this.userProfilesRepository.findOneByOrFail({ userId: me.id }).then(p => new Set(p.mutedInstances))),
+					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
 				]);
 
 				const parentFilter = filter;

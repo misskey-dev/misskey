@@ -8,7 +8,7 @@ import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNotification } from '@/models/Notification.js';
 import { bindThis } from '@/decorators.js';
@@ -35,9 +35,6 @@ export class NotificationService implements OnApplicationShutdown {
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
 
 		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,
@@ -95,7 +92,7 @@ export class NotificationService implements OnApplicationShutdown {
 		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
 		notifierId?: MiUser['id'] | null,
 	): Promise<MiNotification | null> {
-		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: notifieeId });
+		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 
 		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

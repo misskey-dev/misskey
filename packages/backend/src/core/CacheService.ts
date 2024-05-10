@@ -20,6 +20,7 @@ export class CacheService implements OnApplicationShutdown {
 	public localUserByNativeTokenCache: MemoryKVCache<MiLocalUser | null>;
 	public localUserByIdCache: MemoryKVCache<MiLocalUser>;
 	public uriPersonCache: MemoryKVCache<MiUser | null>;
+	public userProfileCache: RedisKVCache<MiUserProfile>;
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
 	public userBlockedCache: RedisKVCache<Set<string>>; // NOTE: 「被」Blockキャッシュ
@@ -35,6 +36,9 @@ export class CacheService implements OnApplicationShutdown {
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
@@ -56,6 +60,14 @@ export class CacheService implements OnApplicationShutdown {
 		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null>(Infinity);
 		this.localUserByIdCache = new MemoryKVCache<MiLocalUser>(Infinity);
 		this.uriPersonCache = new MemoryKVCache<MiUser | null>(Infinity);
+
+		this.userProfileCache = new RedisKVCache<MiUserProfile>(this.redisClient, 'userProfile', {
+			lifetime: 1000 * 60 * 30, // 30m
+			memoryCacheLifetime: 1000 * 60, // 1m
+			fetcher: (key) => this.userProfilesRepository.findOneByOrFail({ userId: key }),
+			toRedisConverter: (value) => JSON.stringify(value),
+			fromRedisConverter: (value) => JSON.parse(value), // TODO: date型の考慮
+		});
 
 		this.userMutingsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userMutings', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -174,6 +186,7 @@ export class CacheService implements OnApplicationShutdown {
 		this.localUserByNativeTokenCache.dispose();
 		this.localUserByIdCache.dispose();
 		this.uriPersonCache.dispose();
+		this.userProfileCache.dispose();
 		this.userMutingsCache.dispose();
 		this.userBlockingCache.dispose();
 		this.userBlockedCache.dispose();
