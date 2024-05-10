@@ -5,6 +5,7 @@
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
+import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository, NotesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
