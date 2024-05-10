@@ -362,7 +362,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const [myRoles, myPolicies] = await Promise.all([this.roleService.getUserRoles(user.id), this.roleService.getUserPolicies(user.id)]);
 				const allRoles = await this.roleService.getRoles();
 				const decorationIds = decorations
-					.filter(d => d.host === null && (d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id))))
+					.filter(d => (d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id))))
 					.map(d => d.id);
 
 				if (ps.avatarDecorations.length > myPolicies.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
@@ -480,7 +480,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.cacheService.userProfileCache.set(user.id, updatedProfile);
 
 			// Publish meUpdated event
-			//this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
+			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {

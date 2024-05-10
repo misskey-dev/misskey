@@ -33,7 +33,6 @@ export class RedisKVCache<T> {
 
 	@bindThis
 	public async set(key: string, value: T): Promise<void> {
-		console.time('time RedisKVCache.set');
 		this.memoryCache.set(key, value);
 		if (this.lifetime === Infinity) {
 			await this.redisClient.set(
@@ -47,7 +46,6 @@ export class RedisKVCache<T> {
 				'EX', Math.round(this.lifetime / 1000),
 			);
 		}
-		console.timeEnd('time RedisKVCache.set');
 	}
 
 	@bindThis
