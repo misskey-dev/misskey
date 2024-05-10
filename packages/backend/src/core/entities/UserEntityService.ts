@@ -637,18 +637,17 @@ export class UserEntityService implements OnModuleInit {
 		}
 		const _userIds = _users.map(u => u.id);
 
-		// -- 特に前提条件のない値群を取得
-
-		const profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
-			.then(profiles => new Map(profiles.map(p => [p.userId, p])));
-
 		// -- 実行者の有無や指定スキーマの種別によって要否が異なる値群を取得
 
+		let profilesMap: Map<MiUser['id'], MiUserProfile> = new Map();
 		let userRelations: Map<MiUser['id'], UserRelation> = new Map();
 		let userMemos: Map<MiUser['id'], string | null> = new Map();
 		let pinNotes: Map<MiUser['id'], MiUserNotePining[]> = new Map();
 
 		if (options?.schema !== 'UserLite') {
+			profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
+				.then(profiles => new Map(profiles.map(p => [p.userId, p])));
+
 			const meId = me ? me.id : null;
 			if (meId) {
 				userMemos = await this.userMemosRepository.findBy({ userId: meId })
