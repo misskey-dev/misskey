@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="900">
 		<MkSwitch v-model="select">SelectMode</MkSwitch>
 		<MkButton @click="setCategoryBulk">Set Category</MkButton>
+		<MkButton @click="deletes">Delete</MkButton>
 		<div class="_gaps">
 			<div :class="$style.decorations">
 				<XDecoration
@@ -49,6 +50,7 @@ function add() {
 		category: '',
 	});
 }
+
 function selectItems(decorationId) {
 	if (selectItemsId.value.includes(decorationId)) {
 		const index = selectItemsId.value.indexOf(decorationId);
@@ -57,6 +59,7 @@ function selectItems(decorationId) {
 		selectItemsId.value.push(decorationId);
 	}
 }
+
 function del(avatarDecoration) {
 	os.confirm({
 		type: 'warning',
@@ -116,6 +119,22 @@ async function setCategoryBulk() {
 		for (let i = 0; i < selectItemsId.value.length; i++) {
 			let decorationId = selectItemsId.value[i];
 			await misskeyApi('admin/avatar-decorations/update', {
+				id: decorationId,
+				category: result,
+			});
+		}
+	}
+}
+
+async function deletes() {
+	const { canceled, result } = await os.inputText({
+		title: 'Category',
+	});
+	if (canceled) return;
+	if (selectItemsId.value.length > 1) {
+		for (let i = 0; i < selectItemsId.value.length; i++) {
+			let decorationId = selectItemsId.value[i];
+			await misskeyApi('admin/avatar-decorations/delete', {
 				id: decorationId,
 				category: result,
 			});

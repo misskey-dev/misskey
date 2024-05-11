@@ -100,6 +100,7 @@ export class FanoutTimelineEndpointService {
 
 			if (ps.me) {
 				const me = ps.me;
+
 				const [
 					userIdsWhoMeMuting,
 					userIdsWhoMeMutingRenotes,
