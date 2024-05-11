@@ -127,17 +127,10 @@ async function setCategoryBulk() {
 }
 
 async function deletes() {
-	const { canceled, result } = await os.inputText({
-		title: 'Category',
-	});
-	if (canceled) return;
-	if (selectItemsId.value.length > 1) {
+	if (selectItemsId.value.length > 0) {
 		for (let i = 0; i < selectItemsId.value.length; i++) {
-			let decorationId = selectItemsId.value[i];
-			await misskeyApi('admin/avatar-decorations/delete', {
-				id: decorationId,
-				category: result,
-			});
+			let decoration = selectItemsId.value[i];
+			del(decoration);
 		}
 	}
 }
