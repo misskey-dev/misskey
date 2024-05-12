@@ -5455,15 +5455,15 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           id: string;
-          memo: string;
-          url: string;
-          imageUrl: string;
-          place: string;
-          priority: string;
-          ratio: number;
-          expiresAt: number;
-          startsAt: number;
-          dayOfWeek: number;
+          memo?: string;
+          url?: string;
+          imageUrl?: string;
+          place?: string;
+          priority?: string;
+          ratio?: number;
+          expiresAt?: number;
+          startsAt?: number;
+          dayOfWeek?: number;
         };
       };
     };
