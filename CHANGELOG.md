@@ -62,6 +62,12 @@
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
+- Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
+- Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
+- Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
+- Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
+- Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
+- Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
 - Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
   - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
