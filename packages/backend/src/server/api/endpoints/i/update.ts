@@ -484,15 +484,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {
-				this.userFollowingService.acceptAllFollowRequests(user);
+				await this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
 			// フォロワーにUpdateを配信
-			this.accountUpdateService.publishToFollowers(user.id);
+			await this.accountUpdateService.publishToFollowers(user.id);
 
 			const urls = updatedProfile.fields.filter(x => x.value.startsWith('https://'));
 			for (const url of urls) {
-				this.verifyLink(url.value, user);
+				await this.verifyLink(url.value, user);
 			}
 			return iObj;
 		});
