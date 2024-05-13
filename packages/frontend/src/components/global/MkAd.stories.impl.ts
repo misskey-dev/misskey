@@ -47,6 +47,7 @@ const common = {
 		lock = new Promise(r => resolve = r);
 
 		try {
+			// NOTE: sleep しないと何故か落ちる
 			await sleep(100);
 			const canvas = within(canvasElement);
 			const a = canvas.getByRole<HTMLAnchorElement>('link');
