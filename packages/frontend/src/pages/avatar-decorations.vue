@@ -94,7 +94,7 @@ function openDecorationCreate() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkAvatarDecoEditDialog.vue')), {
 	}, {
 		del: result => {
-			window.location.reload();
+			avatarDecorations.value.unshift(result);
 		},
 	});
 }
