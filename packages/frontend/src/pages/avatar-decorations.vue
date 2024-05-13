@@ -128,10 +128,10 @@ async function setCategoryBulk() {
 
 async function deletes() {
 	if (selectItemsId.value.length > 0) {
-		for (let i = 0; i < selectItemsId.value.length; i++) {
-			let decoration = selectItemsId.value[i];
-			del(decoration);
-		}
+		selectItemsId.value.forEach(decorationId => {
+			console.log(decorationId);
+			misskeyApi('admin/avatar-decorations/delete', { id: decorationId });
+		});
 	}
 }
 
