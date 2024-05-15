@@ -39,8 +39,8 @@
 - Enhance: Playを手動でリロードできるように
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
 - Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
+- Enhance: AiScriptを0.18.0にバージョンアップ
 - Enhance: ノート詳細ページでリプライ一覧と引用一覧を別々に表示するように
-- Chore: AiScriptを0.18.0にバージョンアップ
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -65,6 +65,8 @@
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
+- Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
+  - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
 - Fix: リモートから配送されたアクティビティにJSON-LD compactionをかける
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
@@ -80,8 +82,6 @@
 - Fix: グローバルタイムラインで返信が表示されないことがある問題を修正
 - Fix: リノートをミュートしたユーザの投稿のリノートがミュートされる問題を修正
 - Fix: AP Link等は添付ファイル扱いしないようになど (#13754)
-- Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
-  - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
 
 ## 2024.3.1
 
