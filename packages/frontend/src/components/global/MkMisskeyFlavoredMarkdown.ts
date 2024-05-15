@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h, SetupContext } from 'vue';
+import { VNode, h, SetupContext, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
@@ -43,7 +43,7 @@ type MfmProps = {
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
-	linkBehavior?: MkABehavior;
+	linkNavigationBehavior?: MkABehavior;
 };
 
 type MfmEvents = {
@@ -52,6 +52,8 @@ type MfmEvents = {
 
 // eslint-disable-next-line import/no-default-export
 export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
+	provide('linkNavigationBehavior', props.linkNavigationBehavior);
+
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -346,7 +348,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-					behavior: props.linkBehavior,
 				})];
 			}
 
@@ -355,7 +356,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-					behavior: props.linkBehavior,
 				}, genEl(token.children, scale, true))];
 			}
 
@@ -364,7 +364,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? host,
 					username: token.props.username,
-					behavior: props.linkBehavior,
 				})];
 			}
 
@@ -373,7 +372,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
 					style: 'color:var(--hashtag);',
-					behavior: props.linkBehavior,
 				}, `#${token.props.hashtag}`)];
 			}
 

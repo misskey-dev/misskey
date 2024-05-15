@@ -27,7 +27,7 @@ export function galleryPost(isSensitive = false) {
 		id: 'somepostid',
 		createdAt: '2016-12-28T22:49:51.000Z',
 		updatedAt: '2016-12-28T22:49:51.000Z',
-		userid: 'someuserid',
+		userId: 'someuserid',
 		user: userDetailed(),
 		title: 'Some post title',
 		description: 'Some post description',
@@ -75,9 +75,8 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
 		avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',
 		avatarDecorations: [],
-		emojis: [],
+		emojis: {},
 		bannerBlurhash: 'eQA^IW^-MH8w9tE8I=S^o{$*R4RikXtSxutRozjEnNR.RQadoyozog',
-		bannerColor: '#000000',
 		bannerUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true',
 		birthday: '2014-06-20',
 		createdAt: '2016-12-28T22:49:51.000Z',
@@ -118,11 +117,16 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		publicReactions: false,
 		securityKeys: false,
 		twoFactorEnabled: false,
+		usePasswordLessLogin: false,
 		twoFactorBackupCodesStock: 'none',
 		updatedAt: null,
+		lastFetchedAt: null,
 		uri: null,
 		url: null,
+		movedTo: null,
+		alsoKnownAs: null,
 		notify: 'none',
+		memo: null
 	};
 }
 
