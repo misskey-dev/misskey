@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/_.js';
+import type { ClipNotesRepository, ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
@@ -19,6 +19,9 @@ export class ClipEntityService {
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
+
+		@Inject(DI.clipNotesRepository)
+		private clipNotesRepository: ClipNotesRepository,
 
 		@Inject(DI.clipFavoritesRepository)
 		private clipFavoritesRepository: ClipFavoritesRepository,
@@ -47,6 +50,7 @@ export class ClipEntityService {
 			isPublic: clip.isPublic,
 			favoritedCount: await this.clipFavoritesRepository.countBy({ clipId: clip.id }),
 			isFavorited: meId ? await this.clipFavoritesRepository.exists({ where: { clipId: clip.id, userId: meId } }) : undefined,
+			notesCount: meId ? await this.clipNotesRepository.countBy({ clipId: clip.id }) : undefined,
 		});
 	}
 
