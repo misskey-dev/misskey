@@ -73,8 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.userProfilesRepository.update({ userId: user.id }, {
 					loggedInDates: [...userProfile.loggedInDates, today],
 				});
-				this.usersRepository.update({ userId: user.id }, {
-					getPoints: userProfile.getPoints + todayGetPoints,
+				this.usersRepository.update( user.id, {
+					getPoints: user.getPoints + todayGetPoints,
 				});
 				this.notificationService.createNotification(user.id, 'loginbonus', {
 					loginbonus: todayGetPoints,
