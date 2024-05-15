@@ -20,6 +20,7 @@
 		"@discordapp/twemoji": "15.0.3",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
+		"@meersagor/wavesurfer-vue": "^0.1.0",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "5.0.5",
@@ -73,7 +74,8 @@
 		"v-code-diff": "1.11.0",
 		"vite": "5.2.11",
 		"vue": "3.4.26",
-		"vuedraggable": "next"
+		"vuedraggable": "next",
+		"wavesurfer.js": "^7.7.14"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
