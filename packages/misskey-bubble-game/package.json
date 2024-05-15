@@ -2,24 +2,21 @@
 	"type": "module",
 	"name": "misskey-bubble-game",
 	"version": "0.0.1",
-	"types": "./built/dts/index.d.ts",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./built/esm/index.js",
-			"types": "./built/dts/index.d.ts"
+			"import": "./built/index.js",
+			"types": "./built/index.d.ts"
 		},
 		"./*": {
-			"import": "./built/esm/*",
-			"types": "./built/dts/*"
+			"import": "./built/*",
+			"types": "./built/*"
 		}
 	},
 	"scripts": {
 		"build": "node ./build.js",
-		"build:tsc": "npm run tsc",
-		"tsc": "npm run tsc-esm && npm run tsc-dts",
-		"tsc-esm": "tsc --outDir built/esm",
-		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
-		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build:tsc\"",
+		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -27,21 +24,22 @@
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@types/matter-js": "0.19.6",
-		"@types/node": "20.11.5",
 		"@types/seedrandom": "3.0.8",
+		"@types/node": "20.11.5",
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
 		"eslint": "8.57.0",
 		"nodemon": "3.0.2",
-		"typescript": "5.3.3"
+		"execa": "8.0.1",
+		"typescript": "5.3.3",
+		"esbuild": "0.19.11",
+		"glob": "10.3.10"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
-		"esbuild": "0.19.11",
 		"eventemitter3": "5.0.1",
-		"glob": "^10.3.10",
 		"matter-js": "0.19.0",
 		"seedrandom": "3.0.5"
 	}

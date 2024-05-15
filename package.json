@@ -1,73 +1,76 @@
 {
-	"name": "misskey",
-	"version": "2024.3.1",
-	"codename": "nasubi",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
-	},
-	"packageManager": "pnpm@8.15.4",
-	"workspaces": [
-		"packages/frontend",
-		"packages/backend",
-		"packages/sw",
-		"packages/misskey-js",
-		"packages/misskey-reversi",
-		"packages/misskey-bubble-game"
-	],
-	"private": true,
-	"scripts": {
-		"build-pre": "node ./scripts/build-pre.js",
-		"build-assets": "node ./scripts/build-assets.mjs",
-		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
-		"build-storybook": "pnpm --filter frontend build-storybook",
-		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
-		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
-		"init": "pnpm migrate",
-		"migrate": "cd packages/backend && pnpm migrate",
-		"revert": "cd packages/backend && pnpm revert",
-		"check:connect": "cd packages/backend && pnpm check:connect",
-		"migrateandstart": "pnpm migrate && pnpm start",
-		"watch": "pnpm dev",
-		"dev": "node scripts/dev.mjs",
-		"lint": "pnpm -r lint",
-		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
-		"cy:run": "pnpm cypress run",
-		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
-		"jest": "cd packages/backend && pnpm jest",
-		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
-		"test": "pnpm -r test",
-		"test-and-coverage": "pnpm -r test-and-coverage",
-		"clean": "node ./scripts/clean.js",
-		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "pnpm clean-all"
-	},
-	"resolutions": {
-		"chokidar": "3.5.3",
-		"lodash": "4.17.21"
-	},
-	"dependencies": {
-		"cssnano": "6.0.5",
-		"execa": "8.0.1",
-		"fast-glob": "3.3.2",
-		"ignore-walk": "6.0.4",
-		"js-yaml": "4.1.0",
-		"postcss": "8.4.35",
-		"tar": "6.2.0",
-		"terser": "5.28.1",
-		"typescript": "5.3.3"
-	},
-	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "7.1.0",
-		"@typescript-eslint/parser": "7.1.0",
-		"cross-env": "7.0.3",
-		"cypress": "13.6.6",
-		"eslint": "8.57.0",
-		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.3"
-	},
-	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.4.0"
-	}
+  "name": "misskey",
+  "version": "2024.5.0-beta.1",
+  "codename": "nasubi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/misskey-dev/misskey.git"
+  },
+  "packageManager": "pnpm@9.0.6",
+  "workspaces": [
+    "packages/frontend",
+    "packages/backend",
+    "packages/sw",
+    "packages/misskey-js",
+    "packages/misskey-reversi",
+    "packages/misskey-bubble-game"
+  ],
+  "private": true,
+  "scripts": {
+    "build-pre": "node ./scripts/build-pre.js",
+    "build-assets": "node ./scripts/build-assets.mjs",
+    "build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
+    "build-storybook": "pnpm --filter frontend build-storybook",
+    "build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
+    "start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
+    "start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
+    "init": "pnpm migrate",
+    "migrate": "cd packages/backend && pnpm migrate",
+    "revert": "cd packages/backend && pnpm revert",
+    "check:connect": "cd packages/backend && pnpm check:connect",
+    "migrateandstart": "pnpm migrate && pnpm start",
+    "watch": "pnpm dev",
+    "dev": "node scripts/dev.mjs",
+    "lint": "pnpm -r lint",
+    "cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+    "cy:run": "pnpm cypress run",
+    "e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+    "jest": "cd packages/backend && pnpm jest",
+    "jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
+    "test": "pnpm -r test",
+    "test-and-coverage": "pnpm -r test-and-coverage",
+    "clean": "node ./scripts/clean.js",
+    "clean-all": "node ./scripts/clean-all.js",
+    "cleanall": "pnpm clean-all"
+  },
+  "resolutions": {
+    "chokidar": "3.5.3",
+    "lodash": "4.17.21"
+  },
+  "dependencies": {
+    "cssnano": "6.1.2",
+    "execa": "8.0.1",
+    "fast-glob": "3.3.2",
+    "ignore-walk": "6.0.4",
+    "js-yaml": "4.1.0",
+    "postcss": "8.4.38",
+    "tar": "6.2.1",
+    "terser": "5.30.3",
+    "typescript": "5.4.5",
+    "esbuild": "0.20.2",
+    "glob": "10.3.12"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.7",
+    "@typescript-eslint/eslint-plugin": "7.7.1",
+    "@typescript-eslint/parser": "7.7.1",
+    "cross-env": "7.0.3",
+    "cypress": "13.7.3",
+    "eslint": "8.57.0",
+    "ncp": "2.0.0",
+    "start-server-and-test": "2.0.3"
+  },
+  "optionalDependencies": {
+    "@tensorflow/tfjs-core": "4.4.0"
+  }
 }

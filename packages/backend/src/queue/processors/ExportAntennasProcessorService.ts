@@ -81,6 +81,7 @@ export class ExportAntennasProcessorService {
 					}) : null,
 					caseSensitive: antenna.caseSensitive,
 					localOnly: antenna.localOnly,
+					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
 					notify: antenna.notify,
