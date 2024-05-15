@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository } from '@/models/_.js';
+import type { UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -44,6 +44,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private notificationService: NotificationService,
 		private userEntityService: UserEntityService,
 	) {
@@ -70,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.userProfilesRepository.update({ userId: user.id }, {
 					loggedInDates: [...userProfile.loggedInDates, today],
 				});
-				this.userProfilesRepository.update({ userId: user.id }, {
+				this.usersRepository.update({ userId: user.id }, {
 					getPoints: userProfile.getPoints + todayGetPoints,
 				});
 				this.notificationService.createNotification(user.id, 'loginbonus', {

@@ -25,6 +25,11 @@ export class MiUser {
 	})
 	public lastFetchedAt: Date | null;
 
+	@Column('integer', {
+		default: '0',
+	})
+	public getPoints: number;
+
 	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,
