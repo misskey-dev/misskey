@@ -124,7 +124,7 @@ function showMenu(ev) {
 		text: 'NSFWガイドライン',
 		icon: 'ti ti-notebook',
 		action: () => {
-			window.open('https://kinel.notion.site/NSFW-39a3f0c8708e4e2594594a1c88099fe3', '_blank', 'noopener');
+			window.open('https://kinel.notion.site/NSFW-2024-5-1-f926e4bcff3f41c499ccd6ff13b2c4f2', '_blank', 'noopener');
 		},
 	}, { type: 'divider' }, {
 		text: i18n.ts.help,
