@@ -10,13 +10,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.count" class="">
 			<img
 				:class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
-				src="https://files.prismisskey.space/misskey/59731116-9616-4161-82b3-7eff6c48ea72.apng"
+				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
 			/>
 			{{ number(cookies) }}
 		</div>
 		<button v-click-anime class="_button" @click="onClick">
 			<img
-				src="https://files.prismisskey.space/misskey/59731116-9616-4161-82b3-7eff6c48ea72.apng"
+				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
 				:class="$style.img"
 			>
 		</button>

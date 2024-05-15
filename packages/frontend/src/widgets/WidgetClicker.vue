@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-clicker">
 	<template #icon>
 		<img
-			:class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
-			src="https://files.prismisskey.space/misskey/59731116-9616-4161-82b3-7eff6c48ea72.apng"
+			:class="[$style.icon,{[$style.dark]:darkMode}]" alt="kabocha kawadiri"
+			src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
 		/>
 	</template>
 	<template #header>Clicker</template>
