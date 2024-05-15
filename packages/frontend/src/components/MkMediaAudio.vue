@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:id="(audio.url).slice(32).replace('-','')"
 	ref="playerEl"
 	v-hotkey="keymap"
 	tabindex="0"
@@ -30,9 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			preload="metadata"
 			controls
 			:class="$style.nativeAudio"
-			:src="audio.url"
 			@keydown.prevent
 		>
+			<source :src="audio.url">
 		</audio>
 	</div>
 
@@ -40,8 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<audio
 			ref="audioEl"
 			preload="metadata"
-			:src="audio.url"
 		>
+			<source :src="audio.url">
 		</audio>
 		<div :class="[$style.controlsChild, $style.controlsLeft]">
 			<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
@@ -65,24 +64,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="$style.volumeSeekbar"
 			/>
 		</div>
-		{{ audioEl }}
-		<WaveSurferPlayer
-			:class="$style.seekbarRoot"
-			:options="{ media: audioEl,
-				height: 32,
-				waveColor: 'gray',
-				progressColor: 'red',
-				barGap: 5,
-				barWidth: 5,
-				barRadius: 8,
-				duration: 80,
-				backend: 'WebAudio'
-			}"
-		></WaveSurferPlayer>
 		<MkMediaRange
-			v-if="defaultStore.state.dataSaver.media && !hide"
 			v-model="rangePercent"
 			:class="$style.seekbarRoot"
+			:buffer="bufferedDataRatio"
 		/>
 	</div>
 </div>
@@ -91,8 +76,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import { WaveSurferPlayer } from '@meersagor/wavesurfer-vue';
-import type WaveSurfer from 'wavesurfer.js';
 import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -101,6 +84,7 @@ import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/account.js';
+
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
@@ -147,8 +131,6 @@ const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.data
 
 // Menu
 const menuShowing = ref(false);
-
-const waveSuferOptions = ref();
 
 function showMenu(ev: MouseEvent) {
 	let menu: MenuItem[] = [];
@@ -244,7 +226,10 @@ const volume = ref(.25);
 const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
-let audioContext = new AudioContext();
+const bufferedDataRatio = computed(() => {
+	if (!audioEl.value) return 0;
+	return bufferedEnd.value / audioEl.value.duration;
+});
 
 // MediaControl Events
 function togglePlayPause() {
@@ -340,7 +325,7 @@ watch(loop, (to) => {
 	if (audioEl.value) audioEl.value.loop = to;
 });
 
-onMounted(async () => {
+onMounted(() => {
 	init();
 });
 
