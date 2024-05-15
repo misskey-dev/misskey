@@ -437,6 +437,10 @@ export interface Locale extends ILocale {
      */
     "followers": string;
     /**
+     * プリズム
+     */
+    "points": string;
+    /**
      * フォローされています
      */
     "followsYou": string;
@@ -9292,6 +9296,10 @@ export interface Locale extends ILocale {
          */
         "achievementEarned": string;
         /**
+         * ログインボーナス
+         */
+        "loginbonus": string;
+        /**
          * 通知テスト
          */
         "testNotification": string;
@@ -9380,6 +9388,10 @@ export interface Locale extends ILocale {
              * 実績の獲得
              */
             "achievementEarned": string;
+            /**
+             * ログインボーナス
+             */
+            "loginbonus": string;
             /**
              * 連携アプリからの通知
              */

@@ -163,6 +163,9 @@ export class NotificationEntityService implements OnModuleInit {
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,
 			} : {}),
+			...(notification.type === 'loginbonus' ? {
+				loginbonus: notification.loginbonus,
+			} : {}),
 			...(notification.type === 'app' ? {
 				body: notification.customBody,
 				header: notification.customHeader,

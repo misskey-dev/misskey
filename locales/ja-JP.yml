@@ -105,6 +105,7 @@ note: "ノート"
 notes: "ノート"
 following: "フォロー"
 followers: "フォロワー"
+points: "プリズム"
 followsYou: "フォローされています"
 createList: "リスト作成"
 manageLists: "リストの管理"
@@ -2452,6 +2453,7 @@ _notification:
   roleAssigned: "ロールが付与されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
+  loginbonus: "ログインボーナス"
   testNotification: "通知テスト"
   checkNotificationBehavior: "通知の表示を確かめる"
   sendTestNotification: "テスト通知を送信する"
@@ -2476,6 +2478,7 @@ _notification:
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
+    loginbonus: "ログインボーナス"
     app: "連携アプリからの通知"
 
   _actions:

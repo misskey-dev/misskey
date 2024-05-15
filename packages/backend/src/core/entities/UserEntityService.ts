@@ -404,6 +404,7 @@ export class UserEntityService implements OnModuleInit {
 			userRelations?: Map<MiUser['id'], UserRelation>,
 			userMemos?: Map<MiUser['id'], string | null>,
 			pinNotes?: Map<MiUser['id'], MiUserNotePining[]>,
+			todayGetPoints?: number,
 		},
 	): Promise<Packed<S>> {
 		const opts = Object.assign({
@@ -507,7 +508,7 @@ export class UserEntityService implements OnModuleInit {
 				iconUrl: r.iconUrl,
 				displayOrder: r.displayOrder,
 			}))) : undefined,
-
+			...(user.host == null ? { getPoints: profile!.getPoints } : {}),
 			...(isDetailed ? {
 				url: profile!.url,
 				uri: user.uri,
@@ -602,6 +603,9 @@ export class UserEntityService implements OnModuleInit {
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
 				policies: this.roleService.getUserPolicies(user.id),
+				...(opts.todayGetPoints ? {
+					todayGetPoints: opts.todayGetPoints,
+				} : {}),
 			} : {}),
 
 			...(opts.includeSecrets ? {

@@ -261,6 +261,10 @@ export class MiUserProfile {
 		length: 32, array: true, default: '{}',
 	})
 	public loggedInDates: string[];
+	@Column('integer', {
+		default: '0',
+	})
+	public getPoints: number;
 
 	@Column('jsonb', {
 		default: [],

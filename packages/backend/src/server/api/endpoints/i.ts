@@ -8,13 +8,14 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
-	kind: "read:account",
+	kind: 'read:account',
 
 	res: {
 		type: 'object',
@@ -43,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
-
+		private notificationService: NotificationService,
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
@@ -51,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const now = new Date();
 			const today = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
-
+			let todayGetPoints = 0;
 			// 渡ってきている user はキャッシュされていて古い可能性があるので改めて取得
 			const userProfile = await this.userProfilesRepository.findOne({
 				where: {
@@ -65,8 +66,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (!userProfile.loggedInDates.includes(today)) {
+				todayGetPoints = Math.floor(Math.random() * 5) + 1;
 				this.userProfilesRepository.update({ userId: user.id }, {
 					loggedInDates: [...userProfile.loggedInDates, today],
+				});
+				this.userProfilesRepository.update({ userId: user.id }, {
+					getPoints: userProfile.getPoints + todayGetPoints,
+				});
+				this.notificationService.createNotification(user.id, 'loginbonus', {
+					loginbonus: todayGetPoints,
 				});
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
@@ -75,6 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				schema: 'MeDetailed',
 				includeSecrets: isSecure,
 				userProfile,
+				...(todayGetPoints && { todayGetPoints }),
 			});
 		});
 	}
