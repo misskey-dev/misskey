@@ -63,7 +63,7 @@ describe('Streaming', () => {
 			takumiNote = await post(takumi, { text: 'piyo' });
 
 			// Follow: ayano => kyoko
-			await api('following/create', { userId: kyoko.id }, ayano);
+			await api('following/create', { userId: kyoko.id, withReplies: false }, ayano);
 
 			// Follow: ayano => akari
 			await follow(ayano, akari);
@@ -508,6 +508,16 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, false);
+			});
+
+			test('withReplies = falseでフォローしてる人によるリプライが流れてくる', async () => {
+				const fired = await waitFire(
+					ayano, 'globalTimeline',		// ayano:Global
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, kyoko),	// kyoko posts
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, true);
 			});
 		});
 
