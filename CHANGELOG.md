@@ -2,6 +2,7 @@
 
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+- 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
 
 ### General
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
@@ -35,6 +36,10 @@
 - Enhance: リプライにて引用がある場合テキストが空でもノートできるように
   - 引用したいノートのURLをコピーしリプライ投稿画面にペーストして添付することで達成できます
 - Enhance: フォローするかどうかの確認ダイアログを出せるように
+- Enhance: Playを手動でリロードできるように
+- Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
+- Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
+- Enhance: AiScriptを0.18.0にバージョンアップ
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -49,10 +54,18 @@
 - Fix: ノート詳細ページにおいてCW付き引用リノートのCWボタンのラベルに「引用」が含まれていない問題を修正
 - Fix: ダイアログの入力で字数制限に違反していてもEnterキーが押せてしまう問題を修正
 - Fix: ダイレクト投稿の宛先が保存されない問題を修正
+- Fix: Playのページを離れたときに、Playが正常に初期化されない問題を修正
+- Fix: ページのOGP URLが間違っているのを修正
+- Fix: リバーシの対局を正しく共有できないことがある問題を修正
+- Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
+- Fix: 連合なしの状態の読み書きができない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
+- Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
+  - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
+- Fix: リモートから配送されたアクティビティにJSON-LD compactionをかける
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
@@ -61,10 +74,12 @@
 - Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
 - Fix: 登録にメール認証が必須になっている場合、登録されているメールアドレスを削除できないように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/606)
+- Fix: Add Cache-Control to Bull Board
 - Fix: nginx経由で/files/にRangeリクエストされた場合に正しく応答できないのを修正
 - Fix: 一部のタイムラインのストリーミングでインスタンスミュートが効かない問題を修正
 - Fix: グローバルタイムラインで返信が表示されないことがある問題を修正
 - Fix: リノートをミュートしたユーザの投稿のリノートがミュートされる問題を修正
+- Fix: AP Link等は添付ファイル扱いしないようになど (#13754)
 
 ## 2024.3.1
 

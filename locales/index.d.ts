@@ -4953,6 +4953,10 @@ export interface Locale extends ILocale {
      */
     "alwaysConfirmFollow": string;
     /**
+     * お問い合わせ
+     */
+    "inquiry": string;
+    /**
      * チュートリアルをスキップできないようにする
      */
     "prohibitSkippingInitialTutorial": string;
