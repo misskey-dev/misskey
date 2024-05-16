@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:id="(audio.url).slice(32).replace('-','')"
+
 	ref="playerEl"
 	v-hotkey="keymap"
 	tabindex="0"
@@ -92,6 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { WaveSurferPlayer } from '@meersagor/wavesurfer-vue';
+import tinycolor from 'tinycolor2';
 import type WaveSurfer from 'wavesurfer.js';
 import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
@@ -101,7 +102,6 @@ import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/account.js';
-import tinycolor from "tinycolor2";
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
