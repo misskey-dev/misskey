@@ -101,6 +101,7 @@ import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/account.js';
+import tinycolor from "tinycolor2";
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
@@ -243,6 +244,7 @@ const volume = ref(.25);
 const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
+let audioContext = new AudioContext();
 
 // MediaControl Events
 function togglePlayPause() {
@@ -273,7 +275,8 @@ let stopAudioElWatch: () => void;
 function init() {
 	if (onceInit) return;
 	onceInit = true;
-
+	const computedStyle = getComputedStyle(document.documentElement);
+	accent.value = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
 	stopAudioElWatch = watch(audioEl, () => {
 		if (audioEl.value) {
 			isReady.value = true;
@@ -339,8 +342,6 @@ watch(loop, (to) => {
 });
 
 onMounted(async () => {
-	accent.value = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
-
 	init();
 });
 
