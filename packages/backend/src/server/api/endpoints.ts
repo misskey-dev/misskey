@@ -4,7 +4,7 @@
  */
 
 import { permissions } from 'misskey-js';
-import type { KeyOf,Schema } from '@/misc/json-schema.js';
+import type { KeyOf, Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
 import * as ep___admin_emoji_setlocalOnlyBulk from './endpoints/admin/emoji/set-localonly-bulk.js';
 import * as ep___admin_emoji_setisSensitiveBulk from './endpoints/admin/emoji/set-issensitive-bulk.js';
@@ -13,6 +13,8 @@ import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-repor
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
 import * as ep___admin_accounts_delete from './endpoints/admin/accounts/delete.js';
 import * as ep___admin_accounts_findByEmail from './endpoints/admin/accounts/find-by-email.js';
+import * as ep___admin_accounts_present_points from './endpoints/admin/accounts/present-points.js';
+
 import * as ep___admin_ad_create from './endpoints/admin/ad/create.js';
 import * as ep___admin_ad_delete from './endpoints/admin/ad/delete.js';
 import * as ep___admin_ad_list from './endpoints/admin/ad/list.js';
@@ -386,13 +388,13 @@ import * as ep___reversi_invitations from './endpoints/reversi/invitations.js';
 import * as ep___reversi_showGame from './endpoints/reversi/show-game.js';
 import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
 import * as ep___reversi_verify from './endpoints/reversi/verify.js';
-
 const eps = [
 	['admin/meta', ep___admin_meta],
 	['admin/abuse-user-reports', ep___admin_abuseUserReports],
 	['admin/accounts/create', ep___admin_accounts_create],
 	['admin/accounts/delete', ep___admin_accounts_delete],
 	['admin/accounts/find-by-email', ep___admin_accounts_findByEmail],
+	['admin/accounts/present-points', ep___admin_accounts_present_points],
 	['admin/ad/create', ep___admin_ad_create],
 	['admin/ad/delete', ep___admin_ad_delete],
 	['admin/ad/list', ep___admin_ad_list],

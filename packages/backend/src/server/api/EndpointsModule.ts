@@ -388,13 +388,14 @@ import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
 import * as ep___reversi_verify from './endpoints/reversi/verify.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
+import * as ep___admin_accounts_present_points from './endpoints/admin/accounts/present-points.js';
 import type { Provider } from '@nestjs/common';
-
 const $admin_meta: Provider = { provide: 'ep:admin/meta', useClass: ep___admin_meta.default };
 const $admin_abuseUserReports: Provider = { provide: 'ep:admin/abuse-user-reports', useClass: ep___admin_abuseUserReports.default };
 const $admin_accounts_create: Provider = { provide: 'ep:admin/accounts/create', useClass: ep___admin_accounts_create.default };
 const $admin_accounts_delete: Provider = { provide: 'ep:admin/accounts/delete', useClass: ep___admin_accounts_delete.default };
 const $admin_accounts_findByEmail: Provider = { provide: 'ep:admin/accounts/find-by-email', useClass: ep___admin_accounts_findByEmail.default };
+const $admin_accounts_present_points: Provider = { provide: 'ep:admin/accounts/present-points', useClass: ep___admin_accounts_present_points.default };
 const $admin_ad_create: Provider = { provide: 'ep:admin/ad/create', useClass: ep___admin_ad_create.default };
 const $admin_ad_delete: Provider = { provide: 'ep:admin/ad/delete', useClass: ep___admin_ad_delete.default };
 const $admin_ad_list: Provider = { provide: 'ep:admin/ad/list', useClass: ep___admin_ad_list.default };
@@ -783,6 +784,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_accounts_create,
 		$admin_accounts_delete,
 		$admin_accounts_findByEmail,
+		$admin_accounts_present_points,
 		$admin_ad_create,
 		$admin_ad_delete,
 		$admin_ad_list,
@@ -1165,6 +1167,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_accounts_create,
 		$admin_accounts_delete,
 		$admin_accounts_findByEmail,
+		$admin_accounts_present_points,
 		$admin_ad_create,
 		$admin_ad_delete,
 		$admin_ad_list,
