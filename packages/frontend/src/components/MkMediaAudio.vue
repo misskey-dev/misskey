@@ -77,7 +77,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				barWidth: 3,
 				barRadius: 5,
 				duration: 80,
-				cursorWidth: 0,
 			}"
 		></WaveSurferPlayer>
 		<MkMediaRange
@@ -93,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { WaveSurferPlayer } from '@meersagor/wavesurfer-vue';
-import tinycolor from 'tinycolor2';
+import type WaveSurfer from 'wavesurfer.js';
 import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -105,6 +104,7 @@ import { $i, iAmModerator } from '@/account.js';
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
+
 const keymap = {
 	'up': () => {
 		if (hasFocus() && audioEl.value) {
