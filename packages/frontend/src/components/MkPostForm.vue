@@ -79,9 +79,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<template v-for="item in defaultStore.state.postFormActions">
-				<button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]" v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}"><i class="ti" :class="bottomItemDef[item].icon"></i></button>
-			</template>
+			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
+			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
+			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
+			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
+			<button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
+			<button v-tooltip="i18n.ts.saveAsDraft" class="_button" :class="$style.footerButton" @click="saveDraft(false)"><i class="ti ti-device-floppy"></i></button>
 		</div>
 		<div :class="$style.footerRight">
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
@@ -274,11 +281,7 @@ const canPost = computed((): boolean => {
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
 const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
-const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
-	hide?: boolean;
-	active?: any;
-	action?: any;
-}> = reactive({
+const bottomItemActionDef = ref({
 	attachFile: {
 		action: chooseFileFrom,
 	},
@@ -319,6 +322,48 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 watch(text, () => {
 	checkMissingMention();
 }, { immediate: true });
+const bottomItemDef = {
+	attachFile: {
+		title: i18n.ts.attachFile,
+		icon: 'ti-photo-plus',
+	},
+	poll: {
+		title: i18n.ts.poll,
+		icon: 'ti-chart-arrows',
+	},
+	useCw: {
+		title: i18n.ts.useCw,
+		icon: 'ti-eye-off',
+	},
+	mention: {
+		title: i18n.ts.mention,
+		icon: 'ti-at',
+	},
+	hashtags: {
+		title: i18n.ts.hashtags,
+		icon: 'ti-hash',
+	},
+	plugins: {
+		title: i18n.ts.plugins,
+		icon: 'ti-plug',
+	},
+	emoji: {
+		title: i18n.ts.emoji,
+		icon: 'ti-mood-happy',
+	},
+	addMfmFunction: {
+		title: i18n.ts.addMfmFunction,
+		icon: 'ti-palette',
+	},
+	clearPost: {
+		title: i18n.ts.clearPost,
+		icon: 'ti-trash',
+	},
+	saveAsDraft: {
+		title: i18n.ts.saveAsDraft,
+		icon: 'ti-note',
+	},
+};
 
 watch(visibility, () => {
 	switch (visibility.value) {
@@ -943,7 +988,6 @@ async function post(ev?: MouseEvent) {
 			if (notesCount === 1) {
 				claimAchievement('notes1');
 			}
-
 
 			if (postData.schedule?.scheduledAt) {
 				const d = new Date(postData.schedule.scheduledAt);

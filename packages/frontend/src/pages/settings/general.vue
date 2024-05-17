@@ -38,6 +38,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkSwitch v-model="alwaysShowPlayer">Youtube.comや、nicovideo.jpのプレイヤーを全て開いた状態にする</MkSwitch>
 			<MkSwitch v-model="alwaysExpandTweet">Xのポストを常時表示させる</MkSwitch>
+			<MkSelect v-model="draftSavingBehavior">
+				<template #label>{{ i18n.ts.draftSavingBehavior }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
+				<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
+			</MkSelect>
+			<MkSwitch v-model="disableNoteDrafting">
+				<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
+				{{ i18n.ts.disableNoteDrafting }}
+				<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+			</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value" class="_margin">
@@ -436,6 +446,9 @@ const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const alwaysShowPlayer = computed(defaultStore.makeGetterSetter('alwaysShowPlayer'));
+
+const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
+const draftSavingBehavior = computed(defaultStore.makeGetterSetter('draftSavingBehavior'));
 const alwaysExpandTweet = computed(defaultStore.makeGetterSetter('alwaysExpandTweet'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const numberOfGamingSpeed = computed(defaultStore.makeGetterSetter('numberOfGamingSpeed'));

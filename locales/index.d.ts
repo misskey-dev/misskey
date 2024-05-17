@@ -61,6 +61,10 @@ export interface Locale extends ILocale {
      */
     "ok": string;
     /**
+     * ノートの投稿フォームを開き直した際に、下書きを復元しないようにします。
+     */
+    "disableNoteDraftingDescription": string;
+    /**
      * このプロファイルをデフォルトにしますか？
      */
     "setDefaultProfileConfirm": string;
@@ -5192,6 +5196,58 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    /**
+     * ノートの自己消滅
+     */
+    "scheduledNoteDelete": string;
+    /**
+     * このノートは{time}に消滅します
+     */
+    "noteDeletationAt": ParameterizedString<"time">;
+    /**
+     * 1年以上先の日時を指定することはできません
+     */
+    "cannotScheduleLaterThanOneYear": string;
+    /**
+     * アクティビティを非公開にする
+     */
+    "hideActivity": string;
+    /**
+     * 自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。
+     */
+    "hideActivityDescription": string;
+    /**
+     * このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。
+     */
+    "channelAnnouncementDescription": string;
+    /**
+     * 投稿フォーム
+     */
+    "postForm": string;
+    /**
+     * 投稿フォームの下部に表示される項目の並び替えが出来ます。項目をクリックすると削除できます。
+     */
+    "postFormBottomSettingsDescription": string;
+    /**
+     * 投稿フォームをリセット
+     */
+    "clearPost": string;
+    /**
+     * 絵文字ピッカーに追加
+     */
+    "addToEmojiPicker": string;
+    /**
+     * リアクション数の非表示
+     */
+    "hideReactionCount": string;
+    /**
+     * 誰がリアクションをしたのかを非表示にする
+     */
+    "hideReactionUsers": string;
+    /**
+     * リアクションをホバーした際のユーザー一覧と、ノート詳細ページのリアクションタブにあるリアクションをしたユーザー一覧を非表示にします
+     */
+    "hideReactionUsersDescription": string;
     /**
      * 下書き
      */

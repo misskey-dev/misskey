@@ -11,6 +11,8 @@ password: "パスワード"
 forgotPassword: "パスワードを忘れた"
 fetchingAsApObject: "連合に照会中"
 ok: "OK"
+
+disableNoteDraftingDescription: "ノートの投稿フォームを開き直した際に、下書きを復元しないようにします。"
 setDefaultProfileConfirm: "このプロファイルをデフォルトにしますか？"
 emojiPickerProfile: "絵文字ピッカーのプロファイル"
 notificationIndicator: "通知のインジケーターの数字を表示する"
