@@ -55,6 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const now = new Date();
 			const today = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+
 			let todayGetPoints = 0;
 			// 渡ってきている user はキャッシュされていて古い可能性があるので改めて取得
 			const userProfile = await this.userProfilesRepository.findOne({
@@ -68,8 +69,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.userIsDeleted);
 			}
 
+			function generateSecureRandomNumber(min, max) {
+				const range = max - min + 1;
+				const randomBuffer = new Uint32Array(1);
+				crypto.getRandomValues(randomBuffer);
+				const randomNumber = randomBuffer[0] / (0xFFFFFFFF + 1); // 0から1未満の浮動小数点数
+				return Math.floor(randomNumber * range) + min;
+			}
+
 			if (!userProfile.loggedInDates.includes(today)) {
-				todayGetPoints = Math.floor(Math.random() * 5) + 1;
+				todayGetPoints = generateSecureRandomNumber(1, 5);
 				this.userProfilesRepository.update({ userId: user.id }, {
 					loggedInDates: [...userProfile.loggedInDates, today],
 				});

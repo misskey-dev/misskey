@@ -42,8 +42,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="[$style.submitInner ,{ [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
-					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : schedule ? 'ti ti-clock-hour-4' : 'ti ti-send'"></i>
+					<template v-else-if="screenWidth >= 355">{{ submitText }}</template>
+					<i :class="[posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : schedule ? 'ti ti-clock-hour-4' : 'ti ti-send',$style.mgnlft]"></i>
 				</div>
 			</button>
 		</div>
@@ -1161,7 +1161,12 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 	});
 }
 
+const screenWidth = ref(0);
 onMounted(() => {
+	screenWidth.value = window.innerWidth;
+	window.addEventListener('resize', () => {
+		screenWidth.value = window.innerWidth;
+	});
 	if (props.autofocus) {
 		focus();
 
@@ -1310,7 +1315,20 @@ defineExpose({
 	border-radius: 999px;
 	pointer-events: none;
 }
-
+.submitInner i::after {
+	content: "";
+}
+@media (width < 355px) {
+	.submitInner {
+		min-width: 20px !important;
+	}
+	.mgnlft{
+		margin-left: 0 !important;
+	}
+}
+.mgnlft{
+	margin-left: 6px;
+}
 .submitInner {
   padding: 0 12px;
   line-height: 34px;

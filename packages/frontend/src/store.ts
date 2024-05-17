@@ -125,7 +125,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	},
-
+	disableNoteDrafting: {
+		where: 'account',
+		default: false,
+	},
 	keepOriginalUploading: {
 		where: 'account',
 		default: false,

@@ -89,6 +89,14 @@ export interface Locale extends ILocale {
      */
     "ruby": string;
     /**
+     * ノートの下書きの復元を無効化
+     */
+    "disableNoteDrafting": string;
+    /**
+     * 隠れ家
+     */
+    "kakuregaFeature": string;
+    /**
      * ピン留めされたチャンネル
      */
     "pinnedChannel": string;
@@ -2604,8 +2612,6 @@ export interface Locale extends ILocale {
      * 内容を隠す
      */
     "useCw": string;
-		"disableNoteDrafting":string;
-		"kakuregaFeature": string;
     /**
      * プレイヤーを開く
      */
