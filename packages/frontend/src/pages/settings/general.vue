@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="disableNoteDrafting">
 				<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
 				{{ i18n.ts.disableNoteDrafting }}
-				<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+				<span class="_beta">{{ i18n.ts.kakuregaFeature }}</span>
 			</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>

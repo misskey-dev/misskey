@@ -2604,6 +2604,8 @@ export interface Locale extends ILocale {
      * 内容を隠す
      */
     "useCw": string;
+		"disableNoteDrafting":string;
+		"kakuregaFeature": string;
     /**
      * プレイヤーを開く
      */
