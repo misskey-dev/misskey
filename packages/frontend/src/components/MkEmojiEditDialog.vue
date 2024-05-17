@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts.isNotifyIsHome }}
 					</MkSwitch>
 				</div>
-				<div v-if="imgUrl">
+				<div v-if="imgUrl" style="width: 30%">
 					<MkInput v-model="text">
 						<template #label>テスト文章</template>
 					</MkInput><br/>

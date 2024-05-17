@@ -81,6 +81,18 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		});
 	}
 
+	async function toggleBlockAndMute() {
+		if (user.isBlocking && user.isMuted || !user.isBlocking && !user.isMuted) {
+			toggleMute();
+			toggleBlock();
+		}
+		if (user.isMuted && !user.isBlocking) {
+			toggleMute();
+		} else if (!user.isMuted && user.isBlocking) {
+			toggleBlock();
+		}
+	}
+
 	async function toggleWithReplies() {
 		os.apiWithDialog('following/update', {
 			userId: user.id,
@@ -327,6 +339,10 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			icon: 'ti ti-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
 			action: toggleBlock,
+		}, {
+			icon: 'ti ti-user-off',
+			text: user.isBlocking || user.isMuted ? i18n.ts.unblock + '&' + i18n.ts.unmute : i18n.ts.block + '&' + i18n.ts.mute,
+			action: toggleBlockAndMute,
 		}]);
 
 		if (user.isFollowed) {
