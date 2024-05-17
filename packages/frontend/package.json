@@ -75,7 +75,7 @@
 		"vite": "5.2.11",
 		"vue": "3.4.26",
 		"vuedraggable": "next",
-		"wavesurfer.js": "^7.7.14",
+		"wavesurfer.js": "^7.7.14"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
