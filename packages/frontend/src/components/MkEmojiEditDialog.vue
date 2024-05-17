@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="text">
 						<template #label>テスト文章</template>
 					</MkInput><br/>
-					<MkNoteSimple :note="{isHidden:false,replyId:null,renoteId:null,files:[],user: $i,text:text,cw:null, emojis: {[name]: imgUrl}}"/>
+					<MkNoteSimple :emojireq="true" :note="{isHidden:false,replyId:null,renoteId:null,files:[],user: $i,text:text,cw:null, emojis: {[name]: imgUrl}}"/>
 					<p v-if="speed ">基準より眩しい可能性があります。</p>
 					<p v-if="!speed">問題は見つかりませんでした。</p>
 					<p>※上記の物は問題がないことを保証するものではありません。</p>

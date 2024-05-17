@@ -39,6 +39,7 @@ type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
+	emojireq?: boolean;
 	author?: {
 		id: ID;
 		username: string;
@@ -474,7 +475,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'emojiCode': {
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (props.author?.host == null ) {
+				if (props.author?.host == null && props.emojireq ) {
 					return [h(MkCustomEmoji, {
 						key: Math.random(),
 						name: token.props.name,
