@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<!--
 										*** LICENSE NOTICE ***
 										* This SVG is derived from the https://skeb.jp/ website, All rights reserved to *Skeb Inc.* https://skeb.co.jp/
-										* This resource SHOULD NOT be considered as a part of the this project that has licensed under AGPL-3.0-only
+										* This resource SHOULD NOT be considered as a part of this project that has licensed under AGPL-3.0-only
 									-->
 									<svg class="ti ti-fw" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
 										<linearGradient id="a" x1="14.645309%" x2="85.354691%" y1="14.645309%" y2="85.363492%">

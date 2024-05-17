@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: ISC
  *
  * This file is derived from the project that has licensed under the ISC license.
- * This file SHOULD NOT be considered as a part of the this project that has licensed under AGPL-3.0-only
+ * This file SHOULD NOT be considered as a part of this project that has licensed under AGPL-3.0-only
  * Adapted from https://github.com/isaacs/ttlcache/blob/b6002f971e122e3b35e23d00ac6a8365d505c14d/examples/rate-limiter-window.ts
  */
 

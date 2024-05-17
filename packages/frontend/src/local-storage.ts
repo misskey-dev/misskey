@@ -38,7 +38,8 @@ type Keys =
 	`aiscript:${string}` |
 	'lastEmojisFetchedAt' | // DEPRECATED, stored in indexeddb (13.9.0~)
 	'emojis' | // DEPRECATED, stored in indexeddb (13.9.0~);
-	`channelLastReadedAt:${string}`
+	`channelLastReadedAt:${string}` |
+	'kawaii'
 
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => window.localStorage.getItem(key),

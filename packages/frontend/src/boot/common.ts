@@ -124,8 +124,8 @@ export async function common(createVue: () => App<Element>) {
 		miLocalStorage.setItem('v', instance.version);
 	});
 
-	//#region loginId
 	const params = new URLSearchParams(location.search);
+	//#region loginId
 	const loginId = params.get('loginId');
 
 	if (loginId) {
@@ -139,6 +139,17 @@ export async function common(createVue: () => App<Element>) {
 		}
 
 		history.replaceState({ misskey: 'loginId' }, '', target);
+	}
+	//#endregion
+
+	//#region kawaii
+	if (params.has('kawaii') || params.has('uwu')) {
+		const v = params.get('kawaii') ?? params.get('uwu');
+		if (v === 'false' || v === '0' || v === 'no' || v === 'off') {
+			miLocalStorage.removeItem('kawaii');
+		} else {
+			miLocalStorage.setItem('kawaii', 'true');
+		}
 	}
 	//#endregion
 

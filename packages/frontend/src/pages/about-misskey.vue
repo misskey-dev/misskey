@@ -11,7 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m znqjceqz">
 				<div v-panel class="about">
 					<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
-						<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
+						<img v-if="miLocalStorage.getItem('kawaii')" src="/client-assets/kawaii/about-icon.png" alt="" class="iconAlt" draggable="false" @load="iconLoaded" @click="gravity"/>
+						<img v-else src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
+						<Mfm v-if="miLocalStorage.getItem('kawaii')" text="Logo by @sawaratsuki@misskey.io" class="iconCredit"/>
 						<div class="misskey">Misskey</div>
 						<div class="version">v{{ version }}</div>
 						<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }">
@@ -137,6 +139,7 @@ import { physics } from '@/scripts/physics.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
+import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
@@ -439,6 +442,21 @@ definePageMetadata(() => ({
 				width: 80px;
 				margin: 0 auto;
 				border-radius: 16px;
+				position: relative;
+				z-index: 1;
+			}
+
+			> .iconAlt {
+				display: block;
+				width: 85%;
+				margin: 0 auto;
+				position: relative;
+				z-index: 1;
+			}
+
+			> .iconCredit {
+				margin: 0 auto;
+				width: max-content;
 				position: relative;
 				z-index: 1;
 			}

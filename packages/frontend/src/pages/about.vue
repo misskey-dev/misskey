@@ -11,7 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 					<div style="overflow: clip;">
-						<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+						<img v-if="miLocalStorage.getItem('kawaii')" src="/client-assets/kawaii/misskey-io.png" alt="" :class="$style.bannerIconAlt"/>
+						<img v-else :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+						<Mfm v-if="miLocalStorage.getItem('kawaii')" text="Logo by @sawaratsuki@misskey.io" :class="$style.iconCredit"/>
 						<div :class="$style.bannerName">
 							<b>{{ instance.name ?? host }}</b>
 						</div>
@@ -168,6 +170,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { instance } from '@/instance.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -230,12 +233,25 @@ definePageMetadata(() => ({
 	border-radius: 8px;
 }
 
+.bannerIconAlt {
+	display: block;
+	margin: 16px auto 0 auto;
+	width: 85%;
+}
+
 .bannerName {
 	display: block;
 	padding: 16px;
 	color: #fff;
 	text-shadow: 0 0 8px #000;
 	background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+}
+
+> .iconCredit {
+	margin: 0 auto;
+	width: max-content;
+	position: relative;
+	z-index: 1;
 }
 
 .rules {
