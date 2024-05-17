@@ -6,6 +6,7 @@
 import { VNode, h, SetupContext, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { ID, Instance } from 'misskey-js/built/entities.js';
 import MkUrl from '@/components/global/MkUrl.vue';
 import MkTime from '@/components/global/MkTime.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -23,7 +24,6 @@ import { defaultStore } from '@/store';
 import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 import { uhoize as doUhoize } from '@/scripts/uhoize.js';
-import {ID, Instance} from "misskey-js/built/entities.js";
 import { safeParseFloat } from '@/scripts/safe-parse.js';
 
 const QUOTE_STYLE = `
@@ -73,7 +73,7 @@ type MfmProps = {
 	emojiUrls?: Record<string, string>;
 	rootScale?: number;
 	nyaize?: boolean | 'respect';
-	uhoize: boolean | 'respect';
+	uhoize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
@@ -246,7 +246,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						const radius = parseFloat(token.props.args.rad ?? '6');
 						return h('span', {
 							class: '_mfm_blur_',
-							style: `--blur-px: ${radius}px;`
+							style: `--blur-px: ${radius}px;`,
 						}, genEl(token.children, scale));
 					}
 					case 'rainbow': {
@@ -363,7 +363,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							key: Math.random(),
 							name: emoji1 + emoji2,
 							normal: props.plain,
-							url: mixedEmojiUrl
+							url: mixedEmojiUrl,
 						});
 					}
 					case 'unixtime': {
@@ -474,7 +474,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'emojiCode': {
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (props.author?.host == null) {
+				if (props.author?.host == null && !props.emojiUrls) {
 					return [h(MkCustomEmoji, {
 						key: Math.random(),
 						name: token.props.name,
@@ -487,6 +487,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					})];
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					console.log(props.emojiUrls, props.emojiUrls[token.props.name], token.props.name);
 					if (props.emojiUrls && (props.emojiUrls[token.props.name] == null)) {
 						return [h('span', `:${token.props.name}:`)];
 					} else {
@@ -495,7 +496,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							name: token.props.name,
 							url: props.emojiUrls && props.emojiUrls[token.props.name],
 							normal: props.plain,
-							host: props.author.host,
+							host: props.author.host ? props.author.host : null,
 							useOriginalSize: scale >= 2.5,
 						})];
 					}

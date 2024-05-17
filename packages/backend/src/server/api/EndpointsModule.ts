@@ -390,6 +390,7 @@ import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import * as ep___admin_accounts_present_points from './endpoints/admin/accounts/present-points.js';
 import type { Provider } from '@nestjs/common';
+import * as ep___emoji_speedtest from './endpoints/admin/emoji/speedtest.js';
 const $admin_meta: Provider = { provide: 'ep:admin/meta', useClass: ep___admin_meta.default };
 const $admin_abuseUserReports: Provider = { provide: 'ep:admin/abuse-user-reports', useClass: ep___admin_abuseUserReports.default };
 const $admin_accounts_create: Provider = { provide: 'ep:admin/accounts/create', useClass: ep___admin_accounts_create.default };
@@ -411,6 +412,7 @@ const $admin_avatarDecorations_update: Provider = { provide: 'ep:admin/avatar-de
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
 const $admin_unsetUserAvatar: Provider = { provide: 'ep:admin/unset-user-avatar', useClass: ep___admin_unsetUserAvatar.default };
 const $admin_unsetUserBanner: Provider = { provide: 'ep:admin/unset-user-banner', useClass: ep___admin_unsetUserBanner.default };
+const $emoji_speedtest: Provider = { provide: 'ep:emoji/speedtest', useClass: ep___emoji_speedtest.default };
 const $admin_drive_cleanRemoteFiles: Provider = { provide: 'ep:admin/drive/clean-remote-files', useClass: ep___admin_drive_cleanRemoteFiles.default };
 const $admin_drive_cleanup: Provider = { provide: 'ep:admin/drive/cleanup', useClass: ep___admin_drive_cleanup.default };
 const $admin_drive_files: Provider = { provide: 'ep:admin/drive/files', useClass: ep___admin_drive_files.default };
@@ -799,6 +801,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_avatarDecorations_update,
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
+		$emoji_speedtest,
 		$admin_unsetUserBanner,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
@@ -1183,6 +1186,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
 		$admin_unsetUserBanner,
+		$emoji_speedtest,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
 		$admin_drive_files,

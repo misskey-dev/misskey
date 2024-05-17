@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkWindow
 	ref="windowEl"
-	:initialWidth="400"
-	:initialHeight="500"
-	:canResize="false"
+	:initialWidth="600"
+	:initialHeight="600"
+	:canResize="true"
 	@close="windowEl.close()"
 	@closed="$emit('closed')"
 >
@@ -18,63 +18,75 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div>
 		<MkSpacer :marginMin="20" :marginMax="28">
-			<div class="_gaps_m">
-				<div v-if="imgUrl != null" :class="$style.imgs">
-					<div style="background: #000;" :class="$style.imgContainer">
-						<img :src="imgUrl" :class="$style.img"/>
-					</div>
-					<div style="background: #222;" :class="$style.imgContainer">
-						<img :src="imgUrl" :class="$style.img"/>
-					</div>
-					<div style="background: #ddd;" :class="$style.imgContainer">
-						<img :src="imgUrl" :class="$style.img"/>
-					</div>
-					<div style="background: #fff;" :class="$style.imgContainer">
-						<img :src="imgUrl" :class="$style.img"/>
-					</div>
-				</div>
-				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
-				<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
-					<template #label>{{ i18n.ts.name }}</template>
-					<template #caption>{{ i18n.ts.emojiNameValidation }}</template>
-				</MkInput>
-				<MkInput v-model="category" :datalist="customEmojiCategories">
-					<template #label>{{ i18n.ts.category }}</template>
-				</MkInput>
-				<MkInput v-model="aliases" autocapitalize="off">
-					<template #label>{{ i18n.ts.tags }}</template>
-					<template #caption>
-						{{ i18n.ts.theKeywordWhenSearchingForCustomEmoji }}<br/>
-						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
-					</template>
-				</MkInput>
-				<MkInput v-model="license" :mfmAutocomplete="true">
-					<template #label>{{ i18n.ts.license }}</template>
-				</MkInput>
-				<MkFolder v-if="!isRequest">
-					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
-					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
-
-					<div class="_gaps">
-						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-
-						<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
-							<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
-							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(role, $event)"><i class="ti ti-x"></i></button>
-							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+			<div class="_gaps_m" style="display: flex; flex-direction: row">
+				<div>
+					<div v-if="imgUrl != null" :class="$style.imgs">
+						<div style="background: #000;" :class="$style.imgContainer">
+							<img :src="imgUrl" :class="$style.img"/>
 						</div>
-
-						<MkInfo>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription }}</MkInfo>
-						<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
+						<div style="background: #222;" :class="$style.imgContainer">
+							<img :src="imgUrl" :class="$style.img"/>
+						</div>
+						<div style="background: #ddd;" :class="$style.imgContainer">
+							<img :src="imgUrl" :class="$style.img"/>
+						</div>
+						<div style="background: #fff;" :class="$style.imgContainer">
+							<img :src="imgUrl" :class="$style.img"/>
+						</div>
 					</div>
-				</MkFolder>
-				<MkSwitch v-model="isSensitive">{{ i18n.ts.isSensitive }}</MkSwitch>
-				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-				<MkSwitch v-model="isNotifyIsHome">
-					{{ i18n.ts.isNotifyIsHome }}
-				</MkSwitch>
+					<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
+					<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
+						<template #label>{{ i18n.ts.name }}</template>
+						<template #caption>{{ i18n.ts.emojiNameValidation }}</template>
+					</MkInput>
+					<MkInput v-model="category" :datalist="customEmojiCategories">
+						<template #label>{{ i18n.ts.category }}</template>
+					</MkInput>
+					<MkInput v-model="aliases" autocapitalize="off">
+						<template #label>{{ i18n.ts.tags }}</template>
+						<template #caption>
+							{{ i18n.ts.theKeywordWhenSearchingForCustomEmoji }}<br/>
+							{{ i18n.ts.setMultipleBySeparatingWithSpace }}
+						</template>
+					</MkInput>
+					<MkInput v-model="license" :mfmAutocomplete="true">
+						<template #label>{{ i18n.ts.license }}</template>
+					</MkInput>
+					<MkFolder v-if="!isRequest">
+						<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
+						<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
+
+						<div class="_gaps">
+							<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+
+							<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
+								<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
+								<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(role, $event)"><i class="ti ti-x"></i></button>
+								<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+							</div>
+
+							<MkInfo>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription }}</MkInfo>
+							<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
+						</div>
+					</MkFolder>
+					<MkSwitch v-model="isSensitive">{{ i18n.ts.isSensitive }}</MkSwitch>
+					<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
+					<MkSwitch v-model="isNotifyIsHome">
+						{{ i18n.ts.isNotifyIsHome }}
+					</MkSwitch>
+				</div>
+				<div v-if="imgUrl">
+					<MkInput v-model="text">
+						<template #label>テスト文章</template>
+					</MkInput><br/>
+					<MkNoteSimple :note="{isHidden:false,replyId:null,renoteId:null,files:[],user: $i,text:text,cw:null, emojis: {[name]: imgUrl}}"/>
+					<p v-if="speed ">基準より眩しい可能性があります。</p>
+					<p v-if="!speed">問題は見つかりませんでした。</p>
+					<p>※上記の物は問題がないことを保証するものではありません。</p>
+				</div>
 			</div>
 		</MkSpacer>
+
 		<div :class="$style.footer">
 			<div :class="$style.footerButtons">
 				<MkButton v-if="!isRequest" danger rounded style="margin: 0 auto;" @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -87,9 +99,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { DriveFile } from 'misskey-js/built/entities.js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -102,12 +113,14 @@ import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-
+import { $i } from '@/account.js';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
 const props = defineProps<{
   emoji?: any,
   isRequest: boolean,
 }>();
-
+const text = ref<string>('テスト文章');
+const speed = ref<boolean>(false);
 const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji ? props.emoji.category : '');
@@ -131,6 +144,12 @@ const emit = defineEmits<{
   (ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
   (ev: 'closed'): void
 }>();
+
+const colorChanges = ref<number | null>(null);
+
+watch(colorChanges, (value) => {
+	console.log(value);
+});
 
 async function changeImage(ev) {
 	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
@@ -222,6 +241,12 @@ async function del() {
 		windowEl.value.close();
 	});
 }
+
+watch(imgUrl, async (value) => {
+	 speed.value = await misskeyApi('emoji/speedtest', {
+		url: value,
+	});
+});
 </script>
 
 <style lang="scss" module>
@@ -241,6 +266,12 @@ async function del() {
   display: block;
   height: 64px;
   width: 64px;
+  object-fit: contain;
+}
+.preview {
+  display: block;
+  height: 16px;
+
   object-fit: contain;
 }
 

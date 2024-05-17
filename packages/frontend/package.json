@@ -17,6 +17,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
+		"@caed0/webp-conv": "^1.1.0",
 		"@discordapp/twemoji": "15.0.3",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
@@ -31,6 +32,7 @@
 		"@vitejs/plugin-vue": "5.0.4",
 		"@vue/compiler-sfc": "3.4.26",
 		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.4",
+		"apng-js": "^1.1.1",
 		"astring": "1.8.6",
 		"broadcast-channel": "7.0.0",
 		"buraha": "0.0.1",
@@ -47,10 +49,14 @@
 		"escape-regexp": "0.0.1",
 		"estree-walker": "3.0.3",
 		"eventemitter3": "5.0.1",
+		"gif-frames": "^1.0.1",
+		"gifshot": "^0.4.5",
+		"gifuct-js": "^2.1.2",
 		"idb-keyval": "6.2.1",
 		"insert-text-at-cursor": "0.3.0",
 		"is-file-animated": "1.0.2",
 		"json5": "2.2.3",
+		"libwebpjs": "^0.0.1",
 		"matter-js": "0.19.0",
 		"mfm-js": "0.24.0",
 		"misskey-bubble-game": "workspace:*",
@@ -75,7 +81,9 @@
 		"vite": "5.2.11",
 		"vue": "3.4.26",
 		"vuedraggable": "next",
-		"wavesurfer.js": "^7.7.14"
+		"wavesurfer.js": "^7.7.14",
+		"webm-wasm": "^0.4.1",
+		"webp-hero": "^0.0.2"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
