@@ -274,12 +274,12 @@ const maxTextLength = computed((): number => {
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
       (
-			1 <= textLength.value ||
+      	1 <= textLength.value ||
 			1 <= files.value.length ||
 			poll.value != null ||
 			props.renote != null ||
 			(props.reply != null && quoteId.value != null)
-		) &&
+      ) &&
       (textLength.value <= maxTextLength.value) &&
       (!poll.value || poll.value.choices.length >= 2);
 });
@@ -857,7 +857,7 @@ async function post(ev?: MouseEvent) {
 			if (notesCount === 1) {
 				claimAchievement('notes1');
 			}
-			poll.value = null;
+
 
 			if (postData.schedule?.scheduledAt) {
 				const d = new Date(postData.schedule.scheduledAt);
@@ -901,6 +901,7 @@ async function post(ev?: MouseEvent) {
 			if (m === 0 && s === 0) {
 				claimAchievement('postedAt0min0sec');
 			}
+			clear();
 		});
 	}).catch(err => {
 		posting.value = false;

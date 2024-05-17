@@ -36,6 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+			<MkSwitch v-model="alwaysShowPlayer">Youtube.comや、nicovideo.jpのプレイヤーを全て開いた状態にする</MkSwitch>
+			<MkSwitch v-model="alwaysExpandTweet">Xのポストを常時表示させる</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value" class="_margin">
@@ -433,6 +435,8 @@ const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
+const alwaysShowPlayer = computed(defaultStore.makeGetterSetter('alwaysShowPlayer'));
+const alwaysExpandTweet = computed(defaultStore.makeGetterSetter('alwaysExpandTweet'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const numberOfGamingSpeed = computed(defaultStore.makeGetterSetter('numberOfGamingSpeed'));
 const homeColor = computed(defaultStore.makeGetterSetter('homeColor'));
@@ -562,6 +566,8 @@ watch([
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
 	alwaysConfirmFollow,
+	alwaysShowPlayer,
+	alwaysExpandTweet,
 ], async () => {
 	await reloadAsk();
 });

@@ -314,6 +314,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	alwaysShowPlayer: {
+		where: 'device',
+		default: true,
+	},
+	alwaysExpandTweet: {
+		where: 'device',
+		default: false,
+	},
 	enableQuickAddMfmFunction: {
 		where: 'device',
 		default: false,
