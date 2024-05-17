@@ -475,7 +475,8 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'emojiCode': {
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (props.author?.host == null && props.emojireq ) {
+				console.log('emojiCode', props.emojireq);
+				if (props.author?.host == null && !props.emojireq ) {
 					return [h(MkCustomEmoji, {
 						key: Math.random(),
 						name: token.props.name,
