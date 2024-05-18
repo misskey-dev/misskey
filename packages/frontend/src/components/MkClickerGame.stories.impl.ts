@@ -11,6 +11,11 @@ import { action } from '@storybook/addon-actions';
 import { expect, userEvent, within } from '@storybook/test';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkClickerGame from './MkClickerGame.vue';
+
+function sleep(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export const Default = {
 	render(args) {
 		return {
@@ -33,6 +38,7 @@ export const Default = {
 		};
 	},
 	async play({ canvasElement }) {
+		await sleep(1000);
 		const canvas = within(canvasElement);
 		const count = canvas.getByTestId('count');
 		// NOTE: flaky なので N/A も通しておく
