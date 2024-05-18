@@ -345,7 +345,7 @@ if (!props.mock) {
 
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		useTooltip(reactButton, async (showing) => {
-			const reactions = await misskeyApiGet('notes/reactions', {
+			const reactions = await misskeyApi('notes/reactions', {
 				noteId: appearNote.value.id,
 				limit: 10,
 				_cacheKey_: appearNote.value.reactionCount,
