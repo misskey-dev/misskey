@@ -22,6 +22,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { CacheService } from '../CacheService.js';
 
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
@@ -30,6 +31,7 @@ export class NoteEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private reactionService: ReactionService;
 	private idService: IdService;
+	private cacheService: CacheService;
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
@@ -69,6 +71,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.idService = this.moduleRef.get('IdService');
+		this.cacheService = this.moduleRef.get('CacheService');
 	}
 
 	@bindThis
@@ -315,6 +318,8 @@ export class NoteEntityService implements OnModuleInit {
 				: await this.channelsRepository.findOneBy({ id: note.channelId })
 			: null;
 
+		const reactions = await this.removeMutedUsersFromReactions(note, meId);
+
 		const reactionEmojiNames = Object.keys(note.reactions)
 			.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
@@ -334,7 +339,7 @@ export class NoteEntityService implements OnModuleInit {
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
 			reactionCount: Object.values(note.reactions).reduce((a, b) => a + b, 0),
-			reactions: this.reactionService.convertLegacyReactions(note.reactions),
+			reactions: this.reactionService.convertLegacyReactions(reactions),
 			reactionEmojis: this.customEmojiService.populateEmojis(reactionEmojiNames, host),
 			reactionAndUserPairCache: opts.withReactionAndUserPairCache ? note.reactionAndUserPairCache : undefined,
 			emojis: host != null ? this.customEmojiService.populateEmojis(note.emojis, host) : undefined,
@@ -386,6 +391,26 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		return packed;
+	}
+
+	@bindThis
+	private async removeMutedUsersFromReactions(note: MiNote, meId: MiUser['id'] | null) {
+		if (meId) {
+			const muteeIds = await this.cacheService.userMutingsCache.fetch(meId);
+			const reactions = { ...note.reactions };
+			for (const pair of note.reactionAndUserPairCache) {
+				const [userId, reaction] = pair.split('/');
+				if (muteeIds.has(userId) && reaction in reactions) {
+					reactions[reaction]--;
+					if (reactions[reaction] === 0) {
+						delete reactions[reaction];
+					}
+				}
+			}
+			return reactions;
+		} else {
+			return note.reactions;
+		}
 	}
 
 	@bindThis
