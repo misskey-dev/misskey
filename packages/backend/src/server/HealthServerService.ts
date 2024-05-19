@@ -46,6 +46,7 @@ export class HealthServerService {
 				this.db.query('SELECT 1'),
 				...(this.meilisearch ? [this.meilisearch.health()] : []),
 			]).then(() => 200, () => 503));
+			reply.header('Cache-Control', 'no-store');
 		});
 
 		done();
