@@ -5,6 +5,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { readyRef } from '@/boot/ready.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { MeiliSearch } from 'meilisearch';
 
 @Injectable()
 export class HealthServerService {
@@ -23,6 +24,9 @@ export class HealthServerService {
 
 		@Inject(DI.db)
 		private db: DataSource,
+
+		@Inject(DI.meilisearch)
+		private meilisearch: MeiliSearch | null,
 	) {}
 
 	@bindThis
@@ -35,6 +39,7 @@ export class HealthServerService {
 				this.redisForSub.ping(),
 				this.redisForTimelines.ping(),
 				this.db.query('SELECT 1'),
+				...(this.meilisearch ? [this.meilisearch.health()] : []),
 			]).then(() => 200, () => 503));
 		});
 
