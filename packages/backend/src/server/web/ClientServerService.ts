@@ -40,7 +40,7 @@ import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
-import { FeedService } from './FeedService.js';
+import { FeedService, FeedFormat } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
@@ -453,55 +453,13 @@ export class ClientServerService {
 		// URL preview endpoint
 		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
-		const getFeed = async (acct: string) => {
-			const { username, host } = Acct.parse(acct);
-			const user = await this.usersRepository.findOneBy({
-				usernameLower: username.toLowerCase(),
-				host: host ?? IsNull(),
-				isSuspended: false,
-			});
-
-			return user && await this.feedService.packFeed(user);
-		};
-
-		// Atom
-		fastify.get<{ Params: { user: string; } }>('/@:user.atom', async (request, reply) => {
-			const feed = await getFeed(request.params.user);
-
-			if (feed) {
-				reply.header('Content-Type', 'application/atom+xml; charset=utf-8');
-				return feed.atom1();
-			} else {
-				reply.code(404);
-				return;
-			}
-		});
-
-		// RSS
-		fastify.get<{ Params: { user: string; } }>('/@:user.rss', async (request, reply) => {
-			const feed = await getFeed(request.params.user);
-
-			if (feed) {
-				reply.header('Content-Type', 'application/rss+xml; charset=utf-8');
-				return feed.rss2();
-			} else {
-				reply.code(404);
-				return;
-			}
-		});
-
-		// JSON
-		fastify.get<{ Params: { user: string; } }>('/@:user.json', async (request, reply) => {
-			const feed = await getFeed(request.params.user);
-
-			if (feed) {
-				reply.header('Content-Type', 'application/json; charset=utf-8');
-				return feed.json1();
-			} else {
-				reply.code(404);
-				return;
-			}
-		});
+		// Feed
+		const feedFormats: FeedFormat[] = ['atom', 'rss', 'json'];
+		for (const feedFormat of feedFormats) {
+			fastify.get<{ Params: { user: string; } }>(`/@:user.${feedFormat}`, this.feedService.handle(feedFormat));
+			fastify.get<{ Params: { user: string; } }>(`/@:user.with_replies.${feedFormat}`, this.feedService.handle(feedFormat, { withReplies: true }));
+			fastify.get<{ Params: { user: string; } }>(`/@:user.with_files.${feedFormat}`, this.feedService.handle(feedFormat, { withFiles: true }));
+		}
 
 		//#region SSR (for crawlers)
 		// User

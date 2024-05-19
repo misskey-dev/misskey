@@ -4,22 +4,31 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { Equal, In, IsNull, Not } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository } from '@/models/_.js';
+import * as Acct from '@/misc/acct.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { MetaService } from '@/core/MetaService.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+
+export type FeedFormat = 'atom' | 'rss' | 'json';
 
 @Injectable()
 export class FeedService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -33,11 +42,24 @@ export class FeedService {
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
+		private fanoutTimelineService: FanoutTimelineService,
+		private metaService: MetaService,
 	) {
 	}
 
 	@bindThis
-	public async packFeed(user: MiUser) {
+	private async packFeed(
+		user: MiUser,
+		options?: {
+			withReplies?: boolean;
+			withFiles?: boolean;
+		},
+	) {
+		const opts = Object.assign({
+			withReplies: false,
+			withFiles: false,
+		}, options);
+
 		const author = {
 			link: `${this.config.url}/@${user.username}`,
 			name: user.name ?? user.username,
@@ -45,15 +67,35 @@ export class FeedService {
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
+		const meta = await this.metaService.fetch();
+
+		let withFilesIds: string[] = [];
+
+		if (opts.withFiles && meta.enableFanoutTimeline) {
+			withFilesIds = await this.fanoutTimelineService.get(`userTimelineWithFiles:${user.id}`);
+		}
+
 		const notes = await this.notesRepository.find({
 			where: {
 				userId: user.id,
 				renoteId: IsNull(),
 				visibility: In(['public', 'home']),
+				...(opts.withReplies ? {} : {
+					replyId: IsNull(),
+				}),
+				...(opts.withFiles ?
+					meta.enableFanoutTimeline ? {
+						id: In(withFilesIds),
+					} : {
+						fileIds: Not(Equal('{}')),
+					} : {}
+				),
 			},
 			order: { id: -1 },
 			take: 20,
 		});
+
+		const optionLink = opts.withReplies ? '.with_replies' : opts.withFiles ? '.with_files' : '';
 
 		const feed = new Feed({
 			id: author.link,
@@ -64,8 +106,8 @@ export class FeedService {
 			link: author.link,
 			image: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 			feedLinks: {
-				json: `${author.link}.json`,
-				atom: `${author.link}.atom`,
+				json: `${author.link + optionLink}.json`,
+				atom: `${author.link + optionLink}.atom`,
 			},
 			author,
 			copyright: user.name ?? user.username,
@@ -88,5 +130,43 @@ export class FeedService {
 		}
 
 		return feed;
+	}
+
+	@bindThis
+	public handle(
+		feedFormat: FeedFormat,
+		options?: {
+			withReplies?: boolean;
+			withFiles?: boolean;
+		},
+	) {
+		return async (
+			request: FastifyRequest<{ Params: { user: string; } }>,
+			reply: FastifyReply,
+		) => {
+			const { username, host } = Acct.parse(request.params.user);
+			const user = await this.usersRepository.findOneBy({
+				usernameLower: username.toLowerCase(),
+				host: host ?? IsNull(),
+				isSuspended: false,
+			});
+
+			const feed = user && await this.packFeed(user, options);
+
+			if (feed) {
+				const subtype = feedFormat === 'atom' || feedFormat === 'rss'
+					? `${feedFormat}+xml`
+					: feedFormat;
+
+				reply.header('Content-Type', `application/${subtype}; charset=utf-8`);
+
+				if (feedFormat === 'atom') return feed.atom1();
+				else if (feedFormat === 'rss') return feed.rss2();
+				else return feed.json1();
+			} else {
+				reply.code(404);
+				return;
+			}
+		};
 	}
 }
