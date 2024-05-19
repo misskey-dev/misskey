@@ -85,20 +85,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 
 			let notificationsRes: [id: string, fields: string[]][];
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			const limit = ps.limit;
 
 			// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照
 			if (ps.sinceId && !ps.untilId) {
 				notificationsRes = await this.redisClient.xrange(
 					`notificationTimeline:${me.id}`,
-					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : '-',
+					ps.sinceId ? '(' + this.idService.parse(ps.sinceId).date.getTime() : '-',
 					'+',
 					'COUNT', limit);
 			} else {
 				notificationsRes = await this.redisClient.xrevrange(
 					`notificationTimeline:${me.id}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : '+',
-					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : '-',
+					ps.untilId ? '(' + this.idService.parse(ps.untilId).date.getTime() : '+',
+					ps.sinceId ? '(' + this.idService.parse(ps.sinceId).date.getTime() : '-',
 					'COUNT', limit);
 			}
 
@@ -106,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
-			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])).filter(x => x.id !== ps.untilId && x !== ps.sinceId) as MiNotification[];
+			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
 
 			if (includeTypes && includeTypes.length > 0) {
 				notifications = notifications.filter(notification => includeTypes.includes(notification.type));
