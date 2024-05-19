@@ -121,7 +121,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.fanoutTimelineService.remove('vmimiRelayTimeline', note.id, redisPipeline);
 			if (note.replyId) {
 				this.fanoutTimelineService.remove('localTimelineWithReplies', note.replyId, redisPipeline);
+				this.fanoutTimelineService.remove(`localTimelineWithReplyTo:${note.replyUserId}`, note.replyId, redisPipeline);
 				this.fanoutTimelineService.remove('vmimiRelayTimelineWithReplies', note.replyId, redisPipeline);
+				//this.fanoutTimelineService.remove(`vmimiRelayTimelineWithReplyTo:${note.replyUserId}`, note.replyId, redisPipeline);
 			}
 			if (note.fileIds.length > 0) {
 				this.fanoutTimelineService.remove('localTimelineWithFiles', note.id, redisPipeline);
