@@ -1247,6 +1247,8 @@ loading: "Loading"
 surrender: "Cancel"
 gameRetry: "Retry"
 here: "here"
+discordWebhookUrl: "DiscordWebhookURL"
+discordWebhookUrlDescription: "send notifications to Discord by setting a Discord webhook URL"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"

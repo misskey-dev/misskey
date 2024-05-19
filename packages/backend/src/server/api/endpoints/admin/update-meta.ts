@@ -92,6 +92,7 @@ export const paramDef = {
 		},
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
+		discordWebhookUrl: { type: 'string', nullable: true },
 		enableEmail: { type: 'boolean' },
 		email: { type: 'string', nullable: true },
 		smtpSecure: { type: 'boolean' },
@@ -523,6 +524,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					set.deeplAuthKey = null;
 				} else {
 					set.deeplAuthKey = ps.deeplAuthKey;
+				}
+			}
+
+			if (ps.discordWebhookUrl !== undefined) {
+				if (ps.discordWebhookUrl === '') {
+					set.discordWebhookUrl = null;
+				} else {
+					set.discordWebhookUrl = ps.discordWebhookUrl;
 				}
 			}
 

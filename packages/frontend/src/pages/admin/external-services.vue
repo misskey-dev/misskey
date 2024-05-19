@@ -21,6 +21,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</div>
 			</FormSection>
+			<FormSection>
+				<template #label>Discord</template>
+
+				<div class="_gaps_m">
+					<MkInput v-model="discordWebhookUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>Webhook URL</template>
+					</MkInput>
+				</div>
+			</formsection>
 		</FormSuspense>
 	</MkSpacer>
 	<template #footer>
@@ -47,22 +57,36 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const deeplAuthKey = ref<string>('');
+const deeplAuthKey = ref<string|null>('');
 const deeplIsPro = ref<boolean>(false);
+const discordWebhookUrl = ref<string|null>('');
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
 	deeplAuthKey.value = meta.deeplAuthKey;
 	deeplIsPro.value = meta.deeplIsPro;
+	discordWebhookUrl.value = meta.discordWebhookUrl;
 }
 
 function save() {
-	os.apiWithDialog('admin/update-meta', {
-		deeplAuthKey: deeplAuthKey.value,
-		deeplIsPro: deeplIsPro.value,
-	}).then(() => {
-		fetchInstance(true);
-	});
+	const urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name and extension
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?' + // port
+        '(\\/[-a-z\\d%_.~+]*)*' + // path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+	if (discordWebhookUrl.value !== null && !urlPattern.test(discordWebhookUrl.value)) {
+		alert(i18n.ts.invalidValue);
+	} else {
+		os.apiWithDialog('admin/update-meta', {
+			deeplAuthKey: deeplAuthKey.value,
+			deeplIsPro: deeplIsPro.value,
+			discordWebhookUrl: discordWebhookUrl.value,
+		}).then(() => {
+			fetchInstance(true);
+		});
+	}
 }
 
 const headerActions = computed(() => []);

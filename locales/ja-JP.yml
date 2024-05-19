@@ -1263,6 +1263,8 @@ reportComplete: "通報完了"
 blockThisUser: "このユーザーをブロックする"
 muteThisUser: "このユーザーをミュートする"
 here: "こちら"
+discordWebhookUrl: "DiscordWebhookURL"
+discordWebhookUrlDescription: "DiscordのWebhookURLを設定すると、お知らせをDiscordに送信できます。"
 
 _bubbleGame:
   howToPlay: "遊び方"

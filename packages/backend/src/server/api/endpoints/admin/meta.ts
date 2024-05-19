@@ -416,6 +416,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			discordWebhookUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			defaultDarkTheme: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -615,6 +619,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
 				deeplAuthKey: instance.deeplAuthKey,
 				deeplIsPro: instance.deeplIsPro,
+				discordWebhookUrl: instance.discordWebhookUrl,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
 				enableVerifymailApi: instance.enableVerifymailApi,

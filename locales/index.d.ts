@@ -5071,6 +5071,14 @@ export interface Locale extends ILocale {
      * こちら
      */
     "here": string;
+    /**
+     * DiscordWebhookURL
+     */
+    "discordWebhookUrl": string;
+    /**
+     * DiscordのWebhookURLを設定すると、お知らせをDiscordに送信できます。
+     */
+    "discordWebhookUrlDescription": string;
     "_bubbleGame": {
         /**
          * 遊び方

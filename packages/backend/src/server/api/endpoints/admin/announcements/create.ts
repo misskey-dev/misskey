@@ -6,6 +6,8 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -104,6 +106,8 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private announcementService: AnnouncementService,
+		private httpRequestService: HttpRequestService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const { raw, packed } = await this.announcementService.create({
@@ -120,7 +124,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				silence: ps.silence,
 				userId: ps.userId,
 			}, me);
-
+			const instance = await this.metaService.fetch(true);
+			try {
+				if (instance.discordWebhookUrl !== null && ps.userId === null) {
+					await this.httpRequestService.send(instance.discordWebhookUrl, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							username: `${instance.name} Announcement`,
+							content: `${raw.title}\n${raw.text}`,
+						}),
+					});
+				}
+			} catch (e) {
+				// ignore
+			}
 			return packed;
 		});
 	}

@@ -5241,6 +5241,7 @@ export type operations = {
             backgroundImageUrl: string | null;
             deeplAuthKey: string | null;
             deeplIsPro: boolean;
+			discordWebhookUrl: string | null;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
             description: string | null;
@@ -9803,6 +9804,7 @@ export type operations = {
           langs?: string[];
           deeplAuthKey?: string | null;
           deeplIsPro?: boolean;
+		  discordWebhookUrl?: string | null;
           enableEmail?: boolean;
           email?: string | null;
           smtpSecure?: boolean;

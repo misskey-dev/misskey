@@ -594,6 +594,12 @@ export class MiMeta {
 	public wellKnownWebsites: string[];
 
 	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public discordWebhookUrl: string | null;
+
+	@Column('varchar', {
 		length: 3072, array: true, default: '{}',
 	})
 	public urlPreviewDenyList: string[];
