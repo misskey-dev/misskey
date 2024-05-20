@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class ChannelIdDenormalizedForMiPoll1716129964060 {
     name = 'ChannelIdDenormalizedForMiPoll1716129964060'
 
