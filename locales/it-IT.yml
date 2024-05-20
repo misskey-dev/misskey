@@ -2367,8 +2367,8 @@ _deck:
     direct: "Note Dirette"
     roleTimeline: "Timeline Ruolo"
 _dialog:
-  charactersExceeded: "Hai superato il limite di {max} caratteri! ({corrente})"
-  charactersBelow: "Sei al di sotto del minimo di {min} caratteri!  ({corrente})"
+  charactersExceeded: "Hai superato il limite di {max} caratteri! ({current})"
+  charactersBelow: "Sei al di sotto del minimo di {min} caratteri!  ({current})"
 _disabledTimeline:
   title: "Timeline disabilitata"
   description: "Il ruolo in cui sei non ti permette di leggere questa timeline"
