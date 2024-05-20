@@ -85,6 +85,7 @@
 - Fix: FTTが有効かつsinceIdのみを指定した場合に帰って来るレスポンスが逆順である問題を修正
 - Fix: `/i/notifications`に `includeTypes`か`excludeTypes`を指定しているとき、通知が存在するのに空配列を返すことがある問題を修正
 - Fix: 複数idを指定する`users/show`が関係ないユーザを返すことがある問題を修正
+- Fix: `/tags` と `/user-tags` が検索エンジンにインデックスされないように
 
 ## 2024.3.1
 
