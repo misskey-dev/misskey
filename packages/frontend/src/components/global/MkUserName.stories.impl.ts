@@ -30,7 +30,7 @@ export const Default = {
 		};
 	},
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(userDetailed().name);
+		await expect(canvasElement).toHaveTextContent(userDetailed().name as string);
 	},
 	args: {
 		user: userDetailed(),
