@@ -18,7 +18,6 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
-import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
@@ -192,9 +191,7 @@ export class ServerService implements OnApplicationShutdown {
 			reply.header('Cache-Control', 'public, max-age=86400');
 
 			if ((await this.metaService.fetch()).enableIdenticonGeneration) {
-				const [temp, cleanup] = await createTemp();
-				await genIdenticon(request.params.x, fs.createWriteStream(temp));
-				return fs.createReadStream(temp).on('close', () => cleanup());
+				return await genIdenticon(request.params.x);
 			} else {
 				return reply.redirect('/static-assets/avatar.png');
 			}
