@@ -33,7 +33,6 @@ export const Empty = {
 		await waitFor(async () => await wait);
 	},
 	args: {
-		static: true,
 		tabs: [],
 	},
 	parameters: {
@@ -71,8 +70,8 @@ export const IconOnly = {
 		...Icon.args,
 		tabs: [
 			{
-				...Icon.args.tabs[0],
-				title: undefined,
+				key: Icon.args.tabs[0].key,
+				icon: Icon.args.tabs[0].icon,
 				iconOnly: true,
 			},
 		],

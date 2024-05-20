@@ -199,6 +199,11 @@ export class ClientServerService {
 
 		// Authenticate
 		fastify.addHook('onRequest', async (request, reply) => {
+			if (request.routeOptions.url == null) {
+				reply.code(404).send('Not found');
+				return;
+			}
+
 			// %71ueueとかでリクエストされたら困るため
 			const url = decodeURI(request.routeOptions.url);
 			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
