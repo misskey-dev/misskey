@@ -744,6 +744,30 @@ export class ClientServerService {
 		});
 		//#endregion
 
+		//region noindex pages
+		const renderNoIndexBase = async (reply: FastifyReply) => {
+			const meta = await this.metaService.fetch();
+			reply.header('Cache-Control', 'public, max-age=30');
+			return await reply.view('noindex', {
+				img: meta.bannerUrl,
+				url: this.config.url,
+				title: meta.name ?? 'Misskey',
+				desc: meta.description,
+				...await this.generateCommonPugData(meta),
+			});
+		};
+
+		// Tags
+		fastify.get<{ Params: { clip: string; } }>('/tags/:tag', async (request, reply) => {
+			return await renderNoIndexBase(reply);
+		});
+
+		// User with Tags
+		fastify.get<{ Params: { clip: string; } }>('/user-tags/:tag', async (request, reply) => {
+			return await renderNoIndexBase(reply);
+		});
+		//endregion
+
 		fastify.get('/_info_card_', async (request, reply) => {
 			const meta = await this.metaService.fetch(true);
 
