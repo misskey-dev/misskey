@@ -658,7 +658,7 @@ testEmail: "Tester la distribution de courriel"
 wordMute: "Filtre de mots"
 hardWordMute: "Filtre de mots dur"
 regexpError: "Erreur d’expression régulière"
-regexpErrorDescription: "Une erreur s'est produite dans l'expression régulière sur la ligne {ligne} de votre mot muet {tab} :"
+regexpErrorDescription: "Une erreur s'est produite dans l'expression régulière sur la ligne {line} de votre mot muet {tab} :"
 instanceMute: "Instance en sourdine"
 userSaysSomething: "{name} a dit quelque chose"
 makeActive: "Activer"
@@ -1317,7 +1317,7 @@ _initialTutorial:
     doItToContinue: "Marquez le fichier joint comme sensible pour procéder."
   _done:
     title: "Le tutoriel est terminé ! 🎉"
-    description: "Les fonctionnalités introduites ici ne sont que quelques-unes. Pour savoir plus sur l'utilisation de Misskey, veuillez consulter {lien}."
+    description: "Les fonctionnalités introduites ici ne sont que quelques-unes. Pour savoir plus sur l'utilisation de Misskey, veuillez consulter {link}."
 _timelineDescription:
   home: "Sur le fil principal, vous pouvez voir les notes des utilisateurs auxquels vous êtes abonné·e."
   local: "Sur le fil local, vous pouvez voir les notes de tous les utilisateurs sur cette instance."
