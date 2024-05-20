@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
 						<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 						<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
+						<MkSwitch v-model="isMediaSilenced" :disabled="!meta || !instance" @update:modelValue="toggleMediaSilenced">{{ i18n.ts.mediaSilenceThisInstance }}</MkSwitch>
 						<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 						<MkTextarea v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
@@ -158,6 +159,7 @@ const instance = ref<Misskey.entities.FederationInstance | null>(null);
 const suspended = ref(false);
 const isBlocked = ref(false);
 const isSilenced = ref(false);
+const isMediaSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
 const moderationNote = ref('');
 
@@ -186,8 +188,9 @@ async function fetch(): Promise<void> {
 	suspended.value = instance.value?.isSuspended ?? false;
 	isBlocked.value = instance.value?.isBlocked ?? false;
 	isSilenced.value = instance.value?.isSilenced ?? false;
+	isMediaSilenced.value = instance.value?.isMediaSilenced ?? false;
 	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
-	moderationNote.value = instance.value?.moderationNote;
+	moderationNote.value = instance.value?.moderationNote ?? '';
 }
 
 async function toggleBlock(): Promise<void> {
@@ -206,6 +209,16 @@ async function toggleSilenced(): Promise<void> {
 	const silencedHosts = meta.value.silencedHosts ?? [];
 	await misskeyApi('admin/update-meta', {
 		silencedHosts: isSilenced.value ? silencedHosts.concat([host]) : silencedHosts.filter(x => x !== host),
+	});
+}
+
+async function toggleMediaSilenced(): Promise<void> {
+	if (!meta.value) throw new Error('No meta?');
+	if (!instance.value) throw new Error('No instance?');
+	const { host } = instance.value;
+	const mediaSilencedHosts = meta.value.mediaSilencedHosts ?? [];
+	await misskeyApi('admin/update-meta', {
+		mediaSilencedHosts: isMediaSilenced.value ? mediaSilencedHosts.concat([host]) : mediaSilencedHosts.filter(x => x !== host),
 	});
 }
 
