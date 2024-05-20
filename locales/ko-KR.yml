@@ -2363,7 +2363,7 @@ _deck:
     direct: "다이렉트"
     roleTimeline: "역할 타임라인"
 _dialog:
-  charactersExceeded: "최대 글자수를 초과하였습니다! 현재 {current} / 최대 {min}"
+  charactersExceeded: "최대 글자수를 초과하였습니다! 현재 {current} / 최대 {max}"
   charactersBelow: "최소 글자수 미만입니다! 현재 {current} / 최소 {min}"
 _disabledTimeline:
   title: "비활성화된 타임라인"
