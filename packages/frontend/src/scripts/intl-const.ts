@@ -15,7 +15,7 @@ const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
 	hour: 'numeric',
 	minute: 'numeric',
 	second: 'numeric',
-	fractionalSecondDigits: (miLocalStorage.getItem('showMillisecondsInTimeFormat') === 'true') ? 3 : undefined,
+	fractionalSecondDigits: (miLocalStorage.getItem('showMillisecondsInTimeFormat') === 't') ? 3 : undefined,
 };
 
 let _dateTimeFormat: Intl.DateTimeFormat;

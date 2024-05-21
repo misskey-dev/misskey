@@ -139,7 +139,7 @@ type Profile = {
 		fontSize: string | null;
 		useSystemFont: 't' | null;
 		wallpaper: string | null;
-		showMillisecondsInTimeFormat: 'true' | 'false' | null;
+		showMillisecondsInTimeFormat: 't' | null;
 	};
 };
 
@@ -325,8 +325,8 @@ async function applyProfile(id: string): Promise<void> {
 	}
 
 	// showMillisecondsInTimeFormat
-	if (settings.showMillisecondsInTimeFormat && settings.showMillisecondsInTimeFormat === 'true') {
-		miLocalStorage.setItem('showMillisecondsInTimeFormat', 'true');
+	if (settings.showMillisecondsInTimeFormat && settings.showMillisecondsInTimeFormat === 't') {
+		miLocalStorage.setItem('showMillisecondsInTimeFormat', 't');
 	} else {
 		miLocalStorage.removeItem('showMillisecondsInTimeFormat');
 	}

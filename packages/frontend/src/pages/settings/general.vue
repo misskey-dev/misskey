@@ -339,9 +339,9 @@ watch(useSystemFont, () => {
 
 watch(showMillisecondsInTimeFormat, () => {
 	if (showMillisecondsInTimeFormat.value) {
-		miLocalStorage.setItem('showMillisecondsInTimeFormat', 'true');
+		miLocalStorage.setItem('showMillisecondsInTimeFormat', 't');
 	} else {
-		miLocalStorage.setItem('showMillisecondsInTimeFormat', 'false');
+		miLocalStorage.removeItem('showMillisecondsInTimeFormat');
 	}
 });
 
