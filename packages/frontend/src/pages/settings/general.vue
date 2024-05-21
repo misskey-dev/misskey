@@ -260,7 +260,7 @@ const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 const dataSaver = ref(defaultStore.state.dataSaver);
-const showMillisecondsInTimeFormat = ref(miLocalStorage.getItem('showMillisecondsInTimeFormat') === 'true');
+const showMillisecondsInTimeFormat = ref(miLocalStorage.getItem('showMillisecondsInTimeFormat') === 't');
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
