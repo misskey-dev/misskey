@@ -438,7 +438,7 @@ export class ClientServerService {
 
 		//#endregion
 
-		const renderBase = async (reply: FastifyReply) => {
+		const renderBase = async (reply: FastifyReply, data: { [key: string]: any } = {}) => {
 			const meta = await this.metaService.fetch();
 			reply.header('Cache-Control', 'public, max-age=30');
 			return await reply.view('base', {
@@ -447,6 +447,7 @@ export class ClientServerService {
 				title: meta.name ?? 'Misskey',
 				desc: meta.description,
 				...await this.generateCommonPugData(meta),
+				...data,
 			});
 		};
 
@@ -745,26 +746,14 @@ export class ClientServerService {
 		//#endregion
 
 		//region noindex pages
-		const renderNoIndexBase = async (reply: FastifyReply) => {
-			const meta = await this.metaService.fetch();
-			reply.header('Cache-Control', 'public, max-age=30');
-			return await reply.view('noindex', {
-				img: meta.bannerUrl,
-				url: this.config.url,
-				title: meta.name ?? 'Misskey',
-				desc: meta.description,
-				...await this.generateCommonPugData(meta),
-			});
-		};
-
 		// Tags
 		fastify.get<{ Params: { clip: string; } }>('/tags/:tag', async (request, reply) => {
-			return await renderNoIndexBase(reply);
+			return await renderBase(reply, { noindex: true });
 		});
 
 		// User with Tags
 		fastify.get<{ Params: { clip: string; } }>('/user-tags/:tag', async (request, reply) => {
-			return await renderNoIndexBase(reply);
+			return await renderBase(reply, { noindex: true });
 		});
 		//endregion
 
