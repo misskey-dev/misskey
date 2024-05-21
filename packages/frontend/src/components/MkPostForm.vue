@@ -1229,11 +1229,11 @@ defineExpose({
 		content: '';
 		position: absolute;
 		top: 0;
-		left: 10px; // 10px + 4px + 10px = 24px
-		width: 4px;
+		left: 9.5px; // 9.5px + 5px + 9.5px = 24px
+		width: 5px;
 		height: 100%;
 		background: var(--channel-color, transparent);
-		border-radius: 2px;
+		border-radius: 2.5px;
 		pointer-events: none;
 	}
 
@@ -1344,7 +1344,7 @@ defineExpose({
 
 	.textOuter::before {
 		left: 0;
-		border-radius: 0 4px 4px 0;
+		border-radius: 0 5px 5px 0;
 	}
 
 	.text {
