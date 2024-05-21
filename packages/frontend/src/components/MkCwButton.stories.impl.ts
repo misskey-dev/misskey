@@ -66,6 +66,10 @@ export const Default = {
 		s.release();
 	},
 	parameters: {
+		chromatic: {
+			// NOTE: テストが終わるまで待つ
+			delay: 5000,
+		},
 		layout: 'centered',
 	},
 } satisfies StoryObj<typeof MkCwButton>;
