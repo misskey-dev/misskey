@@ -272,7 +272,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 						text: r.name,
 						action: async () => {
 							const { canceled, result: period } = await os.select({
-								title: i18n.ts.period,
+								title: i18n.ts.period + ': ' + r.name,
 								items: [{
 									value: 'indefinitely', text: i18n.ts.indefinitely,
 								}, {

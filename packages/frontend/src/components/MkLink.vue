@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <component
 	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	:behavior="props.behavior"
+	:behavior="props.navigationBehavior"
 	:title="url"
 >
 	<slot></slot>
@@ -25,7 +25,7 @@ import { MkABehavior } from '@/components/global/MkA.vue';
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
-	behavior?: MkABehavior;
+	navigationBehavior?: MkABehavior;
 }>(), {
 });
 

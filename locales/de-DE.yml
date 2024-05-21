@@ -1819,7 +1819,6 @@ _2fa:
   registerTOTP: "Authentifizierungs-App registrieren"
   step1: "Installiere zuerst eine Authentifizierungsapp (z.B. {a} oder {b}) auf deinem Gerät."
   step2: "Dann, scanne den angezeigten QR-Code mit deinem Gerät."
-  step2Click: "Durch Klicken dieses QR-Codes kannst du Verifikation mit deinem Security-Token oder einer App registrieren."
   step2Uri: "Nutzt du ein Desktopprogramm, gib folgende URI eingeben"
   step3Title: "Authentifizierungsscode eingeben"
   step3: "Gib zum Abschluss den Code (Token) ein, der von deiner App angezeigt wird."
@@ -2289,4 +2288,3 @@ _reversi:
   black: "Schwarz"
   white: "Weiß"
   total: "Gesamt"
-
