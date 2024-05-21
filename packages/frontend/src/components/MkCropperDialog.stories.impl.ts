@@ -44,17 +44,27 @@ export const Default = {
 		aspectRatio: NaN,
 	},
 	parameters: {
+		chromatic: {
+			// NOTE: ロードが終わるまで待つ
+			delay: 3000,
+		},
 		layout: 'centered',
 		msw: {
 			handlers: [
 				...commonHandlers,
-				http.get('/proxy/image.webp?url=https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true', async () => {
-					const image = await (await fetch('client-assets/fedi.jpg')).blob();
-					return new HttpResponse(image, {
-						headers: {
-							'Content-Type': 'image/jpeg',
-						},
-					});
+				http.get('/proxy/image.webp', async ({ request }) => {
+					const url = new URL(request.url).searchParams.get('url');
+					console.log('あああ' + url);
+					if (url === 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true') {
+						const image = await (await fetch('client-assets/fedi.jpg')).blob();
+						return new HttpResponse(image, {
+							headers: {
+								'Content-Type': 'image/jpeg',
+							},
+						});
+					} else {
+						return new HttpResponse(null, { status: 404 });
+					}
 				}),
 				http.post('/api/drive/files/create', async ({ request }) => {
 					action('POST /api/drive/files/create')(await request.formData());
