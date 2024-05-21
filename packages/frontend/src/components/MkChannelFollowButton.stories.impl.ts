@@ -8,11 +8,11 @@
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { action } from '@storybook/addon-actions';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import { expect, userEvent, within } from '@storybook/test';
 import { channel } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkChannelFollowButton from './MkChannelFollowButton.vue';
-import { semaphore, tick } from '@/scripts/test-utils.js';
+import { semaphore } from '@/scripts/test-utils.js';
 import { i18n } from '@/i18n.js';
 
 function sleep(ms: number) {
