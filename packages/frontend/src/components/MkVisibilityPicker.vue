@@ -12,29 +12,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' && !currentChannel }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
+				<div :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</div>
+				<div :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</div>
 			</div>
 		</button>
 		<button key="home" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'home' && !currentChannel }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</span>
+				<div :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</div>
+				<div :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</div>
 			</div>
 		</button>
 		<button key="followers" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' && !currentChannel }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</span>
+				<div :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</div>
+				<div :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</div>
 			</div>
 		</button>
 		<button key="specified" :disabled="localOnly" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' && !currentChannel }]" data-index="4" @click="choose('specified')">
 			<div :class="$style.icon"><i class="ti ti-mail"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
+				<div :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</div>
+				<div :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</div>
 			</div>
 		</button>
 		<button
@@ -49,11 +49,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-device-tv"></i>
 			</div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.channel }}</span>
-				<span :class="$style.itemDescription" class="_nowrap">
-					<span v-if="currentChannelName">{{ i18n.tsx._visibility.channelSelected({ name: currentChannelName }) }}</span>
-					<span v-else>{{ i18n.ts._visibility.channelDescription }}</span>
-				</span>
+				<div :class="$style.itemTitle">{{ i18n.ts._visibility.channel }}</div>
+				<div :class="$style.itemDescription">
+					{{ currentChannelName ? i18n.tsx._visibility.channelSelected({ name: currentChannelName }) : i18n.ts._visibility.channelDescription }}
+				</div>
 			</div>
 		</button>
 	</div>
@@ -219,6 +218,11 @@ fetchChannels();
 
 .body {
 	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.itemTitle,
+.itemDescription {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -236,6 +240,10 @@ fetchChannels();
 .channelButton {
 	position: relative;
 
+	.itemDescription {
+		max-width: 200px;
+	}
+
 	&::before {
 		content: '';
 		position: absolute;
@@ -247,5 +255,9 @@ fetchChannels();
 		background: var(--channel-color, transparent);
 		pointer-events: none;
 	}
+}
+
+.root.asDrawer .channelButton .itemDescription {
+	max-width: 100%;
 }
 </style>
