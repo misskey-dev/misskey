@@ -41,6 +41,7 @@
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
 - Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
 - Enhance: AiScriptを0.18.0にバージョンアップ
+- Enhance: 時刻の詳細表示の際にミリ秒を含めることができるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
