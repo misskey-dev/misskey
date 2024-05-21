@@ -66,8 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
-		<div v-if="postChannel" :class="$style.colorBar" :style="{ background: postChannel.color }"></div>
+	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]" :style="postChannel && postChannel.color ? `--channel-color: ${postChannel.color}` : undefined">
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
@@ -1098,16 +1097,6 @@ defineExpose({
 	}
 }
 
-.colorBar {
-	position: absolute;
-	top: 0px;
-	left: 12px;
-	width: 5px;
-	height: 100% ;
-	border-radius: 999px;
-	pointer-events: none;
-}
-
 .submitInner {
 	padding: 0 12px;
 	line-height: 34px;
@@ -1236,6 +1225,18 @@ defineExpose({
 	width: 100%;
 	position: relative;
 
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 10px; // 10px + 4px + 10px = 24px
+		width: 4px;
+		height: 100%;
+		background: var(--channel-color, transparent);
+		border-radius: 2px;
+		pointer-events: none;
+	}
+
 	&.withCw {
 		padding-top: 8px;
 	}
@@ -1339,6 +1340,11 @@ defineExpose({
 	.hashtags,
 	.text {
 		padding: 0 16px;
+	}
+
+	.textOuter::before {
+		left: 0;
+		border-radius: 0 4px 4px 0;
 	}
 
 	.text {
