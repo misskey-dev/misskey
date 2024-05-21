@@ -47,12 +47,12 @@ export const Default = {
 	},
 	async play({ canvasElement }) {
 		await s.acquire();
-		await sleep(100);
+		await sleep(1000);
 		const canvas = within(canvasElement);
 		const buttonElement = canvas.getByRole<HTMLButtonElement>('button');
 		await expect(buttonElement).toHaveTextContent(i18n.ts.follow);
 		await userEvent.click(buttonElement);
-		await sleep(100);
+		await sleep(1000);
 		await expect(buttonElement).toHaveTextContent(i18n.ts.unfollow);
 		await sleep(100);
 		await userEvent.click(buttonElement);
