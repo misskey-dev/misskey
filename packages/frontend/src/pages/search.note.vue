@@ -92,6 +92,11 @@ async function search() {
 		return;
 	}
 
+	if (query.startsWith('#') && query.length > 1) {
+		router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
+		return;
+	}
+
 	notePagination.value = {
 		endpoint: 'notes/search',
 		limit: 10,
