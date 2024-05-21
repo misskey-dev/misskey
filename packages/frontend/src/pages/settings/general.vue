@@ -133,6 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
 				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
 				<MkSwitch v-model="useNativeUIForVideoAudioPlayer">{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</MkSwitch>
+				<MkSwitch v-model="showMillisecondsInTimeFormat">{{ i18n.ts.showMillisecondsInTimeFormat }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -259,6 +260,7 @@ const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 const dataSaver = ref(defaultStore.state.dataSaver);
+const showMillisecondsInTimeFormat = ref(miLocalStorage.getItem('showMillisecondsInTimeFormat') === 'true');
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -335,6 +337,14 @@ watch(useSystemFont, () => {
 	}
 });
 
+watch(showMillisecondsInTimeFormat, () => {
+	if (showMillisecondsInTimeFormat.value) {
+		miLocalStorage.setItem('showMillisecondsInTimeFormat', 'true');
+	} else {
+		miLocalStorage.setItem('showMillisecondsInTimeFormat', 'false');
+	}
+});
+
 watch([
 	hemisphere,
 	lang,
@@ -354,6 +364,7 @@ watch([
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
 	alwaysConfirmFollow,
+	showMillisecondsInTimeFormat,
 ], async () => {
 	await reloadAsk();
 });

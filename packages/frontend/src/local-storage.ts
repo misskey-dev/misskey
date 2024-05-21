@@ -14,6 +14,7 @@ type Keys =
 	'neverShowDonationInfo' |
 	'neverShowLocalOnlyInfo' |
 	'modifiedVersionMustProminentlyOfferInAgplV3Section13Read' |
+	'showMillisecondsInTimeFormat' |
 	'lastUsed' |
 	'lang' |
 	'drafts' |

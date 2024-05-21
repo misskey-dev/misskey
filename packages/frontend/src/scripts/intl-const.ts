@@ -4,33 +4,31 @@
  */
 
 import { lang } from '@/config.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 export const versatileLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 
+const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
+	year: 'numeric',
+	month: 'numeric',
+	day: 'numeric',
+	hour: 'numeric',
+	minute: 'numeric',
+	second: 'numeric',
+	fractionalSecondDigits: (miLocalStorage.getItem('showMillisecondsInTimeFormat') === 'true') ? 3 : undefined,
+};
+
 let _dateTimeFormat: Intl.DateTimeFormat;
 try {
-	_dateTimeFormat = new Intl.DateTimeFormat(versatileLang, {
-		year: 'numeric',
-		month: 'numeric',
-		day: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	});
+	_dateTimeFormat = new Intl.DateTimeFormat(versatileLang, dateTimeFormatOptions);
 } catch (err) {
 	console.warn(err);
 	if (_DEV_) console.log('[Intl] Fallback to en-US');
 
 	// Fallback to en-US
-	_dateTimeFormat = new Intl.DateTimeFormat('en-US', {
-		year: 'numeric',
-		month: 'numeric',
-		day: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	});
+	_dateTimeFormat = new Intl.DateTimeFormat('en-US', dateTimeFormatOptions);
 }
+
 export const dateTimeFormat = _dateTimeFormat;
 
 export const timeZone = dateTimeFormat.resolvedOptions().timeZone;

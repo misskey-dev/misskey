@@ -4956,6 +4956,10 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    /**
+     * 時刻の詳細表示にミリ秒を含める
+     */
+    "showMillisecondsInTimeFormat": string;
     "_bubbleGame": {
         /**
          * 遊び方
