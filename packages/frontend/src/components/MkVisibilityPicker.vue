@@ -37,18 +37,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
-		<button ref="channelsButton" class="_button" :class="[$style.item, { [$style.active]: currentChannel }]" data-index="5" @click="chooseChannel">
-			<div :class="$style.channelWrapper" :style="[currentChannel ? {borderLeftColor: `${currentChannel.color}`} : {}]">
-				<div :class="$style.icon">
-					<i class="ti ti-device-tv"></i>
-				</div>
-				<div :class="$style.body">
-					<span :class="$style.itemTitle">{{ i18n.ts._visibility.channel }}</span>
-					<span :class="$style.itemDescription">
-						<span v-if="currentChannelName">{{ i18n.t('_visibility.channelSelected', { name: currentChannelName }) }}</span>
-						<span v-else>{{ i18n.ts._visibility.channelDescription }}</span>
-					</span>
-				</div>
+		<button
+			ref="channelsButton"
+			class="_button"
+			:class="[$style.item, $style.channelButton, { [$style.active]: currentChannel }]"
+			:style="currentChannel && currentChannel.color ? `--channel-color: ${currentChannel.color}` : undefined"
+			data-index="5"
+			@click="chooseChannel"
+		>
+			<div :class="$style.icon">
+				<i class="ti ti-device-tv"></i>
+			</div>
+			<div :class="$style.body">
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.channel }}</span>
+				<span :class="$style.itemDescription" class="_nowrap">
+					<span v-if="currentChannelName">{{ i18n.tsx._visibility.channelSelected({ name: currentChannelName }) }}</span>
+					<span v-else>{{ i18n.ts._visibility.channelDescription }}</span>
+				</span>
 			</div>
 		</button>
 	</div>
@@ -58,6 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, shallowRef, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -72,7 +78,7 @@ const props = withDefaults(defineProps<{
 	localOnly: boolean;
 	src?: HTMLElement;
 	isReplyVisibilitySpecified?: boolean;
-	currentChannel?: Misskey.entities.Channel
+	currentChannel?: Misskey.entities.Channel;
 }>(), {
 });
 
@@ -108,17 +114,30 @@ async function fetchChannels() {
 
 async function chooseChannel() {
 	let selectedChannel: Misskey.entities.Channel | null = null;
-	await os.popupMenu(
-		channels.value.map(it => ({ type: 'button', text: it.name, action: (_) => selectedChannel = it })),
+	await os.popupMenu([
+		{
+			type: 'label',
+			text: i18n.ts.selectChannel,
+		},
+		...channels.value.map<MenuItem>(it => ({
+			type: 'button',
+			text: it.name,
+			active: it.id === currentChannel.value?.id,
+			action: (_) => {
+				selectedChannel = it;
+				currentChannel.value = it;
+			},
+		}))],
 		channelsButton.value,
 	);
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (selectedChannel) {
 		emit('changeChannel', selectedChannel);
+		nextTick(() => {
+			if (modal.value) modal.value.close();
+		});
 	}
-
-	await nextTick();
-	if (modal.value) modal.value.close();
 }
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
@@ -214,12 +233,19 @@ fetchChannels();
 	opacity: 0.6;
 }
 
-.channelWrapper {
-	display: flex;
-	margin-left: -6px;
-	padding-left: 4px;
-	border-left-width: 2px;
-	border-left-style: solid;
-	border-left-color: transparent;
+.channelButton {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 5px;
+		left: 0;
+		width: 4px;
+		height: calc(100% - 10px);
+		border-radius: 0 4px 4px 0;
+		background: var(--channel-color, transparent);
+		pointer-events: none;
+	}
 }
 </style>
