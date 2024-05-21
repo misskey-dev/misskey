@@ -237,6 +237,9 @@ const patronsWithIcon = [{
 }, {
 	name: '古道京紗＠ぷらいべったー',
 	icon: 'https://assets.misskey-hub.net/patrons/18346d0519704963a4beabe6abc170af.jpg',
+}, {
+	name: '越貝鯛丸',
+	icon: 'https://assets.misskey-hub.net/patrons/86c7374de37849b882d8ebbc833dc968.jpg',
 }];
 
 const patrons = [
