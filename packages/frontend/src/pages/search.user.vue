@@ -66,6 +66,11 @@ async function search() {
 		return;
 	}
 
+	if (query.startsWith('#') && query.length > 1) {
+		router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+		return;
+	}
+
 	userPagination.value = {
 		endpoint: 'users/search',
 		limit: 10,
