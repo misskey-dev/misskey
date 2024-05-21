@@ -139,6 +139,7 @@ type Profile = {
 		fontSize: string | null;
 		useSystemFont: 't' | null;
 		wallpaper: string | null;
+		showMillisecondsInTimeFormat: 'true' | 'false' | null;
 	};
 };
 
@@ -196,6 +197,7 @@ function getSettings(): Profile['settings'] {
 		fontSize: miLocalStorage.getItem('fontSize'),
 		useSystemFont: miLocalStorage.getItem('useSystemFont') as 't' | null,
 		wallpaper: miLocalStorage.getItem('wallpaper'),
+		showMillisecondsInTimeFormat: miLocalStorage.getItem('showMillisecondsInTimeFormat') as 'true' | 'false' | null,
 	};
 }
 
@@ -320,6 +322,13 @@ async function applyProfile(id: string): Promise<void> {
 		miLocalStorage.setItem('wallpaper', settings.wallpaper);
 	} else {
 		miLocalStorage.removeItem('wallpaper');
+	}
+
+	// showMillisecondsInTimeFormat
+	if (settings.showMillisecondsInTimeFormat && settings.showMillisecondsInTimeFormat === 'true') {
+		miLocalStorage.setItem('showMillisecondsInTimeFormat', 'true');
+	} else {
+		miLocalStorage.removeItem('showMillisecondsInTimeFormat');
 	}
 
 	const { canceled: cancel2 } = await os.confirm({
