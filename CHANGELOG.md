@@ -41,6 +41,7 @@
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
 - Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
 - Enhance: AiScriptを0.18.0にバージョンアップ
+- Enhance: 通常のノートでも、お気に入りに登録したチャンネルにリノートできるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -60,6 +61,7 @@
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
 - Fix: 連合なしの状態の読み書きができない問題を修正
+- Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
@@ -83,6 +85,8 @@
 - Fix: AP Link等は添付ファイル扱いしないようになど (#13754)
 - Fix: FTTが有効かつsinceIdのみを指定した場合に帰って来るレスポンスが逆順である問題を修正
 - Fix: `/i/notifications`に `includeTypes`か`excludeTypes`を指定しているとき、通知が存在するのに空配列を返すことがある問題を修正
+- Fix: 複数idを指定する`users/show`が関係ないユーザを返すことがある問題を修正
+- Fix: `/tags` と `/user-tags` が検索エンジンにインデックスされないように
 
 ## 2024.3.1
 
