@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="alwaysShowPlayer">Youtube.comや、nicovideo.jpのプレイヤーを全て開いた状態にする</MkSwitch>
 			<MkSwitch v-model="alwaysExpandTweet">Xのポストを常時表示させる</MkSwitch>
 			<MkSelect v-model="draftSavingBehavior">
-				<template #label>{{ i18n.ts.draftSavingBehavior }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<template #label>{{ i18n.ts.draftSavingBehavior }}<span class="_beta">{{ i18n.ts.kakuregaFeature }}</span></template>
 				<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
 				<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
 			</MkSelect>
