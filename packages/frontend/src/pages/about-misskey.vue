@@ -231,6 +231,12 @@ const patronsWithIcon = [{
 }, {
 	name: 'Takeno',
 	icon: 'https://assets.misskey-hub.net/patrons/6fba81536aea48fe94a30909c502dfa1.jpg',
+}, {
+	name: 'くびすじ',
+	icon: 'https://assets.misskey-hub.net/patrons/aa5789850b2149aeb5b89ebe2e9083db.jpg',
+}, {
+	name: '古道京紗＠ぷらいべったー',
+	icon: 'https://assets.misskey-hub.net/patrons/18346d0519704963a4beabe6abc170af.jpg',
 }];
 
 const patrons = [
