@@ -255,7 +255,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = meta.sensitiveWords;
-			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
+			if (this.utilityService.isKeyWordIncluded(data.cw ?? this.utilityService.concatNoteContentsForKeyWordCheck({ text: data.text, pollChoices: data.poll?.choices }), sensitiveWords)) {
 				data.visibility = 'home';
 				this.logger.warn('Visibility changed to home because sensitive words are included', { user: user.id, note: data });
 			} else if (!policies.canPublicNote) {
@@ -371,7 +371,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		const willCauseNotification = mentionedUsers.some(u => u.host === null)
 			|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.host === null))
-			|| data.reply?.userHost === null || (this.isQuote(data) && data.renote?.userHost === null) || false;
+			|| data.reply?.userHost === null || (this.isQuote(data) && data.renote.userHost === null) || false;
 
 		if (process.env.MISSKEY_BLOCK_MENTIONS_FROM_UNFAMILIAR_REMOTE_USERS === 'true' && user.host !== null && willCauseNotification) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
