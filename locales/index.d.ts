@@ -5317,6 +5317,10 @@ export interface Locale extends ILocale {
      * 投稿フォームをリセット
      */
     "clearPost": string;
+    /**
+     * デフォルトでノートが自己消滅するように
+     */
+    "defaultScheduledNoteDelete": string;
     "_bubbleGame": {
         /**
          * 遊び方

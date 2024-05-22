@@ -1329,6 +1329,7 @@ hideReactionCount: "リアクション数の非表示"
 postForm: "投稿フォーム"
 postFormBottomSettingsDescription: "投稿フォームの下部に表示される項目の並び替えが出来ます。項目をクリックすると削除できます。"
 clearPost: "投稿フォームをリセット"
+defaultScheduledNoteDelete: "デフォルトでノートが自己消滅するように"
 
 _bubbleGame:
   howToPlay: "遊び方"

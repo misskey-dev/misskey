@@ -30,13 +30,19 @@
 		{{ i18n.ts.disableNoteDrafting }}
 		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
 	</MkSwitch>
+	<MkSwitch v-model="defaultScheduledNoteDelete">
+		{{ i18n.ts.defaultScheduledNoteDelete }}
+		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+	</MkSwitch>
+	<MkDeleteScheduleEditor v-if="defaultScheduledNoteDelete" v-model="scheduledNoteDelete" :afterOnly="true"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkDeleteScheduleEditor from '@/components/MkDeleteScheduleEditor.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import { bottomItemDef } from '@/scripts/post-form.js';
@@ -46,6 +52,14 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
+const defaultScheduledNoteDelete = computed(defaultStore.makeGetterSetter('defaultScheduledNoteDelete'));
+
+const scheduledNoteDelete = ref({ deleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true });
+
+watch(scheduledNoteDelete, () => {
+	if (!scheduledNoteDelete.value.isValid) return;
+	defaultStore.set('defaultScheduledNoteDeleteTime', scheduledNoteDelete.value.deleteAfter);
+});
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
