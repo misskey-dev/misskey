@@ -89,13 +89,14 @@ export class MiInstance {
 	public notRespondingSince: Date | null;
 
 	/**
-	 * このインスタンスへの配信を停止するか
+	 * このインスタンスへの配信状態
 	 */
 	@Index()
-	@Column('boolean', {
-		default: false,
+	@Column('enum', {
+		default: 'none',
+		enum: ['none', 'manuallySuspended', 'goneSuspended', 'autoSuspendedForNotResponding'],
 	})
-	public isSuspended: boolean;
+	public suspendedState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
 
 	@Column('varchar', {
 		length: 64, nullable: true,

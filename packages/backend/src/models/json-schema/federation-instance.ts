@@ -45,6 +45,11 @@ export const packedFederationInstanceSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		suspendedState: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['none', 'manuallySuspended', 'goneSuspended', 'autoSuspendedForNotResponding'],
+		},
 		isBlocked: {
 			type: 'boolean',
 			optional: false, nullable: false,

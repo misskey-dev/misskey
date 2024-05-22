@@ -22,6 +22,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DeliverJobData } from '../types.js';
+import {Not} from "typeorm";
 
 @Injectable()
 export class DeliverProcessorService {
@@ -62,7 +63,7 @@ export class DeliverProcessorService {
 		if (suspendedHosts == null) {
 			suspendedHosts = await this.instancesRepository.find({
 				where: {
-					isSuspended: true,
+					suspendedState: Not("none"),
 				},
 			});
 			this.suspendedHostsCache.set(suspendedHosts);
@@ -103,9 +104,9 @@ export class DeliverProcessorService {
 					});
 				} else if (i.notRespondingSince) {
 					// 1週間以上不通ならサスペンド
-					if (i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
+					if (i.suspendedState == 'none' && i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
 						this.federatedInstanceService.update(i.id, {
-							isSuspended: true,
+							suspendedState: 'autoSuspendedForNotResponding',
 						});
 					}
 				}
@@ -125,7 +126,7 @@ export class DeliverProcessorService {
 					if (job.data.isSharedInbox && res.statusCode === 410) {
 						this.federatedInstanceService.fetch(host).then(i => {
 							this.federatedInstanceService.update(i.id, {
-								isSuspended: true,
+								suspendedState: 'goneSuspended',
 							});
 						});
 						throw new Bull.UnrecoverableError(`${host} is gone`);
