@@ -337,7 +337,7 @@ onUnmounted(() => {
 }
 
 .thumbnailBlur {
-		filter: blur(8px);
+		filter: blur(16px);
 		clip-path: inset(0);
 }
 
