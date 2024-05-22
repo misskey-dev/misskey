@@ -110,6 +110,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	defaultScheduledNoteDelete: {
+		where: 'account',
+		default: false,
+	},
+	defaultScheduledNoteDeleteTime: {
+		where: 'account',
+		default: 86400000,
+	},
 	uploadFolder: {
 		where: 'account',
 		default: null as string | null,

@@ -1,9 +1,9 @@
 <template>
-<div class="zmdxowus">
-	<span>{{ i18n.ts.scheduledNoteDelete }}</span><span class="_beta">{{ i18n.ts.originalFeature }}</span>
+<div class="$style.root">
+	<span v-if="!afterOnly">{{ i18n.ts.scheduledNoteDelete }}</span><span class="_beta">{{ i18n.ts.originalFeature }}</span>
 	<section>
 		<div>
-			<MkSelect v-model="expiration" small>
+			<MkSelect v-if="!afterOnly" v-model="expiration" small>
 				<template #label>{{ i18n.ts._poll.expiration }}</template>
 				<option value="at">{{ i18n.ts._poll.at }}</option>
 				<option value="after">{{ i18n.ts._poll.after }}</option>
@@ -47,12 +47,13 @@ export type DeleteScheduleEditorModelValue = {
 
 const props = defineProps<{
 		modelValue: DeleteScheduleEditorModelValue;
-	}>();
+		afterOnly?: boolean;
+}>();
 const emit = defineEmits<{
 		(ev: 'update:modelValue', v: DeleteScheduleEditorModelValue): void;
 	}>();
 
-const expiration = ref('at');
+const expiration = ref<'at' | 'after'>(props.afterOnly ? 'after' : 'at');
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
