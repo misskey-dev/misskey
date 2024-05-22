@@ -122,6 +122,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 
 				// リクエストされた通りに並べ替え
+				// 順番は保持されるけど数は減ってる可能性がある
 				const _users: MiUser[] = [];
 				for (const id of ps.userIds) {
 					const user = users.find((u) => u.id === id);
