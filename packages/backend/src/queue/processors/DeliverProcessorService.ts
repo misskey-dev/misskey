@@ -79,6 +79,7 @@ export class DeliverProcessorService {
 				if (i.isNotResponding) {
 					this.federatedInstanceService.update(i.id, {
 						isNotResponding: false,
+						notRespondingSince: null,
 					});
 				}
 
@@ -98,7 +99,15 @@ export class DeliverProcessorService {
 				if (!i.isNotResponding) {
 					this.federatedInstanceService.update(i.id, {
 						isNotResponding: true,
+						notRespondingSince: new Date(),
 					});
+				} else if (i.notRespondingSince) {
+					// 1週間以上不通ならサスペンド
+					if (i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
+						this.federatedInstanceService.update(i.id, {
+							isSuspended: true,
+						});
+					}
 				}
 
 				this.apRequestChart.deliverFail();

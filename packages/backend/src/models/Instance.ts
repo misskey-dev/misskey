@@ -81,6 +81,14 @@ export class MiInstance {
 	public isNotResponding: boolean;
 
 	/**
+	 * このインスタンスと不通になった日時
+	 */
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public notRespondingSince: Date | null;
+
+	/**
 	 * このインスタンスへの配信を停止するか
 	 */
 	@Index()
