@@ -1,2 +1,19 @@
 ---
-
+_lang_: "සිංහල"
+monthAndDay: "{month}-{day}"
+username: "පරිශීලක නාමය"
+password: "මුරපදය"
+cancel: "අවලංගු කරන්න"
+instance: "සර්වර්"
+login: "පිවිසෙන්න"
+users: "පරිශීලක"
+note: "නෝට්"
+notes: "නෝට්"
+instances: "සර්වර්"
+smtpUser: "පරිශීලක නාමය"
+smtpPass: "මුරපදය"
+user: "පරිශීලක"
+_sfx:
+  note: "නෝට්"
+_profile:
+  username: "පරිශීලක නාමය"
