@@ -11,7 +11,7 @@ import { unique } from '@/scripts/array.js';
 const removeHash = (x: string) => x.replace(/#[^#]*$/, '');
 
 export function extractUrlFromMfm(nodes: mfm.MfmNode[], respectSilentFlag = true): string[] {
-	const urlNodes = mfm.extract(nodes, (node): node is (mfm.MfmNode & {props:{url:string}}) => {
+	const urlNodes = mfm.extract(nodes, (node) => {
 		return (node.type === 'url' && !node.props.brackets) || (node.type === 'link' && (!respectSilentFlag || !node.props.silent));
 	});
 	const urls: string[] = unique(urlNodes.map(x => x.props.url));
