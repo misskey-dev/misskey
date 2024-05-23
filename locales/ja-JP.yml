@@ -1240,6 +1240,16 @@ noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
 
+_delivery:
+  status: "配信状態"
+  stop: "配信停止"
+  resume: "配信再開"
+  _type:
+    none: "配信中"
+    manuallySuspended: "手動停止中"
+    goneSuspended: "サーバー削除のため停止中"
+    autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
+
 _bubbleGame:
   howToPlay: "遊び方"
   hold: "ホールド"
