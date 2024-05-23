@@ -23,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkTimeline
 		v-else-if="column.tl"
 		ref="timeline"
-		:sound="sound"
 		:key="column.tl + withRenotes + withReplies + onlyFiles"
+		:sound="sound"
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
