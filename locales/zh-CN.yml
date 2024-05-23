@@ -2036,7 +2036,6 @@ _permissions:
   "read:admin:server-info": "查看服务器信息"
   "read:admin:show-moderation-log": "查看管理日志"
   "read:admin:show-user": "查看用户的非公开信息"
-  "read:admin:show-users": "查看用户的非公开信息"
   "write:admin:suspend-user": "冻结用户"
   "write:admin:unset-user-avatar": "删除用户头像"
   "write:admin:unset-user-banner": "删除用户横幅"
