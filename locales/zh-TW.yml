@@ -1238,6 +1238,10 @@ keepOriginalFilenameDescription: "如果關閉此設置，上傳時檔案名稱�
 noDescription: "沒有說明文字"
 alwaysConfirmFollow: "點擊追隨時總是顯示確認訊息"
 inquiry: "聯絡我們"
+_delivery:
+  stop: "已凍結"
+  _type:
+    none: "直播中"
 _bubbleGame:
   howToPlay: "玩法說明"
   hold: "保留"
