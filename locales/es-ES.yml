@@ -2033,7 +2033,6 @@ _permissions:
   "read:admin:server-info": "Ver información del servidor"
   "read:admin:show-moderation-log": "Ver log de moderación"
   "read:admin:show-user": "Ver información privada de usuario"
-  "read:admin:show-users": "Ver información privada de usuario"
   "write:admin:suspend-user": "Suspender cuentas de usuario"
   "write:admin:unset-user-avatar": "Quitar avatares de usuario"
   "write:admin:unset-user-banner": "Quitar banner de usuarios"
