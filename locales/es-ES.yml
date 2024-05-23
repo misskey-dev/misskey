@@ -1233,6 +1233,10 @@ useNativeUIForVideoAudioPlayer: "Usar la interfaz del navegador cuando se reprod
 keepOriginalFilename: "Mantener el nombre original del archivo"
 noDescription: "No hay descripción"
 alwaysConfirmFollow: "Confirmar siempre cuando se sigue a alguien"
+_delivery:
+  stop: "Suspendido"
+  _type:
+    none: "Publicando"
 _bubbleGame:
   howToPlay: "Cómo jugar"
   hold: "Mantener"
