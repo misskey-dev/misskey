@@ -63,7 +63,7 @@ export class DeliverProcessorService {
 		if (suspendedHosts == null) {
 			suspendedHosts = await this.instancesRepository.find({
 				where: {
-					suspendedState: Not('none'),
+					suspensionState: Not('none'),
 				},
 			});
 			this.suspendedHostsCache.set(suspendedHosts);
@@ -104,9 +104,9 @@ export class DeliverProcessorService {
 					});
 				} else if (i.notRespondingSince) {
 					// 1週間以上不通ならサスペンド
-					if (i.suspendedState === 'none' && i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
+					if (i.suspensionState === 'none' && i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
 						this.federatedInstanceService.update(i.id, {
-							suspendedState: 'autoSuspendedForNotResponding',
+							suspensionState: 'autoSuspendedForNotResponding',
 						});
 					}
 				}
@@ -126,7 +126,7 @@ export class DeliverProcessorService {
 					if (job.data.isSharedInbox && res.statusCode === 410) {
 						this.federatedInstanceService.fetch(host).then(i => {
 							this.federatedInstanceService.update(i.id, {
-								suspendedState: 'goneSuspended',
+								suspensionState: 'goneSuspended',
 							});
 						});
 						throw new Bull.UnrecoverableError(`${host} is gone`);

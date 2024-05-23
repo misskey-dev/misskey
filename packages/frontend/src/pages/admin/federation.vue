@@ -92,7 +92,7 @@ const pagination = {
 };
 
 function getStatus(instance: Misskey.entities.FederationInstance) {
-	switch (instance.suspendedState) {
+	switch (instance.suspensionState) {
 		case 'manuallySuspended':
 			return 'Manually Suspended';
 		case 'goneSuspended':

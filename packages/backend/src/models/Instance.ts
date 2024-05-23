@@ -96,7 +96,7 @@ export class MiInstance {
 		default: 'none',
 		enum: ['none', 'manuallySuspended', 'goneSuspended', 'autoSuspendedForNotResponding'],
 	})
-	public suspendedState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
+	public suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
 
 	@Column('varchar', {
 		length: 64, nullable: true,

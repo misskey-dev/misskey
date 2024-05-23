@@ -4476,7 +4476,7 @@ export type components = {
       isNotResponding: boolean;
       isSuspended: boolean;
       /** @enum {string} */
-      suspendedState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
+      suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
       isBlocked: boolean;
       /** @example misskey */
       softwareName: string | null;
