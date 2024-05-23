@@ -9112,6 +9112,10 @@ export interface Locale extends ILocale {
          */
         "addColumn": string;
         /**
+         * 新しいノートを通知する
+         */
+        "notifyNotes": string;
+        /**
          * カラムの設定
          */
         "configureColumn": string;

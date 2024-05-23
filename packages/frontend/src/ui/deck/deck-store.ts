@@ -33,6 +33,7 @@ export type Column = {
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
+	sound?: boolean;
 };
 
 export const deckStore = markRaw(new Storage('deck', {

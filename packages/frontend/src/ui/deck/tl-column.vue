@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkTimeline
 		v-else-if="column.tl"
 		ref="timeline"
+		:sound="sound"
 		:key="column.tl + withRenotes + withReplies + onlyFiles"
 		:src="column.tl"
 		:withRenotes="withRenotes"
@@ -41,6 +42,7 @@ import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	column: Column;
@@ -52,6 +54,7 @@ const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
+const sound = ref(props.column.sound ?? false);
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
@@ -72,6 +75,10 @@ watch(onlyFiles, v => {
 	updateColumn(props.column.id, {
 		onlyFiles: v,
 	});
+});
+
+watch(sound, v => {
+	updateColumn(props.column.id, { sound: v });
 });
 
 onMounted(() => {
@@ -108,10 +115,15 @@ async function setType() {
 	});
 }
 
-const menu = [{
+const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.timeline,
 	action: setType,
+}, {
+	type: 'switch',
+	icon: 'ti ti-bell',
+	ref: sound,
+	text: i18n.ts._deck.notifyNotes,
 }, {
 	type: 'switch',
 	text: i18n.ts.showRenotes,
