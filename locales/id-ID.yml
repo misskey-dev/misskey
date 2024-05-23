@@ -1235,6 +1235,10 @@ keepOriginalFilenameDescription: "Apabila pengaturan ini dimatikan, nama berkas 
 noDescription: "Tidak ada deskripsi"
 alwaysConfirmFollow: "Selalu konfirmasi ketika mengikuti"
 inquiry: "Hubungi kami"
+_delivery:
+  stop: "Ditangguhkan"
+  _type:
+    none: "Sedang menyiarkan langsung"
 _bubbleGame:
   howToPlay: "Cara bermain"
   hold: "Tahan"
