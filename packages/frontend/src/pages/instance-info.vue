@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{{ i18n.ts._delivery._type[suspendedState] }}
 							</template>
 						</MkKeyValue>
-						<MkButton v-if="suspendedState === 'none'" :disabled="!instance" @click="stopDelivery" danger>{{ i18n.ts._delivery.stop }}</MkButton>
+						<MkButton v-if="suspendedState === 'none'" :disabled="!instance" danger @click="stopDelivery">{{ i18n.ts._delivery.stop }}</MkButton>
 						<MkButton v-if="suspendedState !== 'none'" :disabled="!instance" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
 						<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 						<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
