@@ -2085,7 +2085,6 @@ _permissions:
   "read:admin:server-info": "サーバーの情報を見る"
   "read:admin:show-moderation-log": "モデレーションログを見る"
   "read:admin:show-user": "ユーザーのプライベートな情報を見る"
-  "read:admin:show-users": "複数ユーザーのプライベートな情報をまとめて取得する"
   "write:admin:suspend-user": "ユーザーを凍結する"
   "write:admin:unset-user-avatar": "ユーザーのアバターを削除する"
   "write:admin:unset-user-banner": "ユーザーのバーナーを削除する"

@@ -7936,10 +7936,6 @@ export interface Locale extends ILocale {
          */
         "read:admin:show-user": string;
         /**
-         * ユーザーのプライベートな情報を見る
-         */
-        "read:admin:show-users": string;
-        /**
          * ユーザーを凍結する
          */
         "write:admin:suspend-user": string;
