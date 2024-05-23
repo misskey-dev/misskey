@@ -1233,6 +1233,10 @@ useNativeUIForVideoAudioPlayer: "Riprodurre audio/video usando le funzionalità 
 keepOriginalFilename: "Mantieni il nome file originale"
 keepOriginalFilenameDescription: "Disattivandola, i file verranno caricati usando nomi casuali."
 noDescription: "Manca la descrizione"
+_delivery:
+  stop: "Sospensione"
+  _type:
+    none: "Pubblicazione"
 _bubbleGame:
   howToPlay: "Come giocare"
   hold: "Tieni"
