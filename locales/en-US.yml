@@ -1235,6 +1235,10 @@ keepOriginalFilenameDescription: "If you turn off this setting, files names will
 noDescription: "There is not the explanation"
 alwaysConfirmFollow: "Always confirm when following"
 inquiry: "Contact"
+_delivery:
+  stop: "Suspended"
+  _type:
+    none: "Publishing"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"
