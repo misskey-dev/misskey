@@ -2036,7 +2036,6 @@ _permissions:
   "read:admin:server-info": "ดูข้อมูลเซิร์ฟเวอร์"
   "read:admin:show-moderation-log": "ดูปูมการแก้ไข"
   "read:admin:show-user": "ดูข้อมูลส่วนตัวของผู้ใช้"
-  "read:admin:show-users": "ดูข้อมูลส่วนตัวของผู้ใช้"
   "write:admin:suspend-user": "ระงับผู้ใช้"
   "write:admin:unset-user-avatar": "ลบอวตารผู้ใช้"
   "write:admin:unset-user-banner": "ลบแบนเนอร์ผู้ใช้"
