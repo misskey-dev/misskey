@@ -2039,7 +2039,6 @@ _permissions:
   "read:admin:server-info": "查看伺服器的資訊"
   "read:admin:show-moderation-log": "查看審查紀錄"
   "read:admin:show-user": "查看使用者的私密資訊"
-  "read:admin:show-users": "查看使用者的私密資訊"
   "write:admin:suspend-user": "凍結使用者"
   "write:admin:unset-user-avatar": "刪除使用者的頭像"
   "write:admin:unset-user-banner": "刪除使用者的橫幅"
