@@ -88,9 +88,16 @@ export class FeaturedService {
 		await redisPipeline.exec();
 	}
 
+	// 30%の確率でランキングを更新する
+	private async shouldUpdateLocalOrGlobalRanking(): Promise<boolean> {
+		return Math.random() < 0.3;
+	}
+
 	@bindThis
-	public updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
-		return this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
+	public async updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
+		if (await this.shouldUpdateLocalOrGlobalRanking()) {
+			await this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
+		}
 	}
 
 	@bindThis
@@ -99,13 +106,17 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	public updateInChannelNotesRanking(channelId: MiNote['channelId'], noteId: MiNote['id'], score = 1): Promise<void> {
-		return this.updateRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
+	public async updateInChannelNotesRanking(channelId: MiNote['channelId'], noteId: MiNote['id'], score = 1): Promise<void> {
+		if (await this.shouldUpdateLocalOrGlobalRanking()) {
+			await this.updateRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
+		}
 	}
 
 	@bindThis
-	public updatePerUserNotesRanking(userId: MiUser['id'], noteId: MiNote['id'], score = 1): Promise<void> {
-		return this.updateRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, noteId, score);
+	public async updatePerUserNotesRanking(userId: MiUser['id'], noteId: MiNote['id'], score = 1): Promise<void> {
+		if (await this.shouldUpdateLocalOrGlobalRanking()) {
+			await this.updateRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, noteId, score);
+		}
 	}
 
 	@bindThis
