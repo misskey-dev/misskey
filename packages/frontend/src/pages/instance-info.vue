@@ -35,7 +35,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection v-if="iAmModerator">
 					<template #label>Moderation</template>
 					<div class="_gaps_s">
-						<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
+						<MkKeyValue>
+							<template #key>
+								{{ i18n.ts._delivery.status }}
+							</template>
+							<template #value>
+								{{ i18n.ts._delivery._type[suspensionState] }}
+							</template>
+						</MkKeyValue>
+						<MkButton v-if="suspensionState === 'none'" :disabled="!instance" danger @click="stopDelivery">{{ i18n.ts._delivery.stop }}</MkButton>
+						<MkButton v-if="suspensionState !== 'none'" :disabled="!instance" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
 						<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 						<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
 						<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
@@ -155,7 +164,7 @@ const tab = ref('overview');
 const chartSrc = ref('instance-requests');
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
 const instance = ref<Misskey.entities.FederationInstance | null>(null);
-const suspended = ref(false);
+const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding'>('none');
 const isBlocked = ref(false);
 const isSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
@@ -183,7 +192,7 @@ async function fetch(): Promise<void> {
 	instance.value = await misskeyApi('federation/show-instance', {
 		host: props.host,
 	});
-	suspended.value = instance.value?.isSuspended ?? false;
+	suspensionState.value = instance.value?.suspensionState ?? 'none';
 	isBlocked.value = instance.value?.isBlocked ?? false;
 	isSilenced.value = instance.value?.isSilenced ?? false;
 	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
@@ -209,11 +218,21 @@ async function toggleSilenced(): Promise<void> {
 	});
 }
 
-async function toggleSuspend(): Promise<void> {
+async function stopDelivery(): Promise<void> {
 	if (!instance.value) throw new Error('No instance?');
+	suspensionState.value = 'manuallySuspended';
 	await misskeyApi('admin/federation/update-instance', {
 		host: instance.value.host,
-		isSuspended: suspended.value,
+		isSuspended: true,
+	});
+}
+
+async function resumeDelivery(): Promise<void> {
+	if (!instance.value) throw new Error('No instance?');
+	suspensionState.value = 'none';
+	await misskeyApi('admin/federation/update-instance', {
+		host: instance.value.host,
+		isSuspended: false,
 	});
 }
 

@@ -16,7 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-	kind: 'read:admin:show-users',
+	kind: 'read:admin:show-user',
 
 	res: {
 		type: 'array',
