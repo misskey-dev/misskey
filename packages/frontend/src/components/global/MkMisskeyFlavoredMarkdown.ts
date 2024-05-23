@@ -367,7 +367,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'hashtag': {
 				return [h(MkA, {
 					key: Math.random(),
-					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
+					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/tags/${encodeURIComponent(token.props.hashtag)}#users`,
 					style: 'color:var(--hashtag);',
 				}, `#${token.props.hashtag}`)];
 			}

@@ -219,7 +219,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/role.vue')),
 }, {
 	path: '/user-tags/:tag',
-	component: page(() => import('@/pages/user-tag.vue')),
+	redirect: (props) => `/tags/${props.get('tag')}#users`,
 }, {
 	path: '/explore',
 	component: page(() => import('@/pages/explore.vue')),
@@ -266,6 +266,7 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/tags/:tag',
 	component: page(() => import('@/pages/tag.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/pages/new',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
