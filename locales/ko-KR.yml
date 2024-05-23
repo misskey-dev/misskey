@@ -1230,6 +1230,10 @@ useTotp: "일회용 비밀번호 사용"
 useBackupCode: "백업 코드 사용"
 launchApp: "앱 실행"
 useNativeUIForVideoAudioPlayer: "브라우저 UI에서 미디어 재생"
+_delivery:
+  stop: "정지됨"
+  _type:
+    none: "배포 중"
 _bubbleGame:
   howToPlay: "설명"
   hold: "홀드"
