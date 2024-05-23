@@ -2005,7 +2005,6 @@ _permissions:
   "read:admin:server-info": "Veure informació del servidor"
   "read:admin:show-moderation-log": "Veure registre de moderació "
   "read:admin:show-user": "Veure informació privada de l'usuari "
-  "read:admin:show-users": "Veure informació privada de l'usuari "
   "write:admin:suspend-user": "Suspendre usuari"
   "write:admin:unset-user-avatar": "Esborrar avatar d'usuari "
   "write:admin:unset-user-banner": "Esborrar bàner de l'usuari "
