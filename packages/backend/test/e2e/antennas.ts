@@ -150,7 +150,6 @@ describe('アンテナ', () => {
 			isActive: true,
 			keywords: [['keyword']],
 			name: 'test',
-			notify: false,
 			src: 'all',
 			userListId: null,
 			users: [''],
