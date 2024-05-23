@@ -1238,6 +1238,10 @@ keepOriginalFilenameDescription: "若关闭此设置，上传文件时文件名�
 noDescription: "没有描述"
 alwaysConfirmFollow: "总是确认关注"
 inquiry: "联系我们"
+_delivery:
+  stop: "停止推流"
+  _type:
+    none: "投递中"
 _bubbleGame:
   howToPlay: "游戏说明"
   hold: "抓住"
