@@ -1235,6 +1235,10 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はあらへんで"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "問い合わせ"
+_delivery:
+  stop: "配信せぇへん"
+  _type:
+    none: "配信しとる"
 _bubbleGame:
   howToPlay: "遊び方"
   hold: "ホールド"
