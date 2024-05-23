@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { MiGalleryPost, MiNote, MiUser } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ModuleRef } from '@nestjs/core';
 
 const GLOBAL_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
 export const GALLERY_POSTS_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
@@ -17,11 +19,19 @@ const HASHTAG_RANKING_WINDOW = 1000 * 60 * 60; // 1時間ごと
 const featuredEpoc = new Date('2023-01-01T00:00:00Z').getTime();
 
 @Injectable()
-export class FeaturedService {
+export class FeaturedService implements OnModuleInit {
+	private metaService: MetaService;
+
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis, // TODO: 専用のRedisサーバーを設定できるようにする
 	) {
+	}
+
+	onModuleInit() {
+		this.metaService = this.moduleRef.get('MetaService');
 	}
 
 	@bindThis
@@ -90,7 +100,8 @@ export class FeaturedService {
 
 	// 30%の確率でランキングを更新する
 	private async shouldUpdateLocalOrGlobalRanking(): Promise<boolean> {
-		return Math.random() < 0.3;
+		const meta = await this.metaService.fetch();
+		return Math.random() < meta.featuredUpdateRatio;
 	}
 
 	@bindThis

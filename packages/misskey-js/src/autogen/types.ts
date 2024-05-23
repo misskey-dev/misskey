@@ -4986,6 +4986,7 @@ export type operations = {
             urlPreviewRequireContentLength: boolean;
             urlPreviewUserAgent: string | null;
             urlPreviewSummaryProxyUrl: string | null;
+            featuredUpdateRatio: number;
           };
         };
       };
@@ -8942,6 +8943,7 @@ export type operations = {
           urlPreviewRequireContentLength?: boolean;
           urlPreviewUserAgent?: string | null;
           urlPreviewSummaryProxyUrl?: string | null;
+          featuredUpdateRatio?: number;
         };
       };
     };
