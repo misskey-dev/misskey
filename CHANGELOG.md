@@ -3,6 +3,7 @@
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 - 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
+- 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
