@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('instance not found');
 			}
 
-			let isSuspendedBefore = instance.suspendedState !== 'none';
+			const isSuspendedBefore = instance.suspendedState !== 'none';
 			let suspendedState: undefined | 'manuallySuspended' | 'none';
 
 			if (ps.isSuspended != null && isSuspendedBefore !== ps.isSuspended) {

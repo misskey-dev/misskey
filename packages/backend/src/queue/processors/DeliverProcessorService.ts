@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
+import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -22,7 +23,6 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DeliverJobData } from '../types.js';
-import {Not} from "typeorm";
 
 @Injectable()
 export class DeliverProcessorService {
@@ -63,7 +63,7 @@ export class DeliverProcessorService {
 		if (suspendedHosts == null) {
 			suspendedHosts = await this.instancesRepository.find({
 				where: {
-					suspendedState: Not("none"),
+					suspendedState: Not('none'),
 				},
 			});
 			this.suspendedHostsCache.set(suspendedHosts);
@@ -104,7 +104,7 @@ export class DeliverProcessorService {
 					});
 				} else if (i.notRespondingSince) {
 					// 1週間以上不通ならサスペンド
-					if (i.suspendedState == 'none' && i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
+					if (i.suspendedState === 'none' && i.notRespondingSince.getTime() <= Date.now() - 1000 * 60 * 60 * 24 * 7) {
 						this.federatedInstanceService.update(i.id, {
 							suspendedState: 'autoSuspendedForNotResponding',
 						});

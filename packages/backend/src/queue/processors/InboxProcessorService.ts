@@ -189,7 +189,7 @@ export class InboxProcessorService {
 				latestRequestReceivedAt: new Date(),
 				isNotResponding: false,
 				// もしサーバーが死んでるために配信が止まっていた場合には自動的に復活させてあげる
-				suspendedState: i.suspendedState == 'autoSuspendedForNotResponding' ? 'none' : undefined,
+				suspendedState: i.suspendedState === 'autoSuspendedForNotResponding' ? 'none' : undefined,
 			});
 
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
