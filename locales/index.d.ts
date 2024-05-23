@@ -1901,6 +1901,10 @@ export interface Locale extends ILocale {
      */
     "quoteQuestion": string;
     /**
+     * クリップボードのテキストが長いです。テキストファイルとして添付しますか？
+     */
+    "attachAsFileQuestion": string;
+    /**
      * まだチャットはありません
      */
     "noMessagesYet": string;
