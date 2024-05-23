@@ -37,7 +37,7 @@ export async function getNoteClipMenu(props: {
 	const isRenote = (
 		props.note.renote != null &&
 		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
+		props.note.fileIds?.length === 0 &&
 		props.note.poll == null
 	);
 
@@ -165,7 +165,7 @@ export function getNoteMenu(props: {
 	const isRenote = (
 		props.note.renote != null &&
 		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
+		props.note.fileIds?.length === 0 &&
 		props.note.poll == null
 	);
 
@@ -246,7 +246,7 @@ export function getNoteMenu(props: {
 	}
 
 	async function unclip(): Promise<void> {
-		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
+		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip?.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
 
@@ -255,7 +255,7 @@ export function getNoteMenu(props: {
 			title: i18n.ts.numberOfDays,
 		});
 
-		if (canceled) return;
+		if (canceled || days == null) return;
 
 		os.apiWithDialog('admin/promo/create', {
 			noteId: appearNote.id,
@@ -265,8 +265,8 @@ export function getNoteMenu(props: {
 
 	function share(): void {
 		navigator.share({
-			title: i18n.tsx.noteOf({ user: appearNote.user.name }),
-			text: appearNote.text,
+			title: i18n.tsx.noteOf({ user: appearNote.user.name ?? '' }),
+			text: appearNote.text ?? '',
 			url: `${url}/notes/${appearNote.id}`,
 		});
 	}
@@ -502,7 +502,7 @@ function smallerVisibility(a: Visibility, b: Visibility): Visibility {
 	return 'public';
 }
 
-export function getRenoteMenu(props: {
+export async function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
@@ -510,7 +510,7 @@ export function getRenoteMenu(props: {
 	const isRenote = (
 		props.note.renote != null &&
 		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
+		props.note.fileIds?.length === 0 &&
 		props.note.poll == null
 	);
 
@@ -519,6 +519,10 @@ export function getRenoteMenu(props: {
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
 	const normalExternalChannelRenoteItems: MenuItem[] = [];
+
+	const favoriteChannels = (await favoritedChannelsCache.fetch()).filter((channel) => {
+		return appearNote.channel == null || channel.id !== appearNote.channel.id;
+	});
 
 	if (appearNote.channel) {
 		channelRenoteItems.push(...[{
@@ -598,38 +602,40 @@ export function getRenoteMenu(props: {
 			},
 		}]);
 
-		normalExternalChannelRenoteItems.push({
-			type: 'parent',
-			icon: 'ti ti-repeat',
-			text: appearNote.channel ? i18n.ts.renoteToOtherChannel : i18n.ts.renoteToChannel,
-			children: async () => {
-				const channels = await favoritedChannelsCache.fetch();
-				return channels.filter((channel) => {
-					if (!appearNote.channelId) return true;
-					return channel.id !== appearNote.channelId;
-				}).map((channel) => ({
-					text: channel.name,
-					action: () => {
-						const el = props.renoteButton.value;
-						if (el) {
-							const rect = el.getBoundingClientRect();
-							const x = rect.left + (el.offsetWidth / 2);
-							const y = rect.top + (el.offsetHeight / 2);
-							os.popup(MkRippleEffect, { x, y }, {}, 'end');
-						}
+		if (favoriteChannels.length > 0) {
+			normalExternalChannelRenoteItems.push({
+				type: 'parent',
+				icon: 'ti ti-repeat',
+				text: appearNote.channel ? i18n.ts.renoteToOtherChannel : i18n.ts.renoteToChannel,
+				children: async () => {
+					const channels = await favoritedChannelsCache.fetch();
+					return channels.filter((channel) => {
+						if (!appearNote.channelId) return true;
+						return channel.id !== appearNote.channelId;
+					}).map((channel) => ({
+						text: channel.name,
+						action: () => {
+							const el = props.renoteButton.value;
+							if (el) {
+								const rect = el.getBoundingClientRect();
+								const x = rect.left + (el.offsetWidth / 2);
+								const y = rect.top + (el.offsetHeight / 2);
+								os.popup(MkRippleEffect, { x, y }, {}, 'end');
+							}
 
-						if (!props.mock) {
-							misskeyApi('notes/create', {
-								renoteId: appearNote.id,
-								channelId: channel.id,
-							}).then(() => {
-								os.toast(i18n.tsx.renotedToX({ name: channel.name }));
-							});
-						}
-					},
-				}));
-			},
-		});
+							if (!props.mock) {
+								misskeyApi('notes/create', {
+									renoteId: appearNote.id,
+									channelId: channel.id,
+								}).then(() => {
+									os.toast(i18n.tsx.renotedToX({ name: channel.name }));
+								});
+							}
+						},
+					}));
+				},
+			});
+		}
 	}
 
 	const renoteItems = [

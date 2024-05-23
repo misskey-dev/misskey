@@ -376,11 +376,11 @@ if (appearNote.value.reactionAcceptance === 'likeOnly') {
 	});
 }
 
-function renote(viaKeyboard = false) {
+async function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton });
+	const { menu } = await getRenoteMenu({ note: note.value, renoteButton });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
