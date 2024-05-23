@@ -30,19 +30,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="remote">{{ i18n.ts.remote }}</option>
 						</MkSelect>
 					</div>
-					<!-- TODO
-			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" :spellcheck="false">
-					<span>{{ i18n.ts.username }}</span>
-				</MkInput>
-				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params().origin === 'local'">
-					<span>{{ i18n.ts.host }}</span>
-				</MkInput>
-			</div>
-			-->
 
-					<MkPagination v-slot="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
-						<XAbuseReport v-for="report in items" :key="report.id" :report="report" @resolved="resolved"/>
+					<MkPagination v-slot="{ items }" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
+						<XAbuseReport v-for="report in (items as AbuseUserReport[])" :key="report.id" :report="report" @resolved="resolved"/>
 					</MkPagination>
 				</div>
 			</div>
@@ -60,14 +50,15 @@ import MkPagination from '@/components/MkPagination.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkPagination from '@/components/MkPagination.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import XAbuseReport, { type AbuseUserReport } from '@/components/MkAbuseReport.vue';
 
 const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
-const state = ref('unresolved');
-const reporterOrigin = ref('combined');
-const targetUserOrigin = ref('combined');
-const searchUsername = ref('');
-const searchHost = ref('');
+const state = ref<'all' | 'unresolved' | 'resolved'>('unresolved');
+const reporterOrigin = ref<'combined' | 'local' | 'remote'>('combined');
+const targetUserOrigin = ref<'combined' | 'local' | 'remote'>('combined');
 
 const pagination = {
 	endpoint: 'admin/abuse-user-reports' as const,
@@ -79,9 +70,11 @@ const pagination = {
 	})),
 };
 
-function resolved(reportId) {
-	reports.value.removeItem(reportId);
-}
+const resolved = (reportId: string) => {
+	if (state.value === 'unresolved') {
+		reports.value?.removeItem(reportId);
+	}
+};
 
 const headerActions = computed(() => []);
 

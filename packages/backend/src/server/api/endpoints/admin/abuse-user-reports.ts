@@ -74,6 +74,10 @@ export const meta = {
 					nullable: true, optional: true,
 					ref: 'UserDetailedNotMe',
 				},
+				forwarded: {
+					type: 'boolean',
+					nullable: false, optional: false,
+				},
 			},
 		},
 	},
