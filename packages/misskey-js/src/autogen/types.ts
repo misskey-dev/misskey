@@ -567,7 +567,7 @@ export type paths = {
      * admin/show-users
      * @description No description provided.
      *
-     * **Credential required**: *Yes* / **Permission**: *read:admin:show-users*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:show-user*
      */
     post: operations['admin___show-users'];
   };
@@ -4475,6 +4475,8 @@ export type components = {
       followersCount: number;
       isNotResponding: boolean;
       isSuspended: boolean;
+      /** @enum {string} */
+      suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
       isBlocked: boolean;
       /** @example misskey */
       softwareName: string | null;
@@ -8645,7 +8647,7 @@ export type operations = {
    * admin/show-users
    * @description No description provided.
    *
-   * **Credential required**: *Yes* / **Permission**: *read:admin:show-users*
+   * **Credential required**: *Yes* / **Permission**: *read:admin:show-user*
    */
   'admin___show-users': {
     requestBody: {
