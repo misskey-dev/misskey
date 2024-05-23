@@ -2036,7 +2036,6 @@ _permissions:
   "read:admin:server-info": "View server info"
   "read:admin:show-moderation-log": "View moderation log"
   "read:admin:show-user": "View private user info"
-  "read:admin:show-users": "View private user info"
   "write:admin:suspend-user": "Suspend user"
   "write:admin:unset-user-avatar": "Remove user avatar"
   "write:admin:unset-user-banner": "Remove user banner"
