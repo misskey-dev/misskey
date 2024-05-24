@@ -196,7 +196,7 @@ export class ReactionService {
 			.where('id = :id', { id: note.id })
 			.execute();
 
-		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		// セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
 		if (
 			note.userId !== user.id &&
 			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
