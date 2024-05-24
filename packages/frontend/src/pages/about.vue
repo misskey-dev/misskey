@@ -247,7 +247,7 @@ definePageMetadata(() => ({
 	background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 }
 
-> .iconCredit {
+.iconCredit {
 	margin: 0 auto;
 	width: max-content;
 	position: relative;
