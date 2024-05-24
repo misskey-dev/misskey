@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets } from 'typeorm';
+import { Brackets, EntityNotFoundError } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
@@ -174,6 +174,24 @@ export class AnnouncementService {
 					announcement: announcement,
 				});
 			}
+		}
+	}
+
+	@bindThis
+	public async getAnnouncement(announcementId: MiAnnouncement['id'], me: MiUser | null): Promise<Packed<'Announcement'>> {
+		const announcement = await this.announcementsRepository.findOneByOrFail({ id: announcementId });
+		if (me) {
+			if (announcement.userId && announcement.userId !== me.id) {
+				throw new EntityNotFoundError(this.announcementsRepository.metadata.target, { id: announcementId });
+			}
+
+			const read = await this.announcementReadsRepository.findOneBy({
+				announcementId: announcement.id,
+				userId: me.id,
+			});
+			return this.announcementEntityService.pack({ ...announcement, isRead: read !== null }, me);
+		} else {
+			return this.announcementEntityService.pack(announcement, null);
 		}
 	}
 
