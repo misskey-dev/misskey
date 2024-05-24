@@ -95,6 +95,7 @@ import * as ep___admin_sso_create from './endpoints/admin/sso/create.js';
 import * as ep___admin_sso_delete from './endpoints/admin/sso/delete.js';
 import * as ep___admin_sso_list from './endpoints/admin/sso/list.js';
 import * as ep___admin_sso_update from './endpoints/admin/sso/update.js';
+import * as ep___announcement from './endpoints/announcement.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -482,6 +483,7 @@ const eps = [
 	['admin/sso/delete', ep___admin_sso_delete],
 	['admin/sso/list', ep___admin_sso_list],
 	['admin/sso/update', ep___admin_sso_update],
+	['announcement', ep___announcement],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],

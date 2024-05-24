@@ -394,6 +394,12 @@ type AnnouncementCreated = {
 };
 
 // @public (undocumented)
+type AnnouncementRequest = operations['announcement']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AnnouncementResponse = operations['announcement']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AnnouncementsRequest = operations['announcements']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1308,6 +1314,8 @@ declare namespace entities {
         AdminSsoListRequest,
         AdminSsoListResponse,
         AdminSsoUpdateRequest,
+        AnnouncementRequest,
+        AnnouncementResponse,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AntennasCreateRequest,

@@ -119,6 +119,8 @@ import type {
 	AdminSsoListRequest,
 	AdminSsoListResponse,
 	AdminSsoUpdateRequest,
+	AnnouncementRequest,
+	AnnouncementResponse,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AntennasCreateRequest,
@@ -670,6 +672,7 @@ export type Endpoints = {
 	'admin/sso/delete': { req: AdminSsoDeleteRequest; res: EmptyResponse };
 	'admin/sso/list': { req: AdminSsoListRequest; res: AdminSsoListResponse };
 	'admin/sso/update': { req: AdminSsoUpdateRequest; res: EmptyResponse };
+	'announcement': { req: AnnouncementRequest; res: AnnouncementResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };

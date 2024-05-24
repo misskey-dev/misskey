@@ -26,9 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.content">
 							<Mfm :text="announcement.text"/>
 							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-							<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
-								<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
-							</div>
+							<MkA :to="`/announcements/${announcement.id}`">
+								<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
+									{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
+								</div>
+								<div v-if="announcement.updatedAt" style="opacity: 0.7; font-size: 85%;">
+									{{ i18n.ts.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
+								</div>
+							</MkA>
 						</div>
 						<div v-if="$i && !announcement.silence && !announcement.isRead" :class="$style.footer">
 							<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
