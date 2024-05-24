@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkWindow v-if="page === 1" ref="uiWindow" :initialWidth="400" :initialHeight="500" :canResize="true" @closed="emit('closed')">
+<MkWindow v-if="page === 1" ref="uiWindow" :initialWidth="500" :initialHeight="500" :canResize="true" @closed="emit('closed')">
 	<template #header>
 		<i class="ti ti-exclamation-circle" style="margin-right: 0.5em;"></i>
 		<I18n :src="i18n.ts.reportAbuseOf" tag="span">
@@ -15,33 +15,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m" :class="$style.root">
-			<div>
-				<MkSelect v-model="category" :required="true">
-					<template #label>{{ i18n.ts.abuseReportCategory }}</template>
-					<option value="" selected disabled>{{ i18n.ts.selectCategory }}</option>
-					<option value="nsfw">{{ i18n.ts._abuseReportCategory.nsfw }}</option>
-					<option value="spam">{{ i18n.ts._abuseReportCategory.spam }}</option>
-					<option value="explicit">{{ i18n.ts._abuseReportCategory.explicit }}</option>
-					<option value="phishing">{{ i18n.ts._abuseReportCategory.phishing }}</option>
-					<option value="personalInfoLeak">{{ i18n.ts._abuseReportCategory.personalInfoLeak }}</option>
-					<option value="selfHarm">{{ i18n.ts._abuseReportCategory.selfHarm }}</option>
-					<option value="criticalBreach">{{ i18n.ts._abuseReportCategory.criticalBreach }}</option>
-					<option value="otherBreach">{{ i18n.ts._abuseReportCategory.otherBreach }}</option>
-					<option value="violationRights">{{ i18n.ts._abuseReportCategory.violationRights }}</option>
-					<option value="violationRightsOther">{{ i18n.ts._abuseReportCategory.violationRightsOther }}</option>
-					<option value="notLike">{{ i18n.ts._abuseReportCategory.notLike }}</option>
-					<option value="other">{{ i18n.ts._abuseReportCategory.other }}</option>
-				</MkSelect>
-			</div>
-			<div class="">
-				<MkTextarea v-model="comment">
-					<template #label>{{ i18n.ts.details }}</template>
-					<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
-				</MkTextarea>
-			</div>
-			<div class="">
-				<MkButton primary full :disabled="comment.length === 0 || category.length === 0" @click="send">{{ i18n.ts.send }}</MkButton>
-			</div>
+			<MkSelect v-model="category" :required="true">
+				<template #label>{{ i18n.ts.abuseReportCategory }}</template>
+				<template v-if="category" #caption><Mfm :text="i18n.ts._abuseReportCategory[`${category}_description`]"/></template>
+				<option value="" selected disabled>{{ i18n.ts.selectCategory }}</option>
+				<option value="nsfw">{{ i18n.ts._abuseReportCategory.nsfw }}</option>
+				<option value="spam">{{ i18n.ts._abuseReportCategory.spam }}</option>
+				<option value="explicit">{{ i18n.ts._abuseReportCategory.explicit }}</option>
+				<option value="phishing">{{ i18n.ts._abuseReportCategory.phishing }}</option>
+				<option value="personalInfoLeak">{{ i18n.ts._abuseReportCategory.personalInfoLeak }}</option>
+				<option value="selfHarm">{{ i18n.ts._abuseReportCategory.selfHarm }}</option>
+				<option value="criticalBreach">{{ i18n.ts._abuseReportCategory.criticalBreach }}</option>
+				<option value="otherBreach">{{ i18n.ts._abuseReportCategory.otherBreach }}</option>
+				<option value="violationRights">{{ i18n.ts._abuseReportCategory.violationRights }}</option>
+				<option value="violationRightsOther">{{ i18n.ts._abuseReportCategory.violationRightsOther }}</option>
+				<option value="notLike">{{ i18n.ts._abuseReportCategory.notLike }}</option>
+				<option value="other">{{ i18n.ts._abuseReportCategory.other }}</option>
+			</MkSelect>
+			<MkTextarea v-model="comment">
+				<template #label>{{ i18n.ts.details }}</template>
+				<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
+			</MkTextarea>
+			<MkButton primary full :disabled="comment.length === 0 || category.length === 0" @click="send">{{ i18n.ts.send }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkWindow>
@@ -68,9 +63,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -114,15 +109,6 @@ function refreshUserInfo() {
 }
 
 function send() {
-	if (category.value === 'violationRightsOther') {
-		os.alert({
-			type: 'info',
-			text: i18n.ts._abuseReportMsgs.rightsAbuseCantAccept,
-		});
-		uiWindow.value?.close();
-		emit('closed');
-		return;
-	}
 	if (category.value === 'notLike') {
 		uiWindow.value?.close();
 		page.value = 2;

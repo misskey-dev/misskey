@@ -5137,61 +5137,104 @@ export interface Locale extends ILocale {
             "section3": string;
         };
     };
-    "_abuseReportMsgs": {
-        /**
-         * 申し訳ございません。権利侵害の通報は権利者ご本人からのみ受け付けております。
-         */
-        "rightsAbuseCantAccept": string;
-    };
     "_abuseReportCategory": {
         /**
-         * センシティブなコンテンツを含む投稿
+         * NSFWガイドラインに反するセンシティブなコンテンツ
          */
         "nsfw": string;
+        /**
+         * NSFW(閲覧注意・センシティブ)フラグのないメディア投稿、CW(内容を隠す)で隠されていないテキスト投稿、実写の性器が写り込んでいるメディア等
+         */
+        "nsfw_description": string;
         /**
          * スパム
          */
         "spam": string;
         /**
-         * 暴力もしくは攻撃的な投稿
+         * 不審なウェブサイト(一般的でない通販サイトやアダルトサイト等)の宣伝・誘導、短時間でリノート(再投稿)や投稿を繰り返し行いタイムラインを埋める行為等
+         */
+        "spam_description": string;
+        /**
+         * 暴力もしくは攻撃的な安全にかかわる行為
          */
         "explicit": string;
+        /**
+         * 攻撃的・脅迫・暴力など、悪意のある過激な投稿、他ユーザーの利用を妨げる行為等
+         */
+        "explicit_description": string;
         /**
          * フィッシングもしくは詐欺行為
          */
         "phishing": string;
         /**
+         * 偽のウェブサイトやメッセージで個人情報を盗む試み、または金銭詐取の試み
+         */
+        "phishing_description": string;
+        /**
          * 本人もしくは他人の個人情報の漏えい
          */
         "personalInfoLeak": string;
+        /**
+         * 住所、電話番号、メールアドレスなどの個人情報の無断公開
+         */
+        "personalInfoLeak_description": string;
         /**
          * 自殺もしくは自害など生命に関わる問題
          */
         "selfHarm": string;
         /**
+         * 自傷行為、自殺を示唆する投稿、またはその他の生命に関わる危険行為
+         */
+        "selfHarm_description": string;
+        /**
          * 重大な規約違反
          */
         "criticalBreach": string;
+        /**
+         * 重大な影響を及ぼす規約違反行為
+         */
+        "criticalBreach_description": string;
         /**
          * その他の規約違反
          */
         "otherBreach": string;
         /**
-         * 権利侵害もしくはなりすまし（本人）
+         * 明確に分類されないその他の規約違反行為
+         */
+        "otherBreach_description": string;
+        /**
+         * 権利侵害やなりすまし（侵害を受けた権利者本人によるご申告）
          */
         "violationRights": string;
         /**
-         * 権利侵害（他人）
+         * 権利者本人の著作権、商標権、またはその他の権利を侵害する投稿及びなりすまし行為
+         */
+        "violationRights_description": string;
+        /**
+         * 権利侵害やなりすまし（第三者による通報）
          */
         "violationRightsOther": string;
+        /**
+         * 他人の著作権、商標権、またはその他の権利を侵害する投稿及びなりすまし行為
+         * 第三者による通報の場合、法律で定められた非親告罪の範囲外のケースには対応できないことがあります
+         */
+        "violationRightsOther_description": string;
         /**
          * この人が気に入らない
          */
         "notLike": string;
         /**
+         * 個人的な理由で不快と感じるユーザーや投稿
+         */
+        "notLike_description": string;
+        /**
          * その他
          */
         "other": string;
+        /**
+         * 上記のいずれにも該当しないその他の問題
+         */
+        "other_description": string;
     };
     "_announcement": {
         /**

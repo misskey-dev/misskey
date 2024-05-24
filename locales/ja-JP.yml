@@ -1283,22 +1283,31 @@ _bubbleGame:
     section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
     section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
 
-_abuseReportMsgs:
-  rightsAbuseCantAccept: "申し訳ございません。権利侵害の通報は権利者ご本人からのみ受け付けております。"
-
 _abuseReportCategory:
-  nsfw: "センシティブなコンテンツを含む投稿"
+  nsfw: "NSFWガイドラインに反するセンシティブなコンテンツ"
+  nsfw_description: "NSFW(閲覧注意・センシティブ)フラグのないメディア投稿、CW(内容を隠す)で隠されていないテキスト投稿、実写の性器が写り込んでいるメディア等"
   spam: "スパム"
-  explicit: "暴力もしくは攻撃的な投稿"
+  spam_description: "不審なウェブサイト(一般的でない通販サイトやアダルトサイト等)の宣伝・誘導、短時間でリノート(再投稿)や投稿を繰り返し行いタイムラインを埋める行為等"
+  explicit: "暴力もしくは攻撃的な安全にかかわる行為"
+  explicit_description: "攻撃的・脅迫・暴力など、悪意のある過激な投稿、他ユーザーの利用を妨げる行為等"
   phishing: "フィッシングもしくは詐欺行為"
+  phishing_description: "偽のウェブサイトやメッセージで個人情報を盗む試み、または金銭詐取の試み"
   personalInfoLeak: "本人もしくは他人の個人情報の漏えい"
+  personalInfoLeak_description: "住所、電話番号、メールアドレスなどの個人情報の無断公開"
   selfHarm: "自殺もしくは自害など生命に関わる問題"
+  selfHarm_description: "自傷行為、自殺を示唆する投稿、またはその他の生命に関わる危険行為"
   criticalBreach: "重大な規約違反"
+  criticalBreach_description: "重大な影響を及ぼす規約違反行為"
   otherBreach: "その他の規約違反"
-  violationRights: "権利侵害もしくはなりすまし（本人）"
-  violationRightsOther: "権利侵害（他人）"
+  otherBreach_description: "明確に分類されないその他の規約違反行為"
+  violationRights: "権利侵害やなりすまし（侵害を受けた権利者本人によるご申告）"
+  violationRights_description: "権利者本人の著作権、商標権、またはその他の権利を侵害する投稿及びなりすまし行為"
+  violationRightsOther: "権利侵害やなりすまし（第三者による通報）"
+  violationRightsOther_description: "他人の著作権、商標権、またはその他の権利を侵害する投稿及びなりすまし行為\n第三者による通報の場合、法律で定められた非親告罪の範囲外のケースには対応できないことがあります"
   notLike: "この人が気に入らない"
+  notLike_description: "個人的な理由で不快と感じるユーザーや投稿"
   other: "その他"
+  other_description: "上記のいずれにも該当しないその他の問題"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
