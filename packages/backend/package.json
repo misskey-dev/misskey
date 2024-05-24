@@ -18,7 +18,7 @@
 		"build:tsc": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
 		"watch": "node ./scripts/watch.mjs",
 		"restart": "pnpm build && pnpm start",
-		"dev": "node ./scripts/dev.mjs",
+		"dev": "nodemon -w src -e ts,js,mjs,cjs,json --exec \"cross-env NODE_ENV=development pnpm run restart\"",
 		"typecheck": "tsc --noEmit && tsc -p test --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.ts\"",
 		"lint": "pnpm typecheck && pnpm eslint",
