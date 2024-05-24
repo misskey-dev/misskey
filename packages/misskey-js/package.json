@@ -1,63 +1,63 @@
 {
-  "type": "module",
-  "name": "misskey-js",
-  "version": "2024.5.0-beta.1",
-  "description": "Misskey SDK for JavaScript",
-  "main": "./built/index.js",
-  "types": "./built/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./built/index.js",
-      "types": "./built/index.d.ts"
-    },
-    "./*": {
-      "import": "./built/*",
-      "types": "./built/*"
-    }
-  },
-  "scripts": {
-    "build": "node ./build.js",
-    "watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
-    "tsd": "tsd",
-    "api": "pnpm api-extractor run --local --verbose",
-    "api-prod": "pnpm api-extractor run --verbose",
-    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "typecheck": "tsc --noEmit",
-    "lint": "pnpm typecheck && pnpm eslint",
-    "jest": "jest --coverage --detectOpenHandles",
-    "test": "pnpm jest && pnpm tsd",
-    "update-autogen-code": "pnpm --filter misskey-js-type-generator generate && ncp generator/built/autogen src/autogen"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/misskey-dev/misskey.js.git"
-  },
-  "devDependencies": {
-    "@microsoft/api-extractor": "7.43.1",
-    "@misskey-dev/eslint-plugin": "1.0.0",
-    "@swc/jest": "0.2.36",
-    "@types/jest": "29.5.12",
-    "@types/node": "20.12.7",
-    "@typescript-eslint/eslint-plugin": "7.7.1",
-    "@typescript-eslint/parser": "7.7.1",
-    "eslint": "8.57.0",
-    "jest": "29.7.0",
-    "jest-fetch-mock": "3.0.3",
-    "jest-websocket-mock": "2.5.0",
-    "mock-socket": "9.3.1",
-    "ncp": "2.0.0",
-    "nodemon": "3.1.0",
-    "execa": "8.0.1",
-    "tsd": "0.30.7",
-    "typescript": "5.4.5",
-    "esbuild": "0.19.11",
-    "glob": "10.3.12"
-  },
-  "files": [
-    "built"
-  ],
-  "dependencies": {
-    "eventemitter3": "5.0.1",
-    "reconnecting-websocket": "4.4.0"
-  }
+	"type": "module",
+	"name": "misskey-js",
+	"version": "2024.5.0-beta.2",
+	"description": "Misskey SDK for JavaScript",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./built/index.js",
+			"types": "./built/index.d.ts"
+		},
+		"./*": {
+			"import": "./built/*",
+			"types": "./built/*"
+		}
+	},
+	"scripts": {
+		"build": "node ./build.js",
+		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"tsd": "tsd",
+		"api": "pnpm api-extractor run --local --verbose",
+		"api-prod": "pnpm api-extractor run --verbose",
+		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"jest": "jest --coverage --detectOpenHandles",
+		"test": "pnpm jest && pnpm tsd",
+		"update-autogen-code": "pnpm --filter misskey-js-type-generator generate && ncp generator/built/autogen src/autogen"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/misskey-dev/misskey.js.git"
+	},
+	"devDependencies": {
+		"@microsoft/api-extractor": "7.43.1",
+		"@misskey-dev/eslint-plugin": "1.0.0",
+		"@swc/jest": "0.2.36",
+		"@types/jest": "29.5.12",
+		"@types/node": "20.12.7",
+		"@typescript-eslint/eslint-plugin": "7.7.1",
+		"@typescript-eslint/parser": "7.7.1",
+		"eslint": "8.57.0",
+		"jest": "29.7.0",
+		"jest-fetch-mock": "3.0.3",
+		"jest-websocket-mock": "2.5.0",
+		"mock-socket": "9.3.1",
+		"ncp": "2.0.0",
+		"nodemon": "3.1.0",
+		"execa": "8.0.1",
+		"tsd": "0.30.7",
+		"typescript": "5.4.5",
+		"esbuild": "0.19.11",
+		"glob": "10.3.12"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"eventemitter3": "5.0.1",
+		"reconnecting-websocket": "4.4.0"
+	}
 }

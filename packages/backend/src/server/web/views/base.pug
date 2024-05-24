@@ -50,6 +50,9 @@ html
 			block title
 				= title || 'Misskey'
 
+		if noindex
+			meta(name='robots' content='noindex')
+
 		block desc
 			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 
