@@ -74,10 +74,10 @@ describe('Streaming', () => {
 			await api('following/create', { userId: chitose.id }, kyoko);
 
 			// Follow: erin <=> ayano each other.
-			// erin => ayano: withReplies: false
-			await api('following/create', { userId: ayano.id, withReplies: false }, erin);
-			// ayano => erin: withReplies: true
-			await api('following/create', { userId: erin.id, withReplies: true }, ayano);
+			// erin => ayano: withReplies: true
+			await api('following/create', { userId: ayano.id, withReplies: true }, erin);
+			// ayano => erin: withReplies: false
+			await api('following/create', { userId: erin.id, withReplies: false }, ayano);
 
 			// Mute: chitose => kanako
 			await api('mute/create', { userId: kanako.id }, chitose);
@@ -307,22 +307,22 @@ describe('Streaming', () => {
 			});
 
 			test('withReplies: true のとき自分のfollowers投稿に対するリプライが流れる', async () => {
-				const ayanoNote = await post(ayano, { text: 'hi', visibility: 'followers' });
+				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
 				const fired = await waitFire(
-					ayano, 'homeTimeline',	// ayano:home
-					() => api('notes/create', { text: 'hello', replyId: ayanoNote.id }, erin),	// erin reply to ayano's followers post
-					msg => msg.type === 'note' && msg.body.userId === erin.id,	// wait erin
+					erin, 'homeTimeline',	// erin:home
+					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
+					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
 				);
 
 				assert.strictEqual(fired, true);
 			});
 
 			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
-				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
+				const ayanoNote = await post(ayano, { text: 'hi', visibility: 'followers' });
 				const fired = await waitFire(
-					erin, 'homeTimeline',	// erin:home
-					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
-					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'hello', replyId: ayanoNote.id }, erin),	// erin reply to ayano's followers post
+					msg => msg.type === 'note' && msg.body.userId === erin.id,	// wait erin
 				);
 
 				assert.strictEqual(fired, true);
@@ -507,6 +507,17 @@ describe('Streaming', () => {
 			});
 
 			test('withReplies: true のとき自分のfollowers投稿に対するリプライが流れる', async () => {
+				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
+				const fired = await waitFire(
+					erin, 'homeTimeline',	// erin:home
+					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
+					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
 				const ayanoNote = await post(ayano, { text: 'hi', visibility: 'followers' });
 				const fired = await waitFire(
 					ayano, 'homeTimeline',	// ayano:home
@@ -517,15 +528,14 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
-			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
-				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
+			test('withReplies: true のフォローしていない人のfollowersノートに対するリプライが流れない', async () => {
 				const fired = await waitFire(
 					erin, 'homeTimeline',	// erin:home
-					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
+					() => api('notes/create', { text: 'hello', replyId: chitose.id }, ayano),	// ayano reply to chitose's post
 					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
 				);
 
-				assert.strictEqual(fired, true);
+				assert.strictEqual(fired, false);
 			});
 		});
 
