@@ -1242,9 +1242,12 @@ inquiry: "联系我们"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
+  resume: "继续投递"
   _type:
     none: "投递中"
     manuallySuspended: "手动停止中"
+    goneSuspended: "因服务器被删除而停止"
+    autoSuspendedForNotResponding: "因服务器无应答而停止"
 _bubbleGame:
   howToPlay: "游戏说明"
   hold: "抓住"
@@ -1703,8 +1706,10 @@ _role:
     roleAssignedTo: "已分配给手动角色"
     isLocal: "是本地用户"
     isRemote: "是远程用户"
+    isCat: "猫猫用户"
     isBot: "机器人用户"
     isSuspended: "停用的用户"
+    isLocked: "锁推用户"
     isExplorable: "启用“使账号可见”的用户"
     createdLessThan: "账户创建时间少于"
     createdMoreThan: "账户创建时间超过"
