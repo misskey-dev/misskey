@@ -474,6 +474,7 @@ retype: "再入力"
 noteOf: "{user}のノート"
 quoteAttached: "引用付き"
 quoteQuestion: "引用として添付しますか？"
+attachAsFileQuestion: "クリップボードのテキストが長いです。テキストファイルとして添付しますか？"
 noMessagesYet: "まだチャットはありません"
 newMessageExists: "新しいメッセージがあります"
 onlyOneFileCanBeAttached: "メッセージに添付できるファイルはひとつです"
@@ -1241,6 +1242,16 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
+
+_delivery:
+  status: "配信状態"
+  stop: "配信停止"
+  resume: "配信再開"
+  _type:
+    none: "配信中"
+    manuallySuspended: "手動停止中"
+    goneSuspended: "サーバー削除のため停止中"
+    autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2077,7 +2088,6 @@ _permissions:
   "read:admin:server-info": "サーバーの情報を見る"
   "read:admin:show-moderation-log": "モデレーションログを見る"
   "read:admin:show-user": "ユーザーのプライベートな情報を見る"
-  "read:admin:show-users": "ユーザーのプライベートな情報を見る"
   "write:admin:suspend-user": "ユーザーを凍結する"
   "write:admin:unset-user-avatar": "ユーザーのアバターを削除する"
   "write:admin:unset-user-banner": "ユーザーのバーナーを削除する"

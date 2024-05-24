@@ -188,6 +188,8 @@ export class InboxProcessorService {
 			this.federatedInstanceService.update(i.id, {
 				latestRequestReceivedAt: new Date(),
 				isNotResponding: false,
+				// もしサーバーが死んでるために配信が止まっていた場合には自動的に復活させてあげる
+				suspensionState: i.suspensionState === 'autoSuspendedForNotResponding' ? 'none' : undefined,
 			});
 
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
