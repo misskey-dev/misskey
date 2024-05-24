@@ -190,6 +190,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</FormSection>
+
+					<FormSection>
+						<template #label>{{ i18n.ts._featuredSetting.title }}</template>
+
+						<div class="_gaps_m">
+							<MkRange :min="0" :max="1" :step="0.05" :model-value="featuredUpdateRatio">
+								<template #label>{{ i18n.ts._featuredSetting.updateRatio }}</template>
+								<template #caption>{{ i18n.ts._featuredSetting.updateRatioDescription }}</template>
+							</MkRange>
+						</div>
+					</FormSection>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -222,6 +233,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkRange from '@/components/MkRange.vue';
 
 const name = ref<string | null>(null);
 const shortName = ref<string | null>(null);
@@ -249,6 +261,7 @@ const urlPreviewMaximumContentLength = ref<number>(1024 * 1024 * 10);
 const urlPreviewRequireContentLength = ref<boolean>(true);
 const urlPreviewUserAgent = ref<string | null>(null);
 const urlPreviewSummaryProxyUrl = ref<string | null>(null);
+const featuredUpdateRatio = ref<number>(0.3);
 
 async function init(): Promise<void> {
 	const meta = await misskeyApi('admin/meta');
@@ -278,6 +291,7 @@ async function init(): Promise<void> {
 	urlPreviewRequireContentLength.value = meta.urlPreviewRequireContentLength;
 	urlPreviewUserAgent.value = meta.urlPreviewUserAgent;
 	urlPreviewSummaryProxyUrl.value = meta.urlPreviewSummaryProxyUrl;
+	featuredUpdateRatio.value = meta.featuredUpdateRatio;
 }
 
 async function save() {
@@ -308,6 +322,7 @@ async function save() {
 		urlPreviewRequireContentLength: urlPreviewRequireContentLength.value,
 		urlPreviewUserAgent: urlPreviewUserAgent.value,
 		urlPreviewSummaryProxyUrl: urlPreviewSummaryProxyUrl.value,
+		featuredUpdateRatio: featuredUpdateRatio.value,
 	});
 
 	fetchInstance(true);
