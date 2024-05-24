@@ -98,7 +98,7 @@ export class FeaturedService implements OnModuleInit {
 		await redisPipeline.exec();
 	}
 
-	// 30%の確率でランキングを更新する
+	// 更新比率に応じてランキングを更新する
 	private async shouldUpdateLocalOrGlobalRanking(): Promise<boolean> {
 		const meta = await this.metaService.fetch();
 		return Math.random() < meta.featuredUpdateRatio;
