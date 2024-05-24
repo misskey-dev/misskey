@@ -315,7 +315,7 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, true);
-			})
+			});
 
 			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
 				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
@@ -326,7 +326,7 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, true);
-			})
+			});
 		});	// Home
 
 		describe('Local Timeline', () => {
@@ -515,7 +515,7 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, true);
-			})
+			});
 
 			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
 				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
@@ -526,7 +526,7 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, true);
-			})
+			});
 		});
 
 		describe('Global Timeline', () => {
