@@ -88,13 +88,9 @@ export class ReportAbuseProcessorService {
 					forwarded: resolver.forward && job.data.targetUserHost !== null && job.data.reporterHost === null,
 				});
 
-				const activeWebhooks = await this.webhookService.getActiveWebhooks();
-				for (const webhook of activeWebhooks) {
-					const webhookUser = await this.usersRepository.findOneByOrFail({
-						id: webhook.userId,
-					});
-					const isAdmin = await this.roleService.isAdministrator(webhookUser);
-					if (webhook.on.includes('reportAutoResolved') && isAdmin) {
+				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.on.includes('reportAutoResolved'));
+				for (const webhook of webhooks) {
+					if (await this.roleService.isAdministrator({ id: webhook.userId, isRoot: false })) {
 						this.queueService.webhookDeliver(webhook, 'reportAutoResolved', {
 							resolver: resolver,
 							report: job.data,

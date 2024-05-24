@@ -69,13 +69,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				forwarded: ps.forward && report.targetUserHost != null,
 			}).then(() => this.abuseUserReportsRepository.findOneBy({ id: ps.reportId }));
 
-			const activeWebhooks = await this.webhookService.getActiveWebhooks();
-			for (const webhook of activeWebhooks) {
-				const webhookUser = await this.usersRepository.findOneByOrFail({
-					id: webhook.userId,
-				});
-				const isAdmin = await this.roleService.isAdministrator(webhookUser);
-				if (webhook.on.includes('reportResolved') && isAdmin) {
+			const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.on.includes('reportResolved'));
+			for (const webhook of webhooks) {
+				if (await this.roleService.isAdministrator({ id: webhook.userId, isRoot: false })) {
 					this.queueService.webhookDeliver(webhook, 'reportResolved', {
 						updatedReport,
 					});
