@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <component
 	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
+	:behavior="props.navigationBehavior"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
@@ -31,11 +32,13 @@ import * as os from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 import { isEnabledUrlPreview } from '@/instance.js';
+import { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
+	navigationBehavior?: MkABehavior;
 }>(), {
 	showUrlPreview: true,
 });

@@ -9,8 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </a>
 </template>
 
+<script lang="ts">
+export type MkABehavior = 'window' | 'browser' | null;
+</script>
+
 <script lang="ts" setup>
-import { computed, shallowRef } from 'vue';
+import { computed, inject, shallowRef } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
@@ -20,11 +24,13 @@ import { useRouter } from '@/router/supplier.js';
 const props = withDefaults(defineProps<{
 	to: string;
 	activeClass?: null | string;
-	behavior?: null | 'window' | 'browser';
+	behavior?: MkABehavior;
 }>(), {
 	activeClass: null,
 	behavior: null,
 });
+
+const behavior = props.behavior ?? inject<MkABehavior>('linkNavigationBehavior', null);
 
 const el = shallowRef<HTMLElement>();
 
@@ -80,15 +86,13 @@ function openWindow() {
 }
 
 function nav(ev: MouseEvent) {
-	if (props.behavior === 'browser') {
+	if (behavior === 'browser') {
 		location.href = props.to;
 		return;
 	}
 
-	if (props.behavior) {
-		if (props.behavior === 'window') {
-			return openWindow();
-		}
+	if (behavior === 'window') {
+		return openWindow();
 	}
 
 	if (ev.shiftKey) {

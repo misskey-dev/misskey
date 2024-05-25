@@ -122,9 +122,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 
 				// リクエストされた通りに並べ替え
+				// 順番は保持されるけど数は減ってる可能性がある
 				const _users: MiUser[] = [];
 				for (const id of ps.userIds) {
-					_users.push(users.find(x => x.id === id)!);
+					const user = users.find(x => x.id === id);
+					if (user != null) _users.push(user);
 				}
 
 				return await this.userEntityService.packMany(_users, me, {

@@ -678,7 +678,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:admin:show-users*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:show-user*
      */
     request<E extends 'admin/show-users', P extends Endpoints[E]['req']>(
       endpoint: E,

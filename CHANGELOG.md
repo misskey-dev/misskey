@@ -2,6 +2,8 @@
 
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+- 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
+- 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 - `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
 
 ### General
@@ -9,7 +11,18 @@
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
 - Enhance: クリップのノート数を表示するように
+- Enhance: コンディショナルロールの条件として以下を新たに追加 (#13667)
+  - 猫ユーザーか
+  - botユーザーか
+  - サスペンド済みユーザーか
+  - 鍵アカウントユーザーか
+  - 「アカウントを見つけやすくする」が有効なユーザーか
+- Enhance: Goneを出さずに終了したサーバーへの配信停止を自動的に行うように
+  - もしそのようなサーバーからから配信が届いた場合には自動的に配信を再開します
+- Enhance: 配信停止の理由を表示するように
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
+- Fix: 正規化されていない状態のhashtagが連合されてきたhtmlに含まれているとhashtagが正しくhashtagに復元されない問題を修正
+- Fix: みつけるのアンケート欄にてチャンネルのアンケートが含まれてしまう問題を修正
 
 ### Client
 - Feat: アップロードするファイルの名前をランダム文字列にできるように
@@ -28,9 +41,17 @@
 - Enhance: ノートについているリアクションの「もっと！」から、リアクションの一覧を表示できるように
 - Enhance: リプライにて引用がある場合テキストが空でもノートできるように
   - 引用したいノートのURLをコピーしリプライ投稿画面にペーストして添付することで達成できます
+- Enhance: フォローするかどうかの確認ダイアログを出せるように
+- Enhance: Playを手動でリロードできるように
+- Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
+- Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
+- Enhance: AiScriptを0.18.0にバージョンアップ
+- Enhance: 通常のノートでも、お気に入りに登録したチャンネルにリノートできるように
+- Enhance: 長いテキストをペーストした際にテキストファイルとして添付するかどうかを選択できるように
 - Enhance: 「もうすぐ誕生日のユーザー」ウィジェットで、誕生日が至近のユーザーも表示できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey)
 	- 「今日誕生日のユーザー」は「もうすぐ誕生日のユーザー」に名称変更されました- Fix: 一部のページ内リンクが正しく動作しない問題を修正
+- Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
 - Fix: WebGL2をサポートしないブラウザで「季節に応じた画面の演出」が有効になっているとき、Misskeyが起動できなくなる問題を修正  
@@ -44,10 +65,19 @@
 - Fix: ノート詳細ページにおいてCW付き引用リノートのCWボタンのラベルに「引用」が含まれていない問題を修正
 - Fix: ダイアログの入力で字数制限に違反していてもEnterキーが押せてしまう問題を修正
 - Fix: ダイレクト投稿の宛先が保存されない問題を修正
+- Fix: Playのページを離れたときに、Playが正常に初期化されない問題を修正
+- Fix: ページのOGP URLが間違っているのを修正
+- Fix: リバーシの対局を正しく共有できないことがある問題を修正
+- Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
+- Fix: 連合なしの状態の読み書きができない問題を修正
+- Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
+- Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
+  - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
+- Fix: リモートから配送されたアクティビティにJSON-LD compactionをかける
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
@@ -56,7 +86,16 @@
 - Fix: リプライのみの引用リノートと、CWのみの引用リノートが純粋なリノートとして誤って扱われてしまう問題を修正
 - Fix: 登録にメール認証が必須になっている場合、登録されているメールアドレスを削除できないように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/606)
+- Fix: Add Cache-Control to Bull Board
 - Fix: nginx経由で/files/にRangeリクエストされた場合に正しく応答できないのを修正
+- Fix: 一部のタイムラインのストリーミングでインスタンスミュートが効かない問題を修正
+- Fix: グローバルタイムラインで返信が表示されないことがある問題を修正
+- Fix: リノートをミュートしたユーザの投稿のリノートがミュートされる問題を修正
+- Fix: AP Link等は添付ファイル扱いしないようになど (#13754)
+- Fix: FTTが有効かつsinceIdのみを指定した場合に帰って来るレスポンスが逆順である問題を修正
+- Fix: `/i/notifications`に `includeTypes`か`excludeTypes`を指定しているとき、通知が存在するのに空配列を返すことがある問題を修正
+- Fix: 複数idを指定する`users/show`が関係ないユーザを返すことがある問題を修正
+- Fix: `/tags` と `/user-tags` が検索エンジンにインデックスされないように
 
 ## 2024.3.1
 
