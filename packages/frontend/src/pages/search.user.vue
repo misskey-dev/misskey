@@ -48,29 +48,27 @@ async function search() {
 
 	if (query == null || query === '') return;
 
-	if (searchOrigin.value === 'combined' && !query.includes(' ')) {
-		if (query.startsWith('https://')) {
-			const promise = misskeyApi('ap/show', {
-				uri: query,
-			});
+	if (query.startsWith('https://') && !query.includes(' ')) {
+		const promise = misskeyApi('ap/show', {
+			uri: query,
+		});
 
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
 
-			const res = await promise;
+		const res = await promise;
 
-			if (res.type === 'User') {
-				router.push(`/@${res.object.username}@${res.object.host}`);
-			} else if (res.type === 'Note') {
-				router.push(`/notes/${res.object.id}`);
-			}
-
-			return;
+		if (res.type === 'User') {
+			router.push(`/@${res.object.username}@${res.object.host}`);
+		} else if (res.type === 'Note') {
+			router.push(`/notes/${res.object.id}`);
 		}
 
-		if (query.startsWith('#') && query.length > 1) {
-			router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
-			return;
-		}
+		return;
+	}
+
+	if (query.startsWith('#') && query.length > 1 && !query.includes(' ')) {
+		router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+		return;
 	}
 
 	userPagination.value = {
