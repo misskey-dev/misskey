@@ -46,9 +46,9 @@ First, this extension is designed for servers who joined the [Virtual Kemomimi R
 so you have to join the [Virtual Kemomimi Relay] to use this extension.
 
 After that, you have two ways to use the Vmimi Relay Timeline:
-- Use the my releases of the misskey docker image if you're using official docker image. (Not released yet)
+- Use releases of the misskey docker image if you're using official docker image.
   The image is designed to be a drop-in replacement of the official image.
-  You can use `ghcr.io/anatawa12/vrtl-misskey:latest` as the image name.
+  The image name is `ghcr.io/anatawa12/vrtl-misskey:latest`.
 - Merge the extension branch to your fork and build the image by yourself.
   You can merge the [`vmimi-relay-timeline`][vmimi-relay-timeline-branch] branch to your fork.
   If you ask me, I'll create a pull request to your fork. Feel free to ask me.
@@ -56,9 +56,9 @@ After that, you have two ways to use the Vmimi Relay Timeline:
 はじめに、この拡張は[ぶいみみリレー][Virtual Kemomimi Relay]に参加しているサーバー向けに設計されているため、この拡張を使用するには[ぶいみみリレー][Virtual Kemomimi Relay]に参加する必要があります。
 
 その後、ぶいみみリレータイムラインを使用する方法はふたつあります:
-- 公式のdockerイメージを使用している場合は、私のリリースを使用してください。(まだリリースされていません)
-  のイメージは公式イメージのドロップイン置換として設計されています。
-  メージ名として `ghcr.io/anatawa12/vrtl-misskey:latest` を使用できます。
+- 公式のdockerイメージを使用している場合は、VRTLのdockerイメージを使用してください。
+  のイメージは公式イメージの代わりとして使用できます。
+  イメージ名は `ghcr.io/anatawa12/vrtl-misskey:latest` です。
 - このブランチをあなたのフォークにマージして、自分でイメージをビルドしてください。
   `vmimi-relay-timeline`][vmimi-relay-timeline-branch] ブランチをあなたのフォークにマージする。
   必要であれば、あなたのフォークにプルリクエストを作成します。お気軽にお尋ねください。
