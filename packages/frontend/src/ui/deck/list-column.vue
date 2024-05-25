@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes" :sound="sound"/>
+	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes" @note="onNote"/>
 </XColumn>
 </template>
 
@@ -22,6 +22,9 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { MenuItem } from '@/types/menu.js';
+import { SoundStore } from '@/store.js';
+import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	column: Column;
@@ -30,7 +33,7 @@ const props = defineProps<{
 
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const withRenotes = ref(props.column.withRenotes ?? true);
-const sound = ref(props.column.sound ?? false);
+const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
 if (props.column.listId == null) {
 	setList();
@@ -42,8 +45,8 @@ watch(withRenotes, v => {
 	});
 });
 
-watch(sound, v => {
-	updateColumn(props.column.id, { sound: v });
+watch(soundSetting, v => {
+	updateColumn(props.column.id, { soundSetting: v });
 });
 
 async function setList() {
@@ -65,6 +68,10 @@ function editList() {
 	os.pageWindow('my/lists/' + props.column.listId);
 }
 
+function onNote() {
+	sound.playMisskeySfxFile(soundSetting.value);
+}
+
 const menu: MenuItem[] = [
 	{
 		icon: 'ti ti-pencil',
@@ -82,10 +89,9 @@ const menu: MenuItem[] = [
 		ref: withRenotes,
 	},
 	{
-		type: 'switch',
 		icon: 'ti ti-bell',
-		ref: sound,
-		text: i18n.ts._deck.notifyNotes,
+		text: i18n.ts._deck.newNoteNotificationSettings,
+		action: () => soundSettingsButton(soundSetting),
 	},
 ];
 </script>

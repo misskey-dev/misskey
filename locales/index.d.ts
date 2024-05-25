@@ -1281,6 +1281,10 @@ export interface Locale extends ILocale {
      */
     "selectFolders": string;
     /**
+     * ファイルを選択してください
+     */
+    "pleaseSelectFile": string;
+    /**
      * ファイル名を変更
      */
     "renameFile": string;
@@ -9112,9 +9116,9 @@ export interface Locale extends ILocale {
          */
         "addColumn": string;
         /**
-         * 新しいノートを通知する
+         * 新着ノート通知の設定
          */
-        "notifyNotes": string;
+        "newNoteNotificationSettings": string;
         /**
          * カラムの設定
          */

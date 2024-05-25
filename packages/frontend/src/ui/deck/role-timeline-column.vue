@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" :sound="sound"/>
+	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" @note="onNote"/>
 </XColumn>
 </template>
 
@@ -22,6 +22,9 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { MenuItem } from '@/types/menu.js';
+import { SoundStore } from '@/store.js';
+import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	column: Column;
@@ -29,7 +32,7 @@ const props = defineProps<{
 }>();
 
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
-const sound = ref(props.column.sound ?? false);
+const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
 onMounted(() => {
 	if (props.column.roleId == null) {
@@ -37,8 +40,8 @@ onMounted(() => {
 	}
 });
 
-watch(sound, v => {
-	updateColumn(props.column.id, { sound: v });
+watch(soundSetting, v => {
+	updateColumn(props.column.id, { soundSetting: v });
 });
 
 async function setRole() {
@@ -56,15 +59,18 @@ async function setRole() {
 	});
 }
 
+function onNote() {
+	sound.playMisskeySfxFile(soundSetting.value);
+}
+
 const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.role,
 	action: setRole,
 }, {
-	type: 'switch',
 	icon: 'ti ti-bell',
-	ref: sound,
-	text: i18n.ts._deck.notifyNotes,
+	text: i18n.ts._deck.newNoteNotificationSettings,
+	action: () => soundSettingsButton(soundSetting),
 }];
 
 /*
