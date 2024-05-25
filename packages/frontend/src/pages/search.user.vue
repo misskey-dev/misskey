@@ -49,26 +49,44 @@ async function search() {
 	if (query == null || query === '') return;
 
 	if (query.startsWith('https://') && !query.includes(' ')) {
-		const promise = misskeyApi('ap/show', {
-			uri: query,
-		});
+		//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
+		await new Promise(x => setTimeout(x, 2));
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+		const confirm = await os.confirm({
+			type: 'info',
+			text: i18n.ts.lookupConfirm,
+		})
+		if (!confirm.canceled) {
+			const promise = misskeyApi('ap/show', {
+				uri: query,
+			});
 
-		const res = await promise;
+			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
 
-		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
+			const res = await promise;
+
+			if (res.type === 'User') {
+				router.push(`/@${res.object.username}@${res.object.host}`);
+			} else if (res.type === 'Note') {
+				router.push(`/notes/${res.object.id}`);
+			}
+
+			return;
 		}
-
-		return;
 	}
 
 	if (query.startsWith('#') && query.length > 1 && !query.includes(' ')) {
-		router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
-		return;
+		//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
+		await new Promise(x => setTimeout(x, 2));
+
+		const confirm = await os.confirm({
+			type: 'info',
+			text: i18n.ts.openTagPageConfirm,
+		})
+		if (!confirm.canceled) {
+			router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+			return;
+		}
 	}
 
 	userPagination.value = {
