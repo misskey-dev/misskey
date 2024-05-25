@@ -1,3 +1,100 @@
+# Anatawa12's fork of Misskey
+
+This is anatawa12's fork of Misskey.
+
+This fork is used for several purposes:
+
+- The repository for [vmimi-relay timeline] extension development. I'm the maintainer of the [vmimi-relay timeline].
+- The repository for writing pull-requests to the vmimi relay users. I'm usually sending pull requests to the vmimi relay users after each updates.
+- The repository for writing pull-requests to the upstream repository. I'm one of the contributors of the upstream repository.
+- The repository for writing pull-requests to the [misskey.niri.la]. I'm one of the maintainers of the [misskey.niri.la].
+
+This branch is the branch for releasing the Vmimi Relay Timeline extension.
+
+## Vmimi Relay Timeline
+
+The Vmimi Relay Timeline is additional timelines for Misskey servers who belong to the [Virtual Kemomimi Relay].
+This extension adds two timelines: Vmimi Relay Timeline (VRTL) and Vmimi Social Timeline (VSTL).
+
+ぶいみみリレータイムラインは[ぶいみみリレー][Virtual Kemomimi Relay]に参加しているサーバー向けのmisskeyの拡張タイムラインです。
+この拡張はふたつのタイムラインを追加します: ぶいみみリレータイムライン (VRTL) とぶいみみソーシャルタイムライン (VSTL) です。
+
+### Vmimi Relay Timeline (VRTL)
+
+The Vmimi Relay Timeline (VRTL) is the timeline that shows the posts from the Virtual Kemomimi Relay users.
+This timeline is designed to be similar to the Local Timeline,
+but it shows the posts from the Virtual Kemomimi Relay users.
+
+ぶいみみリレータイムライン (VRTL) はぶいみみリレーに参加しているユーザーの投稿を表示するタイムラインです。
+このタイムラインはローカルタイムラインに似ていますが、ぶいみみリレーに参加しているユーザーの投稿を表示します。
+
+### Vmimi Social Timeline (VSTL)
+
+The Vmimi Social Timeline (VSTL) is the timeline that shows the posts from
+the Virtual Kemomimi Relay users and the users you are following.
+In other words, this timeline is the combination of the VRTL and the Home Timeline.
+This timeline is designed to be similar to the Social Timeline,
+but it shows the posts from the Virtual Kemomimi Relay users instead of the Local Timeline.
+
+ぶいみみソーシャルタイムライン (VSTL) はぶいみみリレーに参加しているユーザーとフォローしているユーザーの投稿を表示するタイムラインです。
+つまり、このタイムラインはVRTLとホームタイムラインの組み合わせです。
+このタイムラインはソーシャルタイムラインに似ていますが、ローカルタイムラインの代わりにぶいみみリレーに参加しているユーザーの投稿を表示します。
+
+### How to use the Vmimi Relay Timeline
+
+First, this extension is designed for servers who joined the [Virtual Kemomimi Relay]
+so you have to join the [Virtual Kemomimi Relay] to use this extension.
+
+After that, you have two ways to use the Vmimi Relay Timeline:
+- Use the my releases of the misskey docker image if you're using official docker image. (Not released yet)
+  The image is designed to be a drop-in replacement of the official image.
+  You can use `ghcr.io/anatawa12/vrtl-misskey:latest` as the image name.
+- Merge the extension branch to your fork and build the image by yourself.
+  You can merge the [`vmimi-relay-timeline`][vmimi-relay-timeline-branch] branch to your fork.
+  If you ask me, I'll create a pull request to your fork. Feel free to ask me.
+
+はじめに、この拡張は[ぶいみみリレー][Virtual Kemomimi Relay]に参加しているサーバー向けに設計されているため、この拡張を使用するには[ぶいみみリレー][Virtual Kemomimi Relay]に参加する必要があります。
+
+その後、ぶいみみリレータイムラインを使用する方法はふたつあります:
+- 公式のdockerイメージを使用している場合は、私のリリースを使用してください。(まだリリースされていません)
+  のイメージは公式イメージのドロップイン置換として設計されています。
+  メージ名として `ghcr.io/anatawa12/vrtl-misskey:latest` を使用できます。
+- このブランチをあなたのフォークにマージして、自分でイメージをビルドしてください。
+  `vmimi-relay-timeline`][vmimi-relay-timeline-branch] ブランチをあなたのフォークにマージする。
+  必要であれば、あなたのフォークにプルリクエストを作成します。お気軽にお尋ねください。
+
+### Branches related to Vmimi Relay Timeline
+
+- [`vmimi-relay-timeline`][vmimi-relay-timeline-branch]:
+  The branch for the Vmimi Relay Timeline extension development.
+  All changes to the Vmimi Relay Timeline extension will be merged to this branch.
+  This branch should be based on the latest official release of Misskey.
+  This branch does not include any changes other than the Vmimi Relay Timeline extension itself.
+- [`vmimi-relay-timeline-releases`][vmimi-relay-timeline-releases-branch]:
+  The branch for releasing the Vmimi Relay Timeline extension.
+  This branch includes the changes for `package.json` and changes to the repository link.
+- `vmimi-relay-timeline-nirila`, `vmimi-relay-timeline-buiso` and other branches:
+  Those branches are the branches for sending pull requests to each fork-based server.
+  Those branches are not permanent; they will be deleted after each pull request is merged.
+
+### How the Vmimi Relay Timeline works
+
+The Vmimi Relay Timeline is implemented as a server-whitelisted timeline.
+
+The Vmimi Relay provides the API endpoint to get the list of joined servers.
+The Vmimi Relay Timeline extension fetches the list of joined servers from the Vmimi Relay
+and filters the received / created notes by the list.
+For implementation simplicity, the Vmimi Relay Timeline includes all public notes of the local server including
+non-federated notes, but this behavior may change in the future.
+
+[Virtual Kemomimi Relay]: https://relay.virtualkemomimi.net/
+[misskey.niri.la]: https://github.com/niri-la/misskey.niri.la/
+[vmimi-relay timeline]: #vmimi-relay-timeline
+[vmimi-relay-timeline-branch]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline
+[vmimi-relay-timeline-releases-branch]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline-releases
+
+---
+
 <div align="center">
 <a href="https://misskey-hub.net">
 	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="400"/>
