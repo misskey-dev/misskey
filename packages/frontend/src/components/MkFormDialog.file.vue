@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkButton inline rounded primary @click="selectButton($event)">{{ i18n.ts.selectFile }}</MkButton>
