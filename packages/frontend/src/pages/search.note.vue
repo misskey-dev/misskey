@@ -74,27 +74,29 @@ async function search() {
 
 	if (query == null || query === '') return;
 
-	if (query.startsWith('https://')) {
-		const promise = misskeyApi('ap/show', {
-			uri: query,
-		});
+	if (!user.value && !isLocalOnly.value) {
+		if (query.startsWith('https://')) {
+			const promise = misskeyApi('ap/show', {
+				uri: query,
+			});
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
 
-		const res = await promise;
+			const res = await promise;
 
-		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
+			if (res.type === 'User') {
+				router.push(`/@${res.object.username}@${res.object.host}`);
+			} else if (res.type === 'Note') {
+				router.push(`/notes/${res.object.id}`);
+			}
+
+			return;
 		}
 
-		return;
-	}
-
-	if (query.startsWith('#') && query.length > 1) {
-		router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
-		return;
+		if (query.startsWith('#') && query.length > 1) {
+			router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
+			return;
+		}
 	}
 
 	notePagination.value = {

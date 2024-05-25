@@ -48,27 +48,30 @@ async function search() {
 
 	if (query == null || query === '') return;
 
-	if (query.startsWith('https://')) {
-		const promise = misskeyApi('ap/show', {
-			uri: query,
-		});
+	if (searchOrigin.value === 'combined') {
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+		if (query.startsWith('https://')) {
+			const promise = misskeyApi('ap/show', {
+				uri: query,
+			});
 
-		const res = await promise;
+			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
 
-		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
+			const res = await promise;
+
+			if (res.type === 'User') {
+				router.push(`/@${res.object.username}@${res.object.host}`);
+			} else if (res.type === 'Note') {
+				router.push(`/notes/${res.object.id}`);
+			}
+
+			return;
 		}
 
-		return;
-	}
-
-	if (query.startsWith('#') && query.length > 1) {
-		router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
-		return;
+		if (query.startsWith('#') && query.length > 1) {
+			router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+			return;
+		}
 	}
 
 	userPagination.value = {
