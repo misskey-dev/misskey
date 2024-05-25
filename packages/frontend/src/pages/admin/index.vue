@@ -306,7 +306,7 @@ function adminLookup(ev: MouseEvent) {
 		text: i18n.ts.lookup,
 		icon: 'ti ti-world-search',
 		action: () => {
-			lookup()
+			lookup();
 		},
 	}], ev.currentTarget ?? ev.target);
 }
