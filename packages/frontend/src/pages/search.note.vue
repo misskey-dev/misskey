@@ -74,7 +74,7 @@ async function search() {
 
 	if (query == null || query === '') return;
 
-	if (!user.value && !isLocalOnly.value) {
+	if (!user.value && !isLocalOnly.value && !query.includes(' ')) {
 		if (query.startsWith('https://')) {
 			const promise = misskeyApi('ap/show', {
 				uri: query,

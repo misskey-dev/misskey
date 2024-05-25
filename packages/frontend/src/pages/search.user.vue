@@ -48,8 +48,7 @@ async function search() {
 
 	if (query == null || query === '') return;
 
-	if (searchOrigin.value === 'combined') {
-
+	if (searchOrigin.value === 'combined' && !query.includes(' ')) {
 		if (query.startsWith('https://')) {
 			const promise = misskeyApi('ap/show', {
 				uri: query,
