@@ -35,7 +35,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
+import { lookupUser, lookupUserByEmail, lookupFile } from '@/scripts/admin-lookup.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -305,7 +305,7 @@ function lookup(ev: MouseEvent) {
 		text: i18n.ts.file,
 		icon: 'ti ti-cloud',
 		action: () => {
-			alert('TODO');
+			lookupFile();
 		},
 	}, {
 		text: i18n.ts.instance,
