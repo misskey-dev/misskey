@@ -2458,9 +2458,15 @@ _imageCompressionMode:
   title: "画像の圧縮形式"
   description: "オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。"
   imageResize: "画像を縮小する"
-  imageResizeDescription: "縮小する場合は2560x2560以下になるように縮小されます。"
+  imageResizeDescription: "縮小する場合は設定値以下になるように縮小されます。"
   imageCompressionLossy: "画像を常に非可逆圧縮する"
   imageCompressionLossyDescription: "非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。"
+  imageResizeSize: "画像縮小時の解像度"
+  _imageResizeSize:
+    max2048: "2048x2048"
+    max2560: "2560x2560"
+    max4096: "4096x4096"
+    max8192: "8192x8192"
 
 _moderationLogTypes:
   createRole: "ロールを作成"
