@@ -81,7 +81,7 @@ async function search() {
 		const confirm = await os.confirm({
 			type: 'info',
 			text: i18n.ts.lookupConfirm,
-		})
+		});
 		if (!confirm.canceled) {
 			const promise = misskeyApi('ap/show', {
 				uri: query,
@@ -108,7 +108,7 @@ async function search() {
 		const confirm = await os.confirm({
 			type: 'info',
 			text: i18n.ts.openTagPageConfirm,
-		})
+		});
 		if (!confirm.canceled) {
 			router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
 			return;
