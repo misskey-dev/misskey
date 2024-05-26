@@ -68,7 +68,7 @@ const path = computed(() => props.announcementId);
 
 function fetch() {
 	announcement.value = null;
-	misskeyApi('announcement', {
+	misskeyApi('announcements/show', {
 		announcementId: props.announcementId,
 	}).then(async _announcement => {
 		announcement.value = _announcement;

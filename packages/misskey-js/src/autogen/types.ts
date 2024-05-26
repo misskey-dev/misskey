@@ -697,15 +697,6 @@ export type paths = {
      */
     post: operations['admin___roles___users'];
   };
-  '/announcement': {
-    /**
-     * announcement
-     * @description No description provided.
-     *
-     * **Credential required**: *No*
-     */
-    post: operations['announcement'];
-  };
   '/announcements': {
     /**
      * announcements
@@ -714,6 +705,15 @@ export type paths = {
      * **Credential required**: *No*
      */
     post: operations['announcements'];
+  };
+  '/announcements/show': {
+    /**
+     * announcements/show
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['announcements___show'];
   };
   '/antennas/create': {
     /**
@@ -9612,17 +9612,23 @@ export type operations = {
     };
   };
   /**
-   * announcement
+   * announcements
    * @description No description provided.
    *
    * **Credential required**: *No*
    */
-  announcement: {
+  announcements: {
     requestBody: {
       content: {
         'application/json': {
+          /** @default 10 */
+          limit?: number;
           /** Format: misskey:id */
-          announcementId: string;
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** @default true */
+          isActive?: boolean;
         };
       };
     };
@@ -9630,7 +9636,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['Announcement'];
+          'application/json': components['schemas']['Announcement'][];
         };
       };
       /** @description Client error */
@@ -9666,23 +9672,17 @@ export type operations = {
     };
   };
   /**
-   * announcements
+   * announcements/show
    * @description No description provided.
    *
    * **Credential required**: *No*
    */
-  announcements: {
+  announcements___show: {
     requestBody: {
       content: {
         'application/json': {
-          /** @default 10 */
-          limit?: number;
           /** Format: misskey:id */
-          sinceId?: string;
-          /** Format: misskey:id */
-          untilId?: string;
-          /** @default true */
-          isActive?: boolean;
+          announcementId: string;
         };
       };
     };
@@ -9690,7 +9690,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['Announcement'][];
+          'application/json': components['schemas']['Announcement'];
         };
       };
       /** @description Client error */

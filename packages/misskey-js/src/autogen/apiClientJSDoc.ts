@@ -845,7 +845,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *No*
      */
-    request<E extends 'announcement', P extends Endpoints[E]['req']>(
+    request<E extends 'announcements', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -856,7 +856,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *No*
      */
-    request<E extends 'announcements', P extends Endpoints[E]['req']>(
+    request<E extends 'announcements/show', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

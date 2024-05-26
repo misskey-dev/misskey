@@ -331,16 +331,16 @@ type AnnouncementCreated = {
 };
 
 // @public (undocumented)
-type AnnouncementRequest = operations['announcement']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type AnnouncementResponse = operations['announcement']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type AnnouncementsRequest = operations['announcements']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AnnouncementsResponse = operations['announcements']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AnnouncementsShowRequest = operations['announcements___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AnnouncementsShowResponse = operations['announcements___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Antenna = components['schemas']['Antenna'];
@@ -1228,10 +1228,10 @@ declare namespace entities {
         AdminRolesUpdateDefaultPoliciesRequest,
         AdminRolesUsersRequest,
         AdminRolesUsersResponse,
-        AnnouncementRequest,
-        AnnouncementResponse,
         AnnouncementsRequest,
         AnnouncementsResponse,
+        AnnouncementsShowRequest,
+        AnnouncementsShowResponse,
         AntennasCreateRequest,
         AntennasCreateResponse,
         AntennasDeleteRequest,
