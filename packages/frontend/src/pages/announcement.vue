@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<Transition
 			:enterActiveClass="defaultStore.state.animation ? $style.fadeEnterActive : ''"
@@ -24,14 +24,12 @@
 				<div :class="$style.content">
 					<Mfm :text="announcement.text"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-					<MkA :to="`/announcements/${announcement.id}`">
-						<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
-							{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
-						</div>
-						<div v-if="announcement.updatedAt" style="opacity: 0.7; font-size: 85%;">
-							{{ i18n.ts.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
-						</div>
-					</MkA>
+					<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
+						{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
+					</div>
+					<div v-if="announcement.updatedAt" style="opacity: 0.7; font-size: 85%;">
+						{{ i18n.ts.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
+					</div>
 				</div>
 				<div v-if="$i && !announcement.silence && !announcement.isRead" :class="$style.footer">
 					<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
@@ -74,21 +72,21 @@ function fetch() {
 	});
 }
 
-async function read(announcement): Promise<void> {
-	if (announcement.needConfirmationToRead) {
+async function read(target: Misskey.entities.Announcement): Promise<void> {
+	if (target.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.tsx._announcement.readConfirmText({ title: announcement.title }),
+			text: i18n.tsx._announcement.readConfirmText({ title: target.title }),
 		});
 		if (confirm.canceled) return;
 	}
 
-	announcement.isRead = true;
-	await misskeyApi('i/read-announcement', { announcementId: announcement.id });
+	target.isRead = true;
+	await misskeyApi('i/read-announcement', { announcementId: target.id });
 	if ($i) {
 		updateAccount({
-			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== announcement.id),
+			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== target.id),
 		});
 	}
 }
