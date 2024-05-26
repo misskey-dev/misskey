@@ -9266,7 +9266,7 @@ export interface Locale extends ILocale {
          */
         "imageResize": string;
         /**
-         * 縮小する場合は設定値以下になるように縮小されます。
+         * 縮小する場合は設定値以下になるように縮小されます。縮小処理でファイルサイズが大きくなってしまう場合は元の画像が利用されます。
          */
         "imageResizeDescription": string;
         /**
@@ -9277,11 +9277,11 @@ export interface Locale extends ILocale {
          * 非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。
          */
         "imageCompressionLossyDescription": string;
-        /**
-         * 画像縮小時の解像度
-         */
-        "imageResizeSize": string;
         "_imageResizeSize": {
+            /**
+             * 画像縮小時の解像度
+             */
+            "title": string;
             /**
              * 2048x2048
              */

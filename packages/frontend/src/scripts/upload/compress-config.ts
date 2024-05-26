@@ -61,11 +61,12 @@ export async function getCompressionConfig(file: File): Promise<BrowserImageResi
 
 	const resize = defaultStore.state.imageCompressionMode.startsWith('resize');
 	const compressKind = defaultStore.state.imageCompressionMode.endsWith('CompressLossy') ? 'lossy' : inputCompressKind;
+	const imageResizeSize = parseInt(defaultStore.state.imageResizeSize, 10);
 
 	const webpSupported = isWebpSupported();
 
 	const imgFormatConfig = (webpSupported ? compressTypeMap : compressTypeMapFallback)[compressKind];
-	const sizeConfig = resize ? { maxWidth: parseInt(defaultStore.state.imageResizeSize, 10), maxHeight: parseInt(defaultStore.state.imageResizeSize, 10) } : noResizeSizeConfig;
+	const sizeConfig = resize ? { maxWidth: imageResizeSize, maxHeight: imageResizeSize } : noResizeSizeConfig;
 
 	if (!resize) {
 		// we don't resize images so we may omit recompression

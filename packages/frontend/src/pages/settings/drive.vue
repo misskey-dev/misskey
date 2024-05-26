@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts._imageCompressionMode.imageResizeDescription }}</template>
 					</MkSwitch>
 					<MkSelect v-model="imageResizeSize">
-						<template #label>{{ i18n.ts._imageCompressionMode.imageResizeSize }}</template>
+						<template #label>{{ i18n.ts._imageCompressionMode._imageResizeSize.title }}</template>
 						<option value="2048">{{ i18n.ts._imageCompressionMode._imageResizeSize.max2048 }}</option>
 						<option value="2560">{{ i18n.ts._imageCompressionMode._imageResizeSize.max2560 }}</option>
 						<option value="4096">{{ i18n.ts._imageCompressionMode._imageResizeSize.max4096 }}</option>
