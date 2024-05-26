@@ -4972,6 +4972,38 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    "_delivery": {
+        /**
+         * 配信状態
+         */
+        "status": string;
+        /**
+         * 配信停止
+         */
+        "stop": string;
+        /**
+         * 配信再開
+         */
+        "resume": string;
+        "_type": {
+            /**
+             * 配信中
+             */
+            "none": string;
+            /**
+             * 手動停止中
+             */
+            "manuallySuspended": string;
+            /**
+             * サーバー削除のため停止中
+             */
+            "goneSuspended": string;
+            /**
+             * サーバー応答なしのため停止中
+             */
+            "autoSuspendedForNotResponding": string;
+        };
+    };
     "_bubbleGame": {
         /**
          * 遊び方
@@ -7903,10 +7935,6 @@ export interface Locale extends ILocale {
          * ユーザーのプライベートな情報を見る
          */
         "read:admin:show-user": string;
-        /**
-         * ユーザーのプライベートな情報を見る
-         */
-        "read:admin:show-users": string;
         /**
          * ユーザーを凍結する
          */
