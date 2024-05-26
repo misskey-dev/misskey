@@ -10,6 +10,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import type {
 	AnnouncementReadsRepository,
 	AnnouncementsRepository,
@@ -32,6 +33,7 @@ const moduleMocker = new ModuleMocker(global);
 describe('AnnouncementService', () => {
 	let app: TestingModule;
 	let announcementService: AnnouncementService;
+	let announcementEntityService: AnnouncementEntityService;
 	let usersRepository: UsersRepository;
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
@@ -67,6 +69,7 @@ describe('AnnouncementService', () => {
 			],
 			providers: [
 				AnnouncementService,
+				AnnouncementEntityService,
 				CacheService,
 				IdService,
 			],
@@ -92,6 +95,7 @@ describe('AnnouncementService', () => {
 		app.enableShutdownHooks();
 
 		announcementService = app.get<AnnouncementService>(AnnouncementService);
+		announcementEntityService = app.get<AnnouncementEntityService>(AnnouncementEntityService);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
