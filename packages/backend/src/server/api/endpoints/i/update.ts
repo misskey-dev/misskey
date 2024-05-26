@@ -522,7 +522,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			window.close();
-		} catch (e) {
+		} catch (err) {
 			// なにもしない
 		}
 	}
