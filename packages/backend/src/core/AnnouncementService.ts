@@ -11,6 +11,7 @@ import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnounceme
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
@@ -29,6 +30,7 @@ export class AnnouncementService {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
+		private announcementEntityService: AnnouncementEntityService,
 	) {
 	}
 
@@ -79,7 +81,7 @@ export class AnnouncementService {
 			userId: values.userId,
 		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
 
-		const packed = (await this.packMany([announcement]))[0];
+		const packed = await this.announcementEntityService.pack(announcement);
 
 		if (values.userId) {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
@@ -210,30 +212,5 @@ export class AnnouncementService {
 		if ((await this.getUnreadAnnouncements(user)).length === 0) {
 			this.globalEventService.publishMainStream(user.id, 'readAllAnnouncements');
 		}
-	}
-
-	@bindThis
-	public async packMany(
-		announcements: MiAnnouncement[],
-		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			reads?: MiAnnouncementRead[];
-		},
-	): Promise<Packed<'Announcement'>[]> {
-		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
-		return announcements.map(announcement => ({
-			id: announcement.id,
-			createdAt: this.idService.parse(announcement.id).date.toISOString(),
-			updatedAt: announcement.updatedAt?.toISOString() ?? null,
-			text: announcement.text,
-			title: announcement.title,
-			imageUrl: announcement.imageUrl,
-			icon: announcement.icon,
-			display: announcement.display,
-			needConfirmationToRead: announcement.needConfirmationToRead,
-			silence: announcement.silence,
-			forYou: announcement.userId === me?.id,
-			isRead: reads.some(read => read.announcementId === announcement.id),
-		}));
 	}
 }
