@@ -366,6 +366,11 @@ function more(ev: MouseEvent) {
 		aspect-ratio: 1;
 	}
 
+	.instanceIconAlt {
+		display: inline-block;
+		width: 85%;
+	}
+
 	.bottom {
 		position: sticky;
 		bottom: 0;
