@@ -33,7 +33,6 @@ const moduleMocker = new ModuleMocker(global);
 describe('AnnouncementService', () => {
 	let app: TestingModule;
 	let announcementService: AnnouncementService;
-	let announcementEntityService: AnnouncementEntityService;
 	let usersRepository: UsersRepository;
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
@@ -95,7 +94,6 @@ describe('AnnouncementService', () => {
 		app.enableShutdownHooks();
 
 		announcementService = app.get<AnnouncementService>(AnnouncementService);
-		announcementEntityService = app.get<AnnouncementEntityService>(AnnouncementEntityService);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
