@@ -11,34 +11,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :key="tab" class="_gaps">
 				<MkInfo v-if="$i && $i.hasUnreadAnnouncement && tab === 'current'" warn>{{ i18n.ts.youHaveUnreadAnnouncements }}</MkInfo>
 				<MkPagination ref="paginationEl" :key="tab" v-slot="{items}" :pagination="tab === 'current' ? paginationCurrent : paginationPast" class="_gaps">
-					<MkA v-for="announcement in items" :key="announcement.id" :to="`/announcements/${announcement.id}`" :class="$style.announcementLink">
-						<section class="_panel" :class="$style.announcement">
-							<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
-							<div :class="$style.header">
-								<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
-								<span style="margin-right: 0.5em;">
-									<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-									<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
-									<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
-									<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
-								</span>
-								<span>{{ announcement.title }}</span>
-							</div>
-							<div :class="$style.content">
-								<Mfm :text="announcement.text"/>
-								<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
+					<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
+						<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
+						<div :class="$style.header">
+							<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
+							<span style="margin-right: 0.5em;">
+								<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
+								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
+								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+							</span>
+							<MkA :to="`/announcements/${announcement.id}`"><span>{{ announcement.title }}</span></MkA>
+						</div>
+						<div :class="$style.content">
+							<Mfm :text="announcement.text"/>
+							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
+							<MkA :to="`/announcements/${announcement.id}`">
 								<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
 									{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
 								</div>
 								<div v-if="announcement.updatedAt" style="opacity: 0.7; font-size: 85%;">
 									{{ i18n.ts.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
 								</div>
-							</div>
-							<div v-if="tab !== 'past' && $i && !announcement.silence && !announcement.isRead" :class="$style.footer">
-								<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
-							</div>
-						</section>
-					</MkA>
+							</MkA>
+						</div>
+						<div v-if="tab !== 'past' && $i && !announcement.silence && !announcement.isRead" :class="$style.footer">
+							<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+						</div>
+					</section>
 				</MkPagination>
 			</div>
 		</MkHorizontalSwipe>
@@ -118,11 +118,6 @@ definePageMetadata(() => ({
 </script>
 
 <style lang="scss" module>
-.announcementLink:hover,
-.announcementLink.active {
-	text-decoration: none;
-}
-
 .announcement {
 	padding: 16px;
 }
