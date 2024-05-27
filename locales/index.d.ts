@@ -1281,6 +1281,10 @@ export interface Locale extends ILocale {
      */
     "selectFolders": string;
     /**
+     * ファイルが選択されていません
+     */
+    "fileNotSelected": string;
+    /**
      * ファイル名を変更
      */
     "renameFile": string;
@@ -4113,9 +4117,13 @@ export interface Locale extends ILocale {
      */
     "thisPostMayBeAnnoyingIgnore": string;
     /**
-     * 見たことのあるリノートを省略して表示
+     * リノートのスマート省略
      */
     "collapseRenotes": string;
+    /**
+     * リアクションやリノートをしたことがあるノートをたたんで表示します。
+     */
+    "collapseRenotesDescription": string;
     /**
      * サーバー内部エラー
      */
@@ -9139,6 +9147,10 @@ export interface Locale extends ILocale {
          * カラムを追加
          */
         "addColumn": string;
+        /**
+         * 新着ノート通知の設定
+         */
+        "newNoteNotificationSettings": string;
         /**
          * カラムの設定
          */
