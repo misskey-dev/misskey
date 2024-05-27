@@ -16,6 +16,7 @@ import { $i, iAmModerator } from '@/account.js';
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
+import { MenuItem } from '@/types/menu.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -81,15 +82,6 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		});
 	}
 
-	async function toggleWithReplies() {
-		os.apiWithDialog('following/update', {
-			userId: user.id,
-			withReplies: !user.withReplies,
-		}).then(() => {
-			user.withReplies = !user.withReplies;
-		});
-	}
-
 	async function toggleNotify() {
 		os.apiWithDialog('following/update', {
 			userId: user.id,
@@ -152,7 +144,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		});
 	}
 
-	let menu = [{
+	let menu: MenuItem[] = [{
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
@@ -304,15 +296,25 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 
 		// フォローしたとしても user.isFollowing はリアルタイム更新されないので不便なため
 		//if (user.isFollowing) {
+		const withRepliesRef = ref(user.withReplies);
 		menu = menu.concat([{
-			icon: user.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
-			text: user.withReplies ? i18n.ts.hideRepliesToOthersInTimeline : i18n.ts.showRepliesToOthersInTimeline,
-			action: toggleWithReplies,
+			type: 'switch',
+			icon: 'ti ti-messages',
+			text: i18n.ts.showRepliesToOthersInTimeline,
+			ref: withRepliesRef,
 		}, {
 			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
 			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
 			action: toggleNotify,
 		}]);
+		watch(withRepliesRef, (withReplies) => {
+			misskeyApi('following/update', {
+				userId: user.id,
+				withReplies,
+			}).then(() => {
+				user.withReplies = withReplies;
+			});
+		});
 		//}
 
 		menu = menu.concat([{ type: 'divider' }, {
