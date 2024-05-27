@@ -16,7 +16,7 @@ import { url } from '@/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
-import { clipsCache } from '@/cache.js';
+import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
@@ -603,9 +603,7 @@ export function getRenoteMenu(props: {
 			icon: 'ti ti-repeat',
 			text: appearNote.channel ? i18n.ts.renoteToOtherChannel : i18n.ts.renoteToChannel,
 			children: async () => {
-				const channels = await misskeyApi('channels/my-favorites', {
-					limit: 30,
-				});
+				const channels = await favoritedChannelsCache.fetch();
 				return channels.filter((channel) => {
 					if (!appearNote.channelId) return true;
 					return channel.id !== appearNote.channelId;

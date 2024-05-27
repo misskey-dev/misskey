@@ -933,7 +933,7 @@ check: "Zweryfikuj"
 driveCapOverrideLabel: "Zmień limit pojemności dysku użytkownika"
 requireAdminForView: "Aby to zobaczyć, musisz być administratorem"
 isSystemAccount: "To jest konto stworzone i zarządzane przez system"
-typeToConfirm: "Wielki chuj "
+typeToConfirm: "Wprowadź {x}, aby potwierdzić"
 deleteAccount: "Usuń konto"
 document: "Dokumentacja"
 numberOfPageCache: "Ilość stron w cache"
@@ -1023,6 +1023,10 @@ flip: "Odwróć"
 lastNDays: "W ciągu ostatnich {n} dni"
 surrender: "Odrzuć"
 gameRetry: "Spróbuj ponownie"
+_delivery:
+  stop: "Zawieszono"
+  _type:
+    none: "Publikowanie"
 _bubbleGame:
   _score:
     score: "Wynik"
