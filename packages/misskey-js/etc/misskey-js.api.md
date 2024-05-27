@@ -337,6 +337,12 @@ type AnnouncementsRequest = operations['announcements']['requestBody']['content'
 type AnnouncementsResponse = operations['announcements']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AnnouncementsShowRequest = operations['announcements___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AnnouncementsShowResponse = operations['announcements___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type Antenna = components['schemas']['Antenna'];
 
 // @public (undocumented)
@@ -1224,6 +1230,8 @@ declare namespace entities {
         AdminRolesUsersResponse,
         AnnouncementsRequest,
         AnnouncementsResponse,
+        AnnouncementsShowRequest,
+        AnnouncementsShowResponse,
         AntennasCreateRequest,
         AntennasCreateResponse,
         AntennasDeleteRequest,
