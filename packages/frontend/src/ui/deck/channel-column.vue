@@ -26,6 +26,7 @@ import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { favoritedChannelsCache } from '@/cache.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
@@ -42,20 +43,18 @@ if (props.column.channelId == null) {
 }
 
 async function setChannel() {
-	const channels = await misskeyApi('channels/my-favorites', {
-		limit: 100,
-	});
-	const { canceled, result: channel } = await os.select({
+	const channels = await favoritedChannelsCache.fetch();
+	const { canceled, result: chosenChannel } = await os.select({
 		title: i18n.ts.selectChannel,
 		items: channels.map(x => ({
 			value: x, text: x.name,
 		})),
 		default: props.column.channelId,
 	});
-	if (canceled) return;
+	if (canceled || chosenChannel == null) return;
 	updateColumn(props.column.id, {
-		channelId: channel.id,
-		name: channel.name,
+		channelId: chosenChannel.id,
+		name: chosenChannel.name,
 	});
 }
 
