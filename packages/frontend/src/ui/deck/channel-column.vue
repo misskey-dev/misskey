@@ -13,13 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkTimeline ref="timeline" src="channel" :channel="column.channelId"/>
+		<MkTimeline ref="timeline" src="channel" :channel="column.channelId" @note="onNote"/>
 	</template>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
@@ -29,6 +29,10 @@ import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { MenuItem } from '@/types/menu.js';
+import { SoundStore } from '@/store.js';
+import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	column: Column;
@@ -37,10 +41,15 @@ const props = defineProps<{
 
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const channel = shallowRef<Misskey.entities.Channel>();
+const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
 if (props.column.channelId == null) {
 	setChannel();
 }
+
+watch(soundSetting, v => {
+	updateColumn(props.column.id, { soundSetting: v });
+});
 
 async function setChannel() {
 	const channels = await favoritedChannelsCache.fetch();
@@ -70,9 +79,17 @@ async function post() {
 	});
 }
 
-const menu = [{
+function onNote() {
+	sound.playMisskeySfxFile(soundSetting.value);
+}
+
+const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.selectChannel,
 	action: setChannel,
+}, {
+	icon: 'ti ti-bell',
+	text: i18n.ts._deck.newNoteNotificationSettings,
+	action: () => soundSettingsButton(soundSetting),
 }];
 </script>
