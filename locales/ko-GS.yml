@@ -649,6 +649,10 @@ replies: "답하기"
 renotes: "리노트"
 attach: "옇기"
 surrender: "아이예"
+_delivery:
+  stop: "고만 보내예"
+  _type:
+    none: "보내고 잇어예"
 _initialAccountSetting:
   startTutorial: "길라잡이 하기"
 _initialTutorial:

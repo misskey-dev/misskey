@@ -1099,6 +1099,10 @@ sourceCode: "Zdrojový kód"
 flip: "Otočit"
 lastNDays: "Posledních {n} dnů"
 surrender: "Zrušit"
+_delivery:
+  stop: "Suspendováno"
+  _type:
+    none: "Publikuji"
 _initialAccountSetting:
   accountCreated: "Váš účet byl úspěšně vytvořen!"
   letsStartAccountSetup: "Pro začátek si nastavte svůj profil."
