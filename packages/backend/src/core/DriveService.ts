@@ -508,6 +508,7 @@ export class DriveService {
 					// The file is federated as sensitive for this time, but was federated as non-sensitive before.
 					// Therefore, update the file to sensitive.
 					await this.driveFilesRepository.update({ id: much.id }, { isSensitive: true });
+					much.isSensitive = true;
 				}
 				return much;
 			}
