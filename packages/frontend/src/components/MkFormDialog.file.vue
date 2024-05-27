@@ -38,7 +38,7 @@ const friendlyFileName = computed<string>(() => {
 		return fileUrl.value;
 	}
 
-	return i18n.ts.pleaseSelectFile;
+	return i18n.ts.fileNotSelected;
 });
 
 if (props.fileId) {

@@ -1283,7 +1283,7 @@ export interface Locale extends ILocale {
     /**
      * ファイルが選択されていません
      */
-    "pleaseSelectFile": string;
+    "fileNotSelected": string;
     /**
      * ファイル名を変更
      */
