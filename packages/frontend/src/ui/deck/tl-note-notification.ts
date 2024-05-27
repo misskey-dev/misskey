@@ -82,7 +82,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 	});
 	if (canceled) return;
 
-	const res = await buildSoundStore(result);
+	const res = buildSoundStore(result);
 	if (res) soundSetting.value = res;
 
 	function buildSoundStore(result: any): SoundStore | null {
