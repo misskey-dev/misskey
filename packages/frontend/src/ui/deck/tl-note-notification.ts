@@ -22,10 +22,10 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		}
 	}
 
-	const { canceled, result } = await os.form('通知設定', {
+	const { canceled, result } = await os.form(i18n.ts.sound, {
 		type: {
 			type: 'enum',
-			label: '通知音',
+			label: i18n.ts.sound,
 			default: soundSetting.value.type ?? 'none',
 			enum: soundsTypes.map(f => ({
 				value: f ?? 'none', label: getSoundTypeName(f),
@@ -33,7 +33,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		},
 		soundFile: {
 			type: 'drive-file',
-			label: 'ファイル',
+			label: i18n.ts.file,
 			defaultFileId: soundSetting.value.type === '_driveFile_' ? soundSetting.value.fileId : null,
 			hidden: v => v.type !== '_driveFile_',
 			validate: async (file: Misskey.entities.DriveFile) => {
