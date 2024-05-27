@@ -63,7 +63,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		},
 		volume: {
 			type: 'range',
-			label: '音量',
+			label: i18n.ts.volume,
 			default: soundSetting.value.volume ?? 1,
 			textConverter: (v) => `${Math.floor(v * 100)}%`,
 			min: 0,
@@ -72,7 +72,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		},
 		listen: {
 			type: 'button',
-			content: '再生',
+			content: i18n.ts.listen,
 			action: (_, v) => {
 				const sound = buildSoundStore(v);
 				if (!sound) return;
