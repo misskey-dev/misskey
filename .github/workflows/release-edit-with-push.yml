@@ -37,4 +37,7 @@ jobs:
       # PRのnotesを更新
       - name: Update PR
         run: |
-          gh pr edit ${{ steps.get_pr.outputs.pr_number }} --body "${{ steps.changelog.outputs.changelog }}"
+          gh pr edit "$PR_NUMBER" --body "$CHANGELOG"
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+          PR_NUMBER: ${{ steps.get_pr.outputs.pr_number }}
