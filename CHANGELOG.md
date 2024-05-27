@@ -26,7 +26,7 @@
 ### Client
 - Feat: アップロードするファイルの名前をランダム文字列にできるように
 - Feat: 個別のお知らせにリンクで飛べるように  
-  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/639)
+  (Based on https://github.com/MisskeyIO/misskey/pull/639)
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
 - Enhance: リアクション・いいねの総数を表示するように
