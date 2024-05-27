@@ -1281,7 +1281,7 @@ export interface Locale extends ILocale {
      */
     "selectFolders": string;
     /**
-     * ファイルを選択してください
+     * ファイルが選択されていません
      */
     "pleaseSelectFile": string;
     /**
