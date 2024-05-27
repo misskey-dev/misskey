@@ -1233,6 +1233,10 @@ useNativeUIForVideoAudioPlayer: "Riprodurre audio/video usando le funzionalità 
 keepOriginalFilename: "Mantieni il nome file originale"
 keepOriginalFilenameDescription: "Disattivandola, i file verranno caricati usando nomi casuali."
 noDescription: "Manca la descrizione"
+_delivery:
+  stop: "Sospensione"
+  _type:
+    none: "Pubblicazione"
 _bubbleGame:
   howToPlay: "Come giocare"
   hold: "Tieni"
@@ -2025,7 +2029,6 @@ _permissions:
   "read:admin:server-info": "Vedere le informazioni sul server"
   "read:admin:show-moderation-log": "Vedere lo storico di moderazione"
   "read:admin:show-user": "Vedere le informazioni private degli account utente"
-  "read:admin:show-users": "Vedere le informazioni private degli account utente"
   "write:admin:suspend-user": "Sospendere i profili"
   "write:admin:unset-user-avatar": "Rimuovere la foto profilo dai profili"
   "write:admin:unset-user-banner": "Rimuovere l'immagine testata dai profili"
