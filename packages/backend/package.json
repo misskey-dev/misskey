@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": ">=20.10.0"
+		"node": "^20.10.0"
 	},
 	"scripts": {
 		"start": "node ./built/boot/entry.js",
@@ -86,6 +86,8 @@
 		"@nestjs/core": "10.3.8",
 		"@nestjs/testing": "10.3.8",
 		"@peertube/http-signature": "1.7.0",
+		"@sentry/node": "^8.5.0",
+		"@sentry/profiling-node": "^8.5.0",
 		"@simplewebauthn/server": "10.0.0",
 		"@sinonjs/fake-timers": "11.2.2",
 		"@smithy/node-http-handler": "2.5.0",

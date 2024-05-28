@@ -50,7 +50,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache, userFavoriteListsCache, userListsCache } from '@/cache.js';
+import { antennasCache, userFavoriteListsCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
@@ -193,9 +193,7 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await misskeyApi('channels/my-favorites', {
-		limit: 100,
-	});
+	const channels = await favoritedChannelsCache.fetch();
 	const items: MenuItem[] = [
 		...channels.map(channel => {
 			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
