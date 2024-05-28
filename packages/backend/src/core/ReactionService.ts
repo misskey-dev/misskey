@@ -29,6 +29,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 
 const FALLBACK = '\u2764';
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
@@ -115,6 +116,11 @@ export class ReactionService {
 		// check visibility
 		if (!await this.noteEntityService.isVisibleForMe(note, user.id)) {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
+		}
+
+		// Check if note is Renote
+		if (isRenote(note) && !isQuote(note)) {
+			throw new IdentifiableError('12c35529-3c79-4327-b1cc-e2cf63a71925', 'You cannot react to Renote.');
 		}
 
 		// NOTE: 空文字列もフォールバックさせるため ?? ではなく || にする
