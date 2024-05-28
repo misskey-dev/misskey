@@ -11,6 +11,10 @@ import { i18n } from '@/i18n.js';
 
 let lock: Promise<undefined> | undefined;
 
+function sleep(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const common = {
 	render(args) {
 		return {
@@ -43,6 +47,8 @@ const common = {
 		lock = new Promise(r => resolve = r);
 
 		try {
+			// NOTE: sleep しないと何故か落ちる
+			await sleep(100);
 			const canvas = within(canvasElement);
 			const a = canvas.getByRole<HTMLAnchorElement>('link');
 			// await expect(a.href).toMatch(/^https?:\/\/.*#test$/);
@@ -53,7 +59,7 @@ const common = {
 			const i = buttons[0];
 			await expect(i).toBeInTheDocument();
 			await userEvent.click(i);
-			// await expect(canvasElement).toHaveTextContent(i18n.ts._ad.back);
+			await expect(canvasElement).toHaveTextContent(i18n.ts._ad.back);
 			await expect(a).not.toBeInTheDocument();
 			await expect(i).not.toBeInTheDocument();
 			buttons = canvas.getAllByRole<HTMLButtonElement>('button');

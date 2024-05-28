@@ -473,6 +473,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						noteVisibility: insert.visibility,
 						userId: user.id,
 						userHost: user.host,
+						channelId: insert.channelId,
 					});
 
 					await transactionalEntityManager.insert(MiPoll, poll);
