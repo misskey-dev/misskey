@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
-		<div :class="$style.reportsRoot">
+		<div>
 			<div :class="$style.filtersRoot">
 				<MkSelect v-model="state">
 					<template #label>{{ i18n.ts.state }}</template>
