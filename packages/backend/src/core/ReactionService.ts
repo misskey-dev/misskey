@@ -117,7 +117,9 @@ export class ReactionService {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
 		}
 
-		let reaction = _reaction ?? FALLBACK;
+		// NOTE: 空文字列もフォールバックさせるため ?? ではなく || にする
+		// https://github.com/misskey-dev/misskey/issues/13804
+		let reaction = _reaction || FALLBACK;
 
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
 			reaction = '\u2764';
