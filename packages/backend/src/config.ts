@@ -57,8 +57,8 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
-	sentryForBackend?: Partial<Sentry.NodeOptions>;
-	sentryForFrontend?: Partial<Sentry.NodeOptions>;
+	sentryForBackend?: { options: Partial<Sentry.NodeOptions> };
+	sentryForFrontend?: { options: Partial<Sentry.NodeOptions> };
 
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
@@ -169,8 +169,8 @@ export type Config = {
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
-	sentryForBackend: Partial<Sentry.NodeOptions> | undefined;
-	sentryForFrontend: Partial<Sentry.NodeOptions> | undefined;
+	sentryForBackend: { options: Partial<Sentry.NodeOptions> } | undefined;
+	sentryForFrontend: { options: Partial<Sentry.NodeOptions> } | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;

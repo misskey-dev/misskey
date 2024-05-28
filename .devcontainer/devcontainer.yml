@@ -139,10 +139,12 @@ id: 'aidx'
 # See the Sentry documentation for more details on options.
 
 #sentryForBackend:
-#  dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #sentryForFrontend:
-#  dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
