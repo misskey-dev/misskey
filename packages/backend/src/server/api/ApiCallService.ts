@@ -93,6 +93,48 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 	}
 
+	#onExecError(ep: IEndpoint, data: any, err: Error): void {
+		if (err instanceof ApiError || err instanceof AuthenticationError) {
+			throw err;
+		} else {
+			const errId = randomUUID();
+			this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
+				ep: ep.name,
+				ps: data,
+				e: {
+					message: err.message,
+					code: err.name,
+					stack: err.stack,
+					id: errId,
+				},
+			});
+			console.error(err, errId);
+
+			if (this.config.sentryForBackend) {
+				Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
+					extra: {
+						ep: ep.name,
+						ps: data,
+						e: {
+							message: err.message,
+							code: err.name,
+							stack: err.stack,
+							id: errId,
+						},
+					},
+				});
+			}
+
+			throw new ApiError(null, {
+				e: {
+					message: err.message,
+					code: err.name,
+					id: errId,
+				},
+			});
+		}
+	}
+
 	@bindThis
 	public handleRequest(
 		endpoint: IEndpoint & { exec: any },
@@ -367,47 +409,11 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
-		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
-			if (err instanceof ApiError || err instanceof AuthenticationError) {
-				throw err;
-			} else {
-				const errId = randomUUID();
-				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
-					ep: ep.name,
-					ps: data,
-					e: {
-						message: err.message,
-						code: err.name,
-						stack: err.stack,
-						id: errId,
-					},
-				});
-				console.error(err, errId);
-
-				if (this.config.sentryForBackend) {
-					Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
-						extra: {
-							ep: ep.name,
-							ps: data,
-							e: {
-								message: err.message,
-								code: err.name,
-								stack: err.stack,
-								id: errId,
-							},
-						},
-					});
-				}
-
-				throw new ApiError(null, {
-					e: {
-						message: err.message,
-						code: err.name,
-						id: errId,
-					},
-				});
-			}
-		});
+		if (this.config.sentryForBackend) {
+			return await Sentry.startSpan({ name: 'API: ' + ep.name }, () => ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => this.#onExecError(ep, data, err)));
+		} else {
+			return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => this.#onExecError(ep, data, err));
+		}
 	}
 
 	@bindThis
