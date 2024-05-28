@@ -204,13 +204,22 @@ export class InboxProcessorService {
 
 		// アクティビティを処理
 		try {
-			await this.apInboxService.performActivity(authUser.user, activity);
+			const result = await this.apInboxService.performActivity(authUser.user, activity);
+			if (result && !result.startsWith('ok')) {
+				this.logger.warn(`inbox activity ignored (maybe): id=${activity.id} reason=${result}`);
+				return result;
+			}
 		} catch (e) {
 			if (e instanceof IdentifiableError) {
 				if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
 					return 'blocked notes with prohibited words';
 				}
-				if (e.id === '85ab9bd7-3a41-4530-959d-f07073900109') return 'actor has been suspended';
+				if (e.id === '85ab9bd7-3a41-4530-959d-f07073900109') {
+					return 'actor has been suspended';
+				}
+				if (e.id === 'd450b8a9-48e4-4dab-ae36-f4db763fda7c') { // invalid Note
+					return e.message;
+				}
 			}
 			throw e;
 		}
