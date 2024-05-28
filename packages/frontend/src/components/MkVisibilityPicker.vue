@@ -66,7 +66,7 @@ import type { MenuItem } from '@/types/menu.js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { favoritedChannelsCache } from '@/cache.js';
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 const channelsButton = shallowRef<InstanceType<typeof HTMLButtonElement>>();
@@ -105,9 +105,7 @@ const currentChannel = ref<Misskey.entities.Channel | undefined>(props.currentCh
 const currentChannelName = computed<string | null>(() => currentChannel.value?.name ?? null);
 
 async function fetchChannels() {
-	const res = await misskeyApi('channels/my-favorites', {
-		limit: 100,
-	});
+	const res = await favoritedChannelsCache.fetch();
 	channels.value.splice(0, 0, ...res);
 }
 
