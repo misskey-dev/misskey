@@ -143,6 +143,7 @@ id: 'aidx'
 # See the Sentry documentation for more details on options.
 
 #sentryForBackend:
+#  enableNodeProfiling: true
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
