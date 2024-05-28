@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</div>
 		<div :class="$style.bottom">
-			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="os.post">
+			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="post">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
@@ -68,7 +68,10 @@ import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { useRouter } from '@/router/supplier.js';
+import { postButtonHandler } from '@/scripts/post-button-handler.js';
 
+const router = useRouter();
 const iconOnly = ref(false);
 
 const menu = computed(() => defaultStore.state.menu);
@@ -103,6 +106,10 @@ function more(ev: MouseEvent) {
 		src: ev.currentTarget ?? ev.target,
 	}, {
 	}, 'closed');
+}
+
+function post() {
+	postButtonHandler(router.currentRef.value);
 }
 </script>
 

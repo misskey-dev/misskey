@@ -21,6 +21,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { postButtonHandler } from '@/scripts/post-button-handler.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -104,7 +105,7 @@ export async function mainBoot() {
 
 	if ($i) {
 		// only add post shortcuts if logged in
-		hotkeys['p|n'] = post;
+		hotkeys['p|n'] = () => postButtonHandler(mainRouter.currentRef.value);
 
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
