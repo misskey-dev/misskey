@@ -13,21 +13,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.userStatus">
 			<button
 				v-if="props.report.targetUser.isSuspended"
-				v-text="'Suspended'"
 				v-tooltip:dialog="i18n.ts.userSuspended"
 				:class="['_button', $style.badge, $style.isSuspended]"
+				v-text="'Suspended'"
 			></button>
 			<button
 				v-if="props.report.targetUser.isSilenced"
-				v-text="'Silenced'"
 				v-tooltip:dialog="i18n.ts.userSilenced"
 				:class="['_button', $style.badge, $style.isSilenced]"
+				v-text="'Silenced'"
 			></button>
 			<button
 				v-if="props.report.targetUser.moderationNote != null && props.report.targetUser.moderationNote.trim() !== ''"
-				v-text="i18n.ts.moderationNote"
 				v-tooltip:dialog="props.report.targetUser.moderationNote.trim()"
 				:class="['_button', $style.badge]"
+				v-text="i18n.ts.moderationNote"
 			></button>
 		</div>
 	</div>
@@ -116,7 +116,9 @@ const emit = defineEmits<{
 
 const editForwardRef = ref(false);
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 const resolvedRef = ref(props.report.resolved);
+// eslint-disable-next-line vue/no-setup-props-destructure
 const forwardedRef = ref(props.report.forwarded);
 
 const resolveReport = () => {
