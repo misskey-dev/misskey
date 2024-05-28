@@ -123,13 +123,11 @@ export class ReactionService {
 			throw new IdentifiableError('12c35529-3c79-4327-b1cc-e2cf63a71925', 'You cannot react to Renote.');
 		}
 
-		// NOTE: 空文字列もフォールバックさせるため ?? ではなく || にする
-		// https://github.com/misskey-dev/misskey/issues/13804
-		let reaction = _reaction || FALLBACK;
+		let reaction = _reaction ?? FALLBACK;
 
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
 			reaction = '\u2764';
-		} else if (_reaction) {
+		} else if (_reaction != null) {
 			const custom = reaction.match(isCustomEmojiRegexp);
 			if (custom) {
 				const reacterHost = this.utilityService.toPunyNullable(user.host);
