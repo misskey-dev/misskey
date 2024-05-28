@@ -16,19 +16,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-text="'Suspended'"
 				v-tooltip:dialog="i18n.ts.userSuspended"
 				:class="['_button', $style.badge, $style.isSuspended]"
-			/>
+			></button>
 			<button
 				v-if="props.report.targetUser.isSilenced"
 				v-text="'Silenced'"
 				v-tooltip:dialog="i18n.ts.userSilenced"
 				:class="['_button', $style.badge, $style.isSilenced]"
-			/>
+			></button>
 			<button
 				v-if="props.report.targetUser.moderationNote != null && props.report.targetUser.moderationNote.trim() !== ''"
 				v-text="i18n.ts.moderationNote"
 				v-tooltip:dialog="props.report.targetUser.moderationNote.trim()"
 				:class="['_button', $style.badge]"
-			/>
+			></button>
 		</div>
 	</div>
 
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.item">
 		<div v-if="resolvedRef">
 			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
-			<I18n v-if="props.report.assignee != null" :src="i18n.ts._tms.resolvedBy" tag="span">
+			<I18n v-if="props.report.assignee != null" :src="i18n.ts.resolvedByX" tag="span">
 				<template #user>
 					<MkA :to="`/admin/user/${props.report.assignee.id}`" class="_link" :behavior="'window'">
 						<MkAcct :user="props.report.assignee"/>
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-if="forwardedRef">
 			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
-			<span>{{ i18n.ts._tms.forwardedReport }}</span>
+			<span>{{ i18n.ts.forwardedReport }}</span>
 		</div>
 	</div>
 
@@ -111,7 +111,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	resolved: [reportId: string];
+	(ev: 'resolved', reportId: string): void;
 }>();
 
 const editForwardRef = ref(false);

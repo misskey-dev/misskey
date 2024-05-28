@@ -47,12 +47,9 @@ import { computed, shallowRef, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import XAbuseReport from '@/components/MkAbuseReport.vue';
+import XAbuseReport, { type AbuseUserReport } from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import MkPagination from '@/components/MkPagination.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import XAbuseReport, { type AbuseUserReport } from '@/components/MkAbuseReport.vue';
 
 const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -85,3 +82,6 @@ definePageMetadata(() => ({
 	icon: 'ti ti-exclamation-circle',
 }));
 </script>
+
+<style module>
+</style>
