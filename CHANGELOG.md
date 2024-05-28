@@ -72,6 +72,8 @@
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
 - Fix: 連合なしの状態の読み書きができない問題を修正
 - Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
+- Fix: エラー画像のアスペクト比が1:1ではない場合に画像がゆがむ問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/195)
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
