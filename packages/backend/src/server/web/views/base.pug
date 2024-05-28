@@ -35,6 +35,14 @@ html
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
+	if googleAnalyticsId
+		script(async src='https://www.googletagmanager.com/gtag/js?id='+ googleAnalyticsId)
+		script.
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', '#{googleAnalyticsId}');
+
 		//- https://github.com/misskey-dev/misskey/issues/9842
 		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v3.3.0')
 		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)

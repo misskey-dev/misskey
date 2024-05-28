@@ -50,6 +50,7 @@ export const paramDef = {
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
 		serverErrorImageUrl: { type: 'string', nullable: true },
+		googleAnalyticsId: { type: 'string', nullable: true },
 		infoImageUrl: { type: 'string', nullable: true },
 		notFoundImageUrl: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
@@ -257,7 +258,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.serverErrorImageUrl !== undefined) {
 				set.serverErrorImageUrl = ps.serverErrorImageUrl;
 			}
-
+			if (ps.googleAnalyticsId !== undefined) {
+				set.googleAnalyticsId = ps.googleAnalyticsId;
+			}
 			if (ps.enableProxyCheckio !== undefined) {
 				set.enableProxyCheckio = ps.enableProxyCheckio;
 			}

@@ -43,65 +43,73 @@ export default defineComponent({
 	setup(props, { slots, expose }) {
 		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
 
+		const dateTextCache = new Map<string, string>();
+
 		function getDateText(time: string) {
+			if (dateTextCache.has(time)) {
+				return dateTextCache.get(time)!;
+			}
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
-			return i18n.tsx.monthAndDay({
+			const text = i18n.tsx.monthAndDay({
 				month: month.toString(),
 				day: date.toString(),
 			});
+			dateTextCache.set(time, text);
+			return text;
 		}
 
 		if (props.items.length === 0) return;
 
-		const renderChildrenImpl = () => props.items.map((item, i) => {
-			if (!slots || !slots.default) return;
+		const renderChildrenImpl = () => {
+			const slotContent = slots.default ? slots.default : () => [];
+			return props.items.map((item, i) => {
+				const el = slotContent({
+					item: item,
+				})[0];
+				if (el.key == null && item.id) el.key = item.id;
 
-			const el = slots.default({
-				item: item,
-			})[0];
-			if (el.key == null && item.id) el.key = item.id;
-
-			if (
-				i !== props.items.length - 1 &&
-				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
-			) {
-				const separator = h('div', {
-					class: $style['separator'],
-					key: item.id + ':separator',
-				}, h('p', {
-					class: $style['date'],
-				}, [
-					h('span', {
-						class: $style['date-1'],
+				if (
+					i !== props.items.length - 1 &&
+					new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
+				) {
+					const separator = h('div', {
+						class: $style['separator'],
+						key: item.id + ':separator',
+					}, h('p', {
+						class: $style['date'],
 					}, [
-						h('i', {
-							class: `ti ti-chevron-up ${$style['date-1-icon']}`,
-						}),
-						getDateText(item.createdAt),
-					]),
-					h('span', {
-						class: $style['date-2'],
-					}, [
-						getDateText(props.items[i + 1].createdAt),
-						h('i', {
-							class: `ti ti-chevron-down ${$style['date-2-icon']}`,
-						}),
-					]),
-				]));
+						h('span', {
+							class: $style['date-1'],
+						}, [
+							h('i', {
+								class: `ti ti-chevron-up ${$style['date-1-icon']}`,
+							}),
+							getDateText(item.createdAt),
+						]),
+						h('span', {
+							class: $style['date-2'],
+						}, [
+							getDateText(props.items[i + 1].createdAt),
+							h('i', {
+								class: `ti ti-chevron-down ${$style['date-2-icon']}`,
+							}),
+						]),
+					]));
 
-				return [el, separator];
-			} else {
-				if (props.ad && item._shouldInsertAd_) {
-					return [h(MkAd, {
-						key: item.id + ':ad',
-						prefer: ['horizontal', 'horizontal-big'],
-					}), el];
+					return [el, separator];
 				} else {
-					return el;
+					if (props.ad && item._shouldInsertAd_) {
+						return [h(MkAd, {
+							key: item.id + ':ad',
+							prefer: ['horizontal', 'horizontal-big'],
+						}), el];
+					} else {
+						return el;
+					}
 				}
-			}
-		});
+			});
+		};
 
 		const renderChildren = () => {
 			const children = renderChildrenImpl();
@@ -120,14 +128,12 @@ export default defineComponent({
 
 		function onBeforeLeave(element: Element) {
 			const el = element as HTMLElement;
-			el.style.top = `${el.offsetTop}px`;
-			el.style.left = `${el.offsetLeft}px`;
+			el.classList.add('before-leave');
 		}
 
 		function onLeaveCancelled(element: Element) {
 			const el = element as HTMLElement;
-			el.style.top = '';
-			el.style.left = '';
+			el.classList.remove('before-leave');
 		}
 
 		// eslint-disable-next-line vue/no-setup-props-destructure
@@ -157,21 +163,21 @@ export default defineComponent({
 	container-type: inline-size;
 
 	&:global {
-	> .list-move {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
+		> .list-move {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
 
-	&.deny-move-transition > .list-move {
-		transition: none !important;
-	}
+		&.deny-move-transition > .list-move {
+			transition: none !important;
+		}
 
-	> .list-enter-active {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
+		> .list-enter-active {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
 
-	> *:empty {
-		display: none;
-	}
+		> *:empty {
+			display: none;
+		}
 	}
 
 	&:not(.date-separated-list-nogap) > *:not(:last-child) {
@@ -194,20 +200,20 @@ export default defineComponent({
 
 .direction-up {
 	&:global {
-	> .list-enter-from,
-	> .list-leave-to {
-		opacity: 0;
-		transform: translateY(64px);
-	}
+		> .list-enter-from,
+		> .list-leave-to {
+			opacity: 0;
+			transform: translateY(64px);
+		}
 	}
 }
 .direction-down {
 	&:global {
-	> .list-enter-from,
-	> .list-leave-to {
-		opacity: 0;
-		transform: translateY(-64px);
-	}
+		> .list-enter-from,
+		> .list-leave-to {
+			opacity: 0;
+			transform: translateY(-64px);
+		}
 	}
 }
 
@@ -246,5 +252,8 @@ export default defineComponent({
 .date-2-icon {
 	margin-left: 8px;
 }
-</style>
 
+.before-leave {
+	position: absolute !important;
+}
+</style>

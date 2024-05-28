@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true" />
+				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>
@@ -45,7 +45,6 @@ const props = defineProps<{
 	disableAutoLoad?: boolean;
     withCw?: boolean;
 }>();
-
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 defineExpose({

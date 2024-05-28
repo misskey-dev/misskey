@@ -77,6 +77,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.somethingHappened }}</template>
 					</MkInput>
+					<MkInput v-model="googleAnalyticsId" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>googleAnal </template>
+					</MkInput>
 
 					<MkColorInput v-model="themeColor">
 						<template #label>{{ i18n.ts.themeColor }}</template>
@@ -144,6 +148,8 @@ const themeColor = ref<string | null>(null);
 const defaultLightTheme = ref<string | null>(null);
 const defaultDarkTheme = ref<string | null>(null);
 const serverErrorImageUrl = ref<string | null>(null);
+const googleAnalyticsId = ref<string | null>(null);
+
 const infoImageUrl = ref<string | null>(null);
 const notFoundImageUrl = ref<string | null>(null);
 const repositoryUrl = ref<string | null>(null);
@@ -189,6 +195,7 @@ function save() {
 		infoImageUrl: infoImageUrl.value === '' ? null : infoImageUrl.value,
 		notFoundImageUrl: notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
 		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
+		googleAnalyticsId: googleAnalyticsId.value === '' ? null : googleAnalyticsId.value,
 		repositoryUrl: repositoryUrl.value === '' ? null : repositoryUrl.value,
 		feedbackUrl: feedbackUrl.value === '' ? null : feedbackUrl.value,
 		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),

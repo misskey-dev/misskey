@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and misskey-project
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
 	<MkNotes
@@ -10,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="tlComponent"
 		:pagination="paginationQuery"
 		:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
-        :withCw="props.withCw"
+		:withCw="props.withCw"
 		@queue="emit('queue', $event)"
 		@status="prComponent?.setDisabled($event)"
 	/>
@@ -39,7 +34,7 @@ const props = withDefaults(defineProps<{
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
-    withCw?: boolean;
+	withCw?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
@@ -55,24 +50,13 @@ const emit = defineEmits<{
 provide('inTimeline', true);
 provide('inChannel', computed(() => props.src === 'channel'));
 
-type TimelineQueryType = {
-  antennaId?: string,
-  withRenotes?: boolean,
-  withReplies?: boolean,
-  withFiles?: boolean,
-  visibility?: string,
-  listId?: string,
-  channelId?: string,
-  roleId?: string
-}
-
 const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
 const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
 
 let tlNotesCount = 0;
 
 function prepend(note) {
-	if (tlComponent.value == null) return;
+	if (!tlComponent.value) return;
 
 	tlNotesCount++;
 
@@ -96,11 +80,8 @@ let paginationQuery: Paging | null = null;
 const stream = useStream();
 
 function connectChannel() {
-	if (props.src === 'antenna') {
-		if (props.antenna == null) return;
-		connection = stream.useChannel('antenna', {
-			antennaId: props.antenna,
-		});
+	if (props.src === 'antenna' && props.antenna) {
+		connection = stream.useChannel('antenna', { antennaId: props.antenna });
 	} else if (props.src === 'home') {
 		connection = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
@@ -119,15 +100,9 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 		});
-		connection.on('note', prepend);
-	} else if (props.src === 'social') {
-		connection = stream.useChannel('hybridTimeline', {
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
-		});
-	} else if (props.src === 'global') {
-		connection = stream.useChannel('globalTimeline', {
+	} else if (props.src === 'social' || props.src === 'global') {
+		const channel = props.src === 'social' ? 'hybridTimeline' : 'globalTimeline';
+		connection = stream.useChannel(channel, {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 		});
@@ -136,34 +111,25 @@ function connectChannel() {
 		connection.on('mention', prepend);
 	} else if (props.src === 'directs') {
 		const onNote = note => {
-			if (note.visibility === 'specified') {
-				prepend(note);
-			}
+			if (note.visibility === 'specified') prepend(note);
 		};
 		connection = stream.useChannel('main');
 		connection.on('mention', onNote);
-	} else if (props.src === 'list') {
-		if (props.list == null) return;
+	} else if (props.src === 'list' && props.list) {
 		connection = stream.useChannel('userList', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		});
-	} else if (props.src === 'channel') {
-		if (props.channel == null) return;
-		connection = stream.useChannel('channel', {
-			channelId: props.channel,
-		});
-	} else if (props.src === 'role') {
-		if (props.role == null) return;
-		connection = stream.useChannel('roleTimeline', {
-			roleId: props.role,
-		});
+	} else if (props.src === 'channel' && props.channel) {
+		connection = stream.useChannel('channel', { channelId: props.channel });
+	} else if (props.src === 'role' && props.role) {
+		connection = stream.useChannel('roleTimeline', { roleId: props.role });
 	}
-	if (props.src.startsWith('custom-timeline')) {
-		return;
+
+	if (props.src !== 'directs' && props.src !== 'mentions') {
+		connection?.on('note', prepend);
 	}
-	if (props.src !== 'directs' && props.src !== 'mentions') connection?.on('note', prepend);
 }
 
 function disconnectChannel() {
@@ -172,91 +138,47 @@ function disconnectChannel() {
 }
 
 function updatePaginationQuery() {
-	let endpoint: keyof Misskey.Endpoints | null;
-	let query: TimelineQueryType | null;
+	const endpoints = {
+		antenna: 'antennas/notes',
+		home: 'notes/timeline',
+		local: 'notes/local-timeline',
+		social: 'notes/hybrid-timeline',
+		global: 'notes/global-timeline',
+		media: 'notes/hybrid-timeline',
+		mentions: 'notes/mentions',
+		directs: 'notes/mentions',
+		list: 'notes/user-list-timeline',
+		channel: 'channels/timeline',
+		role: 'roles/notes',
+	};
 
-	if (props.src === 'antenna') {
-		endpoint = 'antennas/notes';
-		query = {
-			antennaId: props.antenna,
-		};
-	} else if (props.src === 'home') {
-		endpoint = 'notes/timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
-		};
-	} else if (props.src === 'local') {
-		endpoint = 'notes/local-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
-		};
-	} else if (props.src === 'social') {
-		endpoint = 'notes/hybrid-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
-		};
-	} else if (props.src === 'global') {
-		endpoint = 'notes/global-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
-		};
-	} else if (props.src === 'media') {
-		endpoint = 'notes/hybrid-timeline';
-		query = {
-			withFiles: true,
-			withRenotes: props.withRenotes,
-			withReplies: false,
-		};
-	} else if (props.src === 'mentions') {
-		endpoint = 'notes/mentions';
-		query = null;
-	} else if (props.src === 'directs') {
-		endpoint = 'notes/mentions';
-		query = {
-			visibility: 'specified',
-		};
-	} else if (props.src === 'list') {
-		endpoint = 'notes/user-list-timeline';
-		query = {
-			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
-			listId: props.list,
-		};
-	} else if (props.src === 'channel') {
-		endpoint = 'channels/timeline';
-		query = {
-			channelId: props.channel,
-		};
-	} else if (props.src === 'role') {
-		endpoint = 'roles/notes';
-		query = {
-			roleId: props.role,
-		};
-	} else if (props.src.startsWith('custom-timeline')) {
-		endpoint = 'notes/any-local-timeline';
-		query = {
-			host: defaultStore.state[`remoteLocalTimelineDomain${props.src.split('-')[2]}`],
-			remoteToken: defaultStore.state[`remoteLocalTimelineToken${props.src.split('-')[2]}`],
-		};
-	} else {
-		endpoint = null;
-		query = null;
-	}
+	const queries = {
+		antenna: { antennaId: props.antenna },
+		home: { withRenotes: props.withRenotes, withFiles: props.onlyFiles ? true : undefined },
+		local: { withRenotes: props.withRenotes, withReplies: props.withReplies, withFiles: props.onlyFiles ? true : undefined },
+		social: { withRenotes: props.withRenotes, withReplies: props.withReplies, withFiles: props.onlyFiles ? true : undefined },
+		global: { withRenotes: props.withRenotes, withFiles: props.onlyFiles ? true : undefined },
+		media: { withFiles: true, withRenotes: props.withRenotes, withReplies: false },
+		mentions: null,
+		directs: { visibility: 'specified' },
+		list: { withRenotes: props.withRenotes, withFiles: props.onlyFiles ? true : undefined, listId: props.list },
+		channel: { channelId: props.channel },
+		role: { roleId: props.role },
+	};
 
-	if (endpoint && query) {
+	if (props.src.startsWith('custom-timeline')) {
 		paginationQuery = {
-			endpoint: endpoint,
+			endpoint: 'notes/any-local-timeline',
 			limit: 10,
-			params: query,
+			params: {
+				host: defaultStore.state[`remoteLocalTimelineDomain${props.src.split('-')[2]}`],
+				remoteToken: defaultStore.state[`remoteLocalTimelineToken${props.src.split('-')[2]}`],
+			},
 		};
 	} else {
-		paginationQuery = null;
+		const endpoint = endpoints[props.src];
+		const query = queries[props.src];
+		paginationQuery = endpoint && query ? { endpoint, limit: 10, params: query } : null;
 	}
 }
 
@@ -265,12 +187,9 @@ function refreshEndpointAndChannel() {
 		disconnectChannel();
 		connectChannel();
 	}
-
 	updatePaginationQuery();
 }
 
-// デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
-// IDが切り替わったら切り替え先のTLを表示させたい
 watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
 
 // 初回表示用
@@ -282,13 +201,11 @@ onUnmounted(() => {
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		if (tlComponent.value == null) return;
+		if (!tlComponent.value) return;
 
 		tlNotesCount = 0;
 
-		tlComponent.value.pagingComponent?.reload().then(() => {
-			res();
-		});
+		tlComponent.value.pagingComponent?.reload().then(() => res());
 	});
 }
 

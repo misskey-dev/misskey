@@ -234,69 +234,43 @@ const reload = (): Promise<void> => {
 	return init();
 };
 
-const fetchMore = async (): Promise<void> => {
+async function fetchMore(): Promise<void> {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
+
 	moreFetching.value = true;
-	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
-		...params,
-		limit: SECOND_FETCH_LIMIT,
-		...(props.pagination.offsetMode ? {
-			offset: offset.value,
-		} : {
-			untilId: Array.from(items.value.keys()).at(-1),
-		}),
-	}).then(res => {
-		for (let i = 0; i < res.length; i++) {
-			const item = res[i];
-			if (i === 10) item._shouldInsertAd_ = true;
-		}
+	try {
+		const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
+		const response = await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+			...params,
+			limit: SECOND_FETCH_LIMIT,
+			...(props.pagination.offsetMode ? { offset: offset.value } : { untilId: Array.from(items.value.keys()).pop() }),
+		});
 
-		const reverseConcat = _res => {
-			const oldHeight = scrollableElement.value ? scrollableElement.value.scrollHeight : getBodyScrollHeight();
-			const oldScroll = scrollableElement.value ? scrollableElement.value.scrollTop : window.scrollY;
+		const isReversed = props.pagination.reversed;
+		if (isReversed) {
+			const oldHeight = scrollableElement.value?.scrollHeight || 0;
+			const oldScroll = scrollableElement.value?.scrollTop || 0;
 
-			items.value = concatMapWithArray(items.value, _res);
+			items.value = concatMapWithArray(items.value, response);
 
-			return nextTick(() => {
-				if (scrollableElement.value) {
-					scroll(scrollableElement.value, { top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight), behavior: 'instant' });
-				} else {
-					window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
-				}
-
-				return nextTick();
-			});
-		};
-
-		if (res.length === 0) {
-			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					more.value = false;
-					moreFetching.value = false;
+			await nextTick();
+			if (scrollableElement.value) {
+				scroll(scrollableElement.value, {
+					top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight),
+					behavior: 'instant',
 				});
-			} else {
-				items.value = concatMapWithArray(items.value, res);
-				more.value = false;
-				moreFetching.value = false;
 			}
 		} else {
-			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					more.value = true;
-					moreFetching.value = false;
-				});
-			} else {
-				items.value = concatMapWithArray(items.value, res);
-				more.value = true;
-				moreFetching.value = false;
-			}
+			items.value = concatMapWithArray(items.value, response);
 		}
-		offset.value += res.length;
-	}, err => {
+
+		more.value = response.length > 0;
+	} catch (error) {
+		console.error(error);
+	} finally {
 		moreFetching.value = false;
-	});
-};
+	}
+}
 
 const fetchMoreAhead = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
