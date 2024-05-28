@@ -6,6 +6,7 @@
 - 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
+- Feat: エラートラッキングにSentryを使用できるようになりました
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
@@ -26,7 +27,7 @@
 ### Client
 - Feat: アップロードするファイルの名前をランダム文字列にできるように
 - Feat: 個別のお知らせにリンクで飛べるように  
-  (Cherry-picked from https://github.com/MisskeyIO/misskey)
+  (Based on https://github.com/MisskeyIO/misskey/pull/639)
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
 - Enhance: リアクション・いいねの総数を表示するように
