@@ -504,6 +504,12 @@ export class DriveService {
 
 			if (much) {
 				this.registerLogger.info(`file with same hash is found: ${much.id}`);
+				if (sensitive && !much.isSensitive) {
+					// The file is federated as sensitive for this time, but was federated as non-sensitive before.
+					// Therefore, update the file to sensitive.
+					await this.driveFilesRepository.update({ id: much.id }, { isSensitive: true });
+					much.isSensitive = true;
+				}
 				return much;
 			}
 		}
