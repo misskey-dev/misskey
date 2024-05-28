@@ -80,6 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!resolvedRef" :class="$style.operations">
 			<MkSwitch v-if="props.report.targetUser.host != null" v-model="editForwardRef">
 				<template #label>{{ i18n.ts.forwardReport }}</template>
+				<template #caption>{{ i18n.ts.forwardReportIsAnonymous }}</template>
 			</MkSwitch>
 			<div :class="$style.resolveButton">
 				<MkButton primary @click="resolveReport">{{ i18n.ts.abuseMarkAsResolved }}</MkButton>
