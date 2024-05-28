@@ -10,6 +10,7 @@ import type { BasicTimelineType } from '@/timelines.js';
 import { Storage } from '@/pizzax.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deepClone } from '@/scripts/clone.js';
+import { SoundStore } from '@/store.js';
 
 type ColumnWidget = {
 	name: string;
@@ -34,6 +35,7 @@ export type Column = {
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
+	soundSetting: SoundStore;
 };
 
 export const deckStore = markRaw(new Storage('deck', {
