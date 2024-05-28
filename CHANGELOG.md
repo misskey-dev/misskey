@@ -6,6 +6,7 @@
 - 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
+- Feat: エラートラッキングにSentryを使用できるようになりました
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
