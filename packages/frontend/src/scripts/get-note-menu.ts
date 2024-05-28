@@ -609,10 +609,7 @@ export async function getRenoteMenu(props: {
 				text: appearNote.channel ? i18n.ts.renoteToOtherChannel : i18n.ts.renoteToChannel,
 				children: async () => {
 					const channels = await favoritedChannelsCache.fetch();
-					return channels.filter((channel) => {
-						if (!appearNote.channelId) return true;
-						return channel.id !== appearNote.channelId;
-					}).map((channel) => ({
+					return channels.map((channel) => ({
 						text: channel.name,
 						action: () => {
 							const el = props.renoteButton.value;
