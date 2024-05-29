@@ -15,7 +15,7 @@ import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MiRepository, miRepository } from '@/models/_.js';
-import type { DataSource } from 'typeorm';
+import type { DataSource, Repository } from 'typeorm';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
@@ -146,10 +146,10 @@ export default abstract class Chart<T extends Schema> {
 		group: string | null;
 	}[] = [];
 	// ↓にしたいけどfindOneとかで型エラーになる
-	//private repositoryForHour: MiRepository<RawRecord<T>>;
-	//private repositoryForDay: MiRepository<RawRecord<T>>;
-	private repositoryForHour: MiRepository<{ id: number; group?: string | null; date: number; }>;
-	private repositoryForDay: MiRepository<{ id: number; group?: string | null; date: number; }>;
+	//private repositoryForHour: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
+	//private repositoryForDay: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
+	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
+	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
 
 	/**
 	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
