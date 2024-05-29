@@ -243,8 +243,8 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? process.env.NODE_ENV === 'test' ? 'advanced-console' : new MyCustomLogger() : undefined,
-		maxQueryExecutionTime: log ? 0 : 300,
+		logger: log ? new MyCustomLogger() : undefined,
+		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
 	});

@@ -107,6 +107,7 @@ export const miRepository = {
 			.select('*')
 			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName);
 		builder.expressionMap.aliases.splice(1, 1);
+		console.log(builder.getQueryAndParameters());
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
