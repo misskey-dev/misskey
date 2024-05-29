@@ -98,10 +98,7 @@ export const miRepository = {
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
 		const columnNames = this.createTableColumnNames(queryBuilder);
-		const builder = this.createQueryBuilder()
-			.addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames })
-			.select('*')
-			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName);
+		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames });
 		this.selectAliasColumnNames(queryBuilder, builder);
 		console.log(builder.expressionMap.aliases, builder.getQueryAndParameters());
 		if (findOptions) {
@@ -115,7 +112,7 @@ export const miRepository = {
 			return builder.select(selection, selectionAliasName);
 		};
 		for (const columnName of this.createTableColumnNames(queryBuilder)) {
-			selectOrAddSelect(`${queryBuilder.alias}.${columnName}`);
+			selectOrAddSelect(`${queryBuilder.alias}.${columnName}`, `${queryBuilder.alias}_${columnName}`);
 		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
