@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository } from 'typeorm';
+import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -74,16 +74,12 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
-	createAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
+	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
 }
 
 export const miRepository = {
-	createAliasColumnNames(queryBuilder) {
-		const tableColumnNames = this.createTableColumnNames(queryBuilder);
-		return tableColumnNames.map(columnName => `${queryBuilder.alias}_${columnName}`);
-	},
 	createTableColumnNames(queryBuilder) {
 		// @ts-expect-error -- protected
 		const insertedColumns = queryBuilder.getInsertedColumns();
@@ -101,17 +97,27 @@ export const miRepository = {
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
-		const columnNames = this.createAliasColumnNames(queryBuilder);
+		const columnNames = this.createTableColumnNames(queryBuilder);
 		const builder = this.createQueryBuilder()
 			.addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames })
 			.select('*')
 			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName);
 		builder.expressionMap.aliases.splice(1, 1);
+		this.selectAliasColumnNames(queryBuilder, builder);
 		console.log(builder.getQueryAndParameters());
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
 		return await builder.getOneOrFail();
+	},
+	selectAliasColumnNames(queryBuilder, builder) {
+		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
+			selectOrAddSelect = (selection, selectionAliasName) => builder.addSelect(selection, selectionAliasName);
+			return builder.select(selection, selectionAliasName);
+		};
+		for (const columnName of this.createTableColumnNames(queryBuilder)) {
+			selectOrAddSelect(columnName, `${queryBuilder.alias}_${columnName}`);
+		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
 
