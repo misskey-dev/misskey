@@ -102,7 +102,7 @@ export const miRepository = {
 			.select('*')
 			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName)
 			.where('1 = 1');
-		console.log(builder.getQueryAndParameters());
+		console.log(builder.getSql());
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
