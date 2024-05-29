@@ -212,6 +212,10 @@ export default abstract class Chart<T extends Schema> {
 	} {
 		const createEntity = (span: 'hour' | 'day'): EntitySchema => new EntitySchema({
 			name:
+				span === 'hour' ? `ChartX${name.replace(/[^a-zA-Z0-9]/g, '')}` :
+				span === 'day' ? `ChartDayX${name.replace(/[^a-zA-Z0-9]/g, '')}` :
+				new Error('not happen') as never,
+			tableName:
 				span === 'hour' ? `__chart__${camelToSnake(name)}` :
 				span === 'day' ? `__chart_day__${camelToSnake(name)}` :
 				new Error('not happen') as never,
