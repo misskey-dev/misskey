@@ -205,45 +205,79 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	private evalCond(user: MiUser, roles: MiRole[], value: RoleCondFormulaValue): boolean {
 		try {
 			switch (value.type) {
+				// ～かつ～
 				case 'and': {
 					return value.values.every(v => this.evalCond(user, roles, v));
 				}
+				// ～または～
 				case 'or': {
 					return value.values.some(v => this.evalCond(user, roles, v));
 				}
+				// ～ではない
 				case 'not': {
 					return !this.evalCond(user, roles, value.value);
 				}
+				// マニュアルロールがアサインされている
 				case 'roleAssignedTo': {
 					return roles.some(r => r.id === value.roleId);
 				}
+				// ローカルユーザのみ
 				case 'isLocal': {
 					return this.userEntityService.isLocalUser(user);
 				}
+				// リモートユーザのみ
 				case 'isRemote': {
 					return this.userEntityService.isRemoteUser(user);
 				}
+				// サスペンド済みユーザである
+				case 'isSuspended': {
+					return user.isSuspended;
+				}
+				// 鍵アカウントユーザである
+				case 'isLocked': {
+					return user.isLocked;
+				}
+				// botユーザである
+				case 'isBot': {
+					return user.isBot;
+				}
+				// 猫である
+				case 'isCat': {
+					return user.isCat;
+				}
+				// 「ユーザを見つけやすくする」が有効なアカウント
+				case 'isExplorable': {
+					return user.isExplorable;
+				}
+				// ユーザが作成されてから指定期間経過した
 				case 'createdLessThan': {
 					return this.idService.parse(user.id).date.getTime() > (Date.now() - (value.sec * 1000));
 				}
+				// ユーザが作成されてから指定期間経っていない
 				case 'createdMoreThan': {
 					return this.idService.parse(user.id).date.getTime() < (Date.now() - (value.sec * 1000));
 				}
+				// フォロワー数が指定値以下
 				case 'followersLessThanOrEq': {
 					return user.followersCount <= value.value;
 				}
+				// フォロワー数が指定値以上
 				case 'followersMoreThanOrEq': {
 					return user.followersCount >= value.value;
 				}
+				// フォロー数が指定値以下
 				case 'followingLessThanOrEq': {
 					return user.followingCount <= value.value;
 				}
+				// フォロー数が指定値以上
 				case 'followingMoreThanOrEq': {
 					return user.followingCount >= value.value;
 				}
+				// ノート数が指定値以下
 				case 'notesLessThanOrEq': {
 					return user.notesCount <= value.value;
 				}
+				// ノート数が指定値以上
 				case 'notesMoreThanOrEq': {
 					return user.notesCount >= value.value;
 				}

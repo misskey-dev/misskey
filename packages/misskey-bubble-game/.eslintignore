@@ -5,3 +5,4 @@ node_modules
 /jest.config.ts
 /test
 /test-d
+build.js
