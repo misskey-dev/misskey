@@ -100,7 +100,7 @@ export class Repository<T extends typeorm.ObjectLiteral> extends typeorm.Reposit
 		const builder = this.createQueryBuilder()
 			.addCommonTableExpression(queryBuilder, 'cte', { columnNames })
 			.select('*')
-			.from<T>('cte', this.metadata.targetName);
+			.from<T>('cte', queryBuilder.expressionMap.mainAlias?.name ?? this.metadata.tableName);
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
