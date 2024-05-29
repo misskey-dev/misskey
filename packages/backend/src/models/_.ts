@@ -74,12 +74,17 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
-	createColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	createAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
 }
 
 export const miRepository = {
-	createColumnNames(queryBuilder) {
+	createAliasColumnNames(queryBuilder) {
+		const tableColumnNames = this.createTableColumnNames(queryBuilder);
+		return tableColumnNames.map(columnName => `${queryBuilder.alias}_${columnName}`);
+	},
+	createTableColumnNames(queryBuilder) {
 		// @ts-expect-error -- protected
 		const insertedColumns = queryBuilder.getInsertedColumns();
 		if (insertedColumns.length) {
@@ -96,7 +101,7 @@ export const miRepository = {
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
-		const columnNames = this.createColumnNames(queryBuilder);
+		const columnNames = this.createAliasColumnNames(queryBuilder);
 		const builder = this.createQueryBuilder()
 			.addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames })
 			.select('*')
