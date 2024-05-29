@@ -98,7 +98,8 @@ export const miRepository = {
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
 		const columnNames = this.createTableColumnNames(queryBuilder);
-		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames });
+		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
 		console.log(builder.expressionMap.aliases, builder.getQueryAndParameters());
 		if (findOptions) {
