@@ -98,9 +98,9 @@ export const miRepository = {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
 		const columnNames = this.createColumnNames(queryBuilder);
 		const builder = this.createQueryBuilder()
-			.addCommonTableExpression(queryBuilder, 'cte', { columnNames })
+			.addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames })
 			.select('*')
-			.from<ObjectLiteral>('cte', this.metadata.tableName);
+			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName);
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
