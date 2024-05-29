@@ -96,9 +96,10 @@ export const miRepository = {
 		return queryBuilder.expressionMap.insertColumns;
 	},
 	async insertOne(entity, findOptions?) {
-		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
+		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		queryBuilder.expressionMap.mainAlias!.name = 't';
-		const columnNames = this.createTableColumnNames(queryBuilder);
+		const columnNames = this.createTableColumnNames(queryBuilder).map(column => `__disambiguation__${column}`);
+		queryBuilder.returning(columnNames.map(column => `"${column.slice('__disambiguation__'.length)}" AS "${column}"`).join());
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
@@ -114,7 +115,7 @@ export const miRepository = {
 			return builder.select(selection, selectionAliasName);
 		};
 		for (const columnName of this.createTableColumnNames(queryBuilder)) {
-			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
+			selectOrAddSelect(`"${builder.alias}"."__disambiguation__${columnName}"`, `"${builder.alias}_${columnName}"`);
 		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
