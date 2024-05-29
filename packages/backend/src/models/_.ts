@@ -97,6 +97,8 @@ export const miRepository = {
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
+		// @ts-expect-error -- protected
+		queryBuilder.expressionMap.mainAlias!.name = queryBuilder.getMainTableName();
 		const columnNames = this.createTableColumnNames(queryBuilder);
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
