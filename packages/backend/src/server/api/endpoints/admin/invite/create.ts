@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: this.idService.gen(),
 					expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
 					code: generateInviteCode(),
-				});
+				}));
 			}
 
 			const tickets = await Promise.all(ticketsPromises);
