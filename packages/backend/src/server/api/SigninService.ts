@@ -29,13 +29,13 @@ export class SigninService {
 	public signin(request: FastifyRequest, reply: FastifyReply, user: MiLocalUser) {
 		setImmediate(async () => {
 			// Append signin history
-			const record = await this.signinsRepository.insert({
+			const record = await this.signinsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: user.id,
 				ip: request.ip,
 				headers: request.headers as any,
 				success: true,
-			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			// Publish signin event
 			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));

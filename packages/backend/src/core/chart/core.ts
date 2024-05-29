@@ -14,7 +14,8 @@ import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { Repository, DataSource } from 'typeorm';
+import { Repository } from '@/models/_.js';
+import type { DataSource } from 'typeorm';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
@@ -271,8 +272,8 @@ export default abstract class Chart<T extends Schema> {
 		this.logger = logger;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour);
-		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day);
+		this.repositoryForHour = new Repository(db.getRepository<{ id: number; group?: string | null; date: number; }>(hour));
+		this.repositoryForDay = new Repository(db.getRepository<{ id: number; group?: string | null; date: number; }>(day));
 	}
 
 	@bindThis
@@ -387,11 +388,11 @@ export default abstract class Chart<T extends Schema> {
 			}
 
 			// 新規ログ挿入
-			log = await repository.insert({
+			log = await repository.insertOne({
 				date: date,
 				...(group ? { group: group } : {}),
 				...columns,
-			}).then(x => repository.findOneByOrFail(x.identifiers[0])) as RawRecord<T>;
+			}) as RawRecord<T>;
 
 			this.logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 

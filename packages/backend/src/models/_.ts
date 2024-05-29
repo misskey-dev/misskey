@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as typeorm from 'typeorm';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -70,8 +71,42 @@ import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
+import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
-import type { Repository } from 'typeorm';
+export class Repository<T extends typeorm.ObjectLiteral> extends typeorm.Repository<T> {
+	constructor(repository: typeorm.Repository<T>) {
+		super(repository.target, repository.manager, repository.queryRunner);
+	}
+
+	createColumnNames(queryBuilder: typeorm.InsertQueryBuilder<T>): string[] {
+		// @ts-expect-error -- protected
+		const insertedColumns = queryBuilder.getInsertedColumns();
+		if (insertedColumns.length) {
+			return insertedColumns.map(column => column.databaseName);
+		}
+		if (!queryBuilder.expressionMap.mainAlias?.hasMetadata && !queryBuilder.expressionMap.insertColumns.length) {
+			// @ts-expect-error -- protected
+			const valueSets = queryBuilder.getValueSets();
+			if (valueSets.length === 1) {
+				return Object.keys(valueSets[0]);
+			}
+		}
+		return queryBuilder.expressionMap.insertColumns;
+	}
+
+	async insertOne(entity: QueryDeepPartialEntity<T>, findOptions?: Pick<typeorm.FindOneOptions<T>, 'relations'>): Promise<T> {
+		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
+		const columnNames = this.createColumnNames(queryBuilder);
+		const builder = this.createQueryBuilder()
+			.addCommonTableExpression(queryBuilder, 'cte', { columnNames })
+			.select('*')
+			.from<T>('cte', this.metadata.targetName);
+		if (findOptions) {
+			return await builder.setFindOptions(findOptions).getOneOrFail();
+		}
+		return await builder.getOneOrFail();
+	}
+}
 
 export {
 	MiAbuseUserReport,
