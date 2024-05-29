@@ -116,7 +116,7 @@ export const miRepository = {
 			return builder.select(selection, selectionAliasName);
 		};
 		for (const columnName of this.createTableColumnNames(queryBuilder)) {
-			selectOrAddSelect(columnName, `${queryBuilder.alias}_${columnName}`);
+			selectOrAddSelect(`${queryBuilder.alias}.${columnName}`);
 		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
