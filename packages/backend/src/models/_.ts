@@ -102,9 +102,8 @@ export const miRepository = {
 			.addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames })
 			.select('*')
 			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName);
-		builder.expressionMap.aliases.splice(1, 1);
 		this.selectAliasColumnNames(queryBuilder, builder);
-		console.log(builder.getQueryAndParameters());
+		console.log(builder.expressionMap.aliases, builder.getQueryAndParameters());
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
