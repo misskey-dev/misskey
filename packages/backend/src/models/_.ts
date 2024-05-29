@@ -84,21 +84,21 @@ export const miRepository = {
 		// @ts-expect-error -- protected
 		const insertedColumns = queryBuilder.getInsertedColumns();
 		if (insertedColumns.length) {
-			return insertedColumns.map(column => `__disambiguation__${column.databaseName}`);
+			return insertedColumns.map(column => column.databaseName);
 		}
 		if (!queryBuilder.expressionMap.mainAlias?.hasMetadata && !queryBuilder.expressionMap.insertColumns.length) {
 			// @ts-expect-error -- protected
 			const valueSets = queryBuilder.getValueSets();
 			if (valueSets.length === 1) {
-				return Object.keys(valueSets[0]).map(key => `__disambiguation__${key}`);
+				return Object.keys(valueSets[0]);
 			}
 		}
-		return queryBuilder.expressionMap.insertColumns.map(column => `__disambiguation__${column}`);
+		return queryBuilder.expressionMap.insertColumns;
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
 		// @ts-expect-error -- protected
-		queryBuilder.expressionMap.mainAlias!.name = queryBuilder.getMainTableName();
+		queryBuilder.expressionMap.mainAlias!.name = 't';
 		const columnNames = this.createTableColumnNames(queryBuilder);
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
@@ -115,7 +115,7 @@ export const miRepository = {
 			return builder.select(selection, selectionAliasName);
 		};
 		for (const columnName of this.createTableColumnNames(queryBuilder)) {
-			selectOrAddSelect(`"${builder.alias}"."${columnName}"`, `${builder.alias}_${columnName.slice('__disambiguation__'.length)}`);
+			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
 		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
