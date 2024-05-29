@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-const self = props.url.startsWith(local);
+const self = props.url.startsWith(local) && !props.url.match(/\/mulukhiya\//);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 
