@@ -100,7 +100,8 @@ export const miRepository = {
 		const builder = this.createQueryBuilder()
 			.addCommonTableExpression(queryBuilder, this.metadata.tableName, { columnNames })
 			.select('*')
-			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName);
+			.from<ObjectLiteral>(this.metadata.tableName, this.metadata.tableName)
+			.where('1 = 1');
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
