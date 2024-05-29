@@ -84,16 +84,16 @@ export const miRepository = {
 		// @ts-expect-error -- protected
 		const insertedColumns = queryBuilder.getInsertedColumns();
 		if (insertedColumns.length) {
-			return insertedColumns.map(column => column.databaseName);
+			return insertedColumns.map(column => `__disambiguation__${column.databaseName}`);
 		}
 		if (!queryBuilder.expressionMap.mainAlias?.hasMetadata && !queryBuilder.expressionMap.insertColumns.length) {
 			// @ts-expect-error -- protected
 			const valueSets = queryBuilder.getValueSets();
 			if (valueSets.length === 1) {
-				return Object.keys(valueSets[0]);
+				return Object.keys(valueSets[0]).map(key => `__disambiguation__${key}`);
 			}
 		}
-		return queryBuilder.expressionMap.insertColumns;
+		return queryBuilder.expressionMap.insertColumns.map(column => `__disambiguation__${column}`);
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity).returning('*');
@@ -115,7 +115,7 @@ export const miRepository = {
 			return builder.select(selection, selectionAliasName);
 		};
 		for (const columnName of this.createTableColumnNames(queryBuilder)) {
-			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
+			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName.slice('__disambiguation__'.length)}`);
 		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
