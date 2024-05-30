@@ -101,6 +101,7 @@ export const miRepository = {
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
+		const name = queryBuilder.expressionMap.mainAlias!.name;
 		queryBuilder.expressionMap.mainAlias!.name = 't';
 		const columnNames = this.createTableColumnNames(queryBuilder);
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
@@ -111,6 +112,7 @@ export const miRepository = {
 			builder.setFindOptions(findOptions);
 		}
 		const raw = await builder.execute();
+		queryBuilder.expressionMap.mainAlias!.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
 		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, queryBuilder.expressionMap.mainAlias!);
