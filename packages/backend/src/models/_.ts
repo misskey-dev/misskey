@@ -115,7 +115,7 @@ export const miRepository = {
 			builder.setFindOptions(findOptions);
 			// @ts-expect-error -- protected
 			const joins = builder.joins;
-			console.log(joins);
+			console.dir(joins, { depth: null });
 		}
 		const [query, parameters] = builder.getQueryAndParameters();
 		for (let i = 0; i < Math.ceil(query.length / 10000); i++) {
