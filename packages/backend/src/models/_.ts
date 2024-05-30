@@ -113,9 +113,8 @@ export const miRepository = {
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
 		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, queryBuilder.expressionMap.mainAlias!);
-		console.log(raw, relationId, relationCount, result);
+		console.log(raw, relationId, relationCount, result, queryBuilder.expressionMap.mainAlias!.metadata.columns);
 		throw null;
-		return result;
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
 		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
