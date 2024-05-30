@@ -4,6 +4,7 @@
  */
 
 import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
+import { DriverUtils } from 'typeorm/driver/DriverUtils.js';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
 import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
@@ -113,7 +114,7 @@ export const miRepository = {
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
 		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, queryBuilder.expressionMap.mainAlias!);
-		console.log(raw, relationId, relationCount, result, queryBuilder.expressionMap.mainAlias!.metadata.columns);
+		console.log(raw, relationId, relationCount, result, queryBuilder.expressionMap.mainAlias!.metadata.primaryColumns.map((column) => DriverUtils.buildAlias(queryBuilder.connection.driver, undefined, queryBuilder.expressionMap.mainAlias!.name, column.databaseName)));
 		throw null;
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
