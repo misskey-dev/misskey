@@ -101,23 +101,26 @@ export const miRepository = {
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
-		const name = queryBuilder.expressionMap.mainAlias!.name;
-		queryBuilder.expressionMap.mainAlias!.name = 't';
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const mainAlias = queryBuilder.expressionMap.mainAlias!;
+		const name = mainAlias.name;
+		mainAlias.name = 't';
 		const columnNames = this.createTableColumnNames(queryBuilder);
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
 		if (findOptions) {
 			builder.setFindOptions(findOptions);
 		}
 		const raw = await builder.execute();
-		queryBuilder.expressionMap.mainAlias!.name = name;
+		mainAlias.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
-		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, queryBuilder.expressionMap.mainAlias!);
-		console.log(raw, relationId, relationCount, result, queryBuilder.expressionMap.mainAlias!.metadata.primaryColumns.map((column) => DriverUtils.buildAlias(queryBuilder.connection.driver, undefined, queryBuilder.expressionMap.mainAlias!.name, column.databaseName)));
-		throw null;
+		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
+		console.log(raw, relationId, relationCount, result, mainAlias.metadata.primaryColumns.map((column) => DriverUtils.buildAlias(queryBuilder.connection.driver, undefined, mainAlias.name, column.databaseName)));
+		return result[0];
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
 		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
