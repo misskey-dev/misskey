@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.5.0-beta.5",
+	"version": "2024.5.0-rc.7",
 	"description": "Misskey SDK for JavaScript",
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
