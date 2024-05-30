@@ -22,9 +22,11 @@ jobs:
       # PR情報を取得
       - name: Get PR
         run: |
-          pr_json=$(gh pr view ${{ github.event.pull_request.number }} --json isDraft,headRefName)
+          pr_json=$(gh pr view "$PR_NUMBER" --json isDraft,headRefName)
           echo "ref=$(echo $pr_json | jq -r '.headRefName')" >> $GITHUB_OUTPUT
         id: get_pr
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
   release:
     uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v1
     needs: check
