@@ -6,6 +6,7 @@
 - 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
+- Feat: エラートラッキングにSentryを使用できるようになりました
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
@@ -72,6 +73,7 @@
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
 - Fix: 連合なしの状態の読み書きができない問題を修正
 - Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
+- Fix: ファイルを5つ以上添付してもテキストがないとノートが折りたたまれない問題を修正
 - Fix: フォロー中のユーザーに関する"TLに他の人への返信を含める"の設定が分かりづらい問題を修正
 
 ### Server
