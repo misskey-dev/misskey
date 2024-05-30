@@ -113,6 +113,9 @@ export const miRepository = {
 		this.selectAliasColumnNames(queryBuilder, builder);
 		if (findOptions) {
 			builder.setFindOptions(findOptions);
+			// @ts-expect-error -- protected
+			const joins = builder.joins;
+			console.log(joins);
 		}
 		const [query, parameters] = builder.getQueryAndParameters();
 		for (let i = 0; i < Math.ceil(query.length / 10000); i++) {
