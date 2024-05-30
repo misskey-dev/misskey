@@ -99,7 +99,7 @@ export const miRepository = {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		queryBuilder.expressionMap.mainAlias!.name = 't';
 		const columnNames = this.createTableColumnNames(queryBuilder);
-		queryBuilder.returning(columnNames.join());
+		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
