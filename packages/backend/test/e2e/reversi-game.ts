@@ -21,7 +21,7 @@ describe('ReversiGame', () => {
 
 	test('matches when alice invites bob and bob accepts', async () => {
 		const response1 = await api('reversi/match', { userId: bob.id }, alice);
-		assert.strictEqual(response1.status, 200);
+		assert.strictEqual(response1.status, 204);
 		assert.strictEqual(response1.body, null);
 		const response2 = await api('reversi/match', { userId: alice.id }, bob);
 		assert.strictEqual(response2.status, 200);
