@@ -98,16 +98,17 @@ export const miRepository = {
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		queryBuilder.expressionMap.mainAlias!.name = 't';
-		const columnNames = this.createTableColumnNames(queryBuilder).map(column => `__disambiguation__${column}`);
-		queryBuilder.returning(columnNames.map(column => `"${column.slice('__disambiguation__'.length)}" AS "${column}"`).join());
+		const columnNames = this.createTableColumnNames(queryBuilder);
+		queryBuilder.returning(columnNames.join());
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
-		console.log(builder.expressionMap.mainAlias!.metadata, builder.getQueryAndParameters());
 		if (findOptions) {
-			return await builder.setFindOptions(findOptions).getOneOrFail();
+			builder.setFindOptions(findOptions);
 		}
-		return await builder.getOneOrFail();
+		const raw = await builder.execute();
+		console.log(raw);
+		return raw;
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
 		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
@@ -115,7 +116,7 @@ export const miRepository = {
 			return builder.select(selection, selectionAliasName);
 		};
 		for (const columnName of this.createTableColumnNames(queryBuilder)) {
-			selectOrAddSelect(`"${builder.alias}"."__disambiguation__${columnName}"`, `${builder.alias}_${columnName}`);
+			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
 		}
 	},
 } satisfies MiRepository<ObjectLiteral>;
