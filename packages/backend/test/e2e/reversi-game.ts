@@ -19,10 +19,15 @@ describe('ReversiGame', () => {
 		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
 
-	test('matches when alice invites bob', async () => {
-		const response: { body: ReversiMatchResponse } = await api('reversi/match', { userId: bob.id }, alice);
-
-		assert.strictEqual(response.body.user1.id, alice.id);
-		assert.strictEqual(response.body.user2.id, bob.id);
+	test('matches when alice invites bob and bob accepts', async () => {
+		const response1 = await api('reversi/match', { userId: bob.id }, alice);
+		assert.strictEqual(response1.status, 200);
+		assert.strictEqual(response1.body, null);
+		const response2 = await api('reversi/match', { userId: alice.id }, bob);
+		assert.strictEqual(response2.status, 200);
+		assert.notStrictEqual(response2.body, null);
+		const body = response2.body as ReversiMatchResponse;
+		assert.strictEqual(body.user1.id, alice.id);
+		assert.strictEqual(body.user2.id, bob.id);
 	});
 });
