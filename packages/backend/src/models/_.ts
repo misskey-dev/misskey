@@ -103,7 +103,7 @@ export const miRepository = {
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
-		console.log(builder.expressionMap.aliases, builder.getQueryAndParameters());
+		console.log(builder.expressionMap, builder.getQueryAndParameters());
 		if (findOptions) {
 			return await builder.setFindOptions(findOptions).getOneOrFail();
 		}
