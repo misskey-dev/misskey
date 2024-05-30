@@ -4,6 +4,9 @@
  */
 
 import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
+import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
+import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
+import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -107,8 +110,11 @@ export const miRepository = {
 			builder.setFindOptions(findOptions);
 		}
 		const raw = await builder.execute();
-		console.log(raw);
-		return raw;
+		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
+		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
+		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, queryBuilder.expressionMap.mainAlias!);
+		console.log(raw, relationId, relationCount, result);
+		return result;
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
 		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
