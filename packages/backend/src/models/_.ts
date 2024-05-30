@@ -8,6 +8,7 @@ import { DriverUtils } from 'typeorm/driver/DriverUtils.js';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
 import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
+import { OrmUtils } from 'typeorm/util/OrmUtils.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -113,9 +114,19 @@ export const miRepository = {
 		this.selectAliasColumnNames(queryBuilder, builder);
 		if (findOptions) {
 			builder.setFindOptions(findOptions);
+			/*
 			// @ts-expect-error -- protected
-			const joins = builder.joins;
-			console.dir(joins, { depth: null });
+			builder.findOptions = findOptions;
+			if (findOptions.relations) {
+				const relations = Array.isArray(findOptions.relations) ? OrmUtils.propertyPathsToTruthyObject(findOptions.relations) : findOptions.relations;
+				// @ts-expect-error -- protected
+				builder.buildRelations(relations, undefined, mainAlias.metadata, mainAlias.name);
+			}
+			// @ts-expect-error -- protected
+			for (const join of builder.joins) {
+			}
+			 */
+			console.log(builder.expressionMap.joinAttributes);
 		}
 		const [query, parameters] = builder.getQueryAndParameters();
 		for (let i = 0; i < Math.ceil(query.length / 10000); i++) {
