@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-const isMulukhiyaHome = (new URL(props.url)).pathname.startsWith('/mulukhiya')
+const isMulukhiyaHome = (new URL(props.url)).pathname.startsWith('/mulukhiya');
 const self = props.url.startsWith(local) && !isMulukhiyaHome;
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
