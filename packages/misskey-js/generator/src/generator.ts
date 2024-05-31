@@ -60,13 +60,17 @@ async function generateEndpoints(
 	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
 	const paths = openApiDocs.paths ?? {};
 	const postPathItems = Object.keys(paths)
-		.map(it => paths[it]?.post)
+		.map(it => ({
+			_path_: it.replace(/^\//, ''),
+			...paths[it]?.post,
+		}))
 		.filter(filterUndefined);
 
 	for (const operation of postPathItems) {
+		const path = operation._path_;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const operationId = operation.operationId!;
-		const endpoint = new Endpoint(operationId);
+		const endpoint = new Endpoint(path);
 		endpoints.push(endpoint);
 
 		if (isRequestBodyObject(operation.requestBody)) {
@@ -76,19 +80,21 @@ async function generateEndpoints(
 				// いまのところ複数のメディアタイプをとるエンドポイントは無いので決め打ちする
 				endpoint.request = new OperationTypeAlias(
 					operationId,
+					path,
 					supportMediaTypes[0],
 					OperationsAliasType.REQUEST,
 				);
 			}
 		}
 
-		if (isResponseObject(operation.responses['200']) && operation.responses['200'].content) {
+		if (operation.responses && isResponseObject(operation.responses['200']) && operation.responses['200'].content) {
 			const resContent = operation.responses['200'].content;
 			const supportMediaTypes = Object.keys(resContent);
 			if (supportMediaTypes.length > 0) {
 				// いまのところ複数のメディアタイプを返すエンドポイントは無いので決め打ちする
 				endpoint.response = new OperationTypeAlias(
 					operationId,
+					path,
 					supportMediaTypes[0],
 					OperationsAliasType.RESPONSE,
 				);
@@ -97,6 +103,8 @@ async function generateEndpoints(
 	}
 
 	const entitiesOutputLine: string[] = [];
+
+	entitiesOutputLine.push('/* eslint @typescript-eslint/naming-convention: 0 */');
 
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
 	entitiesOutputLine.push('');
@@ -138,12 +146,19 @@ async function generateApiClientJSDoc(
 	endpointsFileName: string,
 	warningsOutputPath: string,
 ) {
-	const endpoints: { operationId: string; description: string; }[] = [];
+	const endpoints: {
+		operationId: string;
+		path: string;
+		description: string;
+	}[] = [];
 
 	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
 	const paths = openApiDocs.paths ?? {};
 	const postPathItems = Object.keys(paths)
-		.map(it => paths[it]?.post)
+		.map(it => ({
+			_path_: it.replace(/^\//, ''),
+			...paths[it]?.post,
+		}))
 		.filter(filterUndefined);
 
 	for (const operation of postPathItems) {
@@ -153,6 +168,7 @@ async function generateApiClientJSDoc(
 		if (operation.description) {
 			endpoints.push({
 				operationId: operationId,
+				path: operation._path_,
 				description: operation.description,
 			});
 		}
@@ -173,7 +189,7 @@ async function generateApiClientJSDoc(
 			'    /**',
 			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
 			'     */',
-			`    request<E extends '${endpoint.operationId}', P extends Endpoints[E][\'req\']>(`,
+			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
@@ -232,21 +248,24 @@ interface IOperationTypeAlias {
 
 class OperationTypeAlias implements IOperationTypeAlias {
 	public readonly operationId: string;
+	public readonly path: string;
 	public readonly mediaType: string;
 	public readonly type: OperationsAliasType;
 
 	constructor(
 		operationId: string,
+		path: string,
 		mediaType: string,
 		type: OperationsAliasType,
 	) {
 		this.operationId = operationId;
+		this.path = path;
 		this.mediaType = mediaType;
 		this.type = type;
 	}
 
 	generateName(): string {
-		const nameBase = this.operationId.replace(/\//g, '-');
+		const nameBase = this.path.replace(/\//g, '-');
 		return toPascal(nameBase + this.type);
 	}
 
@@ -279,19 +298,19 @@ const emptyRequest = new EmptyTypeAlias(OperationsAliasType.REQUEST);
 const emptyResponse = new EmptyTypeAlias(OperationsAliasType.RESPONSE);
 
 class Endpoint {
-	public readonly operationId: string;
+	public readonly path: string;
 	public request?: IOperationTypeAlias;
 	public response?: IOperationTypeAlias;
 
-	constructor(operationId: string) {
-		this.operationId = operationId;
+	constructor(path: string) {
+		this.path = path;
 	}
 
 	toLine(): string {
 		const reqName = this.request?.generateName() ?? emptyRequest.generateName();
 		const resName = this.response?.generateName() ?? emptyResponse.generateName();
 
-		return `'${this.operationId}': { req: ${reqName}; res: ${resName} };`;
+		return `'${this.path}': { req: ${reqName}; res: ${resName} };`;
 	}
 }
 

@@ -4,12 +4,10 @@
 	"service": "app",
 	"workspaceFolder": "/workspace",
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/pnpm:2": {
-			"version": "8.9.2"
-		},
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "20.10.0"
-		}
+			"version": "20.12.2"
+		},
+		"ghcr.io/devcontainers-contrib/features/corepack:1": {}
 	},
 	"forwardPorts": [3000],
 	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh",
@@ -19,7 +17,6 @@
 				"editorconfig.editorconfig",
 				"dbaeumer.vscode-eslint",
 				"Vue.volar",
-				"Vue.vscode-typescript-vue-plugin",
 				"Orta.vscode-jest",
 				"dbaeumer.vscode-eslint",
 				"mrmlnc.vscode-json5"
