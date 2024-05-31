@@ -295,9 +295,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			isLlotheo: false,
 			noIrregularRules: options.noIrregularRules,
 		}, { relations: ['user1', 'user2'] });
-		if (game.user1 === game.user2) {
-			throw new Error('broken match');
-		}
 		this.cacheGame(game);
 
 		const packed = await this.reversiGameEntityService.packDetail(game);
