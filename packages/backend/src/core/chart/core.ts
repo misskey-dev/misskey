@@ -424,6 +424,7 @@ export default abstract class Chart<T extends Schema> {
 		// これを回避するための実装は複雑になりそうなため、一旦保留。
 
 		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
+			console.log(logHour, logDay);
 			const finalDiffs = {} as Record<string, number | string[]>;
 
 			for (const diff of this.buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
