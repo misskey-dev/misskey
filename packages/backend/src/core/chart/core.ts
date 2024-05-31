@@ -400,6 +400,8 @@ export default abstract class Chart<T extends Schema> {
 
 			this.logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 
+			console.log(log);
+
 			return log;
 		} finally {
 			unlock();
