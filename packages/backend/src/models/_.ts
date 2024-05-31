@@ -81,6 +81,7 @@ import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialE
 
 export interface MiRepository<T extends ObjectLiteral> {
 	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	createTableColumnNamesWithPrimaryKey(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
 	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
 }
@@ -101,16 +102,20 @@ export const miRepository = {
 		}
 		return queryBuilder.expressionMap.insertColumns;
 	},
+	createTableColumnNamesWithPrimaryKey(queryBuilder) {
+		const columnNames = this.createTableColumnNames(queryBuilder);
+		if (!columnNames.includes('id')) {
+			columnNames.unshift('id');
+		}
+		return columnNames;
+	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const mainAlias = queryBuilder.expressionMap.mainAlias!;
 		const name = mainAlias.name;
 		mainAlias.name = 't';
-		const columnNames = this.createTableColumnNames(queryBuilder);
-		if (!columnNames.includes('id')) {
-			columnNames.unshift('id');
-		}
+		const columnNames = this.createTableColumnNamesWithPrimaryKey(queryBuilder);
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -132,7 +137,7 @@ export const miRepository = {
 			selectOrAddSelect = (selection, selectionAliasName) => builder.addSelect(selection, selectionAliasName);
 			return builder.select(selection, selectionAliasName);
 		};
-		for (const columnName of this.createTableColumnNames(queryBuilder)) {
+		for (const columnName of this.createTableColumnNamesWithPrimaryKey(queryBuilder)) {
 			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
 		}
 	},
