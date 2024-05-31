@@ -87,6 +87,7 @@ export interface MiRepository<T extends ObjectLiteral> {
 
 export const miRepository = {
 	createTableColumnNames(queryBuilder) {
+		console.log(queryBuilder.expressionMap.mainAlias?.hasMetadata);
 		// @ts-expect-error -- protected
 		const insertedColumns = queryBuilder.getInsertedColumns();
 		if (insertedColumns.length) {
