@@ -115,20 +115,12 @@ export const miRepository = {
 		this.selectAliasColumnNames(queryBuilder, builder);
 		if (findOptions) {
 			builder.setFindOptions(findOptions);
-			console.log(builder.expressionMap.relationIdAttributes, builder.expressionMap.relationCountAttributes, builder.expressionMap.relationPropertyPath);
-			const [query, parameters] = builder.getQueryAndParameters();
-			for (let i = 0; i < Math.ceil(query.length / 10000); i++) {
-				console.log(query.slice(i * 10000, i * 10000 + 10000));
-			}
-			console.log(parameters);
 		}
 		const raw = await builder.execute();
-		console.log(raw);
 		mainAlias.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
 		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
-		console.log(raw, relationId, relationCount, result, mainAlias.metadata.primaryColumns.map((column) => DriverUtils.buildAlias(builder.connection.driver, undefined, mainAlias.name, column.databaseName)));
 		return result[0];
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
