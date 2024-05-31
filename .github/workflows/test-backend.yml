@@ -2,9 +2,6 @@ name: Test (backend)
 
 on:
   push:
-    branches:
-      - master
-      - develop
     paths:
       - packages/backend/**
       # for permissions
