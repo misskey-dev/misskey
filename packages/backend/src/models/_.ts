@@ -114,59 +114,6 @@ export const miRepository = {
 		this.selectAliasColumnNames(queryBuilder, builder);
 		if (findOptions) {
 			builder.setFindOptions(findOptions);
-			// @ts-expect-error -- protected
-			builder.createJoinExpression = function(this: SelectQueryBuilder<ObjectLiteral>) {
-				const joins = this.expressionMap.joinAttributes.map((joinAttr) => {
-					/* eslint-disable @typescript-eslint/no-non-null-assertion */
-					const relation = joinAttr.relation!;
-					const destinationTableName = joinAttr.tablePath;
-					const destinationTableAlias = joinAttr.alias.name;
-					let appendedCondition = joinAttr.condition ? ` AND (${joinAttr.condition})` : '';
-					const parentAlias = joinAttr.parentAlias;
-					if (relation.isManyToOne || relation.isOneToOneOwner) {
-						console.log(relation);
-						const condition = relation.joinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}="${parentAlias}_${joinColumn.propertyPath}"`).join(' AND ');
-						return ` ${joinAttr.direction} JOIN ${this.getTableName(destinationTableName)} ${this.escape(destinationTableAlias)}${
-							// @ts-expect-error -- private
-							this.createTableLockExpression()
-						} ON ${condition}${appendedCondition}`;
-					} else if (relation.isOneToMany || relation.isOneToOneNotOwner) {
-						const condition = relation.inverseRelation!.joinColumns.map((joinColumn) => {
-							if (relation.inverseEntityMetadata.tableType === 'entity-child' && relation.inverseEntityMetadata.discriminatorColumn) {
-								appendedCondition += ` AND ${destinationTableAlias}.${relation.inverseEntityMetadata.discriminatorColumn.databaseName}='${relation.inverseEntityMetadata.discriminatorValue}'`;
-							}
-							return `${destinationTableAlias}.${relation.inverseRelation!.propertyPath}.${joinColumn.referencedColumn!.propertyPath}="${parentAlias}_${joinColumn.propertyPath}"`;
-						}).join(' AND ');
-						if (!condition) {
-							throw new TypeORMError(`Relation ${relation.entityMetadata.name}.${relation.propertyName} does not have join columns.`);
-						}
-						return ` ${joinAttr.direction} JOIN ${this.getTableName(destinationTableName)} ${this.escape(destinationTableAlias)}${
-							// @ts-expect-error -- private
-							this.createTableLockExpression()
-						} ON ${condition}${appendedCondition}`;
-					} else {
-						const junctionTableName = relation.junctionEntityMetadata!.tablePath;
-						const junctionAlias = joinAttr.junctionAlias;
-						let junctionCondition = '', destinationCondition = '';
-						if (relation.isOwning) {
-							junctionCondition = relation.joinColumns.map((joinColumn) => `${junctionAlias}.${joinColumn.propertyPath}=${parentAlias}_${joinColumn.referencedColumn!.propertyPath}`).join(' AND ');
-							destinationCondition = relation.inverseJoinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}="${junctionAlias}_${joinColumn.propertyPath}"`).join(' AND ');
-						} else {
-							junctionCondition = relation.inverseRelation!.inverseJoinColumns.map((joinColumn) => `${junctionAlias}.${joinColumn.propertyPath}="${parentAlias}_${joinColumn.referencedColumn!.propertyPath}"`).join(' AND ');
-							destinationCondition = relation.inverseRelation!.joinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}="${junctionAlias}_${joinColumn.propertyPath}"`).join(' AND ');
-						}
-						return ` ${joinAttr.direction} JOIN ${this.getTableName(junctionTableName)} ${this.escape(junctionAlias)}${
-							// @ts-expect-error -- private
-							this.createTableLockExpression()
-						} ON ${junctionCondition} ${joinAttr.direction} JOIN ${this.getTableName(destinationTableName)} ${this.escape(destinationTableAlias)}${
-							// @ts-expect-error -- private
-							this.createTableLockExpression()
-						} ON ${destinationCondition}${appendedCondition}`;
-					}
-					/* eslint-enable @typescript-eslint/no-non-null-assertion */
-				});
-				return joins.join(' ');
-			};
 		}
 		const [query, parameters] = builder.getQueryAndParameters();
 		for (let i = 0; i < Math.ceil(query.length / 10000); i++) {
@@ -174,6 +121,7 @@ export const miRepository = {
 		}
 		console.log(parameters);
 		const raw = await builder.execute();
+		console.log(raw);
 		mainAlias.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
