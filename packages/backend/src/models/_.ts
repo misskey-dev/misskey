@@ -8,6 +8,7 @@ import { DriverUtils } from 'typeorm/driver/DriverUtils.js';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
 import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
+import { ObjectUtils } from 'typeorm/util/ObjectUtils.js';
 import { OrmUtils } from 'typeorm/util/OrmUtils.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
@@ -122,11 +123,12 @@ export const miRepository = {
 		console.log(parameters);
 		const raw = await builder.execute();
 		console.log(raw);
+		console.log(builder.expressionMap.relationMetadata, builder.expressionMap.relationIdAttributes, builder.expressionMap.relationCountAttributes, builder.expressionMap.relationPropertyPath);
 		mainAlias.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
-		const result = new RawSqlResultsToEntityTransformer(queryBuilder.expressionMap, queryBuilder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
-		console.log(raw, relationId, relationCount, result, mainAlias.metadata.primaryColumns.map((column) => DriverUtils.buildAlias(queryBuilder.connection.driver, undefined, mainAlias.name, column.databaseName)));
+		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
+		console.log(raw, relationId, relationCount, result, mainAlias.metadata.primaryColumns.map((column) => DriverUtils.buildAlias(builder.connection.driver, undefined, mainAlias.name, column.databaseName)));
 		return result[0];
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
