@@ -4449,6 +4449,8 @@ export type components = {
       isActive: boolean;
       /** @default false */
       hasUnreadNote: boolean;
+      /** @default false */
+      notify: boolean;
     };
     Clip: {
       /**
