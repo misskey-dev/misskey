@@ -497,14 +497,20 @@ export class DriveService {
 
 		if (user && !force) {
 		// Check if there is a file with the same hash
-			const much = await this.driveFilesRepository.findOneBy({
+			const matched = await this.driveFilesRepository.findOneBy({
 				md5: info.md5,
 				userId: user.id,
 			});
 
-			if (much) {
-				this.registerLogger.info(`file with same hash is found: ${much.id}`);
-				return much;
+			if (matched) {
+				this.registerLogger.info(`file with same hash is found: ${matched.id}`);
+				if (sensitive && !matched.isSensitive) {
+					// The file is federated as sensitive for this time, but was federated as non-sensitive before.
+					// Therefore, update the file to sensitive.
+					await this.driveFilesRepository.update({ id: matched.id }, { isSensitive: true });
+					matched.isSensitive = true;
+				}
+				return matched;
 			}
 		}
 

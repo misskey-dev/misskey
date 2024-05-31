@@ -922,6 +922,10 @@ renotes: "Preposlať"
 sourceCode: "Zdrojový kód"
 flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
+_delivery:
+  stop: "Zmrazené"
+  _type:
+    none: "Zverejňovanie"
 _role:
   priority: "Priorita"
   _priority:
@@ -1448,4 +1452,3 @@ _moderationLogTypes:
   resetPassword: "Resetovať heslo"
 _reversi:
   total: "Celkom"
-

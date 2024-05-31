@@ -10,6 +10,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import type {
 	AnnouncementReadsRepository,
 	AnnouncementsRepository,
@@ -51,7 +52,7 @@ describe('AnnouncementService', () => {
 
 	function createAnnouncement(data: Partial<MiAnnouncement & { createdAt: Date }> = {}) {
 		return announcementsRepository.insert({
-			id: genAidx(data.createdAt ?? new Date()),
+			id: genAidx(data.createdAt?.getTime() ?? Date.now()),
 			updatedAt: null,
 			title: 'Title',
 			text: 'Text',
@@ -67,6 +68,7 @@ describe('AnnouncementService', () => {
 			],
 			providers: [
 				AnnouncementService,
+				AnnouncementEntityService,
 				CacheService,
 				IdService,
 			],
