@@ -155,7 +155,9 @@ export class SnowfallEffect {
 		max: 0.125,
 		easing: 0.0005,
 	};
-
+	/**
+	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas 
+	 */
 	constructor(options: {
 		sakura?: boolean;
 	}) {

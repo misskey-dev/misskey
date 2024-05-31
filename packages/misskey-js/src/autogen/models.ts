@@ -38,6 +38,7 @@ export type Signin = components['schemas']['Signin'];
 export type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
 export type RoleCondFormulaValueNot = components['schemas']['RoleCondFormulaValueNot'];
 export type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCondFormulaValueIsLocalOrRemote'];
+export type RoleCondFormulaValueUserSettingBooleanSchema = components['schemas']['RoleCondFormulaValueUserSettingBooleanSchema'];
 export type RoleCondFormulaValueAssignedRole = components['schemas']['RoleCondFormulaValueAssignedRole'];
 export type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
 export type RoleCondFormulaFollowersOrFollowingOrNotes = components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];

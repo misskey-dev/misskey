@@ -4,14 +4,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { VmimiRelayTimelineService } from '@/core/VmimiRelayTimelineService.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class VmimiRelayTimelineChannel extends Channel {
@@ -19,8 +18,8 @@ class VmimiRelayTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
-	private withFiles: boolean;
 	private withReplies: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -40,8 +39,8 @@ class VmimiRelayTimelineChannel extends Channel {
 		if (!policies.vrtlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
-		this.withFiles = params.withFiles ?? false;
 		this.withReplies = params.withReplies ?? false;
+		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -51,10 +50,9 @@ class VmimiRelayTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
+		if (!this.vmimiRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
-
-		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
 		// 関係ない返信は除外
 		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
@@ -63,19 +61,11 @@ class VmimiRelayTimelineChannel extends Channel {
 			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
 		}
 
-		// Ignore notes from non-vmimi relay
-		if (!this.vmimiRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
+		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
 
-		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
-		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
-
-		if (this.user && note.renoteId && !note.text) {
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;

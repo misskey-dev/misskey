@@ -79,7 +79,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.tools,
 		icon: 'ti ti-tool',
 		children: toolsMenuItems(),
-	}, { type: 'divider' }, (instance.impressumUrl) ? {
+	}, { type: 'divider' }, {
+		type: 'link',
+		text: i18n.ts.inquiry,
+		icon: 'ti ti-help-circle',
+		to: '/contact',
+	}, (instance.impressumUrl) ? {
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
 		action: () => {
@@ -104,8 +109,8 @@ export function openInstanceMenu(ev: MouseEvent) {
 			window.open('https://kinel.notion.site/NSFW-2024-5-1-f926e4bcff3f41c499ccd6ff13b2c4f2', '_blank', 'noopener');
 		},
 	}, { type: 'divider' }, {
-		text: i18n.ts.help,
-		icon: 'ti ti-help-circle',
+		text: i18n.ts.document,
+		icon: 'ti ti-bulb',
 		action: () => {
 			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
