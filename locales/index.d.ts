@@ -5471,6 +5471,14 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 問い合わせ先URL
+         */
+        "inquiryUrl": string;
+        /**
+         * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
+         */
+        "inquiryUrlDescription": string;
     };
     "_accountMigration": {
         /**
