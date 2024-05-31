@@ -34,8 +34,9 @@ jobs:
 
           check() {
             local file="$1"
+            # SPDX-FileCopyrightText might be other than syuilo for fork changes
             if ! (
-              grep -q "SPDX-FileCopyrightText: syuilo and misskey-project" "$file" ||
+              grep -q "SPDX-FileCopyrightText: " "$file" ||
               grep -q "SPDX-License-Identifier: AGPL-3.0-only" "$file"
             ); then
               echo "Missing: $file"
