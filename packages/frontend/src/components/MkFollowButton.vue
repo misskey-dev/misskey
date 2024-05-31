@@ -93,6 +93,18 @@ async function onClick() {
 				userId: props.user.id,
 			});
 		} else {
+			if (defaultStore.state.alwaysConfirmFollow) {
+				const { canceled } = await os.confirm({
+					type: 'question',
+					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+				});
+
+				if (canceled) {
+					wait.value = false;
+					return;
+				}
+			}
+
 			if (hasPendingFollowRequestFromYou.value) {
 				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
