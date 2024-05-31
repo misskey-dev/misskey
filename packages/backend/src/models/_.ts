@@ -125,7 +125,7 @@ export const miRepository = {
 					const parentAlias = joinAttr.parentAlias;
 					if (relation.isManyToOne || relation.isOneToOneOwner) {
 						console.log(relation);
-						const condition = relation.joinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}=${parentAlias}.${relation.propertyPath}_${joinColumn.referencedColumn!.propertyPath}`).join(' AND ');
+						const condition = relation.joinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}="${parentAlias}_${joinColumn.propertyPath}"`).join(' AND ');
 						return ` ${joinAttr.direction} JOIN ${this.getTableName(destinationTableName)} ${this.escape(destinationTableAlias)}${
 							// @ts-expect-error -- private
 							this.createTableLockExpression()
@@ -135,7 +135,7 @@ export const miRepository = {
 							if (relation.inverseEntityMetadata.tableType === 'entity-child' && relation.inverseEntityMetadata.discriminatorColumn) {
 								appendedCondition += ` AND ${destinationTableAlias}.${relation.inverseEntityMetadata.discriminatorColumn.databaseName}='${relation.inverseEntityMetadata.discriminatorValue}'`;
 							}
-							return `${destinationTableAlias}.${relation.inverseRelation!.propertyPath}.${joinColumn.referencedColumn!.propertyPath}=${parentAlias}_${joinColumn.referencedColumn!.propertyPath}`;
+							return `${destinationTableAlias}.${relation.inverseRelation!.propertyPath}.${joinColumn.referencedColumn!.propertyPath}="${parentAlias}_${joinColumn.propertyPath}"`;
 						}).join(' AND ');
 						if (!condition) {
 							throw new TypeORMError(`Relation ${relation.entityMetadata.name}.${relation.propertyName} does not have join columns.`);
@@ -150,15 +150,15 @@ export const miRepository = {
 						let junctionCondition = '', destinationCondition = '';
 						if (relation.isOwning) {
 							junctionCondition = relation.joinColumns.map((joinColumn) => `${junctionAlias}.${joinColumn.propertyPath}=${parentAlias}_${joinColumn.referencedColumn!.propertyPath}`).join(' AND ');
-							destinationCondition = relation.inverseJoinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}=${junctionAlias}_${joinColumn.propertyPath}`).join(' AND ');
+							destinationCondition = relation.inverseJoinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}="${junctionAlias}_${joinColumn.propertyPath}"`).join(' AND ');
 						} else {
-							junctionCondition = relation.inverseRelation!.inverseJoinColumns.map((joinColumn) => `${junctionAlias}.${joinColumn.propertyPath}=${parentAlias}_${joinColumn.referencedColumn!.propertyPath}`).join(' AND ');
-							destinationCondition = relation.inverseRelation!.joinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}=${junctionAlias}_${joinColumn.propertyPath}`).join(' AND ');
+							junctionCondition = relation.inverseRelation!.inverseJoinColumns.map((joinColumn) => `${junctionAlias}.${joinColumn.propertyPath}="${parentAlias}_${joinColumn.referencedColumn!.propertyPath}"`).join(' AND ');
+							destinationCondition = relation.inverseRelation!.joinColumns.map((joinColumn) => `${destinationTableAlias}.${joinColumn.referencedColumn!.propertyPath}="${junctionAlias}_${joinColumn.propertyPath}"`).join(' AND ');
 						}
 						return ` ${joinAttr.direction} JOIN ${this.getTableName(junctionTableName)} ${this.escape(junctionAlias)}${
 							// @ts-expect-error -- private
 							this.createTableLockExpression()
-						} ON ${this.replacePropertyNames(junctionCondition)} ${joinAttr.direction} JOIN ${this.getTableName(destinationTableName)} ${this.escape(destinationTableAlias)}${
+						} ON ${junctionCondition} ${joinAttr.direction} JOIN ${this.getTableName(destinationTableName)} ${this.escape(destinationTableAlias)}${
 							// @ts-expect-error -- private
 							this.createTableLockExpression()
 						} ON ${destinationCondition}${appendedCondition}`;
