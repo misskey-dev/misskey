@@ -1376,7 +1376,7 @@ _serverSettings:
   fanoutTimelineDbFallback: "資料庫的回退"
   fanoutTimelineDbFallbackDescription: "若啟用，在時間軸沒有快取的情況下將執行回退處理以額外查詢資料庫。若停用，可以透過不執行回退處理來進一步減少伺服器的負荷，但會限制可取得的時間軸範圍。"
   inquiryUrl: "聯絡表單網址"
-  inquiryUrlDescription: "指定伺服器運營者的聯絡表單網址或包含運營者聯絡資訊網頁的網址。"
+  inquiryUrlDescription: "指定伺服器運營者的聯絡表單網址，或包含運營者聯絡資訊網頁的網址。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
