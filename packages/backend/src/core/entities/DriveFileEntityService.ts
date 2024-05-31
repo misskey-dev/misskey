@@ -222,6 +222,9 @@ export class DriveFileEntityService {
 	public async packNullable(
 		src: MiDriveFile['id'] | MiDriveFile,
 		options?: PackOptions,
+		hint?: {
+			packedUser?: Packed<'UserLite'>
+		},
 	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({
 			detail: false,
@@ -248,8 +251,8 @@ export class DriveFileEntityService {
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
-			userId: opts.withUser ? file.userId : null,
-			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
+			userId: file.userId,
+			user: (opts.withUser && file.userId) ? hint?.packedUser ?? this.userEntityService.pack(file.userId) : null,
 		});
 	}
 
@@ -258,7 +261,10 @@ export class DriveFileEntityService {
 		files: MiDriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
-		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
+		const _user = files.map(({ user, userId }) => user ?? userId).filter(isNotNull);
+		const _userMap = await this.userEntityService.packMany(_user)
+			.then(users => new Map(users.map(user => [user.id, user])));
+		const items = await Promise.all(files.map(f => this.packNullable(f, options, f.userId ? { packedUser: _userMap.get(f.userId) } : {})));
 		return items.filter(isNotNull);
 	}
 

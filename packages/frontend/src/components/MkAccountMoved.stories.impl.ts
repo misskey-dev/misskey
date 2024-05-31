@@ -4,7 +4,10 @@
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
+import { HttpResponse, http } from 'msw';
+import { commonHandlers } from '../../.storybook/mocks.js';
 import { userDetailed } from '../../.storybook/fakes.js';
 import MkAccountMoved from './MkAccountMoved.vue';
 export const Default = {
@@ -29,10 +32,18 @@ export const Default = {
 		};
 	},
 	args: {
-		username: userDetailed().username,
-		host: userDetailed().host,
+		movedTo: userDetailed().id,
 	},
 	parameters: {
 		layout: 'centered',
+		msw: {
+			handlers: [
+				...commonHandlers,
+				http.post('/api/users/show', async ({ request }) => {
+					action('POST /api/users/show')(await request.json());
+					return HttpResponse.json(userDetailed());
+				}),
+			],
+		},
 	},
 } satisfies StoryObj<typeof MkAccountMoved>;

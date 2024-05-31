@@ -22,7 +22,7 @@ describe('Renote Mute', () => {
 	}, 1000 * 60 * 2);
 
 	test('ミュート作成', async () => {
-		const res = await api('/renote-mute/create', {
+		const res = await api('renote-mute/create', {
 			userId: carol.id,
 		}, alice);
 
@@ -37,7 +37,7 @@ describe('Renote Mute', () => {
 		// redisに追加されるのを待つ
 		await sleep(100);
 
-		const res = await api('/notes/local-timeline', {}, alice);
+		const res = await api('notes/local-timeline', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
@@ -54,13 +54,29 @@ describe('Renote Mute', () => {
 		// redisに追加されるのを待つ
 		await sleep(100);
 
-		const res = await api('/notes/local-timeline', {}, alice);
+		const res = await api('notes/local-timeline', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === carolRenote.id), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+	});
+
+	// #12956
+	test('タイムラインにリノートミュートしているユーザーの通常ノートのリノートが含まれる', async () => {
+		const carolNote = await post(carol, { text: 'hi' });
+		const bobRenote = await post(bob, { renoteId: carolNote.id });
+
+		// redisに追加されるのを待つ
+		await sleep(100);
+
+		const res = await api('notes/local-timeline', {}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
 	});
 
 	test('ストリームにリノートミュートしているユーザーのリノートが流れない', async () => {
@@ -82,6 +98,19 @@ describe('Renote Mute', () => {
 			alice, 'localTimeline',
 			() => api('notes/create', { renoteId: bobNote.id, text: 'kore' }, carol),
 			msg => msg.type === 'note' && msg.body.userId === carol.id,
+		);
+
+		assert.strictEqual(fired, true);
+	});
+
+	// #12956
+	test('ストリームにリノートミュートしているユーザーの通常ノートのリノートが流れてくる', async () => {
+		const carolbNote = await post(carol, { text: 'hi' });
+
+		const fired = await waitFire(
+			alice, 'localTimeline',
+			() => api('notes/create', { renoteId: carolbNote.id }, bob),
+			msg => msg.type === 'note' && msg.body.userId === bob.id,
 		);
 
 		assert.strictEqual(fired, true);
