@@ -87,7 +87,6 @@ export interface MiRepository<T extends ObjectLiteral> {
 
 export const miRepository = {
 	createTableColumnNames(queryBuilder) {
-		console.log(queryBuilder.expressionMap.mainAlias?.hasMetadata);
 		// @ts-expect-error -- protected
 		const insertedColumns = queryBuilder.getInsertedColumns();
 		if (insertedColumns.length) {
@@ -109,6 +108,9 @@ export const miRepository = {
 		const name = mainAlias.name;
 		mainAlias.name = 't';
 		const columnNames = this.createTableColumnNames(queryBuilder);
+		if (!columnNames.includes('id')) {
+			columnNames.unshift('id');
+		}
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
