@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: anatawa12
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class HardMuteAndSoftMuteFromRegistory1700906353915 {
     async up(queryRunner) {
 			// for servers start using this fork of misskey after 2023.11.1-kinel.1,
