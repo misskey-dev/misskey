@@ -43,6 +43,7 @@ export class AntennaEntityService {
 			withFile: antenna.withFile,
 			isActive: antenna.isActive,
 			hasUnreadNote: false, // TODO
+			notify: false, // 後方互換性のため
 		};
 	}
 }
