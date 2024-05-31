@@ -375,7 +375,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		const willCauseNotification = mentionedUsers.some(u => u.host === null)
 			|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.host === null))
-			|| data.reply?.userHost === null || (this.isQuote(data) && data.renote?.userHost === null) || false;
+			|| data.reply?.userHost === null || (this.isRenote(data) && this.isQuote(data) && data.renote?.userHost === null) || false;
 
 		if (this.config.nirila.blockMentionsFromUnfamiliarRemoteUsers && user.host !== null && willCauseNotification) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
