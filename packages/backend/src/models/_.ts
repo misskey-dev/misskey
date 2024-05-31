@@ -115,6 +115,7 @@ export const miRepository = {
 		this.selectAliasColumnNames(queryBuilder, builder);
 		if (findOptions) {
 			builder.setFindOptions(findOptions);
+			console.log(builder.expressionMap.relationMetadata, builder.expressionMap.relationIdAttributes, builder.expressionMap.relationCountAttributes, builder.expressionMap.relationPropertyPath);
 		}
 		const [query, parameters] = builder.getQueryAndParameters();
 		for (let i = 0; i < Math.ceil(query.length / 10000); i++) {
@@ -123,7 +124,6 @@ export const miRepository = {
 		console.log(parameters);
 		const raw = await builder.execute();
 		console.log(raw);
-		console.log(builder.expressionMap.relationMetadata, builder.expressionMap.relationIdAttributes, builder.expressionMap.relationCountAttributes, builder.expressionMap.relationPropertyPath);
 		mainAlias.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
