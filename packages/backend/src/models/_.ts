@@ -117,6 +117,7 @@ export const miRepository = {
 			builder.setFindOptions(findOptions);
 		}
 		const raw = await builder.execute();
+		console.log(columnNames, builder.getQueryAndParameters(), raw);
 		mainAlias.name = name;
 		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
 		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
