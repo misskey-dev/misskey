@@ -90,6 +90,10 @@ html {
 	&.useSystemFont {
 		font-family: system-ui;
 	}
+
+	&.embed {
+		background-color: transparent;
+	}
 }
 
 html._themeChanging_ {

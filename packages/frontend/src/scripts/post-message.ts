@@ -19,6 +19,7 @@ export type MiPostMessageEvent = {
  * 親フレームにイベントを送信
  */
 export function postMessageToParentWindow(type: PostMessageEventType, payload?: any): void {
+	if (_DEV_) console.log('postMessageToParentWindow', type, payload);
 	window.parent.postMessage({
 		type,
 		payload,
