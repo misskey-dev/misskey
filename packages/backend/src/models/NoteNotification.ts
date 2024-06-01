@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
