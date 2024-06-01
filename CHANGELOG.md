@@ -1,10 +1,10 @@
 ## Unreleased
 
 ### General
--
+- Enhance: 不適切なページ、ギャラリー、Playを管理者権限で削除できるように
 
 ### Client
--
+- Enhance: 不適切なページ、ギャラリー、Playを通報できるように
 
 ### Server
 -
@@ -24,7 +24,6 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
 - Enhance: クリップのノート数を表示するように
 - Enhance: コンディショナルロールの条件として以下を新たに追加 (#13667)
-- Enhance: 不適切なPage、ギャラリー、Playを管理者権限で削除できるように
   - 猫ユーザーか
   - botユーザーか
   - サスペンド済みユーザーか
@@ -60,7 +59,6 @@
 - Enhance: フォローするかどうかの確認ダイアログを出せるように
 - Enhance: Playを手動でリロードできるように
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
-- Enhance: 不適切なPage、ギャラリー、Playを通報できるように
 - Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
 - Enhance: AiScriptを0.18.0にバージョンアップ
 - Enhance: 通常のノートでも、お気に入りに登録したチャンネルにリノートできるように
