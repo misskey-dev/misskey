@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/_.js';
+import type { ClipNotesRepository, ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
@@ -20,6 +20,9 @@ export class ClipEntityService {
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
+		@Inject(DI.clipNotesRepository)
+		private clipNotesRepository: ClipNotesRepository,
+
 		@Inject(DI.clipFavoritesRepository)
 		private clipFavoritesRepository: ClipFavoritesRepository,
 
@@ -32,6 +35,9 @@ export class ClipEntityService {
 	public async pack(
 		src: MiClip['id'] | MiClip,
 		me?: { id: MiUser['id'] } | null | undefined,
+		hint?: {
+			packedUser?: Packed<'UserLite'>
+		},
 	): Promise<Packed<'Clip'>> {
 		const meId = me ? me.id : null;
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
@@ -41,21 +47,25 @@ export class ClipEntityService {
 			createdAt: this.idService.parse(clip.id).date.toISOString(),
 			lastClippedAt: clip.lastClippedAt ? clip.lastClippedAt.toISOString() : null,
 			userId: clip.userId,
-			user: this.userEntityService.pack(clip.user ?? clip.userId),
+			user: hint?.packedUser ?? this.userEntityService.pack(clip.user ?? clip.userId),
 			name: clip.name,
 			description: clip.description,
 			isPublic: clip.isPublic,
 			favoritedCount: await this.clipFavoritesRepository.countBy({ clipId: clip.id }),
 			isFavorited: meId ? await this.clipFavoritesRepository.exists({ where: { clipId: clip.id, userId: meId } }) : undefined,
+			notesCount: meId ? await this.clipNotesRepository.countBy({ clipId: clip.id }) : undefined,
 		});
 	}
 
 	@bindThis
-	public packMany(
+	public async packMany(
 		clips: MiClip[],
 		me?: { id: MiUser['id'] } | null | undefined,
 	) {
-		return Promise.all(clips.map(x => this.pack(x, me)));
+		const _users = clips.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(clips.map(clip => this.pack(clip, me, { packedUser: _userMap.get(clip.userId) })));
 	}
 }
 

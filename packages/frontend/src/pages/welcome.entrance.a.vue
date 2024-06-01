@@ -42,11 +42,11 @@ import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+import { instance as meta } from '@/instance.js';
 
-const meta = ref<Misskey.entities.MetaResponse>();
 const instances = ref<Misskey.entities.FederationInstance[]>();
 
 function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
@@ -55,10 +55,6 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 	}
 	return getProxiedImageUrl(instance.iconUrl, 'preview');
 }
-
-misskeyApi('meta', { detail: true }).then(_meta => {
-	meta.value = _meta;
-});
 
 misskeyApiGet('federation/instances', {
 	sort: '+pubSub',
