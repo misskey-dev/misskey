@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
@@ -64,7 +65,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const rawItems = ref([]);
+const rawItems = ref<Misskey.entities.FetchRssResponse['items']>([]);
 const items = computed(() => rawItems.value.slice(0, widgetProps.maxEntries));
 const fetching = ref(true);
 const fetchEndpoint = computed(() => {
@@ -79,8 +80,8 @@ const tick = () => {
 
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())
-		.then(feed => {
-			rawItems.value = feed.items ?? [];
+		.then((feed: Misskey.entities.FetchRssResponse) => {
+			rawItems.value = feed.items;
 			fetching.value = false;
 		});
 };

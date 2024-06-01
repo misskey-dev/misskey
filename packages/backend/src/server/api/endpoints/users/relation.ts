@@ -132,11 +132,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
-
-			const relations = await Promise.all(ids.map(id => this.userEntityService.getRelation(me.id, id)));
-
-			return Array.isArray(ps.userId) ? relations : relations[0];
+			return Array.isArray(ps.userId)
+				? await this.userEntityService.getRelations(me.id, ps.userId).then(it => [...it.values()])
+				: await this.userEntityService.getRelation(me.id, ps.userId).then(it => [it]);
 		});
 	}
 }

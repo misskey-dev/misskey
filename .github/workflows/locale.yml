@@ -1,0 +1,27 @@
+name: Lint
+
+on:
+  push:
+    paths:
+      - locales/**
+  pull_request:
+    paths:
+      - locales/**
+
+jobs:
+  locale_verify:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v4.0.2
+      with:
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - run: cd locales && node verify.js
