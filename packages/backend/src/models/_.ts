@@ -3,13 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder, TypeORMError } from 'typeorm';
-import { DriverUtils } from 'typeorm/driver/DriverUtils.js';
+import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, QueryRunner, ReplicationMode, Repository, SelectQueryBuilder } from 'typeorm';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
 import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
-import { ObjectUtils } from 'typeorm/util/ObjectUtils.js';
-import { OrmUtils } from 'typeorm/util/OrmUtils.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -79,11 +76,16 @@ import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
+interface AsyncDisposableReference<T> extends AsyncDisposable {
+	readonly value: T;
+}
+
 export interface MiRepository<T extends ObjectLiteral> {
 	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	createTableColumnNamesWithPrimaryKey(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
 	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
+	useQueryRunner(this: Repository<T> & MiRepository<T>, mode: ReplicationMode): AsyncDisposableReference<QueryRunner>;
 }
 
 export const miRepository = {
@@ -110,14 +112,16 @@ export const miRepository = {
 		return columnNames;
 	},
 	async insertOne(entity, findOptions?) {
-		const queryBuilder = this.createQueryBuilder().insert().values(entity);
+		await using queryRunnerADR = this.useQueryRunner('master');
+		const queryRunner = queryRunnerADR.value;
+		const queryBuilder = this.createQueryBuilder(undefined, queryRunner).insert().values(entity);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const mainAlias = queryBuilder.expressionMap.mainAlias!;
 		const name = mainAlias.name;
 		mainAlias.name = 't';
 		const columnNames = this.createTableColumnNamesWithPrimaryKey(queryBuilder);
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
-		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+		const builder = this.createQueryBuilder(undefined, queryRunner).addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
@@ -126,9 +130,9 @@ export const miRepository = {
 		}
 		const raw = await builder.execute();
 		mainAlias.name = name;
-		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
-		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
-		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
+		const relationId = await new RelationIdLoader(builder.connection, queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
+		const relationCount = await new RelationCountLoader(builder.connection, queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
+		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, queryRunner).transform(raw, mainAlias);
 		return result[0];
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
@@ -139,6 +143,23 @@ export const miRepository = {
 		for (const columnName of this.createTableColumnNamesWithPrimaryKey(queryBuilder)) {
 			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
 		}
+	},
+	useQueryRunner(mode) {
+		if (this.queryRunner?.getReplicationMode() === mode) {
+			return {
+				value: this.queryRunner,
+				[Symbol.asyncDispose]() {
+					return Promise.resolve();
+				},
+			};
+		}
+		const queryRunner = this.manager.connection.createQueryRunner(mode);
+		return {
+			value: queryRunner,
+			[Symbol.asyncDispose]() {
+				return queryRunner.release();
+			},
+		};
 	},
 } satisfies MiRepository<ObjectLiteral>;
 
