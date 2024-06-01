@@ -112,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const now = new Date();
 
-			const antenna = await this.antennasRepository.insert({
+			const antenna = await this.antennasRepository.insertOne({
 				id: this.idService.gen(now.getTime()),
 				lastUsedAt: now,
 				userId: me.id,
@@ -127,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludeBots: ps.excludeBots,
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
-			}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
 

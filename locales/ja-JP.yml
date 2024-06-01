@@ -837,6 +837,7 @@ administration: "管理"
 accounts: "アカウント"
 switch: "切り替え"
 noMaintainerInformationWarning: "管理者情報が設定されていません。"
+noInquiryUrlWarning: "問い合わせ先URLが設定されていません。"
 noBotProtectionWarning: "Botプロテクションが設定されていません。"
 configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
@@ -1383,6 +1384,8 @@ _serverSettings:
   fanoutTimelineDescription: "有効にすると、各種タイムラインを取得する際のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。サーバーのメモリ容量が少ない場合、または動作が不安定な場合は無効にすることができます。"
   fanoutTimelineDbFallback: "データベースへのフォールバック"
   fanoutTimelineDbFallbackDescription: "有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。"
+  inquiryUrl: "問い合わせ先URL"
+  inquiryUrlDescription: "サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
