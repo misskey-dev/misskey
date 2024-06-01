@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error();
 			}
 
-			const post = await this.galleryPostsRepository.insert(new MiGalleryPost({
+			const post = await this.galleryPostsRepository.insertOne(new MiGalleryPost({
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
@@ -84,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: me.id,
 				isSensitive: ps.isSensitive,
 				fileIds: files.map(file => file.id),
-			})).then(x => this.galleryPostsRepository.findOneByOrFail(x.identifiers[0]));
+			}));
 
 			return await this.galleryPostEntityService.pack(post, me);
 		});

@@ -68,7 +68,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		localOnly: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
-		const emoji = await this.emojisRepository.insert({
+		const emoji = await this.emojisRepository.insertOne({
 			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
@@ -82,7 +82,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
-		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		if (data.host == null) {
 			this.localEmojisCache.refresh();
