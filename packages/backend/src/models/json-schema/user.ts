@@ -416,6 +416,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			nullable: false, optional: true,
 			enum: ['normal', 'none'],
 		},
+		isNoteSubscribing: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
 		withReplies: {
 			type: 'boolean',
 			nullable: false, optional: true,
