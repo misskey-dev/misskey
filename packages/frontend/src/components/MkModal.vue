@@ -175,8 +175,8 @@ const align = () => {
 	let left;
 	let top;
 
-	const x = srcRect.left + (fixed.value ? 0 : window.pageXOffset);
-	const y = srcRect.top + (fixed.value ? 0 : window.pageYOffset);
+	const x = srcRect.left + (fixed.value ? 0 : window.scrollX);
+	const y = srcRect.top + (fixed.value ? 0 : window.scrollY);
 
 	if (props.anchor.x === 'center') {
 		left = x + (props.src.offsetWidth / 2) - (width / 2);
@@ -220,24 +220,24 @@ const align = () => {
 		}
 	} else {
 		// 画面から横にはみ出る場合
-		if (left + width - window.pageXOffset > (window.innerWidth - SCROLLBAR_THICKNESS)) {
-			left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset - 1;
+		if (left + width - window.scrollX > (window.innerWidth - SCROLLBAR_THICKNESS)) {
+			left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.scrollX - 1;
 		}
 
-		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - (top - window.pageYOffset);
+		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - (top - window.scrollY);
 		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
-		if (top + height - window.pageYOffset > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
+		if (top + height - window.scrollY > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight.value = underSpace;
 				} else {
 					maxHeight.value = upperSpace;
-					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
+					top = window.scrollY + ((upperSpace + MARGIN) - height);
 				}
 			} else {
-				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height + window.pageYOffset - 1;
+				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height + window.scrollY - 1;
 			}
 		} else {
 			maxHeight.value = underSpace;
@@ -255,15 +255,15 @@ const align = () => {
 	let transformOriginX = 'center';
 	let transformOriginY = 'center';
 
-	if (top >= srcRect.top + props.src.offsetHeight + (fixed.value ? 0 : window.pageYOffset)) {
+	if (top >= srcRect.top + props.src.offsetHeight + (fixed.value ? 0 : window.scrollY)) {
 		transformOriginY = 'top';
-	} else if ((top + height) <= srcRect.top + (fixed.value ? 0 : window.pageYOffset)) {
+	} else if ((top + height) <= srcRect.top + (fixed.value ? 0 : window.scrollY)) {
 		transformOriginY = 'bottom';
 	}
 
-	if (left >= srcRect.left + props.src.offsetWidth + (fixed.value ? 0 : window.pageXOffset)) {
+	if (left >= srcRect.left + props.src.offsetWidth + (fixed.value ? 0 : window.scrollX)) {
 		transformOriginX = 'left';
-	} else if ((left + width) <= srcRect.left + (fixed.value ? 0 : window.pageXOffset)) {
+	} else if ((left + width) <= srcRect.left + (fixed.value ? 0 : window.scrollX)) {
 		transformOriginX = 'right';
 	}
 
@@ -276,8 +276,11 @@ const align = () => {
 const onOpened = () => {
 	emit('opened');
 
+	// NOTE: Chromatic テストの際に undefined になる場合がある
+	if (content.value == null) return;
+
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
-	const el = content.value!.children[0];
+	const el = content.value.children[0];
 	el.addEventListener('mousedown', ev => {
 		contentClicking = true;
 		window.addEventListener('mouseup', ev => {

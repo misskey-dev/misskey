@@ -427,6 +427,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			inquiryUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			repositoryUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -434,6 +438,8 @@ export const meta = {
 			summalyProxy: {
 				type: 'string',
 				optional: false, nullable: true,
+				deprecated: true,
+				description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
 			},
 			themeColor: {
 				type: 'string',
@@ -450,6 +456,30 @@ export const meta = {
 			version: {
 				type: 'string',
 				optional: false, nullable: false,
+			},
+			urlPreviewEnabled: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			urlPreviewTimeout: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			urlPreviewMaximumContentLength: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			urlPreviewRequireContentLength: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			urlPreviewUserAgent: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			urlPreviewSummaryProxyUrl: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 		},
 	},
@@ -487,6 +517,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				feedbackUrl: instance.feedbackUrl,
 				impressumUrl: instance.impressumUrl,
 				privacyPolicyUrl: instance.privacyPolicyUrl,
+				inquiryUrl: instance.inquiryUrl,
 				disableRegistration: instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
@@ -533,7 +564,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
 				enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 				proxyAccountId: instance.proxyAccountId,
-				summalyProxy: instance.summalyProxy,
 				email: instance.email,
 				smtpSecure: instance.smtpSecure,
 				smtpHost: instance.smtpHost,
@@ -577,6 +607,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				notesPerOneAd: instance.notesPerOneAd,
+				summalyProxy: instance.urlPreviewSummaryProxyUrl,
+				urlPreviewEnabled: instance.urlPreviewEnabled,
+				urlPreviewTimeout: instance.urlPreviewTimeout,
+				urlPreviewMaximumContentLength: instance.urlPreviewMaximumContentLength,
+				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
+				urlPreviewUserAgent: instance.urlPreviewUserAgent,
+				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
 			};
 		});
 	}

@@ -63,3 +63,26 @@ export async function lookupUserByEmail() {
 		}
 	}
 }
+
+export async function lookupFile() {
+	const { canceled, result: q } = await os.inputText({
+		title: i18n.ts.fileIdOrUrl,
+		minLength: 1,
+	});
+	if (canceled) return;
+
+	const show = (file) => {
+		os.pageWindow(`/admin/file/${file.id}`);
+	};
+
+	misskeyApi('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
+		show(file);
+	}).catch(err => {
+		if (err.code === 'NO_SUCH_FILE') {
+			os.alert({
+				type: 'error',
+				text: i18n.ts.notFound,
+			});
+		}
+	});
+}

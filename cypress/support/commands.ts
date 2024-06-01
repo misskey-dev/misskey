@@ -30,9 +30,13 @@ Cypress.Commands.add('visitHome', () => {
 })
 
 Cypress.Commands.add('resetState', () => {
-	cy.window(win => {
+	// iframe.contentWindow.indexedDB.deleteDatabase() がchromeのバグで使用できないため、indexedDBを無効化している。
+	// see https://github.com/misskey-dev/misskey/issues/13605#issuecomment-2053652123
+	/*
+	cy.window().then(win => {
 		win.indexedDB.deleteDatabase('keyval-store');
 	});
+	 */
 	cy.request('POST', '/api/reset-db', {}).as('reset');
 	cy.get('@reset').its('status').should('equal', 204);
 	cy.reload(true);
