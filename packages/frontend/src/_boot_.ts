@@ -19,7 +19,7 @@ if (isEmbedPage()) {
 	const bootOptions: Partial<CommonBootOptions> = {};
 
 	const params = new URLSearchParams(location.search);
-	const color = params.get('color');
+	const color = params.get('colorMode');
 	if (color && ['light', 'dark'].includes(color)) {
 		bootOptions.forceColorMode = color as 'light' | 'dark';
 	}

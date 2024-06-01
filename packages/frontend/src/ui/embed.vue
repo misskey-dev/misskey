@@ -52,7 +52,7 @@ provideReactiveMetadata(pageMetadata);
 
 //#region Embed Style
 const params = new URLSearchParams(location.search);
-const embedRounded = ref(params.get('rounded') !== '0');
+const embedRounded = ref(params.get('rounded') !== 'false');
 const maxHeight = ref(params.get('maxHeight') ? parseInt(params.get('maxHeight')!) : 0);
 //#endregion
 
