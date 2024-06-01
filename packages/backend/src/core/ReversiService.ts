@@ -281,7 +281,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean; }): Promise<MiReversiGame> {
-		const game = await this.reversiGamesRepository.insert({
+		const game = await this.reversiGamesRepository.insertOne({
 			id: this.idService.gen(),
 			user1Id: parentId,
 			user2Id: childId,
@@ -294,10 +294,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			bw: 'random',
 			isLlotheo: false,
 			noIrregularRules: options.noIrregularRules,
-		}).then(x => this.reversiGamesRepository.findOneOrFail({
-			where: { id: x.identifiers[0].id },
-			relations: ['user1', 'user2'],
-		}));
+		}, { relations: ['user1', 'user2'] });
 		this.cacheGame(game);
 
 		const packed = await this.reversiGameEntityService.packDetail(game);
