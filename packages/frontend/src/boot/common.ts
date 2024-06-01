@@ -24,7 +24,17 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/definition.js';
 
-export async function common(createVue: () => App<Element>) {
+export type CommonBootOptions = {
+	forceColorMode?: 'dark' | 'light' | 'auto';
+};
+
+const defaultCommonBootOptions: CommonBootOptions = {
+	forceColorMode: 'auto',
+};
+
+export async function common(createVue: () => App<Element>, partialOptions?: Partial<CommonBootOptions>) {
+	const bootOptions = Object.assign(defaultCommonBootOptions, partialOptions);
+
 	console.info(`Misskey v${version}`);
 
 	if (_DEV_) {
@@ -166,15 +176,19 @@ export async function common(createVue: () => App<Element>) {
 	});
 
 	//#region Sync dark mode
-	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
+	if (ColdDeviceStorage.get('syncDeviceDarkMode') && bootOptions.forceColorMode === 'auto') {
 		defaultStore.set('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
+		if (ColdDeviceStorage.get('syncDeviceDarkMode') && bootOptions.forceColorMode === 'auto') {
 			defaultStore.set('darkMode', mql.matches);
 		}
 	});
+
+	if (bootOptions.forceColorMode !== 'auto') {
+		defaultStore.set('darkMode', bootOptions.forceColorMode === 'dark');
+	}
 	//#endregion
 
 	fetchInstanceMetaPromise.then(() => {

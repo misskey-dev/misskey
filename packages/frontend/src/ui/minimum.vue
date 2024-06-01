@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div :class="isEmbed ? $style.rootForEmbedPage : $style.root">
 	<div style="container-type: inline-size;">
 		<RouterView/>
 	</div>
@@ -19,6 +19,12 @@ import XCommon from './_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 import { mainRouter } from '@/router/main.js';
+
+const props = withDefaults(defineProps<{
+	isEmbed?: boolean;
+}>(), {
+	isEmbed: false,
+});
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -38,12 +44,18 @@ provideMetadataReceiver((metadataGetter) => {
 });
 provideReactiveMetadata(pageMetadata);
 
-document.documentElement.style.overflowY = 'scroll';
+if (!props.isEmbed) {
+	document.documentElement.style.overflowY = 'scroll';
+}
 </script>
 
 <style lang="scss" module>
 .root {
 	min-height: 100dvh;
+	box-sizing: border-box;
+}
+
+.rootForEmbedPage {
 	box-sizing: border-box;
 }
 </style>

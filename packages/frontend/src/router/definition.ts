@@ -556,6 +556,10 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
 }, {
+	path: '/embed',
+	component: page(() => import('@/pages/embed/index.vue')),
+//	children: [],
+}, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
 }, {

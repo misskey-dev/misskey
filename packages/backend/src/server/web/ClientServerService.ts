@@ -751,7 +751,7 @@ export class ClientServerService {
 		});
 		//#endregion
 
-		//region noindex pages
+		//#region noindex pages
 		// Tags
 		fastify.get<{ Params: { clip: string; } }>('/tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
@@ -761,7 +761,13 @@ export class ClientServerService {
 		fastify.get<{ Params: { clip: string; } }>('/user-tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
 		});
-		//endregion
+		//#endregion
+
+		//#region embed pages
+		fastify.get('/embed/:path(.*)', async (request, reply) => {
+			reply.removeHeader('X-Frame-Options');
+			return await renderBase(reply, { noindex: true });
+		});
 
 		fastify.get('/_info_card_', async (request, reply) => {
 			const meta = await this.metaService.fetch(true);
@@ -776,6 +782,7 @@ export class ClientServerService {
 				originalNotesCount: await this.notesRepository.countBy({ userHost: IsNull() }),
 			});
 		});
+		//#endregion
 
 		fastify.get('/bios', async (request, reply) => {
 			return await reply.view('bios', {

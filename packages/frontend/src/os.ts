@@ -24,6 +24,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import { isEmbedPage } from '@/scripts/embed-page.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -172,6 +173,8 @@ export async function popup<T extends Component>(
 	events: ComponentEmit<T> = {} as ComponentEmit<T>,
 	disposeEvent?: keyof ComponentEmit<T>,
 ): Promise<{ dispose: () => void }> {
+	if (isEmbedPage()) return { dispose: () => {} };
+
 	markRaw(component);
 
 	const id = ++popupIdCount;
