@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: yukineko and tai-cat
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+
 export class NoteNotification1682932943132 {
     name = 'NoteNotification1682932943132'
 
