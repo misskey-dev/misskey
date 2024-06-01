@@ -4,7 +4,8 @@
 -
 
 ### Client
--
+- Enhance: 通報の管理画面を改善  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/222)
 
 ### Server
 -
@@ -66,8 +67,6 @@
 - Enhance: 新着ノートをサウンドで通知する機能をdeck UIに追加しました
 - Enhance: コントロールパネルのクイックアクションからファイルを照会できるように
 - Enhance: コントロールパネルのクイックアクションから通常の照会を行えるように
-- Enhance: 通報の管理画面を改善  
-  (Cherry-picked from https://github.com/taiyme/misskey/pull/222)
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
