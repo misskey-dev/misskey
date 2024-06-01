@@ -1281,6 +1281,10 @@ export interface Locale extends ILocale {
      */
     "selectFolders": string;
     /**
+     * ファイルが選択されていません
+     */
+    "fileNotSelected": string;
+    /**
      * ファイル名を変更
      */
     "renameFile": string;
@@ -3361,6 +3365,10 @@ export interface Locale extends ILocale {
      */
     "noMaintainerInformationWarning": string;
     /**
+     * 問い合わせ先URLが設定されていません。
+     */
+    "noInquiryUrlWarning": string;
+    /**
      * Botプロテクションが設定されていません。
      */
     "noBotProtectionWarning": string;
@@ -4113,9 +4121,13 @@ export interface Locale extends ILocale {
      */
     "thisPostMayBeAnnoyingIgnore": string;
     /**
-     * 見たことのあるリノートを省略して表示
+     * リノートのスマート省略
      */
     "collapseRenotes": string;
+    /**
+     * リアクションやリノートをしたことがあるノートをたたんで表示します。
+     */
+    "collapseRenotesDescription": string;
     /**
      * サーバー内部エラー
      */
@@ -5463,6 +5475,14 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 問い合わせ先URL
+         */
+        "inquiryUrl": string;
+        /**
+         * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
+         */
+        "inquiryUrlDescription": string;
     };
     "_accountMigration": {
         /**
@@ -9139,6 +9159,10 @@ export interface Locale extends ILocale {
          * カラムを追加
          */
         "addColumn": string;
+        /**
+         * 新着ノート通知の設定
+         */
+        "newNoteNotificationSettings": string;
         /**
          * カラムの設定
          */

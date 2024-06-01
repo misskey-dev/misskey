@@ -1023,6 +1023,10 @@ flip: "Odwróć"
 lastNDays: "W ciągu ostatnich {n} dni"
 surrender: "Odrzuć"
 gameRetry: "Spróbuj ponownie"
+_delivery:
+  stop: "Zawieszono"
+  _type:
+    none: "Publikowanie"
 _bubbleGame:
   _score:
     score: "Wynik"

@@ -706,6 +706,15 @@ export type paths = {
      */
     post: operations['announcements'];
   };
+  '/announcements/show': {
+    /**
+     * announcements/show
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['announcements___show'];
+  };
   '/antennas/create': {
     /**
      * antennas/create
@@ -4441,7 +4450,6 @@ export type components = {
       caseSensitive: boolean;
       /** @default false */
       localOnly: boolean;
-      notify: boolean;
       /** @default false */
       excludeBots: boolean;
       /** @default false */
@@ -4450,6 +4458,8 @@ export type components = {
       isActive: boolean;
       /** @default false */
       hasUnreadNote: boolean;
+      /** @default false */
+      notify: boolean;
     };
     Clip: {
       /**
@@ -4832,6 +4842,7 @@ export type components = {
       impressumUrl: string | null;
       logoImageUrl: string | null;
       privacyPolicyUrl: string | null;
+      inquiryUrl: string | null;
       serverRules: string[];
       themeColor: string | null;
       policies: components['schemas']['RolePolicies'];
@@ -4979,6 +4990,7 @@ export type operations = {
             shortName: string | null;
             objectStorageS3ForcePathStyle: boolean;
             privacyPolicyUrl: string | null;
+            inquiryUrl: string | null;
             repositoryUrl: string | null;
             /**
              * @deprecated
@@ -8907,6 +8919,7 @@ export type operations = {
           feedbackUrl?: string | null;
           impressumUrl?: string | null;
           privacyPolicyUrl?: string | null;
+          inquiryUrl?: string | null;
           useObjectStorage?: boolean;
           objectStorageBaseUrl?: string | null;
           objectStorageBucket?: string | null;
@@ -9672,6 +9685,60 @@ export type operations = {
     };
   };
   /**
+   * announcements/show
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  announcements___show: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          announcementId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['Announcement'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * antennas/create
    * @description No description provided.
    *
@@ -9694,7 +9761,6 @@ export type operations = {
           excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
-          notify: boolean;
         };
       };
     };
@@ -9976,7 +10042,6 @@ export type operations = {
           excludeBots?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
-          notify?: boolean;
         };
       };
     };

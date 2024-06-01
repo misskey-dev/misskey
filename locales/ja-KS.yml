@@ -1235,6 +1235,10 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はあらへんで"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "問い合わせ"
+_delivery:
+  stop: "配信せぇへん"
+  _type:
+    none: "配信しとる"
 _bubbleGame:
   howToPlay: "遊び方"
   hold: "ホールド"
@@ -2032,7 +2036,6 @@ _permissions:
   "read:admin:server-info": "サーバーの情報見る"
   "read:admin:show-moderation-log": "モデレーションログ見る"
   "read:admin:show-user": "ユーザーのプライベートな情報見る"
-  "read:admin:show-users": "ユーザーのプライベートな情報見る"
   "write:admin:suspend-user": "ユーザーを凍結"
   "write:admin:unset-user-avatar": "ユーザーのアバターを削除"
   "write:admin:unset-user-banner": "ユーザーのバナーを削除"
