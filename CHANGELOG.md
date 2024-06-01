@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 
 ### Client
 -
