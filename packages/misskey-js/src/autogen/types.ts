@@ -3708,6 +3708,7 @@ export type components = {
       isRenoteMuted?: boolean;
       /** @enum {string} */
       notify?: 'normal' | 'none';
+      isNoteSubscribing?: boolean;
       withReplies?: boolean;
     };
     MeDetailedOnly: {
