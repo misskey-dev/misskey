@@ -2218,7 +2218,7 @@ _charts:
   federation: "聯邦宇宙"
   apRequest: "請求"
   usersIncDec: "使用者增減"
-  usersTotal: "使用者總數"
+  usersTotal: "使用者合計"
   activeUsers: "活躍使用者"
   notesIncDec: "貼文増減"
   localNotesIncDec: "本地貼文増減"
