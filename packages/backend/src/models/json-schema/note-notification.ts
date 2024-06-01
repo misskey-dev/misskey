@@ -1,3 +1,9 @@
+
+/*
+ * SPDX-FileCopyrightText: yukineko and tai-cat
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const packedNoteNotificationSchema = {
 	type: 'object',
 	properties: {

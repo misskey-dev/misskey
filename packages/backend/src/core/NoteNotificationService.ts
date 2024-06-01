@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: yukineko and tai-cat
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { MiNoteNotification } from '@/models/NoteNotification.js';

@@ -1,0 +1,41 @@
+name: "Release Manager: release RC when ready for review"
+
+on:
+  pull_request:
+    types: [ready_for_review]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.get_pr.outputs.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      # PR情報を取得
+      - name: Get PR
+        run: |
+          pr_json=$(gh pr view "$PR_NUMBER" --json isDraft,headRefName)
+          echo "ref=$(echo $pr_json | jq -r '.headRefName')" >> $GITHUB_OUTPUT
+        id: get_pr
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+  release:
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v1
+    needs: check
+    if: startsWith(needs.check.outputs.ref, 'release/')
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
+      use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}

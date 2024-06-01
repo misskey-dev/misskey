@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: yukineko and tai-cat
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 

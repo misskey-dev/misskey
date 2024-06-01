@@ -55,7 +55,7 @@ describe('Account Move', () => {
 		}, 1000 * 10);
 
 		test('Able to create an alias', async () => {
-			const res = await api('/i/update', {
+			const res = await api('i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`],
 			}, bob);
 
@@ -67,7 +67,7 @@ describe('Account Move', () => {
 		});
 
 		test('Able to create a local alias without hostname', async () => {
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: ['@alice'],
 			}, bob);
 
@@ -77,7 +77,7 @@ describe('Account Move', () => {
 		});
 
 		test('Able to create a local alias without @', async () => {
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: ['alice'],
 			}, bob);
 
@@ -87,7 +87,7 @@ describe('Account Move', () => {
 		});
 
 		test('Able to set remote user (but may fail)', async () => {
-			const res = await api('/i/update', {
+			const res = await api('i/update', {
 				alsoKnownAs: ['@syuilo@example.com'],
 			}, bob);
 
@@ -97,7 +97,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unable to add duplicated aliases to alsoKnownAs', async () => {
-			const res = await api('/i/update', {
+			const res = await api('i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`, `@alice@${url.hostname}`],
 			}, bob);
 
@@ -107,7 +107,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unable to add itself', async () => {
-			const res = await api('/i/update', {
+			const res = await api('i/update', {
 				alsoKnownAs: [`@bob@${url.hostname}`],
 			}, bob);
 
@@ -117,7 +117,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unable to add a nonexisting local account to alsoKnownAs', async () => {
-			const res1 = await api('/i/update', {
+			const res1 = await api('i/update', {
 				alsoKnownAs: [`@nonexist@${url.hostname}`],
 			}, bob);
 
@@ -125,7 +125,7 @@ describe('Account Move', () => {
 			assert.strictEqual(res1.body.error.code, 'NO_SUCH_USER');
 			assert.strictEqual(res1.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 
-			const res2 = await api('/i/update', {
+			const res2 = await api('i/update', {
 				alsoKnownAs: ['@alice', 'nonexist'],
 			}, bob);
 
@@ -135,7 +135,7 @@ describe('Account Move', () => {
 		});
 
 		test('Able to add two existing local account to alsoKnownAs', async () => {
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`, `@carol@${url.hostname}`],
 			}, bob);
 
@@ -146,10 +146,10 @@ describe('Account Move', () => {
 		});
 
 		test('Able to properly overwrite alsoKnownAs', async () => {
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`],
 			}, bob);
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: [`@carol@${url.hostname}`, `@dave@${url.hostname}`],
 			}, bob);
 
@@ -164,79 +164,78 @@ describe('Account Move', () => {
 		let antennaId = '';
 
 		beforeAll(async () => {
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`],
 			}, root);
-			const listRoot = await api('/users/lists/create', {
+			const listRoot = await api('users/lists/create', {
 				name: secureRndstr(8),
 			}, root);
-			await api('/users/lists/push', {
+			await api('users/lists/push', {
 				listId: listRoot.body.id,
 				userId: alice.id,
 			}, root);
 
-			await api('/following/create', {
+			await api('following/create', {
 				userId: root.id,
 			}, alice);
-			await api('/following/create', {
+			await api('following/create', {
 				userId: eve.id,
 			}, alice);
-			const antenna = await api('/antennas/create', {
+			const antenna = await api('antennas/create', {
 				name: secureRndstr(8),
 				src: 'home',
-				keywords: [secureRndstr(8)],
+				keywords: [[secureRndstr(8)]],
 				excludeKeywords: [],
 				users: [],
 				caseSensitive: false,
 				localOnly: false,
 				withReplies: false,
 				withFile: false,
-				notify: false,
 			}, alice);
 			antennaId = antenna.body.id;
 
-			await api('/i/update', {
+			await api('i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`],
 			}, bob);
 
-			await api('/following/create', {
+			await api('following/create', {
 				userId: alice.id,
 			}, carol);
 
-			await api('/mute/create', {
+			await api('mute/create', {
 				userId: alice.id,
 			}, dave);
-			await api('/blocking/create', {
+			await api('blocking/create', {
 				userId: alice.id,
 			}, dave);
-			await api('/following/create', {
+			await api('following/create', {
 				userId: eve.id,
 			}, dave);
 
-			await api('/following/create', {
+			await api('following/create', {
 				userId: dave.id,
 			}, eve);
-			const listEve = await api('/users/lists/create', {
+			const listEve = await api('users/lists/create', {
 				name: secureRndstr(8),
 			}, eve);
-			await api('/users/lists/push', {
+			await api('users/lists/push', {
 				listId: listEve.body.id,
 				userId: bob.id,
 			}, eve);
 
-			await api('/i/update', {
+			await api('i/update', {
 				isLocked: true,
 			}, frank);
-			await api('/following/create', {
+			await api('following/create', {
 				userId: frank.id,
 			}, alice);
-			await api('/following/requests/accept', {
+			await api('following/requests/accept', {
 				userId: alice.id,
 			}, frank);
 		}, 1000 * 10);
 
 		test('Prohibit the root account from moving', async () => {
-			const res = await api('/i/move', {
+			const res = await api('i/move', {
 				moveToAccount: `@bob@${url.hostname}`,
 			}, root);
 
@@ -246,7 +245,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unable to move to a nonexisting local account', async () => {
-			const res = await api('/i/move', {
+			const res = await api('i/move', {
 				moveToAccount: `@nonexist@${url.hostname}`,
 			}, alice);
 
@@ -256,7 +255,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unable to move if alsoKnownAs is invalid', async () => {
-			const res = await api('/i/move', {
+			const res = await api('i/move', {
 				moveToAccount: `@carol@${url.hostname}`,
 			}, alice);
 
@@ -266,7 +265,7 @@ describe('Account Move', () => {
 		});
 
 		test('Relationships have been properly migrated', async () => {
-			const move = await api('/i/move', {
+			const move = await api('i/move', {
 				moveToAccount: `@bob@${url.hostname}`,
 			}, alice);
 
@@ -275,13 +274,13 @@ describe('Account Move', () => {
 			await sleep(1000 * 3); // wait for jobs to finish
 
 			// Unfollow delayed?
-			const aliceFollowings = await api('/users/following', {
+			const aliceFollowings = await api('users/following', {
 				userId: alice.id,
 			}, alice);
 			assert.strictEqual(aliceFollowings.status, 200);
 			assert.strictEqual(aliceFollowings.body.length, 3);
 
-			const carolFollowings = await api('/users/following', {
+			const carolFollowings = await api('users/following', {
 				userId: carol.id,
 			}, carol);
 			assert.strictEqual(carolFollowings.status, 200);
@@ -289,25 +288,25 @@ describe('Account Move', () => {
 			assert.strictEqual(carolFollowings.body[0].followeeId, bob.id);
 			assert.strictEqual(carolFollowings.body[1].followeeId, alice.id);
 
-			const blockings = await api('/blocking/list', {}, dave);
+			const blockings = await api('blocking/list', {}, dave);
 			assert.strictEqual(blockings.status, 200);
 			assert.strictEqual(blockings.body.length, 2);
 			assert.strictEqual(blockings.body[0].blockeeId, bob.id);
 			assert.strictEqual(blockings.body[1].blockeeId, alice.id);
 
-			const mutings = await api('/mute/list', {}, dave);
+			const mutings = await api('mute/list', {}, dave);
 			assert.strictEqual(mutings.status, 200);
 			assert.strictEqual(mutings.body.length, 2);
 			assert.strictEqual(mutings.body[0].muteeId, bob.id);
 			assert.strictEqual(mutings.body[1].muteeId, alice.id);
 
-			const rootLists = await api('/users/lists/list', {}, root);
+			const rootLists = await api('users/lists/list', {}, root);
 			assert.strictEqual(rootLists.status, 200);
 			assert.strictEqual(rootLists.body[0].userIds.length, 2);
 			assert.ok(rootLists.body[0].userIds.find((id: string) => id === bob.id));
 			assert.ok(rootLists.body[0].userIds.find((id: string) => id === alice.id));
 
-			const eveLists = await api('/users/lists/list', {}, eve);
+			const eveLists = await api('users/lists/list', {}, eve);
 			assert.strictEqual(eveLists.status, 200);
 			assert.strictEqual(eveLists.body[0].userIds.length, 1);
 			assert.ok(eveLists.body[0].userIds.find((id: string) => id === bob.id));
@@ -315,13 +314,13 @@ describe('Account Move', () => {
 
 		test('A locked account automatically accept the follow request if it had already accepted the old account.', async () => {
 			await successfulApiCall({
-				endpoint: '/following/create',
+				endpoint: 'following/create',
 				parameters: {
 					userId: frank.id,
 				},
 				user: bob,
 			});
-			const followers = await api('/users/followers', {
+			const followers = await api('users/followers', {
 				userId: frank.id,
 			}, frank);
 
@@ -333,7 +332,7 @@ describe('Account Move', () => {
 		test('Unfollowed after 10 sec (24 hours in production).', async () => {
 			await sleep(1000 * 8);
 
-			const following = await api('/users/following', {
+			const following = await api('users/following', {
 				userId: alice.id,
 			}, alice);
 
@@ -342,7 +341,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unable to move if the destination account has already moved.', async () => {
-			const res = await api('/i/move', {
+			const res = await api('i/move', {
 				moveToAccount: `@alice@${url.hostname}`,
 			}, bob);
 
@@ -352,7 +351,7 @@ describe('Account Move', () => {
 		});
 
 		test('Follow and follower counts are properly adjusted', async () => {
-			await api('/following/create', {
+			await api('following/create', {
 				userId: alice.id,
 			}, eve);
 			const newAlice = await Users.findOneByOrFail({ id: alice.id });
@@ -365,7 +364,7 @@ describe('Account Move', () => {
 			assert.strictEqual(newEve.followingCount, 1);
 			assert.strictEqual(newEve.followersCount, 1);
 
-			await api('/following/delete', {
+			await api('following/delete', {
 				userId: alice.id,
 			}, eve);
 			newEve = await Users.findOneByOrFail({ id: eve.id });
@@ -374,49 +373,49 @@ describe('Account Move', () => {
 		});
 
 		test.each([
-			'/antennas/create',
-			'/channels/create',
-			'/channels/favorite',
-			'/channels/follow',
-			'/channels/unfavorite',
-			'/channels/unfollow',
-			'/clips/add-note',
-			'/clips/create',
-			'/clips/favorite',
-			'/clips/remove-note',
-			'/clips/unfavorite',
-			'/clips/update',
-			'/drive/files/upload-from-url',
-			'/flash/create',
-			'/flash/like',
-			'/flash/unlike',
-			'/flash/update',
-			'/following/create',
-			'/gallery/posts/create',
-			'/gallery/posts/like',
-			'/gallery/posts/unlike',
-			'/gallery/posts/update',
-			'/i/claim-achievement',
-			'/i/move',
-			'/i/import-blocking',
-			'/i/import-following',
-			'/i/import-muting',
-			'/i/import-user-lists',
-			'/i/pin',
-			'/mute/create',
-			'/notes/create',
-			'/notes/favorites/create',
-			'/notes/polls/vote',
-			'/notes/reactions/create',
-			'/pages/create',
-			'/pages/like',
-			'/pages/unlike',
-			'/pages/update',
-			'/renote-mute/create',
-			'/users/lists/create',
-			'/users/lists/pull',
-			'/users/lists/push',
-		])('Prohibit access after moving: %s', async (endpoint) => {
+			'antennas/create',
+			'channels/create',
+			'channels/favorite',
+			'channels/follow',
+			'channels/unfavorite',
+			'channels/unfollow',
+			'clips/add-note',
+			'clips/create',
+			'clips/favorite',
+			'clips/remove-note',
+			'clips/unfavorite',
+			'clips/update',
+			'drive/files/upload-from-url',
+			'flash/create',
+			'flash/like',
+			'flash/unlike',
+			'flash/update',
+			'following/create',
+			'gallery/posts/create',
+			'gallery/posts/like',
+			'gallery/posts/unlike',
+			'gallery/posts/update',
+			'i/claim-achievement',
+			'i/move',
+			'i/import-blocking',
+			'i/import-following',
+			'i/import-muting',
+			'i/import-user-lists',
+			'i/pin',
+			'mute/create',
+			'notes/create',
+			'notes/favorites/create',
+			'notes/polls/vote',
+			'notes/reactions/create',
+			'pages/create',
+			'pages/like',
+			'pages/unlike',
+			'pages/update',
+			'renote-mute/create',
+			'users/lists/create',
+			'users/lists/pull',
+			'users/lists/push',
+		] as const)('Prohibit access after moving: %s', async (endpoint) => {
 			const res = await api(endpoint, {}, alice);
 			assert.strictEqual(res.status, 403);
 			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
@@ -424,18 +423,17 @@ describe('Account Move', () => {
 		});
 
 		test('Prohibit access after moving: /antennas/update', async () => {
-			const res = await api('/antennas/update', {
+			const res = await api('antennas/update', {
 				antennaId,
 				name: secureRndstr(8),
 				src: 'users',
-				keywords: [secureRndstr(8)],
+				keywords: [[secureRndstr(8)]],
 				excludeKeywords: [],
 				users: [eve.id],
 				caseSensitive: false,
 				localOnly: false,
 				withReplies: false,
 				withFile: false,
-				notify: false,
 			}, alice);
 
 			assert.strictEqual(res.status, 403);
@@ -447,12 +445,12 @@ describe('Account Move', () => {
 			const res = await uploadFile(alice);
 
 			assert.strictEqual(res.status, 403);
-			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
-			assert.strictEqual(res.body.error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
 		});
 
 		test('Prohibit updating alsoKnownAs after moving', async () => {
-			const res = await api('/i/update', {
+			const res = await api('i/update', {
 				alsoKnownAs: [`@eve@${url.hostname}`],
 			}, alice);
 

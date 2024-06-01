@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { JsonLd } from 'jsonld/jsonld-spec.js';
+import type { Context, JsonLd } from 'jsonld/jsonld-spec.js';
 
 /* eslint:disable:quotemark indent */
 const id_v1 = {
@@ -526,7 +526,42 @@ const activitystreams = {
 	},
 } satisfies JsonLd;
 
-export const CONTEXTS: Record<string, JsonLd> = {
+const context_iris = [
+	'https://www.w3.org/ns/activitystreams',
+	'https://w3id.org/security/v1',
+];
+
+const extension_context_definition = {
+	Key: 'sec:Key',
+	// as non-standards
+	manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
+	sensitive: 'as:sensitive',
+	Hashtag: 'as:Hashtag',
+	quoteUrl: 'as:quoteUrl',
+	// Mastodon
+	toot: 'http://joinmastodon.org/ns#',
+	Emoji: 'toot:Emoji',
+	featured: 'toot:featured',
+	discoverable: 'toot:discoverable',
+	// schema
+	schema: 'http://schema.org#',
+	PropertyValue: 'schema:PropertyValue',
+	value: 'schema:value',
+	// Misskey
+	misskey: 'https://misskey-hub.net/ns#',
+	'_misskey_content': 'misskey:_misskey_content',
+	'_misskey_quote': 'misskey:_misskey_quote',
+	'_misskey_reaction': 'misskey:_misskey_reaction',
+	'_misskey_votes': 'misskey:_misskey_votes',
+	'_misskey_summary': 'misskey:_misskey_summary',
+	'isCat': 'misskey:isCat',
+	// vcard
+	vcard: 'http://www.w3.org/2006/vcard/ns#',
+} satisfies Context;
+
+export const CONTEXT: (string | Context)[] = [...context_iris, extension_context_definition];
+
+export const PRELOADED_CONTEXTS: Record<string, JsonLd> = {
 	'https://w3id.org/identity/v1': id_v1,
 	'https://w3id.org/security/v1': security_v1,
 	'https://www.w3.org/ns/activitystreams': activitystreams,

@@ -64,11 +64,11 @@ export const paramDef = {
 		} },
 		caseSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
+		excludeBots: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
-		notify: { type: 'boolean' },
 	},
-	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
 } as const;
 
 @Injectable()
@@ -124,9 +124,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				users: ps.users,
 				caseSensitive: ps.caseSensitive,
 				localOnly: ps.localOnly,
+				excludeBots: ps.excludeBots,
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
-				notify: ps.notify,
 			}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.globalEventService.publishInternalEvent('antennaCreated', antenna);

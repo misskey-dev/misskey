@@ -152,6 +152,22 @@ redis:
 # ID SETTINGS AFTER THAT!
 
 id: "aidx"
+
+#   ┌────────────────┐
+#───┘ Error tracking └──────────────────────────────────────────
+
+# Sentry is available for error tracking.
+# See the Sentry documentation for more details on options.
+
+#sentryForBackend:
+#  enableNodeProfiling: true
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+
+#sentryForFrontend:
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 
