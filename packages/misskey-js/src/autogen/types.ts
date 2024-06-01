@@ -2484,7 +2484,7 @@ export type paths = {
      *
      * **Credential required**: *Yes* / **Permission**: *write:account*
      */
-    post: operations['note-notification/create'];
+    post: operations['note-notification___create'];
   };
   '/note-notification/delete': {
     /**
@@ -2493,7 +2493,7 @@ export type paths = {
      *
      * **Credential required**: *Yes* / **Permission**: *write:account*
      */
-    post: operations['note-notification/delete'];
+    post: operations['note-notification___delete'];
   };
   '/note-notification/list': {
     /**
@@ -2502,7 +2502,7 @@ export type paths = {
      *
      * **Credential required**: *Yes* / **Permission**: *write:account*
      */
-    post: operations['note-notification/list'];
+    post: operations['note-notification___list'];
   };
   '/my/apps': {
     /**
@@ -20237,7 +20237,7 @@ export type operations = {
    *
    * **Credential required**: *Yes* / **Permission**: *write:account*
    */
-  'note-notification/create': {
+  'note-notification___create': {
     requestBody: {
       content: {
         'application/json': {
@@ -20295,7 +20295,7 @@ export type operations = {
    *
    * **Credential required**: *Yes* / **Permission**: *write:account*
    */
-  'note-notification/delete': {
+  'note-notification___delete': {
     requestBody: {
       content: {
         'application/json': {
@@ -20353,7 +20353,7 @@ export type operations = {
    *
    * **Credential required**: *Yes* / **Permission**: *write:account*
    */
-  'note-notification/list': {
+  'note-notification___list': {
     requestBody: {
       content: {
         'application/json': {

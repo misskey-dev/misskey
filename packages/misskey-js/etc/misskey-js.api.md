@@ -2426,16 +2426,16 @@ type NoteFavorite = components['schemas']['NoteFavorite'];
 type NoteNotification = components['schemas']['NoteNotification'];
 
 // @public (undocumented)
-type NoteNotificationCreateRequest = operations['note-notification/create']['requestBody']['content']['application/json'];
+type NoteNotificationCreateRequest = operations['note-notification___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NoteNotificationDeleteRequest = operations['note-notification/delete']['requestBody']['content']['application/json'];
+type NoteNotificationDeleteRequest = operations['note-notification___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NoteNotificationListRequest = operations['note-notification/list']['requestBody']['content']['application/json'];
+type NoteNotificationListRequest = operations['note-notification___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NoteNotificationListResponse = operations['note-notification/list']['responses']['200']['content']['application/json'];
+type NoteNotificationListResponse = operations['note-notification___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NoteReaction = components['schemas']['NoteReaction'];
