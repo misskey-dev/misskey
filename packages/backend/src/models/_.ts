@@ -80,6 +80,14 @@ interface AsyncDisposableReference<T> extends AsyncDisposable {
 	readonly value: T;
 }
 
+// SEEALSO: <https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html#using-declarations-and-explicit-resource-management>
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+Symbol.dispose ??= Symbol('Symbol.dispose');
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose');
+
 export interface MiRepository<T extends ObjectLiteral> {
 	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
 	createTableColumnNamesWithPrimaryKey(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
