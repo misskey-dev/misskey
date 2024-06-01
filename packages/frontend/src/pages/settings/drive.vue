@@ -44,16 +44,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
 			</MkSwitch>
+			<MkSwitch v-model="keepOriginalFilename">
+				<template #label>{{ i18n.ts.keepOriginalFilename }}</template>
+				<template #caption>{{ i18n.ts.keepOriginalFilenameDescription }}</template>
+			</MkSwitch>
 			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
 			</MkSwitch>
 			<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="filenameRandomize">
-				<template #label>{{ i18n.ts.filenameRandomize }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-				<template #caption>{{ i18n.ts.filenameRandomizeDescription }}</template>
 			</MkSwitch>
 		</div>
 	</FormSection>
@@ -100,7 +100,7 @@ const meterStyle = computed(() => {
 });
 
 const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
-const filenameRandomize = computed(defaultStore.makeGetterSetter('filenameRandomize'));
+const keepOriginalFilename = computed(defaultStore.makeGetterSetter('keepOriginalFilename'));
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;

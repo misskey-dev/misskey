@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div class="detail">
 		<div>
-			<Mfm :text="report.comment"/>
+			<Mfm :text="report.comment" :linkNavigationBehavior="'window'"/>
 		</div>
 		<hr/>
 		<div>{{ i18n.ts.reporter }}: <MkA :to="`/admin/user/${report.reporter.id}`" class="_link" :behavior="'window'">@{{ report.reporter.username }}</MkA></div>

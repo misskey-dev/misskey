@@ -40,13 +40,16 @@ export function uploadFile(
 	if (folder && typeof folder === 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
-		const id = Math.random().toString();
+		const id = uuid();
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
+			const filename = name ?? file.name ?? 'untitled';
+			const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+
 			const ctx = reactive<Uploading>({
-				id: id,
-				name: defaultStore.state.filenameRandomize ? uuid() : name ?? file.name ?? 'untitled',
+				id,
+				name: defaultStore.state.keepOriginalFilename ? filename : id + extension,
 				progressMax: undefined,
 				progressValue: undefined,
 				img: window.URL.createObjectURL(file),

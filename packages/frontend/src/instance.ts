@@ -28,7 +28,7 @@ if (providedAt > cachedAt) {
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.MetaResponse = reactive(cachedMeta ?? {});
+export const instance: Misskey.entities.MetaDetailed = reactive(cachedMeta ?? {});
 
 export const serverErrorImageUrl = computed(() => instance.serverErrorImageUrl ?? DEFAULT_SERVER_ERROR_IMAGE_URL);
 
@@ -36,17 +36,19 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
-export async function fetchInstance(force = false): Promise<void> {
+export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
+
+export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
 	if (!force) {
 		const cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
 
 		if (Date.now() - cachedAt < 1000 * 60 * 60) {
-			return;
+			return instance;
 		}
 	}
 
 	const meta = await misskeyApi('meta', {
-		detail: false,
+		detail: true,
 	});
 
 	for (const [k, v] of Object.entries(meta)) {
@@ -55,4 +57,6 @@ export async function fetchInstance(force = false): Promise<void> {
 
 	miLocalStorage.setItem('instance', JSON.stringify(instance));
 	miLocalStorage.setItem('instanceCachedAt', Date.now().toString());
+
+	return instance;
 }

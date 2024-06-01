@@ -18,16 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCodeEditor v-model="script" lang="is">
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkCodeEditor>
+			<MkSelect v-model="visibility">
+				<template #label>{{ i18n.ts.visibility }}</template>
+				<template #caption>{{ i18n.ts._play.visibilityDescription }}</template>
+				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
+				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
+			</MkSelect>
 			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
-			<MkSelect v-model="visibility">
-				<template #label>{{ i18n.ts.visibility }}</template>
-				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
-				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
-			</MkSelect>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -47,7 +48,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { useRouter } from '@/router/supplier.js';
 
-const PRESET_DEFAULT = `/// @ 0.16.0
+const PRESET_DEFAULT = `/// @ 0.18.0
 
 var name = ""
 
@@ -59,13 +60,13 @@ Ui:render([
 	Ui:C:button({
 		text: "Hello"
 		onClick: @() {
-			Mk:dialog(null \`Hello, {name}!\`)
+			Mk:dialog(null, \`Hello, {name}!\`)
 		}
 	})
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.16.0
+const PRESET_OMIKUJI = `/// @ 0.18.0
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -80,11 +81,11 @@ let choices = [
 	"大凶"
 ]
 
-// シードが「ユーザーID+今日の日付」である乱数生成器を用意
-let random = Math:gen_rng(\`{USER_ID}{Date:year()}{Date:month()}{Date:day()}\`)
+// シードが「PlayID+ユーザーID+今日の日付」である乱数生成器を用意
+let random = Math:gen_rng(\`{THIS_ID}{USER_ID}{Date:year()}{Date:month()}{Date:day()}\`)
 
 // ランダムに選択肢を選ぶ
-let chosen = choices[random(0 (choices.len - 1))]
+let chosen = choices[random(0, (choices.len - 1))]
 
 // 結果のテキスト
 let result = \`今日のあなたの運勢は **{chosen}** です。\`
@@ -108,7 +109,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.16.0
+const PRESET_SHUFFLE = `/// @ 0.18.0
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -122,13 +123,13 @@ var cursor = 0
 
 @do() {
 	if (cursor != 0) {
-		results = results.slice(0 (cursor + 1))
+		results = results.slice(0, (cursor + 1))
 		cursor = 0
 	}
 
 	let chars = []
 	for (let i, length) {
-		let r = Math:rnd(0 (length - 1))
+		let r = Math:rnd(0, (length - 1))
 		chars.push(string.pick(r))
 	}
 	let result = chars.join("")
@@ -162,11 +163,11 @@ var cursor = 0
 						text: "←"
 						disabled: !(results.len > 1 && (results.len - cursor) > 1)
 						onClick: back
-					} {
+					}, {
 						text: "→"
 						disabled: !(results.len > 1 && cursor > 0)
 						onClick: forward
-					} {
+					}, {
 						text: "引き直す"
 						onClick: do
 					}]
@@ -187,27 +188,27 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.16.0
+const PRESET_QUIZ = `/// @ 0.18.0
 let title = '地理クイズ'
 
 let qas = [{
 	q: 'オーストラリアの首都は？'
-	choices: ['シドニー' 'キャンベラ' 'メルボルン']
+	choices: ['シドニー', 'キャンベラ', 'メルボルン']
 	a: 'キャンベラ'
 	aDescription: '最大の都市はシドニーですが首都はキャンベラです。'
-} {
+}, {
 	q: '国土面積2番目の国は？'
-	choices: ['カナダ' 'アメリカ' '中国']
+	choices: ['カナダ', 'アメリカ', '中国']
 	a: 'カナダ'
 	aDescription: '大きい順にロシア、カナダ、アメリカ、中国です。'
-} {
+}, {
 	q: '二重内陸国ではないのは？'
-	choices: ['リヒテンシュタイン' 'ウズベキスタン' 'レソト']
+	choices: ['リヒテンシュタイン', 'ウズベキスタン', 'レソト']
 	a: 'レソト'
 	aDescription: 'レソトは(一重)内陸国です。'
-} {
+}, {
 	q: '閘門がない運河は？'
-	choices: ['キール運河' 'スエズ運河' 'パナマ運河']
+	choices: ['キール運河', 'スエズ運河', 'パナマ運河']
 	a: 'スエズ運河'
 	aDescription: 'スエズ運河は高低差がないので閘門はありません。'
 }]
@@ -243,9 +244,9 @@ each (let qa, qas) {
 			})
 			Ui:C:container({
 				children: []
-			} \`{qa.id}:a\`)
+			}, \`{qa.id}:a\`)
 		]
-	} qa.id))
+	}, qa.id))
 }
 
 @finish() {
@@ -295,12 +296,12 @@ qaEls.push(Ui:C:container({
 			onClick: finish
 		})
 	]
-} 'footer'))
+}, 'footer'))
 
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.16.0
+const PRESET_TIMELINE = `/// @ 0.18.0
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {
@@ -314,7 +315,7 @@ const PRESET_TIMELINE = `/// @ 0.16.0
 	])
 
 	// タイムライン取得
-	let notes = Mk:api("notes/local-timeline" {})
+	let notes = Mk:api("notes/local-timeline", {})
 
 	// それぞれのノートごとにUI要素作成
 	let noteEls = []
@@ -367,7 +368,7 @@ const props = defineProps<{
 }>();
 
 const flash = ref<Misskey.entities.Flash | null>(null);
-const visibility = ref<Misskey.entities.FlashUpdateRequest['visibility']>('public');
+const visibility = ref<'private' | 'public'>('public');
 
 if (props.id) {
 	flash.value = await misskeyApi('flash/show', {
@@ -420,6 +421,7 @@ async function save() {
 			summary: summary.value,
 			permissions: permissions.value,
 			script: script.value,
+			visibility: visibility.value,
 		});
 		router.push('/play/' + created.id + '/edit');
 	}

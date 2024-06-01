@@ -8,10 +8,12 @@ import { markRaw } from 'vue';
 import { $i } from '@/account.js';
 import { wsOrigin } from '@/config.js';
 
-let stream: Misskey.Stream | null = null;
-let timeoutHeartBeat: number | null = null;
+// heart beat interval in ms
+const HEART_BEAT_INTERVAL = 1000 * 60;
 
-export let isReloading: boolean = false;
+let stream: Misskey.Stream | null = null;
+let timeoutHeartBeat: ReturnType<typeof setTimeout> | null = null;
+let lastHeartbeatCall = 0;
 
 export function useStream(): Misskey.Stream {
 	if (stream) return stream;
@@ -20,20 +22,18 @@ export function useStream(): Misskey.Stream {
 		token: $i.token,
 	} : null));
 
-	timeoutHeartBeat = window.setTimeout(heartbeat, 1000 * 60);
-
-	return stream;
-}
-
-export function reloadStream() {
-	if (!stream) return useStream();
 	if (timeoutHeartBeat) window.clearTimeout(timeoutHeartBeat);
-	isReloading = true;
+	timeoutHeartBeat = window.setTimeout(heartbeat, HEART_BEAT_INTERVAL);
 
-	stream.close();
-	stream.once('_connected_', () => isReloading = false);
-	stream.stream.reconnect();
-	timeoutHeartBeat = window.setTimeout(heartbeat, 1000 * 60);
+	// send heartbeat right now when last send time is over HEART_BEAT_INTERVAL
+	document.addEventListener('visibilitychange', () => {
+		if (
+			!stream
+			|| document.visibilityState !== 'visible'
+			|| Date.now() - lastHeartbeatCall < HEART_BEAT_INTERVAL
+		) return;
+		heartbeat();
+	});
 
 	return stream;
 }
@@ -42,5 +42,7 @@ function heartbeat(): void {
 	if (stream != null && document.visibilityState === 'visible') {
 		stream.heartbeat();
 	}
-	timeoutHeartBeat = window.setTimeout(heartbeat, 1000 * 60);
+	lastHeartbeatCall = Date.now();
+	if (timeoutHeartBeat) window.clearTimeout(timeoutHeartBeat);
+	timeoutHeartBeat = window.setTimeout(heartbeat, HEART_BEAT_INTERVAL);
 }

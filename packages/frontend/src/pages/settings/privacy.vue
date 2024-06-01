@@ -43,9 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 	</MkSwitch>
-	<MkSwitch v-model="filenameRandomize">
-		<template #label>{{ i18n.ts.filenameRandomize }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-		<template #caption>{{ i18n.ts.filenameRandomizeDescription }}</template>
+	<MkSwitch v-model="keepOriginalFilename">
+		<template #label>{{ i18n.ts.keepOriginalFilename }}</template>
+		<template #caption>{{ i18n.ts.keepOriginalFilenameDescription }}</template>
 	</MkSwitch>
 
 	<FormSection>
@@ -103,7 +103,7 @@ const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNot
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
-const filenameRandomize = computed(defaultStore.makeGetterSetter('filenameRandomize'));
+const keepOriginalFilename = computed(defaultStore.makeGetterSetter('keepOriginalFilename'));
 
 function save() {
 	misskeyApi('i/update', {

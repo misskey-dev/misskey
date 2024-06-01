@@ -518,7 +518,7 @@ export function waiting(): Promise<void> {
 	});
 }
 
-export function form<F extends Form>(title: string, f: F): Promise<{ canceled: true } | { result: GetFormResultType<F> }> {
+export function form<F extends Form>(title: string, f: F): Promise<{ canceled: true, result?: undefined } | { canceled?: false, result: GetFormResultType<F> }> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form: f }, {
 			done: result => {
