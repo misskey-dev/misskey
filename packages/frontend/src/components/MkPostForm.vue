@@ -612,6 +612,23 @@ async function onPaste(ev: ClipboardEvent) {
 			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
 		});
 	}
+
+	if (paste.length > 1000) {
+		ev.preventDefault();
+		os.confirm({
+			type: 'info',
+			text: i18n.ts.attachAsFileQuestion,
+		}).then(({ canceled }) => {
+			if (canceled) {
+				insertTextAtCursor(textareaEl.value, paste);
+				return;
+			}
+
+			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, "0");
+			const file = new File([paste], `${fileName}.txt`, { type: "text/plain" });
+			upload(file, `${fileName}.txt`);
+		});
+	}
 }
 
 function onDragover(ev) {
