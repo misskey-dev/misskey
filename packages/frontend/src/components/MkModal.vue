@@ -276,8 +276,11 @@ const align = () => {
 const onOpened = () => {
 	emit('opened');
 
+	// NOTE: Chromatic テストの際に undefined になる場合がある
+	if (content.value == null) return;
+
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
-	const el = content.value!.children[0];
+	const el = content.value.children[0];
 	el.addEventListener('mousedown', ev => {
 		contentClicking = true;
 		window.addEventListener('mouseup', ev => {

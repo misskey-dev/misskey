@@ -33,7 +33,7 @@ const common = {
 	},
 	decorators: [
 		(Story, context) => ({
-			// eslint-disable-next-line quotes
+			// @ts-expect-error size is for test
 			template: `<div :style="{ display: 'grid', width: '${context.args.size}px', height: '${context.args.size}px' }"><story/></div>`,
 		}),
 	],
@@ -45,6 +45,7 @@ export const ProfilePage = {
 	...common,
 	args: {
 		...common.args,
+		// @ts-expect-error size is for test
 		size: 120,
 		indicator: true,
 	},

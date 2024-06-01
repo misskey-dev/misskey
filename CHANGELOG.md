@@ -1,9 +1,24 @@
 ## Unreleased
 
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+
+## 2024.5.0
+
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
+- 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
+- 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
+- Feat: エラートラッキングにSentryを使用できるようになりました
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
@@ -15,11 +30,18 @@
   - サスペンド済みユーザーか
   - 鍵アカウントユーザーか
   - 「アカウントを見つけやすくする」が有効なユーザーか
+- Enhance: Goneを出さずに終了したサーバーへの配信停止を自動的に行うように
+  - もしそのようなサーバーからから配信が届いた場合には自動的に配信を再開します
+- Enhance: 配信停止の理由を表示するように
+- Enhance: サーバーのお問い合わせ先URLを設定できるようになりました
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 - Fix: 正規化されていない状態のhashtagが連合されてきたhtmlに含まれているとhashtagが正しくhashtagに復元されない問題を修正
+- Fix: みつけるのアンケート欄にてチャンネルのアンケートが含まれてしまう問題を修正
 
 ### Client
 - Feat: アップロードするファイルの名前をランダム文字列にできるように
+- Feat: 個別のお知らせにリンクで飛べるように  
+  (Based on https://github.com/MisskeyIO/misskey/pull/639)
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
 - Enhance: リアクション・いいねの総数を表示するように
@@ -39,7 +61,13 @@
 - Enhance: Playを手動でリロードできるように
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
 - Enhance: 不適切なPage、ギャラリー、Playを通報できるように
-- Chore: AiScriptを0.18.0にバージョンアップ
+- Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
+- Enhance: AiScriptを0.18.0にバージョンアップ
+- Enhance: 通常のノートでも、お気に入りに登録したチャンネルにリノートできるように
+- Enhance: 長いテキストをペーストした際にテキストファイルとして添付するかどうかを選択できるように
+- Enhance: 新着ノートをサウンドで通知する機能をdeck UIに追加しました
+- Enhance: コントロールパネルのクイックアクションからファイルを照会できるように
+- Enhance: コントロールパネルのクイックアクションから通常の照会を行えるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -58,10 +86,16 @@
 - Fix: ページのOGP URLが間違っているのを修正
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
+- Fix: 連合なしの状態の読み書きができない問題を修正
+- Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
+- Fix: ファイルを5つ以上添付してもテキストがないとノートが折りたたまれない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
 - Enhance: misskey-dev/summaly@5.1.0の取り込み（プレビュー生成処理の効率化）
+- Enhance: ドライブのファイルがNSFWかどうか個別に連合されるように (#13756)
+  - 可能な場合、ノートの添付ファイルのセンシティブ判定がファイル単位になります
+- Fix: リモートから配送されたアクティビティにJSON-LD compactionをかける
 - Fix: フォローリクエストを作成する際に既存のものは削除するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/440)
 - Fix: エンドポイント`notes/translate`のエラーを改善
@@ -76,6 +110,12 @@
 - Fix: グローバルタイムラインで返信が表示されないことがある問題を修正
 - Fix: リノートをミュートしたユーザの投稿のリノートがミュートされる問題を修正
 - Fix: AP Link等は添付ファイル扱いしないようになど (#13754)
+- Fix: FTTが有効かつsinceIdのみを指定した場合に帰って来るレスポンスが逆順である問題を修正
+- Fix: `/i/notifications`に `includeTypes`か`excludeTypes`を指定しているとき、通知が存在するのに空配列を返すことがある問題を修正
+- Fix: 複数idを指定する`users/show`が関係ないユーザを返すことがある問題を修正
+- Fix: `/tags` と `/user-tags` が検索エンジンにインデックスされないように
+- Fix: もともとセンシティブではないと連合されていたファイルがセンシティブとして連合された場合にセンシティブとしてそのファイルを扱うように
+  - センシティブとして連合したファイルは非センシティブとして連合されてもセンシティブとして扱われます
 
 ## 2024.3.1
 

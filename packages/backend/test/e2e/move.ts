@@ -9,7 +9,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { loadConfig } from '@/config.js';
-import { MiUser, UsersRepository } from '@/models/_.js';
+import { MiRepository, MiUser, UsersRepository, miRepository } from '@/models/_.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { jobQueue } from '@/boot/common.js';
 import { api, initTestDb, signup, sleep, successfulApiCall, uploadFile } from '../utils.js';
@@ -42,7 +42,7 @@ describe('Account Move', () => {
 		dave = await signup({ username: 'dave' });
 		eve = await signup({ username: 'eve' });
 		frank = await signup({ username: 'frank' });
-		Users = connection.getRepository(MiUser);
+		Users = connection.getRepository(MiUser).extend(miRepository as MiRepository<MiUser>);
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
@@ -191,7 +191,6 @@ describe('Account Move', () => {
 				localOnly: false,
 				withReplies: false,
 				withFile: false,
-				notify: false,
 			}, alice);
 			antennaId = antenna.body.id;
 
@@ -435,7 +434,6 @@ describe('Account Move', () => {
 				localOnly: false,
 				withReplies: false,
 				withFile: false,
-				notify: false,
 			}, alice);
 
 			assert.strictEqual(res.status, 403);
