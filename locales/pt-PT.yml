@@ -733,9 +733,9 @@ reloadToApplySetting: "As configurações serão refletidas após recarregar a p
 needReloadToApply: "É necessário recarregar a página para refletir as alterações."
 showTitlebar: "Exibir barra de título"
 clearCache: "Limpar o cache"
-onlineUsersCount: "Pessoas Online"
-nUsers: "Usuários"
-nNotes: "Notas"
+onlineUsersCount: "{n} Pessoas Online"
+nUsers: "{n} Usuários"
+nNotes: "{n} Notas"
 sendErrorReports: "Enviar relatórios de erro"
 sendErrorReportsDescription: "Ao ativar essa opção, informações detalhadas de erro serão compartilhadas com o Misskey em caso de problemas, o que pode ajudar a melhorar a qualidade do software. As informações de erro podem incluir a versão do sistema operacional, o tipo de navegador e o sua atividade no Misskey."
 myTheme: "Meu tema"
@@ -767,7 +767,7 @@ emailNotification: "Notificações por e-mail"
 publish: "Publicar"
 inChannelSearch: "Pesquisar no canal"
 useReactionPickerForContextMenu: "Clique com o botão direito do mouse para abrir o seletor de reações."
-typingUsers: "digitando"
+typingUsers: "{users} pessoas digitando"
 jumpToSpecifiedDate: "Pular para uma data específica"
 showingPastTimeline: "Visualizar linha de tempo anterior"
 clear: "Limpar"
@@ -834,7 +834,7 @@ learnMore: "Saiba mais"
 misskeyUpdated: "Misskey foi atualizado!"
 whatIsNew: "Ver atualizações"
 translate: "Traduzir"
-translatedFrom: "Traduzido de"
+translatedFrom: "Traduzido de {x}"
 accountDeletionInProgress: "Encerramento de conta em andamento"
 usernameInfo: "O nome para identificar exclusivamente a sua conta no servidor. Pode conter letras (az, AZ), números (0~9) e sublinhados (_). O nome de usuário não pode ser alterado posteriormente."
 aiChanMode: "Modo AI-chan"
@@ -1012,6 +1012,10 @@ keepScreenOn: "Manter a tela do dispositivo sempre ligada"
 flip: "Inversão"
 lastNDays: "Últimos {n} dias"
 surrender: "Cancelar"
+_delivery:
+  stop: "Suspenso"
+  _type:
+    none: "Publicando"
 _initialAccountSetting:
   followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _serverSettings:
@@ -1301,8 +1305,8 @@ _preferencesBackups:
 _channel:
   featured: "Destaques"
   following: "Seguindo"
-  usersCount: "usuários ativos"
-  notesCount: "notas"
+  usersCount: "{n} usuários ativos"
+  notesCount: "{n} notas"
   nameAndDescription: "Nome e descrição"
 _menuDisplay:
   sideFull: "Exibir painel lateral inteiro"
@@ -1501,4 +1505,3 @@ _moderationLogTypes:
   resetPassword: "Redefinir senha"
 _reversi:
   total: "Total"
-
