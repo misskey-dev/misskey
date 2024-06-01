@@ -651,6 +651,10 @@ show: "Arată"
 icon: "Avatar"
 replies: "Răspunde"
 renotes: "Re-notează"
+_delivery:
+  stop: "Suspendat"
+  _type:
+    none: "Publicare"
 _role:
   _priority:
     middle: "Mediu"
@@ -729,4 +733,3 @@ _moderationLogTypes:
   resetPassword: "Resetează parola"
 _reversi:
   total: "Total"
-

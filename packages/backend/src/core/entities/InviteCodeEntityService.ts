@@ -12,6 +12,7 @@ import type { MiUser } from '@/models/User.js';
 import type { MiRegistrationTicket } from '@/models/RegistrationTicket.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -29,6 +30,10 @@ export class InviteCodeEntityService {
 	public async pack(
 		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
 		me?: { id: MiUser['id'] } | null | undefined,
+		hints?: {
+			packedCreatedBy?: Packed<'UserLite'>,
+			packedUsedBy?: Packed<'UserLite'>,
+		},
 	): Promise<Packed<'InviteCode'>> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
 			where: {
@@ -42,18 +47,28 @@ export class InviteCodeEntityService {
 			code: target.code,
 			expiresAt: target.expiresAt ? target.expiresAt.toISOString() : null,
 			createdAt: this.idService.parse(target.id).date.toISOString(),
-			createdBy: target.createdBy ? await this.userEntityService.pack(target.createdBy, me) : null,
-			usedBy: target.usedBy ? await this.userEntityService.pack(target.usedBy, me) : null,
+			createdBy: target.createdBy ? hints?.packedCreatedBy ?? await this.userEntityService.pack(target.createdBy, me) : null,
+			usedBy: target.usedBy ? hints?.packedUsedBy ?? await this.userEntityService.pack(target.usedBy, me) : null,
 			usedAt: target.usedAt ? target.usedAt.toISOString() : null,
 			used: !!target.usedAt,
 		});
 	}
 
 	@bindThis
-	public packMany(
-		targets: any[],
+	public async packMany(
+		tickets: MiRegistrationTicket[],
 		me: { id: MiUser['id'] },
 	) {
-		return Promise.all(targets.map(x => this.pack(x, me)));
+		const _createdBys = tickets.map(({ createdBy, createdById }) => createdBy ?? createdById).filter(isNotNull);
+		const _usedBys = tickets.map(({ usedBy, usedById }) => usedBy ?? usedById).filter(isNotNull);
+		const _userMap = await this.userEntityService.packMany([..._createdBys, ..._usedBys], me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(
+			tickets.map(ticket => {
+				const packedCreatedBy = ticket.createdById != null ? _userMap.get(ticket.createdById) : undefined;
+				const packedUsedBy = ticket.usedById != null ? _userMap.get(ticket.usedById) : undefined;
+				return this.pack(ticket, me, { packedCreatedBy, packedUsedBy });
+			}),
+		);
 	}
 }

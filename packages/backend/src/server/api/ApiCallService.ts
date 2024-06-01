@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
+import * as Sentry from '@sentry/node';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
@@ -17,6 +18,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import type { Config } from '@/config.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -38,6 +40,9 @@ export class ApiCallService implements OnApplicationShutdown {
 	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 
@@ -85,6 +90,48 @@ export class ApiCallService implements OnApplicationShutdown {
 			}));
 		} else {
 			this.send(reply, 500, new ApiError());
+		}
+	}
+
+	#onExecError(ep: IEndpoint, data: any, err: Error): void {
+		if (err instanceof ApiError || err instanceof AuthenticationError) {
+			throw err;
+		} else {
+			const errId = randomUUID();
+			this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
+				ep: ep.name,
+				ps: data,
+				e: {
+					message: err.message,
+					code: err.name,
+					stack: err.stack,
+					id: errId,
+				},
+			});
+			console.error(err, errId);
+
+			if (this.config.sentryForBackend) {
+				Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
+					extra: {
+						ep: ep.name,
+						ps: data,
+						e: {
+							message: err.message,
+							code: err.name,
+							stack: err.stack,
+							id: errId,
+						},
+					},
+				});
+			}
+
+			throw new ApiError(null, {
+				e: {
+					message: err.message,
+					code: err.name,
+					id: errId,
+				},
+			});
 		}
 	}
 
@@ -362,31 +409,11 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
-		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
-			if (err instanceof ApiError || err instanceof AuthenticationError) {
-				throw err;
-			} else {
-				const errId = randomUUID();
-				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
-					ep: ep.name,
-					ps: data,
-					e: {
-						message: err.message,
-						code: err.name,
-						stack: err.stack,
-						id: errId,
-					},
-				});
-				console.error(err, errId);
-				throw new ApiError(null, {
-					e: {
-						message: err.message,
-						code: err.name,
-						id: errId,
-					},
-				});
-			}
-		});
+		if (this.config.sentryForBackend) {
+			return await Sentry.startSpan({ name: 'API: ' + ep.name }, () => ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => this.#onExecError(ep, data, err)));
+		} else {
+			return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => this.#onExecError(ep, data, err));
+		}
 	}
 
 	@bindThis
