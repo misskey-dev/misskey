@@ -25,7 +25,7 @@ import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/definition.js';
 
 export type CommonBootOptions = {
-	forceColorMode?: 'dark' | 'light' | 'auto';
+	forceColorMode: 'dark' | 'light' | 'auto';
 };
 
 const defaultCommonBootOptions: CommonBootOptions = {

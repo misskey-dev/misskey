@@ -556,9 +556,14 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
 }, {
-	path: '/embed',
-	component: page(() => import('@/pages/embed/index.vue')),
-//	children: [],
+	path: '/embed/notes/:noteId',
+	component: page(() => import('@/pages/embed/note.vue')),
+}, {
+	path: '/embed/user-timeline/@:username',
+	component: page(() => import('@/pages/embed/user-timeline.vue')),
+	query: {
+		header: 'showHeader',
+	}
 }, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),

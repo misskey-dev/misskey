@@ -93,7 +93,14 @@ html {
 
 	&.embed {
 		background-color: transparent;
+		overflow: hidden;
 	}
+}
+
+html.embed,
+html.embed body,
+html.embed #misskey_app {
+	height: 100%;
 }
 
 html._themeChanging_ {
