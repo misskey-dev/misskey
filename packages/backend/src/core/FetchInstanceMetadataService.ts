@@ -154,7 +154,7 @@ export class FetchInstanceMetadataService {
 				throw new Error('No wellknown links');
 			}
 
-			const links = wellknown.links as any[];
+			const links = wellknown.links as ({ rel: string, href: string; })[];
 
 			const link1_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/1.0');
 			const link2_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.0');
