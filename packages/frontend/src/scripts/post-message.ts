@@ -28,6 +28,8 @@ export type MiPostMessageEvent<T extends PostMessageEventType = PostMessageEvent
 let defaultIframeId: string | null = null;
 
 export function setIframeId(id: string): void {
+	if (defaultIframeId != null) return;
+
 	if (_DEV_) console.log('setIframeId', id);
 	defaultIframeId = id;
 }
