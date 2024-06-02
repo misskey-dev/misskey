@@ -51,13 +51,15 @@ provideMetadataReceiver((metadataGetter) => {
 provideReactiveMetadata(pageMetadata);
 
 //#region Embed Link Behavior
-
-// 強制的に新しいタブで開く
+//強制的に新しいタブで開く
 mainRouter.navHook = (path, flag): boolean => {
 	window.open(path, '_blank', 'noopener');
 	return true;
 };
+//#endregion
 
+//#region Embed Provide
+provide('EMBED_PAGE', true);
 //#endregion
 
 //#region Embed Style
@@ -74,7 +76,7 @@ let resizeMessageThrottleFlag = false;
 let previousHeight = 0;
 const resizeObserver = new ResizeObserver(async () => {
 	const height = rootEl.value!.scrollHeight + 2; // border 上下1px
-	if (resizeMessageThrottleFlag && Math.abs(previousHeight - height) < 30) return;
+	if (resizeMessageThrottleFlag && Math.abs(previousHeight - height) < 30) return; // プラマイ30px未満の変化は無視
 	if (resizeMessageThrottleTimer) window.clearTimeout(resizeMessageThrottleTimer);
 
 	postMessageToParentWindow('misskey:embed:changeHeight', {
