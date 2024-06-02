@@ -17,13 +17,13 @@ export interface PostMessageEventPayload extends Record<PostMessageEventType, an
 	'misskey:embed:changeHeight': {
 		height: number;
 	};
-};
+}
 
 export type MiPostMessageEvent<T extends PostMessageEventType = PostMessageEventType> = {
 	type: T;
 	iframeId?: string;
 	payload?: PostMessageEventPayload[T];
-};
+}
 
 let defaultIframeId: string | null = null;
 
