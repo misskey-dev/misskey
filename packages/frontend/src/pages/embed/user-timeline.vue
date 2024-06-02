@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkNotes :class="$style.userTimelineNotes" :pagination="pagination" :noGap="true"/>
 		</template>
+		<XNotFound v-else/>
 	</div>
 </template>
 
@@ -19,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
+import XNotFound from '@/pages/not-found.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 
@@ -43,7 +45,10 @@ misskeyApi('users/show', {
 }).then(res => {
 	user.value = res;
 	loading.value = false;
-});
+}).catch(err => {
+	console.error(err);
+	loading.value = false;
+})
 </script>
 
 <style lang="scss" module>

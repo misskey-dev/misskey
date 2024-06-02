@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.noteEmbedRoot">
 		<MkLoading v-if="loading"/>
 		<MkNote v-else-if="note" :note="note"/>
+		<XNotFound v-else/>
 	</div>
 </template>
 
@@ -14,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
+import XNotFound from '@/pages/not-found.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
@@ -28,7 +30,10 @@ misskeyApi('notes/show', {
 }).then(res => {
 	note.value = res;
 	loading.value = false;
-});
+}).catch(err => {
+	console.error(err);
+	loading.value = false;
+})
 </script>
 
 <style lang="scss" module>
