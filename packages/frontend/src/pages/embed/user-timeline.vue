@@ -48,7 +48,7 @@ misskeyApi('users/show', {
 }).catch(err => {
 	console.error(err);
 	loading.value = false;
-})
+});
 </script>
 
 <style lang="scss" module>
