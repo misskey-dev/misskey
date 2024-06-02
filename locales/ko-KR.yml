@@ -1238,6 +1238,7 @@ launchApp: "앱 실행"
 useNativeUIForVideoAudioPlayer: "브라우저 UI에서 미디어 재생"
 keepOriginalFilename: "원본 파일 이름을 유지"
 noDescription: "설명문이 없습니다"
+alwaysConfirmFollow: "팔로우일 때 항상 확인하기"
 inquiry: "연락하기"
 _delivery:
   status: "전송 상태"
