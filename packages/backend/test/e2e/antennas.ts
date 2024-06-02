@@ -157,6 +157,7 @@ describe('アンテナ', () => {
 			withReplies: false,
 			excludeBots: false,
 			localOnly: false,
+			notify: false,
 		};
 		assert.deepStrictEqual(response, expected);
 	});
