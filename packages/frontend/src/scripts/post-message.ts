@@ -11,10 +11,18 @@ export const postMessageEventTypes = [
 
 export type PostMessageEventType = typeof postMessageEventTypes[number];
 
-export type MiPostMessageEvent = {
-	type: PostMessageEventType;
+export interface PostMessageEventPayload extends Record<PostMessageEventType, any> {
+	'misskey:shareForm:shareCompleted': undefined;
+	'misskey:embed:ready': undefined;
+	'misskey:embed:changeHeight': {
+		height: number;
+	};
+};
+
+export type MiPostMessageEvent<T extends PostMessageEventType = PostMessageEventType> = {
+	type: T;
 	iframeId?: string;
-	payload?: any;
+	payload?: PostMessageEventPayload[T];
 };
 
 let defaultIframeId: string | null = null;
@@ -27,7 +35,7 @@ export function setIframeId(id: string): void {
 /**
  * 親フレームにイベントを送信
  */
-export function postMessageToParentWindow(type: PostMessageEventType, payload?: any, iframeId: string | null = null): void {
+export function postMessageToParentWindow<T extends PostMessageEventType = PostMessageEventType>(type: T, payload?: PostMessageEventPayload[T], iframeId: string | null = null): void {
 	let _iframeId = iframeId;
 	if (_iframeId == null) {
 		_iframeId = defaultIframeId;
