@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="loading"/>
 		<template v-else-if="user">
 			<div v-if="normalizedShowHeader" :class="$style.userHeader">
-				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
+				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
 					<MkAvatar :class="$style.avatar" :user="user"/>
 				</a>
 				<div :class="$style.headerTitle">
@@ -87,11 +87,17 @@ misskeyApi('users/show', {
 }
 
 .userHeader {
+	flex-shrink: 0;
 	padding: 8px 16px;
 	display: flex;
 	align-items: center;
 	gap: var(--margin);
 	border-bottom: 1px solid var(--divider);
+	overflow: hidden;
+
+	.avatarLink {
+		display: block;
+	}
 
 	.avatar {
 		display: inline-block;
