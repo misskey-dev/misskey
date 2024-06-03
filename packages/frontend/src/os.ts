@@ -93,7 +93,7 @@ type Unpromise<T> = T extends Promise<infer U> ? U : never;
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
-	onSuccess?: ((res: Unpromise<T>) => void) | null,
+	onSuccess?: ((res: Awaited<T>) => void) | null,
 	onFailure?: ((err: Misskey.api.APIError) => void) | null,
 	text?: string,
 ): T {
