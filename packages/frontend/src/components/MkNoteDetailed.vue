@@ -710,6 +710,7 @@ function loadConversation() {
 .noteHeaderInstanceIcon {
 	width: 32px;
 	height: 32px;
+	border-radius: 4px;
 }
 
 .noteHeaderUsername {

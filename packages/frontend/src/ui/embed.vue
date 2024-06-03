@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		$style.rootForEmbedPage,
 		{
 			[$style.rounded]: embedRounded,
+			[$style.noBorder]: embedNoBorder,
 		}
 	]"
 	:style="maxHeight > 0 ? { maxHeight: `${maxHeight}px`, '--embedMaxHeight': `${maxHeight}px` } : {}"
@@ -65,6 +66,7 @@ provide('EMBED_PAGE', true);
 //#region Embed Style
 const params = new URLSearchParams(location.search);
 const embedRounded = ref(params.get('rounded') !== 'false');
+const embedNoBorder = ref(params.get('border') === 'false');
 const maxHeight = ref(params.get('maxHeight') ? parseInt(params.get('maxHeight')!) : 0);
 //#endregion
 
@@ -73,7 +75,7 @@ const rootEl = shallowRef<HTMLElement | null>(null);
 
 let previousHeight = 0;
 const resizeObserver = new ResizeObserver(async () => {
-	const height = rootEl.value!.scrollHeight + 2; // border 上下1px
+	const height = rootEl.value!.scrollHeight + (embedNoBorder.value ? 0 : 2); // border 上下1px
 	if (Math.abs(previousHeight - height) < 1) return; // 1px未満の変化は無視
 	postMessageToParentWindow('misskey:embed:changeHeight', {
 		height: (maxHeight.value > 0 && height > maxHeight.value) ? maxHeight.value : height,
@@ -105,6 +107,10 @@ if (_DEV_) document.documentElement.classList.add('embed');
 
 	&.rounded {
 		border-radius: var(--radius);
+	}
+
+	&.noBorder {
+		border: none;
 	}
 }
 

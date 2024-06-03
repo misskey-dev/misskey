@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
 					<MkAvatar :class="$style.avatar" :user="user"/>
 				</a>
-				<div :class="$style.headerTitle">
+				<div :class="$style.headerTitle" @click="top">
 					<I18n :src="i18n.ts.noteOf" tag="div">
 						<template #user>
 							<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
@@ -29,8 +29,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</a>
 			</div>
 			<MkNotes
+				ref="notesEl"
 				:class="$style.userTimelineNotes"
 				:pagination="pagination"
+				:disableAutoLoad="!normalizedEnableAutoLoad"
 				:noGap="true"
 				:ad="false"
 			/>
@@ -40,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
@@ -49,13 +51,20 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { url, instanceName } from '@/config.js';
+import { scrollToTop } from '@/scripts/scroll.js';
+import { isLink } from '@/scripts/is-link.js';
 
 const props = defineProps<{
 	username: string;
 	showHeader?: string;
+	enableAutoLoad?: string;
 }>();
 
+// デフォルト: true
 const normalizedShowHeader = computed(() => props.showHeader !== 'false');
+
+// デフォルト: false
+const normalizedEnableAutoLoad = computed(() => props.enableAutoLoad === 'true');
 
 const user = ref<Misskey.entities.UserLite | null>(null);
 const pagination = computed(() => ({
@@ -65,6 +74,17 @@ const pagination = computed(() => ({
 	},
 } as Paging));
 const loading = ref(true);
+
+const notesEl = shallowRef<InstanceType<typeof MkNotes> | null>(null);
+
+function top(ev: MouseEvent) {
+	const target = ev.target as HTMLElement | null;
+	if (target && isLink(target)) return;
+
+	if (notesEl.value) {
+		scrollToTop(notesEl.value.$el as HTMLElement, { behavior: 'smooth' });
+	}
+}
 
 misskeyApi('users/show', {
 	username: props.username,
@@ -106,6 +126,7 @@ misskeyApi('users/show', {
 	}
 
 	.headerTitle {
+		flex-grow: 1;
 		font-weight: 700;
 		line-height: 1.1;
 
@@ -117,6 +138,7 @@ misskeyApi('users/show', {
 	}
 
 	.instanceIconLink {
+		flex-shrink: 0;
 		display: block;
 		margin-left: auto;
 		height: 24px;

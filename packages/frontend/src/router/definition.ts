@@ -563,6 +563,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/embed/user-timeline.vue')),
 	query: {
 		header: 'showHeader',
+		autoload: 'enableAutoLoad',
 	}
 }, {
 	path: '/timeline',
