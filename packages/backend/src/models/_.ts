@@ -104,6 +104,10 @@ export const miRepository = {
 	},
 	createTableColumnNamesWithPrimaryKey(queryBuilder) {
 		const columnNames = this.createTableColumnNames(queryBuilder);
+		if (this.metadata.columns.filter((column) => column.isGenerated).length) {
+			console.log(this.metadata.columns);
+			throw null;
+		}
 		if (!columnNames.includes('id')) {
 			columnNames.unshift('id');
 		}
