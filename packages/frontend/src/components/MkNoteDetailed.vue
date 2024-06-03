@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
-		<div :class="$style.noteContent">
+		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
 				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 				<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
@@ -761,6 +761,52 @@ function loadConversation() {
 .channel {
 	opacity: 0.7;
 	font-size: 80%;
+}
+
+.showLess {
+	width: 100%;
+	margin-top: 14px;
+	position: sticky;
+	bottom: calc(var(--stickyBottom, 0px) + 14px);
+}
+
+.showLessLabel {
+	display: inline-block;
+	background: var(--popup);
+	padding: 6px 10px;
+	font-size: 0.8em;
+	border-radius: 999px;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.contentCollapsed {
+	position: relative;
+	max-height: 9em;
+	overflow: clip;
+}
+
+.collapsed {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: 2;
+	width: 100%;
+	height: 64px;
+	background: linear-gradient(0deg, var(--panel), var(--X15));
+
+	&:hover > .collapsedLabel {
+		background: var(--panelHighlight);
+	}
+}
+
+.collapsedLabel {
+	display: inline-block;
+	background: var(--panel);
+	padding: 6px 10px;
+	font-size: 0.8em;
+	border-radius: 999px;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 }
 
 .noteFooterInfo {
