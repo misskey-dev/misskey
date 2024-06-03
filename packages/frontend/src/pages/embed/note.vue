@@ -12,15 +12,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import XNotFound from '@/pages/not-found.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { url } from '@/config.js';
 
 const props = defineProps<{
 	noteId: string;
 }>();
+
+provide('EMBED_ORIGINAL_ENTITY_URL', `${url}/notes/${props.noteId}`);
 
 const note = ref<Misskey.entities.Note | null>(null);
 const loading = ref(true);

@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</a>
 						</template>
 					</I18n>
-					<div :class="$style.sub"></div>
+					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
 				</div>
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
@@ -48,7 +48,7 @@ import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { url } from '@/config.js';
+import { url, instanceName } from '@/config.js';
 
 const props = defineProps<{
 	username: string;
@@ -101,6 +101,7 @@ misskeyApi('users/show', {
 
 	.headerTitle {
 		font-weight: 700;
+		line-height: 1.1;
 
 		.sub {
 			font-size: 0.8em;
@@ -112,6 +113,7 @@ misskeyApi('users/show', {
 	.instanceIconLink {
 		display: block;
 		margin-left: auto;
+		height: 24px;
 	}
 
 	.instanceIcon {

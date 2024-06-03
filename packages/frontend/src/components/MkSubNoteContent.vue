@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<details v-if="note.files && note.files.length > 0">
 		<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
-		<MkMediaList :mediaList="note.files"/>
+		<MkMediaList :mediaList="note.files" :originalEntityUrl="`${url}/notes/${note.id}`"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
@@ -36,6 +36,7 @@ import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { url } from '@/config.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

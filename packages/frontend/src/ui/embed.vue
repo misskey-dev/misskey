@@ -71,24 +71,14 @@ const maxHeight = ref(params.get('maxHeight') ? parseInt(params.get('maxHeight')
 //#region Embed Resizer
 const rootEl = shallowRef<HTMLElement | null>(null);
 
-let resizeMessageThrottleTimer: number | null = null;
-let resizeMessageThrottleFlag = false;
 let previousHeight = 0;
 const resizeObserver = new ResizeObserver(async () => {
 	const height = rootEl.value!.scrollHeight + 2; // border 上下1px
-	if (resizeMessageThrottleFlag && Math.abs(previousHeight - height) < 30) return; // プラマイ30px未満の変化は無視
-	if (resizeMessageThrottleTimer) window.clearTimeout(resizeMessageThrottleTimer);
-
+	if (Math.abs(previousHeight - height) < 1) return; // 1px未満の変化は無視
 	postMessageToParentWindow('misskey:embed:changeHeight', {
 		height: (maxHeight.value > 0 && height > maxHeight.value) ? maxHeight.value : height,
 	});
 	previousHeight = height;
-
-	resizeMessageThrottleFlag = true;
-
-	resizeMessageThrottleTimer = window.setTimeout(() => {
-		resizeMessageThrottleFlag = false; // 収縮をやりすぎるとチカチカする
-	}, 500);
 });
 onMounted(() => {
 	resizeObserver.observe(rootEl.value!);

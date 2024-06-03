@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div v-if="appearNote.files && appearNote.files.length > 0">
-					<MkMediaList :mediaList="appearNote.files"/>
+					<MkMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 				</div>
 				<MkPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
 				<div v-if="isEnabledUrlPreview">
@@ -645,7 +645,7 @@ function loadConversation() {
 	font-size: 1.2em;
 
 	&.embeddedNote {
-		padding: 16px 32px;
+		padding: 24px 32px 16px;
 	}
 
 	&:hover > .main > .footer > .button {

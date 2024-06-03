@@ -4984,6 +4984,10 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    /**
+     * {x}から
+     */
+    "fromX": ParameterizedString<"x">;
     "_delivery": {
         /**
          * 配信状態
