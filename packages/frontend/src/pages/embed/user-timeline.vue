@@ -12,10 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkAvatar :class="$style.avatar" :user="user"/>
 				</a>
 				<div :class="$style.headerTitle" @click="top">
-					<I18n :src="i18n.ts.noteOf" tag="div">
+					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
 							<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
-								<Mfm :text="user.name ?? `@${user.username}`" :plain="true"/>
+								<MkUserName :user="user"/>
 							</a>
 						</template>
 					</I18n>
@@ -110,6 +110,7 @@ misskeyApi('users/show', {
 	flex-shrink: 0;
 	padding: 8px 16px;
 	display: flex;
+	min-width: 0;
 	align-items: center;
 	gap: var(--margin);
 	border-bottom: 1px solid var(--divider);
@@ -129,6 +130,7 @@ misskeyApi('users/show', {
 		flex-grow: 1;
 		font-weight: 700;
 		line-height: 1.1;
+		min-width: 0;
 
 		.sub {
 			font-size: 0.8em;

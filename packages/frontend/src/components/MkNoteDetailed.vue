@@ -48,10 +48,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
 			<div :class="$style.noteHeaderBody">
 				<div :class="$style.noteHeaderBodyUpper">
-					<div>
-						<div>
+					<div style="min-width: 0;">
+						<div class="_nowrap">
 							<MkA v-user-preview="appearNote.user.id" :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
-								<MkUserName :nowrap="false" :user="appearNote.user"/>
+								<MkUserName :nowrap="inEmbedPage" :user="appearNote.user"/>
 							</MkA>
 							<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 						</div>
@@ -670,6 +670,7 @@ function loadConversation() {
 .noteHeaderBody {
 	flex: 1;
 	display: flex;
+	min-width: 0;
 	flex-direction: column;
 	justify-content: center;
 	padding-left: 16px;
@@ -678,6 +679,7 @@ function loadConversation() {
 
 .noteHeaderBodyUpper {
 	display: flex;
+	min-width: 0;
 }
 
 .noteHeaderName {
