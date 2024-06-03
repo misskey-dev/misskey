@@ -667,6 +667,11 @@ function loadConversation() {
 	height: 58px;
 }
 
+.embeddedNote .noteHeaderAvatar {
+	width: 50px;
+	height: 50px;
+}
+
 .noteHeaderBody {
 	flex: 1;
 	display: flex;
