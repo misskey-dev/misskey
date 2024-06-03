@@ -236,7 +236,7 @@ const emit = defineEmits<{
 const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false)
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const note = ref(deepClone(props.note));
 
@@ -912,7 +912,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 		color: var(--fgHighlighted);
 	}
 }
-
 
 .footerButtonLink:hover,
 .footerButtonLink:focus,
