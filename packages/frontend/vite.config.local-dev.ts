@@ -52,12 +52,12 @@ const devConfig = {
 			'/bios': httpUrl,
 			'/cli': httpUrl,
 			'/inbox': httpUrl,
-			'/notes': {
+/*			'/notes': {
 				target: httpUrl,
 				headers: {
 					'Accept': 'application/activity+json',
 				},
-			},
+			},*/
 			'/users': {
 				target: httpUrl,
 				headers: {

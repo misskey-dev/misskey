@@ -9,4 +9,4 @@ export function isLink(el: HTMLElement) {
 		return isLink(el.parentElement);
 	}
 	return false;
-};
+}
