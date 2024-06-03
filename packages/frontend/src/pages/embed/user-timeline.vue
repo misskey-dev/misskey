@@ -10,7 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="normalizedShowHeader" :class="$style.userHeader">
 				<MkAvatar :user="user"/>{{ user.name }} のノート
 			</div>
-			<MkNotes :class="$style.userTimelineNotes" :pagination="pagination" :noGap="true"/>
+			<MkNotes
+				:class="$style.userTimelineNotes"
+				:pagination="pagination"
+				:noGap="true"
+				:ad="false"
+			/>
 		</template>
 		<XNotFound v-else/>
 	</div>
