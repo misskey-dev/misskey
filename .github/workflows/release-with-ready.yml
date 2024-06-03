@@ -28,7 +28,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
   release:
-    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v1
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v2
     needs: check
     if: startsWith(needs.check.outputs.ref, 'release/')
     with:
