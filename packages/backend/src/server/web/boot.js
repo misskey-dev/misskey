@@ -174,7 +174,7 @@
 			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
 			<p>Disable an adblocker / アドブロッカーを無効にする</p>
 	 		<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
-			<details style="color: #86b300;">
+			<details class="hide-when-embed" style="color: #86b300;">
 				<summary>Other options / その他のオプション</summary>
 				<a href="/flush">
 					<button class="button-small">
@@ -226,6 +226,10 @@
 			margin: auto;
 			padding: 10px;
 			text-align: center;
+		}
+
+		html.embed .hide-when-embed {
+			display: none;
 		}
 
 		button {

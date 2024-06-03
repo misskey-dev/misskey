@@ -17,7 +17,7 @@ doctype html
 	 https://github.com/misskey-dev/misskey
 
 
-html
+html(class=embed && 'embed')
 
 	head
 		meta(charset='utf-8')
@@ -77,7 +77,7 @@ html
 		script
 			include ../boot.js
 
-	body(class=embed && 'embed')
+	body
 		noscript: p
 			| JavaScriptを有効にしてください
 			br
