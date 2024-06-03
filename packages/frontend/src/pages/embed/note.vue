@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 	<div :class="$style.noteEmbedRoot">
 		<MkLoading v-if="loading"/>
-		<MkNote v-else-if="note" :note="note"/>
+		<MkNoteDetailed v-else-if="note" :note="note"/>
 		<XNotFound v-else/>
 	</div>
 </template>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkNote from '@/components/MkNote.vue';
+import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import XNotFound from '@/pages/not-found.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 

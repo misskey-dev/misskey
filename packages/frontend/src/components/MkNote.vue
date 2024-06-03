@@ -100,7 +100,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
 				</template>
 			</MkReactionsViewer>
-			<footer :class="$style.footer">
+			<footer v-if="inEmbedPage" :class="$style.footer">
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
+					<i class="ti ti-arrow-back-up"></i>
+				</a>
+				<a v-if="canRenote" :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
+					<i class="ti ti-repeat"></i>
+				</a>
+				<a v-else :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button" disabled>
+					<i class="ti ti-ban"></i>
+				</a>
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
+				</a>
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
+					<i class="ti ti-dots"></i>
+				</a>
+			</footer>
+			<footer v-else :class="$style.footer">
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
@@ -218,6 +236,7 @@ const emit = defineEmits<{
 const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false)
 
 const note = ref(deepClone(props.note));
 
@@ -311,7 +330,7 @@ provide('react', (reaction: string) => {
 	});
 });
 
-if (props.mock) {
+if (props.mock || inEmbedPage) {
 	watch(() => props.note, (to) => {
 		note.value = deepClone(to);
 	}, { deep: true });
@@ -324,7 +343,7 @@ if (props.mock) {
 	});
 }
 
-if (!props.mock) {
+if (!props.mock && !inEmbedPage) {
 	useTooltip(renoteButton, async (showing) => {
 		const renotes = await misskeyApi('notes/renotes', {
 			noteId: appearNote.value.id,
@@ -892,6 +911,13 @@ function emitUpdReaction(emoji: string, delta: number) {
 	&:hover {
 		color: var(--fgHighlighted);
 	}
+}
+
+
+.footerButtonLink:hover,
+.footerButtonLink:focus,
+.footerButtonLink:active {
+	text-decoration: none;
 }
 
 .footerButtonCount {

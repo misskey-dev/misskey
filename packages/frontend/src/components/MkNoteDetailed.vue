@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-hotkey="keymap"
 	:class="$style.root"
 >
-	<div v-if="appearNote.reply && appearNote.reply.replyId">
+	<div v-if="!inEmbedPage && appearNote.reply && appearNote.reply.replyId">
 		<div v-if="!conversationLoaded" style="padding: 16px">
 			<MkButton style="margin: 0 auto;" primary rounded @click="loadConversation">{{ i18n.ts.loadConversation }}</MkButton>
 		</div>
@@ -43,25 +43,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		</div>
 	</div>
-	<article :class="$style.note" @contextmenu.stop="onContextmenu">
+	<article :class="[$style.note, { [$style.embeddedNote]: inEmbedPage }]" @contextmenu.stop="onContextmenu">
 		<header :class="$style.noteHeader">
 			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
 			<div :class="$style.noteHeaderBody">
-				<div>
-					<MkA v-user-preview="appearNote.user.id" :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
-						<MkUserName :nowrap="false" :user="appearNote.user"/>
-					</MkA>
-					<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
+				<div :class="$style.noteHeaderBodyUpper">
+					<div>
+						<div>
+							<MkA v-user-preview="appearNote.user.id" :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
+								<MkUserName :nowrap="false" :user="appearNote.user"/>
+							</MkA>
+							<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
+						</div>
+						<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
+					</div>
 					<div :class="$style.noteHeaderInfo">
-						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
-							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
-							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
-							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-						</span>
-						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+						<img v-if="inEmbedPage" :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
+						<template v-else>
+							<div v-if="appearNote.visibility !== 'public'" :title="i18n.ts._visibility[appearNote.visibility]">
+								<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
+								<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
+								<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+							</div>
+							<div v-if="appearNote.localOnly" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></div>
+						</template>
 					</div>
 				</div>
-				<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
@@ -99,54 +106,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" style="margin-top: 6px;"/>
 				</div>
 				<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+				<button v-if="inEmbedPage && isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
+					<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
+				</button>
+				<button v-else-if="inEmbedPage && isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
+					<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
+				</button>
 			</div>
 			<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 		</div>
 		<footer>
 			<div :class="$style.noteFooterInfo">
+				<template v-if="inEmbedPage">
+					<span v-if="appearNote.visibility !== 'public'" style="display: inline-block; margin-right: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
+						<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
+						<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
+						<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+					</span>
+					<span v-if="appearNote.localOnly" style="display: inline-block; margin-right: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+				</template>
 				<MkA :to="notePage(appearNote)">
 					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
 				</MkA>
 			</div>
 			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :note="appearNote"/>
-			<button class="_button" :class="$style.noteFooterButton" @click="reply()">
-				<i class="ti ti-arrow-back-up"></i>
-				<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>
-			</button>
-			<button
-				v-if="canRenote"
-				ref="renoteButton"
-				class="_button"
-				:class="$style.noteFooterButton"
-				@mousedown="renote()"
-			>
-				<i class="ti ti-repeat"></i>
-				<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.renoteCount) }}</p>
-			</button>
-			<button v-else class="_button" :class="$style.noteFooterButton" disabled>
-				<i class="ti ti-ban"></i>
-			</button>
-			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
-				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-				<i v-else class="ti ti-plus"></i>
-				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
-			</button>
-			<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown="clip()">
-				<i class="ti ti-paperclip"></i>
-			</button>
-			<button ref="menuButton" class="_button" :class="$style.noteFooterButton" @mousedown="showMenu()">
-				<i class="ti ti-dots"></i>
-			</button>
+			<template v-if="inEmbedPage">
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
+					<i class="ti ti-arrow-back-up"></i>
+				</a>
+				<a v-if="canRenote" :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
+					<i class="ti ti-repeat"></i>
+				</a>
+				<a v-else :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button" disabled>
+					<i class="ti ti-ban"></i>
+				</a>
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
+				</a>
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
+					<i class="ti ti-dots"></i>
+				</a>
+			</template>
+			<template v-else>
+				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
+					<i class="ti ti-arrow-back-up"></i>
+					<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>
+				</button>
+				<button
+					v-if="canRenote"
+					ref="renoteButton"
+					class="_button"
+					:class="$style.noteFooterButton"
+					@mousedown="renote()"
+				>
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.renoteCount) }}</p>
+				</button>
+				<button v-else class="_button" :class="$style.noteFooterButton" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
+				<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
+					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
+				</button>
+				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown="clip()">
+					<i class="ti ti-paperclip"></i>
+				</button>
+				<button ref="menuButton" class="_button" :class="$style.noteFooterButton" @mousedown="showMenu()">
+					<i class="ti ti-dots"></i>
+				</button>
+			</template>
 		</footer>
 	</article>
-	<div :class="$style.tabs">
+	<div v-if="!inEmbedPage" :class="$style.tabs">
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
 	</div>
-	<div>
+	<div v-if="!inEmbedPage">
 		<div v-if="tab === 'replies'">
 			<div v-if="!repliesLoaded" style="padding: 16px">
 				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
@@ -228,11 +269,12 @@ import { useTooltip } from '@/scripts/use-tooltip.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import { shouldCollapsed } from '@/scripts/collapsed.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview, instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -242,6 +284,7 @@ const props = withDefaults(defineProps<{
 });
 
 const inChannel = inject('inChannel', null);
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const note = ref(deepClone(props.note));
 
@@ -288,6 +331,8 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
+const isLong = shouldCollapsed(appearNote.value, urls ?? []);
+const collapsed = ref(appearNote.value.cw == null && isLong);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
@@ -596,6 +641,10 @@ function loadConversation() {
 	padding: 32px;
 	font-size: 1.2em;
 
+	&.embeddedNote {
+		padding: 16px 32px;
+	}
+
 	&:hover > .main > .footer > .button {
 		opacity: 1;
 	}
@@ -624,6 +673,10 @@ function loadConversation() {
 	font-size: 0.95em;
 }
 
+.noteHeaderBodyUpper {
+	display: flex;
+}
+
 .noteHeaderName {
 	font-weight: bold;
 	line-height: 1.3;
@@ -640,7 +693,17 @@ function loadConversation() {
 }
 
 .noteHeaderInfo {
-	float: right;
+	margin-left: auto;
+	display: flex;
+	gap: 0.5em;
+	align-items: center;
+}
+
+.noteHeaderInstanceIcon {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	margin-left: 4px;
 }
 
 .noteHeaderUsername {
@@ -718,6 +781,12 @@ function loadConversation() {
 	&:hover {
 		color: var(--fgHighlighted);
 	}
+}
+
+.footerButtonLink:hover,
+.footerButtonLink:focus,
+.footerButtonLink:active {
+	text-decoration: none;
 }
 
 .noteFooterButtonCount {
