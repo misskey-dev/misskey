@@ -92,8 +92,8 @@ onUnmounted(() => {
 
 document.documentElement.style.maxWidth = '500px';
 
-// サーバー起動の場合はもとから付与されているためdevのみ
-if (_DEV_) document.documentElement.classList.add('embed');
+// サーバー起動の場合はもとから付与されているけど一応
+document.documentElement.classList.add('embed');
 </script>
 
 <style lang="scss" module>
