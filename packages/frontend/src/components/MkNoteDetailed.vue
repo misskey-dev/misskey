@@ -58,7 +58,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
 					</div>
 					<div :class="$style.noteHeaderInfo">
-						<img v-if="inEmbedPage" :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
+						<a v-if="inEmbedPage" :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
+							<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
+						</a>
 						<template v-else>
 							<div v-if="appearNote.visibility !== 'public'" :title="i18n.ts._visibility[appearNote.visibility]">
 								<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
@@ -275,6 +277,7 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview, instance } from '@/instance.js';
+import { url } from '@/config.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -699,11 +702,14 @@ function loadConversation() {
 	align-items: center;
 }
 
-.noteHeaderInstanceIcon {
+.noteHeaderInstanceIconLink {
 	display: inline-block;
+	margin-left: 4px;
+}
+
+.noteHeaderInstanceIcon {
 	width: 32px;
 	height: 32px;
-	margin-left: 4px;
 }
 
 .noteHeaderUsername {

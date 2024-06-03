@@ -8,7 +8,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="loading"/>
 		<template v-else-if="user">
 			<div v-if="normalizedShowHeader" :class="$style.userHeader">
-				<MkAvatar :user="user"/>{{ user.name }} のノート
+				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
+					<MkAvatar :class="$style.avatar" :user="user"/>
+				</a>
+				<div :class="$style.headerTitle">
+					<I18n :src="i18n.ts.noteOf" tag="div">
+						<template #user>
+							<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
+								<Mfm :text="user.name ?? `@${user.username}`" :plain="true"/>
+							</a>
+						</template>
+					</I18n>
+					<div :class="$style.sub"></div>
+				</div>
+				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
+					<img
+						:class="$style.instanceIcon"
+						:src="instance.iconUrl || '/favicon.ico'"
+					/>
+				</a>
 			</div>
 			<MkNotes
 				:class="$style.userTimelineNotes"
@@ -28,6 +46,9 @@ import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { url } from '@/config.js';
 
 const props = defineProps<{
 	username: string;
@@ -63,6 +84,40 @@ misskeyApi('users/show', {
 	max-height: var(--embedMaxHeight, none);
 	display: flex;
 	flex-direction: column;
+}
+
+.userHeader {
+	padding: 8px 16px;
+	display: flex;
+	align-items: center;
+	gap: var(--margin);
+	border-bottom: 1px solid var(--divider);
+
+	.avatar {
+		display: inline-block;
+		width: 32px;
+		height: 32px;
+	}
+
+	.headerTitle {
+		font-weight: 700;
+
+		.sub {
+			font-size: 0.8em;
+			font-weight: 400;
+			opacity: 0.7;
+		}
+	}
+
+	.instanceIconLink {
+		display: block;
+		margin-left: auto;
+	}
+
+	.instanceIcon {
+		height: 24px;
+		border-radius: 4px;
+	}
 }
 
 .userTimelineNotes {
