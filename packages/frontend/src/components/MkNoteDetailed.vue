@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
-		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
+		<div :class="[$style.noteContent, { [$style.contentCollapsed]: inEmbedPage && collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
 				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 				<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
