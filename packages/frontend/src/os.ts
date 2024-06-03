@@ -89,8 +89,6 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	return promise;
 });
 
-type Unpromise<T> = T extends Promise<infer U> ? U : never;
-
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
 	onSuccess?: ((res: Awaited<T>) => void) | null,
