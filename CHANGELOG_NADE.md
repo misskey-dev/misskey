@@ -8,6 +8,10 @@
 
 ### Server
 -->
+## nade next release
+### Client
+- Fix: マージミスによる存在しない変数が呼ばれる問題を修正
+
 ## nade 1.5.5
 ### Server
 - Fix: DBフォールバックが大量に遡ると取得漏れを起こしてしまう問題を修正した際、sinceIdによる取得を壊してしまったので修正
