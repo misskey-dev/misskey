@@ -193,7 +193,7 @@ const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNote
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
-	props.initialVisibleUsers.forEach(pushVisibleUser);
+	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
 const autocomplete = ref(null);
@@ -374,11 +374,11 @@ function initialize() {
 		}
 
 		if (visibility.value === 'specified') {
-			if (reply.value.visibleUserIds) {
+			if (props.reply.visibleUserIds) {
 				misskeyApi('users/show', {
-					userIds: reply.value.visibleUserIds.filter(uid => uid !== $i.id && uid !== reply.value?.userId),
+					userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
 				}).then(users => {
-					users.forEach(pushVisibleUser);
+					users.forEach(u => pushVisibleUser(u));
 				});
 			}
 
@@ -667,6 +667,23 @@ async function onPaste(ev: ClipboardEvent) {
 			}
 
 			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
+		});
+	}
+
+	if (paste.length > 1000) {
+		ev.preventDefault();
+		os.confirm({
+			type: 'info',
+			text: i18n.ts.attachAsFileQuestion,
+		}).then(({ canceled }) => {
+			if (canceled) {
+				insertTextAtCursor(textareaEl.value, paste);
+				return;
+			}
+
+			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, '0');
+			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
+			upload(file, `${fileName}.txt`);
 		});
 	}
 }
@@ -1089,11 +1106,7 @@ onMounted(() => {
 				applyDraft(draft, true);
 				if (draft.data.visibleUserIds) {
 					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
-						for (let i = 0; i < users.length; i++) {
-							if (users[i].id === draft.data.visibleUserIds[i]) {
-								pushVisibleUser(users[i]);
-							}
-						}
+						users.forEach(u => pushVisibleUser(u));
 					});
 				}
 			}
