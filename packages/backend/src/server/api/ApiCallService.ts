@@ -81,7 +81,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				// もしかするとマイナスになる可能性がなくはないのでマイナスだったら0にしておく
 				reply.header('Retry-After', Math.max(cooldownInSeconds, 0).toString(10));
 			} else {
-				this.logger.warn(`rate limit information has unexpected type ${typeof(err.info?.reset)}`)
+				this.logger.warn(`rate limit information has unexpected type ${typeof(err.info?.reset)}`);
 			}
 		} else if (!statusCode) {
 			statusCode = 500;

@@ -66,7 +66,7 @@ export class RateLimiterService {
 			});
 
 			// Long term limit
-			const max = new Promise<void>((ok, reject)=> {
+			const max = new Promise<void>((ok, reject) => {
 				const limiter = new Limiter({
 					id: `${actor}:${limitation.key}`,
 					duration: limitation.duration! * factor,
