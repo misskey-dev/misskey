@@ -678,7 +678,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:admin:show-users*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:show-user*
      */
     request<E extends 'admin/show-users', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -846,6 +846,17 @@ declare module '../api.js' {
      * **Credential required**: *No*
      */
     request<E extends 'announcements', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *No*
+     */
+    request<E extends 'announcements/show', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

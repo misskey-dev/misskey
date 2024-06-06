@@ -72,10 +72,6 @@ export const packedAntennaSchema = {
 			optional: false, nullable: false,
 			default: false,
 		},
-		notify: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
 		excludeBots: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -95,6 +91,11 @@ export const packedAntennaSchema = {
 			optional: false, nullable: false,
 		},
 		hasUnreadNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			default: false,
+		},
+		notify: {
 			type: 'boolean',
 			optional: false, nullable: false,
 			default: false,

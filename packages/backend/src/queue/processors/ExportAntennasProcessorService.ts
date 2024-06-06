@@ -84,7 +84,6 @@ export class ExportAntennasProcessorService {
 					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
-					notify: antenna.notify,
 				}));
 				if (antennas.length - 1 !== index) {
 					write(', ');

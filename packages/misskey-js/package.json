@@ -1,8 +1,9 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.3.1",
+	"version": "2024.5.0",
 	"description": "Misskey SDK for JavaScript",
+	"license": "MIT",
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
 	"exports": {
@@ -30,7 +31,8 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/misskey-dev/misskey.js.git"
+		"url": "https://github.com/misskey-dev/misskey.git",
+		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.43.1",
