@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
 -
