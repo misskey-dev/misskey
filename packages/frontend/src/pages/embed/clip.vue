@@ -6,20 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 	<div>
 		<MkLoading v-if="loading"/>
-		<XEmbedTimelineUI v-else-if="user" :showHeader="normalizedShowHeader">
+		<XEmbedTimelineUI v-else-if="clip" :showHeader="normalizedShowHeader">
 			<template #header>
-				<div :class="$style.userHeader">
-					<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
-						<MkAvatar :class="$style.avatar" :user="user"/>
-					</a>
+				<div :class="$style.clipHeader">
+					<div :class="$style.headerClipIconRoot">
+						<i class="ti ti-paperclip"></i>
+					</div>
 					<div :class="$style.headerTitle" @click="top">
-						<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
-							<template #user>
-								<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
-									<MkUserName :user="user"/>
-								</a>
-							</template>
-						</I18n>
+						<div class="_nowrap"><a :href="`/clips/${clip.id}`" target="_blank" rel="noopener">{{ clip.name }}</a></div>
 						<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
 					</div>
 					<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
@@ -60,7 +54,7 @@ import { scrollToTop } from '@/scripts/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 
 const props = defineProps<{
-	username: string;
+	clipId: string;
 	showHeader?: string;
 	enableAutoLoad?: string;
 }>();
@@ -71,11 +65,11 @@ const normalizedShowHeader = computed(() => props.showHeader !== 'false');
 // デフォルト: false
 const normalizedEnableAutoLoad = computed(() => props.enableAutoLoad === 'true');
 
-const user = ref<Misskey.entities.UserLite | null>(null);
+const clip = ref<Misskey.entities.Clip | null>(null);
 const pagination = computed(() => ({
-	endpoint: 'users/notes',
+	endpoint: 'clips/notes',
 	params: {
-		userId: user.value?.id,
+		clipId: props.clipId,
 	},
 } as Paging));
 const loading = ref(true);
@@ -91,10 +85,10 @@ function top(ev: MouseEvent) {
 	}
 }
 
-misskeyApi('users/show', {
-	username: props.username,
+misskeyApi('clips/show', {
+	clipId: props.clipId,
 }).then(res => {
-	user.value = res;
+	clip.value = res;
 	loading.value = false;
 }).catch(err => {
 	console.error(err);
@@ -103,7 +97,7 @@ misskeyApi('users/show', {
 </script>
 
 <style lang="scss" module>
-.userHeader {
+.clipHeader {
 	padding: 8px 16px;
 	display: flex;
 	min-width: 0;
@@ -111,14 +105,16 @@ misskeyApi('users/show', {
 	gap: var(--margin);
 	overflow: hidden;
 
-	.avatarLink {
-		display: block;
-	}
-
-	.avatar {
-		display: inline-block;
+	.headerClipIconRoot {
+		flex-shrink: 0;
 		width: 32px;
 		height: 32px;
+		line-height: 32px;
+		font-size: 14px;
+		text-align: center;
+		background-color: var(--accentedBg);
+		color: var(--accent);
+		border-radius: 50%;
 	}
 
 	.headerTitle {

@@ -566,6 +566,13 @@ const routes: RouteDef[] = [{
 		autoload: 'enableAutoLoad',
 	}
 }, {
+	path: '/embed/clips/:clipId',
+	component: page(() => import('@/pages/embed/clip.vue')),
+	query: {
+		header: 'showHeader',
+		autoload: 'enableAutoLoad',
+	}
+}, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
 }, {
