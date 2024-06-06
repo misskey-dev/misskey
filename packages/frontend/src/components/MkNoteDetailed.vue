@@ -131,7 +131,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
 				</MkA>
 			</div>
-			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :maxNumber="inEmbedPage ? 16 : undefined" :note="appearNote"/>
+			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :maxNumber="inEmbedPage ? 16 : undefined" :note="appearNote">
+				<template #more>
+					<MkA :to="`/notes/${appearNote.id}`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
+				</template>
+			</MkReactionsViewer>
 			<template v-if="inEmbedPage">
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-arrow-back-up"></i>
@@ -955,5 +959,12 @@ function loadConversation() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.reactionOmitted {
+	display: inline-block;
+	margin-left: 8px;
+	opacity: .8;
+	font-size: 95%;
 }
 </style>
