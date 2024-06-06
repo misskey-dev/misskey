@@ -4,45 +4,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div>
-		<MkLoading v-if="loading"/>
-		<XEmbedTimelineUI v-else-if="user" :showHeader="normalizedShowHeader">
-			<template #header>
-				<div :class="$style.userHeader">
-					<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
-						<MkAvatar :class="$style.avatar" :user="user"/>
-					</a>
-					<div :class="$style.headerTitle" @click="top">
-						<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
-							<template #user>
-								<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
-									<MkUserName :user="user"/>
-								</a>
-							</template>
-						</I18n>
-						<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
-					</div>
-					<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
-						<img
-							:class="$style.instanceIcon"
-							:src="instance.iconUrl || '/favicon.ico'"
-						/>
-					</a>
+<div>
+	<MkLoading v-if="loading"/>
+	<XEmbedTimelineUI v-else-if="user" :showHeader="normalizedShowHeader">
+		<template #header>
+			<div :class="$style.userHeader">
+				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
+					<MkAvatar :class="$style.avatar" :user="user"/>
+				</a>
+				<div :class="$style.headerTitle" @click="top">
+					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
+						<template #user>
+							<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
+								<MkUserName :user="user"/>
+							</a>
+						</template>
+					</I18n>
+					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
 				</div>
-			</template>
-			<template #body>
-				<MkNotes
-					ref="notesEl"
-					:class="$style.userTimelineNotes"
-					:pagination="pagination"
-					:disableAutoLoad="!normalizedEnableAutoLoad"
-					:noGap="true"
-					:ad="false"
-				/>
-			</template>
-		</XEmbedTimelineUI>
-		<XNotFound v-else/>
-	</div>
+				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
+					<img
+						:class="$style.instanceIcon"
+						:src="instance.iconUrl || '/favicon.ico'"
+					/>
+				</a>
+			</div>
+		</template>
+		<template #body>
+			<MkNotes
+				ref="notesEl"
+				:class="$style.userTimelineNotes"
+				:pagination="pagination"
+				:disableAutoLoad="!normalizedEnableAutoLoad"
+				:noGap="true"
+				:ad="false"
+			/>
+		</template>
+	</XEmbedTimelineUI>
+	<XNotFound v-else/>
+</div>
 </template>
 
 <script setup lang="ts">

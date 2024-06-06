@@ -4,39 +4,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div>
-		<MkLoading v-if="loading"/>
-		<XEmbedTimelineUI v-else-if="clip" :showHeader="normalizedShowHeader">
-			<template #header>
-				<div :class="$style.clipHeader">
-					<div :class="$style.headerClipIconRoot">
-						<i class="ti ti-paperclip"></i>
-					</div>
-					<div :class="$style.headerTitle" @click="top">
-						<div class="_nowrap"><a :href="`/clips/${clip.id}`" target="_blank" rel="noopener">{{ clip.name }}</a></div>
-						<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
-					</div>
-					<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
-						<img
-							:class="$style.instanceIcon"
-							:src="instance.iconUrl || '/favicon.ico'"
-						/>
-					</a>
+<div>
+	<MkLoading v-if="loading"/>
+	<XEmbedTimelineUI v-else-if="clip" :showHeader="normalizedShowHeader">
+		<template #header>
+			<div :class="$style.clipHeader">
+				<div :class="$style.headerClipIconRoot">
+					<i class="ti ti-paperclip"></i>
 				</div>
-			</template>
-			<template #body>
-				<MkNotes
-					ref="notesEl"
-					:class="$style.userTimelineNotes"
-					:pagination="pagination"
-					:disableAutoLoad="!normalizedEnableAutoLoad"
-					:noGap="true"
-					:ad="false"
-				/>
-			</template>
-		</XEmbedTimelineUI>
-		<XNotFound v-else/>
-	</div>
+				<div :class="$style.headerTitle" @click="top">
+					<div class="_nowrap"><a :href="`/clips/${clip.id}`" target="_blank" rel="noopener">{{ clip.name }}</a></div>
+					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
+				</div>
+				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
+					<img
+						:class="$style.instanceIcon"
+						:src="instance.iconUrl || '/favicon.ico'"
+					/>
+				</a>
+			</div>
+		</template>
+		<template #body>
+			<MkNotes
+				ref="notesEl"
+				:class="$style.userTimelineNotes"
+				:pagination="pagination"
+				:disableAutoLoad="!normalizedEnableAutoLoad"
+				:noGap="true"
+				:ad="false"
+			/>
+		</template>
+	</XEmbedTimelineUI>
+	<XNotFound v-else/>
+</div>
 </template>
 
 <script setup lang="ts">

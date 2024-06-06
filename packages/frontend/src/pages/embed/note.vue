@@ -4,11 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div :class="$style.noteEmbedRoot">
-		<MkLoading v-if="loading"/>
-		<MkNoteDetailed v-else-if="note" :note="note"/>
-		<XNotFound v-else/>
-	</div>
+<div :class="$style.noteEmbedRoot">
+	<MkLoading v-if="loading"/>
+	<MkNoteDetailed v-else-if="note" :note="note"/>
+	<XNotFound v-else/>
+</div>
 </template>
 
 <script setup lang="ts">
