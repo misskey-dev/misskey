@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef } from 'vue';
+import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
@@ -58,12 +58,20 @@ import { instance } from '@/instance.js';
 import { url, instanceName } from '@/config.js';
 import { scrollToTop } from '@/scripts/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
+import { useRouter } from '@/router/supplier.js';
 
 const props = defineProps<{
 	username: string;
 	showHeader?: string;
 	enableAutoLoad?: string;
 }>();
+
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
+
+if (!inEmbedPage) {
+	const router = useRouter();
+	router.replace(`/@${props.username}`);
+}
 
 // デフォルト: true
 const normalizedShowHeader = computed(() => props.showHeader !== 'false');
