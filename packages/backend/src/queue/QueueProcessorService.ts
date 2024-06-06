@@ -165,7 +165,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.systemQueueWorker
 				.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 				.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
-				.on('failed', (job, err) => systemLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+				.on('failed', (job, err) => systemLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
 				.on('error', (err: Error) => systemLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
 		}
@@ -214,7 +214,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.dbQueueWorker
 				.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
 				.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
-				.on('failed', (job, err) => dbLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+				.on('failed', (job, err) => dbLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
 				.on('error', (err: Error) => dbLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => dbLogger.warn(`stalled id=${jobId}`));
 		}
