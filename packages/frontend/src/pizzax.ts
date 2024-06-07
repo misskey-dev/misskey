@@ -183,6 +183,14 @@ export class Storage<T extends StateDef> {
 		});
 	}
 
+
+	/**
+	 * Sets the configuration options for Pizzax.
+	 *
+	 * 特にinitを待ったりとかはしないので、boot.jsなど、ロード初期段階で呼ぶ必要がある
+	 *
+	 * @param config - The partial configuration object.
+	 */
 	public setConfig(config: Partial<PizzaxConfig>) {
 		this.options = Object.assign(this.options, config);
 	}
