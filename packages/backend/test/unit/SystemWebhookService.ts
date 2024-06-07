@@ -5,7 +5,6 @@
 
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { MiUser } from '@/models/User.js';
 import { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
@@ -67,7 +66,7 @@ describe('SystemWebhookService', () => {
 					GlobalModule,
 				],
 				providers: [
-					UserWebhookService,
+					SystemWebhookService,
 					IdService,
 					LoggerService,
 					GlobalEventService,
