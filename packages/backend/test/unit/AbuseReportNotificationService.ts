@@ -7,7 +7,8 @@ import { jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import {
-	AbuseReportNotificationRecipientRepository, MiAbuseReportNotificationRecipient,
+	AbuseReportNotificationRecipientRepository,
+	MiAbuseReportNotificationRecipient,
 	MiSystemWebhook,
 	MiUser,
 	SystemWebhooksRepository,
@@ -17,13 +18,13 @@ import {
 import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { IdService } from '@/core/IdService.js';
-import { WebhookService } from '@/core/WebhookService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { randomString } from '../utils.js';
 
 process.env.NODE_ENV = 'test';
@@ -41,7 +42,7 @@ describe('AbuseReportNotificationService', () => {
 	let idService: IdService;
 	let roleService: jest.Mocked<RoleService>;
 	let emailService: jest.Mocked<EmailService>;
-	let webhookService: jest.Mocked<WebhookService>;
+	let webhookService: jest.Mocked<SystemWebhookService>;
 
 	// --------------------------------------------------------------------------------------
 
@@ -107,7 +108,7 @@ describe('AbuseReportNotificationService', () => {
 						provide: RoleService, useFactory: () => ({ getModeratorIds: jest.fn() }),
 					},
 					{
-						provide: WebhookService, useFactory: () => ({ enqueueSystemWebhook: jest.fn() }),
+						provide: SystemWebhookService, useFactory: () => ({ enqueueSystemWebhook: jest.fn() }),
 					},
 					{
 						provide: EmailService, useFactory: () => ({ sendEmail: jest.fn() }),
@@ -134,7 +135,7 @@ describe('AbuseReportNotificationService', () => {
 		idService = app.get(IdService);
 		roleService = app.get(RoleService) as jest.Mocked<RoleService>;
 		emailService = app.get<EmailService>(EmailService) as jest.Mocked<EmailService>;
-		webhookService = app.get<WebhookService>(WebhookService) as jest.Mocked<WebhookService>;
+		webhookService = app.get<SystemWebhookService>(SystemWebhookService) as jest.Mocked<SystemWebhookService>;
 
 		app.enableShutdownHooks();
 	});

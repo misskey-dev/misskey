@@ -11,6 +11,7 @@ import {
 	AbuseReportNotificationRecipientEntityService,
 } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
@@ -62,7 +63,7 @@ import { UserMutingService } from './UserMutingService.js';
 import { UserSuspendService } from './UserSuspendService.js';
 import { UserAuthService } from './UserAuthService.js';
 import { VideoProcessingService } from './VideoProcessingService.js';
-import { WebhookService } from './WebhookService.js';
+import { UserWebhookService } from './UserWebhookService.js';
 import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
@@ -203,7 +204,8 @@ const $UserMutingService: Provider = { provide: 'UserMutingService', useExisting
 const $UserSuspendService: Provider = { provide: 'UserSuspendService', useExisting: UserSuspendService };
 const $UserAuthService: Provider = { provide: 'UserAuthService', useExisting: UserAuthService };
 const $VideoProcessingService: Provider = { provide: 'VideoProcessingService', useExisting: VideoProcessingService };
-const $WebhookService: Provider = { provide: 'WebhookService', useExisting: WebhookService };
+const $UserWebhookService: Provider = { provide: 'UserWebhookService', useExisting: UserWebhookService };
+const $SystemWebhookService: Provider = { provide: 'SystemWebhookService', useExisting: SystemWebhookService };
 const $UtilityService: Provider = { provide: 'UtilityService', useExisting: UtilityService };
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
@@ -347,7 +349,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserSuspendService,
 		UserAuthService,
 		VideoProcessingService,
-		WebhookService,
+		UserWebhookService,
+		SystemWebhookService,
 		UtilityService,
 		FileInfoService,
 		SearchService,
@@ -487,7 +490,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserSuspendService,
 		$UserAuthService,
 		$VideoProcessingService,
-		$WebhookService,
+		$UserWebhookService,
+		$SystemWebhookService,
 		$UtilityService,
 		$FileInfoService,
 		$SearchService,
@@ -628,7 +632,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserSuspendService,
 		UserAuthService,
 		VideoProcessingService,
-		WebhookService,
+		UserWebhookService,
+		SystemWebhookService,
 		UtilityService,
 		FileInfoService,
 		SearchService,
@@ -767,7 +772,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserSuspendService,
 		$UserAuthService,
 		$VideoProcessingService,
-		$WebhookService,
+		$UserWebhookService,
+		$SystemWebhookService,
 		$UtilityService,
 		$FileInfoService,
 		$SearchService,

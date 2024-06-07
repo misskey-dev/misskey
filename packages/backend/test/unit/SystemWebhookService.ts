@@ -5,7 +5,7 @@
 
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import { WebhookService } from '@/core/WebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { MiUser } from '@/models/User.js';
 import { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
@@ -16,11 +16,12 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { api, randomString, sleep } from '../utils.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { randomString, sleep } from '../utils.js';
 
-describe('WebhookService', () => {
+describe('SystemWebhookService', () => {
 	let app: TestingModule;
-	let service: WebhookService;
+	let service: SystemWebhookService;
 
 	// --------------------------------------------------------------------------------------
 
@@ -66,7 +67,7 @@ describe('WebhookService', () => {
 					GlobalModule,
 				],
 				providers: [
-					WebhookService,
+					UserWebhookService,
 					IdService,
 					LoggerService,
 					GlobalEventService,
@@ -83,7 +84,7 @@ describe('WebhookService', () => {
 		usersRepository = app.get(DI.usersRepository);
 		systemWebhooksRepository = app.get(DI.systemWebhooksRepository);
 
-		service = app.get(WebhookService);
+		service = app.get(UserWebhookService);
 		idService = app.get(IdService);
 		queueService = app.get(QueueService) as jest.Mocked<QueueService>;
 

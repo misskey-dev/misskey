@@ -5,8 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiUser, SystemWebhooksRepository, WebhooksRepository } from '@/models/_.js';
-import type { MiWebhook } from '@/models/Webhook.js';
+import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
@@ -19,18 +18,14 @@ import Logger from '@/logger.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class WebhookService implements OnApplicationShutdown {
+export class SystemWebhookService implements OnApplicationShutdown {
 	private logger: Logger;
-	private activeWebhooksFetched = false;
-	private activeWebhooks: MiWebhook[] = [];
 	private activeSystemWebhooksFetched = false;
 	private activeSystemWebhooks: MiSystemWebhook[] = [];
 
 	constructor(
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
-		@Inject(DI.webhooksRepository)
-		private webhooksRepository: WebhooksRepository,
 		@Inject(DI.systemWebhooksRepository)
 		private systemWebhooksRepository: SystemWebhooksRepository,
 		private idService: IdService,
@@ -41,18 +36,6 @@ export class WebhookService implements OnApplicationShutdown {
 	) {
 		this.redisForSub.on('message', this.onMessage);
 		this.logger = this.loggerService.getLogger('webhook');
-	}
-
-	@bindThis
-	public async getActiveWebhooks() {
-		if (!this.activeWebhooksFetched) {
-			this.activeWebhooks = await this.webhooksRepository.findBy({
-				active: true,
-			});
-			this.activeWebhooksFetched = true;
-		}
-
-		return this.activeWebhooks;
 	}
 
 	@bindThis
@@ -210,41 +193,6 @@ export class WebhookService implements OnApplicationShutdown {
 
 		const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 		switch (type) {
-			case 'webhookCreated': {
-				if (body.active) {
-					this.activeWebhooks.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-						...body,
-						latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
-						user: null, // joinなカラムは通常取ってこないので
-					});
-				}
-				break;
-			}
-			case 'webhookUpdated': {
-				if (body.active) {
-					const i = this.activeWebhooks.findIndex(a => a.id === body.id);
-					if (i > -1) {
-						this.activeWebhooks[i] = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
-							user: null, // joinなカラムは通常取ってこないので
-						};
-					} else {
-						this.activeWebhooks.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
-							user: null, // joinなカラムは通常取ってこないので
-						});
-					}
-				} else {
-					this.activeWebhooks = this.activeWebhooks.filter(a => a.id !== body.id);
-				}
-				break;
-			}
-			case 'webhookDeleted': {
-				this.activeWebhooks = this.activeWebhooks.filter(a => a.id !== body.id);
-				break;
-			}
 			case 'systemWebhookCreated': {
 				if (body.isActive) {
 					this.activeSystemWebhooks.push(MiSystemWebhook.deserialize(body));

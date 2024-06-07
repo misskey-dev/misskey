@@ -5,9 +5,9 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { WebhookService } from '@/core/WebhookService.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
 import { systemWebhookEventTypes } from '@/models/SystemWebhook.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 
 export const meta = {
 	tags: ['admin', 'system-webhook'],
@@ -69,11 +69,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private webhookService: WebhookService,
+		private systemWebhookService: SystemWebhookService,
 		private systemWebhookEntityService: SystemWebhookEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const result = await this.webhookService.updateSystemWebhook(
+			const result = await this.systemWebhookService.updateSystemWebhook(
 				{
 					id: ps.id,
 					isActive: ps.isActive,

@@ -17,12 +17,12 @@ import type {
 	MiAbuseUserReport,
 	MiUser,
 } from '@/models/_.js';
-import { WebhookService } from '@/core/WebhookService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { IdService } from './IdService.js';
 
 @Injectable()
@@ -34,7 +34,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		private redisForSub: Redis.Redis,
 		private idService: IdService,
 		private roleService: RoleService,
-		private webhookService: WebhookService,
+		private systemWebhookService: SystemWebhookService,
 		private emailService: EmailService,
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
@@ -123,7 +123,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	 * SystemWebhookを用いて{@link abuseReports}の内容を管理者各位に通知する.
 	 * ここではJobQueueへのエンキューのみを行うため、即時実行されない.
 	 *
-	 * @see WebhookService.enqueueSystemWebhook
+	 * @see SystemWebhookService.enqueueSystemWebhook
 	 */
 	@bindThis
 	public async notifySystemWebhook(
@@ -142,7 +142,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		for (const webhookId of recipientWebhookIds) {
 			await Promise.all(
 				abuseReports.map(it => {
-					return this.webhookService.enqueueSystemWebhook(
+					return this.systemWebhookService.enqueueSystemWebhook(
 						webhookId,
 						type,
 						it,
