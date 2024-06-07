@@ -11,6 +11,7 @@ import '@/style.embed.scss';
 import type { CommonBootOptions } from '@/boot/common.js';
 import { subBoot } from '@/boot/sub-boot.js';
 import { setIframeId, postMessageToParentWindow } from '@/scripts/post-message.js';
+import { defaultStore } from '@/store.js';
 
 const bootOptions: Partial<CommonBootOptions> = {};
 
@@ -20,6 +21,11 @@ const color = params.get('colorMode');
 if (color && ['light', 'dark'].includes(color)) {
 	bootOptions.forceColorMode = color as 'light' | 'dark';
 }
+
+// 外部タブでのstoreの変更の影響を受けないように
+defaultStore.setConfig({
+	disableMessageChannel: true,
+});
 
 // iframeIdの設定
 window.addEventListener('message', event => {

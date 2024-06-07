@@ -32,6 +32,10 @@ type PizzaxChannelMessage<T extends StateDef> = {
 	userId?: string;
 };
 
+export type PizzaxConfig = {
+	disableMessageChannel: boolean;
+};
+
 export class Storage<T extends StateDef> {
 	public readonly ready: Promise<void>;
 	public readonly loaded: Promise<void>;
@@ -47,6 +51,10 @@ export class Storage<T extends StateDef> {
 	public readonly state: State<T>;
 	public readonly reactiveState: ReactiveState<T>;
 
+	private options: PizzaxConfig = {
+		disableMessageChannel: false,
+	};
+
 	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
 
 	// 簡易的にキューイングして占有ロックとする
@@ -60,12 +68,13 @@ export class Storage<T extends StateDef> {
 		return promise;
 	}
 
-	constructor(key: string, def: T) {
+	constructor(key: string, def: T, options?: Partial<PizzaxConfig>) {
 		this.key = key;
 		this.deviceStateKeyName = `pizzax::${key}`;
 		this.deviceAccountStateKeyName = $i ? `pizzax::${key}::${$i.id}` : '';
 		this.registryCacheKeyName = $i ? `pizzax::${key}::cache::${$i.id}` : '';
 		this.def = def;
+		this.options = Object.assign(this.options, options);
 
 		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
 
@@ -119,7 +128,7 @@ export class Storage<T extends StateDef> {
 		this.pizzaxChannel.addEventListener('message', ({ where, key, value, userId }) => {
 			// アカウント変更すればunisonReloadが効くため、このreturnが発火することは
 			// まずないと思うけど一応弾いておく
-			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
+			if ((where === 'deviceAccount' && !($i && userId !== $i.id) || this.options.disableMessageChannel)) return;
 			this.reactiveState[key].value = this.state[key] = value;
 		});
 
@@ -174,6 +183,10 @@ export class Storage<T extends StateDef> {
 		});
 	}
 
+	public setConfig(config: Partial<PizzaxConfig>) {
+		this.options = Object.assign(this.options, config);
+	}
+
 	public set<K extends keyof T>(key: K, value: T[K]['default']): Promise<void> {
 		// IndexedDBやBroadcastChannelで扱うために単純なオブジェクトにする
 		// (JSON.parse(JSON.stringify(value))の代わり)
@@ -187,11 +200,13 @@ export class Storage<T extends StateDef> {
 			if (_DEV_) console.log(`set ${String(key)} start`);
 			switch (this.def[key].where) {
 				case 'device': {
-					this.pizzaxChannel.postMessage({
-						where: 'device',
-						key,
-						value: rawValue,
-					});
+					if (!this.options.disableMessageChannel) {
+						this.pizzaxChannel.postMessage({
+							where: 'device',
+							key,
+							value: rawValue,
+						});
+					}
 					const deviceState = await get(this.deviceStateKeyName) || {};
 					deviceState[key] = rawValue;
 					await set(this.deviceStateKeyName, deviceState);
@@ -199,12 +214,14 @@ export class Storage<T extends StateDef> {
 				}
 				case 'deviceAccount': {
 					if ($i == null) break;
-					this.pizzaxChannel.postMessage({
-						where: 'deviceAccount',
-						key,
-						value: rawValue,
-						userId: $i.id,
-					});
+					if (!this.options.disableMessageChannel) {
+						this.pizzaxChannel.postMessage({
+							where: 'deviceAccount',
+							key,
+							value: rawValue,
+							userId: $i.id,
+						});
+					}
 					const deviceAccountState = await get(this.deviceAccountStateKeyName) || {};
 					deviceAccountState[key] = rawValue;
 					await set(this.deviceAccountStateKeyName, deviceAccountState);

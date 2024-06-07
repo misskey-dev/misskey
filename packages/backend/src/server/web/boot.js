@@ -32,6 +32,8 @@
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
 	}
 
+	const isEmbedPage = document.documentElement.classList.contains('embed');
+
 	//#region Detect language & fetch translations
 	if (!localStorage.hasOwnProperty('locale')) {
 		const supportedLangs = LANGS;
@@ -104,49 +106,51 @@
 	}
 	//#endregion
 
-	//#region Theme
-	const theme = localStorage.getItem('theme');
-	if (theme) {
-		for (const [k, v] of Object.entries(JSON.parse(theme))) {
-			document.documentElement.style.setProperty(`--${k}`, v.toString());
+	if (!isEmbedPage) {
+		//#region Theme
+		const theme = localStorage.getItem('theme');
+		if (theme) {
+			for (const [k, v] of Object.entries(JSON.parse(theme))) {
+				document.documentElement.style.setProperty(`--${k}`, v.toString());
 
-			// HTMLの theme-color 適用
-			if (k === 'htmlThemeColor') {
-				for (const tag of document.head.children) {
-					if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-						tag.setAttribute('content', v);
-						break;
+				// HTMLの theme-color 適用
+				if (k === 'htmlThemeColor') {
+					for (const tag of document.head.children) {
+						if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+							tag.setAttribute('content', v);
+							break;
+						}
 					}
 				}
 			}
 		}
-	}
-	const colorScheme = localStorage.getItem('colorScheme');
-	if (colorScheme) {
-		document.documentElement.style.setProperty('color-scheme', colorScheme);
-	}
-	//#endregion
+		const colorScheme = localStorage.getItem('colorScheme');
+		if (colorScheme) {
+			document.documentElement.style.setProperty('color-scheme', colorScheme);
+		}
+		//#endregion
 
-	const fontSize = localStorage.getItem('fontSize');
-	if (fontSize) {
-		document.documentElement.classList.add('f-' + fontSize);
-	}
+		const fontSize = localStorage.getItem('fontSize');
+		if (fontSize) {
+			document.documentElement.classList.add('f-' + fontSize);
+		}
 
-	const useSystemFont = localStorage.getItem('useSystemFont');
-	if (useSystemFont) {
-		document.documentElement.classList.add('useSystemFont');
-	}
+		const useSystemFont = localStorage.getItem('useSystemFont');
+		if (useSystemFont) {
+			document.documentElement.classList.add('useSystemFont');
+		}
 
-	const wallpaper = localStorage.getItem('wallpaper');
-	if (wallpaper) {
-		document.documentElement.style.backgroundImage = `url(${wallpaper})`;
-	}
+		const wallpaper = localStorage.getItem('wallpaper');
+		if (wallpaper) {
+			document.documentElement.style.backgroundImage = `url(${wallpaper})`;
+		}
 
-	const customCss = localStorage.getItem('customCss');
-	if (customCss && customCss.length > 0) {
-		const style = document.createElement('style');
-		style.innerHTML = customCss;
-		document.head.appendChild(style);
+		const customCss = localStorage.getItem('customCss');
+		if (customCss && customCss.length > 0) {
+			const style = document.createElement('style');
+			style.innerHTML = customCss;
+			document.head.appendChild(style);
+		}
 	}
 
 	async function addStyle(styleText) {
