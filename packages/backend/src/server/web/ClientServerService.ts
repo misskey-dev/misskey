@@ -764,7 +764,7 @@ export class ClientServerService {
 		//#endregion
 
 		//#region embed pages
-		fastify.get('/embed/*', async (request, reply) => {
+		fastify.get('/embed*', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 			return await renderBase(reply, { noindex: true, embed: true });
 		});
