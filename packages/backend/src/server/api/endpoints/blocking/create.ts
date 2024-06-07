@@ -74,8 +74,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
-
 			// 自分自身
 			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.blockeeIsYourself);
@@ -90,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Check if already blocking
 			const exist = await this.blockingsRepository.exists({
 				where: {
-					blockerId: blocker.id,
+					blockerId: me.id,
 					blockeeId: blockee.id,
 				},
 			});
@@ -99,9 +97,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.alreadyBlocking);
 			}
 
-			await this.userBlockingService.block(blocker, blockee);
+			await this.userBlockingService.block(me, blockee);
 
-			return await this.userEntityService.pack(blockee.id, blocker, {
+			return await this.userEntityService.pack(blockee.id, me, {
 				schema: 'UserDetailedNotMe',
 			});
 		});

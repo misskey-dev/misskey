@@ -5,7 +5,7 @@
 
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, UserProfilesRepository } from '@/models/_.js';
+import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 import { DI } from '@/di-symbols.js';
@@ -29,9 +29,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
@@ -39,6 +36,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (me.isDeleted) {
+				return;
+			}
+
 			const token = ps.token;
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
@@ -52,11 +53,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} catch (e) {
 					throw new Error('authentication failed');
 				}
-			}
-
-			const userDetailed = await this.usersRepository.findOneByOrFail({ id: me.id });
-			if (userDetailed.isDeleted) {
-				return;
 			}
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
