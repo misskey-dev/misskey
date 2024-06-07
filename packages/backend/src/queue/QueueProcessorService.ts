@@ -169,6 +169,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					systemLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: System: ${job?.name ?? '?'}: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
@@ -225,6 +226,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					dbLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: DB: ${job?.name ?? '?'}: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
@@ -264,6 +266,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					deliverLogger.error(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: Deliver: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
@@ -303,6 +306,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					inboxLogger.error(`failed(${err.stack}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) });
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: Inbox: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
@@ -342,6 +346,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					webhookLogger.error(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: WebhookDeliver: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
@@ -388,6 +393,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					relationshipLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: Relationship: ${job?.name ?? '?'}: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
@@ -428,6 +434,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					objectStorageLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
 					if (config.sentryForBackend) {
 						Sentry.captureMessage(`Queue: ObjectStorage: ${job?.name ?? '?'}: ${err.message}`, {
+							level: 'error',
 							extra: { job, err },
 						});
 					}
