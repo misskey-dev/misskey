@@ -14,6 +14,7 @@
   - これによりサードパーティクライアントがVRTLの有無を認知できるようになりました。
 - Enhance: VRTL参加サーバーの取得に失敗したときのリトライの間隔を短く
 - Fix: 自分自身に対するリプライがwithReplies = falseなVRTL/VSTLにて含まれていない問題を修正
+- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 
 ## 2024.5.0-kinel.1
 
