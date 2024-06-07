@@ -119,6 +119,8 @@ import type {
 	AdminSystemWebhookUpdateResponse,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
+	AnnouncementsShowRequest,
+	AnnouncementsShowResponse,
 	AntennasCreateRequest,
 	AntennasCreateResponse,
 	AntennasDeleteRequest,
@@ -659,6 +661,7 @@ export type Endpoints = {
 	'admin/system-webhook/show': { req: AdminSystemWebhookShowRequest; res: AdminSystemWebhookShowResponse };
 	'admin/system-webhook/update': { req: AdminSystemWebhookUpdateRequest; res: AdminSystemWebhookUpdateResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
+	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };
 	'antennas/list': { req: EmptyRequest; res: AntennasListResponse };
