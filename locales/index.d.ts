@@ -3906,8 +3906,8 @@ export interface Locale extends ILocale {
     "beta": string;
     /**
      * 独自機能
-		*/
-		"originalFeature": string;
+     */
+    "originalFeature": string;
     /**
      * 自動センシティブ判定
      */
@@ -5004,7 +5004,6 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
-<<<<<<< HEAD
     /**
      * すぐ消す
      */
@@ -5045,7 +5044,6 @@ export interface Locale extends ILocale {
      * 下書きを適用すると現在入力されている内容はリセットされます。よろしいですか？
      */
     "draftOverwriteConfirm": string;
-=======
     "_delivery": {
         /**
          * 配信状態
@@ -5078,7 +5076,6 @@ export interface Locale extends ILocale {
             "autoSuspendedForNotResponding": string;
         };
     };
->>>>>>> 2024.5.0
     "_bubbleGame": {
         /**
          * 遊び方
