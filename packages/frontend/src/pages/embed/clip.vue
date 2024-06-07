@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject } from 'vue';
+import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
@@ -60,12 +60,16 @@ const props = defineProps<{
 	enableAutoLoad?: string;
 }>();
 
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
+function redirectIfNotEmbedPage() {
+	const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
-if (!inEmbedPage) {
-	const router = useRouter();
-	router.replace(`/clips/${props.clipId}`);
+	if (!inEmbedPage) {
+		const router = useRouter();
+		router.replace(`/clips/${props.clipId}`);
+	}
 }
+redirectIfNotEmbedPage();
+onActivated(redirectIfNotEmbedPage);
 
 // デフォルト: true
 const normalizedShowHeader = computed(() => props.showHeader !== 'false');
