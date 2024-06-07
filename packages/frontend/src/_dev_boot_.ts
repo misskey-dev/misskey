@@ -7,10 +7,15 @@
 // よって、devモードとして起動されるときはビルド時に組み込む形としておく。
 // (pnpm start時はpugファイルの中で静的リソースとして読み込むようになっており、この問題は起こっていない)
 import '@tabler/icons-webfont/dist/tabler-icons.scss';
+import { isEmbedPage } from '@/scripts/embed-page.js';
 
 await main();
 
-import('@/_boot_.js');
+if (isEmbedPage()) {
+	import('@/_embed_boot_.js');
+} else {
+	import('@/_boot_.js');
+}
 
 /**
  * backend/src/server/web/boot.jsで差し込まれている起動処理のうち、最低限必要なものを模倣するための処理

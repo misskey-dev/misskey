@@ -1,7 +1,7 @@
 block vars
 
 block loadClientEntry
-	- const clientEntry = config.clientEntry;
+	- const clientEntry = embed ? config.clientEmbedEntry : config.clientEntry;
 
 doctype html
 

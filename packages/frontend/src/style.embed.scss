@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+html.embed {
+	background-color: transparent;
+	overflow: hidden;
+}
+
+html.embed,
+html.embed body,
+html.embed #misskey_app {
+	height: 100%;
+}
