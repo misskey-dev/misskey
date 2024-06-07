@@ -573,6 +573,13 @@ const routes: RouteDef[] = [{
 		autoload: 'enableAutoLoad',
 	}
 }, {
+	path: '/embed/tags/:tag',
+	component: page(() => import('@/pages/embed/tag.vue')),
+	query: {
+		header: 'showHeader',
+		autoload: 'enableAutoLoad',
+	},
+}, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
 }, {
