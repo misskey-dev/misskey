@@ -32,7 +32,9 @@ function redirectIfNotEmbedPage() {
 		router.replace(`/notes/${props.noteId}`);
 	}
 }
+
 redirectIfNotEmbedPage();
+
 onActivated(redirectIfNotEmbedPage);
 
 provide('EMBED_ORIGINAL_ENTITY_URL', `${url}/notes/${props.noteId}`);

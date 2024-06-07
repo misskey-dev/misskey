@@ -74,7 +74,9 @@ function redirectIfNotEmbedPage() {
 		router.replace(`/@${props.username}`);
 	}
 }
+
 redirectIfNotEmbedPage();
+
 onActivated(redirectIfNotEmbedPage);
 
 // デフォルト: true

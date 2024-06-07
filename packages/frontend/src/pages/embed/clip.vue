@@ -68,7 +68,9 @@ function redirectIfNotEmbedPage() {
 		router.replace(`/clips/${props.clipId}`);
 	}
 }
+
 redirectIfNotEmbedPage();
+
 onActivated(redirectIfNotEmbedPage);
 
 // デフォルト: true
