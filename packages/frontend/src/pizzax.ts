@@ -183,7 +183,6 @@ export class Storage<T extends StateDef> {
 		});
 	}
 
-
 	/**
 	 * Sets the configuration options for Pizzax.
 	 *
