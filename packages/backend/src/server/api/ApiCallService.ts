@@ -111,6 +111,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 			if (this.config.sentryForBackend) {
 				Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
+					level: 'error',
 					user: {
 						id: userId,
 					},

@@ -1,14 +1,14 @@
 ## Unreleased
 
 ### General
--
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
   - 埋め込みコードやウェブサイトへの実装方法の詳細はMisskey Hubに掲載予定です
 
 ### Server
--
+- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 
 
 ## 2024.5.0
