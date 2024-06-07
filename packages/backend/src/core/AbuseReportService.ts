@@ -58,11 +58,12 @@ export class AbuseReportService {
 				comment: param.comment,
 			};
 		});
-		await this.abuseUserReportsRepository.insert(entities);
 
-		const reports = await this.abuseUserReportsRepository.findBy({
-			id: In(entities.map(it => it.id)),
-		});
+		const reports = Array.of<MiAbuseUserReport>();
+		for (const entity of entities) {
+			const report = await this.abuseUserReportsRepository.insertOne(entity);
+			reports.push(report);
+		}
 
 		return Promise.all([
 			this.abuseReportNotificationService.notifyAdminStream(reports),
