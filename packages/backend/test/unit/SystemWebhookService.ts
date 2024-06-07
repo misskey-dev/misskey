@@ -84,7 +84,7 @@ describe('SystemWebhookService', () => {
 		usersRepository = app.get(DI.usersRepository);
 		systemWebhooksRepository = app.get(DI.systemWebhooksRepository);
 
-		service = app.get(UserWebhookService);
+		service = app.get(SystemWebhookService);
 		idService = app.get(IdService);
 		queueService = app.get(QueueService) as jest.Mocked<QueueService>;
 
