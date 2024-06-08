@@ -2225,6 +2225,10 @@ _deck:
 _webhookSettings:
   name: "Nom"
   active: "Activat"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Correu electrònic"
 _moderationLogTypes:
   suspend: "Suspèn"
   resetPassword: "Restableix la contrasenya"
