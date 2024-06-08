@@ -76,6 +76,7 @@ const Base = {
 	args: {
 		src: 'federation',
 		span: 'hour',
+		nowForChromatic: 1716263640000,
 	},
 	parameters: {
 		layout: 'centered',
@@ -100,18 +101,21 @@ const Base = {
 export const FederationChart = {
 	...Base,
 	args: {
+		...Base.args,
 		src: 'federation',
 	},
 } satisfies StoryObj<typeof MkChart>;
 export const NotesTotalChart = {
 	...Base,
 	args: {
+		...Base.args,
 		src: 'notes-total',
 	},
 } satisfies StoryObj<typeof MkChart>;
 export const DriveChart = {
 	...Base,
 	args: {
+		...Base.args,
 		src: 'drive',
 	},
 } satisfies StoryObj<typeof MkChart>;
