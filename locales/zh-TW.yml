@@ -2414,6 +2414,10 @@ _webhookSettings:
     renote: "當被轉發時"
     reaction: "當獲得反應時"
     mention: "當被提到時"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "電子郵件"
 _moderationLogTypes:
   createRole: "新增角色"
   deleteRole: "刪除角色 "
