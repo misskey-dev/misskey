@@ -2402,6 +2402,7 @@ _drivecleaner:
   orderByCreatedAtAsc: "按新增日期降序排列"
 _webhookSettings:
   createWebhook: "建立 Webhook"
+  modifyWebhook: "編輯 Webhook"
   name: "名字"
   secret: "密鑰"
   events: "何時運行 Webhook"
@@ -2414,10 +2415,15 @@ _webhookSettings:
     renote: "當被轉發時"
     reaction: "當獲得反應時"
     mention: "當被提到時"
+  deleteConfirm: "請問是否要刪除 Webhook？"
 _abuseReport:
   _notificationRecipient:
+    recipientType: "被通知的種類"
     _recipientType:
       mail: "電子郵件"
+      webhook: "Webhook"
+    keywords: "關鍵字"
+    notifiedUser: "被通知的使用者"
 _moderationLogTypes:
   createRole: "新增角色"
   deleteRole: "刪除角色 "
