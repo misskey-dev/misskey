@@ -4984,10 +4984,6 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
-    /**
-     * SystemWebhook
-     */
-    "systemWebhook": string;
     "_delivery": {
         /**
          * 配信状態

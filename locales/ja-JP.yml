@@ -1242,7 +1242,6 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
-systemWebhook: "SystemWebhook"
 
 _delivery:
   status: "配信状態"

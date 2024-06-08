@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInput v-model="secret">
 				<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
 			</MkInput>
-			<FormSection>
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts._webhookSettings.events }}</template>
 
 				<div class="_gaps_s">
@@ -40,9 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReportResolved }}</template>
 					</MkSwitch>
 				</div>
-			</FormSection>
-
-			<MkDivider/>
+			</MkFolder>
 
 			<MkSwitch v-model="isActive">
 				<template #label>{{ i18n.ts.enable }}</template>
@@ -74,7 +72,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkDivider from '@/components/MkDivider.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 
 type EventType = {
