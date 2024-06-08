@@ -2415,15 +2415,25 @@ _webhookSettings:
     renote: "當被轉發時"
     reaction: "當獲得反應時"
     mention: "當被提到時"
+  _systemEvents:
+    abuseReport: "當使用者檢舉時"
+    abuseReportResolved: "當處理了使用者的檢舉時"
   deleteConfirm: "請問是否要刪除 Webhook？"
 _abuseReport:
   _notificationRecipient:
-    recipientType: "被通知的種類"
+    createRecipient: "新增接收檢舉的通知對象"
+    modifyRecipient: "編輯接收檢舉的通知對象"
+    recipientType: "通知對象的種類"
     _recipientType:
       mail: "電子郵件"
       webhook: "Webhook"
+      _captions:
+        mail: "寄送到擁有監察員權限的使用者電子郵件地址（僅在收到檢舉時）"
+        webhook: "向指定的 SystemWebhook 發送通知（在收到檢舉和解決檢舉時發送）"
     keywords: "關鍵字"
     notifiedUser: "被通知的使用者"
+    notifiedWebhook: "使用的 Webhook"
+    deleteConfirm: "確定要刪除通知對象嗎？"
 _moderationLogTypes:
   createRole: "新增角色"
   deleteRole: "刪除角色 "
@@ -2461,6 +2471,12 @@ _moderationLogTypes:
   deleteAvatarDecoration: "刪除頭像裝飾"
   unsetUserAvatar: "移除使用者的大頭貼"
   unsetUserBanner: "移除使用者的橫幅圖像"
+  createSystemWebhook: "建立 SystemWebhook"
+  updateSystemWebhook: "更新 SystemWebhook"
+  deleteSystemWebhook: "刪除 SystemWebhook"
+  createAbuseReportNotificationRecipient: "建立接收檢舉的通知對象"
+  updateAbuseReportNotificationRecipient: "更新接收檢舉的通知對象"
+  deleteAbuseReportNotificationRecipient: "刪除接收檢舉的通知對象"
 _fileViewer:
   title: "檔案詳細資訊"
   type: "檔案類型 "
