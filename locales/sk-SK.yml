@@ -1447,6 +1447,10 @@ _deck:
 _webhookSettings:
   name: "Názov"
   active: "Zapnuté"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "Zmraziť"
   resetPassword: "Resetovať heslo"
