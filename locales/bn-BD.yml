@@ -1346,6 +1346,10 @@ _deck:
 _webhookSettings:
   name: "নাম"
   active: "চালু"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "ইমেইল"
 _moderationLogTypes:
   suspend: "স্থগিত করা"
   resetPassword: "পাসওয়ার্ড রিসেট করুন"
