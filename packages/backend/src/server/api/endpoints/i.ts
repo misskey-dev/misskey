@@ -82,10 +82,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.userProfilesRepository.update({ userId: user.id }, {
 					loggedInDates: [...userProfile.loggedInDates, today],
 				});
-				this.usersRepository.update( user.id, {
-					getPoints: user.getPoints + todayGetPoints,
+				const user_ = await this.usersRepository.findOne({
+					where: {
+						id: user.id,
+					},
 				});
-				this.notificationService.createNotification(user. id, 'loginbonus', {
+				if (user_ == null) {
+					throw new ApiError(meta.errors.userIsDeleted);
+				}
+				this.usersRepository.update( user.id, {
+					getPoints: user_.getPoints + todayGetPoints,
+				});
+				this.notificationService.createNotification(user.id, 'loginbonus', {
 					loginbonus: todayGetPoints,
 				});
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
