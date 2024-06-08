@@ -121,7 +121,7 @@ export class UserBlockingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'unfollow', {
+					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
 						user: packed,
 					});
 				}

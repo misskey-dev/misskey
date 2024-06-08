@@ -331,7 +331,7 @@ export class UserFollowingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'follow', {
+					this.queueService.userWebhookDeliver(webhook, 'follow', {
 						user: packed,
 					});
 				}
@@ -345,7 +345,7 @@ export class UserFollowingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'followed', {
+					this.queueService.userWebhookDeliver(webhook, 'followed', {
 						user: packed,
 					});
 				}
@@ -398,7 +398,7 @@ export class UserFollowingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'unfollow', {
+					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
 						user: packed,
 					});
 				}
@@ -740,7 +740,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 		for (const webhook of webhooks) {
-			this.queueService.webhookDeliver(webhook, 'unfollow', {
+			this.queueService.userWebhookDeliver(webhook, 'unfollow', {
 				user: packedFollowee,
 			});
 		}

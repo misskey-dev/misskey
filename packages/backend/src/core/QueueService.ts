@@ -455,7 +455,7 @@ export class QueueService {
 	 * @see WebhookDeliverProcessorService
 	 */
 	@bindThis
-	public webhookDeliver(webhook: MiWebhook, type: typeof webhookEventTypes[number], content: unknown) {
+	public userWebhookDeliver(webhook: MiWebhook, type: typeof webhookEventTypes[number], content: unknown) {
 		const data: UserWebhookDeliverJobData = {
 			type,
 			content,
