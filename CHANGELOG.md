@@ -1,6 +1,7 @@
 ## Unreleased
 
 ### General
+- Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
