@@ -26347,6 +26347,7 @@ export type operations = {
           logs: number[][];
           gameMode: string;
           gameVersion: number;
+          isPrivate?: boolean;
         };
       };
     };
