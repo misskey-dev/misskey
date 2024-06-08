@@ -1983,6 +1983,10 @@ _webhookSettings:
   createWebhook: "Создать вебхук"
   name: "Название"
   active: "Вкл."
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Электронная почта"
 _moderationLogTypes:
   suspend: "Заморозить"
   addCustomEmoji: "Добавлено эмодзи"
