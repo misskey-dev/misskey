@@ -2399,6 +2399,10 @@ _webhookSettings:
     renote: "リノートされるとき～！"
     reaction: "ツッコまれたとき～！"
     mention: "メンションがあるとき～！"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "メール"
 _moderationLogTypes:
   createRole: "ロールを追加すんで"
   deleteRole: "ロールほかす"
