@@ -2392,6 +2392,10 @@ _webhookSettings:
     renote: "Quando la Nota è Rinotata"
     reaction: "Quando ricevo una reazione"
     mention: "Quando mi menzionano"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   createRole: "Ruolo creato"
   deleteRole: "Ruolo eliminato"
