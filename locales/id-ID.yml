@@ -2409,6 +2409,10 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Surel"
 _moderationLogTypes:
   createRole: "Peran telah dibuat"
   deleteRole: "Peran telah dihapus"
