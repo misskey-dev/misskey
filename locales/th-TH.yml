@@ -2404,6 +2404,10 @@ _webhookSettings:
     renote: "รีโน้ตแล้วเมื่อ"
     reaction: "เมื่อได้รับรีแอคชั่น"
     mention: "เมื่อกำลังถูกกล่าวถึง"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "อีเมล"
 _moderationLogTypes:
   createRole: "สร้างบทบาทแล้ว"
   deleteRole: "ลบบทบาทแล้ว"
