@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -65,11 +65,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.tooManyUserLists);
 			}
 
-			const userList = await this.userListsRepository.insert({
+			const userList = await this.userListsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
-			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
+			} as MiUserList);
 
 			return await this.userListEntityService.pack(userList);
 		});

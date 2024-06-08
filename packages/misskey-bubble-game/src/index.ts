@@ -1,10 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { DropAndFusionGame, Mono } from './game.js';
 
 export {
-	DropAndFusionGame, Mono,
+	DropAndFusionGame,
+};
+
+export type {
+	Mono,
 };

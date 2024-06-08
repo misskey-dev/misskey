@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -85,7 +85,7 @@ import { bindThis } from '@/decorators.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
-const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
+const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
 class MyCustomLogger implements Logger {
 	@bindThis

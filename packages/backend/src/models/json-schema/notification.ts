@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { notificationTypes } from '@/types.js';
 
-export const packedNotificationSchema = {
+const baseSchema = {
 	type: 'object',
 	properties: {
 		id: {
@@ -23,68 +23,368 @@ export const packedNotificationSchema = {
 			optional: false, nullable: false,
 			enum: [...notificationTypes, 'reaction:grouped', 'renote:grouped'],
 		},
-		user: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: true, nullable: true,
-		},
-		userId: {
-			type: 'string',
-			optional: true, nullable: true,
-			format: 'id',
-		},
-		note: {
-			type: 'object',
-			ref: 'Note',
-			optional: true, nullable: true,
-		},
-		reaction: {
-			type: 'string',
-			optional: true, nullable: true,
-		},
-		achievement: {
-			type: 'string',
-			optional: true, nullable: false,
-		},
-		body: {
-			type: 'string',
-			optional: true, nullable: true,
-		},
-		header: {
-			type: 'string',
-			optional: true, nullable: true,
-		},
-		icon: {
-			type: 'string',
-			optional: true, nullable: true,
-		},
-		reactions: {
-			type: 'array',
-			optional: true, nullable: true,
-			items: {
-				type: 'object',
-				properties: {
-					user: {
-						type: 'object',
-						ref: 'UserLite',
-						optional: false, nullable: false,
-					},
-					reaction: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-				},
-				required: ['user', 'reaction'],
+	},
+} as const;
+
+export const packedNotificationSchema = {
+	type: 'object',
+	oneOf: [{
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['note'],
 			},
-		},
-		users: {
-			type: 'array',
-			optional: true, nullable: true,
-			items: {
+			user: {
 				type: 'object',
 				ref: 'UserLite',
 				optional: false, nullable: false,
 			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
 		},
-	},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['mention'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['reply'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['renote'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['quote'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['reaction'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+			reaction: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['pollEnded'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['follow'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['receiveFollowRequest'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['followRequestAccepted'],
+			},
+			user: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['roleAssigned'],
+			},
+			role: {
+				type: 'object',
+				ref: 'Role',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['achievementEarned'],
+			},
+			achievement: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['app'],
+			},
+			body: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			header: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			icon: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['reaction:grouped'],
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+			reactions: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'object',
+					properties: {
+						user: {
+							type: 'object',
+							ref: 'UserLite',
+							optional: false, nullable: false,
+						},
+						reaction: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+					required: ['user', 'reaction'],
+				},
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['renote:grouped'],
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+			users: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'object',
+					ref: 'UserLite',
+					optional: false, nullable: false,
+				},
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['test'],
+			},
+		},
+	}],
 } as const;

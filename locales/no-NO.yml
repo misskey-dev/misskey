@@ -463,6 +463,9 @@ options: "Alternativ"
 icon: "Avatar"
 replies: "Svar"
 renotes: "Renote"
+surrender: "Avbryt"
+_delivery:
+  stop: "Suspendert"
 _initialAccountSetting:
   theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
@@ -720,4 +723,3 @@ _webhookSettings:
   name: "Navn"
 _moderationLogTypes:
   suspend: "Suspender"
-

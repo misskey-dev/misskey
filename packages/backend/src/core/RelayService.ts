@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -53,11 +53,11 @@ export class RelayService {
 
 	@bindThis
 	public async addRelay(inbox: string): Promise<MiRelay> {
-		const relay = await this.relaysRepository.insert({
+		const relay = await this.relaysRepository.insertOne({
 			id: this.idService.gen(),
 			inbox,
 			status: 'requesting',
-		}).then(x => this.relaysRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		const relayActor = await this.getRelayActor();
 		const follow = await this.apRendererService.renderFollowRelay(relay, relayActor);

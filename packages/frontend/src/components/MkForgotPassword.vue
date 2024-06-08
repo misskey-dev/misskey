@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="370"
 	:height="400"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.forgotPassword }}</template>
@@ -66,6 +66,6 @@ async function onSubmit() {
 		email: email.value,
 	});
 	emit('done');
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>

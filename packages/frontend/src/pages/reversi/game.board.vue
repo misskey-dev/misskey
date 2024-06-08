@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,14 +34,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div :class="$style.board">
+		<div class="_woodenFrame">
 			<div :class="$style.boardInner">
 				<div v-if="showBoardLabels" :class="$style.labelsX">
-					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
+					<span v-for="i in game.map[0].length" :key="i" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
 				<div style="display: flex;">
 					<div v-if="showBoardLabels" :class="$style.labelsY">
-						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+						<div v-for="i in game.map.length" :key="i" :class="$style.labelsYLabel">{{ i }}</div>
 					</div>
 					<div :class="$style.boardCells" :style="cellsStyle">
 						<div
@@ -66,8 +66,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								mode="default"
 							>
 								<template v-if="useAvatarAsStone">
-									<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
-									<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
+									<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl ?? undefined"/>
+									<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl ?? undefined"/>
 								</template>
 								<template v-else>
 									<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
@@ -77,11 +77,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="showBoardLabels" :class="$style.labelsY">
-						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+						<div v-for="i in game.map.length" :key="i" :class="$style.labelsYLabel">{{ i }}</div>
 					</div>
 				</div>
 				<div v-if="showBoardLabels" :class="$style.labelsX">
-					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
+					<span v-for="i in game.map[0].length" :key="i" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
 			</div>
 		</div>
@@ -124,8 +124,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkFolder>
 			<template #label>{{ i18n.ts.options }}</template>
 			<div class="_gaps_s" style="text-align: left;">
-				<MkSwitch v-model="showBoardLabels">Show labels</MkSwitch>
-				<MkSwitch v-model="useAvatarAsStone">useAvatarAsStone</MkSwitch>
+				<MkSwitch v-model="showBoardLabels">{{ i18n.ts._reversi.showBoardLabels }}</MkSwitch>
+				<MkSwitch v-model="useAvatarAsStone">{{ i18n.ts._reversi.useAvatarAsStone }}</MkSwitch>
 			</div>
 		</MkFolder>
 
@@ -151,6 +151,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/scripts/clone.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { signinRequired } from '@/account.js';
+import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
@@ -162,13 +163,14 @@ const $i = signinRequired();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection?: Misskey.ChannelConnection | null;
+	connection?: Misskey.ChannelConnection<Misskey.Channels['reversiGame']> | null;
 }>();
 
 const showBoardLabels = ref<boolean>(false);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
-const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
+// eslint-disable-next-line vue/no-setup-props-destructure
+const game = ref<Misskey.entities.ReversiGameDetailed & { logs: Reversi.Serializer.SerializedLog[] }>(deepClone(props.game));
 const logPos = ref<number>(game.value.logs.length);
 const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
 	map: game.value.map,
@@ -247,7 +249,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 			crc32: crc32.toString(),
 		}).then((res) => {
 			if (res.desynced) {
-				console.log('resynced');
+				if (_DEV_) console.log('resynced');
 				restoreGame(res.game!);
 			}
 		});
@@ -256,7 +258,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 
 const appliedOps: string[] = [];
 
-function putStone(pos) {
+function putStone(pos: number) {
 	if (game.value.isEnded) return;
 	if (!iAmPlayer.value) return;
 	if (!isMyTurn.value) return;
@@ -305,7 +307,7 @@ if (!props.game.isEnded) {
 	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
 }
 
-async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
+async function onStreamLog(log) {
 	game.value.logs = Reversi.Serializer.serializeLogs([
 		...Reversi.Serializer.deserializeLogs(game.value.logs),
 		log,
@@ -441,7 +443,7 @@ function autoplay() {
 
 function share() {
 	os.post({
-		initialText: `#MisskeyReversi ${location.href}`,
+		initialText: `#MisskeyReversi\n${url}/reversi/g/${game.value.id}`,
 		instant: true,
 	});
 }
@@ -497,17 +499,6 @@ $gap: 4px;
 
 .root {
 	text-align: center;
-}
-
-.board {
-	width: 100%;
-	box-sizing: border-box;
-	margin: 0 auto;
-
-	padding: 7px;
-	background: #8C4F26;
-	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
-	border-radius: 12px;
 }
 
 .boardInner {

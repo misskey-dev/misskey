@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -44,15 +44,15 @@ onMounted(() => {
 	let left = props.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 	let top = props.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 
-	const width = rootEl.value.offsetWidth;
-	const height = rootEl.value.offsetHeight;
+	const width = rootEl.value!.offsetWidth;
+	const height = rootEl.value!.offsetHeight;
 
-	if (left + width - window.pageXOffset >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
-		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset;
+	if (left + width - window.scrollX >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
+		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.scrollX;
 	}
 
-	if (top + height - window.pageYOffset >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
-		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.pageYOffset;
+	if (top + height - window.scrollY >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
+		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.scrollY;
 	}
 
 	if (top < 0) {
@@ -63,8 +63,10 @@ onMounted(() => {
 		left = 0;
 	}
 
-	rootEl.value.style.top = `${top}px`;
-	rootEl.value.style.left = `${left}px`;
+	if (rootEl.value) {
+		rootEl.value.style.top = `${top}px`;
+		rootEl.value.style.left = `${left}px`;
+	}
 
 	document.body.addEventListener('mousedown', onMousedown);
 });

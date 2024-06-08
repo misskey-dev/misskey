@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -38,11 +38,12 @@ export class AntennaEntityService {
 			users: antenna.users,
 			caseSensitive: antenna.caseSensitive,
 			localOnly: antenna.localOnly,
-			notify: antenna.notify,
+			excludeBots: antenna.excludeBots,
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
 			isActive: antenna.isActive,
 			hasUnreadNote: false, // TODO
+			notify: false, // 後方互換性のため
 		};
 	}
 }

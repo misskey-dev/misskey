@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -108,7 +108,7 @@ export class NoteEntityService implements OnModuleInit {
 				hide = false;
 			} else {
 				// フォロワーかどうか
-				const isFollowing = await this.followingsRepository.exist({
+				const isFollowing = await this.followingsRepository.exists({
 					where: {
 						followeeId: packedNote.userId,
 						followerId: meId,
@@ -164,7 +164,7 @@ export class NoteEntityService implements OnModuleInit {
 
 		return {
 			multiple: poll.multiple,
-			expiresAt: poll.expiresAt,
+			expiresAt: poll.expiresAt?.toISOString() ?? null,
 			choices,
 		};
 	}
@@ -290,6 +290,7 @@ export class NoteEntityService implements OnModuleInit {
 			_hint_?: {
 				myReactions: Map<MiNote['id'], string | null>;
 				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
+				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
 			};
 		},
 	): Promise<Packed<'Note'>> {
@@ -319,14 +320,13 @@ export class NoteEntityService implements OnModuleInit {
 			.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
 		const packedFiles = options?._hint_?.packedFiles;
+		const packedUsers = options?._hint_?.packedUsers;
 
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: this.idService.parse(note.id).date.toISOString(),
 			userId: note.userId,
-			user: this.userEntityService.pack(note.user ?? note.userId, me, {
-				detail: false,
-			}),
+			user: packedUsers?.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
 			text: text,
 			cw: note.cw,
 			visibility: note.visibility,
@@ -335,6 +335,7 @@ export class NoteEntityService implements OnModuleInit {
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
+			reactionCount: Object.values(note.reactions).reduce((a, b) => a + b, 0),
 			reactions: this.reactionService.convertLegacyReactions(note.reactions),
 			reactionEmojis: this.customEmojiService.populateEmojis(reactionEmojiNames, host),
 			reactionAndUserPairCache: opts.withReactionAndUserPairCache ? note.reactionAndUserPairCache : undefined,
@@ -450,12 +451,20 @@ export class NoteEntityService implements OnModuleInit {
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
 		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
+		const users = [
+			...notes.map(({ user, userId }) => user ?? userId),
+			...notes.map(({ replyUserId }) => replyUserId).filter(isNotNull),
+			...notes.map(({ renoteUserId }) => renoteUserId).filter(isNotNull),
+		];
+		const packedUsers = await this.userEntityService.packMany(users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
 				myReactions: myReactionsMap,
 				packedFiles,
+				packedUsers,
 			},
 		})));
 	}

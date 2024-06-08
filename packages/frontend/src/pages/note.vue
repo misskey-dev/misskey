@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -21,14 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-							<MkNoteDetailed :key="note.id" v-model:note="note" :class="$style.note"/>
+							<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_margin">
 							<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
 							<div class="_gaps">
-								<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`">
-									<MkClipPreview :clip="item"/>
-								</MkA>
+								<MkClipPreview v-for="item in clips" :key="item.id" :clip="item"/>
 							</div>
 						</div>
 						<div v-if="!showPrev" class="_buttons" :class="$style.loadPrev">
@@ -66,6 +64,7 @@ import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	noteId: string;
+	initialTab?: string;
 }>();
 
 const note = ref<null | Misskey.entities.Note>();
@@ -141,16 +140,18 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => note.value ? {
+definePageMetadata(() => ({
 	title: i18n.ts.note,
-	subtitle: dateString(note.value.createdAt),
-	avatar: note.value.user,
-	path: `/notes/${note.value.id}`,
-	share: {
-		title: i18n.tsx.noteOf({ user: note.value.user.name }),
-		text: note.value.text,
-	},
-} : null));
+	...note.value ? {
+		subtitle: dateString(note.value.createdAt),
+		avatar: note.value.user,
+		path: `/notes/${note.value.id}`,
+		share: {
+			title: i18n.tsx.noteOf({ user: note.value.user.name }),
+			text: note.value.text,
+		},
+	} : {},
+}));
 </script>
 
 <style lang="scss" module>

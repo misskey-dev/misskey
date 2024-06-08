@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,7 +15,7 @@ import { defaultStore, userActions } from '@/store.js';
 import { $i, iAmModerator } from '@/account.js';
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -272,7 +272,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 						text: r.name,
 						action: async () => {
 							const { canceled, result: period } = await os.select({
-								title: i18n.ts.period,
+								title: i18n.ts.period + ': ' + r.name,
 								items: [{
 									value: 'indefinitely', text: i18n.ts.indefinitely,
 								}, {

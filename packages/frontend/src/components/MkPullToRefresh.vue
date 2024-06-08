@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
+import { isHorizontalSwipeSwiping } from '@/scripts/touch.js';
 
 const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;
@@ -129,7 +130,7 @@ function moveEnd() {
 function moving(event: TouchEvent | PointerEvent) {
 	if (!isPullStart.value || isRefreshing.value || disabled) return;
 
-	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance.value)) {
+	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance.value) || isHorizontalSwipeSwiping.value) {
 		pullDistance.value = 0;
 		isPullEnd.value = false;
 		moveEnd();
@@ -146,6 +147,10 @@ function moving(event: TouchEvent | PointerEvent) {
 
 	if (pullDistance.value > 0) {
 		if (event.cancelable) event.preventDefault();
+	}
+
+	if (pullDistance.value > SCROLL_STOP) {
+		event.stopPropagation();
 	}
 
 	isPullEnd.value = pullDistance.value >= FIRE_THRESHOLD;

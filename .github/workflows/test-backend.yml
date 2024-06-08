@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
 
     services:
       postgres:
@@ -41,12 +41,11 @@ jobs:
       with:
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-        run_install: false
+      uses: pnpm/action-setup@v4
+    - name: Install FFmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.1
+      uses: actions/setup-node@v4.0.2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -61,7 +60,7 @@ jobs:
     - name: Test
       run: pnpm --filter backend test-and-coverage
     - name: Upload to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./packages/backend/coverage/coverage-final.json
@@ -71,7 +70,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
 
     services:
       postgres:
@@ -91,12 +90,9 @@ jobs:
         with:
           submodules: true
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: false
+        uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.1
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
@@ -111,7 +107,7 @@ jobs:
       - name: Test
         run: pnpm --filter backend test-and-coverage:e2e
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/backend/coverage/coverage-final.json

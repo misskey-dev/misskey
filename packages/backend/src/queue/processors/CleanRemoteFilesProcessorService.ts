@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -63,7 +63,7 @@ export class CleanRemoteFilesProcessorService {
 				isLink: false,
 			});
 
-			job.updateProgress(deletedCount / total);
+			job.updateProgress(100 / total * deletedCount);
 		}
 
 		this.logger.succ('All cached remote files has been deleted.');

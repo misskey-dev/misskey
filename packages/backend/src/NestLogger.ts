@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,7 +7,7 @@ import { LoggerService } from '@nestjs/common';
 import Logger from '@/logger.js';
 
 const logger = new Logger('core', 'cyan');
-const nestLogger = logger.createSubLogger('nest', 'green', false);
+const nestLogger = logger.createSubLogger('nest', 'green');
 
 export class NestLogger implements LoggerService {
 	/**

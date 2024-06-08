@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -50,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ad = await this.adsRepository.insert({
+			const ad = await this.adsRepository.insertOne({
 				id: this.idService.gen(),
 				expiresAt: new Date(ps.expiresAt),
 				startsAt: new Date(ps.startsAt),
@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ratio: ps.ratio,
 				place: ps.place,
 				memo: ps.memo,
-			}).then(r => this.adsRepository.findOneByOrFail({ id: r.identifiers[0].id }));
+			});
 
 			this.moderationLogService.log(me, 'createAd', {
 				adId: ad.id,

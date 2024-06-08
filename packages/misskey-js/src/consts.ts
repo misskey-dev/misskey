@@ -58,7 +58,6 @@ export const permissions = [
 	'read:admin:server-info',
 	'read:admin:show-moderation-log',
 	'read:admin:show-user',
-	'read:admin:show-users',
 	'write:admin:suspend-user',
 	'write:admin:unset-user-avatar',
 	'write:admin:unset-user-banner',
@@ -121,6 +120,7 @@ export const moderationLogTypes = [
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
+	'updateRemoteInstanceNote',
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
@@ -260,6 +260,12 @@ export type ModerationLogPayloads = {
 	unsuspendRemoteInstance: {
 		id: string;
 		host: string;
+	};
+	updateRemoteInstanceNote: {
+		id: string;
+		host: string;
+		before: string | null;
+		after: string | null;
 	};
 	markSensitiveDriveFile: {
 		fileId: string;

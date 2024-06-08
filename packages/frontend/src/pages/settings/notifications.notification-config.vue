@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="following">{{ i18n.ts.following }}</option>
 		<option value="follower">{{ i18n.ts.followers }}</option>
 		<option value="mutualFollow">{{ i18n.ts.mutualFollow }}</option>
+		<option value="followingOrFollower">{{ i18n.ts.followingOrFollower }}</option>
 		<option value="list">{{ i18n.ts.userList }}</option>
 		<option value="never">{{ i18n.ts.none }}</option>
 	</MkSelect>

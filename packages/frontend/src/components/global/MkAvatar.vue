@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<img
 			v-for="decoration in decorations ?? user.avatarDecorations"
 			:class="[$style.decoration]"
-			:src="decoration.url"
+			:src="getDecorationUrl(decoration)"
 			:style="{
 				rotate: getDecorationAngle(decoration),
 				scale: getDecorationScale(decoration),
@@ -81,13 +81,20 @@ const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar)
-	? getStaticImageUrl(props.user.avatarUrl)
-	: props.user.avatarUrl);
+const url = computed(() => {
+	if (props.user.avatarUrl == null) return null;
+	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
+	return props.user.avatarUrl;
+});
 
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
 	emit('click', ev);
+}
+
+function getDecorationUrl(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(decoration.url);
+	return decoration.url;
 }
 
 function getDecorationAngle(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
@@ -109,6 +116,7 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
+	if (props.user.avatarBlurhash == null) return;
 	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
