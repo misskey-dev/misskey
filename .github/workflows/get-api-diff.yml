@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json
@@ -32,10 +32,7 @@ jobs:
         ref: ${{ matrix.ref }}
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8
-        run_install: false
+      uses: pnpm/action-setup@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4.0.2
       with:
