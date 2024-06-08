@@ -106,10 +106,7 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
-export type WebhookDeliverJobData = SystemWebhookDeliverJobData | UserWebhookDeliverJobData;
-
 export type SystemWebhookDeliverJobData = {
-	publisher: 'system'
 	type: string;
 	content: unknown;
 	webhookId: MiWebhook['id'];
@@ -120,7 +117,6 @@ export type SystemWebhookDeliverJobData = {
 };
 
 export type UserWebhookDeliverJobData = {
-	publisher: 'user'
 	type: string;
 	content: unknown;
 	webhookId: MiWebhook['id'];

@@ -30,7 +30,8 @@ import type {
 	ObjectStorageQueue,
 	RelationshipQueue,
 	SystemQueue,
-	WebhookDeliverQueue,
+	UserWebhookDeliverQueue,
+	SystemWebhookDeliverQueue,
 } from './QueueModule.js';
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
@@ -48,7 +49,8 @@ export class QueueService {
 		@Inject('queue:db') public dbQueue: DbQueue,
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
-		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
+		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
+		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {
 		this.systemQueue.add('tickCharts', {
 		}, {
@@ -455,7 +457,6 @@ export class QueueService {
 	@bindThis
 	public webhookDeliver(webhook: MiWebhook, type: typeof webhookEventTypes[number], content: unknown) {
 		const data: UserWebhookDeliverJobData = {
-			publisher: 'user',
 			type,
 			content,
 			webhookId: webhook.id,
@@ -466,7 +467,7 @@ export class QueueService {
 			eventId: randomUUID(),
 		};
 
-		return this.webhookDeliverQueue.add(webhook.id, data, {
+		return this.userWebhookDeliverQueue.add(webhook.id, data, {
 			attempts: 4,
 			backoff: {
 				type: 'custom',
@@ -483,7 +484,6 @@ export class QueueService {
 	@bindThis
 	public systemWebhookDeliver(webhook: MiSystemWebhook, type: SystemWebhookEventType, content: unknown) {
 		const data: SystemWebhookDeliverJobData = {
-			publisher: 'system',
 			type,
 			content,
 			webhookId: webhook.id,
@@ -493,7 +493,7 @@ export class QueueService {
 			eventId: randomUUID(),
 		};
 
-		return this.webhookDeliverQueue.add(webhook.id, data, {
+		return this.systemWebhookDeliverQueue.add(webhook.id, data, {
 			attempts: 4,
 			backoff: {
 				type: 'custom',
