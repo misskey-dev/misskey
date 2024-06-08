@@ -2394,6 +2394,10 @@ _webhookSettings:
     renote: "Cuando reciba un \"re-note\""
     reaction: "Cuando se recibe una reacción"
     mention: "Cuando hay una mención"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Correo"
 _moderationLogTypes:
   createRole: "Rol creado"
   deleteRole: "Rol eliminado"
