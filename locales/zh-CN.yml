@@ -1673,8 +1673,8 @@ _role:
   descriptionOfIsExplorable: "打开后将公开角色时间线。如果角色不是公开的，就无法公开时间线。"
   displayOrder: "显示顺序"
   descriptionOfDisplayOrder: "数字越大，显示位置越靠前。"
-  canEditMembersByModerator: "允许监察者编辑成员"
-  descriptionOfCanEditMembersByModerator: "如果选中，监察者和管理员都能够为用户分配/取消分配角色。如果未选中，则只有管理员可以执行此操作。"
+  canEditMembersByModerator: "允许监察员编辑成员"
+  descriptionOfCanEditMembersByModerator: "如果选中，监察员和管理员都能够为用户分配/取消分配角色。如果未选中，则只有管理员可以执行此操作。"
   priority: "优先级"
   _priority:
     low: "低"
@@ -2401,6 +2401,7 @@ _drivecleaner:
   orderByCreatedAtAsc: "按添加日期降序排列"
 _webhookSettings:
   createWebhook: "创建 Webhook"
+  modifyWebhook: "编辑 webhook"
   name: "名称"
   secret: "密钥"
   events: "何时运行 Webhook"
@@ -2413,10 +2414,25 @@ _webhookSettings:
     renote: "被转发时"
     reaction: "被回应时"
     mention: "被提及时"
+  _systemEvents:
+    abuseReport: "当收到举报时"
+    abuseReportResolved: "当举报被处理时"
+  deleteConfirm: "要删除 webhook 吗？"
 _abuseReport:
   _notificationRecipient:
+    createRecipient: "新建举报通知"
+    modifyRecipient: "编辑举报通知"
+    recipientType: "通知类型"
     _recipientType:
       mail: "邮箱"
+      webhook: "Webhook"
+      _captions:
+        mail: "当收到新举报时，向持有监察员权限的用户发送通知邮件"
+        webhook: "当收到新举报及举报被处理时，使用指定的 SystemWebhook 发送通知"
+    keywords: "关键字"
+    notifiedUser: "通知的用户"
+    notifiedWebhook: "使用的 webhook"
+    deleteConfirm: "要删除通知吗？"
 _moderationLogTypes:
   createRole: "创建角色"
   deleteRole: "删除角色"
@@ -2454,6 +2470,12 @@ _moderationLogTypes:
   deleteAvatarDecoration: "删除头像挂件"
   unsetUserAvatar: "清除用户头像"
   unsetUserBanner: "清除用户横幅"
+  createSystemWebhook: "新建了 SystemWebhook"
+  updateSystemWebhook: "更新了 SystemWebhook"
+  deleteSystemWebhook: "删除了 SystemWebhook"
+  createAbuseReportNotificationRecipient: "新建了举报通知"
+  updateAbuseReportNotificationRecipient: "更新了举报通知"
+  deleteAbuseReportNotificationRecipient: "删除了举报通知"
 _fileViewer:
   title: "文件信息"
   type: "文件类型"
