@@ -468,5 +468,9 @@ _deck:
     mentions: "ກ່າວເຖິງ"
 _webhookSettings:
   name: "ຊື່"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "ອີເມວ"
 _moderationLogTypes:
   suspend: "ລະງັບ"
