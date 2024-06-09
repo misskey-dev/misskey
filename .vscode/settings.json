@@ -7,7 +7,7 @@
 		"*.test.ts": "typescript"
 	},
 	"jest.jestCommandLine": "pnpm run jest",
-	"jest.autoRun": "off",
+	"jest.runMode": "on-demand",
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit"
 	},

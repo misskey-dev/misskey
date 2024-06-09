@@ -48,6 +48,25 @@ const devConfig = {
 			},
 			'/url': httpUrl,
 			'/proxy': httpUrl,
+			'/_info_card_': httpUrl,
+			'/bios': httpUrl,
+			'/cli': httpUrl,
+			'/inbox': httpUrl,
+			'/notes': {
+				target: httpUrl,
+				headers: {
+					'Accept': 'application/activity+json',
+				},
+			},
+			'/users': {
+				target: httpUrl,
+				headers: {
+					'Accept': 'application/activity+json',
+				},
+			},
+			'/.well-known': {
+				target: httpUrl,
+			},
 		},
 	},
 	build: {

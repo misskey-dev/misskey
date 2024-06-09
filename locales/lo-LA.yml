@@ -395,6 +395,10 @@ searchByGoogle: "ຄົ້ນຫາ"
 file: "ໄຟລ໌"
 replies: "ຕອບ​ໄປ​ທີ"
 renotes: "Renote"
+_delivery:
+  stop: "ໂຈະ"
+  _type:
+    none: "ການ​ພິມ​ເຜີຍ​ແຜ່"
 _role:
   _priority:
     middle: "ປານກາງ"
@@ -466,4 +470,3 @@ _webhookSettings:
   name: "ຊື່"
 _moderationLogTypes:
   suspend: "ລະງັບ"
-

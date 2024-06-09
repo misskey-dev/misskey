@@ -1,15 +1,21 @@
-import { bundledThemesInfo } from 'shiki';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { getHighlighterCore, loadWasm } from 'shiki/core';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
+import { bundledThemesInfo } from 'shiki/themes';
+import { bundledLanguagesInfo } from 'shiki/langs';
 import { unique } from './array.js';
 import { deepClone } from './clone.js';
 import { deepMerge } from './merge.js';
-import type { Highlighter, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki';
+import type { HighlighterCore, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki/core';
 import { ColdDeviceStorage } from '@/store.js';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 
-let _highlighter: Highlighter | null = null;
+let _highlighter: HighlighterCore | null = null;
 
 export async function getTheme(mode: 'light' | 'dark', getName: true): Promise<string>;
 export async function getTheme(mode: 'light' | 'dark', getName?: false): Promise<ThemeRegistration | ThemeRegistrationRaw>;
@@ -46,16 +52,14 @@ export async function getTheme(mode: 'light' | 'dark', getName = false): Promise
 	return darkPlus;
 }
 
-export async function getHighlighter(): Promise<Highlighter> {
+export async function getHighlighter(): Promise<HighlighterCore> {
 	if (!_highlighter) {
 		return await initHighlighter();
 	}
 	return _highlighter;
 }
 
-export async function initHighlighter() {
-	const aiScriptGrammar = await import('aiscript-vscode/aiscript/syntaxes/aiscript.tmLanguage.json');
-
+async function initHighlighter() {
 	await loadWasm(import('shiki/onig.wasm?init'));
 
 	// テーマの重複を消す
@@ -64,11 +68,12 @@ export async function initHighlighter() {
 		...(await Promise.all([getTheme('light'), getTheme('dark')])),
 	]);
 
+	const jsLangInfo = bundledLanguagesInfo.find(t => t.id === 'javascript');
 	const highlighter = await getHighlighterCore({
 		themes,
 		langs: [
-			import('shiki/langs/javascript.mjs'),
-			aiScriptGrammar.default as unknown as LanguageRegistration,
+			...(jsLangInfo ? [async () => await jsLangInfo.import()] : []),
+			async () => (await import('aiscript-vscode/aiscript/syntaxes/aiscript.tmLanguage.json')).default as unknown as LanguageRegistration,
 		],
 	});
 
