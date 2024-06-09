@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="legacyCalculation">{{ i18n.ts.legacyCalculation }}</option>
 				<option value="seeRenderedSize">{{ i18n.ts.seeRenderedSize }}</option>
 			</MkRadios>
-			<MkRadios v-model="collapsingNoteSize" v-if="collapsingNoteCondition !== 'legacyCalculation'">
+			<MkRadios v-if="collapsingNoteCondition !== 'legacyCalculation'" v-model="collapsingNoteSize">
 				<template #label>{{ i18n.ts.collapsingNoteSize }}</template>
 				<option :value="18">{{ i18n.ts.large }}</option>
 				<option :value="13.5">{{ i18n.ts.medium }}</option>

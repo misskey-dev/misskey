@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -57,7 +57,7 @@ if (collapsingNoteCondition === 'seeRenderedSize') {
 		const limit = collapseSize * parseFloat(getComputedStyle(collapsibleArea.value).fontSize);
 		isLong.value = current > limit;
 		collapsed.value &&= isLong.value;
-	})
+	});
 }
 const isLong = ref(true);
 switch (collapsingNoteCondition) {

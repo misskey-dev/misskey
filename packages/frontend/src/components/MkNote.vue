@@ -231,7 +231,7 @@ if (collapsingNoteCondition === 'seeRenderedSize') {
 		const limit = collapseSize * parseFloat(getComputedStyle(collapsibleArea.value).fontSize);
 		isLong.value = current > limit;
 		collapsed.value &&= isLong.value;
-	})
+	});
 }
 
 // plugin
