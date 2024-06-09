@@ -7,7 +7,7 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { safeParseFloat } from './safe-parse.js';
 
-export function shouldCollapsedLegacy(note: Misskey.entities.Note, urls: string[]): boolean {
+export function shouldCollapseLegacy(note: Misskey.entities.Note, urls: string[]): boolean {
 	const collapsed = note.cw == null && (
 		note.text != null && (
 			(note.text.includes('$[x2')) ||
@@ -23,7 +23,7 @@ export function shouldCollapsedLegacy(note: Misskey.entities.Note, urls: string[
 	return collapsed;
 }
 
-export function shouldCollapsed(note: Misskey.entities.Note, limitY: number, ast?: mfm.MfmNode[] | null, urls?: string[]): boolean {
+export function shouldCollapse(note: Misskey.entities.Note, limitY: number, ast?: mfm.MfmNode[] | null, urls?: string[]): boolean {
 	if (note.cw != null) return false;
 	if (note.text == null) return false;
 	if (note.files && note.files.length >= 5) return true;

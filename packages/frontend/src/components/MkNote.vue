@@ -198,7 +198,7 @@ import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { shouldCollapsedLegacy, shouldCollapsed } from '@/scripts/collapsed.js';
+import { shouldCollapseLegacy, shouldCollapse } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
@@ -297,14 +297,14 @@ const collapseSize = ({
 const isLong = ref(true);
 switch (collapsingNoteCondition) {
 	case 'detailedCalculation':
-		isLong.value = shouldCollapsed(appearNote.value, collapseSize, parsed.value, urls.value ?? []);
+		isLong.value = shouldCollapse(appearNote.value, collapseSize, parsed.value, urls.value ?? []);
 		break;
 	case 'seeRenderedSize':
 		break;
 	// fail safe
 	case 'legacyCalculation':
 	default:
-		isLong.value = shouldCollapsedLegacy(appearNote.value, urls.value ?? []);
+		isLong.value = shouldCollapseLegacy(appearNote.value, urls.value ?? []);
 		break;
 }
 const collapsed = ref(appearNote.value.cw == null && isLong.value);
