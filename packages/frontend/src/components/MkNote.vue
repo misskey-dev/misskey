@@ -56,8 +56,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]" :style="`max-height: ${collapseSize}`">
-					<div ref="collapsibleInner">
+				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]" :style="{ 'max-height': collapsed ? `${collapseSize}em` : undefined }">
+					<div ref="collapsibleArea">
 						<div :class="$style.text">
 							<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 							<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
@@ -223,6 +223,17 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 
 const note = ref(deepClone(props.note));
 
+// used later
+const collapsingNoteCondition = defaultStore.state.collapsingNoteCondition;
+if (collapsingNoteCondition === 'seeRenderedSize') {
+	onMounted(() => {
+		const current = collapsibleArea.value.clientHeight;
+		const limit = collapseSize * parseFloat(getComputedStyle(collapsibleArea.value).fontSize);
+		isLong.value = current > limit;
+		collapsed.value &&= isLong.value;
+	})
+}
+
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
@@ -262,22 +273,6 @@ const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
-const collapsibleArea = ref(null);
-const collapseSize = computed(() => ({
-	small: 9,
-	medium: 13.5,
-	large: 18,
-})[defaultStore.state.collapsingNoteSize]);
-const isLong = computed(() => {
-	switch (defaultStore.state.collapsingNoteCondition) {
-		case 'detailedCalculation': return shouldCollapsed(appearNote.value, collapseSize.value, parsed.value, urls.value ?? []);
-		case 'seeRenderedSize': return collapsibleArea.value == null ? false : collapsibleInner.value.clientHeight > collapseSize.value * parseFloat(getComputedStyle(collapsibleInner.value).fontSize);
-		// fail safe
-		case 'legacyCalculation':
-		default: return shouldCollapsedLegacy(appearNote.value, urls.value ?? []);
-	}
-});
-const collapsed = ref(appearNote.value.cw == null && isLong.value);
 const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
@@ -291,6 +286,28 @@ const renoteCollapsed = ref(
 		(appearNote.value.myReaction != null)
 	),
 );
+
+// oversized note collapsing
+const collapsibleArea = ref(null);
+const collapseSize = ({
+	small: 9,
+	medium: 13.5,
+	large: 18,
+})[defaultStore.state.collapsingNoteSize] ?? 13.5;
+const isLong = ref(true);
+switch (collapsingNoteCondition) {
+	case 'detailedCalculation':
+		isLong.value = shouldCollapsed(appearNote.value, collapseSize, parsed.value, urls.value ?? []);
+		break;
+	case 'seeRenderedSize':
+		break;
+	// fail safe
+	case 'legacyCalculation':
+	default:
+		isLong.value = shouldCollapsedLegacy(appearNote.value, urls.value ?? []);
+		break;
+}
+const collapsed = ref(appearNote.value.cw == null && isLong.value);
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;

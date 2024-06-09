@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.collapsingNoteSize }}</template>
 				<option value="large">{{ i18n.ts.large }}</option>
 				<option value="medium">{{ i18n.ts.medium }}</option>
-				<option value="small">{{ i18n.tsx.small }}</option>
+				<option value="small">{{ i18n.ts.small }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
