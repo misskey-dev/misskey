@@ -2423,7 +2423,7 @@ _abuseReport:
   _notificationRecipient:
     createRecipient: "신고 수신자 추가"
     modifyRecipient: "신고 수신자 편집"
-    recipientType: "수신자 유형"
+    recipientType: "알림 수신 유형"
     _recipientType:
       mail: "이메일"
       webhook: "Webhook"
