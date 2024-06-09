@@ -92,6 +92,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
 				<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 			</MkRadios>
+			<MkRadios v-model="collapsingNoteCondition">
+				<template #label>{{ i18n.ts.collapsingNoteCondition }}</template>
+				<option value="detailedCalculation">{{ i18n.ts.detailedCalculation }}</option>
+				<option value="legacyCalculation">{{ i18n.ts.legacyCalculation }}</option>
+				<option value="seeRenderedSize">{{ i18n.ts.seeRenderedSize }}</option>
+			</MkRadios>
+			<MkRadios v-model="collapsingNoteSize" v-if="collapsingNoteCondition !== 'legacyCalculation'">
+				<template #label>{{ i18n.ts.collapsingNoteSize }}</template>
+				<option value="large">{{ i18n.ts.large }}</option>
+				<option value="medium">{{ i18n.ts.medium }}</option>
+				<option value="small">{{ i18n.tsx.small }}</option>
+			</MkRadios>
 		</div>
 	</FormSection>
 
@@ -306,6 +318,8 @@ const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const showAvatarDecorations = computed(defaultStore.makeGetterSetter('showAvatarDecorations'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
+const collapsingNoteSize = computed(defaultStore.makeGetterSetter('collapsingNoteSize'));
+const collapsingNoteCondition = computed(defaultStore.makeGetterSetter('collapsingNoteCondition'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));

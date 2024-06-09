@@ -102,6 +102,8 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'aiChanMode',
 	'devMode',
 	'mediaListWithOneImageAppearance',
+	'collapsingNoteSize',
+	'collapsingNoteCondition',
 	'notificationPosition',
 	'notificationStackAxis',
 	'enableCondensedLineForAcct',

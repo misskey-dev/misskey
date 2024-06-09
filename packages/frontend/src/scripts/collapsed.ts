@@ -23,7 +23,7 @@ export function shouldCollapsedLegacy(note: Misskey.entities.Note, urls: string[
 	return collapsed;
 }
 
-export function shouldCollapsed(note: Misskey.entities.Note, ast?: mfm.MfmNode[] | null, urls?: string[]): boolean {
+export function shouldCollapsed(note: Misskey.entities.Note, limitY: number, ast?: mfm.MfmNode[] | null, urls?: string[]): boolean {
 	if (note.cw != null) return false;
 	if (note.text == null) return false;
 	if (note.files && note.files.length >= 5) return true;
@@ -34,7 +34,7 @@ export function shouldCollapsed(note: Misskey.entities.Note, ast?: mfm.MfmNode[]
 
 	// しきい値（X方向の文字数は半角換算）
 	const limitX = 55;
-	const limitY = 13.5;
+	// const limitY = 13.5;
 
 	let forceCollapsed = false;
 
@@ -168,6 +168,12 @@ export function shouldCollapsed(note: Misskey.entities.Note, ast?: mfm.MfmNode[]
 								forceCollapsed = true;
 							}
 							addHeightsInline(getHeightForEachLine(node.children, depth + 1));
+							break;
+						}
+
+						case 'border': {
+							const width = safeParseFloat(node.props.args.width) ?? 1;
+							addHeightsInline(getHeightForEachLine(node.children, depth + 1).map(l => l + (width * 2)));
 							break;
 						}
 
