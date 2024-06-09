@@ -232,9 +232,9 @@ export function role(params: {
 	asBadge?: boolean,
 	canEditMembersByModerator?: boolean,
 	usersCount?: number,
-}): entities.Role {
+}, seed?: string): entities.Role {
 	const prefix = params.displayOrder ? params.displayOrder.toString().padStart(3, '0') + '-' : '';
-	const genId = Math.random().toString(36).substring(10);
+	const genId = text(36, seed);
 
 	return {
 		id: params.id ?? genId,
@@ -277,11 +277,12 @@ export function emoji(params?: {
 	localOnly?: boolean,
 	roleIdsThatCanBeUsedThisEmojiAsReaction?: {id:string, name:string}[],
 	updatedAt?: string,
-}): entities.EmojiDetailedAdmin {
-	const id = params?.id ?? new Date().getTime().toString() + text(5);
-	const name = params?.name ?? text(8);
+}, seed?: string): entities.EmojiDetailedAdmin {
+	const _seed = seed ?? params?.id ?? "DEFAULT_SEED";
+	const id = params?.id ?? new Date().getTime().toString() + text(5, _seed);
+	const name = params?.name ?? text(8, _seed);
 
-	const image = imageDataUrl()
+	const image = imageDataUrl({}, _seed)
 
 	return {
 		id: id,

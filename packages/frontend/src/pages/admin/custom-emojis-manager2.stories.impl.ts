@@ -89,7 +89,7 @@ function createRender(params: {
 						});
 
 						const driveFile: entities.DriveFile = {
-							id: fakeId(),
+							id: fakeId(file.name),
 							createdAt: new Date().toISOString(),
 							name: file.name,
 							type: file.type,
@@ -122,7 +122,7 @@ function createRender(params: {
 						const file = storedDriveFiles.find(f => f.id === fileId)!;
 
 						const em = emoji({
-							id: fakeId(),
+							id: fakeId(file.name),
 							name: body.name,
 							publicUrl: file.url,
 							originalUrl: file.url,
@@ -148,13 +148,13 @@ export const Default = createRender({
 });
 
 export const List10 = createRender({
-	emojis: Array.from({ length: 10 }, (_, i) => emoji({ name: `emoji_${i}` })),
+	emojis: Array.from({ length: 10 }, (_, i) => emoji({ name: `emoji_${i}` }, i.toString())),
 });
 
 export const List100 = createRender({
-	emojis: Array.from({ length: 100 }, (_, i) => emoji({ name: `emoji_${i}` })),
+	emojis: Array.from({ length: 100 }, (_, i) => emoji({ name: `emoji_${i}` }, i.toString())),
 });
 
 export const List1000 = createRender({
-	emojis: Array.from({ length: 1000 }, (_, i) => emoji({ name: `emoji_${i}` })),
+	emojis: Array.from({ length: 1000 }, (_, i) => emoji({ name: `emoji_${i}` }, i.toString())),
 });
