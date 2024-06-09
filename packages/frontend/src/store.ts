@@ -384,7 +384,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	collapsingNoteSize: {
 		where: 'device',
-		default: 'medium' as 'small' | 'medium' | 'large',
+		default: 13.5,
 	},
 	collapsingNoteCondition: {
 		where: 'device',

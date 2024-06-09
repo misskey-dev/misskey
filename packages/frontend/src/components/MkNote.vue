@@ -289,11 +289,7 @@ const renoteCollapsed = ref(
 
 // oversized note collapsing
 const collapsibleArea = ref(null);
-const collapseSize = ({
-	small: 9,
-	medium: 13.5,
-	large: 18,
-})[defaultStore.state.collapsingNoteSize] ?? 13.5;
+const collapseSize = defaultStore.state.collapsingNoteSize;
 const isLong = ref(true);
 switch (collapsingNoteCondition) {
 	case 'detailedCalculation':

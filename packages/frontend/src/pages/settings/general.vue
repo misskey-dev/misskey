@@ -100,9 +100,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 			<MkRadios v-model="collapsingNoteSize" v-if="collapsingNoteCondition !== 'legacyCalculation'">
 				<template #label>{{ i18n.ts.collapsingNoteSize }}</template>
-				<option value="large">{{ i18n.ts.large }}</option>
-				<option value="medium">{{ i18n.ts.medium }}</option>
-				<option value="small">{{ i18n.ts.small }}</option>
+				<option :value="18">{{ i18n.ts.large }}</option>
+				<option :value="13.5">{{ i18n.ts.medium }}</option>
+				<option :value="9">{{ i18n.ts.small }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
