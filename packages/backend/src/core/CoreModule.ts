@@ -12,6 +12,7 @@ import {
 } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
@@ -215,6 +216,7 @@ const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: Fe
 const $FanoutTimelineService: Provider = { provide: 'FanoutTimelineService', useExisting: FanoutTimelineService };
 const $FanoutTimelineEndpointService: Provider = { provide: 'FanoutTimelineEndpointService', useExisting: FanoutTimelineEndpointService };
 const $ChannelFollowingService: Provider = { provide: 'ChannelFollowingService', useExisting: ChannelFollowingService };
+const $ChannelMutingService: Provider = { provide: 'ChannelMutingService', useExisting: ChannelMutingService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
 
@@ -361,6 +363,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FanoutTimelineService,
 		FanoutTimelineEndpointService,
 		ChannelFollowingService,
+		ChannelMutingService,
 		RegistryApiService,
 		ReversiService,
 
@@ -503,6 +506,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FanoutTimelineService,
 		$FanoutTimelineEndpointService,
 		$ChannelFollowingService,
+		$ChannelMutingService,
 		$RegistryApiService,
 		$ReversiService,
 
@@ -646,6 +650,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FanoutTimelineService,
 		FanoutTimelineEndpointService,
 		ChannelFollowingService,
+		ChannelMutingService,
 		RegistryApiService,
 		ReversiService,
 
@@ -787,6 +792,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FanoutTimelineService,
 		$FanoutTimelineEndpointService,
 		$ChannelFollowingService,
+		$ChannelMutingService,
 		$RegistryApiService,
 		$ReversiService,
 
