@@ -1,13 +1,15 @@
 ## Unreleased
 
 ### General
+- Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Enhance: 不適切なページ、ギャラリー、Playを管理者権限で削除できるように
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
 - Enhance: 不適切なページ、ギャラリー、Playを通報できるように
 
 ### Server
--
+- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 
 
 ## 2024.5.0

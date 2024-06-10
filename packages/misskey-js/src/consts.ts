@@ -328,6 +328,32 @@ export type ModerationLogPayloads = {
 		userHost: string | null;
 		fileId: string;
 	};
+	createSystemWebhook: {
+		systemWebhookId: string;
+		webhook: any;
+	};
+	updateSystemWebhook: {
+		systemWebhookId: string;
+		before: any;
+		after: any;
+	};
+	deleteSystemWebhook: {
+		systemWebhookId: string;
+		webhook: any;
+	};
+	createAbuseReportNotificationRecipient: {
+		recipientId: string;
+		recipient: any;
+	};
+	updateAbuseReportNotificationRecipient: {
+		recipientId: string;
+		before: any;
+		after: any;
+	};
+	deleteAbuseReportNotificationRecipient: {
+		recipientId: string;
+		recipient: any;
+	};
 	deletePage: {
 		pageId: string;
 		pageUserId: string;

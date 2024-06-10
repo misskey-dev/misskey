@@ -135,6 +135,24 @@ export type ModerationLog = {
 	type: 'unsetUserBanner';
 	info: ModerationLogPayloads['unsetUserBanner'];
 } | {
+	type: 'createSystemWebhook';
+	info: ModerationLogPayloads['createSystemWebhook'];
+} | {
+	type: 'updateSystemWebhook';
+	info: ModerationLogPayloads['updateSystemWebhook'];
+} | {
+	type: 'deleteSystemWebhook';
+	info: ModerationLogPayloads['deleteSystemWebhook'];
+} | {
+	type: 'createAbuseReportNotificationRecipient';
+	info: ModerationLogPayloads['createAbuseReportNotificationRecipient'];
+} | {
+	type: 'updateAbuseReportNotificationRecipient';
+	info: ModerationLogPayloads['updateAbuseReportNotificationRecipient'];
+} | {
+	type: 'deleteAbuseReportNotificationRecipient';
+	info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
+} | {
 	type: 'deletePage';
 	info: ModerationLogPayloads['deletePage'];
 } | {
