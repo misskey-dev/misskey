@@ -1,5 +1,18 @@
 ## Unreleased
 
+### General
+- Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
+
+### Client
+-
+
+### Server
+- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+
+
+## 2024.5.0
+
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 - 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
@@ -20,6 +33,7 @@
 - Enhance: Goneを出さずに終了したサーバーへの配信停止を自動的に行うように
   - もしそのようなサーバーからから配信が届いた場合には自動的に配信を再開します
 - Enhance: 配信停止の理由を表示するように
+- Enhance: サーバーのお問い合わせ先URLを設定できるようになりました
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 - Fix: 正規化されていない状態のhashtagが連合されてきたhtmlに含まれているとhashtagが正しくhashtagに復元されない問題を修正
 - Fix: みつけるのアンケート欄にてチャンネルのアンケートが含まれてしまう問題を修正

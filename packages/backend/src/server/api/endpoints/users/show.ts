@@ -117,9 +117,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					if (user != null) _users.push(user);
 				}
 
-				return await Promise.all(_users.map(u => this.userEntityService.pack(u, me, {
-					schema: 'UserDetailed',
-				})));
+				const _userMap = await this.userEntityService.packMany(_users, me, { schema: 'UserDetailed' })
+					.then(users => new Map(users.map(u => [u.id, u])));
+				return _users.map(u => _userMap.get(u.id)!);
 			} else {
 				// Lookup user
 				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
