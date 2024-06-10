@@ -1026,6 +1026,7 @@ thisPostMayBeAnnoyingHome: "Post to home timeline"
 thisPostMayBeAnnoyingCancel: "Cancel"
 thisPostMayBeAnnoyingIgnore: "Post anyway"
 collapseRenotes: "Collapse renotes you've already seen"
+collapseRenotesDescription: "Collapse notes that you've reacted to or renoted before."
 internalServerError: "Internal Server Error"
 internalServerErrorDescription: "The server has run into an unexpected error."
 copyErrorInfo: "Copy error details"
@@ -2397,6 +2398,7 @@ _drivecleaner:
   orderByCreatedAtAsc: "Ascending Dates"
 _webhookSettings:
   createWebhook: "Create Webhook"
+  modifyWebhook: "Modify Webhook"
   name: "Name"
   secret: "Secret"
   events: "Webhook Events"
@@ -2411,8 +2413,17 @@ _webhookSettings:
     mention: "When being mentioned"
 _abuseReport:
   _notificationRecipient:
+    recipientType: "Notification type"
     _recipientType:
       mail: "Email"
+      webhook: "Webhook"
+      _captions:
+        mail: "Send the email to moderators' email addresses when you receive abuse."
+        webhook: "Send a notification to SystemWebhook when you receive or resolve abuse."
+    keywords: "Keywords"
+    notifiedUser: "Users to notify"
+    notifiedWebhook: "Webhook to use"
+    deleteConfirm: "Are you sure that you want to delete the notification recipient?"
 _moderationLogTypes:
   createRole: "Role created"
   deleteRole: "Role deleted"
@@ -2450,6 +2461,9 @@ _moderationLogTypes:
   deleteAvatarDecoration: "Avatar decoration deleted"
   unsetUserAvatar: "Unset this user's avatar"
   unsetUserBanner: "Unset this user's banner"
+  createSystemWebhook: "Create SystemWebhook"
+  updateSystemWebhook: "Update SystemWebHook"
+  deleteSystemWebhook: "Delete SystemWebhook"
 _fileViewer:
   title: "File details"
   type: "File type"
