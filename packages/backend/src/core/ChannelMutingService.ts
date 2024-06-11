@@ -5,8 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiUser } from '@/models/_.js';
+import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiChannelMuting, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
@@ -64,7 +65,7 @@ export class ChannelMutingService {
 			.where('channel_muting.userId = :userId', { userId: params.requestUserId })
 			.andWhere(qb => {
 				qb.where('channel_muting.expiresAt IS NULL')
-					.orWhere('channel_muting.expiresAt > :now:', { now: new Date() });
+					.orWhere('channel_muting.expiresAt > :now', { now: new Date() });
 			});
 
 		if (opts?.joinUser) {
@@ -73,6 +74,32 @@ export class ChannelMutingService {
 
 		if (opts?.joinBannerFile) {
 			q.leftJoinAndSelect('channel.banner', 'drive_file');
+		}
+
+		return q.getMany();
+	}
+
+	/**
+	 * 期限切れのチャンネルミュート情報を取得する.
+	 *
+	 * @param [opts]
+	 * @param {(boolean|undefined)} [opts.joinUser=undefined] チャンネルミュートを設定したユーザ情報をJOINするかどうか(falseまたは省略時はJOINしない).
+	 * @param {(boolean|undefined)} [opts.joinChannel=undefined] ミュート先のチャンネル情報をJOINするかどうか(falseまたは省略時はJOINしない).
+	 */
+	public async findExpiredMutings(opts?: {
+		joinUser?: boolean;
+		joinChannel?: boolean;
+	}): Promise<MiChannelMuting[]> {
+		const now = new Date();
+		const q = this.channelMutingRepository.createQueryBuilder('channel_muting')
+			.where('channel_muting.expiresAt < :now', { now });
+
+		if (opts?.joinUser) {
+			q.innerJoinAndSelect('channel_muting.user', 'user');
+		}
+
+		if (opts?.joinChannel) {
+			q.leftJoinAndSelect('channel_muting.channel', 'channel');
 		}
 
 		return q.getMany();
@@ -134,6 +161,20 @@ export class ChannelMutingService {
 			userId: params.requestUserId,
 			channelId: params.targetChannelId,
 		});
+	}
+
+	/**
+	 * 期限切れのチャンネルミュート情報を削除する.
+	 */
+	@bindThis
+	public async eraseExpiredMutings(): Promise<void> {
+		const expiredMutings = await this.findExpiredMutings();
+		await this.channelMutingRepository.delete({ id: In(expiredMutings.map(x => x.id)) });
+
+		const userIds = [...new Set(expiredMutings.map(x => x.userId))];
+		for (const userId of userIds) {
+			this.userMutingChannelsCache.refresh(userId).then();
+		}
 	}
 
 	@bindThis
