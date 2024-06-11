@@ -8,7 +8,7 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type {
 	ChannelFavoritesRepository,
-	ChannelFollowingsRepository,
+	ChannelFollowingsRepository, ChannelMutingRepository,
 	ChannelsRepository,
 	DriveFilesRepository,
 	MiDriveFile,
@@ -33,6 +33,8 @@ export class ChannelEntityService {
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 		@Inject(DI.channelFavoritesRepository)
 		private channelFavoritesRepository: ChannelFavoritesRepository,
+		@Inject(DI.channelMutingRepository)
+		private channelMutingRepository: ChannelMutingRepository,
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 		@Inject(DI.driveFilesRepository)
@@ -52,6 +54,7 @@ export class ChannelEntityService {
 			bannerFiles?: Map<MiDriveFile['id'], MiDriveFile>;
 			followings?: Set<MiChannel['id']>;
 			favorites?: Set<MiChannel['id']>;
+			muting?: Set<MiChannel['id']>;
 			pinnedNotes?: Map<MiNote['id'], MiNote>;
 		},
 	): Promise<Packed<'Channel'>> {
@@ -65,6 +68,7 @@ export class ChannelEntityService {
 
 		let isFollowing = false;
 		let isFavorite = false;
+		let isMuting = false;
 		if (me) {
 			isFollowing = opts?.followings?.has(channel.id) ?? await this.channelFollowingsRepository.exists({
 				where: {
@@ -74,6 +78,13 @@ export class ChannelEntityService {
 			});
 
 			isFavorite = opts?.favorites?.has(channel.id) ?? await this.channelFavoritesRepository.exists({
+				where: {
+					userId: me.id,
+					channelId: channel.id,
+				},
+			});
+
+			isMuting = opts?.muting?.has(channel.id) ?? await this.channelMutingRepository.exists({
 				where: {
 					userId: me.id,
 					channelId: channel.id,
@@ -112,6 +123,7 @@ export class ChannelEntityService {
 			...(me ? {
 				isFollowing,
 				isFavorite,
+				isMuting,
 				hasUnreadNote: false, // 後方互換性のため
 			} : {}),
 
@@ -162,6 +174,15 @@ export class ChannelEntityService {
 				.then(it => new Set(it.map(it => it.channelId)))
 			: new Set<MiChannel['id']>();
 
+		const muting = me
+			? await this.channelMutingRepository
+				.findBy({
+					userId: me.id,
+					channelId: In(channels.map(it => it.id)),
+				})
+				.then(it => new Set(it.map(it => it.channelId)))
+			: new Set<MiChannel['id']>();
+
 		const pinnedNotes = await this.notesRepository
 			.find({
 				where: {
@@ -174,6 +195,7 @@ export class ChannelEntityService {
 			bannerFiles,
 			followings,
 			favorites,
+			muting,
 			pinnedNotes,
 		})));
 	}
