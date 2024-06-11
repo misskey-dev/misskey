@@ -113,7 +113,7 @@ const routes: RouteDef[] = [{
 		name: 'navbar',
 		component: page(() => import('@/pages/settings/navbar.vue')),
 	}, {
-		path: '/timelineheader',
+		path: '/timeline-header',
 		name: 'timelineHeader',
 		component: page(() => import('@/pages/settings/timelineHeader.vue')),
 	}, {

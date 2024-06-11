@@ -6,13 +6,30 @@
 import { reactive } from 'vue';
 import { i18n } from '@/i18n.js';
 import { userListsCache } from '@/cache.js';
-import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/store.js';
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+
+export type TimelineHeaderItem =
+	'home' |
+	'local' |
+	'social' |
+	'global' |
+	'lists' |
+	'antennas' |
+	'channels' |
+	`list:${string}`
+
+type TimelineHeaderItemsDef = {
+	title: string;
+	icon: string;
+	iconOnly?: boolean; // わからん
+}
+
 const lists = await userListsCache.fetch();
-export const timelineHeaderItemDef = reactive({
+export const timelineHeaderItemDef = reactive<Partial<Record<TimelineHeaderItem, TimelineHeaderItemsDef>>>({
 	home: {
 		title: i18n.ts._timelines.home,
 		icon: 'ti ti-home',
-		iconOnly: false,
+		iconOnly: true,
 	},
 	...(isLocalTimelineAvailable ? {
 		local: {

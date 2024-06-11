@@ -50,11 +50,11 @@ import { defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { timelineHeaderItemDef } from '@/timelineHeader.js';
+import { timelineHeaderItemDef } from '@/timeline-header.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(defaultStore.state.timelineTopBar.map(x => ({
+const items = ref(defaultStore.state.timelineHeader.map(x => ({
 	id: Math.random().toString(),
 	type: x,
 })));
@@ -70,7 +70,7 @@ async function reloadAsk() {
 }
 
 async function addItem() {
-	const menu = Object.keys(timelineHeaderItemDef).filter(k => !defaultStore.state.timelineTopBar.includes(k));
+	const menu = Object.keys(timelineHeaderItemDef).filter(k => !defaultStore.state.timelineHeader.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
@@ -89,12 +89,12 @@ function removeItem(index: number) {
 }
 
 async function save() {
-	defaultStore.set('timelineTopBar', items.value.map(x => x.type));
+	defaultStore.set('timelineHeader', items.value.map(x => x.type));
 	await reloadAsk();
 }
 
 function reset() {
-	items.value = defaultStore.def.timelineTopBar.default.map(x => ({
+	items.value = defaultStore.def.timelineHeader.default.map(x => ({
 		id: Math.random().toString(),
 		type: x,
 	}));

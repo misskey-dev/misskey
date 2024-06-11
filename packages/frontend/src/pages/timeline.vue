@@ -53,12 +53,11 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { timelineHeaderItemDef } from '@/timelineHeader.js';
+import { timelineHeaderItemDef } from '@/timeline-header.js';
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
-const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 const keymap = {
 	't': focus,
 };
@@ -278,23 +277,37 @@ const headerActions = computed(() => {
 	}
 	return tmp;
 });
-let headerTabs = computed(() => defaultStore.reactiveState.timelineTopBar.value.map(tab => ({
-	...(tab !== 'lists' && tab !== 'antennas' && tab !== 'channels' ? {
-		key: tab,
-	} : {}),
-	title: timelineHeaderItemDef[tab].title,
-	icon: timelineHeaderItemDef[tab].icon,
-	iconOnly: timelineHeaderItemDef[tab].iconOnly,
-	...(tab === 'lists' ? {
-		onClick: (ev) => chooseList(ev),
-	} : {}),
-	...(tab === 'antennas' ? {
-		onClick: (ev) => chooseAntenna(ev),
-	} : {}),
-	...(tab === 'channels' ? {
-		onClick: (ev) => chooseChannel(ev),
-	} : {}),
-})) as Tab[]);
+const headerTabs = computed(() => defaultStore.reactiveState.timelineHeader.value.map(tab => {
+	if ((tab === 'local' || tab === 'social') && !isLocalTimelineAvailable) {
+		return {};
+	} else if (tab === 'global' && !isGlobalTimelineAvailable) {
+		return {};
+	}
+
+	const tabDef = timelineHeaderItemDef[tab];
+	if (!tabDef) {
+		return {};
+	}
+
+	return {
+		...(!['channels', 'antennas', 'lists'].includes(tab) ? {
+			key: tab,
+		} : {}),
+		title: tabDef.title,
+		icon: tabDef.icon,
+		iconOnly: tabDef.iconOnly,
+		...(tab === 'lists' ? {
+			onClick: (ev) => chooseList(ev),
+		} : {}),
+		...(tab === 'antennas' ? {
+			onClick: (ev) => chooseAntenna(ev),
+		} : {}),
+		...(tab === 'channels' ? {
+			onClick: (ev) => chooseChannel(ev),
+		} : {}),
+	};
+}) as Tab[]);
+
 const headerTabsWhenNotLogin = computed(() => [
 	...(isLocalTimelineAvailable ? [{
 		key: 'local',

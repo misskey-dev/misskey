@@ -9,7 +9,7 @@ import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
-
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
 interface PostFormAction {
 	title: string,
 	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
@@ -52,8 +52,6 @@ export type SoundStore = {
 
 	volume: number;
 }
-export const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
-export const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -149,7 +147,7 @@ export const defaultStore = markRaw(new Storage('base', {
 			'ui',
 		],
 	},
-	timelineTopBar: {
+	timelineHeader: {
 		where: 'deviceAccount',
 		default: [
 			'home',
@@ -163,7 +161,7 @@ export const defaultStore = markRaw(new Storage('base', {
 			'lists',
 			'antennas',
 			'channels',
-		],
+		] as TimelineHeaderItem[],
 	},
 	visibility: {
 		where: 'deviceAccount',
@@ -539,8 +537,7 @@ interface Watcher {
  */
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
-import { $i } from '@/account.js';
-import { instance } from '@/instance.js';
+import { TimelineHeaderItem } from '@/timeline-header.js';
 
 export class ColdDeviceStorage {
 	public static default = {
