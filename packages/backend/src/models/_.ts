@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder, TypeORMError } from 'typeorm';
+import { DriverUtils } from 'typeorm/driver/DriverUtils.js';
+import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
+import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
+import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
+import { ObjectUtils } from 'typeorm/util/ObjectUtils.js';
+import { OrmUtils } from 'typeorm/util/OrmUtils.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
@@ -70,8 +77,70 @@ import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
+import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
-import type { Repository } from 'typeorm';
+export interface MiRepository<T extends ObjectLiteral> {
+	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	createTableColumnNamesWithPrimaryKey(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
+	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
+}
+
+export const miRepository = {
+	createTableColumnNames(queryBuilder) {
+		// @ts-expect-error -- protected
+		const insertedColumns = queryBuilder.getInsertedColumns();
+		if (insertedColumns.length) {
+			return insertedColumns.map(column => column.databaseName);
+		}
+		if (!queryBuilder.expressionMap.mainAlias?.hasMetadata && !queryBuilder.expressionMap.insertColumns.length) {
+			// @ts-expect-error -- protected
+			const valueSets = queryBuilder.getValueSets();
+			if (valueSets.length === 1) {
+				return Object.keys(valueSets[0]);
+			}
+		}
+		return queryBuilder.expressionMap.insertColumns;
+	},
+	createTableColumnNamesWithPrimaryKey(queryBuilder) {
+		const columnNames = this.createTableColumnNames(queryBuilder);
+		if (!columnNames.includes('id')) {
+			columnNames.unshift('id');
+		}
+		return columnNames;
+	},
+	async insertOne(entity, findOptions?) {
+		const queryBuilder = this.createQueryBuilder().insert().values(entity);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const mainAlias = queryBuilder.expressionMap.mainAlias!;
+		const name = mainAlias.name;
+		mainAlias.name = 't';
+		const columnNames = this.createTableColumnNamesWithPrimaryKey(queryBuilder);
+		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
+		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		builder.expressionMap.mainAlias!.tablePath = 'cte';
+		this.selectAliasColumnNames(queryBuilder, builder);
+		if (findOptions) {
+			builder.setFindOptions(findOptions);
+		}
+		const raw = await builder.execute();
+		mainAlias.name = name;
+		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
+		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
+		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
+		return result[0];
+	},
+	selectAliasColumnNames(queryBuilder, builder) {
+		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
+			selectOrAddSelect = (selection, selectionAliasName) => builder.addSelect(selection, selectionAliasName);
+			return builder.select(selection, selectionAliasName);
+		};
+		for (const columnName of this.createTableColumnNamesWithPrimaryKey(queryBuilder)) {
+			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
+		}
+	},
+} satisfies MiRepository<ObjectLiteral>;
 
 export {
 	MiAbuseUserReport,
@@ -143,70 +212,70 @@ export {
 	MiReversiGame,
 };
 
-export type AbuseUserReportsRepository = Repository<MiAbuseUserReport>;
-export type AccessTokensRepository = Repository<MiAccessToken>;
-export type AdsRepository = Repository<MiAd>;
-export type AnnouncementsRepository = Repository<MiAnnouncement>;
-export type AnnouncementReadsRepository = Repository<MiAnnouncementRead>;
-export type AntennasRepository = Repository<MiAntenna>;
-export type AppsRepository = Repository<MiApp>;
-export type AvatarDecorationsRepository = Repository<MiAvatarDecoration>;
-export type AuthSessionsRepository = Repository<MiAuthSession>;
-export type BlockingsRepository = Repository<MiBlocking>;
-export type ChannelFollowingsRepository = Repository<MiChannelFollowing>;
-export type ChannelFavoritesRepository = Repository<MiChannelFavorite>;
-export type ClipsRepository = Repository<MiClip>;
-export type ClipNotesRepository = Repository<MiClipNote>;
-export type ClipFavoritesRepository = Repository<MiClipFavorite>;
-export type DriveFilesRepository = Repository<MiDriveFile>;
-export type DriveFoldersRepository = Repository<MiDriveFolder>;
-export type EmojisRepository = Repository<MiEmoji>;
-export type FollowingsRepository = Repository<MiFollowing>;
-export type FollowRequestsRepository = Repository<MiFollowRequest>;
-export type GalleryLikesRepository = Repository<MiGalleryLike>;
-export type GalleryPostsRepository = Repository<MiGalleryPost>;
-export type HashtagsRepository = Repository<MiHashtag>;
-export type InstancesRepository = Repository<MiInstance>;
-export type MetasRepository = Repository<MiMeta>;
-export type ModerationLogsRepository = Repository<MiModerationLog>;
-export type MutingsRepository = Repository<MiMuting>;
-export type RenoteMutingsRepository = Repository<MiRenoteMuting>;
-export type NotesRepository = Repository<MiNote>;
-export type NoteFavoritesRepository = Repository<MiNoteFavorite>;
-export type NoteReactionsRepository = Repository<MiNoteReaction>;
-export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting>;
-export type NoteUnreadsRepository = Repository<MiNoteUnread>;
-export type PagesRepository = Repository<MiPage>;
-export type PageLikesRepository = Repository<MiPageLike>;
-export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest>;
-export type PollsRepository = Repository<MiPoll>;
-export type PollVotesRepository = Repository<MiPollVote>;
-export type PromoNotesRepository = Repository<MiPromoNote>;
-export type PromoReadsRepository = Repository<MiPromoRead>;
-export type RegistrationTicketsRepository = Repository<MiRegistrationTicket>;
-export type RegistryItemsRepository = Repository<MiRegistryItem>;
-export type RelaysRepository = Repository<MiRelay>;
-export type SigninsRepository = Repository<MiSignin>;
-export type SwSubscriptionsRepository = Repository<MiSwSubscription>;
-export type UsedUsernamesRepository = Repository<MiUsedUsername>;
-export type UsersRepository = Repository<MiUser>;
-export type UserIpsRepository = Repository<MiUserIp>;
-export type UserKeypairsRepository = Repository<MiUserKeypair>;
-export type UserListsRepository = Repository<MiUserList>;
-export type UserListFavoritesRepository = Repository<MiUserListFavorite>;
-export type UserListMembershipsRepository = Repository<MiUserListMembership>;
-export type UserNotePiningsRepository = Repository<MiUserNotePining>;
-export type UserPendingsRepository = Repository<MiUserPending>;
-export type UserProfilesRepository = Repository<MiUserProfile>;
-export type UserPublickeysRepository = Repository<MiUserPublickey>;
-export type UserSecurityKeysRepository = Repository<MiUserSecurityKey>;
-export type WebhooksRepository = Repository<MiWebhook>;
-export type ChannelsRepository = Repository<MiChannel>;
-export type RetentionAggregationsRepository = Repository<MiRetentionAggregation>;
-export type RolesRepository = Repository<MiRole>;
-export type RoleAssignmentsRepository = Repository<MiRoleAssignment>;
-export type FlashsRepository = Repository<MiFlash>;
-export type FlashLikesRepository = Repository<MiFlashLike>;
-export type UserMemoRepository = Repository<MiUserMemo>;
-export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord>;
-export type ReversiGamesRepository = Repository<MiReversiGame>;
+export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
+export type AccessTokensRepository = Repository<MiAccessToken> & MiRepository<MiAccessToken>;
+export type AdsRepository = Repository<MiAd> & MiRepository<MiAd>;
+export type AnnouncementsRepository = Repository<MiAnnouncement> & MiRepository<MiAnnouncement>;
+export type AnnouncementReadsRepository = Repository<MiAnnouncementRead> & MiRepository<MiAnnouncementRead>;
+export type AntennasRepository = Repository<MiAntenna> & MiRepository<MiAntenna>;
+export type AppsRepository = Repository<MiApp> & MiRepository<MiApp>;
+export type AvatarDecorationsRepository = Repository<MiAvatarDecoration> & MiRepository<MiAvatarDecoration>;
+export type AuthSessionsRepository = Repository<MiAuthSession> & MiRepository<MiAuthSession>;
+export type BlockingsRepository = Repository<MiBlocking> & MiRepository<MiBlocking>;
+export type ChannelFollowingsRepository = Repository<MiChannelFollowing> & MiRepository<MiChannelFollowing>;
+export type ChannelFavoritesRepository = Repository<MiChannelFavorite> & MiRepository<MiChannelFavorite>;
+export type ClipsRepository = Repository<MiClip> & MiRepository<MiClip>;
+export type ClipNotesRepository = Repository<MiClipNote> & MiRepository<MiClipNote>;
+export type ClipFavoritesRepository = Repository<MiClipFavorite> & MiRepository<MiClipFavorite>;
+export type DriveFilesRepository = Repository<MiDriveFile> & MiRepository<MiDriveFile>;
+export type DriveFoldersRepository = Repository<MiDriveFolder> & MiRepository<MiDriveFolder>;
+export type EmojisRepository = Repository<MiEmoji> & MiRepository<MiEmoji>;
+export type FollowingsRepository = Repository<MiFollowing> & MiRepository<MiFollowing>;
+export type FollowRequestsRepository = Repository<MiFollowRequest> & MiRepository<MiFollowRequest>;
+export type GalleryLikesRepository = Repository<MiGalleryLike> & MiRepository<MiGalleryLike>;
+export type GalleryPostsRepository = Repository<MiGalleryPost> & MiRepository<MiGalleryPost>;
+export type HashtagsRepository = Repository<MiHashtag> & MiRepository<MiHashtag>;
+export type InstancesRepository = Repository<MiInstance> & MiRepository<MiInstance>;
+export type MetasRepository = Repository<MiMeta> & MiRepository<MiMeta>;
+export type ModerationLogsRepository = Repository<MiModerationLog> & MiRepository<MiModerationLog>;
+export type MutingsRepository = Repository<MiMuting> & MiRepository<MiMuting>;
+export type RenoteMutingsRepository = Repository<MiRenoteMuting> & MiRepository<MiRenoteMuting>;
+export type NotesRepository = Repository<MiNote> & MiRepository<MiNote>;
+export type NoteFavoritesRepository = Repository<MiNoteFavorite> & MiRepository<MiNoteFavorite>;
+export type NoteReactionsRepository = Repository<MiNoteReaction> & MiRepository<MiNoteReaction>;
+export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting> & MiRepository<MiNoteThreadMuting>;
+export type NoteUnreadsRepository = Repository<MiNoteUnread> & MiRepository<MiNoteUnread>;
+export type PagesRepository = Repository<MiPage> & MiRepository<MiPage>;
+export type PageLikesRepository = Repository<MiPageLike> & MiRepository<MiPageLike>;
+export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest> & MiRepository<MiPasswordResetRequest>;
+export type PollsRepository = Repository<MiPoll> & MiRepository<MiPoll>;
+export type PollVotesRepository = Repository<MiPollVote> & MiRepository<MiPollVote>;
+export type PromoNotesRepository = Repository<MiPromoNote> & MiRepository<MiPromoNote>;
+export type PromoReadsRepository = Repository<MiPromoRead> & MiRepository<MiPromoRead>;
+export type RegistrationTicketsRepository = Repository<MiRegistrationTicket> & MiRepository<MiRegistrationTicket>;
+export type RegistryItemsRepository = Repository<MiRegistryItem> & MiRepository<MiRegistryItem>;
+export type RelaysRepository = Repository<MiRelay> & MiRepository<MiRelay>;
+export type SigninsRepository = Repository<MiSignin> & MiRepository<MiSignin>;
+export type SwSubscriptionsRepository = Repository<MiSwSubscription> & MiRepository<MiSwSubscription>;
+export type UsedUsernamesRepository = Repository<MiUsedUsername> & MiRepository<MiUsedUsername>;
+export type UsersRepository = Repository<MiUser> & MiRepository<MiUser>;
+export type UserIpsRepository = Repository<MiUserIp> & MiRepository<MiUserIp>;
+export type UserKeypairsRepository = Repository<MiUserKeypair> & MiRepository<MiUserKeypair>;
+export type UserListsRepository = Repository<MiUserList> & MiRepository<MiUserList>;
+export type UserListFavoritesRepository = Repository<MiUserListFavorite> & MiRepository<MiUserListFavorite>;
+export type UserListMembershipsRepository = Repository<MiUserListMembership> & MiRepository<MiUserListMembership>;
+export type UserNotePiningsRepository = Repository<MiUserNotePining> & MiRepository<MiUserNotePining>;
+export type UserPendingsRepository = Repository<MiUserPending> & MiRepository<MiUserPending>;
+export type UserProfilesRepository = Repository<MiUserProfile> & MiRepository<MiUserProfile>;
+export type UserPublickeysRepository = Repository<MiUserPublickey> & MiRepository<MiUserPublickey>;
+export type UserSecurityKeysRepository = Repository<MiUserSecurityKey> & MiRepository<MiUserSecurityKey>;
+export type WebhooksRepository = Repository<MiWebhook> & MiRepository<MiWebhook>;
+export type ChannelsRepository = Repository<MiChannel> & MiRepository<MiChannel>;
+export type RetentionAggregationsRepository = Repository<MiRetentionAggregation> & MiRepository<MiRetentionAggregation>;
+export type RolesRepository = Repository<MiRole> & MiRepository<MiRole>;
+export type RoleAssignmentsRepository = Repository<MiRoleAssignment> & MiRepository<MiRoleAssignment>;
+export type FlashsRepository = Repository<MiFlash> & MiRepository<MiFlash>;
+export type FlashLikesRepository = Repository<MiFlashLike> & MiRepository<MiFlashLike>;
+export type UserMemoRepository = Repository<MiUserMemo> & MiRepository<MiUserMemo>;
+export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord> & MiRepository<MiBubbleGameRecord>;
+export type ReversiGamesRepository = Repository<MiReversiGame> & MiRepository<MiReversiGame>;

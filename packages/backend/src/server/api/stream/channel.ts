@@ -4,6 +4,10 @@
  */
 
 import { bindThis } from '@/decorators.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type Connection from './Connection.js';
 
 /**
@@ -52,6 +56,24 @@ export default abstract class Channel {
 
 	protected get subscriber() {
 		return this.connection.subscriber;
+	}
+
+	/*
+	 * ミュートとブロックされてるを処理する
+	 */
+	protected isNoteMutedOrBlocked(note: Packed<'Note'>): boolean {
+		// 流れてきたNoteがインスタンスミュートしたインスタンスが関わる
+		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return true;
+
+		// 流れてきたNoteがミュートしているユーザーが関わる
+		if (isUserRelated(note, this.userIdsWhoMeMuting)) return true;
+		// 流れてきたNoteがブロックされているユーザーが関わる
+		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return true;
+
+		// 流れてきたNoteがリノートをミュートしてるユーザが行ったもの
+		if (isRenotePacked(note) && !isQuotePacked(note) && this.userIdsWhoMeMutingRenotes.has(note.user.id)) return true;
+
+		return false;
 	}
 
 	constructor(id: string, connection: Connection) {
