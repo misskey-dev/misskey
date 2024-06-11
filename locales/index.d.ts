@@ -1724,9 +1724,13 @@ export interface Locale extends ILocale {
      * リスト
      */
     "userList": string;
-		/**
-		 * Misskeyへのリンク
-		 */
+    /**
+     * Serviceへのリンク
+     */
+    "toServiceArt": string;
+    /**
+     * 情報
+     */
     "about": string;
     /**
      * Misskeyについて
@@ -4164,6 +4168,14 @@ export interface Locale extends ILocale {
      * 連合なしにする
      */
     "disableFederationOk": string;
+    /**
+     * R18など、NSFWに相当する内容を投稿する場合は、注釈に投稿の内容に関する簡単な説明を記述してください。
+     * 詳しくはルールをご覧ください。https://service.misskey.art
+     */
+    "contentWarningCheckRule": string;
+    /**
+     * 現在このサーバーは招待制です。招待コードをお持ちの方のみ登録できます。
+     */
     "invitationRequiredToRegister": string;
     /**
      * このサーバーではメール配信はサポートされていません
@@ -6327,10 +6339,13 @@ export interface Locale extends ILocale {
                  */
                 "flavor": string;
             };
-            "_cookieClicked": {
+            "_puddingClicked": {
+                /**
+                 * プリンをクリックするゲーム
+                 */
                 "title": string;
                 /**
-                 * クッキーをクリックした
+                 * プリンをクリックした
                  */
                 "description": string;
                 /**
@@ -7045,6 +7060,14 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         "source": string;
+        /**
+         * 本家のソースコード
+         */
+        "originalSource": string;
+        /**
+         * Misskey.ioのソースコード
+         */
+        "ioSource": string;
         /**
          * オリジナル
          */
@@ -8691,6 +8714,13 @@ export interface Locale extends ILocale {
          * ローカル
          */
         "local": string;
+        /**
+         * メディア
+         */
+        "media": string;
+        /**
+         * ソーシャル
+         */
         "social": string;
         /**
          * グローバル
