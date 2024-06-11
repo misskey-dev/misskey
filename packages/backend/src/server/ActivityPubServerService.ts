@@ -78,8 +78,8 @@ export class ActivityPubServerService {
 		private loggerService: LoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
-		this.logger = this.loggerService.getLogger('server-ap', 'gray', false);
-		this.inboxLogger = this.logger.createSubLogger('inbox', 'gray', false);
+		this.logger = this.loggerService.getLogger('server-ap', 'gray');
+		this.inboxLogger = this.logger.createSubLogger('inbox', 'gray');
 	}
 
 	@bindThis
