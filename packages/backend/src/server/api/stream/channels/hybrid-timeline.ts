@@ -10,6 +10,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
@@ -55,12 +56,14 @@ class HybridTimelineChannel extends Channel {
 		// チャンネルの投稿ではなく、自分自身の投稿 または
 		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
 		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
-		// フォローしているチャンネルの投稿 の場合だけ
+		// フォローしているチャンネルの投稿 または
+		// ミュートしていないチャンネルの投稿(リノート・引用リノートもチェック対象）の場合だけ
 		if (!(
 			(note.channelId == null && isMe) ||
 			(note.channelId == null && Object.hasOwn(this.following, note.userId)) ||
 			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
-			(note.channelId != null && this.followingChannels.has(note.channelId))
+			(note.channelId != null && this.followingChannels.has(note.channelId)) ||
+			(note.channelId != null && !isChannelRelated(note, this.mutingChannels))
 		)) return;
 
 		if (note.visibility === 'followers') {
@@ -82,7 +85,10 @@ class HybridTimelineChannel extends Channel {
 			}
 		}
 
-		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
+		// 純粋なリノート（引用リノートでないリノート）の場合
+		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) {
+			return;
+		}
 
 		if (this.user && note.renoteId && !note.text) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {

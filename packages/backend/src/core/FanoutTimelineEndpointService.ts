@@ -17,6 +17,8 @@ import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 
 type TimelineOptions = {
 	untilId: string | null,
@@ -33,6 +35,7 @@ type TimelineOptions = {
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
+	excludeMutedChannels?: boolean;
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 };
 
@@ -45,6 +48,7 @@ export class FanoutTimelineEndpointService {
 		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
 		private fanoutTimelineService: FanoutTimelineService,
+		private channelMutingService: ChannelMutingService,
 	) {
 	}
 
@@ -101,11 +105,13 @@ export class FanoutTimelineEndpointService {
 					userIdsWhoMeMutingRenotes,
 					userIdsWhoBlockingMe,
 					userMutedInstances,
+					userMutedChannels,
 				] = await Promise.all([
 					this.cacheService.userMutingsCache.fetch(ps.me.id),
 					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
 					this.cacheService.userBlockedCache.fetch(ps.me.id),
 					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
+					ps.excludeMutedChannels ? this.channelMutingService.userMutingChannelsCache.fetch(me.id) : Promise.resolve(new Set<string>()),
 				]);
 
 				const parentFilter = filter;
@@ -114,6 +120,7 @@ export class FanoutTimelineEndpointService {
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
+					if (ps.excludeMutedChannels && isChannelRelated(note, userMutedChannels)) return false;
 
 					return parentFilter(note);
 				};

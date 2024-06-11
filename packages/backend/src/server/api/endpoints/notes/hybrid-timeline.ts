@@ -19,6 +19,7 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -47,7 +48,7 @@ export const meta = {
 		bothWithRepliesAndWithFiles: {
 			message: 'Specifying both withReplies and withFiles is not supported',
 			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
-			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f'
+			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f',
 		},
 	},
 } as const;
@@ -87,6 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private userFollowingService: UserFollowingService,
+		private channelMutingService: ChannelMutingService,
 		private metaService: MetaService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
@@ -152,6 +154,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
+				excludeMutedChannels: true,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
 					sinceId,
@@ -188,6 +191,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				followerId: me.id,
 			},
 		});
+		const mutingChannelIds = (followingChannels.length > 0)
+			? await this.channelMutingService.list({ requestUserId: me.id }).then(x => x.map(x => x.id))
+			: [];
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 			.andWhere(new Brackets(qb => {
@@ -215,6 +221,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}));
 		} else {
 			query.andWhere('note.channelId IS NULL');
+		}
+
+		if (mutingChannelIds.length > 0) {
+			// ミュートしてるチャンネルは含めない
+			query.andWhere(new Brackets(qb => {
+				qb
+					.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds })
+					.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+			}));
 		}
 
 		if (!ps.withReplies) {

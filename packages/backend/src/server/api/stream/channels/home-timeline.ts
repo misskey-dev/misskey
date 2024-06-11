@@ -8,6 +8,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
@@ -43,7 +44,10 @@ class HomeTimelineChannel extends Channel {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (note.channelId) {
-			if (!this.followingChannels.has(note.channelId)) return;
+			// そのチャンネルをフォローしていない or そのチャンネル(リノート・引用リノート含む）はミュートしている
+			if (!this.followingChannels.has(note.channelId) || isChannelRelated(note, this.mutingChannels)) {
+				return;
+			}
 		} else {
 			// その投稿のユーザーをフォローしていなかったら弾く
 			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;

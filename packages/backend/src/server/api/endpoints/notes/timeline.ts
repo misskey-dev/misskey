@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, ChannelFollowingsRepository } from '@/models/_.js';
+import type { NotesRepository, ChannelFollowingsRepository, ChannelMutingRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -17,6 +17,7 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -68,6 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 		private userFollowingService: UserFollowingService,
+		private channelMutingService: ChannelMutingService,
 		private queryService: QueryService,
 		private metaService: MetaService,
 	) {
@@ -112,6 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimelines: ps.withFiles ? [`homeTimelineWithFiles:${me.id}`] : [`homeTimeline:${me.id}`],
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
+				excludeMutedChannels: true,
 				noteFilter: note => {
 					if (note.reply && note.reply.visibility === 'followers') {
 						if (!Object.hasOwn(followings, note.reply.userId)) return false;
@@ -146,6 +149,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				followerId: me.id,
 			},
 		});
+		const mutingChannelIds = (followingChannels.length > 0)
+			? await this.channelMutingService.list({ requestUserId: me.id }).then(x => x.map(x => x.id))
+			: [];
 
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
@@ -163,7 +169,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				qb
 					.where(new Brackets(qb2 => {
 						qb2
-							.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds })
+							.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds })
 							.andWhere('note.channelId IS NULL');
 					}))
 					.orWhere('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
@@ -171,9 +177,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		} else if (followees.length > 0) {
 			// ユーザーフォローのみ（チャンネルフォローなし）
 			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
-			query
-				.andWhere('note.channelId IS NULL')
-				.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+			query.andWhere(new Brackets(qb => {
+				qb
+					.andWhere('note.channelId IS NULL')
+					.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+			}));
 		} else if (followingChannels.length > 0) {
 			// チャンネルフォローのみ（ユーザーフォローなし）
 			const followingChannelIds = followingChannels.map(x => x.followeeId);
@@ -184,9 +192,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}));
 		} else {
 			// フォローなし
-			query
-				.andWhere('note.channelId IS NULL')
-				.andWhere('note.userId = :meId', { meId: me.id });
+			query.andWhere(new Brackets(qb => {
+				qb
+					.andWhere('note.channelId IS NULL')
+					.andWhere('note.userId = :meId', { meId: me.id });
+			}));
+		}
+
+		if (mutingChannelIds.length > 0) {
+			// ミュートしてるチャンネルは含めない
+			query.andWhere(new Brackets(qb => {
+				qb
+					.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds })
+					.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+			}));
 		}
 
 		query.andWhere(new Brackets(qb => {
