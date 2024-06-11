@@ -184,13 +184,10 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('invalid Actor: id has different host');
 		}
 
-		if (x.publicKey && typeof x.publicKey.id !== 'string') {
-			const publicKeyIdHost = this.punyHost(x.publicKey.id);
-			if (publicKeyIdHost !== expectHost) {
-				throw new Error('invalid Actor: publicKey.id has different host');
-			}
-		} else if (x.publicKey && Array.isArray(x.publicKey)) {
-			for (const publicKey of x.publicKey) {
+		if (x.publicKey) {
+			const publicKeys = Array.isArray(x.publicKey) ? x.publicKey : [x.publicKey];
+
+			for (const publicKey of publicKeys) {
 				if (typeof publicKey.id !== 'string') {
 					throw new Error('invalid Actor: publicKey.id is not a string');
 				}
@@ -200,8 +197,6 @@ export class ApPersonService implements OnModuleInit {
 					throw new Error('invalid Actor: publicKey.id has different host');
 				}
 			}
-		} else if (x.publicKey) {
-			throw new Error('invalid Actor: publicKey is not an object or an array');
 		}
 
 		if (x.additionalPublicKeys) {
@@ -415,10 +410,9 @@ export class ApPersonService implements OnModuleInit {
 				}));
 
 				if (person.publicKey) {
-					const publicKeys = new Map<string, IKey>([
-						...(person.additionalPublicKeys ? person.additionalPublicKeys.map(key => [key.id, key] as const) : []),
-						...(Array.isArray(person.publicKey) ? person.publicKey.map(key => [key.id, key] as const) : [[person.publicKey.id, person.publicKey]] as const),
-					]);
+					const publicKeys = new Map<string, IKey>();
+					(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
+					(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
 
 					await transactionalEntityManager.save(Array.from(publicKeys.values(), key => new MiUserPublickey({
 						keyId: key.id,
@@ -576,7 +570,7 @@ export class ApPersonService implements OnModuleInit {
 			const publicKeys = new Map<string, IKey>();
 			if (person.publicKey) {
 				(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
-				publicKeys.set(person.publicKey.id, person.publicKey);
+				(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
 
 				await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
 					keyId: key.id,
