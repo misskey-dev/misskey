@@ -67,7 +67,6 @@ async function reloadAsk() {
 
 async function addItem() {
 	const menu = Object.keys(timelineHeaderItemDef).filter(k => !defaultStore.state.timelineTopBar.includes(k));
-	console.log(menu);
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
