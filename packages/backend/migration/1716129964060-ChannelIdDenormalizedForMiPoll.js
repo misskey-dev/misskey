@@ -15,7 +15,7 @@ export class ChannelIdDenormalizedForMiPoll1716129964060 {
 
     async down(queryRunner) {
         await queryRunner.query(`DROP INDEX "public"."IDX_c1240fcc9675946ea5d6c2860e"`);
-        await queryRunner.query(`COMMENT ON COLUMN "poll"."channelId" IS '[Denormalized]'`);
+        await queryRunner.query(`COMMENT ON COLUMN "poll"."channelId" IS NULL`);
         await queryRunner.query(`ALTER TABLE "poll" DROP COLUMN "channelId"`);
     }
 }
