@@ -52,7 +52,8 @@ export type SoundStore = {
 
 	volume: number;
 }
-
+export const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
+export const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -146,6 +147,22 @@ export const defaultStore = markRaw(new Storage('base', {
 			'search',
 			'-',
 			'ui',
+		],
+	},
+	timelineTopBar: {
+		where: 'deviceAccount',
+		default: [
+			'home',
+			...(isLocalTimelineAvailable ? [
+				'local',
+				'social',
+			] : []),
+			...(isGlobalTimelineAvailable ? [
+				'global',
+			] : []),
+			'lists',
+			'antennas',
+			'channels',
 		],
 	},
 	visibility: {
@@ -522,6 +539,8 @@ interface Watcher {
  */
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
+import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 
 export class ColdDeviceStorage {
 	public static default = {

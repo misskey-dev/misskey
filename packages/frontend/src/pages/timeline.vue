@@ -53,6 +53,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { timelineHeaderItemDef } from '@/timelineHeader.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -277,49 +278,23 @@ const headerActions = computed(() => {
 	}
 	return tmp;
 });
-
-const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
-	title: l.name,
-	icon: 'ti ti-star',
-	iconOnly: true,
-}))), {
-	key: 'home',
-	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
-	iconOnly: true,
-}, ...(isLocalTimelineAvailable ? [{
-	key: 'local',
-	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
-	iconOnly: true,
-}, {
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
-	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
-	key: 'global',
-	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: true,
-}] : []), {
-	icon: 'ti ti-list',
-	title: i18n.ts.lists,
-	iconOnly: true,
-	onClick: chooseList,
-}, {
-	icon: 'ti ti-antenna',
-	title: i18n.ts.antennas,
-	iconOnly: true,
-	onClick: chooseAntenna,
-}, {
-	icon: 'ti ti-device-tv',
-	title: i18n.ts.channel,
-	iconOnly: true,
-	onClick: chooseChannel,
-}] as Tab[]);
-
+let headerTabs = computed(() => defaultStore.reactiveState.timelineTopBar.value.map(tab => ({
+	...(tab !== 'lists' && tab !== 'antennas' && tab !== 'channels' ? {
+		key: tab,
+	} : {}),
+	title: timelineHeaderItemDef[tab].title,
+	icon: timelineHeaderItemDef[tab].icon,
+	iconOnly: timelineHeaderItemDef[tab].iconOnly,
+	...(tab === 'lists' ? {
+		onClick: (ev) => chooseList(ev),
+	} : {}),
+	...(tab === 'antennas' ? {
+		onClick: (ev) => chooseAntenna(ev),
+	} : {}),
+	...(tab === 'channels' ? {
+		onClick: (ev) => chooseChannel(ev),
+	} : {}),
+})) as Tab[]);
 const headerTabsWhenNotLogin = computed(() => [
 	...(isLocalTimelineAvailable ? [{
 		key: 'local',

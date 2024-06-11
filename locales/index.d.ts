@@ -2121,6 +2121,10 @@ export interface Locale extends ILocale {
      */
     "accountSettings": string;
     /**
+     * タイムラインのヘッダー
+     */
+    "timelineHeader": string;
+    /**
      * プロモーション
      */
     "promotion": string;
