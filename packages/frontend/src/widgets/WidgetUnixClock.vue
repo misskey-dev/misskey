@@ -68,9 +68,9 @@ watch(showColon, (v) => {
 });
 
 const tick = () => {
-	const now = new Date();
-	ss.value = Math.floor(now.getTime() / 1000).toString();
-	ms.value = Math.floor(now.getTime() % 1000 / 10).toString().padStart(2, '0');
+	const now = Date.now();
+	ss.value = Math.floor(now / 1000).toString();
+	ms.value = Math.floor(now % 1000 / 10).toString().padStart(2, '0');
 	if (ss.value !== prevSec) showColon.value = true;
 	prevSec = ss.value;
 };

@@ -17,17 +17,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
 
     steps:
       - uses: actions/checkout@v4.1.1
         with:
           submodules: true
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-          run_install: false
+        uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.2
         with:

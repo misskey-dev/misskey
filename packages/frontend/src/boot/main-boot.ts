@@ -75,27 +75,31 @@ export async function mainBoot() {
 			mainRouter.push('/search');
 		},
 	};
-
-	if (defaultStore.state.enableSeasonalScreenEffect) {
-		const month = new Date().getMonth() + 1;
-		if (defaultStore.state.hemisphere === 'S') {
-			// ▼南半球
-			if (month === 7 || month === 8) {
-				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect({}).render();
+	try {
+		if (defaultStore.state.enableSeasonalScreenEffect) {
+			const month = new Date().getMonth() + 1;
+			if (defaultStore.state.hemisphere === 'S') {
+				// ▼南半球
+				if (month === 7 || month === 8) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				}
+			} else {
+				// ▼北半球
+				if (month === 12 || month === 1) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				} else if (month === 3 || month === 4) {
+					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SakuraEffect({
+						sakura: true,
+					}).render();
+				}
 			}
-		} else {
-			// ▼北半球
-			if (month === 12 || month === 1) {
-				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect({}).render();
-			} else if (month === 3 || month === 4) {
-				const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SakuraEffect({
-					sakura: true,
-				}).render();
-			}
-		}
+		}	
+	} catch (error) {
+		// console.error(error);
+		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
 	}
 
 	if ($i) {
@@ -187,14 +191,26 @@ export async function mainBoot() {
 		if ($i.followersCount >= 500) claimAchievement('followers500');
 		if ($i.followersCount >= 1000) claimAchievement('followers1000');
 
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365) {
-			claimAchievement('passedSinceAccountCreated1');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 2) {
-			claimAchievement('passedSinceAccountCreated2');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 3) {
+		const createdAt = new Date($i.createdAt);
+		const createdAtThreeYearsLater = new Date($i.createdAt);
+		createdAtThreeYearsLater.setFullYear(createdAtThreeYearsLater.getFullYear() + 3);
+		if (now >= createdAtThreeYearsLater) {
 			claimAchievement('passedSinceAccountCreated3');
+			claimAchievement('passedSinceAccountCreated2');
+			claimAchievement('passedSinceAccountCreated1');
+		} else {
+			const createdAtTwoYearsLater = new Date($i.createdAt);
+			createdAtTwoYearsLater.setFullYear(createdAtTwoYearsLater.getFullYear() + 2);
+			if (now >= createdAtTwoYearsLater) {
+				claimAchievement('passedSinceAccountCreated2');
+				claimAchievement('passedSinceAccountCreated1');
+			} else {
+				const createdAtOneYearLater = new Date($i.createdAt);
+				createdAtOneYearLater.setFullYear(createdAtOneYearLater.getFullYear() + 1);
+				if (now >= createdAtOneYearLater) {
+					claimAchievement('passedSinceAccountCreated1');
+				}
+			}
 		}
 
 		if (claimedAchievements.length >= 30) {
@@ -229,7 +245,7 @@ export async function mainBoot() {
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
 			}

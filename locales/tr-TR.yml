@@ -378,6 +378,10 @@ addMemo: "Kısa not ekle"
 icon: "Avatar"
 replies: "yanıt"
 renotes: "vazgeçme"
+_delivery:
+  stop: "Askıya alınmış"
+  _type:
+    none: "Paylaşım"
 _accountDelete:
   started: "Silme işlemi başlatıldı"
 _email:
@@ -455,4 +459,3 @@ _deck:
 _moderationLogTypes:
   suspend: "askıya al"
   resetPassword: "Şifre sıfırlama"
-
