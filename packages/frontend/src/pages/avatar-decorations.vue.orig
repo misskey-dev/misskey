@@ -87,9 +87,9 @@ async function changeImage(ev,avatarDecoration) {
 	console.log("file = " + file.value.id + " " + file.value.name + " " + file.value.url);
 	if( file.value != null && file.value.id != null ){
 		if ( file_old.value != null  && file_old.value.id != null ){
-//        		await os.apiWithDialog('drive/files/delete', {
-//                		fileId: file_old.value.id,
-//        		});
+        		await os.apiWithDialog('drive/files/delete', {
+                		fileId: file_old.value.id,
+        		});
 		}
 		avatarDecoration.url = file.value.url;
         	const candidate = file.value.name.replace(/\.(.+)$/, '');

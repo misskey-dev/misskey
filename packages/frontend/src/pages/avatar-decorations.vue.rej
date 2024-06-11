@@ -1,0 +1,15 @@
+--- packages/frontend/src/pages/avatar-decorations.vue      2024-06-02 18:34:40.422808429 +0900
++++ packages/frontend/src/pages/avatar-decorations.vue   2024-06-02 15:15:14.691532052 +0900
+@@ -87,9 +87,9 @@
+        console.log("file = " + file.value.id + " " + file.value.name + " " + file.value.url);
+        if( file.value != null && file.value.id != null ){
+                if ( file_old.value != null  && file_old.value.id != null ){
+-                       await os.apiWithDialog('drive/files/delete', {
+-                               fileId: file_old.value.id,
+-                       });
++//                     await os.apiWithDialog('drive/files/delete', {
++//                             fileId: file_old.value.id,
++//                     });
+                }
+                avatarDecoration.url = file.value.url;
+                const candidate = file.value.name.replace(/\.(.+)$/, '');
