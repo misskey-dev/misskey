@@ -143,6 +143,53 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</FormSection>
+
+					<FormSection>
+						<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
+
+						<div class="_gaps_m">
+							<MkSwitch v-model="urlPreviewEnabled">
+								<template #label>{{ i18n.ts._urlPreviewSetting.enable }}</template>
+							</MkSwitch>
+
+							<MkSwitch v-model="urlPreviewRequireContentLength">
+								<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}</template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
+							</MkSwitch>
+
+							<MkInput v-model="urlPreviewMaximumContentLength" type="number">
+								<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}</template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
+							</MkInput>
+
+							<MkInput v-model="urlPreviewTimeout" type="number">
+								<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}</template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
+							</MkInput>
+
+							<MkInput v-model="urlPreviewUserAgent" type="text">
+								<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}</template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
+							</MkInput>
+
+							<div>
+								<MkInput v-model="urlPreviewSummaryProxyUrl" type="text">
+									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}</template>
+									<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+								</MkInput>
+
+								<div :class="$style.subCaption">
+									{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
+									<ul style="padding-left: 20px; margin: 4px 0">
+										<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
+										<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
+										<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
+										<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</FormSection>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -173,6 +220,8 @@ import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const name = ref<string | null>(null);
 const shortName = ref<string | null>(null);
@@ -194,6 +243,12 @@ const perRemoteUserUserTimelineCacheMax = ref<number>(0);
 const perUserHomeTimelineCacheMax = ref<number>(0);
 const perUserListTimelineCacheMax = ref<number>(0);
 const notesPerOneAd = ref<number>(0);
+const urlPreviewEnabled = ref<boolean>(true);
+const urlPreviewTimeout = ref<number>(10000);
+const urlPreviewMaximumContentLength = ref<number>(1024 * 1024 * 10);
+const urlPreviewRequireContentLength = ref<boolean>(true);
+const urlPreviewUserAgent = ref<string | null>(null);
+const urlPreviewSummaryProxyUrl = ref<string | null>(null);
 
 async function init(): Promise<void> {
 	const meta = await misskeyApi('admin/meta');
@@ -217,9 +272,15 @@ async function init(): Promise<void> {
 	perUserHomeTimelineCacheMax.value = meta.perUserHomeTimelineCacheMax;
 	perUserListTimelineCacheMax.value = meta.perUserListTimelineCacheMax;
 	notesPerOneAd.value = meta.notesPerOneAd;
+	urlPreviewEnabled.value = meta.urlPreviewEnabled;
+	urlPreviewTimeout.value = meta.urlPreviewTimeout;
+	urlPreviewMaximumContentLength.value = meta.urlPreviewMaximumContentLength;
+	urlPreviewRequireContentLength.value = meta.urlPreviewRequireContentLength;
+	urlPreviewUserAgent.value = meta.urlPreviewUserAgent;
+	urlPreviewSummaryProxyUrl.value = meta.urlPreviewSummaryProxyUrl;
 }
 
-async function save(): void {
+async function save() {
 	await os.apiWithDialog('admin/update-meta', {
 		name: name.value,
 		shortName: shortName.value === '' ? null : shortName.value,
@@ -241,6 +302,12 @@ async function save(): void {
 		perUserHomeTimelineCacheMax: perUserHomeTimelineCacheMax.value,
 		perUserListTimelineCacheMax: perUserListTimelineCacheMax.value,
 		notesPerOneAd: notesPerOneAd.value,
+		urlPreviewEnabled: urlPreviewEnabled.value,
+		urlPreviewTimeout: urlPreviewTimeout.value,
+		urlPreviewMaximumContentLength: urlPreviewMaximumContentLength.value,
+		urlPreviewRequireContentLength: urlPreviewRequireContentLength.value,
+		urlPreviewUserAgent: urlPreviewUserAgent.value,
+		urlPreviewSummaryProxyUrl: urlPreviewSummaryProxyUrl.value,
 	});
 
 	fetchInstance(true);
@@ -258,5 +325,10 @@ definePageMetadata(() => ({
 .footer {
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+}
+
+.subCaption {
+	font-size: 0.85em;
+	color: var(--fgTransparentWeak);
 }
 </style>

@@ -511,7 +511,13 @@ export class UserFollowingService implements OnModuleInit {
 		if (blocking) throw new Error('blocking');
 		if (blocked) throw new Error('blocked');
 
-		const followRequest = await this.followRequestsRepository.insert({
+		// Remove old follow requests before creating a new one.
+		await this.followRequestsRepository.delete({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+
+		const followRequest = await this.followRequestsRepository.insertOne({
 			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
@@ -525,7 +531,7 @@ export class UserFollowingService implements OnModuleInit {
 			followeeHost: followee.host,
 			followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : undefined,
 			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : undefined,
-		}).then(x => this.followRequestsRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		// Publish receiveRequest event
 		if (this.userEntityService.isLocalUser(followee)) {

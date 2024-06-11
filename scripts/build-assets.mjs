@@ -34,7 +34,7 @@ async function copyFrontendFonts() {
 }
 
 async function copyFrontendTablerIcons() {
-  await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont', './built/_frontend_dist_/tabler-icons', { dereference: true, recursive: true });
+  await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont/dist', './built/_frontend_dist_/tabler-icons', { dereference: true, recursive: true });
 }
 
 async function copyFrontendLocales() {

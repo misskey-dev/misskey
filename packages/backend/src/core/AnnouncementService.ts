@@ -4,13 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets } from 'typeorm';
+import { Brackets, EntityNotFoundError } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
@@ -29,6 +30,7 @@ export class AnnouncementService {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
+		private announcementEntityService: AnnouncementEntityService,
 	) {
 	}
 
@@ -65,7 +67,7 @@ export class AnnouncementService {
 
 	@bindThis
 	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
-		const announcement = await this.announcementsRepository.insert({
+		const announcement = await this.announcementsRepository.insertOne({
 			id: this.idService.gen(),
 			updatedAt: null,
 			title: values.title,
@@ -77,9 +79,9 @@ export class AnnouncementService {
 			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			userId: values.userId,
-		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
-		const packed = (await this.packMany([announcement]))[0];
+		const packed = await this.announcementEntityService.pack(announcement);
 
 		if (values.userId) {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
@@ -178,6 +180,24 @@ export class AnnouncementService {
 	}
 
 	@bindThis
+	public async getAnnouncement(announcementId: MiAnnouncement['id'], me: MiUser | null): Promise<Packed<'Announcement'>> {
+		const announcement = await this.announcementsRepository.findOneByOrFail({ id: announcementId });
+		if (me) {
+			if (announcement.userId && announcement.userId !== me.id) {
+				throw new EntityNotFoundError(this.announcementsRepository.metadata.target, { id: announcementId });
+			}
+
+			const read = await this.announcementReadsRepository.findOneBy({
+				announcementId: announcement.id,
+				userId: me.id,
+			});
+			return this.announcementEntityService.pack({ ...announcement, isRead: read !== null }, me);
+		} else {
+			return this.announcementEntityService.pack(announcement, null);
+		}
+	}
+
+	@bindThis
 	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
@@ -192,30 +212,5 @@ export class AnnouncementService {
 		if ((await this.getUnreadAnnouncements(user)).length === 0) {
 			this.globalEventService.publishMainStream(user.id, 'readAllAnnouncements');
 		}
-	}
-
-	@bindThis
-	public async packMany(
-		announcements: MiAnnouncement[],
-		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			reads?: MiAnnouncementRead[];
-		},
-	): Promise<Packed<'Announcement'>[]> {
-		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
-		return announcements.map(announcement => ({
-			id: announcement.id,
-			createdAt: this.idService.parse(announcement.id).date.toISOString(),
-			updatedAt: announcement.updatedAt?.toISOString() ?? null,
-			text: announcement.text,
-			title: announcement.title,
-			imageUrl: announcement.imageUrl,
-			icon: announcement.icon,
-			display: announcement.display,
-			needConfirmationToRead: announcement.needConfirmationToRead,
-			silence: announcement.silence,
-			forYou: announcement.userId === me?.id,
-			isRead: reads.some(read => read.announcementId === announcement.id),
-		}));
 	}
 }
