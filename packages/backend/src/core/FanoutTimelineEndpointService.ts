@@ -111,7 +111,7 @@ export class FanoutTimelineEndpointService {
 					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
 					this.cacheService.userBlockedCache.fetch(ps.me.id),
 					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
-					ps.excludeMutedChannels ? this.channelMutingService.userMutingChannelsCache.fetch(me.id) : Promise.resolve(new Set<string>()),
+					ps.excludeMutedChannels ? this.channelMutingService.mutingChannelsCache.fetch(me.id) : Promise.resolve(new Set<string>()),
 				]);
 
 				const parentFilter = filter;

@@ -15,7 +15,7 @@ import { RedisKVCache } from '@/misc/cache.js';
 
 @Injectable()
 export class ChannelMutingService {
-	public userMutingChannelsCache: RedisKVCache<Set<string>>;
+	public mutingChannelsCache: RedisKVCache<Set<string>>;
 
 	constructor(
 		@Inject(DI.redis)
@@ -29,7 +29,7 @@ export class ChannelMutingService {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.userMutingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'channelMutingChannels', {
+		this.mutingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'channelMutingChannels', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
 			fetcher: (userId) => this.channelMutingRepository.find({
@@ -115,7 +115,7 @@ export class ChannelMutingService {
 		requestUserId: MiUser['id'],
 		targetChannelId: MiChannel['id'],
 	}): Promise<boolean> {
-		const mutedChannels = await this.userMutingChannelsCache.get(params.requestUserId);
+		const mutedChannels = await this.mutingChannelsCache.get(params.requestUserId);
 		return (mutedChannels?.has(params.targetChannelId) ?? false);
 	}
 
@@ -173,7 +173,7 @@ export class ChannelMutingService {
 
 		const userIds = [...new Set(expiredMutings.map(x => x.userId))];
 		for (const userId of userIds) {
-			this.userMutingChannelsCache.refresh(userId).then();
+			this.mutingChannelsCache.refresh(userId).then();
 		}
 	}
 
@@ -185,11 +185,11 @@ export class ChannelMutingService {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'muteChannel': {
-					this.userMutingChannelsCache.refresh(body.userId).then();
+					this.mutingChannelsCache.refresh(body.userId).then();
 					break;
 				}
 				case 'unmuteChannel': {
-					this.userMutingChannelsCache.delete(body.userId).then();
+					this.mutingChannelsCache.delete(body.userId).then();
 					break;
 				}
 			}
@@ -198,7 +198,7 @@ export class ChannelMutingService {
 
 	@bindThis
 	public dispose(): void {
-		this.userMutingChannelsCache.dispose();
+		this.mutingChannelsCache.dispose();
 	}
 
 	@bindThis

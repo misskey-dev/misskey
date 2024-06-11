@@ -39,7 +39,6 @@ export default class Connection {
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
 	public userMutedInstances: Set<string> = new Set();
-	public userMutedChannels: Set<string> = new Set();
 	private fetchIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
@@ -71,7 +70,7 @@ export default class Connection {
 			this.cacheService.userProfileCache.fetch(this.user.id),
 			this.cacheService.userFollowingsCache.fetch(this.user.id),
 			this.channelFollowingService.userFollowingChannelsCache.fetch(this.user.id),
-			this.channelMutingService.userMutingChannelsCache.fetch(this.user.id),
+			this.channelMutingService.mutingChannelsCache.fetch(this.user.id),
 			this.cacheService.userMutingsCache.fetch(this.user.id),
 			this.cacheService.userBlockedCache.fetch(this.user.id),
 			this.cacheService.renoteMutingsCache.fetch(this.user.id),
@@ -125,37 +124,16 @@ export default class Connection {
 		const { type, body } = obj;
 
 		switch (type) {
-			case 'readNotification':
-				this.onReadNotification(body);
-				break;
-			case 'subNote':
-				this.onSubscribeNote(body);
-				break;
-			case 's':
-				this.onSubscribeNote(body);
-				break; // alias
-			case 'sr':
-				this.onSubscribeNote(body);
-				this.readNote(body);
-				break;
-			case 'unsubNote':
-				this.onUnsubscribeNote(body);
-				break;
-			case 'un':
-				this.onUnsubscribeNote(body);
-				break; // alias
-			case 'connect':
-				this.onChannelConnectRequested(body);
-				break;
-			case 'disconnect':
-				this.onChannelDisconnectRequested(body);
-				break;
-			case 'channel':
-				this.onChannelMessageRequested(body);
-				break;
-			case 'ch':
-				this.onChannelMessageRequested(body);
-				break; // alias
+			case 'readNotification': this.onReadNotification(body); break;
+			case 'subNote': this.onSubscribeNote(body); break;
+			case 's': this.onSubscribeNote(body); break; // alias
+			case 'sr': this.onSubscribeNote(body); this.readNote(body); break;
+			case 'unsubNote': this.onUnsubscribeNote(body); break;
+			case 'un': this.onUnsubscribeNote(body); break; // alias
+			case 'connect': this.onChannelConnectRequested(body); break;
+			case 'disconnect': this.onChannelDisconnectRequested(body); break;
+			case 'channel': this.onChannelMessageRequested(body); break;
+			case 'ch': this.onChannelMessageRequested(body); break; // alias
 		}
 	}
 

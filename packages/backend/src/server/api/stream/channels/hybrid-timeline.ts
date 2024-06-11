@@ -63,7 +63,7 @@ class HybridTimelineChannel extends Channel {
 			(note.channelId == null && Object.hasOwn(this.following, note.userId)) ||
 			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
 			(note.channelId != null && this.followingChannels.has(note.channelId)) ||
-			(note.channelId != null && !isChannelRelated(note, this.mutingChannels))
+			(note.channelId != null && isChannelRelated(note, this.mutingChannels))
 		)) return;
 
 		if (note.visibility === 'followers') {
