@@ -410,14 +410,32 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async getModeratorIds(includeAdmins = true): Promise<MiUser['id'][]> {
+	public async getModeratorIds(includeAdmins = true, excludeExpire = false): Promise<MiUser['id'][]> {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const moderatorRoles = includeAdmins ? roles.filter(r => r.isModerator || r.isAdministrator) : roles.filter(r => r.isModerator);
-		const assigns = moderatorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
-			roleId: In(moderatorRoles.map(r => r.id)),
-		}) : [];
+		const moderatorRoles = includeAdmins
+			? roles.filter(r => r.isModerator || r.isAdministrator)
+			: roles.filter(r => r.isModerator);
+
 		// TODO: isRootなアカウントも含める
-		return assigns.map(a => a.userId);
+		const assigns = moderatorRoles.length > 0
+			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
+			: [];
+
+		const now = Date.now();
+		const result = [
+			// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
+			...new Set(
+				assigns
+					.filter(it =>
+						(excludeExpire)
+							? (it.expiresAt == null || it.expiresAt.getTime() > now)
+							: true,
+					)
+					.map(a => a.userId),
+			),
+		];
+
+		return result.sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
@@ -471,12 +489,12 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			}
 		}
 
-		const created = await this.roleAssignmentsRepository.insert({
+		const created = await this.roleAssignmentsRepository.insertOne({
 			id: this.idService.gen(now),
 			expiresAt: expiresAt,
 			roleId: roleId,
 			userId: userId,
-		}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		this.rolesRepository.update(roleId, {
 			lastUsedAt: new Date(),
@@ -558,7 +576,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async create(values: Partial<MiRole>, moderator?: MiUser): Promise<MiRole> {
 		const date = new Date();
-		const created = await this.rolesRepository.insert({
+		const created = await this.rolesRepository.insertOne({
 			id: this.idService.gen(date.getTime()),
 			updatedAt: date,
 			lastUsedAt: date,
@@ -576,7 +594,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canEditMembersByModerator: values.canEditMembersByModerator,
 			displayOrder: values.displayOrder,
 			policies: values.policies,
-		}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		this.globalEventService.publishInternalEvent('roleCreated', created);
 

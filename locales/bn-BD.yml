@@ -857,6 +857,10 @@ replies: "জবাব"
 renotes: "রিনোট"
 sourceCode: "সোর্স কোড"
 flip: "উল্টান"
+_delivery:
+  stop: "স্থগিত করা হয়েছে"
+  _type:
+    none: "প্রকাশ করা হচ্ছে"
 _role:
   priority: "অগ্রাধিকার"
   _priority:
@@ -1347,4 +1351,3 @@ _moderationLogTypes:
   resetPassword: "পাসওয়ার্ড রিসেট করুন"
 _reversi:
   total: "মোট"
-
