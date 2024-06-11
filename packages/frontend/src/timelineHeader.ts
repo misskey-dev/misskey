@@ -5,12 +5,9 @@
 
 import { reactive } from 'vue';
 import { i18n } from '@/i18n.js';
-import { antennasCache, favoritedChannelsCache, userListsCache } from '@/cache.js';
-import { MenuItem } from '@/types/menu.js';
-import * as os from '@/os.js';
-import { miLocalStorage } from '@/local-storage.js';
+import { userListsCache } from '@/cache.js';
 import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/store.js';
-
+const lists = await userListsCache.fetch();
 export const timelineHeaderItemDef = reactive({
 	home: {
 		title: i18n.ts._timelines.home,
@@ -19,7 +16,6 @@ export const timelineHeaderItemDef = reactive({
 	},
 	...(isLocalTimelineAvailable ? {
 		local: {
-			key: 'local',
 			title: i18n.ts._timelines.local,
 			icon: 'ti ti-planet',
 			iconOnly: true,
@@ -30,7 +26,6 @@ export const timelineHeaderItemDef = reactive({
 			iconOnly: true,
 		} } : {}),
 	...(isGlobalTimelineAvailable ? { global: {
-		key: 'global',
 		title: i18n.ts._timelines.global,
 		icon: 'ti ti-whirl',
 		iconOnly: true,
@@ -50,68 +45,12 @@ export const timelineHeaderItemDef = reactive({
 		title: i18n.ts.channel,
 		iconOnly: true,
 	},
+	...lists.reduce((acc, l) => {
+		acc['list:' + l.id] = {
+			title: i18n.ts.lists + ':' + l.name,
+			icon: 'ti ti-star',
+			iconOnly: true,
+		};
+		return acc;
+	}, {}),
 });
-
-async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await userListsCache.fetch();
-	const items: MenuItem[] = [
-		...lists.map(list => ({
-			type: 'link' as const,
-			text: list.name,
-			to: `/timeline/list/${list.id}`,
-		})),
-		(lists.length === 0 ? undefined : { type: 'divider' }),
-		{
-			type: 'link' as const,
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			to: '/my/lists',
-		},
-	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
-}
-
-async function chooseAntenna(ev: MouseEvent): Promise<void> {
-	const antennas = await antennasCache.fetch();
-	const items: MenuItem[] = [
-		...antennas.map(antenna => ({
-			type: 'link' as const,
-			text: antenna.name,
-			indicate: antenna.hasUnreadNote,
-			to: `/timeline/antenna/${antenna.id}`,
-		})),
-		(antennas.length === 0 ? undefined : { type: 'divider' }),
-		{
-			type: 'link' as const,
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			to: '/my/antennas',
-		},
-	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
-}
-
-async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await favoritedChannelsCache.fetch();
-	const items: MenuItem[] = [
-		...channels.map(channel => {
-			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
-			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
-
-			return {
-				type: 'link' as const,
-				text: channel.name,
-				indicate: hasUnreadNote,
-				to: `/channels/${channel.id}`,
-			};
-		}),
-		(channels.length === 0 ? undefined : { type: 'divider' }),
-		{
-			type: 'link' as const,
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			to: '/channels',
-		},
-	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
-}

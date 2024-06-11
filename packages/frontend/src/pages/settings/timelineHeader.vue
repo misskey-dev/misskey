@@ -1,33 +1,29 @@
-<!--
-SPDX-FileCopyrightText: syuilo and misskey-project
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<FormSlot>
 		<template #label>{{ i18n.ts.timelineHeader }}</template>
 		<MkContainer :showHeader="false">
-			<Sortable
-				v-model="items"
-				itemKey="id"
-				:animation="150"
-				:handle="'.' + $style.itemHandle"
-				@start="e => e.item.classList.add('active')"
-				@end="e => e.item.classList.remove('active')"
-			>
-				<template #item="{element,index}">
-					<div
-						v-if="element.type === '-' || timelineHeaderItemDef[element.type]"
-						:class="$style.item"
-					>
-						<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
-
-						<i class="ti-fw" :class="[$style.itemIcon, timelineHeaderItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ timelineHeaderItemDef[element.type]?.title }}</span>
-						<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
-					</div>
-				</template>
-			</Sortable>
+			<div style="overflow-x: auto;">
+				<Sortable
+					v-model="items"
+					itemKey="id"
+					:class="$style.container"
+					:animation="150"
+					:handle="'.' + $style.itemHandle"
+					@start="e => e.item.classList.add('active')"
+					@end="e => e.item.classList.remove('active')"
+				>
+					<template #item="{element,index}">
+						<div
+							:class="$style.item"
+						>
+							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
+							<i class="ti-fw" :class="[$style.itemIcon, timelineHeaderItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ timelineHeaderItemDef[element.type]?.title }}</span>
+							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
+						</div>
+					</template>
+				</Sortable>
+			</div>
 		</MkContainer>
 	</FormSlot>
 	<div class="_buttons">
@@ -116,6 +112,7 @@ definePageMetadata(() => ({
 	overflow: hidden;
 	white-space: nowrap;
 	color: var(--navFg);
+	min-width: 200px;
 }
 
 .itemIcon {
@@ -145,5 +142,9 @@ definePageMetadata(() => ({
 	height: 32px;
 	margin: 0 8px;
 	opacity: 0.5;
+}
+
+.container{
+	display: flex;
 }
 </style>
