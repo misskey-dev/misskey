@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -66,13 +66,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const ticket = await this.registrationTicketsRepository.insert({
+			const ticket = await this.registrationTicketsRepository.insertOne({
 				id: this.idService.gen(),
 				createdBy: me,
 				createdById: me.id,
 				expiresAt: policies.inviteExpirationTime ? new Date(Date.now() + (policies.inviteExpirationTime * 1000 * 60)) : null,
 				code: generateInviteCode(),
-			}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			return await this.inviteCodeEntityService.pack(ticket, me);
 		});

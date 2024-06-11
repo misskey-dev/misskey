@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,16 @@ import {
 const fallbackName = (key: string) => `idbfallback::${key}`;
 
 let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && window.indexedDB.open) : true;
+
+// iframe.contentWindow.indexedDB.deleteDatabase() がchromeのバグで使用できないため、indexedDBを無効化している。
+// バグが治って再度有効化するのであれば、cypressのコマンド内のコメントアウトを外すこと
+// see https://github.com/misskey-dev/misskey/issues/13605#issuecomment-2053652123
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+if (window.Cypress) {
+	idbAvailable = false;
+	console.log('Cypress detected. It will use localStorage.');
+}
 
 if (idbAvailable) {
 	await iset('idb-test', 'test')

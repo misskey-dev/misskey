@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -44,6 +44,11 @@ export const packedFederationInstanceSchema = {
 		isSuspended: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		suspensionState: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['none', 'manuallySuspended', 'goneSuspended', 'autoSuspendedForNotResponding'],
 		},
 		isBlocked: {
 			type: 'boolean',
@@ -106,6 +111,10 @@ export const packedFederationInstanceSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'date-time',
+		},
+		moderationNote: {
+			type: 'string',
+			optional: true, nullable: true,
 		},
 	},
 } as const;

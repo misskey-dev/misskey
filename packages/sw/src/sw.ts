@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -76,7 +76,7 @@ globalThis.addEventListener('push', ev => {
 			case 'notification':
 			case 'unreadAntennaNote':
 				// 1日以上経過している場合は無視
-				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
+				if (Date.now() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
 				return createNotification(data);
 			case 'readAllNotifications':

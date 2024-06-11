@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -29,9 +29,6 @@ export const meta = {
 			id: 'eb627bc7-574b-4a52-a860-3c3eae772b88',
 		},
 	},
-
-	res: {
-	},
 } as const;
 
 export const paramDef = {
@@ -39,7 +36,15 @@ export const paramDef = {
 	properties: {
 		score: { type: 'integer', minimum: 0 },
 		seed: { type: 'string', minLength: 1, maxLength: 1024 },
-		logs: { type: 'array' },
+		logs: {
+			type: 'array',
+			items: {
+				type: 'array',
+				items: {
+					type: 'number',
+				},
+			},
+		},
 		gameMode: { type: 'string' },
 		gameVersion: { type: 'integer' },
 	},

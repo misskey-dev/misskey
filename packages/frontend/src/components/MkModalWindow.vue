@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -51,7 +51,7 @@ const bodyWidth = ref(0);
 const bodyHeight = ref(0);
 
 const close = () => {
-	modal.value.close();
+	modal.value?.close();
 };
 
 const onBgClick = () => {
@@ -67,11 +67,13 @@ const onKeydown = (evt) => {
 };
 
 const ro = new ResizeObserver((entries, observer) => {
+	if (rootEl.value == null || headerEl.value == null) return;
 	bodyWidth.value = rootEl.value.offsetWidth;
 	bodyHeight.value = rootEl.value.offsetHeight - headerEl.value.offsetHeight;
 });
 
 onMounted(() => {
+	if (rootEl.value == null || headerEl.value == null) return;
 	bodyWidth.value = rootEl.value.offsetWidth;
 	bodyHeight.value = rootEl.value.offsetHeight - headerEl.value.offsetHeight;
 	ro.observe(rootEl.value);

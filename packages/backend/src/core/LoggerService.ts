@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,7 +15,7 @@ export class LoggerService {
 	}
 
 	@bindThis
-	public getLogger(domain: string, color?: KEYWORD | undefined, store?: boolean) {
-		return new Logger(domain, color, store);
+	public getLogger(domain: string, color?: KEYWORD | undefined) {
+		return new Logger(domain, color);
 	}
 }

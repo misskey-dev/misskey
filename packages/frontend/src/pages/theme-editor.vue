@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -190,7 +190,7 @@ function applyThemeCode() {
 async function saveAs() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.name,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 
@@ -228,10 +228,10 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.themeEditor,
 	icon: 'ti ti-palette',
-});
+}));
 </script>
 
 <style lang="scss" scoped>

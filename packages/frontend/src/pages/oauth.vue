@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -51,10 +51,10 @@ function onLogin(res): void {
 	login(res.i);
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'OAuth',
 	icon: 'ti ti-apps',
-});
+}));
 </script>
 
 <style lang="scss" module>

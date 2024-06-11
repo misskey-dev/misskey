@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -33,11 +33,11 @@ export const meta = {
 			properties: {
 				id: {
 					type: 'string',
-					format: 'misskey:id'
+					format: 'misskey:id',
 				},
 				user: {
 					type: 'object',
-					ref: 'User'
+					ref: 'UserDetailed',
 				},
 			},
 			required: ['id', 'user'],
@@ -92,9 +92,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.limit(ps.limit)
 				.getMany();
 
+			const _users = assigns.map(({ user, userId }) => user ?? userId);
+			const _userMap = await this.userEntityService.packMany(_users, me, { schema: 'UserDetailed' })
+				.then(users => new Map(users.map(u => [u.id, u])));
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
-				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
+				user: _userMap.get(assign.userId) ?? await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
 			})));
 		});
 	}

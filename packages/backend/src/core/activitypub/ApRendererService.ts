@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -28,8 +28,9 @@ import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
-import { LdSignatureService } from './LdSignatureService.js';
+import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
+import { CONTEXT } from './misc/contexts.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -56,7 +57,7 @@ export class ApRendererService {
 		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
-		private ldSignatureService: LdSignatureService,
+		private jsonLdService: JsonLdService,
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
@@ -166,6 +167,7 @@ export class ApRendererService {
 			mediaType: file.webpublicType ?? file.type,
 			url: this.driveFileEntityService.getPublicUrl(file),
 			name: file.comment,
+			sensitive: file.isSensitive,
 		};
 	}
 
@@ -315,7 +317,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter((item): item is MiDriveFile => item != null);
+			return ids.map(id => items.find(item => item.id === id)).filter(isNotNull);
 		};
 
 		let inReplyTo;
@@ -325,7 +327,7 @@ export class ApRendererService {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
 
 			if (inReplyToNote != null) {
-				const inReplyToUserExist = await this.usersRepository.exist({ where: { id: inReplyToNote.userId } });
+				const inReplyToUserExist = await this.usersRepository.exists({ where: { id: inReplyToNote.userId } });
 
 				if (inReplyToUserExist) {
 					if (inReplyToNote.uri) {
@@ -389,17 +391,15 @@ export class ApRendererService {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
 
-		let apText = text;
+		let apAppend = '';
 
 		if (quote) {
-			apText += `\n\nRE: ${quote}`;
+			apAppend += `\n\nRE: ${quote}`;
 		}
 
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
 
-		const content = this.apMfmService.getNoteHtml(Object.assign({}, note, {
-			text: apText,
-		}));
+		const { content, noMisskeyContent } = this.apMfmService.getNoteHtml(note, apAppend);
 
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
@@ -412,9 +412,6 @@ export class ApRendererService {
 
 		const asPoll = poll ? {
 			type: 'Question',
-			content: this.apMfmService.getNoteHtml(Object.assign({}, note, {
-				text: text,
-			})),
 			[poll.expiresAt && poll.expiresAt < new Date() ? 'closed' : 'endTime']: poll.expiresAt,
 			[poll.multiple ? 'anyOf' : 'oneOf']: poll.choices.map((text, i) => ({
 				type: 'Note',
@@ -432,11 +429,13 @@ export class ApRendererService {
 			attributedTo,
 			summary: summary ?? undefined,
 			content: content ?? undefined,
-			_misskey_content: text,
-			source: {
-				content: text,
-				mediaType: 'text/x.misskeymarkdown',
-			},
+			...(noMisskeyContent ? {} : {
+				_misskey_content: text,
+				source: {
+					content: text,
+					mediaType: 'text/x.misskeymarkdown',
+				},
+			}),
 			_misskey_quote: quote,
 			quoteUrl: quote,
 			published: this.idService.parse(note.id).date.toISOString(),
@@ -620,47 +619,16 @@ export class ApRendererService {
 			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
-		return Object.assign({
-			'@context': [
-				'https://www.w3.org/ns/activitystreams',
-				'https://w3id.org/security/v1',
-				{
-					// as non-standards
-					manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
-					sensitive: 'as:sensitive',
-					Hashtag: 'as:Hashtag',
-					quoteUrl: 'as:quoteUrl',
-					// Mastodon
-					toot: 'http://joinmastodon.org/ns#',
-					Emoji: 'toot:Emoji',
-					featured: 'toot:featured',
-					discoverable: 'toot:discoverable',
-					// schema
-					schema: 'http://schema.org#',
-					PropertyValue: 'schema:PropertyValue',
-					value: 'schema:value',
-					// Misskey
-					misskey: 'https://misskey-hub.net/ns#',
-					'_misskey_content': 'misskey:_misskey_content',
-					'_misskey_quote': 'misskey:_misskey_quote',
-					'_misskey_reaction': 'misskey:_misskey_reaction',
-					'_misskey_votes': 'misskey:_misskey_votes',
-					'_misskey_summary': 'misskey:_misskey_summary',
-					'isCat': 'misskey:isCat',
-					// vcard
-					vcard: 'http://www.w3.org/2006/vcard/ns#',
-				},
-			],
-		}, x as T & { id: string });
+		return Object.assign({ '@context': CONTEXT }, x as T & { id: string });
 	}
 
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const ldSignature = this.ldSignatureService.use();
-		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
+		const jsonLd = this.jsonLdService.use();
+		jsonLd.debug = false;
+		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 
 		return activity;
 	}

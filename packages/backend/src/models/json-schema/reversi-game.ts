@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -47,12 +47,12 @@ export const packedReversiGameLiteSchema = {
 		user1: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		user2: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		winnerId: {
 			type: 'string',
@@ -62,7 +62,7 @@ export const packedReversiGameLiteSchema = {
 		winner: {
 			type: 'object',
 			optional: false, nullable: true,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		surrenderedUserId: {
 			type: 'string',
@@ -165,12 +165,12 @@ export const packedReversiGameDetailedSchema = {
 		user1: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		user2: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		winnerId: {
 			type: 'string',
@@ -180,7 +180,7 @@ export const packedReversiGameDetailedSchema = {
 		winner: {
 			type: 'object',
 			optional: false, nullable: true,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		surrenderedUserId: {
 			type: 'string',
@@ -226,6 +226,9 @@ export const packedReversiGameDetailedSchema = {
 			items: {
 				type: 'array',
 				optional: false, nullable: false,
+				items: {
+					type: 'number',
+				},
 			},
 		},
 		map: {

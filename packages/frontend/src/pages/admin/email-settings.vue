@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -124,16 +124,16 @@ function save() {
 		smtpUser: smtpUser.value,
 		smtpPass: smtpPass.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.emailServer,
 	icon: 'ti ti-mail',
-});
+}));
 </script>
 
 <style lang="scss" module>

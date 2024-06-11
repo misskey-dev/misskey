@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -52,7 +52,7 @@ const count = computed(() => props.mediaList.filter(media => previewable(media))
 let lightbox: PhotoSwipeLightbox | null;
 
 const popstateHandler = (): void => {
-	if (lightbox.pswp && lightbox.pswp.isOpen === true) {
+	if (lightbox?.pswp && lightbox.pswp.isOpen === true) {
 		lightbox.pswp.close();
 	}
 };
@@ -67,7 +67,10 @@ async function calcAspectRatio() {
 		return;
 	}
 
-	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
+	const ratioMax = (ratio: number) => {
+		if (img.properties.width == null || img.properties.height == null) return '';
+		return `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
+	};
 
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
 		case '16_9':
@@ -137,7 +140,7 @@ onMounted(() => {
 		// element is children
 		const { element } = itemData;
 
-		const id = element.dataset.id;
+		const id = element?.dataset.id;
 		const file = props.mediaList.find(media => media.id === id);
 		if (!file) return;
 
@@ -147,14 +150,14 @@ onMounted(() => {
 		if (file.properties.orientation != null && file.properties.orientation >= 5) {
 			[itemData.w, itemData.h] = [itemData.h, itemData.w];
 		}
-		itemData.msrc = file.thumbnailUrl;
+		itemData.msrc = file.thumbnailUrl ?? undefined;
 		itemData.alt = file.comment ?? file.name;
 		itemData.comment = file.comment ?? file.name;
 		itemData.thumbCropped = true;
 	});
 
 	lightbox.on('uiRegister', () => {
-		lightbox.pswp.ui.registerElement({
+		lightbox?.pswp?.ui?.registerElement({
 			name: 'altText',
 			className: 'pwsp__alt-text-container',
 			appendTo: 'wrapper',
@@ -163,8 +166,8 @@ onMounted(() => {
 				textBox.className = 'pwsp__alt-text _acrylic';
 				el.appendChild(textBox);
 
-				pwsp.on('change', (a) => {
-					textBox.textContent = pwsp.currSlide.data.comment;
+				pwsp.on('change', () => {
+					textBox.textContent = pwsp.currSlide?.data.comment;
 				});
 			},
 		});

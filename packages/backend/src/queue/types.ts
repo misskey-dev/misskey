@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -106,7 +106,17 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
-export type WebhookDeliverJobData = {
+export type SystemWebhookDeliverJobData = {
+	type: string;
+	content: unknown;
+	webhookId: MiWebhook['id'];
+	to: string;
+	secret: string;
+	createdAt: number;
+	eventId: string;
+};
+
+export type UserWebhookDeliverJobData = {
 	type: string;
 	content: unknown;
 	webhookId: MiWebhook['id'];

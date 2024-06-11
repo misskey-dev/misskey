@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="el" :class="$style.root">
+<div ref="rootEl" :class="$style.root">
 	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
@@ -14,7 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</header>
 	<Transition
-		:name="defaultStore.state.animation ? 'folder-toggle' : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.folderToggleEnterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.folderToggleLeaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.folderToggleEnterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.folderToggleLeaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -42,8 +45,8 @@ const props = withDefaults(defineProps<{
 	expanded: true,
 });
 
-const el = shallowRef<HTMLDivElement>();
-const bg = ref<string | null>(null);
+const rootEl = shallowRef<HTMLDivElement>();
+const bg = ref<string>();
 const showBody = ref((props.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`) === 't') : props.expanded);
 
 watch(showBody, () => {
@@ -52,40 +55,44 @@ watch(showBody, () => {
 	}
 });
 
-function enter(el: Element) {
+function enter(element: Element) {
+	const el = element as HTMLElement;
 	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = 0;
+	el.style.height = '0';
 	el.offsetHeight; // reflow
 	el.style.height = elementHeight + 'px';
 }
 
-function afterEnter(el: Element) {
-	el.style.height = null;
+function afterEnter(element: Element) {
+	const el = element as HTMLElement;
+	el.style.height = 'unset';
 }
 
-function leave(el: Element) {
+function leave(element: Element) {
+	const el = element as HTMLElement;
 	const elementHeight = el.getBoundingClientRect().height;
 	el.style.height = elementHeight + 'px';
 	el.offsetHeight; // reflow
-	el.style.height = 0;
+	el.style.height = '0';
 }
 
-function afterLeave(el: Element) {
-	el.style.height = null;
+function afterLeave(element: Element) {
+	const el = element as HTMLElement;
+	el.style.height = 'unset';
 }
 
 onMounted(() => {
-	function getParentBg(el: HTMLElement | null): string {
+	function getParentBg(el?: HTMLElement | null): string {
 		if (el == null || el.tagName === 'BODY') return 'var(--bg)';
-		const bg = el.style.background || el.style.backgroundColor;
-		if (bg) {
-			return bg;
+		const background = el.style.background || el.style.backgroundColor;
+		if (background) {
+			return background;
 		} else {
 			return getParentBg(el.parentElement);
 		}
 	}
 
-	const rawBg = getParentBg(el.value);
+	const rawBg = getParentBg(rootEl.value);
 	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	_bg.setAlpha(0.85);
 	bg.value = _bg.toRgbString();
@@ -93,14 +100,12 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.folder-toggle-enter-active, .folder-toggle-leave-active {
+.folderToggleEnterActive, .folderToggleLeaveActive {
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
-.folder-toggle-enter-from {
-	opacity: 0;
-}
-.folder-toggle-leave-to {
+
+.folderToggleEnterFrom, .folderToggleLeaveTo {
 	opacity: 0;
 }
 

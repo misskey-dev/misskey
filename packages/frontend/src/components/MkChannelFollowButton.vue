@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -26,17 +26,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	channel: Record<string, any>;
+	channel: Misskey.entities.Channel;
 	full?: boolean;
 }>(), {
 	full: false,
 });
 
-const isFollowing = ref<boolean>(props.channel.isFollowing);
+const isFollowing = ref(props.channel.isFollowing);
 const wait = ref(false);
 
 async function onClick() {

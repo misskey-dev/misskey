@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { userDetailed, inviteCode } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkInviteCode from './MkInviteCode.vue';
@@ -39,8 +39,8 @@ export const Default = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.post('/api/users/show', (req, res, ctx) => {
-					return res(ctx.json(userDetailed(req.params.userId as string)));
+				http.post('/api/users/show', ({ params }) => {
+					return HttpResponse.json(userDetailed(params.userId as string));
 				}),
 			],
 		},

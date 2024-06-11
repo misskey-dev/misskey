@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -163,12 +163,12 @@ export class SignupApiService {
 		}
 
 		if (instance.emailRequiredForSignup) {
-			if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
+			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
-			if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
+			if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
@@ -183,13 +183,13 @@ export class SignupApiService {
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
 
-			const pendingUser = await this.userPendingsRepository.insert({
+			const pendingUser = await this.userPendingsRepository.insertOne({
 				id: this.idService.gen(),
 				code,
 				email: emailAddress!,
 				username: username,
 				password: hash,
-			}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			const link = `${this.config.url}/signup-complete/${code}`;
 
@@ -213,7 +213,7 @@ export class SignupApiService {
 				});
 
 				const res = await this.userEntityService.pack(account, account, {
-					detail: true,
+					schema: 'MeDetailed',
 					includeSecrets: true,
 				});
 

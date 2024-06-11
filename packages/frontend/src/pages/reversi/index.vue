@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
+import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -115,9 +115,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
 
 const myGamesPagination = {
@@ -193,7 +194,9 @@ async function matchHeatbeat() {
 }
 
 async function matchUser() {
-	const user = await os.selectUser({ local: true });
+	pleaseLogin();
+
+	const user = await os.selectUser({ includeSelf: false, localOnly: true });
 	if (user == null) return;
 
 	matchingUser.value = user;
@@ -202,6 +205,8 @@ async function matchUser() {
 }
 
 function matchAny(ev: MouseEvent) {
+	pleaseLogin();
+
 	os.popupMenu([{
 		text: i18n.ts._reversi.allowIrregularRules,
 		action: () => {
@@ -256,10 +261,10 @@ onUnmounted(() => {
 	cancelMatching();
 });
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
-})));
+}));
 </script>
 
 <style lang="scss" module>

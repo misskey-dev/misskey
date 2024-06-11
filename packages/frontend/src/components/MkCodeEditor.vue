@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -196,10 +196,11 @@ watch(v, newValue => {
 	resize: none;
 	text-align: left;
 	color: transparent;
-	caret-color: rgb(225, 228, 232);
+	caret-color: var(--fg);
 	background-color: transparent;
 	border: 0;
 	border-radius: 6px;
+	box-sizing: border-box;
 	outline: 0;
 	min-width: calc(100% - 24px);
 	height: 100%;
@@ -210,6 +211,6 @@ watch(v, newValue => {
 }
 
 .textarea::selection {
-	color: #fff;
+	color: var(--bg);
 }
 </style>
