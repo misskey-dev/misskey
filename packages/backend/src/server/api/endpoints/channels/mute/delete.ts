@@ -55,12 +55,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			// Check if already muting
+			// Check muting
 			const exist = await this.channelMutingService.isMuted({
 				requestUserId: me.id,
 				targetChannelId: targetChannel.id,
 			});
-			if (exist) {
+			if (!exist) {
 				throw new ApiError(meta.errors.notMuting);
 			}
 
