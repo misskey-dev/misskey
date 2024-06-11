@@ -13,10 +13,10 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type { WebhookDeliverJobData } from '../types.js';
+import { UserWebhookDeliverJobData } from '../types.js';
 
 @Injectable()
-export class WebhookDeliverProcessorService {
+export class UserWebhookDeliverProcessorService {
 	private logger: Logger;
 
 	constructor(
@@ -33,7 +33,7 @@ export class WebhookDeliverProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {
+	public async process(job: Bull.Job<UserWebhookDeliverJobData>): Promise<string> {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
 
