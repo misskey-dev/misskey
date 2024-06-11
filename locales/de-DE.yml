@@ -654,7 +654,7 @@ smtpSecureInfo: "Schalte dies aus, falls du STARTTLS verwendest."
 testEmail: "Emailversand testen"
 wordMute: "Wortstummschaltung"
 regexpError: "Fehler in einem regulären Ausdruck"
-regexpErrorDescription: "Im regulären Ausdruck deiner {tab}en Wortstummschaltungen ist ein Fehler aufgetreten:"
+regexpErrorDescription: "Im regulären Ausdruck deiner in Zeile {line} von {tab}en Wortstummschaltungen ist ein Fehler aufgetreten:"
 instanceMute: "Instanzstummschaltungen"
 userSaysSomething: "{name} hat etwas gesagt"
 makeActive: "Aktivieren"
@@ -1185,6 +1185,10 @@ addMfmFunction: "MFM hinzufügen"
 sfx: "Soundeffekte"
 lastNDays: "Letzten {n} Tage"
 surrender: "Abbrechen"
+_delivery:
+  stop: "Gesperrt"
+  _type:
+    none: "Wird veröffentlicht"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
@@ -1819,7 +1823,6 @@ _2fa:
   registerTOTP: "Authentifizierungs-App registrieren"
   step1: "Installiere zuerst eine Authentifizierungsapp (z.B. {a} oder {b}) auf deinem Gerät."
   step2: "Dann, scanne den angezeigten QR-Code mit deinem Gerät."
-  step2Click: "Durch Klicken dieses QR-Codes kannst du Verifikation mit deinem Security-Token oder einer App registrieren."
   step2Uri: "Nutzt du ein Desktopprogramm, gib folgende URI eingeben"
   step3Title: "Authentifizierungsscode eingeben"
   step3: "Gib zum Abschluss den Code (Token) ein, der von deiner App angezeigt wird."
@@ -2289,4 +2292,3 @@ _reversi:
   black: "Schwarz"
   white: "Weiß"
   total: "Gesamt"
-

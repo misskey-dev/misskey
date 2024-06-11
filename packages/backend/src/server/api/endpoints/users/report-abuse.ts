@@ -82,14 +82,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
-			const report = await this.abuseUserReportsRepository.insert({
+			const report = await this.abuseUserReportsRepository.insertOne({
 				id: this.idService.gen(),
 				targetUserId: user.id,
 				targetUserHost: user.host,
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
-			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			// Publish event to moderators
 			setImmediate(async () => {

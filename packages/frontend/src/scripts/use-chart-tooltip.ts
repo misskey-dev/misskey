@@ -53,11 +53,11 @@ export function useChartTooltip(opts: { position: 'top' | 'middle' } = { positio
 		const rect = context.chart.canvas.getBoundingClientRect();
 
 		tooltipShowing.value = true;
-		tooltipX.value = rect.left + window.pageXOffset + context.tooltip.caretX;
+		tooltipX.value = rect.left + window.scrollX + context.tooltip.caretX;
 		if (opts.position === 'top') {
-			tooltipY.value = rect.top + window.pageYOffset;
+			tooltipY.value = rect.top + window.scrollY;
 		} else if (opts.position === 'middle') {
-			tooltipY.value = rect.top + window.pageYOffset + context.tooltip.caretY;
+			tooltipY.value = rect.top + window.scrollY + context.tooltip.caretY;
 		}
 	}
 

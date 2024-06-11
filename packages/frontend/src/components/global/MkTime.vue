@@ -47,7 +47,7 @@ const invalid = Number.isNaN(_time);
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-const now = ref((props.origin ?? new Date()).getTime());
+const now = ref(props.origin?.getTime() ?? Date.now());
 const ago = computed(() => (now.value - _time) / 1000/*ms*/);
 
 const relative = computed<string>(() => {
@@ -77,7 +77,7 @@ let tickId: number;
 let currentInterval: number;
 
 function tick() {
-	now.value = (new Date()).getTime();
+	now.value = Date.now();
 	const nextInterval = ago.value < 60 ? 10000 : ago.value < 3600 ? 60000 : 180000;
 
 	if (currentInterval !== nextInterval) {
