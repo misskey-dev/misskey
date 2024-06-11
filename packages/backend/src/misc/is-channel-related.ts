@@ -14,12 +14,7 @@ import { Packed } from '@/misc/json-schema.js';
  * @param channelIds 確認対象のチャンネルID一覧
  */
 export function isChannelRelated(note: MiNote | Packed<'Note'>, channelIds: Set<string>): boolean {
-	if (!note.channelId) {
-		// チャンネル投稿じゃなければ無条件でOK
-		return true;
-	}
-
-	if (channelIds.has(note.channelId)) {
+	if (note.channelId && channelIds.has(note.channelId)) {
 		return true;
 	}
 
@@ -27,7 +22,7 @@ export function isChannelRelated(note: MiNote | Packed<'Note'>, channelIds: Set<
 		return true;
 	}
 
-	// NOTE: リプライはchannelIdのチェックだけでOKなはずなので見てない
+	// NOTE: リプライはchannelIdのチェックだけでOKなはずなので見てない(チャンネルのノートにチャンネル外からのリプライまたはその逆はないはずなので）
 
 	return false;
 }

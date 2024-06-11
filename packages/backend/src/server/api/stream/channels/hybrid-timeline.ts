@@ -53,18 +53,29 @@ class HybridTimelineChannel extends Channel {
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		// チャンネルの投稿ではなく、自分自身の投稿 または
-		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
-		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
-		// フォローしているチャンネルの投稿 または
-		// ミュートしていないチャンネルの投稿(リノート・引用リノートもチェック対象）の場合だけ
-		if (!(
-			(note.channelId == null && isMe) ||
-			(note.channelId == null && Object.hasOwn(this.following, note.userId)) ||
-			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
-			(note.channelId != null && this.followingChannels.has(note.channelId)) ||
-			(note.channelId != null && isChannelRelated(note, this.mutingChannels))
-		)) return;
+		if (!note.channelId) {
+			// 以下の条件に該当するノートのみ後続処理に通す（ので、以下のif文は該当しないノートをすべて弾くようにする）
+			// - 自分自身の投稿
+			// - その投稿のユーザーをフォローしている
+			// - 全体公開のローカルの投稿
+			if (!(
+				isMe ||
+				Object.hasOwn(this.following, note.userId) ||
+				(note.user.host == null && note.visibility === 'public')
+			)) {
+				return;
+			}
+		} else {
+			// 以下の条件に該当するノートのみ後続処理に通す（ので、以下のif文は該当しないノートをすべて弾くようにする）
+			// - ミュートしていないチャンネルの投稿(リノート・引用リノートもチェック対象）
+			// - フォローしているチャンネルの投稿
+			if (isChannelRelated(note, this.mutingChannels)) {
+				return;
+			}
+			if (!this.followingChannels.has(note.channelId)) {
+				return;
+			}
+		}
 
 		if (note.visibility === 'followers') {
 			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
