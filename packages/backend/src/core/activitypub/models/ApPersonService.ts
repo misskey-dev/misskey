@@ -184,15 +184,24 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('invalid Actor: id has different host');
 		}
 
-		if (x.publicKey) {
-			if (typeof x.publicKey.id !== 'string') {
-				throw new Error('invalid Actor: publicKey.id is not a string');
-			}
-
+		if (x.publicKey && typeof x.publicKey.id !== 'string') {
 			const publicKeyIdHost = this.punyHost(x.publicKey.id);
 			if (publicKeyIdHost !== expectHost) {
 				throw new Error('invalid Actor: publicKey.id has different host');
 			}
+		} else if (x.publicKey && Array.isArray(x.publicKey)) {
+			for (const publicKey of x.publicKey) {
+				if (typeof publicKey.id !== 'string') {
+					throw new Error('invalid Actor: publicKey.id is not a string');
+				}
+
+				const publicKeyIdHost = this.punyHost(publicKey.id);
+				if (publicKeyIdHost !== expectHost) {
+					throw new Error('invalid Actor: publicKey.id has different host');
+				}
+			}
+		} else if (x.publicKey) {
+			throw new Error('invalid Actor: publicKey is not an object or an array');
 		}
 
 		if (x.additionalPublicKeys) {
@@ -408,7 +417,7 @@ export class ApPersonService implements OnModuleInit {
 				if (person.publicKey) {
 					const publicKeys = new Map<string, IKey>([
 						...(person.additionalPublicKeys ? person.additionalPublicKeys.map(key => [key.id, key] as const) : []),
-						[person.publicKey.id, person.publicKey],
+						...(Array.isArray(person.publicKey) ? person.publicKey.map(key => [key.id, key] as const) : [[person.publicKey.id, person.publicKey]] as const),
 					]);
 
 					await transactionalEntityManager.save(Array.from(publicKeys.values(), key => new MiUserPublickey({

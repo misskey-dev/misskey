@@ -169,7 +169,7 @@ export interface IActor extends IObject {
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
-	publicKey?: IKey;
+	publicKey?: IKey | IKey[];
 	additionalPublicKeys?: IKey[];
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
