@@ -149,9 +149,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				followerId: me.id,
 			},
 		});
-		const mutingChannelIds = (followingChannels.length > 0)
-			? await this.channelMutingService.list({ requestUserId: me.id }).then(x => x.map(x => x.id))
-			: [];
+		const mutingChannelIds = await this.channelMutingService.list({ requestUserId: me.id }).then(x => x.map(x => x.id));
 
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
@@ -200,11 +198,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		if (mutingChannelIds.length > 0) {
-			// ミュートしてるチャンネルは含めない
 			query.andWhere(new Brackets(qb => {
 				qb
-					.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds })
-					.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+					// ミュートしてるチャンネルは含めない
+					.where(new Brackets(qb2 => {
+						qb2
+							.andWhere(new Brackets(qb3 => {
+								qb3
+									.andWhere('note.channelId IS NOT NULL')
+									.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+							}))
+							.andWhere(new Brackets(qb3 => {
+								qb3
+									.andWhere('note.renoteChannelId IS NOT NULL')
+									.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+							}));
+					}))
+					// チャンネルの投稿ではない
+					.orWhere('note.channelId IS NULL');
 			}));
 		}
 
