@@ -1,12 +1,11 @@
 import tinycolor from 'tinycolor2';
 
 class FavIconDot {
-	canvas: HTMLCanvasElement;
-	src: string | null = null;
-	ctx: CanvasRenderingContext2D | null = null;
-	faviconImage: HTMLImageElement | null = null;
-	faviconEL: HTMLLinkElement | undefined;
-	hasLoaded: Promise<void> | undefined;
+	private readonly canvas: HTMLCanvasElement;
+	private ctx: CanvasRenderingContext2D | null = null;
+	private faviconImage: HTMLImageElement | null = null;
+	private faviconEL: HTMLLinkElement | undefined;
+	private hasLoaded: Promise<void> | undefined;
 
 	constructor() {
 		this.canvas = document.createElement('canvas');
@@ -17,13 +16,12 @@ class FavIconDot {
 	 */
 	public async setup() {
 		const element: HTMLLinkElement = await this.getOrMakeFaviconElement();
-		
+
 		this.faviconEL = element;
-		this.src = this.faviconEL.getAttribute('href');
 		this.ctx = this.canvas.getContext('2d');
-			
+
 		this.faviconImage = document.createElement('img');
-	
+
 		this.hasLoaded = new Promise((resolve, reject) => {
 			(this.faviconImage as HTMLImageElement).addEventListener('load', () => {
 				this.canvas.width = (this.faviconImage as HTMLImageElement).width;
@@ -100,7 +98,7 @@ export function setFavIconDot(visible: boolean) {
 			icon = new FavIconDot();
 			await icon.setup();
 		}
-		
+
 		(icon as FavIconDot).setVisible(visible);
 	};
 
