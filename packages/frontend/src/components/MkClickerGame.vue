@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<div v-if="game.ready" :class="$style.game">
 		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-		<div :class="$style.count" class="">
+		<div :class="$style.count" class="" data-testid="count">
 			<img
 				:class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
 				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"

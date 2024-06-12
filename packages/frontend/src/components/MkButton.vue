@@ -27,6 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:type="type"
 	:name="name"
 	:value="value"
+	:disabled="disabled"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
@@ -89,6 +90,7 @@ const props = defineProps<{
   asLike?: boolean;
   name?: string;
   value?: string;
+	disabled?: boolean;
 }>();
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));

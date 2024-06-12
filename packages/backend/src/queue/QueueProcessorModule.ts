@@ -12,7 +12,8 @@ import { DeliverProcessorService } from './processors/DeliverProcessorService.js
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { ScheduleNotePostProcessorService } from './processors/ScheduleNotePostProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
-import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
+import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
+import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
@@ -72,7 +73,8 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,
 		RelationshipProcessorService,
-		WebhookDeliverProcessorService,
+		UserWebhookDeliverProcessorService,
+		SystemWebhookDeliverProcessorService,
 		EndedPollNotificationProcessorService,
 		ScheduleNotePostProcessorService,
 		DeliverProcessorService,

@@ -493,7 +493,7 @@ export class ApNoteService {
 
 			this.logger.info(`register emoji host=${host}, name=${name}`);
 
-			return await this.emojisRepository.insert({
+			return await this.emojisRepository.insertOne({
 				id: this.idService.gen(),
 				host,
 				name,
@@ -502,7 +502,7 @@ export class ApNoteService {
 				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
-			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+			});
 		}));
 	}
 }
