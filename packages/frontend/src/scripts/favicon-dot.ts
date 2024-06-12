@@ -73,17 +73,24 @@ class FavIconDot {
 
 	private drawDot() {
 		if (!this.ctx || !this.faviconImage) return;
-		const radius = Math.min(this.faviconImage.width, this.faviconImage.height) / 4.5;
-		const strokeWidth = Math.max(radius / 3, 2);
-
-		this.ctx.beginPath();
-		this.ctx.arc(this.canvas.width - radius - (strokeWidth / 2), this.canvas.height - radius - (strokeWidth / 2), radius, 0, 2 * Math.PI);
+		const radius = Math.min(this.faviconImage.width, this.faviconImage.height) / 6;
 		const computedStyle = getComputedStyle(document.documentElement);
-		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--error') || '#ec4137').toHexString();
-		this.ctx.strokeStyle = 'white';
-		this.ctx.lineWidth = strokeWidth;
+
+		// 元の画像を丸く切り抜く
+		this.ctx.globalCompositeOperation = 'destination-out';
+		this.ctx.beginPath();
+		// 丸い部分の外側を描画（色付きの丸と同心円上に、右下にstrokeWidthだけはみ出させて描画）
+		this.ctx.arc(this.canvas.width - radius, this.canvas.height - radius, radius * 1.5, 0, 2 * Math.PI);
 		this.ctx.fill();
-		this.ctx.stroke();
+		this.ctx.closePath();
+
+		// 丸い部分を描画
+		this.ctx.globalCompositeOperation = 'source-over';
+		this.ctx.beginPath();
+		this.ctx.arc(this.canvas.width - radius, this.canvas.height - radius, radius, 0, 2 * Math.PI);
+		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--error') || '#ec4137').toHexString();
+		this.ctx.fill();
+		this.ctx.closePath();
 	}
 
 	private setFavicon() {
