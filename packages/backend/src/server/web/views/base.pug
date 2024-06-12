@@ -36,7 +36,7 @@ html
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
 		//- https://github.com/misskey-dev/misskey/issues/9842
-		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.44.0')
+		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v3.3.0')
 		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
 
 		if !config.clientManifestExists
@@ -49,6 +49,9 @@ html
 		title
 			block title
 				= title || 'Misskey'
+
+		if noindex
+			meta(name='robots' content='noindex')
 
 		block desc
 			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
