@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Injectable } from '@nestjs/common';
 import { setImmediate } from 'node:timers/promises';
 import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
@@ -93,13 +92,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const notes = ps.noteIds ? await this.notesRepository.find({
-				where: { id: In(ps.noteIds), userId: user.id },
+				where: { id: In(ps.noteIds), userId: targetUser.id },
 			}) : [];
 
 			const report = await this.abuseUserReportsRepository.insert({
 				id: this.idService.gen(),
-				targetUserId: user.id,
-				targetUserHost: user.host,
+				targetUserId: targetUser.id,
+				targetUserHost: targetUser.host,
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,

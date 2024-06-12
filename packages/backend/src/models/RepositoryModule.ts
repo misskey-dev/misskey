@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Provider } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import {
@@ -29,8 +28,6 @@ import {
 	MiDriveFolder,
 	MiEmoji,
 	MiEmojiRequest,
-	MiBubbleGameRecord,
-	MiFollowRequest,
 	MiFlash,
 	MiFlashLike,
 	MiFollowRequest,
@@ -82,8 +79,8 @@ import {
 	MiUserSecurityKey,
 	MiWebhook,
 	MiScheduledNote,
-	MiBubbleGameRecord
-, MiReversiGame } from './_.js';
+	MiBubbleGameRecord } from './_.js';
+import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
 
 const $usersRepository: Provider = {
