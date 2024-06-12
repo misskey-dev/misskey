@@ -5,7 +5,8 @@
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
-- Feat: 未読の通知があるときにタブのアイコン（Favicon）を目立たせることができるように
+- Feat: 未読の通知があるときにタブのアイコン（Favicon）を目立たせることができるように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/474)
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 
 ### Server
