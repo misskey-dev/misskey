@@ -80,16 +80,16 @@ class FavIconDot {
 		this.ctx.globalCompositeOperation = 'destination-out';
 		this.ctx.beginPath();
 		this.ctx.arc(this.canvas.width - radius, this.canvas.height - radius, radius * 1.5, 0, 2 * Math.PI);
-		this.ctx.fill();
 		this.ctx.closePath();
+		this.ctx.fill();
 
 		// 丸い部分を描画
 		this.ctx.globalCompositeOperation = 'source-over';
 		this.ctx.beginPath();
 		this.ctx.arc(this.canvas.width - radius, this.canvas.height - radius, radius, 0, 2 * Math.PI);
 		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--error') || '#ec4137').toHexString();
-		this.ctx.fill();
 		this.ctx.closePath();
+		this.ctx.fill();
 	}
 
 	private setFavicon() {
