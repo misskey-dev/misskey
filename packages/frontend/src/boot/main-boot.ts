@@ -264,6 +264,10 @@ export async function mainBoot() {
 			}
 		}
 
+		if (defaultStore.state.enableFaviconNotificationDot && $i.hasUnreadNotification) {
+			setFavIconDot(true);
+		}
+
 		const main = markRaw(stream.useChannel('main', null, 'System'));
 
 		// 自分の情報が更新されたとき

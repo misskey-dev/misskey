@@ -73,11 +73,15 @@ class FavIconDot {
 
 	private drawDot() {
 		if (!this.ctx || !this.faviconImage) return;
+		const radius = Math.min(this.faviconImage.width, this.faviconImage.height) / 4.5;
+		const strokeWidth = Math.max(radius / 3, 2);
+
 		this.ctx.beginPath();
-		this.ctx.arc(this.faviconImage.width - 10, 10, 10, 0, 2 * Math.PI);
+		this.ctx.arc(this.canvas.width - radius - (strokeWidth / 2), this.canvas.height - radius - (strokeWidth / 2), radius, 0, 2 * Math.PI);
 		const computedStyle = getComputedStyle(document.documentElement);
-		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--navIndicator')).toHexString();
+		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--error') || '#ec4137').toHexString();
 		this.ctx.strokeStyle = 'white';
+		this.ctx.lineWidth = strokeWidth;
 		this.ctx.fill();
 		this.ctx.stroke();
 	}
