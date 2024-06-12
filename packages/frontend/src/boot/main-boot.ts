@@ -21,6 +21,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { setFavIconDot } from '@/scripts/favicon-dot.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -96,7 +97,7 @@ export async function mainBoot() {
 					}).render();
 				}
 			}
-		}	
+		}
 	} catch (error) {
 		// console.error(error);
 		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
@@ -271,6 +272,8 @@ export async function mainBoot() {
 		});
 
 		main.on('readAllNotifications', () => {
+			setFavIconDot(false);
+
 			updateAccount({
 				hasUnreadNotification: false,
 				unreadNotificationsCount: 0,
@@ -279,6 +282,11 @@ export async function mainBoot() {
 
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
+
+			if (defaultStore.state.enableFaviconNotificationDot) {
+				setFavIconDot(true);
+			}
+
 			updateAccount({
 				hasUnreadNotification: true,
 				unreadNotificationsCount,

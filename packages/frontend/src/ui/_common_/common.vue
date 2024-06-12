@@ -47,7 +47,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { setFavIconDot } from '../../scripts/favicon-dot';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
@@ -91,11 +90,6 @@ if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
 
-	// For the favicon notification dot
-	watch(() => $i?.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot, (hasAny) => setFavIconDot(hasAny as boolean));
-
-	if ($i.hasUnreadNotification && defaultStore.state.enableFaviconNotificationDot) setFavIconDot(true);
-	
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
 	//#region Listen message from SW
