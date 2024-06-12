@@ -79,7 +79,6 @@ class FavIconDot {
 		// 元の画像を丸く切り抜く
 		this.ctx.globalCompositeOperation = 'destination-out';
 		this.ctx.beginPath();
-		// 丸い部分の外側を描画（色付きの丸と同心円上に、右下にstrokeWidthだけはみ出させて描画）
 		this.ctx.arc(this.canvas.width - radius, this.canvas.height - radius, radius * 1.5, 0, 2 * Math.PI);
 		this.ctx.fill();
 		this.ctx.closePath();
