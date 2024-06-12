@@ -81,7 +81,7 @@ class FavIconDot {
 		if (this.faviconEL) this.faviconEL.href = this.canvas.toDataURL('image/png');
 	}
 
-	async setVisible(isVisible: boolean) {
+	public async setVisible(isVisible: boolean) {
 		// Wait for it to have loaded the icon
 		await this.hasLoaded;
 		this.drawIcon();
@@ -99,7 +99,7 @@ export function setFavIconDot(visible: boolean) {
 			await icon.setup();
 		}
 
-		(icon as FavIconDot).setVisible(visible);
+		icon!.setVisible(visible);
 	};
 
 	// If document is already loaded, set visibility immediately
