@@ -5,7 +5,7 @@
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
--
+- Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 
 ### Server
 - チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
