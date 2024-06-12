@@ -2729,7 +2729,7 @@ export interface Locale extends ILocale {
      */
     "notificationSettingDesc": string;
     /**
-     * ファビコン通知ドットを有効にする
+     * 未読の通知があるときにタブのアイコンを目立たせる
      */
     "enableFaviconNotificationDot": string;
     /**
