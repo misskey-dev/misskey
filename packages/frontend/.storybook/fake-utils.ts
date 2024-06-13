@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import seedrandom from 'seedrandom';
+
 /**
  * AIで生成した無作為なファーストネーム
  */
@@ -30,18 +32,21 @@ export const countryDict = [
 	'Vietnam', 'Kenya', 'Saudi Arabia', 'Netherlands', 'Colombia', 'Poland', 'Chile', 'Malaysia', 'Ukraine', 'New Zealand', 'Peru',
 ]
 
-export function text(length: number = 10): string {
+export function text(length: number = 10, seed?: string): string {
 	let result = "";
 
+	// シード値を使う場合、同じ数値が羅列されるが、ランダム文字列という意味では満たせていると思うのでこのまま使っておく
+	const rand = seed ? seedrandom(seed)() : Math.random();
 	while (result.length < length) {
-		result += Math.random().toString(36).substring(2);
+		result += rand.toString(36).substring(2);
 	}
 
 	return result.substring(0, length);
 }
 
-export function integer(min: number = 0, max: number = 9999): number {
-	return Math.floor(Math.random() * (max - min)) + min;
+export function integer(min: number = 0, max: number = 9999, seed?: string): number {
+	const rand = seed ? seedrandom(seed)() : Math.random();
+	return Math.floor(rand * (max - min)) + min;
 }
 
 export function date(params?: {
@@ -59,10 +64,10 @@ export function date(params?: {
 	secondMax?: number,
 	millisecondMin?: number,
 	millisecondMax?: number,
-}) {
-	const year = integer(params?.yearMin ?? 1970, params?.yearMax ?? (new Date()).getFullYear());
-	const month = integer(params?.monthMin ?? 1, params?.monthMax ?? 12);
-	let day = integer(params?.dayMin ?? 1, params?.dayMax ?? 31);
+}, seed?: string): Date {
+	const year = integer(params?.yearMin ?? 1970, params?.yearMax ?? (new Date()).getFullYear(), seed);
+	const month = integer(params?.monthMin ?? 1, params?.monthMax ?? 12, seed);
+	let day = integer(params?.dayMin ?? 1, params?.dayMax ?? 31, seed);
 	if (month === 2) {
 		day = Math.min(day, 28);
 	} else if ([4, 6, 9, 11].includes(month)) {
@@ -71,43 +76,45 @@ export function date(params?: {
 		day = Math.min(day, 31);
 	}
 
-	const hour = integer(params?.hourMin ?? 0, params?.hourMax ?? 23);
-	const minute = integer(params?.minuteMin ?? 0, params?.minuteMax ?? 59);
-	const second = integer(params?.secondMin ?? 0, params?.secondMax ?? 59);
-	const millisecond = integer(params?.millisecondMin ?? 0, params?.millisecondMax ?? 999);
+	const hour = integer(params?.hourMin ?? 0, params?.hourMax ?? 23, seed);
+	const minute = integer(params?.minuteMin ?? 0, params?.minuteMax ?? 59, seed);
+	const second = integer(params?.secondMin ?? 0, params?.secondMax ?? 59, seed);
+	const millisecond = integer(params?.millisecondMin ?? 0, params?.millisecondMax ?? 999, seed);
 
 	return new Date(year, month - 1, day, hour, minute, second, millisecond);
 }
 
-export function boolean(): boolean {
-	return Math.random() < 0.5;
+export function boolean(seed?: string): boolean {
+	const rand = seed ? seedrandom(seed)() : Math.random();
+	return rand < 0.5;
 }
 
-export function choose<T>(array: T[]): T {
-	return array[Math.floor(Math.random() * array.length)];
+export function choose<T>(array: T[], seed?: string): T {
+	const rand = seed ? seedrandom(seed)() : Math.random();
+	return array[Math.floor(rand * array.length)];
 }
 
-export function firstName(): string {
-	return choose(firstNameDict);
+export function firstName(seed?: string): string {
+	return choose(firstNameDict, seed);
 }
 
-export function lastName(): string {
-	return choose(lastNameDict);
+export function lastName(seed?: string): string {
+	return choose(lastNameDict, seed);
 }
 
-export function country(): string {
-	return choose(countryDict);
+export function country(seed?: string): string {
+	return choose(countryDict, seed);
 }
 
 const TIME2000 = 946684800000;
-export function fakeId(): string {
+export function fakeId(seed?: string): string {
 	let time = new Date().getTime();
 
 	time = time - TIME2000;
 	if (time < 0) time = 0;
 
 	const timeStr = time.toString(36).padStart(8, '0');
-	const noiseStr = text(2);
+	const noiseStr = text(2, seed);
 
 	return timeStr + noiseStr;
 }
@@ -123,7 +130,7 @@ export function imageDataUrl(options?: {
 		blue?: number,
 		alpha?: number,
 	}
-}): string {
+}, seed?: string): string {
 	const canvas = document.createElement('canvas');
 	canvas.width = options?.size?.width ?? 100;
 	canvas.height = options?.size?.height ?? 100;
@@ -135,9 +142,9 @@ export function imageDataUrl(options?: {
 
 	ctx.beginPath()
 
-	const red = options?.color?.red ?? integer(0, 255);
-	const green = options?.color?.green ?? integer(0, 255);
-	const blue = options?.color?.blue ?? integer(0, 255);
+	const red = options?.color?.red ?? integer(0, 255, seed);
+	const green = options?.color?.green ?? integer(0, 255, seed);
+	const blue = options?.color?.blue ?? integer(0, 255, seed);
 	const alpha = options?.color?.alpha ?? 1;
 	ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2, true);
 	ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;

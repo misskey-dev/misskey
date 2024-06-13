@@ -11,10 +11,10 @@ import { commonHandlers } from '../../.storybook/mocks.js';
 import MkRoleSelectDialog from '@/components/MkRoleSelectDialog.vue';
 
 const roles = [
-	role({ displayOrder: 1 }), role({ displayOrder: 1 }), role({ displayOrder: 1 }), role({ displayOrder: 1 }),
-	role({ displayOrder: 2 }), role({ displayOrder: 2 }), role({ displayOrder: 3 }), role({ displayOrder: 3 }),
-	role({ displayOrder: 4 }), role({ displayOrder: 5 }), role({ displayOrder: 6 }), role({ displayOrder: 7 }),
-	role({ displayOrder: 999, name: 'privateRole', isPublic: false }),
+	role({ displayOrder: 1 }, '1'), role({ displayOrder: 1 }, '1'), role({ displayOrder: 1 }, '1'), role({ displayOrder: 1 }, '1'),
+	role({ displayOrder: 2 }, '2'), role({ displayOrder: 2 }, '2'), role({ displayOrder: 3 }, '3'), role({ displayOrder: 3 }, '3'),
+	role({ displayOrder: 4 }, '4'), role({ displayOrder: 5 }, '5'), role({ displayOrder: 6 }, '6'), role({ displayOrder: 7 }, '7'),
+	role({ displayOrder: 999, name: 'privateRole', isPublic: false }, '999'),
 ];
 
 export const Default = {

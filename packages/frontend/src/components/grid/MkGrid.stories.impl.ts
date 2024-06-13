@@ -12,6 +12,7 @@ import { boolean, choose, country, date, firstName, integer, lastName, text } fr
 import MkGrid from './MkGrid.vue';
 import { GridContext, GridEvent } from '@/components/grid/grid-event.js';
 import { DataSource, GridSetting } from '@/components/grid/grid.js';
+import { GridColumnSetting } from '@/components/grid/column.js';
 
 function d(p: {
 	check?: boolean,
@@ -23,23 +24,23 @@ function d(p: {
 	country?: string,
 	reportCount?: number,
 	createdAt?: string,
-}) {
-	const prefix = text(10);
+}, seed: string) {
+	const prefix = text(10, seed);
 
 	return {
-		check: p.check ?? boolean(),
-		name: p.name ?? `${firstName()} ${lastName()}`,
+		check: p.check ?? boolean(seed),
+		name: p.name ?? `${firstName(seed)} ${lastName(seed)}`,
 		email: p.email ?? `${prefix}@example.com`,
-		age: p.age ?? integer(20, 80),
-		birthday: date().toISOString(),
-		gender: p.gender ?? choose(['male', 'female', 'other', 'unknown']),
-		country: p.country ?? country(),
-		reportCount: p.reportCount ?? integer(),
-		createdAt: p.createdAt ?? date().toISOString(),
+		age: p.age ?? integer(20, 80, seed),
+		birthday: date({}, seed).toISOString(),
+		gender: p.gender ?? choose(['male', 'female', 'other', 'unknown'], seed),
+		country: p.country ?? country(seed),
+		reportCount: p.reportCount ?? integer(0, 9999, seed),
+		createdAt: p.createdAt ?? date({}, seed).toISOString(),
 	};
 }
 
-const defaultCols = [
+const defaultCols: GridColumnSetting[] = [
 	{ bindTo: 'check', icon: 'ti-check', type: 'boolean', width: 50 },
 	{ bindTo: 'name', title: 'Name', type: 'text', width: 'auto' },
 	{ bindTo: 'email', title: 'Email', type: 'text', width: 'auto' },
@@ -52,13 +53,10 @@ const defaultCols = [
 ];
 
 function createArgs(overrides?: { settings?: Partial<GridSetting>, data?: DataSource[] }) {
-	const refData = ref([
-		d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}),
-		d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}),
-		d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}),
-		d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}),
-		d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}), d({}),
-	]);
+	const refData = ref<ReturnType<typeof d>[]>([]);
+	for (let i = 0; i < 100; i++) {
+		refData.value.push(d({}, i.toString()));
+	}
 
 	return {
 		settings: {
@@ -73,7 +71,7 @@ function createArgs(overrides?: { settings?: Partial<GridSetting>, data?: DataSo
 	};
 }
 
-function createRender(params: { settings: Partial<GridSetting>, data: DataSource[] }) {
+function createRender(params: { settings: GridSetting, data: DataSource[] }) {
 	return {
 		render(args) {
 			return {
@@ -155,7 +153,7 @@ export const AdditionalRowStyle = createRender(createArgs({
 		row: {
 			styleRules: [
 				{
-					condition: ({ row }) => AdditionalRowStyle.args.data[row.index].check,
+					condition: ({ row }) => AdditionalRowStyle.args.data[row.index].check as boolean,
 					applyStyle: {
 						style: {
 							backgroundColor: 'lightgray',

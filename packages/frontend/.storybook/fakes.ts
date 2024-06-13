@@ -4,7 +4,7 @@
  */
 
 import type { entities } from 'misskey-js'
-import { imageDataUrl, text } from "./fake-utils.js";
+import { date, imageDataUrl, text } from "./fake-utils.js";
 
 export function abuseUserReport() {
 	return {
@@ -232,9 +232,11 @@ export function role(params: {
 	asBadge?: boolean,
 	canEditMembersByModerator?: boolean,
 	usersCount?: number,
-}): entities.Role {
+}, seed?: string): entities.Role {
 	const prefix = params.displayOrder ? params.displayOrder.toString().padStart(3, '0') + '-' : '';
-	const genId = Math.random().toString(36).substring(10);
+	const genId = text(36, seed);
+	const createdAt = params.createdAt ?? date({}, seed).toISOString();
+	const updatedAt = params.updatedAt ?? date({}, seed).toISOString();
 
 	return {
 		id: params.id ?? genId,
@@ -245,8 +247,8 @@ export function role(params: {
 		isModerator: params.isModerator ?? false,
 		isAdministrator: params.isAdministrator ?? false,
 		displayOrder: params.displayOrder ?? 0,
-		createdAt: params.createdAt ?? new Date().toISOString(),
-		updatedAt: params.updatedAt ?? new Date().toISOString(),
+		createdAt: createdAt,
+		updatedAt: updatedAt,
 		target: params.target ?? 'manual',
 		isPublic: params.isPublic ?? true,
 		isExplorable: params.isExplorable ?? true,
@@ -277,11 +279,13 @@ export function emoji(params?: {
 	localOnly?: boolean,
 	roleIdsThatCanBeUsedThisEmojiAsReaction?: {id:string, name:string}[],
 	updatedAt?: string,
-}): entities.EmojiDetailedAdmin {
-	const id = params?.id ?? new Date().getTime().toString() + text(5);
-	const name = params?.name ?? text(8);
+}, seed?: string): entities.EmojiDetailedAdmin {
+	const _seed = seed ?? (params?.id ?? "DEFAULT_SEED");
+	const id = params?.id ?? text(32, _seed);
+	const name = params?.name ?? text(8, _seed);
+	const updatedAt = params?.updatedAt ?? date({}, _seed).toISOString();
 
-	const image = imageDataUrl()
+	const image = imageDataUrl({}, _seed)
 
 	return {
 		id: id,
@@ -297,6 +301,6 @@ export function emoji(params?: {
 		isSensitive: params?.isSensitive ?? false,
 		localOnly: params?.localOnly ?? false,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: params?.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
-		updatedAt: params?.updatedAt ?? new Date().toISOString(),
+		updatedAt: updatedAt,
 	}
 }
