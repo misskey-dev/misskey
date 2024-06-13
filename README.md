@@ -50,7 +50,7 @@ After that, you have two ways to use the Vmimi Relay Timeline:
   The image is designed to be a drop-in replacement of the official image.
   The image name is [`ghcr.io/anatawa12/vrtl-misskey:latest`].
 - Merge the extension branch to your fork and build the image by yourself.
-  You can merge the [`vmimi-relay-timeline`][vmimi-relay-timeline-branch] branch to your fork.
+  You can merge the [`vmimi-relay-timeline/generic`] branch to your fork.
   If you ask me, I'll create a pull request to your fork. Feel free to ask me.
 
 はじめに、この拡張は[ぶいみみリレー][Virtual Kemomimi Relay]に参加しているサーバー向けに設計されているため、この拡張を使用するには[ぶいみみリレー][Virtual Kemomimi Relay]に参加する必要があります。
@@ -60,20 +60,20 @@ After that, you have two ways to use the Vmimi Relay Timeline:
   のイメージは公式イメージの代わりとして使用できます。
   イメージ名は [`ghcr.io/anatawa12/vrtl-misskey:latest`] です。
 - このブランチをあなたのフォークにマージして、自分でイメージをビルドしてください。
-  [`vmimi-relay-timeline`][vmimi-relay-timeline-branch] ブランチをあなたのフォークにマージすることで、この拡張を使用できます。
+  [`vmimi-relay-timeline/generic`] ブランチをあなたのフォークにマージすることで、この拡張を使用できます。
   必要であれば、あなたのフォークにプルリクエストを作成します。お気軽にお尋ねください。
 
 ### Branches related to Vmimi Relay Timeline
 
-- [`vmimi-relay-timeline`][vmimi-relay-timeline-branch]:
+- [`vmimi-relay-timeline/generic`]:
   The branch for the Vmimi Relay Timeline extension development.
   All changes to the Vmimi Relay Timeline extension will be merged to this branch.
   This branch should be based on the latest official release of Misskey.
   This branch does not include any changes other than the Vmimi Relay Timeline extension itself.
-- [`vmimi-relay-timeline-releases`][vmimi-relay-timeline-releases-branch]:
+- [`vmimi-relay-timeline/releases`]:
   The branch for releasing the Vmimi Relay Timeline extension.
   This branch includes the changes for `package.json` and changes to the repository link.
-- `vmimi-relay-timeline-nirila`, `vmimi-relay-timeline-buiso` and other branches:
+- `vmimi-relay-timeline/forks/nirila`, `vmimi-relay-timeline/forks/buiso` and other branches:
   Those branches are the branches for sending pull requests to each fork-based server.
   Those branches are not permanent; they will be deleted after each pull request is merged.
 
@@ -90,8 +90,8 @@ non-federated notes, but this behavior may change in the future.
 [Virtual Kemomimi Relay]: https://relay.virtualkemomimi.net/
 [misskey.niri.la]: https://github.com/niri-la/misskey.niri.la/
 [vmimi-relay timeline]: #vmimi-relay-timeline
-[vmimi-relay-timeline-branch]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline
-[vmimi-relay-timeline-releases-branch]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline-releases
+[`vmimi-relay-timeline/generic`]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline
+[`vmimi-relay-timeline/releases`]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline-releases
 [`ghcr.io/anatawa12/vrtl-misskey:latest`]: https://github.com/anatawa12/misskey/pkgs/container/vrtl-misskey
 
 ---
