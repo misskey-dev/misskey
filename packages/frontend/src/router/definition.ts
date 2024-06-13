@@ -115,7 +115,7 @@ const routes: RouteDef[] = [{
 	}, {
 		path: '/timeline-header',
 		name: 'timelineHeader',
-		component: page(() => import('@/pages/settings/timelineHeader.vue')),
+		component: page(() => import('@/pages/settings/timeline-header.vue')),
 	}, {
 		path: '/statusbar',
 		name: 'statusbar',
