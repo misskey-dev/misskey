@@ -5,7 +5,7 @@
 
 import tinycolor from 'tinycolor2';
 
-class FavIconDot {
+class FaviconDot {
 	private readonly canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D | null = null;
 	private faviconImage: HTMLImageElement | null = null;
@@ -105,12 +105,12 @@ class FavIconDot {
 	}
 }
 
-let icon: FavIconDot | undefined = undefined;
+let icon: FaviconDot | undefined = undefined;
 
-export function setFavIconDot(visible: boolean) {
+export function setFaviconDot(visible: boolean) {
 	const setIconVisibility = async () => {
 		if (!icon) {
-			icon = new FavIconDot();
+			icon = new FaviconDot();
 			await icon.setup();
 		}
 
