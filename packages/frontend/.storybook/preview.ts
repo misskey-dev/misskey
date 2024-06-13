@@ -7,7 +7,7 @@ import { FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
-import { initialize, mswDecorator } from 'msw-storybook-addon';
+import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
 import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
@@ -122,7 +122,6 @@ const preview = {
 			}
 			return story;
 		},
-		mswDecorator,
 		(Story, context) => {
 			return {
 				setup() {
@@ -137,6 +136,7 @@ const preview = {
 			};
 		},
 	],
+	loaders: [mswLoader],
 	parameters: {
 		controls: {
 			exclude: /^__/,
