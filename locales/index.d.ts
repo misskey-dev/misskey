@@ -2729,10 +2729,6 @@ export interface Locale extends ILocale {
      */
     "notificationSettingDesc": string;
     /**
-     * 未読の通知があるときにタブのアイコンを目立たせる
-     */
-    "enableFaviconNotificationDot": string;
-    /**
      * グローバル設定を使う
      */
     "useGlobalSetting": string;

@@ -264,7 +264,7 @@ export async function mainBoot() {
 			}
 		}
 
-		if (defaultStore.state.enableFaviconNotificationDot && $i.hasUnreadNotification) {
+		if ($i.hasUnreadNotification) {
 			setFaviconDot(true);
 		}
 
@@ -287,9 +287,7 @@ export async function mainBoot() {
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
 
-			if (defaultStore.state.enableFaviconNotificationDot) {
-				setFaviconDot(true);
-			}
+			setFaviconDot(true);
 
 			updateAccount({
 				hasUnreadNotification: true,
