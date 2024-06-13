@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.webhooksRepository.update(webhook.id, {
 				name: ps.name,
 				url: ps.url,
-				secret: ps.secret === null ? '' : ps.secret ? ps.secret : undefined,
+				secret: ps.secret === null ? '' : ps.secret,
 				on: ps.on,
 				active: ps.active,
 			});
