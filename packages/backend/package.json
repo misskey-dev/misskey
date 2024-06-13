@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "^20.10.0"
+		"node": "^20.10.0 || ^22.0.0"
 	},
 	"scripts": {
 		"start": "node ./built/boot/entry.js",
@@ -159,7 +159,7 @@
 		"qrcode": "1.5.3",
 		"random-seed": "0.3.0",
 		"ratelimiter": "3.4.1",
-		"re2": "1.20.10",
+		"re2": "1.21.2",
 		"redis-lock": "0.1.4",
 		"reflect-metadata": "0.2.2",
 		"rename": "1.0.4",

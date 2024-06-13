@@ -5,10 +5,11 @@
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 
 ### Client
--
+- Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 
 ### Server
 - チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
 - Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
 - Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
 - Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
