@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
-			q.andWhere('noteHistory.targetId = :noteId', { targetId: note.id });
+			q.andWhere('noteHistory.targetId = :targetId', { targetId: note.id });
 			const histories = await q.limit(ps.limit).getMany();
 			return await this.noteHistoryEntityService.packMany(histories, me, {
 				detail: true,
