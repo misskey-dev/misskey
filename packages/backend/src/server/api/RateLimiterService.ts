@@ -32,13 +32,13 @@ export class RateLimiterService {
 
 	@bindThis
 	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1) {
-		{
-			if (this.disabled) {
-				return Promise.resolve();
-			}
+		if (this.disabled) {
+			return Promise.resolve();
+		}
 
-			// Short-term limit
-			const min = new Promise<void>((ok, reject) => {
+		// Short-term limit
+		const min = () => {
+			return new Promise<void>((ok, reject) => {
 				const minIntervalLimiter = new Limiter({
 					id: `${actor}:${limitation.key}:min`,
 					duration: limitation.minInterval! * factor,
@@ -57,16 +57,18 @@ export class RateLimiterService {
 						return reject({ code: 'BRIEF_REQUEST_INTERVAL', info });
 					} else {
 						if (hasLongTermLimit) {
-							return max.then(ok, reject);
+							return max().then(ok, reject);
 						} else {
 							return ok();
 						}
 					}
 				});
 			});
+		};
 
-			// Long term limit
-			const max = new Promise<void>((ok, reject) => {
+		// Long term limit
+		const max = () => {
+			return new Promise<void>((ok, reject) => {
 				const limiter = new Limiter({
 					id: `${actor}:${limitation.key}`,
 					duration: limitation.duration! * factor,
@@ -88,20 +90,20 @@ export class RateLimiterService {
 					}
 				});
 			});
+		};
 
-			const hasShortTermLimit = typeof limitation.minInterval === 'number';
+		const hasShortTermLimit = typeof limitation.minInterval === 'number';
 
-			const hasLongTermLimit =
-				typeof limitation.duration === 'number' &&
-				typeof limitation.max === 'number';
+		const hasLongTermLimit =
+			typeof limitation.duration === 'number' &&
+			typeof limitation.max === 'number';
 
-			if (hasShortTermLimit) {
-				return min;
-			} else if (hasLongTermLimit) {
-				return max;
-			} else {
-				return Promise.resolve();
-			}
+		if (hasShortTermLimit) {
+			return min();
+		} else if (hasLongTermLimit) {
+			return max();
+		} else {
+			return Promise.resolve();
 		}
 	}
 }
