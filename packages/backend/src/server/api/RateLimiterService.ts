@@ -31,6 +31,18 @@ export class RateLimiterService {
 	}
 
 	@bindThis
+	private checkLimiter(options: Limiter.LimiterOption): Promise<Limiter.LimiterInfo> {
+		return new Promise<Limiter.LimiterInfo>((resolve, reject) => {
+			new Limiter(options).get((err, info) => {
+				if (err) {
+					return reject({ code: 'ERR', info });
+				}
+				resolve(info);
+			});
+		});
+	}
+
+	@bindThis
 	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1) {
 		if (this.disabled) {
 			return Promise.resolve();
@@ -39,18 +51,12 @@ export class RateLimiterService {
 		// Short-term limit
 		const min = () => {
 			return new Promise<void>((ok, reject) => {
-				const minIntervalLimiter = new Limiter({
+				this.checkLimiter({
 					id: `${actor}:${limitation.key}:min`,
 					duration: limitation.minInterval! * factor,
 					max: 1,
 					db: this.redisClient,
-				});
-
-				minIntervalLimiter.get((err, info) => {
-					if (err) {
-						return reject({ code: 'ERR', info });
-					}
-
+				}).then((info) => {
 					this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
 
 					if (info.remaining === 0) {
@@ -69,18 +75,12 @@ export class RateLimiterService {
 		// Long term limit
 		const max = () => {
 			return new Promise<void>((ok, reject) => {
-				const limiter = new Limiter({
+				this.checkLimiter({
 					id: `${actor}:${limitation.key}`,
 					duration: limitation.duration! * factor,
 					max: limitation.max! / factor,
 					db: this.redisClient,
-				});
-
-				limiter.get((err, info) => {
-					if (err) {
-						return reject({ code: 'ERR', info });
-					}
-
+				}).then((info) => {
 					this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
 
 					if (info.remaining === 0) {
