@@ -43,9 +43,9 @@ export class RateLimiterService {
 	}
 
 	@bindThis
-	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1) {
+	public async limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1) {
 		if (this.disabled) {
-			return Promise.resolve();
+			return;
 		}
 
 		// Short-term limit
@@ -97,11 +97,11 @@ export class RateLimiterService {
 			typeof limitation.max === 'number';
 
 		if (hasShortTermLimit) {
-			return min();
+			await min();
 		} else if (hasLongTermLimit) {
-			return max();
+			await max();
 		} else {
-			return Promise.resolve();
+			return;
 		}
 	}
 }
