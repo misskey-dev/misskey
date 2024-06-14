@@ -50,53 +50,43 @@ export class RateLimiterService {
 
 		// Short-term limit
 		const min = async () => {
-			const info = await this.checkLimiter({
-				id: `${actor}:${limitation.key}:min`,
-				duration: limitation.minInterval! * factor,
-				max: 1,
-				db: this.redisClient,
-			});
-
-			this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
-
-			if (info.remaining === 0) {
-				// eslint-disable-next-line no-throw-literal
-				throw { code: 'BRIEF_REQUEST_INTERVAL', info };
-			} else {
-				return;
+			if (limitation.minInterval != null) {
+				const info = await this.checkLimiter({
+					id: `${actor}:${limitation.key}:min`,
+					duration: limitation.minInterval * factor,
+					max: 1,
+					db: this.redisClient,
+				});
+				this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
+				if (info.remaining === 0) {
+					// eslint-disable-next-line no-throw-literal
+					throw { code: 'BRIEF_REQUEST_INTERVAL', info };
+				} else {
+					return;
+				}
 			}
 		};
 
 		// Long term limit
 		const max = async () => {
-			const info = await this.checkLimiter({
-				id: `${actor}:${limitation.key}`,
-				duration: limitation.duration! * factor,
-				max: limitation.max! / factor,
-				db: this.redisClient,
-			});
-
-			this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
-
-			if (info.remaining === 0) {
-				// eslint-disable-next-line no-throw-literal
-				throw { code: 'RATE_LIMIT_EXCEEDED', info };
-			} else {
-				return;
+			if (limitation.duration != null && limitation.max != null) {
+				const info = await this.checkLimiter({
+					id: `${actor}:${limitation.key}`,
+					duration: limitation.duration * factor,
+					max: limitation.max / factor,
+					db: this.redisClient,
+				});
+				this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
+				if (info.remaining === 0) {
+					// eslint-disable-next-line no-throw-literal
+					throw { code: 'RATE_LIMIT_EXCEEDED', info };
+				} else {
+					return;
+				}
 			}
 		};
 
-		const hasShortTermLimit = typeof limitation.minInterval === 'number';
-
-		const hasLongTermLimit =
-			typeof limitation.duration === 'number' &&
-			typeof limitation.max === 'number';
-
-		if (hasShortTermLimit) {
-			await min();
-		}
-		if (hasLongTermLimit) {
-			await max();
-		}
+		await min();
+		await max();
 	}
 }
