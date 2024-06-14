@@ -55,7 +55,7 @@ type MinimumUser = {
 };
 
 type Option = {
-	createdAt?: Date | null;
+	publishedAt?: Date | null;
 	name?: string | null;
 	text?: string | null;
 	reply?: MiNote | null;
@@ -170,7 +170,6 @@ export class NoteEditService implements OnApplicationShutdown {
 			data.channel = await this.channelsRepository.findOneBy({ id: data.reply.channelId });
 		}
 
-		if (data.createdAt == null) data.createdAt = this.idService.parse(targetId).date;
 		if (data.renote == null && targetNote.renoteId) data.renote = await this.notesRepository.findOneByOrFail({ id: targetNote.renoteId });
 		if (data.reply == null && targetNote.replyId) data.reply = await this.notesRepository.findOneByOrFail({ id: targetNote.replyId });
 		if (data.poll == null) data.poll = targetNote.hasPoll ? await this.pollsRepository.findOneByOrFail({ noteId: targetId }) : null;
@@ -248,7 +247,7 @@ export class NoteEditService implements OnApplicationShutdown {
 
 		const note = new MiNote({
 			id: targetNote.id,
-			updatedAt: data.createdAt ?? new Date(),
+			updatedAt: data.publishedAt ?? new Date(),
 			visibility: changeVisibilityToHome ? 'home' : targetNote.visibility,
 			fileIds: data.files ? data.files.map(file => file.id) : [],
 			replyId: data.reply ? data.reply.id : null,
