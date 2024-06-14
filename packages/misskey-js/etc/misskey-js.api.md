@@ -1624,6 +1624,8 @@ declare namespace entities {
         NotesSearchResponse,
         NotesShowRequest,
         NotesShowResponse,
+        NotesHistoryRequest,
+        NotesHistoryResponse,
         NotesStateRequest,
         NotesStateResponse,
         NotesThreadMutingCreateRequest,
@@ -1770,6 +1772,7 @@ declare namespace entities {
         Announcement,
         App,
         Note,
+        NoteHistory,
         NoteReaction,
         NoteFavorite,
         Notification_2 as Notification,
@@ -2513,6 +2516,9 @@ type Note = components['schemas']['Note'];
 type NoteFavorite = components['schemas']['NoteFavorite'];
 
 // @public (undocumented)
+type NoteHistory = components['schemas']['NoteHistory'];
+
+// @public (undocumented)
 type NoteReaction = components['schemas']['NoteReaction'];
 
 // @public (undocumented)
@@ -2559,6 +2565,12 @@ type NotesGlobalTimelineRequest = operations['notes___global-timeline']['request
 
 // @public (undocumented)
 type NotesGlobalTimelineResponse = operations['notes___global-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHistoryRequest = operations['notes___history']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHistoryResponse = operations['notes___history']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['requestBody']['content']['application/json'];

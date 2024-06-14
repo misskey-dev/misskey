@@ -302,6 +302,7 @@ import * as ep___notes_replies from './endpoints/notes/replies.js';
 import * as ep___notes_searchByTag from './endpoints/notes/search-by-tag.js';
 import * as ep___notes_search from './endpoints/notes/search.js';
 import * as ep___notes_show from './endpoints/notes/show.js';
+import * as ep___notes_history from './endpoints/notes/history.js';
 import * as ep___notes_state from './endpoints/notes/state.js';
 import * as ep___notes_threadMuting_create from './endpoints/notes/thread-muting/create.js';
 import * as ep___notes_threadMuting_delete from './endpoints/notes/thread-muting/delete.js';
@@ -683,6 +684,7 @@ const eps = [
 	['notes/search-by-tag', ep___notes_searchByTag],
 	['notes/search', ep___notes_search],
 	['notes/show', ep___notes_show],
+	['notes/history', ep___notes_history],
 	['notes/state', ep___notes_state],
 	['notes/thread-muting/create', ep___notes_threadMuting_create],
 	['notes/thread-muting/delete', ep___notes_threadMuting_delete],

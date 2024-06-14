@@ -438,6 +438,8 @@ import type {
 	NotesSearchResponse,
 	NotesShowRequest,
 	NotesShowResponse,
+	NotesHistoryRequest,
+	NotesHistoryResponse,
 	NotesStateRequest,
 	NotesStateResponse,
 	NotesThreadMutingCreateRequest,
@@ -864,6 +866,7 @@ export type Endpoints = {
 	'notes/search-by-tag': { req: NotesSearchByTagRequest; res: NotesSearchByTagResponse };
 	'notes/search': { req: NotesSearchRequest; res: NotesSearchResponse };
 	'notes/show': { req: NotesShowRequest; res: NotesShowResponse };
+	'notes/history': { req: NotesHistoryRequest; res: NotesHistoryResponse };
 	'notes/state': { req: NotesStateRequest; res: NotesStateResponse };
 	'notes/thread-muting/create': { req: NotesThreadMutingCreateRequest; res: EmptyResponse };
 	'notes/thread-muting/delete': { req: NotesThreadMutingDeleteRequest; res: EmptyResponse };

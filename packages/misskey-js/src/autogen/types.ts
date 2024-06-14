@@ -2807,6 +2807,15 @@ export type paths = {
      */
     post: operations['notes___show'];
   };
+  '/notes/history': {
+    /**
+     * notes/history
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['notes___history'];
+  };
   '/notes/state': {
     /**
      * notes/state
@@ -4107,6 +4116,39 @@ export type components = {
       clippedCount?: number;
       myReaction?: string | null;
     };
+    NoteHistory: {
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      id: string;
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      targetId: string;
+      /** Format: date-time */
+      createdAt: string;
+      text: string | null;
+      cw?: string | null;
+      mentions?: string[];
+      fileIds?: string[];
+      files?: components['schemas']['DriveFile'][];
+      tags?: string[];
+      poll?: ({
+        /** Format: date-time */
+        expiresAt?: string | null;
+        multiple: boolean;
+        choices: {
+            isVoted: boolean;
+            text: string;
+            votes: number;
+          }[];
+      }) | null;
+      emojis?: {
+        [key: string]: string;
+      };
+    };
     NoteReaction: {
       /**
        * Format: id
@@ -4776,6 +4818,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      canEditNote: boolean;
       mentionLimit: number;
       canInvite: boolean;
       inviteLimit: number;
@@ -22335,6 +22378,66 @@ export type operations = {
       200: {
         content: {
           'application/json': components['schemas']['Note'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notes/history
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  notes___history: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          noteId: string;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['NoteHistory'][];
         };
       };
       /** @description Client error */
