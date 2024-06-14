@@ -49,47 +49,45 @@ export class RateLimiterService {
 		}
 
 		// Short-term limit
-		const min = () => {
-			return new Promise<void>((ok, reject) => {
-				this.checkLimiter({
-					id: `${actor}:${limitation.key}:min`,
-					duration: limitation.minInterval! * factor,
-					max: 1,
-					db: this.redisClient,
-				}).then((info) => {
-					this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
-
-					if (info.remaining === 0) {
-						return reject({ code: 'BRIEF_REQUEST_INTERVAL', info });
-					} else {
-						if (hasLongTermLimit) {
-							return max().then(ok, reject);
-						} else {
-							return ok();
-						}
-					}
-				});
+		const min = async () => {
+			const info = await this.checkLimiter({
+				id: `${actor}:${limitation.key}:min`,
+				duration: limitation.minInterval! * factor,
+				max: 1,
+				db: this.redisClient,
 			});
+
+			this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
+
+			if (info.remaining === 0) {
+				// eslint-disable-next-line no-throw-literal
+				throw { code: 'BRIEF_REQUEST_INTERVAL', info };
+			} else {
+				if (hasLongTermLimit) {
+					await max();
+				} else {
+					return;
+				}
+			}
 		};
 
 		// Long term limit
-		const max = () => {
-			return new Promise<void>((ok, reject) => {
-				this.checkLimiter({
-					id: `${actor}:${limitation.key}`,
-					duration: limitation.duration! * factor,
-					max: limitation.max! / factor,
-					db: this.redisClient,
-				}).then((info) => {
-					this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
-
-					if (info.remaining === 0) {
-						return reject({ code: 'RATE_LIMIT_EXCEEDED', info });
-					} else {
-						return ok();
-					}
-				});
+		const max = async () => {
+			const info = await this.checkLimiter({
+				id: `${actor}:${limitation.key}`,
+				duration: limitation.duration! * factor,
+				max: limitation.max! / factor,
+				db: this.redisClient,
 			});
+
+			this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
+
+			if (info.remaining === 0) {
+				// eslint-disable-next-line no-throw-literal
+				throw { code: 'RATE_LIMIT_EXCEEDED', info };
+			} else {
+				return;
+			}
 		};
 
 		const hasShortTermLimit = typeof limitation.minInterval === 'number';
