@@ -63,11 +63,7 @@ export class RateLimiterService {
 				// eslint-disable-next-line no-throw-literal
 				throw { code: 'BRIEF_REQUEST_INTERVAL', info };
 			} else {
-				if (hasLongTermLimit) {
-					await max();
-				} else {
-					return;
-				}
+				return;
 			}
 		};
 
@@ -98,10 +94,9 @@ export class RateLimiterService {
 
 		if (hasShortTermLimit) {
 			await min();
-		} else if (hasLongTermLimit) {
+		}
+		if (hasLongTermLimit) {
 			await max();
-		} else {
-			return;
 		}
 	}
 }
