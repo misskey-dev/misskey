@@ -132,6 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				timelineConfig = [
 					`homeTimeline:${me.id}`,
 					'vmimiRelayTimeline',
+					`vmimiRelayTimelineWithReplyTo:${me.id}`,
 				];
 			}
 

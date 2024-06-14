@@ -119,6 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimelines:
 					ps.withFiles ? ['vmimiRelayTimelineWithFiles']
 					: ps.withReplies ? ['vmimiRelayTimeline', 'vmimiRelayTimelineWithReplies']
+					: me ? ['vmimiRelayTimeline', `vmimiRelayTimelineWithReplyTo:${me.id}`]
 					: ['vmimiRelayTimeline'],
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,

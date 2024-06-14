@@ -955,6 +955,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 				if (note.visibility === 'public' && this.vmimiRelayTimelineService.isRelayedInstance(note.userHost)) {
 					this.fanoutTimelineService.push('vmimiRelayTimelineWithReplies', note.id, meta.vmimiRelayTimelineCacheMax, r);
+					if (note.replyUserHost == null) {
+						this.fanoutTimelineService.push(`vmimiRelayTimelineWithReplyTo:${note.replyUserId}`, note.id, meta.vmimiRelayTimelineCacheMax / 10, r);
+					}
 				}
 			} else {
 				this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
