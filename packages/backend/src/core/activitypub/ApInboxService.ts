@@ -769,6 +769,7 @@ export class ApInboxService {
 			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
 		} else if (getApType(object) === 'Question') {
+			// TODO: 投稿の編集時にアンケートが変更されているとQuestionで飛んでくるのでそれに対応する
 			await this.apQuestionService.updateQuestion(object, resolver).catch(err => console.error(err));
 			return 'ok: Question updated';
 		} else if (getApType(object) === 'Note') {
