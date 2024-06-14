@@ -61,8 +61,6 @@ export class RateLimiterService {
 				if (info.remaining === 0) {
 					// eslint-disable-next-line no-throw-literal
 					throw { code: 'BRIEF_REQUEST_INTERVAL', info };
-				} else {
-					return;
 				}
 			}
 		};
@@ -80,8 +78,6 @@ export class RateLimiterService {
 				if (info.remaining === 0) {
 					// eslint-disable-next-line no-throw-literal
 					throw { code: 'RATE_LIMIT_EXCEEDED', info };
-				} else {
-					return;
 				}
 			}
 		};
