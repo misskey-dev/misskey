@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -38,12 +39,24 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private avatarDecorationService: AvatarDecorationService,
+		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			let fileUrl = ps.url;
+			// URLに変更があるか
+			if (typeof ps.url !== 'undefined' || typeof ps.url === 'string' ) {
+				// システムユーザーとして再アップロード
+				const sysFileData = await this.driveService.uploadFromUrl({
+					url: ps.url,
+					user: null,
+					force: true,
+				});
+				fileUrl = sysFileData.url;
+			}
 			await this.avatarDecorationService.update(ps.id, {
 				name: ps.name,
 				description: ps.description,
-				url: ps.url,
+				url: fileUrl,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
 			}, me);
 		});
