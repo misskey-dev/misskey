@@ -6,6 +6,7 @@
 
 ### Client
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
+- Fix: ベースロールを編集してもUI上では変更が反映されない問題を修正 
 
 ### Server
 - チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
