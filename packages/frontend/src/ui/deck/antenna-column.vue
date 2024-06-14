@@ -42,7 +42,7 @@ onMounted(() => {
 		misskeyApi('antennas/show', { antennaId: props.column.antennaId })
 			.then(value => {
 				antennaName.value = value.name;
-			})
+			});
 	}
 });
 

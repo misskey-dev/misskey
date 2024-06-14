@@ -49,9 +49,9 @@ onMounted(() => {
 		setChannel();
 	} else {
 		misskeyApi('channels/show', { channelId: props.column.channelId })
-			.then(value => channelName.value = value.name)
+			.then(value => channelName.value = value.name);
 	}
-})
+});
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });

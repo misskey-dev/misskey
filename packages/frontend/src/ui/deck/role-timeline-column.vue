@@ -40,7 +40,7 @@ onMounted(() => {
 		setRole();
 	} else {
 		misskeyApi('roles/show', { roleId: props.column.roleId })
-			.then(value => roleName.value = value.name)
+			.then(value => roleName.value = value.name);
 	}
 });
 

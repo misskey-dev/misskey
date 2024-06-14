@@ -41,9 +41,9 @@ onMounted(() => {
 		setList();
 	} else {
 		misskeyApi('users/lists/show', { listId: props.column.listId })
-			.then(value => listName.value = value.name)
+			.then(value => listName.value = value.name);
 	}
-})
+});
 
 watch(withRenotes, v => {
 	updateColumn(props.column.id, {
