@@ -19,7 +19,7 @@ type ColumnWidget = {
 
 export type Column = {
 	id: string;
-	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'channel' | 'list' | 'mentions' | 'direct';
+	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'channel' | 'list' | 'mentions' | 'direct' | 'roleTimeline';
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
@@ -34,7 +34,7 @@ export type Column = {
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
-	soundSetting: SoundStore;
+	soundSetting?: SoundStore;
 };
 
 export const deckStore = markRaw(new Storage('deck', {
@@ -77,7 +77,7 @@ export const loadDeck = async () => {
 			key: deckStore.state.profile,
 		});
 	} catch (err) {
-		if (err.code === 'NO_SUCH_KEY') {
+		if (typeof err === 'object' && err != null && 'code' in err && err.code === 'NO_SUCH_KEY') {
 			// 後方互換性のため
 			if (deckStore.state.profile === 'default') {
 				saveDeck();
@@ -159,6 +159,7 @@ export function swapLeftColumn(id: Column['id']) {
 			}
 			return true;
 		}
+		return false;
 	});
 	saveDeck();
 }
@@ -175,6 +176,7 @@ export function swapRightColumn(id: Column['id']) {
 			}
 			return true;
 		}
+		return false;
 	});
 	saveDeck();
 }
@@ -195,6 +197,7 @@ export function swapUpColumn(id: Column['id']) {
 			}
 			return true;
 		}
+		return false;
 	});
 	saveDeck();
 }
@@ -215,6 +218,7 @@ export function swapDownColumn(id: Column['id']) {
 			}
 			return true;
 		}
+		return false;
 	});
 	saveDeck();
 }
@@ -266,6 +270,7 @@ export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = deepClone(deckStore.state.columns[columnIndex]);
 	if (column == null) return;
+	if (column.widgets == null) column.widgets = [];
 	column.widgets = column.widgets.filter(w => w.id !== widget.id);
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
@@ -288,6 +293,7 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, widgetDat
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = deepClone(deckStore.state.columns[columnIndex]);
 	if (column == null) return;
+	if (column.widgets == null) column.widgets = [];
 	column.widgets = column.widgets.map(w => w.id === widgetId ? {
 		...w,
 		data: widgetData,

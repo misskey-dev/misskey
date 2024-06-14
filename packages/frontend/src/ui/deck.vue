@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:ref="id"
 					:key="id"
 					:class="$style.column"
-					:column="columns.find(c => c.id === id)"
+					:column="columns.find(c => c.id === id)!"
 					:isStacked="ids.length > 1"
 					@headerWheel="onWheel"
 				/>
@@ -185,7 +185,7 @@ const addColumn = async (ev) => {
 		'mentions',
 		'direct',
 		'roleTimeline',
-	];
+	] as const;
 
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
@@ -194,6 +194,7 @@ const addColumn = async (ev) => {
 		})),
 	});
 	if (canceled) return;
+	if (column == null) return;
 
 	addColumnToStore({
 		type: column,
@@ -212,7 +213,7 @@ const onContextmenu = (ev) => {
 
 function onWheel(ev: WheelEvent) {
 	if (ev.deltaX === 0) {
-		columnsEl.value.scrollLeft += ev.deltaY;
+		columnsEl.value!.scrollLeft += ev.deltaY;
 	}
 }
 
