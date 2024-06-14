@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
 	<template #header>
-		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name || roleName || i18n.ts._deck._columns.roleTimeline }}</span>
 	</template>
 
 	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" @note="onNote"/>
@@ -33,10 +33,14 @@ const props = defineProps<{
 
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
+const roleName = ref<string | null>(null);
 
 onMounted(() => {
 	if (props.column.roleId == null) {
 		setRole();
+	} else {
+		misskeyApi('roles/show', { roleId: props.column.roleId })
+			.then(value => roleName.value = value.name)
 	}
 });
 

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
 	<template #header>
-		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ (column.name || listName) ?? i18n.ts._deck._columns.list }}</span>
 	</template>
 
 	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes" @note="onNote"/>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, shallowRef, ref } from 'vue';
+import { watch, shallowRef, ref, onMounted } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -34,10 +34,16 @@ const props = defineProps<{
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const withRenotes = ref(props.column.withRenotes ?? true);
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
+const listName = ref<string | null>(null);
 
-if (props.column.listId == null) {
-	setList();
-}
+onMounted(() => {
+	if (props.column.listId == null) {
+		setList();
+	} else {
+		misskeyApi('users/lists/show', { listId: props.column.listId })
+			.then(value => listName.value = value.name)
+	}
+})
 
 watch(withRenotes, v => {
 	updateColumn(props.column.id, {

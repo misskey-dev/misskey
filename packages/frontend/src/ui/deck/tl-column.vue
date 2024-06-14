@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
-		<span style="margin-left: 8px;">{{ column.name }}</span>
+		<span style="margin-left: 8px;">{{ column.name || (column.tl ? i18n.ts._timelines[column.tl] : null) || i18n.ts._deck._columns.tl }}</span>
 	</template>
 
 	<div v-if="(((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
