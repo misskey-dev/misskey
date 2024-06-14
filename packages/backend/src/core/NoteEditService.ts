@@ -311,16 +311,16 @@ export class NoteEditService implements OnApplicationShutdown {
 		}
 		this.noteHistoryRepository.insert(new MiNoteHistory({
 			id: this.idService.gen(),
-			text: note.text,
-			cw: note.cw,
-			targetId: note.id,
-			fileIds: note.fileIds,
-			attachedFileTypes: note.attachedFileTypes,
-			mentions: note.mentions,
-			mentionedRemoteUsers: note.mentionedRemoteUsers,
-			emojis: note.emojis,
-			tags: note.tags,
-			hasPoll: note.hasPoll,
+			text: targetNote.text,
+			cw: targetNote.cw,
+			targetId: targetNote.id,
+			fileIds: targetNote.fileIds,
+			attachedFileTypes: targetNote.attachedFileTypes,
+			mentions: targetNote.mentions,
+			mentionedRemoteUsers: targetNote.mentionedRemoteUsers,
+			emojis: targetNote.emojis,
+			tags: targetNote.tags,
+			hasPoll: targetNote.hasPoll,
 		}));
 		setImmediate('post updated', { signal: this.#shutdownController.signal }).then(
 			async () => this.postNoteEdited((await this.notesRepository.findOneByOrFail({ id: note.id })), user, data, silent, tags!, mentionedUsers!),
