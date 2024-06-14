@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -176,7 +177,6 @@ export class NoteHistoryEntityService implements OnModuleInit {
 			skipHide?: boolean;
 			withReactionAndUserPairCache?: boolean;
 			_hint_?: {
-				myReactions: Map<MiNote['id'], string | null>;
 				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
 				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
 			};
@@ -214,6 +214,37 @@ export class NoteHistoryEntityService implements OnModuleInit {
 			} : {}),
 		});
 		return packed;
+	}
+
+	@bindThis
+	public async packMany(
+		noteHistories: MiNoteHistory[],
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			detail?: boolean;
+			skipHide?: boolean;
+		},
+	) {
+		if (noteHistories.length === 0) return [];
+		const targetNotes = await this.notesRepository.findBy({ id: In(noteHistories.map(n => n.targetId)) });
+		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(targetNotes));
+		const fileIds = targetNotes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
+		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
+		const users = [
+			...targetNotes.map(({ user, userId }) => user ?? userId),
+			...targetNotes.map(({ replyUserId }) => replyUserId).filter(isNotNull),
+			...targetNotes.map(({ renoteUserId }) => renoteUserId).filter(isNotNull),
+		];
+		const packedUsers = await this.userEntityService.packMany(users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+
+		return await Promise.all(noteHistories.map(nh => this.pack(nh.id, me, {
+			...options,
+			_hint_: {
+				packedFiles,
+				packedUsers,
+			},
+		})));
 	}
 
 	@bindThis
