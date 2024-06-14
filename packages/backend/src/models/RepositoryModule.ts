@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Provider } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import {
@@ -41,6 +40,7 @@ import {
 	MiMuting,
 	MiNote,
 	MiNoteFavorite,
+	MiNoteHistory,
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiNoteUnread,
@@ -77,8 +77,9 @@ import {
 	MiUserProfile,
 	MiUserPublickey,
 	MiUserSecurityKey,
-	MiWebhook
+	MiWebhook,
 } from './_.js';
+import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
 
 const $usersRepository: Provider = {
@@ -114,6 +115,12 @@ const $appsRepository: Provider = {
 const $avatarDecorationsRepository: Provider = {
 	provide: DI.avatarDecorationsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiAvatarDecoration).extend(miRepository as MiRepository<MiAvatarDecoration>),
+	inject: [DI.db],
+};
+
+const $noteHistoryRepository: Provider = {
+	provide: DI.noteHistoryRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiNoteHistory).extend(miRepository as MiRepository<MiNoteHistory>),
 	inject: [DI.db],
 };
 
@@ -504,6 +511,7 @@ const $reversiGamesRepository: Provider = {
 		$announcementReadsRepository,
 		$appsRepository,
 		$avatarDecorationsRepository,
+		$noteHistoryRepository,
 		$noteFavoritesRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
@@ -575,6 +583,7 @@ const $reversiGamesRepository: Provider = {
 		$announcementReadsRepository,
 		$appsRepository,
 		$avatarDecorationsRepository,
+		$noteHistoryRepository,
 		$noteFavoritesRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,

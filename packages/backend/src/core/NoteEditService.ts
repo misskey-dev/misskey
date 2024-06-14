@@ -88,9 +88,6 @@ export class NoteEditService implements OnApplicationShutdown {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.noteHistoryRepository)
-		private noteHistoryRepository: NoteHistoryRepository,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
@@ -108,6 +105,9 @@ export class NoteEditService implements OnApplicationShutdown {
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.noteHistoryRepository)
+		private noteHistoryRepository: NoteHistoryRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
