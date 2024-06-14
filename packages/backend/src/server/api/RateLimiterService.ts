@@ -49,40 +49,37 @@ export class RateLimiterService {
 		}
 
 		// Short-term limit
-		const min = async () => {
-			if (limitation.minInterval != null) {
-				const info = await this.checkLimiter({
-					id: `${actor}:${limitation.key}:min`,
-					duration: limitation.minInterval * factor,
-					max: 1,
-					db: this.redisClient,
-				});
-				this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
-				if (info.remaining === 0) {
-					// eslint-disable-next-line no-throw-literal
-					throw { code: 'BRIEF_REQUEST_INTERVAL', info };
-				}
+		if (limitation.minInterval != null) {
+			const info = await this.checkLimiter({
+				id: `${actor}:${limitation.key}:min`,
+				duration: limitation.minInterval * factor,
+				max: 1,
+				db: this.redisClient,
+			});
+
+			this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
+
+			if (info.remaining === 0) {
+				// eslint-disable-next-line no-throw-literal
+				throw { code: 'BRIEF_REQUEST_INTERVAL', info };
 			}
-		};
+		}
 
 		// Long term limit
-		const max = async () => {
-			if (limitation.duration != null && limitation.max != null) {
-				const info = await this.checkLimiter({
-					id: `${actor}:${limitation.key}`,
-					duration: limitation.duration * factor,
-					max: limitation.max / factor,
-					db: this.redisClient,
-				});
-				this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
-				if (info.remaining === 0) {
-					// eslint-disable-next-line no-throw-literal
-					throw { code: 'RATE_LIMIT_EXCEEDED', info };
-				}
-			}
-		};
+		if (limitation.duration != null && limitation.max != null) {
+			const info = await this.checkLimiter({
+				id: `${actor}:${limitation.key}`,
+				duration: limitation.duration * factor,
+				max: limitation.max / factor,
+				db: this.redisClient,
+			});
 
-		await min();
-		await max();
+			this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
+
+			if (info.remaining === 0) {
+				// eslint-disable-next-line no-throw-literal
+				throw { code: 'RATE_LIMIT_EXCEEDED', info };
+			}
+		}
 	}
 }
