@@ -9,23 +9,16 @@ import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 import type { MiDriveFile } from './DriveFile.js';
 
-@Entity('note')
+@Entity('note_history')
 export class MiNoteHistory {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		nullable: true,
-		comment: 'The updated date of the Note.',
-	})
-	public updatedAt: Date;
-
 	@Index()
 	@Column({
 		...id(),
-		nullable: true,
 	})
-	public targetId: MiNote['id'] | null;
+	public targetId: MiNote['id'];
 
 	// TODO: varcharにしたい
 	@Column('text', {
@@ -78,7 +71,7 @@ export class MiNoteHistory {
 	})
 	public hasPoll: boolean;
 
-	constructor(data: Partial<MiNote>) {
+	constructor(data: Partial<MiNoteHistory>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

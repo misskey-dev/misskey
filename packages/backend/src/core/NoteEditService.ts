@@ -12,7 +12,8 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, NotesRepository, UserProfilesRepository, UsersRepository, PollsRepository, DriveFilesRepository } from '@/models/_.js';
+import { MiNoteHistory } from '@/models/NoteHistory.js';
+import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, NotesRepository, NoteHistoryRepository, UserProfilesRepository, UsersRepository, PollsRepository, DriveFilesRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
@@ -86,6 +87,9 @@ export class NoteEditService implements OnApplicationShutdown {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.noteHistoryRepository)
+		private noteHistoryRepository: NoteHistoryRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -306,7 +310,19 @@ export class NoteEditService implements OnApplicationShutdown {
 
 			throw e;
 		}
-
+		this.noteHistoryRepository.insert(new MiNoteHistory({
+			id: this.idService.gen(),
+			text: note.text,
+			cw: note.cw,
+			targetId: note.id,
+			fileIds: note.fileIds,
+			attachedFileTypes: note.attachedFileTypes,
+			mentions: note.mentions,
+			mentionedRemoteUsers: note.mentionedRemoteUsers,
+			emojis: note.emojis,
+			tags: note.tags,
+			hasPoll: note.hasPoll,
+		}));
 		setImmediate('post updated', { signal: this.#shutdownController.signal }).then(
 			async () => this.postNoteEdited((await this.notesRepository.findOneByOrFail({ id: note.id })), user, data, silent, tags!, mentionedUsers!),
 			() => { /* aborted, ignore this */ },
