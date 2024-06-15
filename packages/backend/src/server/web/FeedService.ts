@@ -14,7 +14,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import {MfmService} from "@/core/MfmService.js";
+import { MfmService } from "@/core/MfmService.js";
 import { parse as mfmParse } from 'mfm-js';
 
 @Injectable()
