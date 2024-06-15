@@ -154,15 +154,20 @@ describe('Webリソース', () => {
 			status: 404,
 		}));
 
-		before(() => {});
-		test('のエントリはMFMを含まない。', async () => {
-			const content = await simpleGet(path(alice.username), "application/json");
-			const a: string = content.body;
+		describe(' has entry such ', () => {
+			beforeEach(() => {
+				post(alice, { text: "**a**" })
+			});
 
-			if (a.includes("**a**")) {
-				throw new Error("MFM shouldn't be included");
-			}
-		});
+			test('MFMを含まない。', async () => {
+				const content = await simpleGet(path(alice.username), "application/json");
+				const a: string = content.body;
+
+				if (a.includes("**a**")) {
+					throw new Error("MFM shouldn't be included");
+				}
+			});
+		})
 	});
 
 	describe.each([{ path: '/api/foo' }])('$path', ({ path }) => {
