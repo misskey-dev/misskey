@@ -29,7 +29,7 @@ function getChartArray(seed: string, limit: number, option?: { accumulate?: bool
 	return array;
 }
 
-function getChartResolver(fields: string[], option?: { accumulate?: boolean, mulMap?: Record<string, number> }): HttpResponseResolver<PathParams, DefaultBodyType, JsonBodyType> {
+export function getChartResolver(fields: string[], option?: { accumulate?: boolean, mulMap?: Record<string, number> }): HttpResponseResolver<PathParams, DefaultBodyType, JsonBodyType> {
 	return ({ request }) => {
 		action(`GET ${request.url}`)();
 		const limitParam = new URL(request.url).searchParams.get('limit');
@@ -76,6 +76,7 @@ const Base = {
 	args: {
 		src: 'federation',
 		span: 'hour',
+		nowForChromatic: 1716263640000,
 	},
 	parameters: {
 		layout: 'centered',
@@ -100,18 +101,21 @@ const Base = {
 export const FederationChart = {
 	...Base,
 	args: {
+		...Base.args,
 		src: 'federation',
 	},
 } satisfies StoryObj<typeof MkChart>;
 export const NotesTotalChart = {
 	...Base,
 	args: {
+		...Base.args,
 		src: 'notes-total',
 	},
 } satisfies StoryObj<typeof MkChart>;
 export const DriveChart = {
 	...Base,
 	args: {
+		...Base.args,
 		src: 'drive',
 	},
 } satisfies StoryObj<typeof MkChart>;
