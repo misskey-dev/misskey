@@ -161,9 +161,11 @@ describe('Webリソース', () => {
 
 			test('MFMを含まない。', async () => {
 				const content = await simpleGet(path(alice.username), "*/*", undefined, res => res.text());
-				const a: string = content.body;
+				const _body: unknown = content.body;
+				// JSONフィードのときは改めて文字列化する
+				const body: string = typeof (_body) === "object" ? JSON.stringify(_body) : _body as string;
 
-				if (a.includes("**a**")) {
+				if (body.includes("**a**")) {
 					throw new Error("MFM shouldn't be included");
 				}
 			});
