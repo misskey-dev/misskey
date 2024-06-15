@@ -229,7 +229,7 @@ export class SearchService {
 					const config = loadConfig();
 					const defaultTag: string | null = config.defaultTag?.tag;
 					if (defaultTag) {
-						query.andWhere('(user.host IS NULL) OR (:t = any(note.tags))', { t: normalizeForSearch(defaultTag) });
+						query.andWhere(':t = any(note.tags)', { t: normalizeForSearch(defaultTag) });
 					} else {
 						query.andWhere('user.host IS NULL');
 					}
