@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -5,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import glob from 'fast-glob';
 import walk from 'ignore-walk';
 import Pack from 'tar/lib/pack.js';
-import meta from '../package.json' assert { type: "json" };
+import meta from '../package.json' with { type: "json" };
 
 const cwd = fileURLToPath(new URL('..', import.meta.url));
 const ignore = [
