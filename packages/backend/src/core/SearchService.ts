@@ -17,6 +17,8 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { loadConfig } from '@/config.js';
 
 type K = string;
 type V = string | number | boolean;
@@ -224,12 +226,17 @@ export class SearchService {
 
 			if (opts.host) {
 				if (opts.host === '.') {
-					query.andWhere('user.host IS NULL');
+					const config = loadConfig();
+					const defaultTag: string | null = config.defaultTag?.tag;
+					if (defaultTag) {
+						query.andWhere(':t = any(note.tags)', { t: normalizeForSearch(defaultTag) });
+					} else {
+						query.andWhere('user.host IS NULL');
+					}
 				} else {
 					query.andWhere('user.host = :host', { host: opts.host });
 				}
 			}
-
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
