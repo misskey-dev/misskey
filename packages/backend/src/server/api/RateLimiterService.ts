@@ -57,7 +57,7 @@ export class RateLimiterService {
 						return reject({ code: 'BRIEF_REQUEST_INTERVAL', info });
 					} else {
 						if (hasLongTermLimit) {
-							return max;
+							return max.then(ok, reject);
 						} else {
 							return ok();
 						}
