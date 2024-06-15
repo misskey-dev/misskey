@@ -42,7 +42,7 @@ function setPosition() {
 	let left = props.targetElement.offsetWidth;
 	let top = (parentRect.top - rootRect.top) - 8;
 
-	maxHeight.value = window.innerHeight - SCROLLBAR_THICKNESS * 2;
+	maxHeight.value = window.innerHeight - rootRect.top - SCROLLBAR_THICKNESS;
 
 	if (rootRect.left + left + myRect.width >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
 		left = -myRect.width;
