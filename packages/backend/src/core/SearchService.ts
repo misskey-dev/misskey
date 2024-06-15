@@ -168,7 +168,7 @@ export class SearchService {
 		sinceId?: MiNote['id'];
 		limit?: number;
 	}): Promise<MiNote[]> {
-		if (this.meilisearch) {
+		if (this.meilisearch) { // TODO:  Meilisearch側のデフォルトタグ対応。当面は対応の予定なし。
 			const filter: Q = {
 				op: 'and',
 				qs: [],
