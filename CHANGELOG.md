@@ -7,7 +7,7 @@
 ### Client
 - Feat: 未読の通知があるときにタブのアイコン（Favicon）を目立たせることができるように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/474)
-- `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
+- Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 
 ### Server
