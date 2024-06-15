@@ -6,10 +6,11 @@
 
 ### Client
 - `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
+- Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 
 ### Server
 - チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
-
+- Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
 
 ## 2024.5.0
 
