@@ -23,7 +23,7 @@ jobs:
       # headがrelease/かつopenのPRを1つ取得
       - name: Get PR
         run: |
-          echo "pr_number=$(gh pr list --limit 1 --head "${{ github.ref_name }}" --json number  --jq '.[] | .number')" >> $GITHUB_OUTPUT
+          echo "pr_number=$(gh pr list --limit 1 --head "$GITHUB_REF_NAME" --json number --jq '.[] | .number')" >> $GITHUB_OUTPUT
         id: get_pr
       - name: Get target version
         uses: misskey-dev/release-manager-actions/.github/actions/get-target-version@v1
