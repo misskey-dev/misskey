@@ -160,7 +160,7 @@ describe('Webリソース', () => {
 			});
 
 			test('MFMを含まない。', async () => {
-				const content = await simpleGet(path(alice.username), "application/json");
+				const content = await simpleGet(path(alice.username), "*/*", undefined, res => res.text());
 				const a: string = content.body;
 
 				if (a.includes("**a**")) {
