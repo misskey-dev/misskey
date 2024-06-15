@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="itemsEl" v-hotkey="keymap"
 		class="_popup _shadow"
 		:class="[$style.root, { [$style.center]: align === 'center', [$style.asDrawer]: asDrawer }]"
-		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
+		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : 'calc(100dvh - 32px)' }"
 		@contextmenu.self="e => e.preventDefault()"
 	>
 		<template v-for="(item, i) in (items2 ?? [])">
