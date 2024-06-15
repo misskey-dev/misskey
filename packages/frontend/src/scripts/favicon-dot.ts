@@ -9,7 +9,7 @@ class FaviconDot {
 	private readonly canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D | null = null;
 	private faviconImage: HTMLImageElement | null = null;
-	private faviconEL: HTMLLinkElement | undefined;
+	private faviconEl: HTMLLinkElement | undefined;
 	private hasLoaded: Promise<void> | undefined;
 
 	constructor() {
@@ -22,28 +22,33 @@ class FaviconDot {
 	public async setup() {
 		const element: HTMLLinkElement = await this.getOrMakeFaviconElement();
 
-		this.faviconEL = element;
+		this.faviconEl = element;
 		this.ctx = this.canvas.getContext('2d');
 
 		this.faviconImage = document.createElement('img');
 
 		this.hasLoaded = new Promise((resolve, reject) => {
-			(this.faviconImage as HTMLImageElement).addEventListener('load', () => {
-				this.canvas.width = (this.faviconImage as HTMLImageElement).width;
-				this.canvas.height = (this.faviconImage as HTMLImageElement).height;
+			if (!this.faviconImage) {
+				reject('Failed to create favicon img element');
+				return;
+			}
+
+			this.faviconImage.addEventListener('load', () => {
+				this.canvas.width = this.faviconImage!.width;
+				this.canvas.height = this.faviconImage!.height;
 				resolve();
 			});
-			(this.faviconImage as HTMLImageElement).addEventListener('error', () => {
+			this.faviconImage.addEventListener('error', () => {
 				reject('Failed to create favicon img element');
 			});
 		});
 
-		this.faviconImage.src = this.faviconEL.href;
+		this.faviconImage.src = this.faviconEl.href;
 	}
 
 	private async getOrMakeFaviconElement(): Promise<HTMLLinkElement> {
 		return new Promise((resolve, reject) => {
-			const favicon = (document.querySelector('link[rel=icon]') ?? this.createFaviconElem()) as HTMLLinkElement;
+			const favicon = document.querySelector<HTMLLinkElement>('link[rel=icon]') ?? this.createFaviconElem();
 			favicon.addEventListener('load', () => {
 				resolve(favicon);
 			});
@@ -93,7 +98,7 @@ class FaviconDot {
 	}
 
 	private setFavicon() {
-		if (this.faviconEL) this.faviconEL.href = this.canvas.toDataURL('image/png');
+		if (this.faviconEl) this.faviconEl.href = this.canvas.toDataURL('image/png');
 	}
 
 	public async setVisible(isVisible: boolean) {
