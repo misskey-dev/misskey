@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="el" :class="$style.root">
-	<MkMenu :items="items" :align="align" :width="width" :maxHeight="maxHeight" :asDrawer="false" @close="onChildClosed"/>
+	<MkMenu :items="items" :align="align" :width="width" :asDrawer="false" @close="onChildClosed"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, shallowRef, ref, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 
@@ -29,7 +29,6 @@ const emit = defineEmits<{
 
 const el = shallowRef<HTMLElement>();
 const align = 'left';
-const maxHeight = ref<number | undefined>(undefined);
 
 const SCROLLBAR_THICKNESS = 16;
 
@@ -41,9 +40,6 @@ function setPosition() {
 
 	let left = props.targetElement.offsetWidth;
 	let top = (parentRect.top - rootRect.top) - 8;
-
-	maxHeight.value = window.innerHeight - rootRect.top - SCROLLBAR_THICKNESS;
-
 	if (rootRect.left + left + myRect.width >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
 		left = -myRect.width;
 	}
