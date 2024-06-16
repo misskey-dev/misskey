@@ -502,7 +502,7 @@ export class ApNoteService {
 
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
 
-		await this.noteEditService.edit(actor, targetNote.id, {
+		return await this.noteEditService.edit(actor, targetNote.id, {
 			publishedAt: note.updated ? new Date(note.updated) : new Date(),
 			files,
 			reply,
