@@ -63,6 +63,36 @@ After that, you have two ways to use the Vmimi Relay Timeline:
   [`vmimi-relay-timeline/generic`] ブランチをあなたのフォークにマージすることで、この拡張を使用できます。
   必要であれば、あなたのフォークにプルリクエストを作成します。お気軽にお尋ねください。
 
+### Notes for Third-party Client Developers
+
+Here are the technical notes for third-party misskey client developers.
+
+サードパーティ Misskey クライアント向けの技術的な情報です
+
+#### Detecting Vmimi Relay Timeline
+
+There is `vmimiRelayTimelineImplemented` property on `metadata` object of `nodeinfo`.
+If it's true, your client can assume that the VRTL is implemented for the sever.
+
+`nodeinfo`の`metadata`オブジェクトに`vmimiRelayTimelineImplemented`プロパティがあります。
+この値が true であれば、VRTLがそのサーバーにて実装されてると考えて問題ありません
+
+#### Endpoints and Channels of Vmimi Relay Timeline
+
+The fetch note endpoint for VRTL and VSTL are `notes/vmimi-relay-timeline` and `notes/vmimi-relay-hybrid-timeline`,
+and the channel name for them are `vmimiRelayTimeline` and `vmimiRelayHybridTimeline`.
+
+Those endpoints and channels have almost same options as LTL / STL but they have one extra option specific to VRTL/VSTL.
+The `withLocalOnly` flag (true by default) indicates if the timeline should include local only (non-federated) notes from server (local) timeline.
+
+For more details, see `misskey-js`.
+
+VRTLとVSTLのfetchエンドポイントはそれぞれ `notes/vmimi-relay-timeline`と `notes/vmimi-relay-hybrid-timeline`で、
+チャンネルは `vmimiRelayTimeline` と `vmimiRelayHybridTimeline` です。
+
+これらのエンドポイントとチャンネルは LTL/STL とほぼ同じオプションを持っていますが、 VRTL/VSTL に固有オプションが一つあります。
+`withLocalOnly` (デフォルトtrue) はタイムラインにローカルのみ(連合なし)ノートがタイムラインに含まれるかどうかを示します。
+
 ### Branches related to Vmimi Relay Timeline
 
 - [`vmimi-relay-timeline/generic`]:
