@@ -10,17 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else-if="widgetProps.src === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="widgetProps.src === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="widgetProps.src === 'global'" class="ti ti-whirl"></i>
+		<i v-else-if="widgetProps.src === 'vmimi-relay'" class="ti ti-circles-relation"></i>
+		<i v-else-if="widgetProps.src === 'vmimi-relay-social'" class="ti ti-topology-full"></i>
 		<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
 		<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
 	</template>
 	<template #header>
 		<button class="_button" @click="choose">
-			<span>{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : i18n.ts._timelines[widgetProps.src] }}</span>
+			<span>{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : widgetProps.src == 'vmimi-relay' ? i18n.ts._timelines.vmimiRelay : widgetProps.src == 'vmimi-relay-social' ? i18n.ts._timelines.vmimiRelaySocial : i18n.ts._timelines[widgetProps.src] }}</span>
 			<i :class="menuOpened ? 'ti ti-chevron-up' : 'ti ti-chevron-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>
 
-	<div v-if="(((widgetProps.src === 'local' || widgetProps.src === 'social') && !isLocalTimelineAvailable) || (widgetProps.src === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
+	<div v-if="(((widgetProps.src === 'local' || widgetProps.src === 'social' || widgetProps.src == 'vmimi-relay-social') && !isLocalTimelineAvailable) || (widgetProps.src === 'global' && !isGlobalTimelineAvailable) || ((widgetProps.src === 'vmimi-relay' || widgetProps.src == 'vmimi-relay-social') && !isVmimiRelayTimelineAvailable))" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -48,6 +50,7 @@ import { instance } from '@/instance.js';
 const name = 'timeline';
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
+const isVmimiRelayTimelineAvailable = (($i == null && instance.policies.vrtlAvailable) || ($i != null && $i.policies.vrtlAvailable));
 
 const widgetPropsDef = {
 	showHeader: {
@@ -131,6 +134,14 @@ const choose = async (ev) => {
 		text: i18n.ts._timelines.global,
 		icon: 'ti ti-whirl',
 		action: () => { setSrc('global'); },
+	}, {
+		text: i18n.ts._timelines.vmimiRelay,
+		icon: 'ti ti-whirl',
+		action: () => { setSrc('vmimi-relay'); },
+	}, {
+		text: i18n.ts._timelines.vmimiRelaySocial,
+		icon: 'ti ti-whirl',
+		action: () => { setSrc('vmimi-relay-social'); },
 	}, antennaItems.length > 0 ? { type: 'divider' } : undefined, ...antennaItems, listItems.length > 0 ? { type: 'divider' } : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;
 	});

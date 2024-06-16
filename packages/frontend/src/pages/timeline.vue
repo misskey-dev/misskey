@@ -17,12 +17,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.tl">
 					<MkTimeline
 						ref="tlComponent"
-						:key="src + withRenotes + withReplies + onlyFiles"
+						:key="src + withRenotes + withReplies + onlyFiles + withLocalOnly"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
+						:withLocalOnly="withLocalOnly"
 						:sound="true"
 						@queue="queueUpdated"
 					/>
@@ -75,6 +76,10 @@ const src = computed<'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'v
 const withRenotes = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
+});
+const withLocalOnly = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withLocalOnly,
+	set: (x) => saveTlFilter('withLocalOnly', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
@@ -263,7 +268,11 @@ const headerActions = computed(() => {
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: src.value === 'local' || src.value === 'social' || src.value === 'vmimi-relay' || src.value === 'vmimi-relay-social' ? withReplies : false,
-				}], ev.currentTarget ?? ev.target);
+				}, src.value === 'vmimi-relay' || src.value === 'vmimi-relay-social' ? {
+					type: 'switch',
+					text: i18n.ts.showLocalOnlyInTimeline,
+					ref: withLocalOnly,
+				} : undefined], ev.currentTarget ?? ev.target);
 			},
 		},
 	];

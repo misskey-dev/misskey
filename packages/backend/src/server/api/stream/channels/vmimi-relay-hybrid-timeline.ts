@@ -22,6 +22,7 @@ class VmimiRelayHybridTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
+	private withLocalOnly: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -44,6 +45,7 @@ class VmimiRelayHybridTimelineChannel extends Channel {
 		this.withRenotes = params.withRenotes ?? true;
 		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
+		this.withLocalOnly = params.withLocalOnly ?? true;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -62,7 +64,7 @@ class VmimiRelayHybridTimelineChannel extends Channel {
 		if (!(
 			(note.channelId == null && isMe) ||
 			(note.channelId == null && Object.hasOwn(this.following, note.userId)) ||
-			(note.channelId == null && (this.vmimiRelayTimelineService.isRelayedInstance(note.user.host) && note.visibility === 'public')) ||
+			(note.channelId == null && (this.vmimiRelayTimelineService.isRelayedInstance(note.user.host) && note.visibility === 'public') && (this.withLocalOnly || !note.localOnly)) ||
 			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
 
