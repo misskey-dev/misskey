@@ -20906,6 +20906,8 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
+          /** @default true */
+          withLocalOnly?: boolean;
           /** @default 10 */
           limit?: number;
           /** @default true */
@@ -20974,6 +20976,8 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
+          /** @default true */
+          withLocalOnly?: boolean;
           /** @default 10 */
           limit?: number;
           /** @default true */

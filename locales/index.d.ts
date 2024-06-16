@@ -4717,6 +4717,10 @@ export interface Locale extends ILocale {
      */
     "hideRepliesToOthersInTimelineAll": string;
     /**
+     * TLに連合なし投稿を含める
+     */
+    "showLocalOnlyInTimeline": string;
+    /**
      * この操作は元に戻せません。本当にTLに現在フォロー中の人全員の返信を含めるようにしますか？
      */
     "confirmShowRepliesAll": string;
