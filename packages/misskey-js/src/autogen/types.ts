@@ -4129,7 +4129,7 @@ export type components = {
       targetId: string;
       /** Format: date-time */
       createdAt: string;
-      text: string | null;
+      text?: string | null;
       cw?: string | null;
       mentions?: string[];
       fileIds?: string[];
