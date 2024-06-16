@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@keydown.enter="toggle"
 	>
 	<XButton :checked="checked" :disabled="disabled" @toggle="toggle"/>
-	<span :class="$style.body">
+	<span v-if="!noBody" :class="$style.body">
 		<!-- TODO: 無名slotの方は廃止 -->
 		<span :class="$style.label">
 			<span @click="toggle">
@@ -34,16 +34,19 @@ const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
 	disabled?: boolean;
 	helpText?: string;
+	noBody?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: boolean): void;
+	(ev: 'change', v: boolean): void;
 }>();
 
 const checked = toRefs(props).modelValue;
 const toggle = () => {
 	if (props.disabled) return;
 	emit('update:modelValue', !checked.value);
+	emit('change', !checked.value);
 };
 </script>
 
