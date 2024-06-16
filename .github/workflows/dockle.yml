@@ -24,10 +24,12 @@ jobs:
           tags: |
             misskey:scan
       - name: Run dockle
-        uses: goodwithtech/dockle-action@main
+        uses: docker://goodwithtech/dockle:v0.4.14
+        env:
+          DOCKLE_OUTPUT_FORMAT: list
+          DOCKLE_EXIT_CODE: 1
+          DOCKLE_EXIT_LEVEL: WARN
+          DOCKLE_IGNORES: CIS-DI-0005,CIS-DI-0010
+          DOCKLE_DEBUG: true
         with:
-          image: 'misskey:scan'
-          format: 'list'
-          exit-code: '1'
-          exit-level: 'warn'
-          ignore: 'CIS-DI-0005,CIS-DI-0010'
+          args: 'misskey:scan'
