@@ -1,3 +1,19 @@
+## Unreleased
+
+### General
+- Feat: VRTL/VSTLに連合なし投稿を含めるかを選択可能に
+  - もともとのVRTL/VSTLでは連合なし投稿が常に含まれていましたが、正しくVRTL/VSTLのノートを表現するために含めないようにできるようになりました
+  - VSTLの場合、連合なし投稿を含めないようにしてもフォローしている人の連合なし投稿は表示されます
+
+### Client
+- Fix: ウィジェットでVRTL/VSTLが使用できない問題を修正
+
+### Server
+- Enhance: `vmimiRelayTimelineImplemented` と `disableVmimiRelayTimeline` nodeinfo に追加しました
+  - これによりサードパーティクライアントがVRTLの有無を認知できるようになりました。
+- Enhance: VRTL参加サーバーの取得に失敗したときのリトライの間隔を短く
+- Fix: 自分自身に対するリプライがwithReplies = falseなVRTL/VSTLにて含まれていない問題を修正
+
 ## 2024.5.0-kinel.1
 
 ### General

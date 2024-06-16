@@ -25,11 +25,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkTimeline
 		v-else-if="column.tl"
 		ref="timeline"
-		:key="column.tl + withRenotes + withReplies + onlyFiles"
+		:key="column.tl + withRenotes + withReplies + onlyFiles + withLocalOnly"
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
 		:onlyFiles="onlyFiles"
+		:withLocalOnly="withLocalOnly"
 		@note="onNote"
 	/>
 </XColumn>
@@ -63,6 +64,7 @@ const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, 
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
+const withLocalOnly = ref(props.column.withLocalOnly ?? true);
 
 watch(withRenotes, v => {
 	updateColumn(props.column.id, {
@@ -79,6 +81,12 @@ watch(withReplies, v => {
 watch(onlyFiles, v => {
 	updateColumn(props.column.id, {
 		onlyFiles: v,
+	});
+});
+
+watch(withLocalOnly, v => {
+	updateColumn(props.column.id, {
+		withLocalOnly: v,
 	});
 });
 
@@ -150,7 +158,11 @@ const menu: MenuItem[] = [{
 	text: i18n.ts.fileAttachedOnly,
 	ref: onlyFiles,
 	disabled: props.column.tl === 'local' || props.column.tl === 'social' || props.column.tl === 'vmimi-relay-social' || props.column.tl === 'vmimi-relay' ? withReplies : false,
-}];
+}, props.column.tl === 'vmimi-relay-social' || props.column.tl === 'vmimi-relay' ? {
+	type: 'switch',
+	text: i18n.ts.showLocalOnlyInTimeline,
+	ref: withLocalOnly,
+} : undefined];
 </script>
 
 <style lang="scss" module>
