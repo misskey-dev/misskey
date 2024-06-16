@@ -90,8 +90,8 @@ non-federated notes, but this behavior may change in the future.
 [Virtual Kemomimi Relay]: https://relay.virtualkemomimi.net/
 [misskey.niri.la]: https://github.com/niri-la/misskey.niri.la/
 [vmimi-relay timeline]: #vmimi-relay-timeline
-[`vmimi-relay-timeline/generic`]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline
-[`vmimi-relay-timeline/releases`]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline-releases
+[`vmimi-relay-timeline/generic`]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline/generic
+[`vmimi-relay-timeline/releases`]: https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline/releases
 [`ghcr.io/anatawa12/vrtl-misskey:latest`]: https://github.com/anatawa12/misskey/pkgs/container/vrtl-misskey
 
 ---
