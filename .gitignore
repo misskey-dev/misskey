@@ -69,3 +69,6 @@ tsdoc-metadata.json
 
 # VSCode addon
 .favorites.json
+
+# me
+/packages/frontend/vite.config.local-dev.ts.*.mjs
