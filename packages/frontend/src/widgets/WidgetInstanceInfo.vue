@@ -80,7 +80,6 @@ defineExpose<WidgetComponentExpose>({
 
 .body {
 	text-overflow: ellipsis;
-	overflow: clip;
 }
 
 .name {
