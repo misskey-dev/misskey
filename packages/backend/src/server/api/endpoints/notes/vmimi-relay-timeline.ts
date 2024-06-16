@@ -52,6 +52,7 @@ export const paramDef = {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 		withReplies: { type: 'boolean', default: false },
+		withLocalOnly: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		allowPartial: { type: 'boolean', default: true }, // this timeline is new so true by default
 		sinceId: { type: 'string', format: 'misskey:id' },
@@ -98,6 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
 					withReplies: ps.withReplies,
+					withLocalOnly: ps.withLocalOnly,
 				}, me);
 
 				process.nextTick(() => {
@@ -117,9 +119,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				redisTimelines:
-					ps.withFiles ? ['vmimiRelayTimelineWithFiles']
-					: ps.withReplies ? ['vmimiRelayTimeline', 'vmimiRelayTimelineWithReplies']
-					: ['vmimiRelayTimeline'],
+					ps.withFiles ? ['vmimiRelayTimelineWithFiles', ...(ps.withLocalOnly ? ['localTimelineWithFiles'] as const : [])]
+					: ps.withReplies ? ['vmimiRelayTimeline', 'vmimiRelayTimelineWithReplies', ...(ps.withLocalOnly ? ['localTimeline', 'localTimelineWithReplies'] as const : [])]
+					: me ? ['vmimiRelayTimeline', `vmimiRelayTimelineWithReplyTo:${me.id}`, ...(ps.withLocalOnly ? ['localTimeline', `localTimelineWithReplyTo:${me.id}`] as const : [])]
+					: ['vmimiRelayTimeline', ...(ps.withLocalOnly ? ['localTimeline'] as const : [])],
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
@@ -129,6 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
 					withReplies: ps.withReplies,
+					withLocalOnly: ps.withLocalOnly,
 				}, me),
 			});
 
@@ -149,6 +153,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withFiles: boolean,
 		withRenotes: boolean,
 		withReplies: boolean,
+		withLocalOnly: boolean,
 	}, me: MiLocalUser | null) {
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
@@ -167,6 +172,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				qb.orWhere('note.userHost IN (:...vmimiRelayInstances)', { vmimiRelayInstances });
 			}
 		}));
+
+		if (!ps.withLocalOnly) {
+			query.andWhere('note.localOnly = FALSE');
+		}
 
 		if (!ps.withReplies) {
 			query.andWhere(new Brackets(qb => {

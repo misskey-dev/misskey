@@ -58,6 +58,7 @@ export const paramDef = {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 		withReplies: { type: 'boolean', default: false },
+		withLocalOnly: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		allowPartial: { type: 'boolean', default: true }, // this timeline is new so true by default
 		sinceId: { type: 'string', format: 'misskey:id' },
@@ -108,6 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					limit: ps.limit,
 					withFiles: ps.withFiles,
 					withReplies: ps.withReplies,
+					withLocalOnly: ps.withLocalOnly,
 				}, me);
 
 				process.nextTick(() => {
@@ -124,17 +126,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					`homeTimelineWithFiles:${me.id}`,
 					'vmimiRelayTimelineWithFiles',
 				];
+				if (ps.withLocalOnly) timelineConfig = [...timelineConfig, 'localTimelineWithFiles'];
 			} else if (ps.withReplies) {
 				timelineConfig = [
 					`homeTimeline:${me.id}`,
 					'vmimiRelayTimeline',
 					'vmimiRelayTimelineWithReplies',
 				];
+				if (ps.withLocalOnly) timelineConfig = [...timelineConfig, 'localTimeline', 'localTimelineWithReplies'];
 			} else {
 				timelineConfig = [
 					`homeTimeline:${me.id}`,
 					'vmimiRelayTimeline',
+					`vmimiRelayTimelineWithReplyTo:${me.id}`,
 				];
+				if (ps.withLocalOnly) timelineConfig = [...timelineConfig, 'localTimeline', `localTimelineWithReplyTo:${me.id}`];
 			}
 
 			const [
@@ -166,6 +172,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					limit,
 					withFiles: ps.withFiles,
 					withReplies: ps.withReplies,
+					withLocalOnly: ps.withLocalOnly,
 				}, me),
 			});
 
@@ -183,6 +190,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		limit: number,
 		withFiles: boolean,
 		withReplies: boolean,
+		withLocalOnly: boolean,
 	}, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
 		const followingChannels = await this.channelFollowingsRepository.find({
@@ -199,6 +207,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
 					qb.orWhere(new Brackets(qb => {
 						qb.where('note.visibility = \'public\'');
+						if (!ps.withLocalOnly) qb.andWhere('note.localOnly = FALSE');
 						qb.andWhere(new Brackets(qb => {
 							qb.where('note.userHost IS NULL');
 							if (vmimiRelayInstances.length !== 0) {
@@ -210,6 +219,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					qb.where('note.userId = :meId', { meId: me.id });
 					qb.orWhere(new Brackets(qb => {
 						qb.where('note.visibility = \'public\'');
+						if (!ps.withLocalOnly) qb.andWhere('note.localOnly = FALSE');
 						qb.andWhere(new Brackets(qb => {
 							qb.where('note.userHost IS NULL');
 							if (vmimiRelayInstances.length !== 0) {

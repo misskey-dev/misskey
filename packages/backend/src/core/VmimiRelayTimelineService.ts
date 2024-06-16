@@ -13,14 +13,16 @@ import type Logger from '@/logger.js';
 type VmimiInstanceList = { Url: string; }[];
 
 // one day
-const UpdateInterval = 1000 * 60 * 60 * 24;
-const RetryInterval = 1000 * 60 * 60 * 6;
+const UpdateInterval = 1000 * 60 * 60 * 24; // 24 hours = 1 day
+const MinRetryInterval = 1000 * 60; // one minutes
+const MaxRetryInterval = 1000 * 60 * 60 * 6; // 6 hours
 
 @Injectable()
 export class VmimiRelayTimelineService {
 	instanceHosts: Set<string>;
 	instanceHostsArray: string[];
 	nextUpdate: number;
+	nextRetryInterval: number;
 	updatePromise: Promise<void> | null;
 	private logger: Logger;
 
@@ -32,6 +34,7 @@ export class VmimiRelayTimelineService {
 		this.instanceHosts = new Set<string>([]);
 		this.instanceHostsArray = [];
 		this.nextUpdate = 0;
+		this.nextRetryInterval = MinRetryInterval;
 		this.updatePromise = null;
 
 		this.logger = this.loggerService.getLogger('vmimi');
@@ -55,10 +58,12 @@ export class VmimiRelayTimelineService {
 			this.instanceHosts = new Set<string>(this.instanceHostsArray);
 			this.nextUpdate = Date.now() + UpdateInterval;
 			this.logger.info(`Got instance list: ${this.instanceHostsArray}`);
+			this.nextRetryInterval = MinRetryInterval;
 		} catch (e) {
 			this.logger.error('Failed to update instance list', e as any);
-			this.nextUpdate = Date.now() + RetryInterval;
-			setTimeout(() => this.checkForUpdateInstanceList(), RetryInterval + 5);
+			this.nextUpdate = Date.now() + this.nextRetryInterval;
+			setTimeout(() => this.checkForUpdateInstanceList(), this.nextRetryInterval + 5);
+			this.nextRetryInterval = Math.min(this.nextRetryInterval * 2, MaxRetryInterval);
 		}
 	}
 
