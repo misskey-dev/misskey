@@ -4,11 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository } from '@/models/_.js';
+import type { UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { UserListService } from '@/core/UserListService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -32,6 +33,18 @@ export const meta = {
 			code: 'NO_SUCH_USER',
 			id: '588e7f72-c744-4a61-b180-d354e912bda2',
 		},
+
+		listLimitExceeded: {
+			message: 'You cannot update the user because you have exceeded the limit of lists.',
+			code: 'LIST_LIMIT_EXCEEDED',
+			id: 'd4005118-e773-4132-bafb-10ba22c78da3',
+		},
+
+		listUsersLimitExceeded: {
+			message: 'You cannot update the user because you have exceeded the limit of users in a list.',
+			code: 'LIST_USERS_LIMIT_EXCEEDED',
+			id: 'db7fe164-73d0-4788-8ed1-b6a19e95990d',
+		},
 	},
 } as const;
 
@@ -51,8 +64,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
+
 		private userListService: UserListService,
 		private getterService: GetterService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the list
@@ -63,6 +80,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (userList == null) {
 				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			// Check the list limit
+			const policies = await this.roleService.getUserPolicies(me.id);
+			const currentCount = await this.userListsRepository.countBy({
+				userId: me.id,
+			});
+			if (currentCount > policies.userListLimit) {
+				throw new ApiError(meta.errors.listLimitExceeded);
+			}
+
+			const currentUserCounts = await this.userListMembershipsRepository
+				.createQueryBuilder('ulm')
+				.select('COUNT(*)')
+				.where('ulm.userListUserId = :userId', { userId: me.id })
+				.groupBy('ulm.userListId')
+				.getRawMany<{ count: number }>();
+			if (currentUserCounts.some((x) => x.count > policies.userEachUserListsLimit)) {
+				throw new ApiError(meta.errors.listUsersLimitExceeded);
 			}
 
 			// Fetch the user

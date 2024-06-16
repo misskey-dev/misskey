@@ -61,6 +61,12 @@ export const meta = {
 			code: 'TOO_MANY_USERS',
 			id: '1845ea77-38d1-426e-8e4e-8b83b24f5bd7',
 		},
+
+		listUsersLimitExceeded: {
+			message: 'You cannot create a list because you have exceeded the limit of users in a list.',
+			code: 'LIST_USERS_LIMIT_EXCEEDED',
+			id: '3e205e58-0798-40f2-a589-a78a619ee3d4',
+		},
 	},
 } as const;
 
@@ -99,11 +105,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				},
 			});
 			if (!listExist) throw new ApiError(meta.errors.noSuchList);
+
+			const policies = await this.roleService.getUserPolicies(me.id);
 			const currentCount = await this.userListsRepository.countBy({
 				userId: me.id,
 			});
-			if (currentCount > (await this.roleService.getUserPolicies(me.id)).userListLimit) {
+			if (currentCount >= policies.userListLimit) {
 				throw new ApiError(meta.errors.tooManyUserLists);
+			}
+
+			const currentUserCounts = await this.userListMembershipsRepository
+				.createQueryBuilder('ulm')
+				.select('COUNT(*)')
+				.where('ulm.userListUserId = :userId', { userId: me.id })
+				.groupBy('ulm.userListId')
+				.getRawMany<{ count: number }>();
+			if (currentUserCounts.some((x) => x.count > policies.userEachUserListsLimit)) {
+				throw new ApiError(meta.errors.listUsersLimitExceeded);
 			}
 
 			const userList = await this.userListsRepository.insert({

@@ -31,6 +31,11 @@ export const meta = {
 			code: 'YOU_ARE_NOT_ADMIN',
 			id: 'a70c7643-1db5-4ebf-becd-ff4b4223cf23',
 		},
+		webhookLimitExceeded: {
+			message: 'You cannot update the webhook because you have exceeded the limit of webhooks.',
+			code: 'WEBHOOK_LIMIT_EXCEEDED',
+			id: 'a261cb2d-867d-47a8-a743-8bbd2c1438b1',
+		},
 	},
 
 } as const;
@@ -62,6 +67,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const currentWebhooksCount = await this.webhooksRepository.countBy({
+				userId: me.id,
+			});
+			if (currentWebhooksCount > (await this.roleService.getUserPolicies(me.id)).webhookLimit) {
+				throw new ApiError(meta.errors.webhookLimitExceeded);
+			}
+
 			const webhook = await this.webhooksRepository.findOneBy({
 				id: ps.webhookId,
 				userId: me.id,

@@ -9,6 +9,7 @@ import type { AntennasRepository, UserListsRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -32,6 +33,12 @@ export const meta = {
 			message: 'No such user list.',
 			code: 'NO_SUCH_USER_LIST',
 			id: '1c6b35c9-943e-48c2-81e4-2844989407f7',
+		},
+
+		antennaLimitExceeded: {
+			message: 'You cannot update the antenna because you have exceeded the limit of antennas.',
+			code: 'ANTENNA_LIMIT_EXCEEDED',
+			id: '3166a92e-09d9-4c09-afa3-1dbe34a3afcf',
 		},
 	},
 
@@ -83,6 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private antennaEntityService: AntennaEntityService,
 		private globalEventService: GlobalEventService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.keywords && ps.excludeKeywords) {
@@ -98,6 +106,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (antenna == null) {
 				throw new ApiError(meta.errors.noSuchAntenna);
+			}
+
+			const currentAntennasCount = await this.antennasRepository.countBy({
+				userId: me.id,
+			});
+			if (currentAntennasCount > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
+				throw new ApiError(meta.errors.antennaLimitExceeded);
 			}
 
 			let userList;

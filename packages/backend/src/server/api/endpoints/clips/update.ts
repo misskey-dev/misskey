@@ -25,6 +25,18 @@ export const meta = {
 			code: 'NO_SUCH_CLIP',
 			id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
 		},
+
+		clipLimitExceeded: {
+			message: 'You cannot update the clip because you have exceeded the limit of clips.',
+			code: 'CLIP_LIMIT_EXCEEDED',
+			id: 'fed46dd9-d99a-4a88-b23f-8d31c80b5b25',
+		},
+
+		clipNotesLimitExceeded: {
+			message: 'You cannot update the clip because you have exceeded the limit of notes in a clip.',
+			code: 'CLIP_NOTES_LIMIT_EXCEEDED',
+			id: '6f02ab37-66a4-4285-afaf-a8b1000e8f3f',
+		},
 	},
 
 	res: {
@@ -58,6 +70,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (e) {
 				if (e instanceof ClipService.NoSuchClipError) {
 					throw new ApiError(meta.errors.noSuchClip);
+				} else if (e instanceof ClipService.ClipLimitExceededError) {
+					throw new ApiError(meta.errors.clipLimitExceeded);
+				} else if (e instanceof ClipService.ClipNotesLimitExceededError) {
+					throw new ApiError(meta.errors.clipNotesLimitExceeded);
 				}
 				throw e;
 			}
