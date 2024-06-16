@@ -25,7 +25,7 @@ export const packedNoteHistorySchema = {
 		},
 		text: {
 			type: 'string',
-			optional: false, nullable: true,
+			optional: true, nullable: true,
 		},
 		cw: {
 			type: 'string',
