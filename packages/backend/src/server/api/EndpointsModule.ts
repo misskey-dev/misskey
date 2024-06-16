@@ -283,6 +283,7 @@ import * as ep___notes_favorites_create from './endpoints/notes/favorites/create
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
 import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
+import * as ep___notes_history from './endpoints/notes/history.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
@@ -296,13 +297,13 @@ import * as ep___notes_replies from './endpoints/notes/replies.js';
 import * as ep___notes_searchByTag from './endpoints/notes/search-by-tag.js';
 import * as ep___notes_search from './endpoints/notes/search.js';
 import * as ep___notes_show from './endpoints/notes/show.js';
-import * as ep___notes_history from './endpoints/notes/history.js';
 import * as ep___notes_state from './endpoints/notes/state.js';
 import * as ep___notes_threadMuting_create from './endpoints/notes/thread-muting/create.js';
 import * as ep___notes_threadMuting_delete from './endpoints/notes/thread-muting/delete.js';
 import * as ep___notes_timeline from './endpoints/notes/timeline.js';
 import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
+import * as ep___notes_update from './endpoints/notes/update.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_flush from './endpoints/notifications/flush.js';
@@ -667,6 +668,7 @@ const $notes_favorites_create: Provider = { provide: 'ep:notes/favorites/create'
 const $notes_favorites_delete: Provider = { provide: 'ep:notes/favorites/delete', useClass: ep___notes_favorites_delete.default };
 const $notes_featured: Provider = { provide: 'ep:notes/featured', useClass: ep___notes_featured.default };
 const $notes_globalTimeline: Provider = { provide: 'ep:notes/global-timeline', useClass: ep___notes_globalTimeline.default };
+const $notes_history: Provider = { provide: 'ep:notes/history', useClass: ep___notes_history.default };
 const $notes_hybridTimeline: Provider = { provide: 'ep:notes/hybrid-timeline', useClass: ep___notes_hybridTimeline.default };
 const $notes_localTimeline: Provider = { provide: 'ep:notes/local-timeline', useClass: ep___notes_localTimeline.default };
 const $notes_mentions: Provider = { provide: 'ep:notes/mentions', useClass: ep___notes_mentions.default };
@@ -680,13 +682,13 @@ const $notes_replies: Provider = { provide: 'ep:notes/replies', useClass: ep___n
 const $notes_searchByTag: Provider = { provide: 'ep:notes/search-by-tag', useClass: ep___notes_searchByTag.default };
 const $notes_search: Provider = { provide: 'ep:notes/search', useClass: ep___notes_search.default };
 const $notes_show: Provider = { provide: 'ep:notes/show', useClass: ep___notes_show.default };
-const $notes_history: Provider = { provide: 'ep:notes/history', useClass: ep___notes_history.default };
 const $notes_state: Provider = { provide: 'ep:notes/state', useClass: ep___notes_state.default };
 const $notes_threadMuting_create: Provider = { provide: 'ep:notes/thread-muting/create', useClass: ep___notes_threadMuting_create.default };
 const $notes_threadMuting_delete: Provider = { provide: 'ep:notes/thread-muting/delete', useClass: ep___notes_threadMuting_delete.default };
 const $notes_timeline: Provider = { provide: 'ep:notes/timeline', useClass: ep___notes_timeline.default };
 const $notes_translate: Provider = { provide: 'ep:notes/translate', useClass: ep___notes_translate.default };
 const $notes_unrenote: Provider = { provide: 'ep:notes/unrenote', useClass: ep___notes_unrenote.default };
+const $notes_update: Provider = { provide: 'ep:notes/update', useClass: ep___notes_update.default };
 const $notes_userListTimeline: Provider = { provide: 'ep:notes/user-list-timeline', useClass: ep___notes_userListTimeline.default };
 const $notifications_create: Provider = { provide: 'ep:notifications/create', useClass: ep___notifications_create.default };
 const $notifications_flush: Provider = { provide: 'ep:notifications/flush', useClass: ep___notifications_flush.default };
@@ -1055,6 +1057,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_favorites_delete,
 		$notes_featured,
 		$notes_globalTimeline,
+		$notes_history,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
 		$notes_mentions,
@@ -1068,13 +1071,13 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_searchByTag,
 		$notes_search,
 		$notes_show,
-		$notes_history,
 		$notes_state,
 		$notes_threadMuting_create,
 		$notes_threadMuting_delete,
 		$notes_timeline,
 		$notes_translate,
 		$notes_unrenote,
+		$notes_update,
 		$notes_userListTimeline,
 		$notifications_create,
 		$notifications_flush,
@@ -1437,6 +1440,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_favorites_delete,
 		$notes_featured,
 		$notes_globalTimeline,
+		$notes_history,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
 		$notes_mentions,
@@ -1450,13 +1454,13 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_searchByTag,
 		$notes_search,
 		$notes_show,
-		$notes_history,
 		$notes_state,
 		$notes_threadMuting_create,
 		$notes_threadMuting_delete,
 		$notes_timeline,
 		$notes_translate,
 		$notes_unrenote,
+		$notes_update,
 		$notes_userListTimeline,
 		$notifications_create,
 		$notifications_flush,

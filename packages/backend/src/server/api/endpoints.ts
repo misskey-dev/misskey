@@ -289,6 +289,7 @@ import * as ep___notes_favorites_create from './endpoints/notes/favorites/create
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
 import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
+import * as ep___notes_history from './endpoints/notes/history.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
@@ -302,13 +303,13 @@ import * as ep___notes_replies from './endpoints/notes/replies.js';
 import * as ep___notes_searchByTag from './endpoints/notes/search-by-tag.js';
 import * as ep___notes_search from './endpoints/notes/search.js';
 import * as ep___notes_show from './endpoints/notes/show.js';
-import * as ep___notes_history from './endpoints/notes/history.js';
 import * as ep___notes_state from './endpoints/notes/state.js';
 import * as ep___notes_threadMuting_create from './endpoints/notes/thread-muting/create.js';
 import * as ep___notes_threadMuting_delete from './endpoints/notes/thread-muting/delete.js';
 import * as ep___notes_timeline from './endpoints/notes/timeline.js';
 import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
+import * as ep___notes_update from './endpoints/notes/update.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_flush from './endpoints/notifications/flush.js';
@@ -671,6 +672,7 @@ const eps = [
 	['notes/favorites/delete', ep___notes_favorites_delete],
 	['notes/featured', ep___notes_featured],
 	['notes/global-timeline', ep___notes_globalTimeline],
+	['notes/history', ep___notes_history],
 	['notes/hybrid-timeline', ep___notes_hybridTimeline],
 	['notes/local-timeline', ep___notes_localTimeline],
 	['notes/mentions', ep___notes_mentions],
@@ -684,13 +686,13 @@ const eps = [
 	['notes/search-by-tag', ep___notes_searchByTag],
 	['notes/search', ep___notes_search],
 	['notes/show', ep___notes_show],
-	['notes/history', ep___notes_history],
 	['notes/state', ep___notes_state],
 	['notes/thread-muting/create', ep___notes_threadMuting_create],
 	['notes/thread-muting/delete', ep___notes_threadMuting_delete],
 	['notes/timeline', ep___notes_timeline],
 	['notes/translate', ep___notes_translate],
 	['notes/unrenote', ep___notes_unrenote],
+	['notes/update', ep___notes_update],
 	['notes/user-list-timeline', ep___notes_userListTimeline],
 	['notifications/create', ep___notifications_create],
 	['notifications/flush', ep___notifications_flush],
