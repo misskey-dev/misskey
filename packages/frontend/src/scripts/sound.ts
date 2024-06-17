@@ -127,9 +127,16 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
 	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
+	playMisskeySfxFile(sound);
+}
+
+export async function playMisskeySfxFile(soundStore: SoundStore) {
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+		return;
+	}
 
 	canPlay = false;
-	playMisskeySfxFile(sound).finally(() => {
+	playMisskeySfxFileInternal(soundStore).finally(() => {
 		// ごく短時間に音が重複しないように
 		setTimeout(() => {
 			canPlay = true;
@@ -141,7 +148,7 @@ export function playMisskeySfx(operationType: OperationType) {
  * サウンド設定形式で指定された音声を再生する
  * @param soundStore サウンド設定
  */
-export async function playMisskeySfxFile(soundStore: SoundStore) {
+export async function playMisskeySfxFileInternal(soundStore: SoundStore) {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
 	}
