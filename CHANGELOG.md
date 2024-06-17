@@ -7,6 +7,7 @@
 
 ### Client
 - Fix: ウィジェットでVRTL/VSTLが使用できない問題を修正
+- Fix: deck uiの通知音が重なる問題 (#14029)
 
 ### Server
 - Enhance: `vmimiRelayTimelineImplemented` と `disableVmimiRelayTimeline` nodeinfo に追加しました
