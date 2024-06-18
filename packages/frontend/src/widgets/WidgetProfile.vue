@@ -81,16 +81,19 @@ defineExpose<WidgetComponentExpose>({
 
 .body {
 	text-overflow: ellipsis;
+	overflow: clip;
+	margin-left: -10px;
+	padding: 10px;
 }
 
 .name {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	text-shadow: (0 0 8px rgb(0, 0, 0));
 	font-weight: bold;
 }
 
 .username {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	text-shadow: (0 0 8px rgb(0, 0, 0));
 }
 </style>
