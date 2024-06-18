@@ -95,7 +95,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		const currentCount = await this.userListMembershipsRepository.countBy({
 			userListId: list.id,
 		});
-		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
+		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
 			throw new UserListService.TooManyUsersError();
 		}
 
