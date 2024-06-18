@@ -77,6 +77,7 @@ const props = withDefaults(defineProps<{
 	stacked?: boolean;
 	bar?: boolean;
 	aspectRatio?: number | null;
+	nowForChromatic?: number;
 }>(), {
 	args: undefined,
 	limit: 90,
@@ -84,6 +85,13 @@ const props = withDefaults(defineProps<{
 	stacked: false,
 	bar: false,
 	aspectRatio: null,
+
+	/**
+	 * @desc Overwrites current date to fix background lines of chart.
+	 * @ignore Only used for Chromatic. Don't use this for production.
+	 * @see https://github.com/misskey-dev/misskey/pull/13830#issuecomment-2155886151
+	 */
+	nowForChromatic: undefined,
 });
 
 const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
@@ -106,7 +114,8 @@ const getColor = (i) => {
 	return colorSets[i % colorSets.length];
 };
 
-const now = new Date();
+// eslint-disable-next-line vue/no-setup-props-destructure
+const now = props.nowForChromatic != null ? new Date(props.nowForChromatic) : new Date();
 let chartInstance: Chart | null = null;
 let chartData: {
 	series: {
