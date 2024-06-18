@@ -5436,6 +5436,10 @@ export interface Locale extends ILocale {
          */
         "iconUrl": string;
         /**
+         * アイコン画像は、{host}からCORS制限なくアクセスできるようにする必要があります。アイコン画像を外部ドメインから参照する場合は、必要に応じてAccess-Control-Allow-Originヘッダの設定を調整してください。
+         */
+        "iconUrlDescription": ParameterizedString<"host">;
+        /**
          * {host}がアプリとして表示される際のアイコンを指定します。
          */
         "appIconDescription": ParameterizedString<"host">;

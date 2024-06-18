@@ -1374,6 +1374,7 @@ _serverRules:
 
 _serverSettings:
   iconUrl: "アイコン画像のURL"
+  iconUrlDescription: "アイコン画像は、{host}からCORS制限なくアクセスできるようにする必要があります。アイコン画像を外部ドメインから参照する場合は、必要に応じてAccess-Control-Allow-Originヘッダの設定を調整してください。"
   appIconDescription: "{host}がアプリとして表示される際のアイコンを指定します。"
   appIconUsageExample: "例: PWAや、スマートフォンのホーム画面にブックマークとして追加された時など"
   appIconStyleRecommendation: "円形もしくは角丸にクロップされる場合があるため、塗り潰された余白のある背景を持つことが推奨されます。"
