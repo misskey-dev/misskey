@@ -87,12 +87,13 @@ defineExpose<WidgetComponentExpose>({
 
 .name {
 	color: #fff;
-	text-shadow: (0 0 8px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px var(--accent));
 	font-weight: bold;
 }
 
 .host {
 	color: #fff;
-	text-shadow: (0 0 8px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px var(--accent));
+
 }
 </style>
