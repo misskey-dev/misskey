@@ -45,7 +45,7 @@ function start(_game: Misskey.entities.ReversiGameDetailed) {
 
 	if (shareWhenStart.value) {
 		misskeyApi('notes/create', {
-			text: `${i18n.ts._reversi.iStartedAGame}\n${url}/reversi/g/${game.value.id}`,
+			text: `${i18n.ts._reversi.iStartedAGame}\n${url}/reversi/g/${props.gameId}`,
 			visibility: 'home',
 		});
 	}
