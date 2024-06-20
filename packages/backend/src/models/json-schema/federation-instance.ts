@@ -41,6 +41,11 @@ export const packedFederationInstanceSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		notRespondingSince: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'date-time',
+		},
 		isSuspended: {
 			type: 'boolean',
 			optional: false, nullable: false,

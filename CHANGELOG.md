@@ -14,6 +14,7 @@
 - Enhance: `vmimiRelayTimelineImplemented` と `disableVmimiRelayTimeline` nodeinfo に追加しました
   - これによりサードパーティクライアントがVRTLの有無を認知できるようになりました。
 - Enhance: VRTL参加サーバーの取得に失敗したときのリトライの間隔を短く
+- Enhance: 応答がないインスタンスがいつから応答がなくなったかをクライアントに送信するようにしました
 - Fix: 自分自身に対するリプライがwithReplies = falseなVRTL/VSTLにて含まれていない問題を修正
 - チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 

@@ -39,6 +39,7 @@ export class InstanceEntityService {
 			followingCount: instance.followingCount,
 			followersCount: instance.followersCount,
 			isNotResponding: instance.isNotResponding,
+			notRespondingSince: instance.notRespondingSince ? instance.notRespondingSince.toISOString() : null,
 			isSuspended: instance.suspensionState !== 'none',
 			suspensionState: instance.suspensionState,
 			isBlocked: this.utilityService.isBlockedHost(meta.blockedHosts, instance.host),

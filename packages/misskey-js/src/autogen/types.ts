@@ -4520,6 +4520,8 @@ export type components = {
       followingCount: number;
       followersCount: number;
       isNotResponding: boolean;
+      /** Format: date-time */
+      notRespondingSince: string | null;
       isSuspended: boolean;
       /** @enum {string} */
       suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
