@@ -67,7 +67,7 @@ export const failedApiCall = async <T, E extends keyof misskey.Endpoints, P exte
 export const api = async <E extends keyof misskey.Endpoints>(path: E, params: misskey.Endpoints[E]['req'], me?: UserToken): Promise<{
 	status: number,
 	headers: Headers,
-	body: any
+	body: misskey.Endpoints[E]['res']
 }> => {
 	const bodyAuth: Record<string, string> = {};
 	const headers: Record<string, string> = {
