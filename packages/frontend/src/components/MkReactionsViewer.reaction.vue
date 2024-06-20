@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' ,[$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' ,[$style.reacted]: note.myReactions?.includes(reaction) , [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, inject, onMounted, ref, shallowRef, watch} from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
@@ -42,7 +42,9 @@ const props = defineProps<{
 	reaction: string;
 	count: number;
 	isInitial: boolean;
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {
+		myReactions: string[];
+	}
 }>();
 
 const mock = inject<boolean>('mock', false);
@@ -64,14 +66,15 @@ const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	const oldReaction = props.note.myReaction;
+	const oldReaction = props.note.myReactions.includes(props.reaction) ? props.reaction : null;
+	console.log(oldReaction);
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
 			text: oldReaction !== props.reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
 		});
 		if (confirm.canceled) return;
-
+		props.note.myReactions.splice(props.note.myReactions.indexOf(oldReaction), 1);
 		if (oldReaction !== props.reaction) {
 			sound.playMisskeySfx('reaction');
 		}
@@ -83,8 +86,9 @@ async function toggleReaction() {
 
 		misskeyApi('notes/reactions/delete', {
 			noteId: props.note.id,
+			reaction: oldReaction,
 		}).then(() => {
-			if (oldReaction !== props.reaction) {
+			if (oldReaction !== props.reaction ) {
 				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
 					reaction: props.reaction,

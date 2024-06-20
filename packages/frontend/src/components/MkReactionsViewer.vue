@@ -24,7 +24,9 @@ import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {
+		myReactions: string[];
+	}
 	maxNumber?: number;
 }>(), {
 	maxNumber: Infinity,
@@ -57,7 +59,6 @@ function onMockToggleReaction(emoji: string, count: number) {
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
-
 	for (let i = 0; i < reactions.value.length; i++) {
 		const reaction = reactions.value[i][0];
 		if (reaction in newSource && newSource[reaction] !== 0) {
@@ -76,7 +77,7 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 
 	newReactions = newReactions.slice(0, props.maxNumber);
 
-	if (props.note.myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
+	if (props.note. myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
 		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
 	}
 

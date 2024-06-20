@@ -162,26 +162,30 @@ export class ReactionService {
 		};
 
 		// Create reaction
-		try {
-			await this.noteReactionsRepository.insert(record);
-		} catch (e) {
-			if (isDuplicateKeyValueError(e)) {
-				const exists = await this.noteReactionsRepository.findOneByOrFail({
-					noteId: note.id,
-					userId: user.id,
-				});
+		const exists = await this.noteReactionsRepository.findOneBy({
+			noteId: note.id,
+			userId: user.id,
+			reaction: record.reaction,
+		});
 
-				if (exists.reaction !== reaction) {
-					// 別のリアクションがすでにされていたら置き換える
-					await this.delete(user, note);
-					await this.noteReactionsRepository.insert(record);
-				} else {
-					// 同じリアクションがすでにされていたらエラー
-					throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-				}
+		const count = await this.noteReactionsRepository.countBy({
+			noteId: note.id,
+			userId: user.id,
+		});
+
+		if (count > 3) {
+			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+		}
+
+		if (exists == null) {
+			if (user.host == null) {
+				await this.noteReactionsRepository.insert(record);
 			} else {
-				throw e;
+				throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
 			}
+		} else {
+			// 同じリアクションがすでにされていたらエラー
+			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
 		}
 
 		// Increment reactions count
@@ -275,17 +279,24 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote) {
+	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, reaction?: string) {
 		// if already unreacted
-		const exist = await this.noteReactionsRepository.findOneBy({
-			noteId: note.id,
-			userId: user.id,
-		});
-
+		let exist;
+		if (reaction == null) {
+			exist = await this.noteReactionsRepository.findOneBy({
+				noteId: note.id,
+				userId: user.id,
+			});
+		} else {
+			exist = await this.noteReactionsRepository.findOneBy({
+				noteId: note.id,
+				userId: user.id,
+				reaction: reaction.replace(/@./, ''),
+			});
+		}
 		if (exist == null) {
 			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
-
 		// Delete reaction
 		const result = await this.noteReactionsRepository.delete(exist.id);
 

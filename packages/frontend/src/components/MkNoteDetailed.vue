@@ -129,8 +129,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-ban"></i>
 			</button>
 			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReactions?.length >= 3 " class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+				<i v-else-if="appearNote.myReactions?.length >= 3 " class="ti ti-minus" style="color: var(--accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
 				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
@@ -257,13 +257,11 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { infoImageUrl, instance } from '@/instance.js';
+import { infoImageUrl, instance, isEnabledUrlPreview } from '@/instance.js';
 import MkPostForm from '@/components/MkPostFormSimple.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 
 const MOBILE_THRESHOLD = 500;
-const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
-import { isEnabledUrlPreview } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -504,10 +502,8 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 }
 
 function toggleReact() {
-	if (appearNote.value.myReaction == null) {
+	if (appearNote.value.myReactions?.length > 3 || !appearNote.value.myReactions ) {
 		react();
-	} else {
-		undoReact(appearNote.value);
 	}
 }
 

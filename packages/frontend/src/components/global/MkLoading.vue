@@ -84,7 +84,9 @@ const props = withDefaults(defineProps<{
 	height: var(--size);
 	margin: 0 auto;
 }
-
+.text{
+	color: var(--fg);
+}
 .spinner {
 	position: absolute;
 	top: 0;
