@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
 				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReactions?.length >= 3 " class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-				<i v-else-if="appearNote.myReactions?.length >= 3 || appearNote.myReaction && appearNote.user.host " class="ti ti-minus" style="color: var(--accent);"></i>
+				<i v-else-if="appearNote.myReactions?.length >= 4 || appearNote.myReaction && appearNote.user.host " class="ti ti-minus" style="color: var(--accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
 				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
@@ -502,7 +502,7 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 }
 
 function toggleReact() {
-	if (appearNote.value.myReactions?.length < 3 || appearNote.value.myReaction && appearNote.value.user.host || !appearNote.value.myReactions ) {
+	if (appearNote.value.myReactions?.length < 4 || appearNote.value.myReaction && appearNote.value.user.host || !appearNote.value.myReactions ) {
 		react();
 	}
 }

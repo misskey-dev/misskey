@@ -129,7 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti ti-ban"></i>
 				</button>
 				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReactions?.length >= 3 " class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReactions?.length >= 4 " class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
 					<i v-else-if="appearNote.myReactions?.length >= 3 || appearNote.myReaction && appearNote.user.host" class="ti ti-minus" style="color: var(--accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
@@ -444,7 +444,7 @@ function react(viaKeyboard = false): void {
 }
 
 function toggleReact() {
-	if (appearNote.value.myReactions?.length < 3 || appearNote.value.myReaction && appearNote.value.user.host || !appearNote.value.myReactions ) {
+	if (appearNote.value.myReactions?.length < 4 || appearNote.value.myReaction && appearNote.value.user.host || !appearNote.value.myReactions ) {
 		react();
 	}
 }
