@@ -502,7 +502,7 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 }
 
 function toggleReact() {
-	if (appearNote.value.myReactions?.length > 3 || !appearNote.value.myReactions ) {
+	if (appearNote.value.myReactions?.length < 3 || !appearNote.value.myReactions ) {
 		react();
 	}
 }
