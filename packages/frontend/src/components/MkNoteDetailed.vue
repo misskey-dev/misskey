@@ -58,6 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
+						<span v-if="note.updatedAt" style="margin-left: 0.5em;" :title="note.updatedAt"><i class="ti ti-pencil"></i></span>
 						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 					</div>
 				</div>
@@ -106,6 +107,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.noteFooterInfo">
 				<MkA :to="notePage(appearNote)">
 					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
+				</MkA>
+				<MkA v-if="appearNote.updatedAt" :to="notePage(appearNote)" style="margin-left: 0.5em;">
+					<MkTime :time="appearNote.updatedAt" mode="detail" colored/>
 				</MkA>
 			</div>
 			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :note="appearNote"/>
