@@ -66,8 +66,7 @@ const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	const oldReaction = props.note.myReactions.includes(props.reaction) ? props.reaction : null;
-	console.log(oldReaction);
+	const oldReaction = props.note.myReactions?.includes(props.reaction) ? props.reaction : null;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
