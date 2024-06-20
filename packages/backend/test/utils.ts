@@ -17,6 +17,7 @@ import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/val
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { ApiError } from "@/server/api/error.js";
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -66,10 +67,13 @@ export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends
 	return res.body;
 };
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+
 export const api = async <E extends keyof misskey.Endpoints>(path: E, params: misskey.Endpoints[E]['req'], me?: UserToken): Promise<{
 	status: number,
 	headers: Headers,
-	body: misskey.Endpoints[E]['res']
+	body: XOR<misskey.Endpoints[E]['res'], { error: ApiError }>
 }> => {
 	const bodyAuth: Record<string, string> = {};
 	const headers: Record<string, string> = {
