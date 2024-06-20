@@ -365,6 +365,7 @@ describe('Note', () => {
 			assert.strictEqual(Array.isArray(res.body), true);
 			const myNote = res.body.find((note: { id: string; files: { id: string }[] }) => note.id === createdNote.body.createdNote.id);
 			assert.ok(myNote);
+			assert.ok(myNote.files);
 			assert.strictEqual(myNote.files.length, 1);
 			assert.strictEqual(myNote.files[0].id, file.body!.id);
 		});
@@ -390,6 +391,8 @@ describe('Note', () => {
 			assert.strictEqual(Array.isArray(res.body), true);
 			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
 			assert.ok(myNote);
+			assert.ok(myNote.renote);
+			assert.ok(myNote.renote.files);
 			assert.strictEqual(myNote.renote.files.length, 1);
 			assert.strictEqual(myNote.renote.files[0].id, file.body!.id);
 		});
@@ -416,6 +419,8 @@ describe('Note', () => {
 			assert.strictEqual(Array.isArray(res.body), true);
 			const myNote = res.body.find((note: { id: string }) => note.id === reply.body.createdNote.id);
 			assert.ok(myNote);
+			assert.ok(myNote.reply);
+			assert.ok(myNote.reply.files);
 			assert.strictEqual(myNote.reply.files.length, 1);
 			assert.strictEqual(myNote.reply.files[0].id, file.body!.id);
 		});
@@ -447,6 +452,9 @@ describe('Note', () => {
 			assert.strictEqual(Array.isArray(res.body), true);
 			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
 			assert.ok(myNote);
+			assert.ok(myNote.renote);
+			assert.ok(myNote.renote.reply);
+			assert.ok(myNote.renote.reply.files);
 			assert.strictEqual(myNote.renote.reply.files.length, 1);
 			assert.strictEqual(myNote.renote.reply.files[0].id, file.body!.id);
 		});
