@@ -1,4 +1,4 @@
-## Unreleased
+## 2024.5.0-kinel.2
 
 ### General
 - Feat: VRTL/VSTLに連合なし投稿を含めるかを選択可能に
