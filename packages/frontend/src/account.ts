@@ -120,7 +120,7 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 				res.json().then(done2, fail2);
 			}))
 			.then(async res => {
-				if (res.error) {
+				if ('error' in res) {
 					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
 						// SUSPENDED
 						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {

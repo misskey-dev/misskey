@@ -41,7 +41,7 @@ export class ClipService {
 		const currentCount = await this.clipsRepository.countBy({
 			userId: me.id,
 		});
-		if (currentCount > (await this.roleService.getUserPolicies(me.id)).clipLimit) {
+		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).clipLimit) {
 			throw new ClipService.TooManyClipsError();
 		}
 
@@ -102,7 +102,7 @@ export class ClipService {
 		const currentCount = await this.clipNotesRepository.countBy({
 			clipId: clip.id,
 		});
-		if (currentCount > (await this.roleService.getUserPolicies(me.id)).noteEachClipsLimit) {
+		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).noteEachClipsLimit) {
 			throw new ClipService.TooManyClipNotesError();
 		}
 
