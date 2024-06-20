@@ -109,7 +109,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
 				</MkA>
 				<br/>
-				<MkA v-if="appearNote.updatedAt" :to="notePage(appearNote)" style="margin-left: 0.5em;">
+				<MkA v-if="appearNote.updatedAt" :to="notePage(appearNote)">
 					{{ i18n.ts.edited }}: <MkTime :time="appearNote.updatedAt" mode="detail" colored/>
 				</MkA>
 			</div>
