@@ -42,6 +42,7 @@ describe('Block', () => {
 		const res = await api('notes/reactions/create', { noteId: note.id, reaction: '👍' }, bob);
 
 		assert.strictEqual(res.status, 400);
+		assert.ok(res.body);
 		assert.strictEqual(res.body.error.id, '20ef5475-9f38-4e4c-bd33-de6d979498ec');
 	});
 
@@ -51,6 +52,7 @@ describe('Block', () => {
 		const res = await api('notes/create', { replyId: note.id, text: 'yo' }, bob);
 
 		assert.strictEqual(res.status, 400);
+		assert.ok(res.body);
 		assert.strictEqual(res.body.error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
 	});
 

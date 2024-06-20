@@ -278,36 +278,42 @@ describe('Account Move', () => {
 				userId: alice.id,
 			}, alice);
 			assert.strictEqual(aliceFollowings.status, 200);
+			assert.ok(aliceFollowings);
 			assert.strictEqual(aliceFollowings.body.length, 3);
 
 			const carolFollowings = await api('users/following', {
 				userId: carol.id,
 			}, carol);
 			assert.strictEqual(carolFollowings.status, 200);
+			assert.ok(carolFollowings);
 			assert.strictEqual(carolFollowings.body.length, 2);
 			assert.strictEqual(carolFollowings.body[0].followeeId, bob.id);
 			assert.strictEqual(carolFollowings.body[1].followeeId, alice.id);
 
 			const blockings = await api('blocking/list', {}, dave);
 			assert.strictEqual(blockings.status, 200);
+			assert.ok(blockings);
 			assert.strictEqual(blockings.body.length, 2);
 			assert.strictEqual(blockings.body[0].blockeeId, bob.id);
 			assert.strictEqual(blockings.body[1].blockeeId, alice.id);
 
 			const mutings = await api('mute/list', {}, dave);
 			assert.strictEqual(mutings.status, 200);
+			assert.ok(mutings);
 			assert.strictEqual(mutings.body.length, 2);
 			assert.strictEqual(mutings.body[0].muteeId, bob.id);
 			assert.strictEqual(mutings.body[1].muteeId, alice.id);
 
 			const rootLists = await api('users/lists/list', {}, root);
 			assert.strictEqual(rootLists.status, 200);
+			assert.ok(rootLists);
 			assert.strictEqual(rootLists.body[0].userIds.length, 2);
 			assert.ok(rootLists.body[0].userIds.find((id: string) => id === bob.id));
 			assert.ok(rootLists.body[0].userIds.find((id: string) => id === alice.id));
 
 			const eveLists = await api('users/lists/list', {}, eve);
 			assert.strictEqual(eveLists.status, 200);
+			assert.ok(eveLists);
 			assert.strictEqual(eveLists.body[0].userIds.length, 1);
 			assert.ok(eveLists.body[0].userIds.find((id: string) => id === bob.id));
 		});
@@ -442,7 +448,8 @@ describe('Account Move', () => {
 		});
 
 		test('Prohibit access after moving: /drive/files/create', async () => {
-			const res = await uploadFile(alice);
+			// FIXME: 一旦逃げておく
+			const res = await uploadFile(alice) as any;
 
 			assert.strictEqual(res.status, 403);
 			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.code, 'YOUR_ACCOUNT_MOVED');
