@@ -29,7 +29,7 @@ describe('Timelines', () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === aliceNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === aliceNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('フォローしているユーザーのノートが含まれる', async () => {
@@ -61,7 +61,7 @@ describe('Timelines', () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === bobNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'hi');
 			assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
 		});
 
@@ -149,7 +149,7 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === carolNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === carolNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信が含まれない', async () => {
@@ -396,7 +396,7 @@ describe('Timelines', () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === aliceNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === aliceNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('フォローしているユーザーの自身を visibleUserIds に指定した visibility: specified なノートが含まれる', async () => {
@@ -411,7 +411,7 @@ describe('Timelines', () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === bobNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('フォローしていないユーザーの自身を visibleUserIds に指定した visibility: specified なノートが含まれない', async () => {
@@ -451,7 +451,7 @@ describe('Timelines', () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === aliceNote.id).text, 'ok');
+			assert.strictEqual(res.body.find(note => note.id === aliceNote.id)?.text, 'ok');
 		});
 
 		/* TODO
@@ -966,7 +966,7 @@ describe('Timelines', () => {
 			const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === bobNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('リスインしている自分の visibility: followers なノートが含まれる', async () => {
@@ -982,7 +982,7 @@ describe('Timelines', () => {
 			const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === aliceNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === aliceNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('リスインしているユーザーのチャンネルノートが含まれない', async () => {
@@ -1031,7 +1031,7 @@ describe('Timelines', () => {
 			const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === bobNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('リスインしているユーザーの自身宛てではない visibility: specified なノートが含まれない', async () => {
@@ -1088,7 +1088,7 @@ describe('Timelines', () => {
 			const res = await api('users/notes', { userId: bob.id }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === bobNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('自身の visibility: followers なノートが含まれる', async () => {
@@ -1101,7 +1101,7 @@ describe('Timelines', () => {
 			const res = await api('users/notes', { userId: alice.id }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find(note => note.id === aliceNote.id).text, 'hi');
+			assert.strictEqual(res.body.find(note => note.id === aliceNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('チャンネル投稿が含まれない', async () => {
