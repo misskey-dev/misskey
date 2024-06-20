@@ -73,6 +73,16 @@ export class ApiCallService implements OnApplicationShutdown {
 				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
 			}
 			statusCode = statusCode ?? 403;
+		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
+			const info: unknown = err.info;
+			const unixEpochInSeconds = Date.now();
+			if (typeof(info) === 'object' && info && 'resetMs' in info && typeof(info.resetMs) === 'number') {
+				const cooldownInSeconds = Math.ceil((info.resetMs - unixEpochInSeconds) / 1000);
+				// もしかするとマイナスになる可能性がなくはないのでマイナスだったら0にしておく
+				reply.header('Retry-After', Math.max(cooldownInSeconds, 0).toString(10));
+			} else {
+				this.logger.warn(`rate limit information has unexpected type ${typeof(err.info?.reset)}`);
+			}
 		} else if (!statusCode) {
 			statusCode = 500;
 		}
@@ -93,7 +103,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 	}
 
-	#onExecError(ep: IEndpoint, data: any, err: Error): void {
+	#onExecError(ep: IEndpoint, data: any, err: Error, userId?: MiUser['id']): void {
 		if (err instanceof ApiError || err instanceof AuthenticationError) {
 			throw err;
 		} else {
@@ -108,10 +118,13 @@ export class ApiCallService implements OnApplicationShutdown {
 					id: errId,
 				},
 			});
-			console.error(err, errId);
 
 			if (this.config.sentryForBackend) {
 				Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
+					level: 'error',
+					user: {
+						id: userId,
+					},
 					extra: {
 						ep: ep.name,
 						ps: data,
@@ -305,12 +318,17 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (factor > 0) {
 				// Rate limit
 				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
-					throw new ApiError({
-						message: 'Rate limit exceeded. Please try again later.',
-						code: 'RATE_LIMIT_EXCEEDED',
-						id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
-						httpStatusCode: 429,
-					});
+					if ('info' in err) {
+						// errはLimiter.LimiterInfoであることが期待される
+						throw new ApiError({
+							message: 'Rate limit exceeded. Please try again later.',
+							code: 'RATE_LIMIT_EXCEEDED',
+							id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+							httpStatusCode: 429,
+						}, err.info);
+					} else {
+						throw new TypeError('information must be a rate-limiter information.');
+					}
 				});
 			}
 		}
@@ -410,9 +428,13 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		if (this.config.sentryForBackend) {
-			return await Sentry.startSpan({ name: 'API: ' + ep.name }, () => ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => this.#onExecError(ep, data, err)));
+			return await Sentry.startSpan({
+				name: 'API: ' + ep.name,
+			}, () => ep.exec(data, user, token, file, request.ip, request.headers)
+				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));
 		} else {
-			return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => this.#onExecError(ep, data, err));
+			return await ep.exec(data, user, token, file, request.ip, request.headers)
+				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
 		}
 	}
 
