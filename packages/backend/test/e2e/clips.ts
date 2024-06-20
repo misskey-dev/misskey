@@ -153,8 +153,7 @@ describe('クリップ', () => {
 	});
 
 	test('の作成はポリシーで定められた数以上はできない。', async () => {
-		// ポリシー + 1まで作れるという所がミソ
-		const clipLimit = DEFAULT_POLICIES.clipLimit + 1;
+		const clipLimit = DEFAULT_POLICIES.clipLimit;
 		for (let i = 0; i < clipLimit; i++) {
 			await create();
 		}
@@ -327,7 +326,7 @@ describe('クリップ', () => {
 	});
 
 	test('の一覧(clips/list)が取得できる(上限いっぱい)', async () => {
-		const clipLimit = DEFAULT_POLICIES.clipLimit + 1;
+		const clipLimit = DEFAULT_POLICIES.clipLimit;
 		const clips = await createMany({}, clipLimit);
 		const res = await list({
 			parameters: { limit: 1 }, // FIXME: 無視されて11全部返ってくる
@@ -705,7 +704,7 @@ describe('クリップ', () => {
 
 		// TODO: 17000msくらいかかる...
 		test('をポリシーで定められた上限いっぱい(200)を超えて追加はできない。', async () => {
-			const noteLimit = DEFAULT_POLICIES.noteEachClipsLimit + 1;
+			const noteLimit = DEFAULT_POLICIES.noteEachClipsLimit;
 			const noteList = await Promise.all([...Array(noteLimit)].map((_, i) => post(alice, {
 				text: `test ${i}`,
 			}) as unknown)) as Misskey.entities.Note[];
