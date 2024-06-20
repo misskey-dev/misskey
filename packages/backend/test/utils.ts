@@ -51,11 +51,11 @@ export const successfulApiCall = async <E extends keyof misskey.Endpoints, P ext
 	return res.body;
 };
 
-export const failedApiCall = async <T, E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
+export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
 	status: number,
 	code: string,
 	id: string
-}): Promise<T> => {
+}): Promise<void> => {
 	const { endpoint, parameters, user } = request;
 	const { status, code, id } = assertion;
 	const res = await api(endpoint, parameters, user);
