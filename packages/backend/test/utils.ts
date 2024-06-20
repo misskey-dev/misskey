@@ -88,7 +88,7 @@ export const api = async <E extends keyof misskey.Endpoints>(path: E, params: mi
 	});
 
 	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
-		? await res.json()
+		? await res.json() as misskey.Endpoints[E]['res']
 		: null;
 
 	return {
