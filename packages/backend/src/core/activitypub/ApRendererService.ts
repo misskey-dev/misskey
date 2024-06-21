@@ -316,7 +316,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
+			return ids.map(id => items.find(item => item.id === id)).filter((x): x is MiDriveFile => x != null);
 		};
 
 		let inReplyTo;
@@ -685,7 +685,7 @@ export class ApRendererService {
 		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
-		const emojis = names.map(name => allEmojis.get(name)).filter(x => x != null);
+		const emojis = names.map(name => allEmojis.get(name)).filter((x): x is MiEmoji => x != null);
 
 		return emojis;
 	}

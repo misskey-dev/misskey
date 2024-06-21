@@ -275,7 +275,7 @@ export class NoteEntityService implements OnModuleInit {
 				packedFiles.set(k, v);
 			}
 		}
-		return fileIds.map(id => packedFiles.get(id)).filter(x => x != null);
+		return fileIds.map(id => packedFiles.get(id)).filter((x): x is Packed<'DriveFile'> => x != null);
 	}
 
 	@bindThis
@@ -448,12 +448,12 @@ export class NoteEntityService implements OnModuleInit {
 
 		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(notes));
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
-		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
+		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter((x): x is string => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 		const users = [
 			...notes.map(({ user, userId }) => user ?? userId),
-			...notes.map(({ replyUserId }) => replyUserId).filter(x => x != null),
-			...notes.map(({ renoteUserId }) => renoteUserId).filter(x => x != null),
+			...notes.map(({ replyUserId }) => replyUserId).filter((x): x is string => x != null),
+			...notes.map(({ renoteUserId }) => renoteUserId).filter((x): x is string => x != null),
 		];
 		const packedUsers = await this.userEntityService.packMany(users, me)
 			.then(users => new Map(users.map(u => [u.id, u])));

@@ -180,7 +180,7 @@ export class NotificationEntityService implements OnModuleInit {
 
 		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
 
-		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(x => x != null);
+		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter((x): x is string => x != null);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
 			relations: ['user', 'reply', 'reply.user', 'renote', 'renote.user'],
@@ -222,7 +222,7 @@ export class NotificationEntityService implements OnModuleInit {
 			);
 		});
 
-		return (await Promise.all(packPromises)).filter(x => x != null);
+		return (await Promise.all(packPromises)).filter((x): x is T => x != null);
 	}
 
 	@bindThis
@@ -312,7 +312,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
 			const isValid = this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
 			return isValid ? notification : null;
-		}))) as [T | null] ).filter(x => x != null);
+		}))) as [T | null]).filter((x): x is T => x != null);
 
 		return filteredNotifications;
 	}

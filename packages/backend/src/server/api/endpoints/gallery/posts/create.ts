@@ -69,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: fileId,
 					userId: me.id,
 				}),
-			))).filter(x => x != null);
+			))).filter((x): x is MiDriveFile => x != null);
 
 			if (files.length === 0) {
 				throw new Error();

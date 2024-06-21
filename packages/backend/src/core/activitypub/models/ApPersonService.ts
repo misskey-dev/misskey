@@ -636,7 +636,7 @@ export class ApPersonService implements OnModuleInit {
 
 			// とりあえずidを別の時間で生成して順番を維持
 			let td = 0;
-			for (const note of featuredNotes.filter(x => x != null)) {
+			for (const note of featuredNotes.filter((x): x is MiNote => x != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(MiUserNotePining, {
 					id: this.idService.gen(Date.now() + td),

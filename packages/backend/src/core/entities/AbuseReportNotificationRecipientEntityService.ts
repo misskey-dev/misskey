@@ -65,13 +65,13 @@ export class AbuseReportNotificationRecipientEntityService {
 			);
 		}
 
-		const userIds = objs.map(it => it.userId).filter(x => x != null);
+		const userIds = objs.map(it => it.userId).filter((x): x is string => x != null);
 		const users: Map<string, Packed<'UserLite'>> = (userIds.length > 0)
 			? await this.userEntityService.packMany(userIds)
 				.then(it => new Map(it.map(it => [it.id, it])))
 			: new Map();
 
-		const systemWebhookIds = objs.map(it => it.systemWebhookId).filter(x => x != null);
+		const systemWebhookIds = objs.map(it => it.systemWebhookId).filter((x): x is string => x != null);
 		const systemWebhooks: Map<string, Packed<'SystemWebhook'>> = (systemWebhookIds.length > 0)
 			? await this.systemWebhookEntityService.packMany(systemWebhookIds)
 				.then(it => new Map(it.map(it => [it.id, it])))

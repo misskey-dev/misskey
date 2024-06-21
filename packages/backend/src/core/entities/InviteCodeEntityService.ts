@@ -58,8 +58,8 @@ export class InviteCodeEntityService {
 		tickets: MiRegistrationTicket[],
 		me: { id: MiUser['id'] },
 	) {
-		const _createdBys = tickets.map(({ createdBy, createdById }) => createdBy ?? createdById).filter(x => x != null);
-		const _usedBys = tickets.map(({ usedBy, usedById }) => usedBy ?? usedById).filter(x => x != null);
+		const _createdBys = tickets.map(({ createdBy, createdById }) => createdBy ?? createdById).filter((x): x is string | MiUser => x != null);
+		const _usedBys = tickets.map(({ usedBy, usedById }) => usedBy ?? usedById).filter((x): x is string | MiUser => x != null);
 		const _userMap = await this.userEntityService.packMany([..._createdBys, ..._usedBys], me)
 			.then(users => new Map(users.map(u => [u.id, u])));
 		return Promise.all(

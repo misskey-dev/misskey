@@ -537,7 +537,7 @@ export class ApInboxService {
 		const userIds = uris
 			.filter(uri => uri.startsWith(this.config.url + '/users/'))
 			.map(uri => uri.split('/').at(-1))
-			.filter(x => x != null);
+			.filter((x): x is string => x != null);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});

@@ -260,11 +260,11 @@ export class DriveFileEntityService {
 		files: MiDriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
-		const _user = files.map(({ user, userId }) => user ?? userId).filter(x => x != null);
+		const _user = files.map(({ user, userId }) => user ?? userId).filter((x): x is string | MiUser => x != null);
 		const _userMap = await this.userEntityService.packMany(_user)
 			.then(users => new Map(users.map(user => [user.id, user])));
 		const items = await Promise.all(files.map(f => this.packNullable(f, options, f.userId ? { packedUser: _userMap.get(f.userId) } : {})));
-		return items.filter(x => x != null);
+		return items.filter((x): x is Packed<'DriveFile'> => x != null);
 	}
 
 	@bindThis
@@ -289,6 +289,6 @@ export class DriveFileEntityService {
 	): Promise<Packed<'DriveFile'>[]> {
 		if (fileIds.length === 0) return [];
 		const filesMap = await this.packManyByIdsMap(fileIds, options);
-		return fileIds.map(id => filesMap.get(id)).filter(x => x != null);
+		return fileIds.map(id => filesMap.get(id)).filter((x): x is Packed<'DriveFile'> => x != null);
 	}
 }

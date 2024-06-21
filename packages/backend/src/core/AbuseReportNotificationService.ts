@@ -90,7 +90,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		const recipientEMailAddresses = await this.fetchEMailRecipients().then(it => it
 			.filter(it => it.isActive && it.userProfile?.emailVerified)
 			.map(it => it.userProfile?.email)
-			.filter(x => x != null),
+			.filter((x): x is string => x != null),
 		);
 
 		// 送信先の鮮度を保つため、毎回取得する
@@ -137,7 +137,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.then(it => it
 				.filter(it => it.isActive && it.systemWebhookId && it.method === 'webhook')
 				.map(it => it.systemWebhookId)
-				.filter(x => x != null));
+				.filter((x): x is string => x != null));
 		for (const webhookId of recipientWebhookIds) {
 			await Promise.all(
 				abuseReports.map(it => {
@@ -339,7 +339,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	@bindThis
 	private async removeUnauthorizedRecipientUsers(recipients: MiAbuseReportNotificationRecipient[]): Promise<MiAbuseReportNotificationRecipient[]> {
 		const userRecipients = recipients.filter(it => it.userId !== null);
-		const recipientUserIds = new Set(userRecipients.map(it => it.userId).filter(x => x != null));
+		const recipientUserIds = new Set(userRecipients.map(it => it.userId).filter((x): x is string => x != null));
 		if (recipientUserIds.size <= 0) {
 			// ユーザが通知先として設定されていない場合、この関数での処理を行うべきレコードが無い
 			return recipients;

@@ -15,7 +15,7 @@ export function extractApHashtags(tags: IObject | IObject[] | null | undefined):
 	return hashtags.map(tag => {
 		const m = tag.name.match(/^#(.+)/);
 		return m ? m[1] : null;
-	}).filter(x => x != null);
+	}).filter((x): x is string => x != null);
 }
 
 export function extractApHashtagObjects(tags: IObject | IObject[] | null | undefined): IApHashtag[] {

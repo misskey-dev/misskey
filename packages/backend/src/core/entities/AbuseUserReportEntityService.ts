@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AbuseUserReportsRepository } from '@/models/_.js';
+import type { AbuseUserReportsRepository, MiUser } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';
@@ -62,7 +62,7 @@ export class AbuseUserReportEntityService {
 	) {
 		const _reporters = reports.map(({ reporter, reporterId }) => reporter ?? reporterId);
 		const _targetUsers = reports.map(({ targetUser, targetUserId }) => targetUser ?? targetUserId);
-		const _assignees = reports.map(({ assignee, assigneeId }) => assignee ?? assigneeId).filter(x => x != null);
+		const _assignees = reports.map(({ assignee, assigneeId }) => assignee ?? assigneeId).filter((x): x is string | MiUser => x != null);
 		const _userMap = await this.userEntityService.packMany(
 			[..._reporters, ..._targetUsers, ..._assignees],
 			null,
