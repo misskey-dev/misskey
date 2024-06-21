@@ -98,11 +98,13 @@ import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
+import { type Keymap } from '@/scripts/tms/hotkey.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
 
 <script lang="ts" setup>
+
 const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{
@@ -125,11 +127,20 @@ const items2 = ref<InnerMenuItem[]>();
 
 const child = shallowRef<InstanceType<typeof XChild>>();
 
-const keymap = computed(() => ({
-	'up|k|shift+tab': focusUp,
-	'down|j|tab': focusDown,
-	'esc': close,
-}));
+const keymap = {
+	'up|k|shift+tab': {
+		allowRepeat: true,
+		callback: () => focusUp(),
+	},
+	'down|j|tab': {
+		allowRepeat: true,
+		callback: () => focusDown(),
+	},
+	'esc': {
+		allowRepeat: true,
+		callback: () => close(false),
+	},
+} as const satisfies Keymap;
 
 const childShowingItem = ref<MenuItem | null>();
 

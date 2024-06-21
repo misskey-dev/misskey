@@ -47,6 +47,7 @@ import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
+import { type Keymap } from '@/scripts/tms/hotkey.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -154,8 +155,11 @@ if (type.value === 'drawer') {
 }
 
 const keymap = {
-	'esc': () => emit('esc'),
-};
+	'esc': {
+		allowRepeat: true,
+		callback: () => emit('esc'),
+	},
+} as const satisfies Keymap;
 
 const MARGIN = 16;
 const SCROLLBAR_THICKNESS = 16;
