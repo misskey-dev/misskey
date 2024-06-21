@@ -115,6 +115,11 @@ const menuDef = computed(() => [{
 		to: '/settings/navbar',
 		active: currentPage.value?.route.name === 'navbar',
 	}, {
+		icon: 'ti ti-layout-navbar',
+		text: i18n.ts.timelineHeader,
+		to: '/settings/timelineheader',
+		active: currentPage.value?.route.name === 'timelineHeader',
+	}, {
 		icon: 'ti ti-equal-double',
 		text: i18n.ts.statusbar,
 		to: '/settings/statusbar',

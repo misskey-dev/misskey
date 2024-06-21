@@ -55,11 +55,11 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { timelineHeaderItemDef } from '@/timeline-header.js';
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable && defaultStore.state.showLocalTimeline) || ($i != null && $i.policies.ltlAvailable && defaultStore.state.showLocalTimeline);
-const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable && defaultStore.state.showGlobalTimeline) || ($i != null && $i.policies.gtlAvailable && defaultStore.state.showGlobalTimeline);
 const keymap = {
 	't': focus,
 };
@@ -69,7 +69,7 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`| `channel:${string}`>({
+const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
@@ -136,13 +136,17 @@ if (src.value.split(':')[0] === 'channel') {
 }
 watch(src, async () => {
 	queue.value = 0;
-
 	if (src.value.split(':')[0] === 'channel') {
 		const channelId = src.value.split(':')[1];
 		channelInfo.value = await misskeyApi('channels/show', { channelId });
 	} else {
 		channelInfo.value = null;
 	}
+});
+
+watch(withSensitive, () => {
+	// これだけはクライアント側で完結する処理なので手動でリロード
+	tlComponent.value?.reloadTimeline();
 });
 
 function queueUpdated(q: number): void {
@@ -161,7 +165,8 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 		... lists.map(list => ({
 			type: 'link' as const,
 			text: list.name,
-			to: `/timeline/list/${list.id}` })),
+			to: `/timeline/list/${list.id}`,
+		})),
 		(lists.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
@@ -297,83 +302,36 @@ const headerActions = computed(() => {
 	}
 	return tmp;
 });
+const headerTabs = computed(() => defaultStore.reactiveState.timelineHeader.value.map(tab => {
+	if ((tab === 'local' || tab === 'social') && !isLocalTimelineAvailable) {
+		return {};
+	} else if (tab === 'global' && !isGlobalTimelineAvailable) {
+		return {};
+	}
 
-const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
-	title: l.name,
-	icon: 'ti ti-star',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}))), ...(defaultStore.reactiveState.pinnedChannels.value.map(l => ({
-	key: 'channel:' + l.id,
-	title: l.name,
-	icon: 'ti ti-star',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}))), ...(showHomeTimeline.value ? [{
-	key: 'home',
-	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(isLocalTimelineAvailable ? [{
-	key: 'local',
-	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(isShowMediaTimeline.value ? [{
-	key: 'media',
-	title: i18n.ts._timelines.media,
-	icon: 'ti ti-photo',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(showSocialTimeline.value ? [{
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(remoteLocalTimelineEnable1.value ? [{
-	key: 'custom-timeline-1',
-	title: defaultStore.state.remoteLocalTimelineName1,
-	icon: 'ti ti-plus',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(remoteLocalTimelineEnable2.value ? [{
-	key: 'custom-timeline-2',
-	title: defaultStore.state.remoteLocalTimelineName2,
-	icon: 'ti ti-plus',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(remoteLocalTimelineEnable3.value ? [{
-	key: 'custom-timeline-3',
-	title: defaultStore.state.remoteLocalTimelineName3,
-	icon: 'ti ti-plus',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(remoteLocalTimelineEnable4.value ? [{
-	key: 'custom-timeline-4',
-	title: defaultStore.state.remoteLocalTimelineName4,
-	icon: 'ti ti-plus',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(remoteLocalTimelineEnable5.value ? [{
-	key: 'custom-timeline-5',
-	title: defaultStore.state.remoteLocalTimelineName5,
-	icon: 'ti ti-plus',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), ...(isGlobalTimelineAvailable ? [{
-	key: 'global',
-	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: defaultStore.state.topBarNameShown ?? false,
-}] : []), {
-	icon: 'ti ti-list',
-	title: i18n.ts.lists,
-	iconOnly: true,
-	onClick: chooseList,
-}, {
-	icon: 'ti ti-antenna',
-	title: i18n.ts.antennas,
-	iconOnly: true,
-	onClick: chooseAntenna,
-}, {
-	icon: 'ti ti-device-tv',
-	title: i18n.ts.channel,
-	iconOnly: true,
-	onClick: chooseChannel,
-}] as Tab[]);
+	const tabDef = timelineHeaderItemDef[tab];
+	if (!tabDef) {
+		return {};
+	}
+
+	return {
+		...(!['channels', 'antennas', 'lists'].includes(tab) ? {
+			key: tab,
+		} : {}),
+		title: tabDef.title,
+		icon: tabDef.icon,
+		iconOnly: tabDef.iconOnly,
+		...(tab === 'lists' ? {
+			onClick: (ev) => chooseList(ev),
+		} : {}),
+		...(tab === 'antennas' ? {
+			onClick: (ev) => chooseAntenna(ev),
+		} : {}),
+		...(tab === 'channels' ? {
+			onClick: (ev) => chooseChannel(ev),
+		} : {}),
+	};
+}) as Tab[]);
 
 const headerTabsWhenNotLogin = computed(() => [
 	...(isLocalTimelineAvailable ? [{
@@ -398,31 +356,31 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .new {
-  position: sticky;
-  top: calc(var(--stickyTop, 0px) + 16px);
-  z-index: 1000;
-  width: 100%;
-  margin: calc(-0.675em - 8px) 0;
+	position: sticky;
+	top: calc(var(--stickyTop, 0px) + 16px);
+	z-index: 1000;
+	width: 100%;
+	margin: calc(-0.675em - 8px) 0;
 
-  &:first-child {
-    margin-top: calc(-0.675em - 8px - var(--margin));
-  }
+	&:first-child {
+		margin-top: calc(-0.675em - 8px - var(--margin));
+	}
 }
 
 .newButton {
-  display: block;
-  margin: var(--margin) auto 0 auto;
-  padding: 8px 16px;
-  border-radius: 32px;
+	display: block;
+	margin: var(--margin) auto 0 auto;
+	padding: 8px 16px;
+	border-radius: 32px;
 }
 
 .postForm {
-  border-radius: var(--radius);
+	border-radius: var(--radius);
 }
 
 .tl {
-  background: var(--bg);
-  border-radius: var(--radius);
-  overflow: clip;
+	background: var(--bg);
+	border-radius: var(--radius);
+	overflow: clip;
 }
 </style>

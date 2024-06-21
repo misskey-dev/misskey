@@ -9,8 +9,7 @@ import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
 interface PostFormAction {
 	title: string,
 	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
@@ -53,7 +52,6 @@ export type SoundStore = {
 
 	volume: number;
 }
-import { instance } from '@/instance.js';
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -237,6 +235,22 @@ export const defaultStore = markRaw(new Storage('base', {
 			'ui',
 			'cacheclear',
 		],
+	},
+	timelineHeader: {
+		where: 'deviceAccount',
+		default: [
+			'home',
+			...(isLocalTimelineAvailable ? [
+				'local',
+				'social',
+			] : []),
+			...(isGlobalTimelineAvailable ? [
+				'global',
+			] : []),
+			'lists',
+			'antennas',
+			'channels',
+		] as TimelineHeaderItem[],
 	},
 	visibility: {
 		where: 'deviceAccount',
@@ -804,6 +818,7 @@ interface Watcher {
  */
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
+import { TimelineHeaderItem } from '@/timeline-header.js';
 
 export class ColdDeviceStorage {
 	public static default = {
