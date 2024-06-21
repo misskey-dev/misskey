@@ -1282,7 +1282,7 @@ describe('Timelines', () => {
 		});
 
 		/** @see https://github.com/misskey-dev/misskey/issues/14000 */
-		test.concurrent('FTT: キャッシュをパージした後でも sinceId による絞り込みが正しく動作する', async () => {
+		test.concurrent('FTT: sinceId にキャッシュより古いノートを指定しても、sinceId による絞り込みが正しく動作する', async () => {
 			const alice = await signup();
 			const noteSince = await post(alice, { text: 'Note where id will be `sinceId`.' });
 			const note1 = await post(alice, { text: '1' });
@@ -1294,7 +1294,7 @@ describe('Timelines', () => {
 			assert.deepStrictEqual(res.body, [note1, note2, note3]);
 		});
 
-		test.concurrent('FTT: キャッシュをパージした後でも sinceId と untilId による絞り込みが正しく動作する', async () => {
+		test.concurrent('FTT: sinceId にキャッシュより古いノートを指定しても、sinceId と untilId による絞り込みが正しく動作する', async () => {
 			const alice = await signup();
 			const noteSince = await post(alice, { text: 'Note where id will be `sinceId`.' });
 			const note1 = await post(alice, { text: '1' });
