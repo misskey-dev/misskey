@@ -14,7 +14,6 @@ import type { MiNote } from '@/models/Note.js';
 import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -276,7 +275,7 @@ export class NoteEntityService implements OnModuleInit {
 				packedFiles.set(k, v);
 			}
 		}
-		return fileIds.map(id => packedFiles.get(id)).filter(isNotNull);
+		return fileIds.map(id => packedFiles.get(id)).filter(x => x != null);
 	}
 
 	@bindThis
@@ -449,12 +448,12 @@ export class NoteEntityService implements OnModuleInit {
 
 		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(notes));
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
-		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
+		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 		const users = [
 			...notes.map(({ user, userId }) => user ?? userId),
-			...notes.map(({ replyUserId }) => replyUserId).filter(isNotNull),
-			...notes.map(({ renoteUserId }) => renoteUserId).filter(isNotNull),
+			...notes.map(({ replyUserId }) => replyUserId).filter(x => x != null),
+			...notes.map(({ renoteUserId }) => renoteUserId).filter(x => x != null),
 		];
 		const packedUsers = await this.userEntityService.packMany(users, me)
 			.then(users => new Map(users.map(u => [u.id, u])));
