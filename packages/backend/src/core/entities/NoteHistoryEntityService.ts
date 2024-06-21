@@ -13,7 +13,6 @@ import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import type { UsersRepository, NotesRepository, NoteHistoryRepository, FollowingsRepository, PollsRepository, PollVotesRepository, MiNoteHistory } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -165,7 +164,7 @@ export class NoteHistoryEntityService implements OnModuleInit {
 				packedFiles.set(k, v);
 			}
 		}
-		return fileIds.map(id => packedFiles.get(id)).filter(isNotNull);
+		return fileIds.map(id => packedFiles.get(id)).filter((x): x is Packed<'DriveFile'> => x != null);
 	}
 
 	@bindThis
@@ -195,7 +194,7 @@ export class NoteHistoryEntityService implements OnModuleInit {
 		}
 		const host = targetNote.userHost;
 
-		const packedFiles = options?._hint_?.packedFiles;
+		const packedFiles = options?._hint_?.packedFiles ?? new Map();
 
 		const packed: Packed<'NoteHistory'> = await awaitAll({
 			id: targetHistory.id,
@@ -228,12 +227,12 @@ export class NoteHistoryEntityService implements OnModuleInit {
 		if (noteHistories.length === 0) return [];
 		const targetNotes = await this.notesRepository.findBy({ id: In(noteHistories.map(n => n.targetId)) });
 		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(targetNotes));
-		const fileIds = targetNotes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
+		const fileIds: string[] = targetNotes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter((x): x is string => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 		const users = [
 			...targetNotes.map(({ user, userId }) => user ?? userId),
-			...targetNotes.map(({ replyUserId }) => replyUserId).filter(isNotNull),
-			...targetNotes.map(({ renoteUserId }) => renoteUserId).filter(isNotNull),
+			...targetNotes.map(({ replyUserId }) => replyUserId).filter((x): x is string => x != null),
+			...targetNotes.map(({ renoteUserId }) => renoteUserId).filter((x): x is string => x != null),
 		];
 		const packedUsers = await this.userEntityService.packMany(users, me)
 			.then(users => new Map(users.map(u => [u.id, u])));
