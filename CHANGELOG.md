@@ -1,8 +1,4 @@
-## Unreleased
-
-### General
-
-### Client
+## 2024.5.0-kinel.3
 
 ### Server
 - Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (pick #14059)
