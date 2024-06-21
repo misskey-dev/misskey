@@ -160,33 +160,56 @@ export class ReactionService {
 			userId: user.id,
 			reaction,
 		};
+		if (user.host == null) {
+			const exists = await this.noteReactionsRepository.findOneBy({
+				noteId: note.id,
+				userId: user.id,
+				reaction: record.reaction,
+			});
 
-		// Create reaction
-		const exists = await this.noteReactionsRepository.findOneBy({
-			noteId: note.id,
-			userId: user.id,
-			reaction: record.reaction,
-		});
+			const count = await this.noteReactionsRepository.countBy({
+				noteId: note.id,
+				userId: user.id,
+			});
 
-		const count = await this.noteReactionsRepository.countBy({
-			noteId: note.id,
-			userId: user.id,
-		});
+			if (count > 3) {
+				throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+			}
 
-		if (count > 3) {
-			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-		}
-
-		if (exists == null) {
-			if (user.host == null) {
-				await this.noteReactionsRepository.insert(record);
+			if (exists == null) {
+				if (user.host == null) {
+					await this.noteReactionsRepository.insert(record);
+				} else {
+					throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+				}
 			} else {
+			// 同じリアクションがすでにされていたらエラー
 				throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
 			}
 		} else {
-			// 同じリアクションがすでにされていたらエラー
-			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+			try {
+				await this.noteReactionsRepository.insert(record);
+			} catch (e) {
+				if (isDuplicateKeyValueError(e)) {
+					const exists = await this.noteReactionsRepository.findOneByOrFail({
+						noteId: note.id,
+						userId: user.id,
+					});
+
+					if (exists.reaction !== reaction) {
+					// 別のリアクションがすでにされていたら置き換える
+						await this.delete(user, note);
+						await this.noteReactionsRepository.insert(record);
+					} else {
+					// 同じリアクションがすでにされていたらエラー
+						throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+					}
+				} else {
+					throw e;
+				}
+			}
 		}
+		// Create reaction
 
 		// Increment reactions count
 		const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
