@@ -586,9 +586,6 @@ importers:
       '@types/node':
         specifier: 20.12.7
         version: 20.12.7
-      '@types/node-fetch':
-        specifier: 3.0.3
-        version: 3.0.3
       '@types/nodemailer':
         specifier: 6.4.15
         version: 6.4.15
@@ -4624,10 +4621,6 @@ packages:
 
   '@types/node-fetch@2.6.4':
     resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
-
-  '@types/node-fetch@3.0.3':
-    resolution: {integrity: sha512-HhggYPH5N+AQe/OmN6fmhKmRRt2XuNJow+R3pQwJxOOF9GuwM7O2mheyGeIrs5MOIeNjDEdgdoyHBOrFeJBR3g==}
-    deprecated: This is a stub types definition. node-fetch provides its own type definitions, so you do not need this installed.
 
   '@types/node@18.17.15':
     resolution: {integrity: sha512-2yrWpBk32tvV/JAd3HNHWuZn/VDN1P+72hWirHnvsvTGSqbANi+kSeuQR9yAHnbvaBvHDsoTdXV0Fe+iRtHLKA==}
@@ -16024,10 +16017,6 @@ snapshots:
     dependencies:
       '@types/node': 20.12.7
       form-data: 3.0.1
-
-  '@types/node-fetch@3.0.3':
-    dependencies:
-      node-fetch: 3.3.2
 
   '@types/node@18.17.15': {}
 
