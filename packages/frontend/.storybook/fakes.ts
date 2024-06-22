@@ -22,6 +22,66 @@ export function abuseUserReport() {
 	};
 }
 
+export function channel(id = 'somechannelid', name = 'Some Channel', bannerUrl: string | null = 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true'): entities.Channel {
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		lastNotedAt: '2016-12-28T22:49:51.000Z',
+		name,
+		description: null,
+		userId: null,
+		bannerUrl,
+		pinnedNoteIds: [],
+		color: '#000',
+		isArchived: false,
+		usersCount: 1,
+		notesCount: 1,
+		isSensitive: false,
+		allowRenoteToExternal: false,
+	};
+}
+
+export function clip(id = 'someclipid', name = 'Some Clip'): entities.Clip {
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		lastClippedAt: null,
+		userId: 'someuserid',
+		user: {
+			id: 'someuserid',
+			name: 'Misskey User',
+			username: 'miskist',
+			host: 'misskey-hub.net',
+			avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
+			avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',
+			avatarDecorations: [],
+			emojis: {},
+			badgeRoles: [],
+			onlineStatus: 'unknown',
+		},
+		notesCount: undefined,
+		name,
+		description: 'Some clip description',
+		isPublic: false,
+		favoritedCount: 0,
+	};
+}
+
+export function emojiDetailed(id = 'someemojiid', name = 'some_emoji'): entities.EmojiDetailed {
+	return {
+		id,
+		aliases: ['alias1', 'alias2'],
+		name,
+		category: 'emojiCategory',
+		host: null,
+		url: '/client-assets/about-icon.png',
+		license: null,
+		isSensitive: false,
+		localOnly: false,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: ['roleId1', 'roleId2'],
+	};
+}
+
 export function galleryPost(isSensitive = false) {
 	return {
 		id: 'somepostid',
@@ -62,6 +122,35 @@ export function file(isSensitive = false) {
 		folder: null,
 		userId: null,
 		user: null,
+	};
+}
+
+export function federationInstance(): entities.FederationInstance {
+	return {
+		id: 'someinstanceid',
+		firstRetrievedAt: '2021-01-01T00:00:00.000Z',
+		host: 'misskey-hub.net',
+		usersCount: 10,
+		notesCount: 20,
+		followingCount: 5,
+		followersCount: 15,
+		isNotResponding: false,
+		isSuspended: false,
+		suspensionState: 'none',
+		isBlocked: false,
+		softwareName: 'misskey',
+		softwareVersion: '2024.5.0',
+		openRegistrations: false,
+		name: 'Misskey Hub',
+		description: '',
+		maintainerName: '',
+		maintainerEmail: '',
+		isSilenced: false,
+		iconUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
+		faviconUrl: '',
+		themeColor: '',
+		infoUpdatedAt: '',
+		latestRequestReceivedAt: '',
 	};
 }
 
