@@ -118,8 +118,11 @@ export function setFaviconDot(visible: boolean) {
 			icon = new FaviconDot();
 			await icon.setup();
 		}
-
-		icon!.setVisible(visible);
+		try {
+			icon!.setVisible(visible);
+		} catch (e) {
+			// do nothing
+		}
 	};
 
 	// If document is already loaded, set visibility immediately
