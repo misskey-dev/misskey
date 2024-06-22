@@ -3,4 +3,5 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const fallback = Symbol('fallback');
+import MkChartTooltip from './MkChartTooltip.vue';
+void MkChartTooltip;
