@@ -1,11 +1,38 @@
 ## Unreleased
 
+### General
+- Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
+
+### Client
+- Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
+- Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
+- Fix: リバーシの対局を正しく共有できないことがある問題を修正
+- Fix: コントロールパネルでベースロールのポリシーを編集してもUI上では変更が反映されない問題を修正 
+
+### Server
+- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
+- Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
+- Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
+- Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
+- Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
+- Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
+- Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
+- Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
+- Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
+- Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
+- Fix: FTT有効時、タイムライン用エンドポイントで`sinceId`にキャッシュ内最古のものより古いものを指定した場合に正しく結果が返ってこない問題を修正
+
+## 2024.5.0
+
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 - 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
 - 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
+- Feat: エラートラッキングにSentryを使用できるようになりました
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
@@ -19,6 +46,7 @@
 - Enhance: Goneを出さずに終了したサーバーへの配信停止を自動的に行うように
   - もしそのようなサーバーからから配信が届いた場合には自動的に配信を再開します
 - Enhance: 配信停止の理由を表示するように
+- Enhance: サーバーのお問い合わせ先URLを設定できるようになりました
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 - Fix: 正規化されていない状態のhashtagが連合されてきたhtmlに含まれているとhashtagが正しくhashtagに復元されない問題を修正
 - Fix: みつけるのアンケート欄にてチャンネルのアンケートが含まれてしまう問題を修正
@@ -72,6 +100,7 @@
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
 - Fix: 連合なしの状態の読み書きができない問題を修正
 - Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
+- Fix: ファイルを5つ以上添付してもテキストがないとノートが折りたたまれない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに

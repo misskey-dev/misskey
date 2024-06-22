@@ -837,6 +837,7 @@ administration: "管理"
 accounts: "アカウント"
 switch: "切り替え"
 noMaintainerInformationWarning: "管理者情報が設定されていません。"
+noInquiryUrlWarning: "問い合わせ先URLが設定されていません。"
 noBotProtectionWarning: "Botプロテクションが設定されていません。"
 configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
@@ -1383,6 +1384,8 @@ _serverSettings:
   fanoutTimelineDescription: "有効にすると、各種タイムラインを取得する際のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。サーバーのメモリ容量が少ない場合、または動作が不安定な場合は無効にすることができます。"
   fanoutTimelineDbFallback: "データベースへのフォールバック"
   fanoutTimelineDbFallbackDescription: "有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。"
+  inquiryUrl: "問い合わせ先URL"
+  inquiryUrlDescription: "サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
@@ -2465,6 +2468,7 @@ _drivecleaner:
 
 _webhookSettings:
   createWebhook: "Webhookを作成"
+  modifyWebhook: "Webhookを編集"
   name: "名前"
   secret: "シークレット"
   events: "Webhookを実行するタイミング"
@@ -2477,6 +2481,26 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+  _systemEvents:
+    abuseReport: "ユーザーから通報があったとき"
+    abuseReportResolved: "ユーザーからの通報を処理したとき"
+  deleteConfirm: "Webhookを削除しますか？"
+
+_abuseReport:
+  _notificationRecipient:
+    createRecipient: "通報の通知先を追加"
+    modifyRecipient: "通報の通知先を編集"
+    recipientType: "通知先の種類"
+    _recipientType:
+      mail: "メール"
+      webhook: "Webhook"
+      _captions:
+        mail: "モデレーター権限を持つユーザーのメールアドレスに通知を送ります(通報を受けた時のみ)"
+        webhook: "指定したSystemWebhookに通知を送ります(通報を受けた時と通報を解決した時にそれぞれ発信)"
+    keywords: "キーワード"
+    notifiedUser: "通知先ユーザー"
+    notifiedWebhook: "使用するWebhook"
+    deleteConfirm: "通知先を削除しますか？"
 
 _moderationLogTypes:
   createRole: "ロールを作成"
@@ -2515,6 +2539,12 @@ _moderationLogTypes:
   deleteAvatarDecoration: "アイコンデコレーションを削除"
   unsetUserAvatar: "ユーザーのアイコンを解除"
   unsetUserBanner: "ユーザーのバナーを解除"
+  createSystemWebhook: "SystemWebhookを作成"
+  updateSystemWebhook: "SystemWebhookを更新"
+  deleteSystemWebhook: "SystemWebhookを削除"
+  createAbuseReportNotificationRecipient: "通報の通知先を作成"
+  updateAbuseReportNotificationRecipient: "通報の通知先を更新"
+  deleteAbuseReportNotificationRecipient: "通報の通知先を削除"
 
 _fileViewer:
   title: "ファイルの詳細"
