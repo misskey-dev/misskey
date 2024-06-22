@@ -7,7 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
-		<div>
+		<div class="_gaps">
+			<div :class="$style.subMenus" class="_gaps">
+				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ "通知設定" }}</MkButton>
+			</div>
+
 			<div :class="$style.filtersRoot">
 				<MkSelect v-model="state">
 					<template #label>{{ i18n.ts.state }}</template>
@@ -29,6 +33,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSelect>
 			</div>
 
+			<!-- TODO
+			<div class="inputs" style="display: flex; padding-top: 1.2em;">
+				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" :spellcheck="false">
+					<span>{{ i18n.ts.username }}</span>
+				</MkInput>
+				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params().origin === 'local'">
+					<span>{{ i18n.ts.host }}</span>
+				</MkInput>
+			</div>
+			-->
+
 			<MkPagination v-slot="{ items }" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
 				<XAbuseReport v-for="report in (items as AbuseUserReport[])" :key="report.id" :report="report" @resolved="resolved"/>
 			</MkPagination>
@@ -46,6 +61,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import XAbuseReport, { type AbuseUserReport } from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkButton from '@/components/MkButton.vue';
 
 const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -80,6 +96,13 @@ definePageMetadata(() => ({
 </script>
 
 <style module>
+.subMenus {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+}
+
 .filtersRoot {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);

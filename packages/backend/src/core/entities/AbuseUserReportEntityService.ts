@@ -11,7 +11,6 @@ import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import type { MiUser } from '@/models/User.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -66,7 +65,7 @@ export class AbuseUserReportEntityService {
 	) {
 		const _reporters = reports.map(({ reporter, reporterId }) => reporter ?? reporterId);
 		const _targetUsers = reports.map(({ targetUser, targetUserId }) => targetUser ?? targetUserId);
-		const _assignees = reports.map(({ assignee, assigneeId }) => assignee ?? assigneeId).filter(isNotNull);
+		const _assignees = reports.map(({ assignee, assigneeId }) => assignee ?? assigneeId).filter(x => x != null);
 		const _userMap = await this.userEntityService.packMany(
 			[..._reporters, ..._targetUsers, ..._assignees],
 			me,

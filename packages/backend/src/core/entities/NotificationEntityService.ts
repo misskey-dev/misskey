@@ -13,7 +13,6 @@ import type { MiGroupedNotification, MiNotification } from '@/models/Notificatio
 import type { MiNote } from '@/models/Note.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
 import { CacheService } from '@/core/CacheService.js';
 import { RoleEntityService } from './RoleEntityService.js';
@@ -103,7 +102,7 @@ export class NotificationEntityService implements OnModuleInit {
 					user,
 					reaction: reaction.reaction,
 				};
-			}))).filter(r => isNotNull(r.user));
+			}))).filter(r => r.user != null);
 			// if all users have been deleted, don't show this notification
 			if (reactions.length === 0) {
 				return null;
@@ -124,7 +123,7 @@ export class NotificationEntityService implements OnModuleInit {
 				}
 
 				return this.userEntityService.pack(userId, { id: meId });
-			}))).filter(isNotNull);
+			}))).filter(x => x != null);
 			// if all users have been deleted, don't show this notification
 			if (users.length === 0) {
 				return null;
@@ -181,7 +180,7 @@ export class NotificationEntityService implements OnModuleInit {
 
 		validNotifications = await this.#filterValidNotifier(validNotifications, meId);
 
-		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(isNotNull);
+		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(x => x != null);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
 			relations: ['user', 'reply', 'reply.user', 'renote', 'renote.user'],
@@ -223,7 +222,7 @@ export class NotificationEntityService implements OnModuleInit {
 			);
 		});
 
-		return (await Promise.all(packPromises)).filter(isNotNull);
+		return (await Promise.all(packPromises)).filter(x => x != null);
 	}
 
 	@bindThis
@@ -305,7 +304,7 @@ export class NotificationEntityService implements OnModuleInit {
 			this.cacheService.userProfileCache.fetch(meId).then(p => new Set(p.mutedInstances)),
 		]);
 
-		const notifierIds = notifications.map(notification => 'notifierId' in notification ? notification.notifierId : null).filter(isNotNull);
+		const notifierIds = notifications.map(notification => 'notifierId' in notification ? notification.notifierId : null).filter(x => x != null);
 		const notifiers = notifierIds.length > 0 ? await this.usersRepository.find({
 			where: { id: In(notifierIds) },
 		}) : [];
@@ -313,7 +312,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
 			const isValid = this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
 			return isValid ? notification : null;
-		}))) as [T | null] ).filter(isNotNull);
+		}))) as [T | null] ).filter(x => x != null);
 
 		return filteredNotifications;
 	}
