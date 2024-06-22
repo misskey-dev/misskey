@@ -40,6 +40,7 @@ export class ClipEntityService {
 		},
 	): Promise<Packed<'Clip'>> {
 		const meId = me ? me.id : null;
+		console.log({ src, meId });
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
@@ -53,7 +54,7 @@ export class ClipEntityService {
 			isPublic: clip.isPublic,
 			favoritedCount: await this.clipFavoritesRepository.countBy({ clipId: clip.id }),
 			isFavorited: meId ? await this.clipFavoritesRepository.exists({ where: { clipId: clip.id, userId: meId } }) : undefined,
-			notesCount: meId ? await this.clipNotesRepository.countBy({ clipId: clip.id }) : undefined,
+			notesCount: (meId === clip.userId) ? await this.clipNotesRepository.countBy({ clipId: clip.id }) : undefined,
 		});
 	}
 
