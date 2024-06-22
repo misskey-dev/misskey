@@ -77,7 +77,7 @@ export class RateLimiterService {
 		if (limitation.duration != null && limitation.max != null) {
 			const info = await this.checkLimiter({
 				id: `${actor}:${limitation.key}`,
-				duration: limitation.duration * factor,
+				duration: limitation.duration,
 				max: limitation.max / factor,
 				db: this.redisClient,
 			});
