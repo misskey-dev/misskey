@@ -40,7 +40,6 @@ export class ClipEntityService {
 		},
 	): Promise<Packed<'Clip'>> {
 		const meId = me ? me.id : null;
-		console.log({ src, meId });
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
