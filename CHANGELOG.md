@@ -1,5 +1,20 @@
 ## Unreleased
 
+### General
+- Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
+
+### Client
+- Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
+- Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
+
+### Server
+- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
+- Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
+
+## 2024.5.0
+
 ### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 - 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。

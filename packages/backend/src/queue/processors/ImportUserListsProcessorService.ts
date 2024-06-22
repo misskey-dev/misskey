@@ -79,11 +79,11 @@ export class ImportUserListsProcessorService {
 				});
 
 				if (list == null) {
-					list = await this.userListsRepository.insert({
+					list = await this.userListsRepository.insertOne({
 						id: this.idService.gen(),
 						userId: user.id,
 						name: listName,
-					}).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
+					});
 				}
 
 				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
