@@ -12,6 +12,14 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { IEndpointMeta } from './endpoints.js';
 
+type RateLimitInfo = {
+	code: 'BRIEF_REQUEST_INTERVAL',
+	info: Limiter.LimiterInfo,
+} | {
+	code: 'RATE_LIMIT_EXCEEDED',
+	info: Limiter.LimiterInfo,
+}
+
 @Injectable()
 export class RateLimiterService {
 	private logger: Logger;
@@ -35,7 +43,7 @@ export class RateLimiterService {
 		return new Promise<Limiter.LimiterInfo>((resolve, reject) => {
 			new Limiter(options).get((err, info) => {
 				if (err) {
-					return reject({ code: 'ERR', info });
+					return reject(err);
 				}
 				resolve(info);
 			});
@@ -43,9 +51,9 @@ export class RateLimiterService {
 	}
 
 	@bindThis
-	public async limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1) {
+	public async limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1): Promise<RateLimitInfo | null> {
 		if (this.disabled) {
-			return;
+			return null;
 		}
 
 		// Short-term limit
@@ -61,7 +69,7 @@ export class RateLimiterService {
 
 			if (info.remaining === 0) {
 				// eslint-disable-next-line no-throw-literal
-				throw { code: 'BRIEF_REQUEST_INTERVAL', info };
+				return { code: 'BRIEF_REQUEST_INTERVAL', info };
 			}
 		}
 
@@ -78,8 +86,10 @@ export class RateLimiterService {
 
 			if (info.remaining === 0) {
 				// eslint-disable-next-line no-throw-literal
-				throw { code: 'RATE_LIMIT_EXCEEDED', info };
+				return { code: 'RATE_LIMIT_EXCEEDED', info };
 			}
 		}
+
+		return null
 	}
 }
