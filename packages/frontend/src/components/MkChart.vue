@@ -114,7 +114,7 @@ const getColor = (i) => {
 	return colorSets[i % colorSets.length];
 };
 
-// eslint-disable-next-line vue/no-setup-props-destructure
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const now = props.nowForChromatic != null ? new Date(props.nowForChromatic) : new Date();
 let chartInstance: Chart | null = null;
 let chartData: {
