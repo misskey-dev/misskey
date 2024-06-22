@@ -90,6 +90,6 @@ export class RateLimiterService {
 			}
 		}
 
-		return null
+		return null;
 	}
 }
