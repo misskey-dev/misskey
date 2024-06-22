@@ -7,12 +7,6 @@ interface IErrPromise<TSuccess, TError = unknown> {
 	catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;
 }
 
-class ErrPromise<TSuccess, TError> extends Promise<TSuccess> implements IErrPromise<TSuccess, TError> {
-	constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {
-		super(executor);
-	}
-}
-
 declare module '../api.js' {
   export interface APIClient {
     /**
@@ -24,7 +18,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -35,7 +29,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -47,7 +41,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -59,7 +53,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -71,7 +65,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -83,7 +77,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -95,7 +89,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -106,7 +100,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -117,7 +111,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -128,7 +122,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -139,7 +133,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -150,7 +144,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -161,7 +155,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -172,7 +166,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -183,7 +177,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -194,7 +188,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -205,7 +199,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -216,7 +210,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -227,7 +221,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -238,7 +232,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -249,7 +243,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -260,7 +254,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -271,7 +265,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -282,7 +276,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -293,7 +287,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -304,7 +298,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -315,7 +309,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -326,7 +320,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -337,7 +331,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -348,7 +342,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -359,7 +353,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -370,7 +364,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -381,7 +375,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -392,7 +386,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -404,7 +398,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -415,7 +409,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -426,7 +420,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -437,7 +431,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -448,7 +442,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -459,7 +453,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -470,7 +464,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -481,7 +475,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -492,7 +486,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -503,7 +497,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -514,7 +508,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -525,7 +519,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -536,7 +530,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -547,7 +541,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -558,7 +552,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -569,7 +563,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -580,7 +574,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -591,7 +585,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -602,7 +596,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -613,7 +607,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -624,7 +618,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -635,7 +629,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -646,7 +640,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -657,7 +651,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -668,7 +662,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -679,7 +673,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -690,7 +684,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -701,7 +695,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -712,7 +706,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -723,7 +717,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -734,7 +728,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -745,7 +739,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -756,7 +750,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -767,7 +761,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -778,7 +772,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -789,7 +783,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -800,7 +794,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -811,7 +805,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -822,7 +816,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -833,7 +827,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -844,7 +838,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -855,7 +849,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -866,7 +860,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -877,7 +871,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -888,7 +882,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -899,7 +893,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -910,7 +904,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -922,7 +916,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -934,7 +928,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -946,7 +940,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -958,7 +952,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -970,7 +964,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -981,7 +975,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -992,7 +986,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1003,7 +997,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1014,7 +1008,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1025,7 +1019,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1036,7 +1030,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1047,7 +1041,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1058,7 +1052,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1069,7 +1063,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1080,7 +1074,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1091,7 +1085,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1102,7 +1096,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1114,7 +1108,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1125,7 +1119,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1136,7 +1130,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1147,7 +1141,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1158,7 +1152,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1169,7 +1163,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1180,7 +1174,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1191,7 +1185,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1202,7 +1196,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1213,7 +1207,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1224,7 +1218,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1235,7 +1229,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1246,7 +1240,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1257,7 +1251,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1268,7 +1262,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1279,7 +1273,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1290,7 +1284,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1301,7 +1295,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1312,7 +1306,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1323,7 +1317,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1334,7 +1328,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1345,7 +1339,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1356,7 +1350,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1367,7 +1361,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1378,7 +1372,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1389,7 +1383,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1400,7 +1394,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1411,7 +1405,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1422,7 +1416,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1433,7 +1427,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1444,7 +1438,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1455,7 +1449,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1466,7 +1460,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1477,7 +1471,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1488,7 +1482,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1499,7 +1493,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1510,7 +1504,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1521,7 +1515,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1532,7 +1526,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1543,7 +1537,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1554,7 +1548,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1565,7 +1559,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1576,7 +1570,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1587,7 +1581,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1598,7 +1592,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Find the notes to which the given file is attached.
@@ -1609,7 +1603,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Check if a given file exists.
@@ -1620,7 +1614,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Upload a new drive file.
@@ -1631,7 +1625,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Delete an existing drive file.
@@ -1642,7 +1636,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Search for a drive file by a hash of the contents.
@@ -1653,7 +1647,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Search for a drive file by the given parameters.
@@ -1664,7 +1658,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show the properties of a drive file.
@@ -1675,7 +1669,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Update the properties of a drive file.
@@ -1686,7 +1680,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Request the server to download a new drive file from the specified URL.
@@ -1697,7 +1691,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1708,7 +1702,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1719,7 +1713,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1730,7 +1724,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1741,7 +1735,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1752,7 +1746,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1763,7 +1757,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1774,7 +1768,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1785,7 +1779,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1796,7 +1790,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1807,7 +1801,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1819,7 +1813,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1830,7 +1824,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1841,7 +1835,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1852,7 +1846,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1863,7 +1857,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1874,7 +1868,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1885,7 +1879,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1896,7 +1890,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1907,7 +1901,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1918,7 +1912,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1929,7 +1923,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1940,7 +1934,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1951,7 +1945,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1962,7 +1956,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1973,7 +1967,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1984,7 +1978,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -1995,7 +1989,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2006,7 +2000,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2017,7 +2011,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2028,7 +2022,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2039,7 +2033,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2050,7 +2044,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2061,7 +2055,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2072,7 +2066,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2083,7 +2077,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2094,7 +2088,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2105,7 +2099,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2116,7 +2110,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2127,7 +2121,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2138,7 +2132,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2149,7 +2143,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2160,7 +2154,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2171,7 +2165,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2182,7 +2176,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2194,7 +2188,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2206,7 +2200,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2218,7 +2212,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2230,7 +2224,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2242,7 +2236,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2254,7 +2248,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2266,7 +2260,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2278,7 +2272,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2290,7 +2284,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2302,7 +2296,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2313,7 +2307,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2325,7 +2319,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2337,7 +2331,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2349,7 +2343,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2361,7 +2355,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2373,7 +2367,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2385,7 +2379,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2397,7 +2391,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2409,7 +2403,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2421,7 +2415,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2433,7 +2427,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2444,7 +2438,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2455,7 +2449,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2466,7 +2460,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2478,7 +2472,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2490,7 +2484,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2502,7 +2496,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2514,7 +2508,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2526,7 +2520,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2537,7 +2531,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2548,7 +2542,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2559,7 +2553,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2570,7 +2564,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2581,7 +2575,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2592,7 +2586,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2603,7 +2597,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2615,7 +2609,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2626,7 +2620,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2637,7 +2631,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2648,7 +2642,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2659,7 +2653,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2670,7 +2664,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2681,7 +2675,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2693,7 +2687,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2704,7 +2698,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2716,7 +2710,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2728,7 +2722,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2739,7 +2733,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2751,7 +2745,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2762,7 +2756,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2774,7 +2768,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2785,7 +2779,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2796,7 +2790,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2807,7 +2801,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2818,7 +2812,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2829,7 +2823,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2840,7 +2834,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2851,7 +2845,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2862,7 +2856,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2873,7 +2867,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2884,7 +2878,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2895,7 +2889,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2906,7 +2900,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2918,7 +2912,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2929,7 +2923,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2940,7 +2934,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2951,7 +2945,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2962,7 +2956,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2973,7 +2967,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2984,7 +2978,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -2995,7 +2989,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3006,7 +3000,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3017,7 +3011,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3028,7 +3022,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3039,7 +3033,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3050,7 +3044,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3061,7 +3055,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3072,7 +3066,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3083,7 +3077,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3094,7 +3088,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3105,7 +3099,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3116,7 +3110,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3127,7 +3121,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3138,7 +3132,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3149,7 +3143,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3160,7 +3154,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3171,7 +3165,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3182,7 +3176,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3193,7 +3187,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3204,7 +3198,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3215,7 +3209,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3226,7 +3220,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3237,7 +3231,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3248,7 +3242,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3259,7 +3253,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3270,7 +3264,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3281,7 +3275,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3292,7 +3286,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3303,7 +3297,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3314,7 +3308,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3325,7 +3319,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3336,7 +3330,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3347,7 +3341,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3358,7 +3352,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3369,7 +3363,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3381,7 +3375,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3392,7 +3386,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3403,7 +3397,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3414,7 +3408,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3425,7 +3419,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3436,7 +3430,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3447,7 +3441,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3458,7 +3452,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3469,7 +3463,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3480,7 +3474,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3491,7 +3485,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3502,7 +3496,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3513,7 +3507,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3524,7 +3518,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3535,7 +3529,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3546,7 +3540,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3557,7 +3551,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3568,7 +3562,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3579,7 +3573,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3590,7 +3584,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3601,7 +3595,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3612,7 +3606,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3623,7 +3617,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3634,7 +3628,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Request a users password to be reset.
@@ -3645,7 +3639,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Only available when running with <code>NODE_ENV=testing</code>. Reset the database and flush Redis.
@@ -3656,7 +3650,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Complete the password reset that was previously requested.
@@ -3667,7 +3661,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3678,7 +3672,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3689,7 +3683,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Check push notification registration exists.
@@ -3701,7 +3695,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Update push notification registration.
@@ -3713,7 +3707,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Register to receive push notifications.
@@ -3725,7 +3719,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Unregister from receiving push notifications.
@@ -3736,7 +3730,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Endpoint for testing input validation.
@@ -3747,7 +3741,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3758,7 +3752,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3769,7 +3763,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show all clips this user owns.
@@ -3780,7 +3774,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show everyone that follows this user.
@@ -3791,7 +3785,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show everyone that this user is following.
@@ -3802,7 +3796,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show all gallery posts by the given user.
@@ -3813,7 +3807,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Get a list of other users that the specified user frequently replies to.
@@ -3824,7 +3818,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3835,7 +3829,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Create a new list of users.
@@ -3846,7 +3840,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Delete an existing list of users.
@@ -3857,7 +3851,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show all lists that the authenticated user has created.
@@ -3868,7 +3862,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Remove a user from a list.
@@ -3879,7 +3873,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Add a user to an existing list.
@@ -3890,7 +3884,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show the properties of a list.
@@ -3901,7 +3895,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3912,7 +3906,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3923,7 +3917,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Update the properties of a list.
@@ -3934,7 +3928,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3945,7 +3939,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3956,7 +3950,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3967,7 +3961,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -3978,7 +3972,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show all pages this user created.
@@ -3989,7 +3983,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show all flashs this user created.
@@ -4000,7 +3994,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show all reactions this user made.
@@ -4011,7 +4005,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show users that the authenticated user might be interested to follow.
@@ -4022,7 +4016,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show the different kinds of relations between the authenticated user and the specified user(s).
@@ -4033,7 +4027,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * File a report.
@@ -4044,7 +4038,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Search for a user by username and/or host.
@@ -4055,7 +4049,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Search for users.
@@ -4066,7 +4060,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * Show the properties of a user.
@@ -4077,7 +4071,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4088,7 +4082,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4099,7 +4093,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4110,7 +4104,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4122,7 +4116,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4133,7 +4127,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4144,7 +4138,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4155,7 +4149,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4166,7 +4160,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4177,7 +4171,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4188,7 +4182,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4199,7 +4193,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4210,7 +4204,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4221,7 +4215,7 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
 
     /**
      * No description provided.
@@ -4232,6 +4226,6 @@ declare module '../api.js' {
       endpoint: E,
       params: P,
       credential?: string | null,
-    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;
+    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;
   }
 }

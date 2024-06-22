@@ -65,8 +65,8 @@ export class APIClient {
 		endpoint: E,
 		params: P = {} as P,
 		credential?: string | null,
-	): ErrPromise<SwitchCaseResponseType<E, P>, RE> {
-		return new Promise((resolve, reject) => {
+	): IErrPromise<SwitchCaseResponseType<E, P>, RE> {
+		return new ErrPromise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
 				body: JSON.stringify({

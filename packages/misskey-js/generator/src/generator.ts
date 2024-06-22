@@ -290,12 +290,6 @@ async function generateApiClientJSDoc(
 		'',
 		'	catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;',
 		'}',
-		'',
-		'class ErrPromise<TSuccess, TError> extends Promise<TSuccess> implements IErrPromise<TSuccess, TError> {',
-		'	constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {',
-		'		super(executor);',
-		'	}',
-		'}',
 	);
 	endpointOutputLine.push('');
 
@@ -312,7 +306,7 @@ async function generateApiClientJSDoc(
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
-			'    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;',
+			'    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;',
 		);
 
 		if (i < endpoints.length - 1) {
