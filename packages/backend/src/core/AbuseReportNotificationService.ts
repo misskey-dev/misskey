@@ -10,7 +10,6 @@ import sanitizeHtml from 'sanitize-html';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
@@ -91,7 +90,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		const recipientEMailAddresses = await this.fetchEMailRecipients().then(it => it
 			.filter(it => it.isActive && it.userProfile?.emailVerified)
 			.map(it => it.userProfile?.email)
-			.filter(isNotNull),
+			.filter(x => x != null),
 		);
 
 		// 送信先の鮮度を保つため、毎回取得する
@@ -138,7 +137,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.then(it => it
 				.filter(it => it.isActive && it.systemWebhookId && it.method === 'webhook')
 				.map(it => it.systemWebhookId)
-				.filter(isNotNull));
+				.filter(x => x != null));
 		for (const webhookId of recipientWebhookIds) {
 			await Promise.all(
 				abuseReports.map(it => {
@@ -340,7 +339,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	@bindThis
 	private async removeUnauthorizedRecipientUsers(recipients: MiAbuseReportNotificationRecipient[]): Promise<MiAbuseReportNotificationRecipient[]> {
 		const userRecipients = recipients.filter(it => it.userId !== null);
-		const recipientUserIds = new Set(userRecipients.map(it => it.userId).filter(isNotNull));
+		const recipientUserIds = new Set(userRecipients.map(it => it.userId).filter(x => x != null));
 		if (recipientUserIds.size <= 0) {
 			// ユーザが通知先として設定されていない場合、この関数での処理を行うべきレコードが無い
 			return recipients;
