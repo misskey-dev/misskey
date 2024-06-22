@@ -4984,6 +4984,10 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    /**
+     * カラーモードを{mode}に変更しました。
+     */
+    "colorModeChangedToX": ParameterizedString<"mode">;
     "_delivery": {
         /**
          * 配信状態
