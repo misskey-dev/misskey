@@ -69,9 +69,7 @@ export async function mainBoot() {
 
 	const hotkeys = {
 		'd': (): void => {
-			ColdDeviceStorage.set('syncDeviceDarkMode', false);
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-			toast(i18n.tsx.colorModeChangedToX({ mode: defaultStore.state.darkMode ? i18n.ts.dark : i18n.ts.light }), 1500);
 		},
 		's': (): void => {
 			mainRouter.push('/search');
