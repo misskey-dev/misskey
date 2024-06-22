@@ -96,12 +96,14 @@ async function generateEndpointErrors(
 			const errorResponseCodes = Object.keys(operation.responses).filter((key) => !okResponses.includes(key));
 			const errorTypes = new Map<string, OpenAPIV3_1.SchemaObject>();
 			errorResponseCodes.forEach((code) => {
-				const response = operation.responses![code];
+				if (operation.responses == null) return;
+				const response = operation.responses[code];
 				if ('content' in response && response.content != null && 'application/json' in response.content) {
 					const errors = response.content['application/json'].examples;
 					if (errors != null) {
 						Object.keys(errors).forEach((key) => {
 							const error = errors[key];
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 							if (error != null && 'value' in error && error.value != null) {
 								errorTypes.set(key, error.value);
 							}
@@ -270,17 +272,17 @@ async function generateApiClientJSDoc(
 	endpointOutputLine.push('');
 
 	endpointOutputLine.push(
-		`interface IErrPromise<TSuccess, TError = unknown> {`,
-		`	then<TResult1 = TSuccess, TResult2 = never>(onfulfilled?: ((value: TSuccess) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: TError) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;`,
-		``,
-		`	catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;`,
-		`}`,
-		``,
-		`class ErrPromise<TSuccess, TError> extends Promise<TSuccess> implements IErrPromise<TSuccess, TError> {`,
-		`	constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {`,
-		`		super(executor);`,
-		`	}`,
-		`}`,
+		'interface IErrPromise<TSuccess, TError = unknown> {',
+		'	then<TResult1 = TSuccess, TResult2 = never>(onfulfilled?: ((value: TSuccess) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: TError) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;',
+		'',
+		'	catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;',
+		'}',
+		'',
+		'class ErrPromise<TSuccess, TError> extends Promise<TSuccess> implements IErrPromise<TSuccess, TError> {',
+		'	constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {',
+		'		super(executor);',
+		'	}',
+		'}',
 	);
 	endpointOutputLine.push('');
 
