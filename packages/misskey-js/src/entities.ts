@@ -226,6 +226,18 @@ export type SignupPendingResponse = {
 	i: string,
 };
 
+export type SignupErrors = {
+	message: 'DUPLICATED_USERNAME',
+	code: 400,
+} | {
+	message: 'USED_USERNAME',
+	code: 400,
+} | {
+	message: 'DENIED_USERNAME',
+	code: 400,
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+} | Record<string, any>;
+
 export type SigninRequest = {
 	username: string;
 	password: string;
@@ -235,4 +247,22 @@ export type SigninRequest = {
 export type SigninResponse = {
 	id: User['id'],
 	i: string,
+};
+
+export type SigninErrors = {
+	message: 'Too many failed attempts to sign in. Try again later.',
+	code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+	id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
+} | {
+	id: '6cc579cc-885d-43d8-95c2-b8c7fc963280', // User not found
+} | {
+	id: 'e03a5f46-d309-4865-9b69-56282d94e1eb', // User is suspended
+} | {
+	id: '4e30e80c-e338-45a0-8c8f-44455efa3b76', // Internal server error
+} | {
+	id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c', // Invalid credentials
+} | {
+	id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f', // Invalid one-time password
+} | {
+	id: '93b86c4b-72f9-40eb-9815-798928603d1e', // Invalid passkey credential
 };

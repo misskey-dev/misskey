@@ -4,15 +4,16 @@ import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
 import openapiTS from 'openapi-typescript';
 
+const disabledLints = [
+	'@typescript-eslint/naming-convention',
+	'@typescript-eslint/no-explicit-any',
+];
+
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
 	openApiJsonPath: string,
 	typeFileName: string,
 ) {
-	const disabledLints = [
-		'@typescript-eslint/naming-convention',
-		'@typescript-eslint/no-explicit-any',
-	];
 
 	const lines: string[] = [];
 	for (const lint of disabledLints) {
@@ -49,22 +50,96 @@ async function generateSchemaEntities(
 	await writeFile(outputPath, typeAliasLines.join('\n'));
 }
 
-async function generateEndpoints(
-	openApiDocs: OpenAPIV3_1.Document,
-	typeFileName: string,
-	entitiesOutputPath: string,
-	endpointOutputPath: string,
-) {
-	const endpoints: Endpoint[] = [];
-
+function getEndpoints(openApiDocs: OpenAPIV3_1.Document) {
 	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
 	const paths = openApiDocs.paths ?? {};
-	const postPathItems = Object.keys(paths)
+	return Object.keys(paths)
 		.map(it => ({
 			_path_: it.replace(/^\//, ''),
 			...paths[it]?.post,
 		}))
 		.filter(filterUndefined);
+}
+
+async function generateEndpointErrors(
+	openApiDocs: OpenAPIV3_1.Document,
+	endpointErrorsOutputPath: string,
+) {
+	const endpoints: Endpoint[] = [];
+
+	const postPathItems = getEndpoints(openApiDocs);
+
+	const endpointsErrorsOutputLine: string[] = [];
+
+	for (const lint of disabledLints) {
+		endpointsErrorsOutputLine.push(`/* eslint ${lint}: 0 */`);
+	}
+	endpointsErrorsOutputLine.push('');
+
+	endpointsErrorsOutputLine.push('export type EndpointsErrors = {');
+
+	for (const operation of postPathItems) {
+		const path = operation._path_;
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const operationId = operation.operationId!;
+		const endpoint = new Endpoint(path);
+		endpoints.push(endpoint);
+
+		if (operation.responses) {
+			const okResponses = [
+				'200',
+				'201',
+				'202',
+				'204',
+			];
+
+			const errorResponseCodes = Object.keys(operation.responses).filter((key) => !okResponses.includes(key));
+			const errorTypes = new Map<string, OpenAPIV3_1.SchemaObject>();
+			errorResponseCodes.forEach((code) => {
+				const response = operation.responses![code];
+				if ('content' in response && response.content != null && 'application/json' in response.content) {
+					const errors = response.content['application/json'].examples;
+					if (errors != null) {
+						Object.keys(errors).forEach((key) => {
+							const error = errors[key];
+							if (error != null && 'value' in error && error.value != null) {
+								errorTypes.set(key, error.value);
+							}
+						});
+					}
+				}
+			});
+
+			if (errorTypes.size > 0) {
+				endpointsErrorsOutputLine.push(`\t'${operationId}': {`);
+				for (const [key, value] of errorTypes) {
+					if ('error' in value && value.error != null) {
+						let typeString = JSON.stringify(value.error);
+						typeString = typeString.substring(0, typeString.length - 1) + ', [x: string]: any ' + typeString.substring(typeString.length - 1);
+						endpointsErrorsOutputLine.push(`\t\t'${key}': ${typeString},`);
+					}
+				}
+				endpointsErrorsOutputLine.push('\t},');
+			}
+		}
+	}
+
+	endpointsErrorsOutputLine.push('};');
+	endpointsErrorsOutputLine.push('');
+
+	await writeFile(endpointErrorsOutputPath, endpointsErrorsOutputLine.join('\n'));
+}
+
+async function generateEndpoints(
+	openApiDocs: OpenAPIV3_1.Document,
+	typeFileName: string,
+	entitiesOutputPath: string,
+	endpointErrorsOutputPath: string,
+	endpointOutputPath: string,
+) {
+	const endpoints: Endpoint[] = [];
+
+	const postPathItems = getEndpoints(openApiDocs);
 
 	for (const operation of postPathItems) {
 		const path = operation._path_;
@@ -100,6 +175,18 @@ async function generateEndpoints(
 				);
 			}
 		}
+
+		if (operation.responses) {
+			const errorResponseCodes = Object.keys(operation.responses).filter((key) => key !== '200');
+			if (errorResponseCodes.length > 0) {
+				endpoint.errors = new OperationTypeAlias(
+					operationId,
+					path,
+					'application/json',
+					OperationsAliasType.ERRORS,
+				);
+			}
+		}
 	}
 
 	const entitiesOutputLine: string[] = [];
@@ -107,14 +194,16 @@ async function generateEndpoints(
 	entitiesOutputLine.push('/* eslint @typescript-eslint/naming-convention: 0 */');
 
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
+	entitiesOutputLine.push(`import { EndpointsErrors as _Operations_EndpointsErrors } from '${toImportPath(endpointErrorsOutputPath)}';`);
 	entitiesOutputLine.push('');
 
 	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.REQUEST).toLine());
 	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.RESPONSE).toLine());
+	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.ERRORS).toLine());
 	entitiesOutputLine.push('');
 
 	const entities = endpoints
-		.flatMap(it => [it.request, it.response].filter(i => i))
+		.flatMap(it => [it.request, it.response, it.errors].filter(i => i))
 		.filter(filterUndefined);
 	entitiesOutputLine.push(...entities.map(it => it.toLine()));
 	entitiesOutputLine.push('');
@@ -180,6 +269,21 @@ async function generateApiClientJSDoc(
 	endpointOutputLine.push(`import type { Endpoints } from '${toImportPath(endpointsFileName)}';`);
 	endpointOutputLine.push('');
 
+	endpointOutputLine.push(
+		`interface IErrPromise<TSuccess, TError = unknown> {`,
+		`	then<TResult1 = TSuccess, TResult2 = never>(onfulfilled?: ((value: TSuccess) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: TError) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;`,
+		``,
+		`	catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;`,
+		`}`,
+		``,
+		`class ErrPromise<TSuccess, TError> extends Promise<TSuccess> implements IErrPromise<TSuccess, TError> {`,
+		`	constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {`,
+		`		super(executor);`,
+		`	}`,
+		`}`,
+	);
+	endpointOutputLine.push('');
+
 	endpointOutputLine.push(`declare module '${toImportPath(apiClientFileName)}' {`);
 	endpointOutputLine.push('  export interface APIClient {');
 	for (let i = 0; i < endpoints.length; i++) {
@@ -189,11 +293,11 @@ async function generateApiClientJSDoc(
 			'    /**',
 			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
 			'     */',
-			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
+			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\'], RE extends Endpoints[E][\'errors\']>(`,
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
-			'    ): Promise<SwitchCaseResponseType<E, P>>;',
+			'    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;',
 		);
 
 		if (i < endpoints.length - 1) {
@@ -235,7 +339,8 @@ function toImportPath(fileName: string, fromPath = '/built/autogen', toPath = ''
 
 enum OperationsAliasType {
 	REQUEST = 'Request',
-	RESPONSE = 'Response'
+	RESPONSE = 'Response',
+	ERRORS = 'Errors',
 }
 
 interface IOperationTypeAlias {
@@ -271,9 +376,15 @@ class OperationTypeAlias implements IOperationTypeAlias {
 
 	toLine(): string {
 		const name = this.generateName();
-		return (this.type === OperationsAliasType.REQUEST)
-			? `export type ${name} = operations['${this.operationId}']['requestBody']['content']['${this.mediaType}'];`
-			: `export type ${name} = operations['${this.operationId}']['responses']['200']['content']['${this.mediaType}'];`;
+
+		switch (this.type) {
+			case OperationsAliasType.REQUEST:
+				return `export type ${name} = operations['${this.operationId}']['requestBody']['content']['${this.mediaType}'];`;
+			case OperationsAliasType.RESPONSE:
+				return `export type ${name} = operations['${this.operationId}']['responses']['200']['content']['${this.mediaType}'];`;
+			case OperationsAliasType.ERRORS:
+				return `export type ${name} = _Operations_EndpointsErrors['${this.operationId}'][keyof _Operations_EndpointsErrors['${this.operationId}']];`;
+		}
 	}
 }
 
@@ -296,11 +407,13 @@ class EmptyTypeAlias implements IOperationTypeAlias {
 
 const emptyRequest = new EmptyTypeAlias(OperationsAliasType.REQUEST);
 const emptyResponse = new EmptyTypeAlias(OperationsAliasType.RESPONSE);
+const emptyErrors = new EmptyTypeAlias(OperationsAliasType.ERRORS);
 
 class Endpoint {
 	public readonly path: string;
 	public request?: IOperationTypeAlias;
 	public response?: IOperationTypeAlias;
+	public errors?: IOperationTypeAlias;
 
 	constructor(path: string) {
 		this.path = path;
@@ -309,8 +422,9 @@ class Endpoint {
 	toLine(): string {
 		const reqName = this.request?.generateName() ?? emptyRequest.generateName();
 		const resName = this.response?.generateName() ?? emptyResponse.generateName();
+		const errorsName = this.errors?.generateName() ?? emptyErrors.generateName();
 
-		return `'${this.path}': { req: ${reqName}; res: ${resName} };`;
+		return `'${this.path}': { req: ${reqName}; res: ${resName}; errors: ${errorsName} };`;
 	}
 }
 
@@ -324,12 +438,15 @@ async function main() {
 	const typeFileName = './built/autogen/types.ts';
 	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);
 
+	const endpointErrorsFileName = `${generatePath}/endpointErrors.ts`;
+	await generateEndpointErrors(openApiDocs, endpointErrorsFileName);
+
 	const modelFileName = `${generatePath}/models.ts`;
 	await generateSchemaEntities(openApiDocs, typeFileName, modelFileName);
 
 	const entitiesFileName = `${generatePath}/entities.ts`;
 	const endpointFileName = `${generatePath}/endpoint.ts`;
-	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
+	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointErrorsFileName, endpointFileName);
 
 	const apiClientWarningFileName = `${generatePath}/apiClientJSDoc.ts`;
 	await generateApiClientJSDoc(openApiDocs, '../api.ts', endpointFileName, apiClientWarningFileName);

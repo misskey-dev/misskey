@@ -3,6 +3,18 @@ import './autogen/apiClientJSDoc.js';
 import { SwitchCaseResponseType } from './api.types.js';
 import type { Endpoints } from './api.types.js';
 
+interface IErrPromise<TSuccess, TError = unknown> {
+	then<TResult1 = TSuccess, TResult2 = never>(onfulfilled?: ((value: TSuccess) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: TError) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+
+	catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;
+}
+
+class ErrPromise<TSuccess, TError> extends Promise<TSuccess> implements IErrPromise<TSuccess, TError> {
+	constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {
+		super(executor);
+	}
+}
+
 export type {
 	SwitchCaseResponseType,
 } from './api.types.js';
@@ -49,11 +61,11 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
-	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
+	public request<E extends keyof Endpoints, P extends Endpoints[E]['req'], RE extends Endpoints[E]['errors']>(
 		endpoint: E,
 		params: P = {} as P,
 		credential?: string | null,
-	): Promise<SwitchCaseResponseType<E, P>> {
+	): ErrPromise<SwitchCaseResponseType<E, P>, RE> {
 		return new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',

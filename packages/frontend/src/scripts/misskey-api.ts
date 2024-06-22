@@ -7,6 +7,7 @@ import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
+import { ErrPromise } from '@/scripts/err-promise.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
@@ -14,13 +15,14 @@ export function misskeyApi<
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
+	RE extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
 	data: P = {} as any,
 	token?: string | null | undefined,
 	signal?: AbortSignal,
-): Promise<_ResT> {
+): ErrPromise<_ResT, RE> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
@@ -28,7 +30,7 @@ export function misskeyApi<
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<_ResT>((resolve, reject) => {
+	const promise = new ErrPromise<_ResT, RE>((resolve, reject) => {
 		// Append a credential
 		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
@@ -47,7 +49,7 @@ export function misskeyApi<
 			const body = res.status === 204 ? null : await res.json();
 
 			if (res.status === 200) {
-				resolve(body);
+				resolve(body as _ResT);
 			} else if (res.status === 204) {
 				resolve(undefined as _ResT); // void -> undefined
 			} else {
@@ -66,11 +68,12 @@ export function misskeyApiGet<
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
+	RE extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
 	data: P = {} as any,
-): Promise<_ResT> {
+): ErrPromise<_ResT, RE> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -79,7 +82,7 @@ export function misskeyApiGet<
 
 	const query = new URLSearchParams(data as any);
 
-	const promise = new Promise<_ResT>((resolve, reject) => {
+	const promise = new ErrPromise<_ResT, RE>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
