@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="el" :class="$style.root">
-	<MkMenu :items="items" :align="align" :width="width" :asDrawer="false" @close="onChildClosed"/>
+	<MkMenu :items="items" :align="align" :width="width" maxHeight="calc(100dvh - 32px)" :asDrawer="false" @close="onChildClosed"/>
 </div>
 </template>
 

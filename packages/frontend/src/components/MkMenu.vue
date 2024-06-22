@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="itemsEl" v-hotkey="keymap"
 		class="_popup _shadow"
 		:class="[$style.root, { [$style.center]: align === 'center', [$style.asDrawer]: asDrawer }]"
-		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : 'calc(100dvh - 32px)' }"
+		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: normalizedMaxHeight }"
 		@contextmenu.self="e => e.preventDefault()"
 	>
 		<template v-for="(item, i) in (items2 ?? [])">
@@ -111,7 +111,7 @@ const props = defineProps<{
 	asDrawer?: boolean;
 	align?: 'center' | string;
 	width?: number;
-	maxHeight?: number;
+	maxHeight?: number | string;
 }>();
 
 const emit = defineEmits<{
@@ -132,6 +132,12 @@ const keymap = computed(() => ({
 }));
 
 const childShowingItem = ref<MenuItem | null>();
+
+const normalizedMaxHeight = computed(() => {
+	if (props.maxHeight == null) return undefined;
+	if (typeof props.maxHeight === 'number') return props.maxHeight + 'px';
+	return props.maxHeight;
+});
 
 let preferClick = isTouchUsing || props.asDrawer;
 
