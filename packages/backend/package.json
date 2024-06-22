@@ -177,7 +177,7 @@
 		"tsc-alias": "1.8.8",
 		"tsconfig-paths": "4.2.0",
 		"typeorm": "0.3.20",
-		"typescript": "5.4.5",
+		"typescript": "5.5.2",
 		"ulid": "2.3.0",
 		"vary": "1.1.2",
 		"web-push": "3.6.7",
