@@ -1,6 +1,9 @@
+/* eslint @typescript-eslint/no-unused-vars: 0 */
+
 import type {
 	EmptyRequest,
 	EmptyResponse,
+	EmptyErrors,
 	AdminMetaResponse,
 	AdminMetaErrors,
 	AdminAbuseUserReportsRequest,

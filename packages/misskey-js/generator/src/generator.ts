@@ -227,9 +227,12 @@ async function generateEndpoints(
 
 	const endpointOutputLine: string[] = [];
 
+	endpointOutputLine.push('/* eslint @typescript-eslint/no-unused-vars: 0 */');
+	endpointOutputLine.push('');
+
 	endpointOutputLine.push('import type {');
 	endpointOutputLine.push(
-		...[emptyRequest, emptyResponse, ...entities].map(it => '\t' + it.generateName() + ','),
+		...[emptyRequest, emptyResponse, emptyErrors, ...entities].map(it => '\t' + it.generateName() + ','),
 	);
 	endpointOutputLine.push(`} from '${toImportPath(entitiesOutputPath)}';`);
 	endpointOutputLine.push('');
