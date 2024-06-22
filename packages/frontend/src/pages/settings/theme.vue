@@ -204,7 +204,8 @@ definePageMetadata(() => ({
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--acrylicPanel);
+			background-color: var(--panel);
+			opacity: .5;
 			cursor: not-allowed;
 		}
 
