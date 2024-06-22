@@ -4,10 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="showHiddenContent">
 	<component
-		:is="disableImageLink ? 'div' : 'a'"
-		v-bind="disableImageLink ? {
+		:is="(image.isSensitive && !$i) || disableImageLink ? 'div' : 'a'"
+		v-bind="(image.isSensitive && !$i) || disableImageLink ? {
 			title: image.name,
 			class: $style.imageContainer,
 		} : {
@@ -59,6 +59,7 @@ import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 import { $i, iAmModerator } from '@/account.js';
 
 const props = withDefaults(defineProps<{
@@ -83,11 +84,34 @@ const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 		: props.image.thumbnailUrl,
 );
 
-function onclick() {
+//function onclick() {
+//	if (!props.controls) {
+//		return;
+//	}
+//	if (hide.value) {
+//		hide.value = false;
+//	}
+//}
+
+function showHiddenContent(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
 	}
+
+	if (props.image.isSensitive && !$i) {
+		ev.preventDefault();
+		ev.stopPropagation();
+//		pleaseLogin();
+                os.alert({
+                     type: 'error',
+                     text: 'すみませんが、入会・ログインして見てください',
+                });
+		return;
+	}
+
 	if (hide.value) {
+		ev.preventDefault();
+		ev.stopPropagation();
 		hide.value = false;
 	}
 }
