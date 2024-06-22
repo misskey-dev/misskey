@@ -120,7 +120,7 @@ export function setFaviconDot(visible: boolean) {
 		}
 		try {
 			icon!.setVisible(visible);
-		} catch (e) {
+		} catch (err) {
 			// do nothing
 		}
 	};
