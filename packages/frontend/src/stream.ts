@@ -9,7 +9,7 @@ import { $i } from '@/account.js';
 import { wsOrigin } from '@/config.js';
 import { StreamMock } from '@/scripts/stream-mock.js';
 import { isEmbedPage } from '@/scripts/embed-page.js';
-import { ColdDeviceStorage } from '@/store.js';
+import { defaultStore } from '@/store.js';
 
 // heart beat interval in ms
 const HEART_BEAT_INTERVAL = 1000 * 60;
@@ -21,7 +21,7 @@ let lastHeartbeatCall = 0;
 export function useStream(): Misskey.Stream {
 	if (stream) return stream;
 
-	if (isEmbedPage() || ColdDeviceStorage.get('disableWebsocket') === true) {
+	if (isEmbedPage() || defaultStore.state.disableWebsocket === true) {
 		stream = markRaw(new StreamMock(wsOrigin, null) as unknown as Misskey.Stream);
 		return stream;
 	} else {
