@@ -17,7 +17,7 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 
 type AnyOf<T extends Record<any, any>> = T[keyof T];
 
-type StreamEvents = {
+export type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
 } & BroadcastEvents;

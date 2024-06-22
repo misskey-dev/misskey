@@ -7,6 +7,9 @@ import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
 import { $i } from '@/account.js';
 import { wsOrigin } from '@/config.js';
+import { StreamMock } from '@/scripts/stream-mock.js';
+import { isEmbedPage } from '@/scripts/embed-page.js';
+import { ColdDeviceStorage } from '@/store.js';
 
 // heart beat interval in ms
 const HEART_BEAT_INTERVAL = 1000 * 60;
@@ -18,9 +21,14 @@ let lastHeartbeatCall = 0;
 export function useStream(): Misskey.Stream {
 	if (stream) return stream;
 
-	stream = markRaw(new Misskey.Stream(wsOrigin, $i ? {
-		token: $i.token,
-	} : null));
+	if (isEmbedPage() || ColdDeviceStorage.get('disableWebsocket') === true) {
+		stream = markRaw(new StreamMock(wsOrigin, null) as unknown as Misskey.Stream);
+		return stream;
+	} else {
+		stream = markRaw(new Misskey.Stream(wsOrigin, $i ? {
+			token: $i.token,
+		} : null));
+	}
 
 	if (timeoutHeartBeat) window.clearTimeout(timeoutHeartBeat);
 	timeoutHeartBeat = window.setTimeout(heartbeat, HEART_BEAT_INTERVAL);
