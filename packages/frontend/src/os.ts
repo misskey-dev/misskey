@@ -57,7 +57,10 @@ export function apiWithDialog<
 		text = initialText.join('\n');
 
 		if ('code' in err && err.code != null) {
-			if (err.code === 'INTERNAL_ERROR') {
+			if (customErrors && customErrors[err.code] != null) {
+				title = customErrors[err.code].title;
+				text = customErrors[err.code].text;
+			} else if (err.code === 'INTERNAL_ERROR') {
 				title = i18n.ts.internalServerError;
 				text = i18n.ts.internalServerErrorDescription;
 				const date = new Date().toISOString();
@@ -93,9 +96,6 @@ export function apiWithDialog<
 			} else if (err.code === 'ROLE_PERMISSION_DENIED') {
 				title = i18n.ts.permissionDeniedError;
 				text = i18n.ts.permissionDeniedErrorDescription;
-			} else if (customErrors && customErrors[err.code] != null) {
-				title = customErrors[err.code].title;
-				text = customErrors[err.code].text;
 			} else if (err.code.startsWith('TOO_MANY')) {
 				title = i18n.ts.youCannotCreateAnymore;
 				if ('id' in err && err.id != null) {
