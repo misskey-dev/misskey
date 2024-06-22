@@ -14,7 +14,6 @@ async function generateBaseTypes(
 	openApiJsonPath: string,
 	typeFileName: string,
 ) {
-
 	const lines: string[] = [];
 	for (const lint of disabledLints) {
 		lines.push(`/* eslint ${lint}: 0 */`);
@@ -76,6 +75,8 @@ async function generateEndpointErrors(
 	}
 	endpointsErrorsOutputLine.push('');
 
+	const errorWithIdTypes = new Map<string, string>();
+
 	endpointsErrorsOutputLine.push('export type EndpointsErrors = {');
 
 	for (const operation of postPathItems) {
@@ -94,7 +95,8 @@ async function generateEndpointErrors(
 			];
 
 			const errorResponseCodes = Object.keys(operation.responses).filter((key) => !okResponses.includes(key));
-			const errorTypes = new Map<string, OpenAPIV3_1.SchemaObject>();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const errorTypes = new Map<string, Record<string, any>>();
 			errorResponseCodes.forEach((code) => {
 				if (operation.responses == null) return;
 				const response = operation.responses[code];
@@ -118,7 +120,12 @@ async function generateEndpointErrors(
 					if ('error' in value && value.error != null) {
 						let typeString = JSON.stringify(value.error);
 						typeString = typeString.substring(0, typeString.length - 1) + ', [x: string]: any ' + typeString.substring(typeString.length - 1);
-						endpointsErrorsOutputLine.push(`\t\t'${key}': ${typeString},`);
+						if ('id' in value.error && value.error.id != null) {
+							errorWithIdTypes.set(value.error.id, typeString);
+							endpointsErrorsOutputLine.push(`\t\t'${key}': IdentifiableError['${value.error.id}'],`);
+						} else {
+							endpointsErrorsOutputLine.push(`\t\t'${key}': ${typeString},`);
+						}
 					}
 				}
 				endpointsErrorsOutputLine.push('\t},');
@@ -128,6 +135,12 @@ async function generateEndpointErrors(
 
 	endpointsErrorsOutputLine.push('};');
 	endpointsErrorsOutputLine.push('');
+
+	endpointsErrorsOutputLine.push('export type IdentifiableError = {');
+	for (const [key, value] of errorWithIdTypes) {
+		endpointsErrorsOutputLine.push(`\t'${key}': ${value},`);
+	}
+	endpointsErrorsOutputLine.push('};');
 
 	await writeFile(endpointErrorsOutputPath, endpointsErrorsOutputLine.join('\n'));
 }
