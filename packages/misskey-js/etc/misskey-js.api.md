@@ -728,6 +728,7 @@ type ApGetResponse = operations['ap___get']['responses']['200']['content']['appl
 declare namespace api {
     export {
         isAPIError,
+        ErrPromise,
         SwitchCaseResponseType,
         APIError,
         FetchLike,
@@ -2706,6 +2707,11 @@ export { entities }
 
 // @public (undocumented)
 type Error_2 = components['schemas']['Error'];
+
+// @public (undocumented)
+class ErrPromise<TSuccess, TError> extends Promise<TSuccess> {
+    constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void);
+}
 
 // @public (undocumented)
 type ExportCustomEmojisErrors = EndpointsErrors['export-custom-emojis'][keyof EndpointsErrors['export-custom-emojis']];

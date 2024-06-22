@@ -284,15 +284,6 @@ async function generateApiClientJSDoc(
 	endpointOutputLine.push(`import type { Endpoints } from '${toImportPath(endpointsFileName)}';`);
 	endpointOutputLine.push('');
 
-	endpointOutputLine.push(
-		'interface IErrPromise<TSuccess, TError = unknown> {',
-		'  then<TResult1 = TSuccess, TResult2 = never>(onfulfilled?: ((value: TSuccess) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: TError) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;',
-		'',
-		'  catch<TResult = never>(onrejected?: ((reason: TError) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TSuccess | TResult>;',
-		'}',
-	);
-	endpointOutputLine.push('');
-
 	endpointOutputLine.push(`declare module '${toImportPath(apiClientFileName)}' {`);
 	endpointOutputLine.push('  export interface APIClient {');
 	for (let i = 0; i < endpoints.length; i++) {
@@ -306,7 +297,7 @@ async function generateApiClientJSDoc(
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
-			'    ): IErrPromise<SwitchCaseResponseType<E, P>, RE>;',
+			'    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;',
 		);
 
 		if (i < endpoints.length - 1) {
