@@ -92,7 +92,7 @@ class FaviconDot {
 		this.ctx.globalCompositeOperation = 'source-over';
 		this.ctx.beginPath();
 		this.ctx.arc(this.canvas.width - radius, this.canvas.height - radius, radius, 0, 2 * Math.PI);
-		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--error') || '#ec4137').toHexString();
+		this.ctx.fillStyle = tinycolor(computedStyle.getPropertyValue('--faviconDotColor') || '#ec4137').toHexString();
 		this.ctx.closePath();
 		this.ctx.fill();
 	}
