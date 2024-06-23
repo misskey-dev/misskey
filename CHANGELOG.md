@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
+
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
@@ -37,7 +40,6 @@
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 - 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
 - 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
-- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
 
 ### General
 - Feat: エラートラッキングにSentryを使用できるようになりました
