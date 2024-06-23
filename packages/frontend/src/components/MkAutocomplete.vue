@@ -207,10 +207,6 @@ function exec() {
 				fetching.value = false;
 				// キャッシュ
 				sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
-			}).catch((err) => {
-				if (isAPIError(err)) {
-					console.error(err);
-				}
 			});
 		}
 	} else if (props.type === 'hashtag') {
