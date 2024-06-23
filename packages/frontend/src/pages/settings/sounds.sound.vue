@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.sound }}</template>
 		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getSoundTypeName(x) }}</option>
 	</MkSelect>
-	<div v-if="type === '_driveFile_' && driveFileError === true"  :class="$style.fileSelectorRoot">
+	<div v-if="type === '_driveFile_' && driveFileError === true" :class="$style.fileSelectorRoot">
 		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
 		<div :class="$style.fileErrorRoot">
 			<MkCondensedLine>{{ i18n.ts._soundSettings.driveFileError }}</MkCondensedLine>
