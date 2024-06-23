@@ -57,7 +57,7 @@ export class StreamMock extends EventEmitter<StreamEvents> {
 	}
 }
 
-class ChannelConnectionMock<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']>{
+class ChannelConnectionMock<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
 	public id = '';
 
 	constructor(stream: StreamMock, ...args: OmitFirst<ConstructorParameters<typeof Misskey.ChannelConnection<Channel>>>) {
