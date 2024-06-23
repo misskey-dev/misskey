@@ -7,7 +7,6 @@ import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
-import { ErrPromise } from '@/scripts/err-promise.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
@@ -15,14 +14,14 @@ export function misskeyApi<
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
-	RE extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
+	ER extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
 	data: P = {} as any,
 	token?: string | null | undefined,
 	signal?: AbortSignal,
-): ErrPromise<_ResT, RE> {
+): Promise<_ResT> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
@@ -30,7 +29,7 @@ export function misskeyApi<
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new ErrPromise<_ResT, RE>((resolve, reject) => {
+	const promise = new Promise<_ResT>((resolve, reject) => {
 		// Append a credential
 		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
@@ -53,9 +52,11 @@ export function misskeyApi<
 			} else if (res.status === 204) {
 				resolve(undefined as _ResT); // void -> undefined
 			} else {
-				reject(body.error);
+				reject(new Misskey.api.APIError<ER>(body.error));
 			}
-		}).catch(reject);
+		}).catch((reason) => {
+			reject(new Error(reason));
+		});
 	});
 
 	promise.then(onFinally, onFinally);
@@ -68,12 +69,12 @@ export function misskeyApiGet<
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
-	RE extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
+	ER extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
 	data: P = {} as any,
-): ErrPromise<_ResT, RE> {
+): Promise<_ResT> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -82,7 +83,7 @@ export function misskeyApiGet<
 
 	const query = new URLSearchParams(data as any);
 
-	const promise = new ErrPromise<_ResT, RE>((resolve, reject) => {
+	const promise = new Promise<_ResT>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
@@ -96,9 +97,11 @@ export function misskeyApiGet<
 			} else if (res.status === 204) {
 				resolve(undefined as _ResT); // void -> undefined
 			} else {
-				reject(body.error);
+				reject(new Misskey.api.APIError<ER>(body.error));
 			}
-		}).catch(reject);
+		}).catch((reason) => {
+			reject(new Error(reason));
+		});
 	});
 
 	promise.then(onFinally, onFinally);

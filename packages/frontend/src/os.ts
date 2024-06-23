@@ -24,7 +24,6 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { ErrPromise } from '@/scripts/err-promise.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -43,7 +42,7 @@ export function apiWithDialog<
 	customErrors?: CustomErrorDef<ER>,
 ) {
 	const promise = misskeyApi(endpoint, data, token);
-	promiseDialog(promise, null, async (err) => {
+	promiseDialog(promise, null, async (err: Error) => {
 		let title: string | undefined;
 		let text: string;
 
@@ -51,57 +50,63 @@ export function apiWithDialog<
 		if ('message' in err && err.message != null) {
 			initialText.push(err.message);
 		}
-		if ('id' in err && err.id != null) {
-			initialText.push(err.id);
+		if (Misskey.api.isAPIError<ER>(err) && 'id' in err.payload && err.payload.id != null) {
+			initialText.push(err.payload.id);
 		}
 		text = initialText.join('\n');
 
-		if ('code' in err && err.code != null) {
-			if (customErrors && customErrors[err.code] != null) {
-				title = customErrors[err.code].title;
-				text = customErrors[err.code].text;
-			} else if (err.code === 'INTERNAL_ERROR') {
-				title = i18n.ts.internalServerError;
-				text = i18n.ts.internalServerErrorDescription;
-				const date = new Date().toISOString();
-				const { result } = await actions({
-					type: 'error',
-					title,
-					text,
-					actions: [{
-						value: 'ok',
-						text: i18n.ts.gotIt,
-						primary: true,
-					}, {
-						value: 'copy',
-						text: i18n.ts.copyErrorInfo,
-					}],
-				});
-				if (result === 'copy') {
-					const text = [
-						`Endpoint: ${endpoint}`,
-						('info' in err) ? `Info: ${JSON.stringify(err.info)}` : undefined,
-						`Date: ${date}`,
-					].filter(x => x != null);
-					copyToClipboard(text.join('\n'));
-					success();
-				}
-				return;
-			} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
-				title = i18n.ts.cannotPerformTemporary;
-				text = i18n.ts.cannotPerformTemporaryDescription;
-			} else if (err.code === 'INVALID_PARAM') {
-				title = i18n.ts.invalidParamError;
-				text = i18n.ts.invalidParamErrorDescription;
-			} else if (err.code === 'ROLE_PERMISSION_DENIED') {
-				title = i18n.ts.permissionDeniedError;
-				text = i18n.ts.permissionDeniedErrorDescription;
-			} else if (err.code.startsWith('TOO_MANY')) {
-				title = i18n.ts.youCannotCreateAnymore;
-				if ('id' in err && err.id != null) {
-					text = `${i18n.ts.error}: ${err.id}`;
-				} else {
-					text = `${i18n.ts.error}`;
+		if (Misskey.api.isAPIError<ER>(err)) {
+			const { payload } = err;
+			if ('code' in payload && payload.code != null) {
+				if (customErrors && customErrors[payload.code] != null) {
+					title = customErrors[payload.code].title;
+					text = customErrors[payload.code].text;
+				} else if (payload.code === 'INTERNAL_ERROR') {
+					title = i18n.ts.internalServerError;
+					text = i18n.ts.internalServerErrorDescription;
+					const date = new Date().toISOString();
+					const { result } = await actions({
+						type: 'error',
+						title,
+						text,
+						actions: [{
+							value: 'ok',
+							text: i18n.ts.gotIt,
+							primary: true,
+						}, {
+							value: 'copy',
+							text: i18n.ts.copyErrorInfo,
+						}],
+					});
+					if (result === 'copy') {
+						const text = [
+							`Endpoint: ${endpoint}`,
+							('info' in err) ? `Info: ${JSON.stringify(err.info)}` : undefined,
+							`Date: ${date}`,
+						].filter(x => x != null);
+						copyToClipboard(text.join('\n'));
+						success();
+					}
+					return;
+				} else if (payload.code === 'RATE_LIMIT_EXCEEDED') {
+					title = i18n.ts.cannotPerformTemporary;
+					text = i18n.ts.cannotPerformTemporaryDescription;
+				} else if (payload.code === 'INVALID_PARAM') {
+					title = i18n.ts.invalidParamError;
+					text = i18n.ts.invalidParamErrorDescription;
+				} else if (payload.code === 'ROLE_PERMISSION_DENIED') {
+					title = i18n.ts.permissionDeniedError;
+					text = i18n.ts.permissionDeniedErrorDescription;
+				} else if (payload.code.startsWith('TOO_MANY')) {
+					title = i18n.ts.youCannotCreateAnymore;
+					if ('id' in err && err.id != null) {
+						text = `${i18n.ts.error}: ${err.id}`;
+					} else {
+						text = `${i18n.ts.error}`;
+					}
+				} else if (err.message.startsWith('Unexpected token')) {
+					title = i18n.ts.gotInvalidResponseError;
+					text = i18n.ts.gotInvalidResponseErrorDescription;
 				}
 			} else if (err.message.startsWith('Unexpected token')) {
 				title = i18n.ts.gotInvalidResponseError;
@@ -119,13 +124,12 @@ export function apiWithDialog<
 }
 
 export function promiseDialog<
-	T extends ErrPromise<any, any> | Promise<any>,
-	R = T extends ErrPromise<infer R, unknown> ? R : T extends Promise<infer R> ? R : never,
-	E = T extends ErrPromise<unknown, infer E> ? E : T extends Promise<unknown> ? any : never,
+	T extends Promise<any>,
+	R = T extends Promise<infer R> ? R : never,
 >(
 	promise: T,
 	onSuccess?: ((res: R) => void) | null,
-	onFailure?: ((err: E) => void) | null,
+	onFailure?: ((err: any) => void) | null,
 	text?: string,
 ): T {
 	const showing = ref(true);

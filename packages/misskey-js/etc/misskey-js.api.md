@@ -728,7 +728,6 @@ type ApGetResponse = operations['ap___get']['responses']['200']['content']['appl
 declare namespace api {
     export {
         isAPIError,
-        ErrPromise,
         SwitchCaseResponseType,
         APIError,
         FetchLike,
@@ -753,13 +752,25 @@ class APIClient {
 }
 
 // @public (undocumented)
-type APIError = {
-    id: string;
-    code: string;
-    message: string;
-    kind: 'client' | 'server';
-    info: Record<string, any>;
-};
+class APIError<ER extends Endpoints[keyof Endpoints]['errors'] = {}> extends Error {
+    // (undocumented)
+    readonly [MK_API_ERROR] = true;
+    constructor(response: ER extends Record<string, never> ? {
+        id: string;
+        code: string;
+        message: string;
+        kind: 'client' | 'server';
+        info: Record<string, any>;
+    } : ER);
+    // (undocumented)
+    payload: ER extends Record<string, never> ? {
+        id: string;
+        code: string;
+        message: string;
+        kind: "client" | "server";
+        info: Record<string, any>;
+    } : ER;
+}
 
 // @public (undocumented)
 type App = components['schemas']['App'];
@@ -2709,11 +2720,6 @@ export { entities }
 type Error_2 = components['schemas']['Error'];
 
 // @public (undocumented)
-class ErrPromise<TSuccess, TError> extends Promise<TSuccess> {
-    constructor(executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void);
-}
-
-// @public (undocumented)
 type ExportCustomEmojisErrors = EndpointsErrors['export-custom-emojis'][keyof EndpointsErrors['export-custom-emojis']];
 
 // @public (undocumented)
@@ -3448,7 +3454,7 @@ type IRevokeTokenErrors = EndpointsErrors['i___revoke-token'][keyof EndpointsErr
 type IRevokeTokenRequest = operations['i___revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError;
+function isAPIError<ER extends Endpoints[keyof Endpoints]['errors']>(reason: any): reason is APIError<ER>;
 
 // @public (undocumented)
 type ISigninHistoryErrors = EndpointsErrors['i___signin-history'][keyof EndpointsErrors['i___signin-history']];

@@ -296,11 +296,11 @@ async function generateApiClientJSDoc(
 			'    /**',
 			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
 			'     */',
-			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\'], RE extends Endpoints[E][\'errors\']>(`,
+			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
-			'    ): ErrPromise<SwitchCaseResponseType<E, P>, RE>;',
+			'    ): Promise<SwitchCaseResponseType<E, P>>;',
 		);
 
 		if (i < endpoints.length - 1) {
