@@ -10076,9 +10076,9 @@ export interface Locale extends ILocale {
          */
         "always": string;
         /**
-         * Altキー（Optionキー）を押しながらで表示
+         * Shiftキーを押しながらで表示
          */
-        "withAlt": string;
+        "withShift": string;
         /**
          * 無効（常にブラウザのUIを使用）
          */

@@ -2688,5 +2688,5 @@ _mediaControls:
 _contextMenu:
   title: "Misskey独自のコンテキストメニュー"
   always: "常に表示する"
-  withAlt: "Altキー（Optionキー）を押しながらで表示"
+  withShift: "Shiftキーを押しながらで表示"
   never: "無効（常にブラウザのUIを使用）"
