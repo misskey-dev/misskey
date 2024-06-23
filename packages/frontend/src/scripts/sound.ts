@@ -129,7 +129,17 @@ export function playMisskeySfx(operationType: OperationType) {
 	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
 
 	canPlay = false;
-	playMisskeySfxFile(sound).finally(() => {
+	playMisskeySfxFile(sound).then((succeed) => {
+		if (!succeed && sound.type === '_driveFile_') {
+			// ドライブファイルが存在しない場合はデフォルトのサウンドを再生する
+			const soundName = defaultStore.def[`sound_${operationType}`].default.type as Exclude<SoundType, '_driveFile_'>;
+			if (_DEV_) console.log(`Failed to play sound: ${sound.fileUrl}, so play default sound: ${soundName}`);
+			playMisskeySfxFile({
+				type: soundName,
+				volume: sound.volume,
+			});
+		}
+	}).finally(() => {
 		// ごく短時間に音が重複しないように
 		setTimeout(() => {
 			canPlay = true;
@@ -140,20 +150,24 @@ export function playMisskeySfx(operationType: OperationType) {
 /**
  * サウンド設定形式で指定された音声を再生する
  * @param soundStore サウンド設定
+ * @returns 再生が成功したかどうか
  */
 export async function playMisskeySfxFile(soundStore: SoundStore) {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
-		return;
+		return false;
 	}
 	const masterVolume = defaultStore.state.sound_masterVolume;
 	if (isMute() || masterVolume === 0 || soundStore.volume === 0) {
-		return;
+		return true; // ミュート時は成功として扱う
 	}
 	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
-	const buffer = await loadAudio(url);
-	if (!buffer) return;
+	const buffer = await loadAudio(url).catch(() => {
+		return undefined;
+	});
+	if (!buffer) return false;
 	const volume = soundStore.volume * masterVolume;
 	createSourceNode(buffer, { volume }).soundSource.start();
+	return true;
 }
 
 export async function playUrl(url: string, opts: {
