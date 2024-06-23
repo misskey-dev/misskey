@@ -58,7 +58,6 @@ import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { MFM_TAGS, MFM_PARAMS } from '@/const.js';
 import { searchEmoji, EmojiDef } from '@/scripts/search-emoji.js';
-import { isAPIError } from 'misskey-js/api.js';
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
