@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "^20.10.0"
+		"node": "^20.10.0 || ^22.0.0"
 	},
 	"scripts": {
 		"start": "node ./built/boot/entry.js",
@@ -159,7 +159,7 @@
 		"qrcode": "1.5.3",
 		"random-seed": "0.3.0",
 		"ratelimiter": "3.4.1",
-		"re2": "1.20.10",
+		"re2": "1.21.2",
 		"redis-lock": "0.1.4",
 		"reflect-metadata": "0.2.2",
 		"rename": "1.0.4",
@@ -177,7 +177,7 @@
 		"tsc-alias": "1.8.8",
 		"tsconfig-paths": "4.2.0",
 		"typeorm": "0.3.20",
-		"typescript": "5.4.5",
+		"typescript": "5.5.2",
 		"ulid": "2.3.0",
 		"vary": "1.1.2",
 		"web-push": "3.6.7",
@@ -207,7 +207,6 @@
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
 		"@types/node": "20.12.7",
-		"@types/node-fetch": "3.0.3",
 		"@types/nodemailer": "6.4.15",
 		"@types/oauth": "0.9.4",
 		"@types/oauth2orize": "1.11.5",
