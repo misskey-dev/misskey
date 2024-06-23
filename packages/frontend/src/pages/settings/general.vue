@@ -176,6 +176,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
 				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
 			</MkSelect>
+			<MkSelect v-model="contextMenu">
+				<template #label>{{ i18n.ts._contextMenu.title }}</template>
+				<option value="always">{{ i18n.ts._contextMenu.always }}</option>
+				<option value="withAlt">{{ i18n.ts._contextMenu.withAlt }}</option>
+				<option value="never">{{ i18n.ts._contextMenu.never }}</option>
+			</MkSelect>
 			<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
 				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
@@ -315,6 +321,7 @@ const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enabl
 const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
 const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
 const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
+const contextMenu = computed(defaultStore.makeGetterSetter('contextMenu'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -357,6 +364,7 @@ watch([
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
 	alwaysConfirmFollow,
+	contextMenu,
 ], async () => {
 	await reloadAsk();
 });

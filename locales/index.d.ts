@@ -9761,7 +9761,7 @@ export interface Locale extends ILocale {
     "_dataSaver": {
         "_media": {
             /**
-             * メディアの読み込み
+             * メディアの読み込みを無効化
              */
             "title": string;
             /**
@@ -9771,7 +9771,7 @@ export interface Locale extends ILocale {
         };
         "_avatar": {
             /**
-             * アイコン画像
+             * アイコン画像のアニメーションを無効化
              */
             "title": string;
             /**
@@ -9781,7 +9781,7 @@ export interface Locale extends ILocale {
         };
         "_urlPreview": {
             /**
-             * URLプレビューのサムネイル
+             * URLプレビューのサムネイルを非表示
              */
             "title": string;
             /**
@@ -9791,7 +9791,7 @@ export interface Locale extends ILocale {
         };
         "_code": {
             /**
-             * コードハイライト
+             * コードハイライトを非表示
              */
             "title": string;
             /**
@@ -10065,6 +10065,24 @@ export interface Locale extends ILocale {
          * ループ再生
          */
         "loop": string;
+    };
+    "_contextMenu": {
+        /**
+         * Misskey独自のコンテキストメニュー
+         */
+        "title": string;
+        /**
+         * 常に表示する
+         */
+        "always": string;
+        /**
+         * Altキー（Optionキー）を押しながらで表示
+         */
+        "withAlt": string;
+        /**
+         * 無効（常にブラウザのUIを使用）
+         */
+        "never": string;
     };
 }
 declare const locales: {
