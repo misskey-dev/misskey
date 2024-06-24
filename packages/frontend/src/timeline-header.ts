@@ -3,10 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { i18n } from '@/i18n.js';
-import { userListsCache } from '@/cache.js';
+import {
+	antennasCache,
+	userChannelFollowingsCache,
+	userChannelsCache,
+	userFavoriteListsCache,
+	userListsCache,
+} from '@/cache.js';
 import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
 
 export type TimelineHeaderItem =
 	'home' |
@@ -16,7 +24,11 @@ export type TimelineHeaderItem =
 	'lists' |
 	'antennas' |
 	'channels' |
-	`list:${string}`
+	`list:${string}` |
+	`channel:${string}` |
+	`antenna:${string}` |
+	'media' |
+	`customTimeline:${string}`;
 
 type TimelineHeaderItemsDef = {
 	title: string;
@@ -25,6 +37,11 @@ type TimelineHeaderItemsDef = {
 }
 
 const lists = await userListsCache.fetch();
+const userChannels = await userChannelsCache.fetch();
+const userChannelFollowings = await userChannelFollowingsCache.fetch();
+const userFavoriteLists = await userFavoriteListsCache.fetch();
+const antenna = await antennasCache.fetch();
+
 export const timelineHeaderItemDef = reactive<Partial<Record<TimelineHeaderItem, TimelineHeaderItemsDef>>>({
 	home: {
 		title: i18n.ts._timelines.home,
@@ -70,4 +87,46 @@ export const timelineHeaderItemDef = reactive<Partial<Record<TimelineHeaderItem,
 		};
 		return acc;
 	}, {}),
+	...userChannels.reduce((acc, l) => {
+		acc['channel:' + l.id] = {
+			title: i18n.ts.channel + ':' + l.name,
+			icon: 'ti ti-star',
+			iconOnly: true,
+		};
+		return acc;
+	}, {}),
+	...userChannelFollowings.reduce((acc, l) => {
+		acc['channel:' + l.id] = {
+			title: i18n.ts.channel + ':' + l.name,
+			icon: 'ti ti-star',
+			iconOnly: true,
+		};
+		return acc;
+	}, {}),
+	...userFavoriteLists.reduce((acc, l) => {
+		acc['channel:' + l.id] = {
+			title: i18n.ts.channel + ':' + l.name,
+			icon: 'ti ti-star',
+			iconOnly: true,
+		};
+		return acc;
+	}, {}),
+	...antenna.reduce((acc, l) => {
+		acc['antenna:' + l.id] = {
+			title: i18n.ts.antennas + ':' + l.name,
+			icon: 'ti ti-star',
+			iconOnly: true,
+		};
+		return acc;
+	}, {}),
+	...defaultStore.reactiveState.remoteLocalTimeline.value.reduce((acc, t) => {
+		acc['remoteLocalTimeline:' + t.host.replace('https://', '')] = {
+			title: 'remoteLocaltimeline:' + t.name,
+			icon: 'ti ti-star',
+			iconOnly: true,
+		};
+		return acc;
+	}, {}),
+
 });
+

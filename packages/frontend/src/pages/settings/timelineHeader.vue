@@ -30,6 +30,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkContainer>
 	</FormSlot>
+	<MkFoldableSection>
+		<template #header>リモートのローカルタイムライン</template>
+
+		<div v-if="remoteLocalTimeline.length < 3">
+			<MkInput v-model="tmpName" placeholder="remoteLocalTimeline 1"/>
+			<MkInput v-model="tmpServer" placeholder="https://prismisskey.space"/>
+			<MkButton @click="addRemote"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
+		</div>
+
+		<div v-for="(a,i) in remoteLocalTimeline" :key="i">
+			<MkInput v-model="remoteLocalTimeline[i]['name']" :placeholder="a"/>
+			<MkInput v-model="remoteLocalTimeline[i]['host']" :placeholder="a"/>
+			<MkButton danger @click="deleteRemote(i)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+		</div>
+	</MkFoldableSection>
 	<div class="_buttons">
 		<MkButton @click="addItem"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
 		<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
@@ -39,25 +54,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import MkRadios from '@/components/MkRadios.vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
 import { defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { timelineHeaderItemDef } from '@/timeline-header.js';
+import MkInput from '@/components/MkInput.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { $i } from '@/account.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+const tmpName = ref();
+const tmpServer = ref();
 
 const items = ref(defaultStore.state.timelineHeader.map(x => ({
 	id: Math.random().toString(),
 	type: x,
 })));
+const remoteLocalTimeline = ref(defaultStore.state.remoteLocalTimeline);
+const maxLocalTimeline = $i.policies.localTimelineAnyLimit;
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -69,11 +89,31 @@ async function reloadAsk() {
 	unisonReload();
 }
 
+async function addRemote() {
+	if (!tmpName.value || !tmpServer.value) return;
+	if (maxLocalTimeline <= remoteLocalTimeline.value.length) return;
+	remoteLocalTimeline.value.push({
+		id: Math.random().toString(),
+		name: tmpName.value,
+		host: tmpServer.value,
+	});
+	tmpName.value = '';
+	tmpServer.value = '';
+	await defaultStore.set('remoteLocalTimeline', remoteLocalTimeline.value);
+}
+
+const menu = computed(() => {
+	return Object.keys(timelineHeaderItemDef).filter(k => !items.value.map(item => item.type).includes(k));
+});
+
+async function deleteRemote(index: number) {
+	remoteLocalTimeline.value.splice(index, 1);
+}
+
 async function addItem() {
-	const menu = Object.keys(timelineHeaderItemDef).filter(k => !defaultStore.state.timelineHeader.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
-		items: [...menu.map(k => ({
+		items: [...menu.value.map(k => ({
 			value: k, text: timelineHeaderItemDef[k].title,
 		}))],
 	});

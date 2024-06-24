@@ -147,6 +147,13 @@ export const navbarItemDef = reactive({
 					miLocalStorage.setItem('ui', 'classic');
 					unisonReload();
 				},
+			}, {
+				text: 'twilike',
+				active: ui === 'twilike',
+				action: () => {
+					miLocalStorage.setItem('ui', 'twilike');
+					unisonReload();
+				},
 			}], ev.currentTarget ?? ev.target);
 		},
 	},

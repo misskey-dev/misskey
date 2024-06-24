@@ -10,6 +10,8 @@ import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
 import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+import { instance } from '@/instance.js';
+
 interface PostFormAction {
 	title: string,
 	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
@@ -534,85 +536,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 44,
 	},
-	remoteLocalTimelineDomain1: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineDomain2: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineDomain3: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineDomain4: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineDomain5: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineToken1: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineToken2: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineToken3: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineToken4: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineToken5: {
-		where: 'account',
-		default: '',
-	},
-	remoteLocalTimelineEnable1: {
-		where: 'account',
-		default: false,
-	},
-	remoteLocalTimelineEnable2: {
-		where: 'account',
-		default: false,
-	},
-	remoteLocalTimelineEnable3: {
-		where: 'account',
-		default: false,
-	},
-	remoteLocalTimelineEnable4: {
-		where: 'account',
-		default: false,
-	},
-	remoteLocalTimelineEnable5: {
-		where: 'account',
-		default: false,
-	},
-	remoteLocalTimelineName1: {
-		where: 'account',
-		default: 'custom timeline 1',
-	},
-	remoteLocalTimelineName2: {
-		where: 'account',
-		default: 'custom timeline 2 ',
-	},
-	remoteLocalTimelineName3: {
-		where: 'account',
-		default: 'custom timeline 3',
-	},
-	remoteLocalTimelineName4: {
-		where: 'account',
-		default: 'custom timeline 4',
-	},
-	remoteLocalTimelineName5: {
-		where: 'account',
-		default: 'custom timeline 5',
+	remoteLocalTimeline: {
+		where: 'device',
+		default: [],
 	},
 	onlyAndWithSave: {
 		where: 'device',

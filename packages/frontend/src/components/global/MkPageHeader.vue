@@ -150,8 +150,8 @@ onUnmounted(() => {
 	height: var(--height);
 
 	.tabs:first-child {
-		margin-left: auto;
 		padding: 0 12px;
+		width: 100%;
 	}
 	.tabs {
 		margin-right: auto;
@@ -168,6 +168,7 @@ onUnmounted(() => {
 	}
 
 	&.slim {
+		width: 100%;
 		text-align: center;
 		gap: 0;
         .buttonsRight {

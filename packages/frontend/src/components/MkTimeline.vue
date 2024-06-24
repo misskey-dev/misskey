@@ -165,14 +165,12 @@ function updatePaginationQuery() {
 		channel: { channelId: props.channel },
 		role: { roleId: props.role },
 	};
-
-	if (props.src.startsWith('custom-timeline')) {
+	if (props.src.startsWith('remoteLocalTimeline')) {
 		paginationQuery = {
 			endpoint: 'notes/any-local-timeline',
 			limit: 10,
 			params: {
-				host: defaultStore.state[`remoteLocalTimelineDomain${props.src.split('-')[2]}`],
-				remoteToken: defaultStore.state[`remoteLocalTimelineToken${props.src.split('-')[2]}`],
+				host: props.list,
 			},
 		};
 	} else {

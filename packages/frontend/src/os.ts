@@ -13,6 +13,7 @@ import type { Form, GetFormResultType } from '@/scripts/form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
+import XPostFormDialog from '@/components/XPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
@@ -25,6 +26,7 @@ import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import MkSwitch from '@/components/MkSwitch.vue';
+import { ui } from '@/config.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -551,7 +553,7 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
 			localOnly: opts.localOnly,
-            multiple: opts.multiple,
+			multiple: opts.multiple,
 		}, {
 			ok: user => {
 				resolve(user);
@@ -682,14 +684,25 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 		let dispose;
-		popup(MkPostFormDialog, props, {
-			closed: () => {
-				resolve();
-				dispose();
-			},
-		}).then(res => {
-			dispose = res.dispose;
-		});
+		if (ui !== 'twilike') {
+			popup(MkPostFormDialog, props, {
+				closed: () => {
+					resolve();
+					dispose();
+				},
+			}).then(res => {
+				dispose = res.dispose;
+			});
+		} else {
+			popup(XPostFormDialog, props, {
+				closed: () => {
+					resolve();
+					dispose();
+				},
+			}).then(res => {
+				dispose = res.dispose;
+			});
+		}
 	});
 }
 

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { Brackets, In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -24,6 +24,8 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -80,168 +82,81 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		private idService: IdService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
+		private queryService: QueryService,
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-		private idService: IdService,
-		private federatedInstanceService: FederatedInstanceService,
-		private httpRequestService: HttpRequestService,
-		private utilityService: UtilityService,
-		private userEntityService: UserEntityService,
-		private noteEntityService: NoteEntityService,
-		private metaService: MetaService,
-		private apResolverService: ApResolverService,
-		private apDbResolverService: ApDbResolverService,
-		private apPersonService: ApPersonService,
-		private apNoteService: ApNoteService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
-			if (ps.host === undefined) throw new ApiError(meta.errors.hostIsNull);
-			if (ps.remoteToken === undefined) throw new ApiError(meta.errors.remoteTokenIsNull);
-			const i = await this.federatedInstanceService.fetch(ps.host);
-			const noteIds = [];
 
-			if (i.softwareName === 'misskey') {
-				const remoteTimeline: string[] = await (await this.httpRequestService.send('https://' + ps.host + '/api/notes/local-timeline', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						i: ps.remoteToken,
-						withFiles: ps.withFiles,
-						withRenotes: ps.withRenotes,
-						withReplies: ps.withReplies,
-						limit: 30,
-					}),
-				})).json() as string[];
+			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
 
-				if (remoteTimeline.length > 0) {
-					for (const note of remoteTimeline) {
-						const uri = `https://${ps.host}/notes/${note.id}`;
-						const note_ = await this.fetchAny(uri, me);
-						if (note_ == null) continue;
-						noteIds.push(note_.id);
-					}
-				}
+			const timeline = await this.fanoutTimelineEndpointService.timeline({
+				untilId,
+				sinceId,
+				limit: ps.limit,
+				allowPartial: ps.allowPartial,
+				me,
+				useDbFallback: true,
+				redisTimelines: [`remoteLocalTimeline:${ps.host}`],
+				alwaysIncludeMyNotes: true,
+				excludePureRenotes: !ps.withRenotes,
+				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
+					untilId,
+					sinceId,
+					limit,
+					withFiles: ps.withFiles,
+					withReplies: ps.withReplies,
+					host: ps.host,
+				}, me),
+			});
 
-				let notes = await this.notesRepository.findBy({ id: In(noteIds) });
-				let packedNote: any[] = await this.noteEntityService.packMany(notes, me, { detail: true });
-				if (untilId) {
-					let lastRemoteId;
-					const lastUri = packedNote[packedNote.length - 1].uri;
-					lastRemoteId = lastUri.split('/')[lastUri.split('/').length - 1];
-					do {
-						const remoteTimeline: string[] = await (await this.httpRequestService.send('https://' + ps.host + '/api/notes/local-timeline', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								i: ps.remoteToken,
-								withFiles: ps.withFiles,
-								withRenotes: ps.withRenotes,
-								withReplies: ps.withReplies,
-								untilId: lastRemoteId,
-								limit: 30,
-							}),
-						})).json() as string[];
+			return timeline;
+		},
 
-						if (remoteTimeline.length > 0) {
-							for (const note of remoteTimeline) {
-								const uri = `https://${ps.host}/notes/${note.id}`;
-								const note_ = await this.fetchAny(uri, me);
-								if (note_ == null) continue;
-								//noteIds.push(note_.id);
-								lastRemoteId = note_.id;
-								if (lastRemoteId === ps.untilId) {
-									break;
-								}
-							}
-						}
-					} while (lastRemoteId !== ps.untilId);
-					const remoteTimeline: string[] = await (await this.httpRequestService.send('https://' + ps.host + '/api/notes/local-timeline', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							i: ps.remoteToken,
-							withFiles: ps.withFiles,
-							withRenotes: ps.withRenotes,
-							withReplies: ps.withReplies,
-							untilId: lastRemoteId,
-							limit: 30,
-						}),
-					})).json() as string[];
-
-					if (remoteTimeline.length > 0) {
-						for (const note of remoteTimeline) {
-							const uri = `https://${ps.host}/notes/${note.id}`;
-							const note_ = await this.fetchAny(uri, me);
-							if (note_ == null) continue;
-							noteIds.push(note_.id);
-						}
-					}
-				}
-
-				notes = await this.notesRepository.findBy({ id: In(noteIds) });
-				packedNote = await this.noteEntityService.packMany(notes, me, { detail: true });
-				return packedNote.reverse();
-			}
-		});
-	}
-	@bindThis
-	private async fetchAny(uri: string, me: MiLocalUser | null | undefined) {
-		// ブロックしてたら中断
-		const fetchedMeta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) return null;
-
-		let local = await this.mergePack(me, ...await Promise.all([
-			this.apDbResolverService.getUserFromApId(uri),
-			this.apDbResolverService.getNoteFromApId(uri),
-		]));
-		if (local != null) return local;
-
-		// リモートから一旦オブジェクトフェッチ
-		let object;
-		try {
-			const resolver = this.apResolverService.createResolver();
-			object = await resolver.resolve(uri) as any;
-		} catch (e) {
-			return null;
-		}
-		if (!object) return null;
-		// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
-		// これはDBに存在する可能性があるため再度DB検索
-		if (uri !== object.id) {
-			local = await this.mergePack(me, ...await Promise.all([
-				this.apDbResolverService.getUserFromApId(object.id),
-				this.apDbResolverService.getNoteFromApId(object.id),
-			]));
-			if (local != null) return local;
-		}
-
-		return await this.mergePack(
-			me,
-			isActor(object) ? await this.apPersonService.createPerson(getApId(object)) : null,
-			isPost(object) ? await this.apNoteService.createNote(getApId(object), undefined, true) : null,
 		);
 	}
+	private async getFromDb(ps: {
+		sinceId: string | null,
+		untilId: string | null,
+		limit: number,
+		withFiles: boolean,
+		withReplies: boolean,
+		host: string,
+	}, me: MiLocalUser | null) {
+		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId)
+			.andWhere(`(note.visibility = \'public\') AND (note.userHost = \'${ps.host}\') AND (note.channelId IS NULL)`)
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
-	@bindThis
-	private async mergePack(me: MiLocalUser | null | undefined, user: MiUser | null | undefined, note: MiNote | null | undefined) {
-		if (note != null) {
-			try {
-				const object = await this.noteEntityService.pack(note, me, { detail: true });
+		this.queryService.generateVisibilityQuery(query, me);
+		if (me) this.queryService.generateMutedUserQuery(query, me);
+		if (me) this.queryService.generateBlockedUserQuery(query, me);
+		if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
-				return object;
-			} catch (e) {
-				return null;
-			}
+		if (ps.withFiles) {
+			query.andWhere('note.fileIds != \'{}\'');
 		}
 
-		return null;
+		if (!ps.withReplies) {
+			query.andWhere(new Brackets(qb => {
+				qb
+					.where('note.replyId IS NULL') // 返信ではない
+					.orWhere(new Brackets(qb => {
+						qb // 返信だけど投稿者自身への返信
+							.where('note.replyId IS NOT NULL')
+							.andWhere('note.replyUserId = note.userId');
+					}));
+			}));
+		}
+
+		return await query.limit(ps.limit).getMany();
 	}
 }

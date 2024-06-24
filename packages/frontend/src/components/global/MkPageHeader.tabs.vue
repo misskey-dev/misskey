@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="el" :class="$style.tabs" @wheel="onTabWheel">
-	<div :class="$style.tabsInner">
+	<div :class="ui !== 'twilike' ? $style.tabsInner : $style.tabsInnerX">
 		<button
 			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
+			class="_button" :class="[ui !== 'twilike' ? $style.tab : $style.tabX, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
 			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
@@ -55,6 +55,7 @@ export type Tab = {
 <script lang="ts" setup>
 import { onMounted, onUnmounted, watch, nextTick, shallowRef, ref, computed } from 'vue';
 import { defaultStore } from '@/store.js';
+import { ui } from '@/config.js';
 
 const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
@@ -207,6 +208,15 @@ onUnmounted(() => {
 	white-space: nowrap;
 }
 
+.tabsInnerX {
+	display: flex;
+	height: var(--height);
+	white-space: nowrap;
+	justify-content: space-around;
+}
+.tabX{
+	flex: 1;
+}
 .tab {
 	display: inline-block;
 	position: relative;
@@ -231,6 +241,7 @@ onUnmounted(() => {
 .tabInner {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 }
 
 .tabIcon + .tabTitle {

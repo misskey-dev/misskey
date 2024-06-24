@@ -1010,6 +1010,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 						this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
 					}
 				}
+				if (note.visibility === 'public' && note.userHost !== null) {
+					this.fanoutTimelineService.push(`remoteLocalTimeline:${note.userHost}`, note.id, 1000, r);
+				}
 			}
 
 			if (Math.random() < 0.1) {

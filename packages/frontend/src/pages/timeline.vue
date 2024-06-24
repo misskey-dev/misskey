@@ -12,7 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
-				<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostForm.value" :channel="channelInfo" :autofocus="deviceKind === 'desktop'" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostForm.value && ui !== 'twilike'" :channel="channelInfo" :autofocus="deviceKind === 'desktop'" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<XPostForm v-if="$i && ui === 'twilike' " :channel="channelInfo" :autofocus="deviceKind === 'desktop'" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 				<div :class="$style.tl">
 					<MkTimeline
@@ -21,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:channel="src.split(':')[1]"
+						:antenna="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
@@ -47,7 +49,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache, userFavoriteListsCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
@@ -57,6 +58,8 @@ import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { timelineHeaderItemDef } from '@/timeline-header.js';
 import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+import { ui } from '@/config.js';
+import XPostForm from '@/components/XPostForm.vue';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -121,14 +124,7 @@ const withSensitive = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
 	set: (x) => saveTlFilter('withSensitive', x),
 });
-const isShowMediaTimeline = ref(defaultStore.state.showMediaTimeline);
-const remoteLocalTimelineEnable1 = ref(defaultStore.state.remoteLocalTimelineEnable1);
-const remoteLocalTimelineEnable2 = ref(defaultStore.state.remoteLocalTimelineEnable2);
-const remoteLocalTimelineEnable3 = ref(defaultStore.state.remoteLocalTimelineEnable3);
-const remoteLocalTimelineEnable4 = ref(defaultStore.state.remoteLocalTimelineEnable4);
-const remoteLocalTimelineEnable5 = ref(defaultStore.state.remoteLocalTimelineEnable5);
-const showHomeTimeline = ref(defaultStore.state.showHomeTimeline);
-const showSocialTimeline = ref(defaultStore.state.showSocialTimeline);
+
 const channelInfo = ref();
 if (src.value.split(':')[0] === 'channel') {
 	const channelId = src.value.split(':')[1];
