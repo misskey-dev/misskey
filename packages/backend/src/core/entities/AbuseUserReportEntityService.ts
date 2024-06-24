@@ -85,7 +85,7 @@ export class AbuseUserReportEntityService {
 	) {
 		const _reporters = reports.map(({ reporter, reporterId }) => reporter ?? reporterId);
 		const _targetUsers = reports.map(({ targetUser, targetUserId }) => targetUser ?? targetUserId);
-		const _assignees = reports.map(({ assignee, assigneeId }) => assignee ?? assigneeId).filter(isNotNull);
+		const _assignees = reports.map(({ assignee, assigneeId }) => assignee ?? assigneeId).filter(x => x != null);
 		const _userMap = await this.userEntityService.packMany(
 			[..._reporters, ..._targetUsers, ..._assignees],
 			null,

@@ -136,7 +136,7 @@ export default defineComponent({
 			el.classList.remove('before-leave');
 		}
 
-		// eslint-disable-next-line vue/no-setup-props-destructure
+		// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 		const classes = {
 			[$style['date-separated-list']]: true,
 			[$style['date-separated-list-nogap']]: props.noGap,

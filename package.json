@@ -56,7 +56,7 @@
 		"postcss": "8.4.38",
 		"tar": "6.2.1",
 		"terser": "5.30.3",
-		"typescript": "5.4.5",
+		"typescript": "5.5.2",
 		"esbuild": "0.20.2",
 		"glob": "10.3.12"
 	},
