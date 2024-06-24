@@ -13,16 +13,16 @@ import { isEmbedPage } from '@/scripts/embed-page.js';
 // heart beat interval in ms
 const HEART_BEAT_INTERVAL = 1000 * 60;
 
-let stream: Misskey.Stream | null = null;
-let timeoutHeartBeat: ReturnType<typeof setTimeout> | null = null;
+let stream: Misskey.IStream | null = null;
+let timeoutHeartBeat: number | null = null;
 let lastHeartbeatCall = 0;
 
-export function useStream(): Misskey.Stream {
+export function useStream(): Misskey.IStream {
 	if (stream) return stream;
 
 	// TODO: No Websocketモードもここで判定
 	if (isEmbedPage()) {
-		stream = markRaw(new StreamMock(wsOrigin, null) as unknown as Misskey.Stream);
+		stream = markRaw(new StreamMock(wsOrigin, null));
 		return stream;
 	} else {
 		stream = markRaw(new Misskey.Stream(wsOrigin, $i ? {

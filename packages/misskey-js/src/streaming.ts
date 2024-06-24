@@ -22,10 +22,26 @@ export type StreamEvents = {
 	_disconnected_: void;
 } & BroadcastEvents;
 
+export interface IStream extends EventEmitter<StreamEvents> {
+	state: 'initializing' | 'reconnecting' | 'connected';
+
+	useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): IChannelConnection<Channels[C]>;
+	removeSharedConnection(connection: SharedConnection): void;
+	removeSharedConnectionPool(pool: Pool): void;
+	disconnectToChannel(connection: NonSharedConnection): void;
+	send(typeOrPayload: string): void;
+	send(typeOrPayload: string, payload: any): void;
+	send(typeOrPayload: Record<string, any> | any[]): void;
+	send(typeOrPayload: string | Record<string, any> | any[], payload?: any): void;
+	ping(): void;
+	heartbeat(): void;
+	close(): void;
+};
+
 /**
  * Misskey stream connection
  */
-export default class Stream extends EventEmitter<StreamEvents> {
+export default class Stream extends EventEmitter<StreamEvents> implements IStream {
 	private stream: _ReconnectingWebsocket.default;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
@@ -275,7 +291,18 @@ class Pool {
 	}
 }
 
-export abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export interface IChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+	id: string;
+	name?: string;
+	inCount: number;
+	outCount: number;
+	channel: string;
+
+	send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void;
+	dispose(): void;
+}
+
+export abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;

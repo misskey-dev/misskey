@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import type { Channels, StreamEvents } from 'misskey-js';
+import type { Channels, StreamEvents, IStream, IChannelConnection } from 'misskey-js';
 
 type AnyOf<T extends Record<any, any>> = T[keyof T];
 type OmitFirst<T extends any[]> = T extends [any, ...infer R] ? R : never;
@@ -13,7 +13,7 @@ type OmitFirst<T extends any[]> = T extends [any, ...infer R] ? R : never;
 /**
  * Websocket無効化時に使うStreamのモック（なにもしない）
  */
-export class StreamMock extends EventEmitter<StreamEvents> {
+export class StreamMock extends EventEmitter<StreamEvents> implements IStream {
 	public readonly state = 'initializing';
 
 	constructor(...args: ConstructorParameters<typeof Misskey.Stream>) {
@@ -57,12 +57,18 @@ export class StreamMock extends EventEmitter<StreamEvents> {
 	}
 }
 
-class ChannelConnectionMock<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+class ChannelConnectionMock<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
 	public id = '';
+	public name?: string; // for debug
+	public inCount = 0; // for debug
+	public outCount = 0; // for debug
+	public channel: string;
 
-	constructor(stream: StreamMock, ...args: OmitFirst<ConstructorParameters<typeof Misskey.ChannelConnection<Channel>>>) {
+	constructor(stream: IStream, ...args: OmitFirst<ConstructorParameters<typeof Misskey.ChannelConnection<Channel>>>) {
 		super();
-		// do nothing
+
+		this.channel = args[0];
+		this.name = args[1];
 	}
 
 	public send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void {
