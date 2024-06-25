@@ -50,6 +50,7 @@ import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef } f
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
+import { DESKTOP_THRESHOLD } from '@/const.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
@@ -61,8 +62,6 @@ const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
-
-const DESKTOP_THRESHOLD = 1100;
 
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 

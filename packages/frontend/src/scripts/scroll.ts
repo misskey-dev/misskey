@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { MOBILE_THRESHOLD } from "@/const.js";
 
 type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
@@ -110,7 +111,7 @@ export function scrollToBottom(
 		container.scroll({ top: el.scrollHeight - container.clientHeight + getStickyTop(el, container) || 0, ...options });
 	} else {
 		window.scroll({
-			top: (el.scrollHeight - window.innerHeight + getStickyTop(el, container) + (window.innerWidth <= 500 ? 96 : 0)) || 0,
+			top: (el.scrollHeight - window.innerHeight + getStickyTop(el, container) + (window.innerWidth <= MOBILE_THRESHOLD ? 96 : 0)) || 0,
 			...options,
 		});
 	}
