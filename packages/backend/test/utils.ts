@@ -17,6 +17,7 @@ import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/val
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { type Response } from 'node-fetch';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -454,7 +455,7 @@ export type SimpleGetResponse = {
 	type: string | null,
 	location: string | null
 };
-export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
+export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,
@@ -482,7 +483,7 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
 		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
-		null;
+		await bodyExtractor(res);
 
 	return {
 		status: res.status,
