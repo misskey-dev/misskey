@@ -27,7 +27,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #body>
 			<MkNotes
 				ref="notesEl"
-				:class="$style.userTimelineNotes"
 				:pagination="pagination"
 				:disableAutoLoad="!normalizedEnableAutoLoad"
 				:noGap="true"
