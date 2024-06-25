@@ -7,8 +7,8 @@ import { createApp, defineAsyncComponent } from 'vue';
 import { common } from './common.js';
 import type { CommonBootOptions } from './common.js';
 
-export async function subBoot(options?: Partial<CommonBootOptions>, isEmbedPage?: boolean) {
+export async function subBoot(options?: Partial<CommonBootOptions>) {
 	const { isClientUpdated } = await common(() => createApp(
-		defineAsyncComponent(() => isEmbedPage ? import('@/ui/embed.vue') : import('@/ui/minimum.vue')),
+		defineAsyncComponent(() => import('@/ui/minimum.vue')),
 	), options);
 }

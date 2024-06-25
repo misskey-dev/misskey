@@ -8,8 +8,9 @@ import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 import '@/style.embed.scss';
+import { createApp, defineAsyncComponent } from 'vue';
+import { common } from '@/boot/common.js';
 import type { CommonBootOptions } from '@/boot/common.js';
-import { subBoot } from '@/boot/sub-boot.js';
 import { setIframeId, postMessageToParentWindow } from '@/scripts/post-message.js';
 import { defaultStore } from '@/store.js';
 
@@ -35,7 +36,9 @@ window.addEventListener('message', event => {
 });
 
 // 起動
-subBoot(bootOptions, true).then(() => {
+common(() => createApp(
+	defineAsyncComponent(() => import('@/ui/embed.vue')),
+), bootOptions).then(({ isClientUpdated }) => {
 	// 起動完了を通知（このあとクライアント側から misskey:embedParent:registerIframeId が送信される）
 	postMessageToParentWindow('misskey:embed:ready');
 });
