@@ -197,6 +197,7 @@ function iframeOnLoad() {
 		});
 	});
 }
+
 function windowEventHandler(event: MessageEvent) {
 	if (event.source !== iframeEl.value?.contentWindow) {
 		return;
@@ -217,6 +218,7 @@ function windowEventHandler(event: MessageEvent) {
 		});
 	}
 }
+
 function calcScale() {
 	if (!resizerRootEl.value) return;
 	const previewWidth = resizerRootEl.value.clientWidth - 40; // 左右の余白 20pxずつ
@@ -225,15 +227,18 @@ function calcScale() {
 	const scale = Math.min(previewWidth / iframeWidth, previewHeight / iframeHeight.value, 1); // 拡大はしない
 	iframeScale.value = scale;
 }
+
 onMounted(() => {
 	window.addEventListener('message', windowEventHandler);
 	if (!resizerRootEl.value) return;
 	resizeObserver.observe(resizerRootEl.value);
 });
+
 onDeactivated(() => {
 	window.removeEventListener('message', windowEventHandler);
 	resizeObserver.disconnect();
 });
+
 onUnmounted(() => {
 	window.removeEventListener('message', windowEventHandler);
 	resizeObserver.disconnect();
