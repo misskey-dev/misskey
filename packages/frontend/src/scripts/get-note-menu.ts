@@ -20,6 +20,7 @@ import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { copyEmbedCode } from '@/scripts/get-embed-code.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -321,6 +322,13 @@ export function getNoteMenu(props: {
 				text: i18n.ts.share,
 				action: share,
 			}] : []),
+			(!appearNote.url && !appearNote.uri) ? {
+				icon: 'ti ti-code',
+				text: i18n.ts.copyEmbedCode,
+				action: () => {
+					copyEmbedCode('notes', appearNote.id);
+				},
+			} : undefined,
 			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,

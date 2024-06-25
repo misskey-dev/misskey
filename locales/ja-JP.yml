@@ -1243,6 +1243,8 @@ noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
 fromX: "{x}から"
+copyEmbedCode: "埋め込みコードをコピー"
+noteOfThisUser: "このユーザーのノート"
 
 _delivery:
   status: "配信状態"
@@ -2685,3 +2687,15 @@ _mediaControls:
   pip: "ピクチャインピクチャ"
   playbackRate: "再生速度"
   loop: "ループ再生"
+
+_embedCodeGen:
+  title: "埋め込みコードをカスタマイズ"
+  header: "ヘッダーを表示"
+  autoload: "自動で続きを読み込む（非推奨）"
+  maxHeight: "高さの最大値"
+  maxHeightDescription: "0で最大値の設定が無効になります。ウィジェットが縦に伸び続けるのを防ぐために、何らかの値に指定してください。"
+  maxHeightWarn: "高さの最大値制限が無効（0）になっています。これが意図した変更ではない場合は、高さの最大値を何らかの値に設定してください。"
+  rounded: "角丸にする"
+  border: "外枠に枠線をつける"
+  applyToPreview: "プレビューに反映"
+  previewIsNotActual: "プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。"

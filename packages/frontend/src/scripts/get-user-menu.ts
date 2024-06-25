@@ -16,6 +16,7 @@ import { $i, iAmModerator } from '@/account.js';
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
+import { copyEmbedCode } from '@/scripts/get-embed-code.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -177,7 +178,17 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			if (user.url == null) return;
 			window.open(user.url, '_blank', 'noopener');
 		},
-	}] : []), {
+	}] : [{
+		icon: 'ti ti-code',
+		text: i18n.ts.copyEmbedCode,
+		type: 'parent' as const,
+		children: [{
+			text: i18n.ts.noteOfThisUser,
+			action: () => {
+				copyEmbedCode('user-timeline', user.username);
+			},
+		}], // TODO: ユーザーカードの埋め込みなど
+	}]), {
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
