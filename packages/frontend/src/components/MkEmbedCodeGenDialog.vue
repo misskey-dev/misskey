@@ -21,10 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				:class="$style.embedCodeGenPreviewRoot"
 			>
-				<MkLoading :class="$style.embedCodeGenPreviewSpinner" v-if="iframeLoading"/>
+				<MkLoading v-if="iframeLoading" :class="$style.embedCodeGenPreviewSpinner"/>
 				<div :class="$style.embedCodeGenPreviewWrapper">
 					<div :class="$style.embedCodeGenPreviewTitle">{{ i18n.ts.preview }}</div>
-					<div :class="$style.embedCodeGenPreviewResizerRoot" ref="resizerRootEl">
+					<div ref="resizerRootEl" :class="$style.embedCodeGenPreviewResizerRoot">
 						<div
 							:class="$style.embedCodeGenPreviewResizer"
 							:style="{ transform: iframeStyle }"
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="typeof maxHeight === 'number' && maxHeight <= 0" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
 				<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ i18n.ts._embedCodeGen.previewIsNotActual }}</MkInfo>
 				<div>
-					<MkButton @click="applyToPreview" :disabled="iframeLoading">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
+					<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
 				</div>
 			</div>
 		</div>

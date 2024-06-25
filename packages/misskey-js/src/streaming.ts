@@ -36,7 +36,7 @@ export interface IStream extends EventEmitter<StreamEvents> {
 	ping(): void;
 	heartbeat(): void;
 	close(): void;
-};
+}
 
 /**
  * Misskey stream connection
