@@ -425,6 +425,13 @@ export class ClientServerService {
 		// Manifest
 		fastify.get('/manifest.json', async (request, reply) => await this.manifestHandler(reply));
 
+		// Embed Javascript
+		fastify.get('/embed.js', async (request, reply) => {
+			return await reply.sendFile('/embed.js', staticAssets, {
+				maxAge: ms('1 day'),
+			});
+		});
+
 		fastify.get('/robots.txt', async (request, reply) => {
 			return await reply.sendFile('/robots.txt', staticAssets);
 		});
