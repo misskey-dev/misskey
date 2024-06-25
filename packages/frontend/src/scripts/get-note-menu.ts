@@ -316,19 +316,18 @@ export function getNoteMenu(props: {
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			} : undefined,
-			...(isSupportShare() ? [{
-				icon: 'ti ti-share',
-				text: i18n.ts.share,
-				action: share,
-			}] : []),
-			(!appearNote.url && !appearNote.uri) ? {
+			} : {
 				icon: 'ti ti-code',
 				text: i18n.ts.copyEmbedCode,
 				action: () => {
 					copyEmbedCode('notes', appearNote.id);
 				},
-			} : undefined,
+			},
+			...(isSupportShare() ? [{
+				icon: 'ti ti-share',
+				text: i18n.ts.share,
+				action: share,
+			}] : []),
 			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
@@ -456,14 +455,20 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-		, (appearNote.url || appearNote.uri) ? {
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink),
+		(appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
-		} : undefined]
+		} : {
+			icon: 'ti ti-code',
+			text: i18n.ts.copyEmbedCode,
+			action: () => {
+				copyEmbedCode('notes', appearNote.id);
+			},
+		}]
 			.filter(x => x !== undefined);
 	}
 

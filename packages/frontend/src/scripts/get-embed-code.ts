@@ -13,16 +13,16 @@ import MkEmbedCodeGenDialog from '@/components/MkEmbedCodeGenDialog.vue';
 const embeddableEntities = [
 	'notes',
 	'user-timeline',
-	'clip',
-	'tag',
+	'clips',
+	'tags',
 ] as const;
 
 export type EmbeddableEntity = typeof embeddableEntities[number];
 
 // 内部でスクロールがあるページ
 export const embedRouteWithScrollbar: EmbeddableEntity[] = [
-	'clip',
-	'tag',
+	'clips',
+	'tags',
 	'user-timeline'
 ];
 

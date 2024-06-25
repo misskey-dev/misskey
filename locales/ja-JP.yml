@@ -1244,7 +1244,7 @@ alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
 fromX: "{x}から"
 copyEmbedCode: "埋め込みコードをコピー"
-noteOfThisUser: "このユーザーのノート"
+noteOfThisUser: "このユーザーのノート一覧"
 
 _delivery:
   status: "配信状態"

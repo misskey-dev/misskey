@@ -4993,7 +4993,7 @@ export interface Locale extends ILocale {
      */
     "copyEmbedCode": string;
     /**
-     * このユーザーのノート
+     * このユーザーのノート一覧
      */
     "noteOfThisUser": string;
     "_delivery": {
