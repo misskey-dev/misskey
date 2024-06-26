@@ -109,6 +109,6 @@ export function copyEmbedCode(entity: EmbeddableEntity, idOrUsername: string, pa
 			entity,
 			idOrUsername,
 			params: _params,
-		});
+		}, {}, 'closed');
 	}
 }
