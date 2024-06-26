@@ -156,6 +156,19 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 	};
 }
 
+function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuItem | undefined {
+	if (note.url != null || note.uri != null) return undefined;
+	if (['specified', 'followers'].includes(note.visibility)) return undefined;
+
+	return {
+		icon: 'ti ti-code',
+		text,
+		action: (): void => {
+			copyEmbedCode('notes', note.id);
+		},
+	};
+}
+
 export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
@@ -316,13 +329,7 @@ export function getNoteMenu(props: {
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			} : {
-				icon: 'ti ti-code',
-				text: i18n.ts.copyEmbedCode,
-				action: () => {
-					copyEmbedCode('notes', appearNote.id);
-				},
-			},
+			} : getNoteEmbedCodeMenu(appearNote, i18n.ts.copyEmbedCode),
 			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
@@ -462,13 +469,7 @@ export function getNoteMenu(props: {
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
-		} : {
-			icon: 'ti ti-code',
-			text: i18n.ts.copyEmbedCode,
-			action: () => {
-				copyEmbedCode('notes', appearNote.id);
-			},
-		}]
+		} : getNoteEmbedCodeMenu(appearNote, i18n.ts.copyEmbedCode)]
 			.filter(x => x !== undefined);
 	}
 
