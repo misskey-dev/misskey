@@ -142,6 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</a>
 				<a v-if="canRenote" :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.renoteCount) }}</p>
 				</a>
 				<a v-else :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button" disabled>
 					<i class="ti ti-ban"></i>
@@ -149,6 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
+					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</a>
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-dots"></i>
