@@ -61,12 +61,14 @@
 		"glob": "10.3.12"
 	},
 	"devDependencies": {
+		"@misskey-dev/eslint-plugin": "2.0.1",
 		"@types/node": "20.14.7",
 		"@typescript-eslint/eslint-plugin": "7.13.1",
 		"@typescript-eslint/parser": "7.13.1",
 		"cross-env": "7.0.3",
 		"cypress": "13.12.0",
 		"eslint": "9.5.0",
+		"globals": "15.6.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.4"
 	},
