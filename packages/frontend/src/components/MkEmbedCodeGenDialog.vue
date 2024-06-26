@@ -56,9 +56,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-if="isEmbedWithScrollbar" v-model="autoload">{{ i18n.ts._embedCodeGen.autoload }}</MkSwitch>
 				<MkSwitch v-model="rounded">{{ i18n.ts._embedCodeGen.rounded }}</MkSwitch>
 				<MkSwitch v-model="border">{{ i18n.ts._embedCodeGen.border }}</MkSwitch>
-				<MkInfo v-if="typeof maxHeight === 'number' && maxHeight <= 0" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
+				<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight ||maxHeight <= 0)" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
 				<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ i18n.ts._embedCodeGen.previewIsNotActual }}</MkInfo>
-				<div>
+				<div class="_buttons">
 					<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
 				</div>
 			</div>
