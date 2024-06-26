@@ -44,7 +44,10 @@ const loading = ref(true);
 misskeyApi('notes/show', {
 	noteId: props.noteId,
 }).then(res => {
-	note.value = res;
+	// リモートのノートは埋め込ませない
+	if (res.url == null && res.uri == null) {
+		note.value = res;
+	}
 	loading.value = false;
 }).catch(err => {
 	console.error(err);
