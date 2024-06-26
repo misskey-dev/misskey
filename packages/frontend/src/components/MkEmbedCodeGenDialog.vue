@@ -124,12 +124,12 @@ function ok() {
 
 // 本URL生成用params
 const paramsForUrl = computed<EmbedParams>(() => ({
-	header: header.value === true ? undefined : header.value,
-	autoload: autoload.value === false ? undefined : autoload.value,
+	header: header.value,
+	autoload: autoload.value,
 	maxHeight: typeof maxHeight.value === 'number' ? Math.max(0, maxHeight.value) : undefined,
 	colorMode: colorMode.value === 'auto' ? undefined : colorMode.value,
-	rounded: rounded.value === true ? undefined : rounded.value,
-	border: border.value === true ? undefined : border.value,
+	rounded: rounded.value,
+	border: border.value,
 }));
 
 // プレビュー用params（手動で更新を掛けるのでref）
@@ -142,7 +142,7 @@ const embedPreviewUrl = computed(() => {
 		const maxHeight = parseInt(paramClass.get('maxHeight')!);
 		paramClass.set('maxHeight', maxHeight === 0 ? '500' : Math.min(maxHeight, 700).toString()); // プレビューであまりにも縮小されると見づらいため、700pxまでに制限
 	}
-	return `${url}/embed/${props.entity}/${_idOrUsername}?${paramClass.toString()}`;
+	return `${url}/embed/${props.entity}/${_idOrUsername}${paramClass.toString() ? '?' + paramClass.toString() : ''}`;
 });
 
 const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(props.entity));

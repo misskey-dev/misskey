@@ -35,11 +35,22 @@ export type EmbedParams = {
 	header?: boolean;
 };
 
+// パラメータのデフォルトの値
+export const defaultEmbedParams: EmbedParams = {
+	maxHeight: undefined,
+	colorMode: undefined,
+	rounded: true,
+	border: true,
+	autoload: false,
+	header: true,
+};
+
 export function normalizeEmbedParams(params: EmbedParams): Record<string, string> {
 	// paramsのvalueをすべてstringに変換。undefinedやnullはプロパティごと消す
 	const normalizedParams: Record<string, string> = {};
 	for (const key in params) {
-		if (params[key] == null) {
+		// デフォルトの値と同じならparamsに含めない
+		if (params[key] == null || params[key] === defaultEmbedParams[key]) {
 			continue;
 		}
 		switch (typeof params[key]) {
