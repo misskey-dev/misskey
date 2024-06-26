@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
 import * as assert from 'assert';
+import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';
 import { loadConfig } from '@/config.js';
-import { api, post, randomString, sendEnvUpdateRequest, signup, sleep, uploadUrl } from '../utils.js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, sleep, uploadUrl, UserToken } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -20,6 +23,18 @@ function waitForPushToTl() {
 }
 
 let redisForTimelines: Redis;
+
+async function createChannel(name: string, user: UserToken): Promise<entities.ChannelsCreateResponse> {
+	return (await api('channels/create', { name }, user)).body;
+}
+
+function followChannel(channelId: string, user: UserToken) {
+	return api('channels/follow', { channelId }, user);
+}
+
+function muteChannel(channelId: string, user: UserToken) {
+	return api('channels/mute/create', { channelId }, user);
+}
 
 describe('Timelines', () => {
 	beforeAll(() => {
@@ -113,7 +128,12 @@ describe('Timelines', () => {
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
 			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
+			const bobNote = await post(bob, {
+				text: 'hi',
+				replyId: carolNote.id,
+				visibility: 'specified',
+				visibleUserIds: [carolNote.id],
+			});
 
 			await waitForPushToTl();
 
@@ -168,7 +188,12 @@ describe('Timelines', () => {
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
 			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
+			const bobNote = await post(bob, {
+				text: 'hi',
+				replyId: carolNote.id,
+				visibility: 'specified',
+				visibleUserIds: [carolNote.id],
+			});
 
 			await waitForPushToTl();
 
@@ -452,7 +477,12 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
-			const aliceNote = await post(alice, { text: 'ok', visibility: 'specified', visibleUserIds: [bob.id], replyId: bobNote.id });
+			const aliceNote = await post(alice, {
+				text: 'ok',
+				visibility: 'specified',
+				visibleUserIds: [bob.id],
+				replyId: bobNote.id,
+			});
 
 			await waitForPushToTl();
 
@@ -483,13 +513,152 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			const aliceNote = await post(alice, { text: 'hi', visibility: 'specified', visibleUserIds: [bob.id] });
-			const bobNote = await post(bob, { text: 'ok', visibility: 'specified', visibleUserIds: [alice.id], replyId: aliceNote.id });
+			const bobNote = await post(bob, {
+				text: 'ok',
+				visibility: 'specified',
+				visibleUserIds: [alice.id],
+				replyId: aliceNote.id,
+			});
 
 			await waitForPushToTl();
 
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
+		describe('Channel', () => {
+			test.concurrent('フォローしていないチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしているチャンネルのノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			});
+
+			test.concurrent('フォローしているユーザがフォローしていないチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしているユーザがフォローしているチャンネルでノートした時は含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			});
+
+			test.concurrent('チャンネルミュート中であり、かつフォローしていないチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であれば、フォローしているチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であり、フォローしているユーザがフォローしていないチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であれば、フォローしているユーザがフォローしているチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
 		});
 	});
 
@@ -672,6 +841,140 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		}, 1000 * 10);
+
+		describe('Channel', () => {
+			test.concurrent('フォローしていないチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしていてもチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしているユーザがフォローしていないチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしているユーザがフォローしているチャンネルでノートした時も含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であり、かつフォローしていないチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であれば、フォローしているチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であり、フォローしているユーザがフォローしていないチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であれば、フォローしているユーザがフォローしているチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/local-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+		});
 	});
 
 	describe('Social TL', () => {
@@ -812,6 +1115,140 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		}, 1000 * 10);
+
+		describe('Channel', () => {
+			test.concurrent('フォローしていないチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしているチャンネルのノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			});
+
+			test.concurrent('フォローしているユーザがフォローしていないチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('フォローしているユーザがフォローしているチャンネルでノートした時は含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			});
+
+			test.concurrent('チャンネルミュート中であり、かつフォローしていないチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であれば、フォローしているチャンネルのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であり、フォローしているユーザがフォローしていないチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test.concurrent('チャンネルミュート中であれば、フォローしているユーザがフォローしているチャンネルでノートした時は含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+				await api('following/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+				await followChannel(channel.id, alice);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+		});
 	});
 
 	describe('User List TL', () => {
