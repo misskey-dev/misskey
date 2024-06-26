@@ -125,7 +125,7 @@ function ok() {
 // 本URL生成用params
 const paramsForUrl = computed<EmbedParams>(() => ({
 	header: header.value === true ? undefined : header.value,
-	autoload: autoload.value === true ? undefined : autoload.value,
+	autoload: autoload.value === false ? undefined : autoload.value,
 	maxHeight: typeof maxHeight.value === 'number' ? Math.max(0, maxHeight.value) : undefined,
 	colorMode: colorMode.value === 'auto' ? undefined : colorMode.value,
 	rounded: rounded.value === true ? undefined : rounded.value,
