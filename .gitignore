@@ -35,8 +35,8 @@ coverage
 !/.config/example.yml
 !/.config/docker_example.yml
 !/.config/docker_example.env
-compose.yaml
-!/.devcontainer/compose.yaml
+.devcontainer/compose.yml
+!/.devcontainer/compose.yml
 
 # misskey
 /build

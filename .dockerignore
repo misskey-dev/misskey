@@ -7,7 +7,7 @@ Dockerfile
 build/
 built/
 db/
-compose.yaml
+.devcontainer/compose.yml
 node_modules/
 packages/*/node_modules
 redis/
@@ -28,4 +28,4 @@ fluent-emojis/
 
 .idea/
 packages/*/.vscode/
-packages/backend/test/compose.yaml
+packages/backend/test/compose.yml
