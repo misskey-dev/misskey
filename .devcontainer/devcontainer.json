@@ -1,6 +1,6 @@
 {
 	"name": "Misskey",
-	"dockerComposeFile": "compose.yaml",
+	"dockerComposeFile": "compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspace",
 	"features": {
