@@ -82,6 +82,10 @@ RUN apt-get update \
 USER misskey
 WORKDIR /misskey
 
+# add package.json to add pnpm
+COPY --chown=misskey:misskey ./package.json ./package.json
+RUN corepack install
+
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
