@@ -2,16 +2,23 @@ import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
 import parser from 'vue-eslint-parser';
 import pluginVue from 'eslint-plugin-vue';
+import pluginMisskey from '@misskey-dev/eslint-plugin';
 import sharedConfig from '../shared/eslint.config.js';
 
 export default [
 	...sharedConfig,
+	{
+		files: ['src/**/*.vue'],
+		...pluginMisskey.configs.typescript,
+	},
 	...pluginVue.configs['flat/recommended'],
 	{
 		files: ['src/**/*.{ts,vue}'],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),
+				...globals.browser,
+
 				// Node.js
 				module: false,
 				require: false,
