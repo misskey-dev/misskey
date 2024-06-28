@@ -94,11 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const [
-				userIdsWhoMeMuting,
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-			]) : [new Set<string>()];
+			const userIdsWhoMeMuting = me ? await this.cacheService.userMutingsCache.fetch(me.id) : new Set<string>();
 
 			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
