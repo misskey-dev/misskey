@@ -206,7 +206,6 @@
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
 		"@types/node": "20.14.7",
-		"@types/node-fetch": "3.0.3",
 		"@types/nodemailer": "6.4.15",
 		"@types/oauth": "0.9.5",
 		"@types/oauth2orize": "1.11.5",
