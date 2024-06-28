@@ -20,7 +20,7 @@ import type Logger from '@/logger.js';
 import type { MiNote } from '@/models/Note.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MfmService } from '@/core/MfmService.js';
-import { toArray } from '@/misc/prelude/array.js';
+import { toArray, toSingle } from '@/misc/prelude/array.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
@@ -182,6 +182,8 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		if (x.publicKey) {
+			x.publicKey = toSingle(x.publicKey);
+
 			if (typeof x.publicKey.id !== 'string') {
 				throw new Error('invalid Actor: publicKey.id is not a string');
 			}
