@@ -67,6 +67,21 @@ if (props.modelValue.deleteAt) {
 } else if (typeof props.modelValue.deleteAfter === 'number') {
 	expiration.value = 'after';
 	after.value = props.modelValue.deleteAfter / 1000;
+
+	if (after.value % 60 === 0) {
+		unit.value = 'minute';
+		after.value /= 60;
+	}
+
+	if (after.value % 60 === 0) {
+		unit.value = 'hour';
+		after.value /= 60;
+	}
+
+	if (after.value % 24 === 0) {
+		unit.value = 'day';
+		after.value /= 24;
+	}
 }
 
 function get(): DeleteScheduleEditorModelValue {
