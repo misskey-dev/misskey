@@ -255,8 +255,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       ip-cidr:
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 4.0.1
+        version: 4.0.1
       ipaddr.js:
         specifier: 2.2.0
         version: 2.2.0
@@ -8083,8 +8083,8 @@ packages:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
 
-  ip-cidr@4.0.0:
-    resolution: {integrity: sha512-i1Jhb9sqm2+PuOHTfya3ekAUi+dadhgcEz+4FKKY1hXemocP4Xf7io8Xflc74/i2ejxe/5fp4z8z3BAsfAZ8sw==}
+  ip-cidr@4.0.1:
+    resolution: {integrity: sha512-V5Nce94SVJ7NtyT/UKUeTM7sY3V7TEk48hURhtBgTiGduOa5t6p9Hd+zBOGvr4Gu7iWPxFVYNl017p0akQA84w==}
     engines: {node: '>=16.14.0'}
 
   ip-regex@4.3.0:
@@ -21193,7 +21193,7 @@ snapshots:
       jsbn: 1.1.0
       sprintf-js: 1.1.3
 
-  ip-cidr@4.0.0:
+  ip-cidr@4.0.1:
     dependencies:
       ip-address: 9.0.5
 
