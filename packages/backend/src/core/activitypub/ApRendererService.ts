@@ -25,7 +25,6 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
@@ -317,7 +316,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(isNotNull);
+			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
 		};
 
 		let inReplyTo;
@@ -689,7 +688,7 @@ export class ApRendererService {
 		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
-		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
+		const emojis = names.map(name => allEmojis.get(name)).filter(x => x != null);
 
 		return emojis;
 	}

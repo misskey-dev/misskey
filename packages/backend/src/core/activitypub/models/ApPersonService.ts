@@ -39,7 +39,6 @@ import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { REMOTE_USER_CACHE_TTL, REMOTE_USER_MOVE_COOLDOWN } from '@/const.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
@@ -711,7 +710,7 @@ export class ApPersonService implements OnModuleInit {
 
 			// とりあえずidを別の時間で生成して順番を維持
 			let td = 0;
-			for (const note of featuredNotes.filter(isNotNull)) {
+			for (const note of featuredNotes.filter(x => x != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(MiUserNotePining, {
 					id: this.idService.gen(Date.now() + td),
