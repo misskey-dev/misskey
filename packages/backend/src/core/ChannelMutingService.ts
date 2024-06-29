@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { In } from 'typeorm';
+import { Brackets, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiChannelMuting, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -47,6 +47,7 @@ export class ChannelMutingService {
 	 * ミュートしているチャンネルの一覧を取得する.
 	 * @param params
 	 * @param [opts]
+	 * @param	{(boolean|undefined)} [opts.idOnly=false] チャンネルIDのみを取得するかどうか. ID以外のフィールドに値がセットされなくなり、他テーブルとのJOINも一切されなくなるので注意.
 	 * @param {(boolean|undefined)} [opts.joinUser=undefined] チャンネルオーナーのユーザ情報をJOINするかどうか(falseまたは省略時はJOINしない).
 	 * @param {(boolean|undefined)} [opts.joinBannerFile=undefined] バナー画像のドライブファイルをJOINするかどうか(falseまたは省略時はJOINしない).
 	 */
@@ -56,27 +57,42 @@ export class ChannelMutingService {
 			requestUserId: MiUser['id'],
 		},
 		opts?: {
+			idOnly?: boolean;
 			joinUser?: boolean;
 			joinBannerFile?: boolean;
 		},
 	): Promise<MiChannel[]> {
-		const q = this.channelsRepository.createQueryBuilder('channel')
-			.innerJoin('channel_muting', 'channel_muting', 'channel_muting.channelId = channel.id')
-			.where('channel_muting.userId = :userId', { userId: params.requestUserId })
-			.andWhere(qb => {
-				qb.where('channel_muting.expiresAt IS NULL')
-					.orWhere('channel_muting.expiresAt > :now', { now: new Date() });
-			});
+		if (opts?.idOnly) {
+			const q = this.channelMutingRepository.createQueryBuilder('channel_muting')
+				.select('channel_muting.channelId')
+				.where('channel_muting.userId = :userId', { userId: params.requestUserId })
+				.andWhere(new Brackets(qb => {
+					qb.where('channel_muting.expiresAt IS NULL')
+						.orWhere('channel_muting.expiresAt > :now', { now: new Date() });
+				}));
 
-		if (opts?.joinUser) {
-			q.innerJoinAndSelect('channel.user', 'user');
+			return q
+				.getRawMany<{ channel_muting_channelId: string }>()
+				.then(xs => xs.map(x => ({ id: x.channel_muting_channelId } as MiChannel)));
+		} else {
+			const q = this.channelsRepository.createQueryBuilder('channel')
+				.innerJoin('channel_muting', 'channel_muting', 'channel_muting.channelId = channel.id')
+				.where('channel_muting.userId = :userId', { userId: params.requestUserId })
+				.andWhere(new Brackets(qb => {
+					qb.where('channel_muting.expiresAt IS NULL')
+						.orWhere('channel_muting.expiresAt > :now', { now: new Date() });
+				}));
+
+			if (opts?.joinUser) {
+				q.innerJoinAndSelect('channel.user', 'user');
+			}
+
+			if (opts?.joinBannerFile) {
+				q.leftJoinAndSelect('channel.banner', 'drive_file');
+			}
+
+			return q.getMany();
 		}
-
-		if (opts?.joinBannerFile) {
-			q.leftJoinAndSelect('channel.banner', 'drive_file');
-		}
-
-		return q.getMany();
 	}
 
 	/**

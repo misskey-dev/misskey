@@ -21,6 +21,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ApiError } from '../../error.js';
+import { ChannelFollowingService } from "@/core/ChannelFollowingService.js";
 
 export const meta = {
 	tags: ['notes'],
@@ -77,16 +78,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
-		private cacheService: CacheService,
 		private queryService: QueryService,
 		private userFollowingService: UserFollowingService,
 		private channelMutingService: ChannelMutingService,
+		private channelFollowingService: ChannelFollowingService,
 		private metaService: MetaService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
@@ -184,12 +183,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withReplies: boolean,
 	}, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
-		const followingChannels = await this.channelFollowingsRepository.find({
-			where: {
-				followerId: me.id,
-			},
-		});
-		const mutingChannelIds = await this.channelMutingService.list({ requestUserId: me.id }).then(x => x.map(x => x.id));
+
+		const mutingChannelIds = await this.channelMutingService
+			.list({ requestUserId: me.id }, { idOnly: true })
+			.then(x => x.map(x => x.id));
+		const followingChannelIds = await this.channelFollowingService
+			.list({ requestUserId: me.id }, { idOnly: true })
+			.then(x => x.map(x => x.id).filter(x => !mutingChannelIds.includes(x)));
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 			.andWhere(new Brackets(qb => {
@@ -208,9 +208,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
-		if (followingChannels.length > 0) {
-			const followingChannelIds = followingChannels.map(x => x.followeeId);
-
+		if (followingChannelIds.length > 0) {
 			query.andWhere(new Brackets(qb => {
 				qb.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
 				qb.orWhere('note.channelId IS NULL');
@@ -221,23 +219,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		if (mutingChannelIds.length > 0) {
 			query.andWhere(new Brackets(qb => {
-				qb
-					// ミュートしてるチャンネルは含めない
-					.where(new Brackets(qb2 => {
-						qb2
-							.andWhere(new Brackets(qb3 => {
-								qb3
-									.andWhere('note.channelId IS NOT NULL')
-									.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-							}))
-							.andWhere(new Brackets(qb3 => {
-								qb3
-									.andWhere('note.renoteChannelId IS NOT NULL')
-									.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-							}));
-					}))
-					// チャンネルの投稿ではない
-					.orWhere('note.channelId IS NULL');
+				qb.orWhere('note.renoteChannelId IS NULL');
+				qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
 			}));
 		}
 

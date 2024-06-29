@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, ChannelFollowingsRepository, ChannelMutingRepository } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -18,6 +18,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -60,9 +61,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
 		private noteEntityService: NoteEntityService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
@@ -70,6 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 		private userFollowingService: UserFollowingService,
 		private channelMutingService: ChannelMutingService,
+		private channelFollowingService: ChannelFollowingService,
 		private queryService: QueryService,
 		private metaService: MetaService,
 	) {
@@ -144,12 +143,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
-		const followingChannels = await this.channelFollowingsRepository.find({
-			where: {
-				followerId: me.id,
-			},
-		});
-		const mutingChannelIds = await this.channelMutingService.list({ requestUserId: me.id }).then(x => x.map(x => x.id));
+
+		const mutingChannelIds = await this.channelMutingService
+			.list({ requestUserId: me.id }, { idOnly: true })
+			.then(x => x.map(x => x.id));
+		const followingChannelIds = await this.channelFollowingService
+			.list({ requestUserId: me.id }, { idOnly: true })
+			.then(x => x.map(x => x.id).filter(x => !mutingChannelIds.includes(x)));
 
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
@@ -159,10 +159,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
-		if (followees.length > 0 && followingChannels.length > 0) {
+		if (followees.length > 0 && followingChannelIds.length > 0) {
 			// ユーザー・チャンネルともにフォローあり
 			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
-			const followingChannelIds = followingChannels.map(x => x.followeeId);
 			query.andWhere(new Brackets(qb => {
 				qb
 					.where(new Brackets(qb2 => {
@@ -179,12 +178,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				qb
 					.andWhere('note.channelId IS NULL')
 					.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+				if (mutingChannelIds.length > 0) {
+					qb.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+				}
 			}));
-		} else if (followingChannels.length > 0) {
+		} else if (followingChannelIds.length > 0) {
 			// チャンネルフォローのみ（ユーザーフォローなし）
-			const followingChannelIds = followingChannels.map(x => x.followeeId);
 			query.andWhere(new Brackets(qb => {
 				qb
+					// renoteChannelIdは見る必要が無い
+					// ・HTLに流れてくるチャンネル＝フォローしているチャンネル
+					// ・HTLにフォロー外のチャンネルが流れるのは、フォローしているユーザがそのチャンネル投稿をリノートした場合のみ
+					// つまり、ユーザフォローしてない前提のこのブロックでは見る必要が無い
 					.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds })
 					.orWhere('note.userId = :meId', { meId: me.id });
 			}));
@@ -194,28 +199,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				qb
 					.andWhere('note.channelId IS NULL')
 					.andWhere('note.userId = :meId', { meId: me.id });
-			}));
-		}
-
-		if (mutingChannelIds.length > 0) {
-			query.andWhere(new Brackets(qb => {
-				qb
-					// ミュートしてるチャンネルは含めない
-					.where(new Brackets(qb2 => {
-						qb2
-							.andWhere(new Brackets(qb3 => {
-								qb3
-									.andWhere('note.channelId IS NOT NULL')
-									.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-							}))
-							.andWhere(new Brackets(qb3 => {
-								qb3
-									.andWhere('note.renoteChannelId IS NOT NULL')
-									.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-							}));
-					}))
-					// チャンネルの投稿ではない
-					.orWhere('note.channelId IS NULL');
 			}));
 		}
 
