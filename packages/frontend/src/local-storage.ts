@@ -45,7 +45,6 @@ export type Keys =
 // セッション毎に廃棄されるLocalStorage代替（embedなどで使用）
 const safeSessionStorage = new Map<Keys, string>();
 
-
 const embedPage = isEmbedPage();
 
 export const miLocalStorage = {
