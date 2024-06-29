@@ -34,6 +34,16 @@
 
 	const isEmbedPage = document.documentElement.classList.contains('embed');
 
+	if (isEmbedPage) {
+		const params = new URLSearchParams(location.search);
+		if (params.has('rounded') && params.get('rounded') === 'false') {
+			document.documentElement.classList.add('norounded');
+		}
+		if (params.has('border') && params.get('border') === 'false') {
+			document.documentElement.classList.add('noborder');
+		}
+	}
+
 	//#region Detect language & fetch translations
 	if (!localStorage.hasOwnProperty('locale')) {
 		const supportedLangs = LANGS;
