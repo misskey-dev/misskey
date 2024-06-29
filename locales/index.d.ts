@@ -5167,6 +5167,14 @@ export interface Locale extends ILocale {
      */
     "defaultScheduledNoteDelete": string;
     /**
+     * 「すぐ消す」の初期値
+     */
+    "defaultScheduledNoteDeleteTime": string;
+    /**
+     * 「すぐ消す」が有効になっています
+     */
+    "scheduledNoteDeleteEnabled": string;
+    /**
      * もう一度お試しください。
      */
     "tryAgain": string;

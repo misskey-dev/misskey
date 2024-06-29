@@ -30,11 +30,22 @@
 		<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
 		<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
 	</MkSelect>
+	<MkSwitch v-model="disableNoteDrafting">
+		<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
+		{{ i18n.ts.disableNoteDrafting }}
+		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+	</MkSwitch>
+	<div>
+		<div :class="$style.label">
+			{{ i18n.ts.defaultScheduledNoteDeleteTime }}
+			<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+		</div>
+		<MkDeleteScheduleEditor v-model="scheduledNoteDelete" :afterOnly="true"/>
+	</div>
 	<MkSwitch v-model="defaultScheduledNoteDelete">
 		{{ i18n.ts.defaultScheduledNoteDelete }}
 		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
 	</MkSwitch>
-	<MkDeleteScheduleEditor v-if="defaultScheduledNoteDelete" v-model="scheduledNoteDelete" :afterOnly="true"/>
 </div>
 </template>
 
