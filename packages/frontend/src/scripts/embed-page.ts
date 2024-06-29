@@ -2,11 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { miLocalStorage } from "@/local-storage.js";
-import type { Keys } from "@/local-storage.js";
-import { embedPage } from "@/config.js";
 
 //#region Embed関連の定義
+
+/** 埋め込みページかどうか */
+export function isEmbedPage() {
+	return location.pathname.startsWith('/embed');
+}
 
 /** 埋め込みの対象となるエンティティ（/embed/xxx の xxx の部分と対応させる） */
 const embeddableEntities = [
@@ -36,6 +38,7 @@ export type EmbedParams = {
 	header?: boolean;
 };
 
+/** 正規化されたパラメータ */
 export type ParsedEmbedParams = Required<Omit<EmbedParams, 'maxHeight' | 'colorMode'>> & Pick<EmbedParams, 'maxHeight' | 'colorMode'>;
 
 /** パラメータのデフォルトの値 */
@@ -47,6 +50,8 @@ export const defaultEmbedParams = {
 	autoload: false,
 	header: true,
 } as const;
+
+//#endregion
 
 /**
  * パラメータを正規化する（埋め込みページ初期化用）
@@ -83,31 +88,4 @@ export function parseEmbedParams(searchParams: URLSearchParams | string): Parsed
 		...defaultEmbedParams,
 		...params,
 	};
-}
-
-/**
- * EmbedページではlocalStorageを使用できないようにしているが、
- * 動作に必要な値はsafeSessionStorage（miLocalStorage内のやつ）に移動する
- */
-export function initEmbedPageLocalStorage() {
-	if (!embedPage) {
-		return;
-	}
-
-	const keysToDuplicate: Keys[] = [
-		'v',
-		'lastVersion',
-		'instance',
-		'instanceCachedAt',
-		'lang',
-		'locale',
-		'localeVersion',
-	];
-
-	keysToDuplicate.forEach(key => {
-		const value = window.localStorage.getItem(key);
-		if (value && !miLocalStorage.getItem(key)) {
-			miLocalStorage.setItem(key, value);
-		}
-	});
 }

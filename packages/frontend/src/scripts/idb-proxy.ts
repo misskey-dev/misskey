@@ -15,7 +15,7 @@ import { miLocalStorage } from '@/local-storage.js';
 
 const PREFIX = 'idbfallback::';
 
-let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function' && !embedPage) : true;
+let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function') : true;
 
 // iframe.contentWindow.indexedDB.deleteDatabase() がchromeのバグで使用できないため、indexedDBを無効化している。
 // バグが治って再度有効化するのであれば、cypressのコマンド内のコメントアウトを外すこと
@@ -27,7 +27,10 @@ if (window.Cypress) {
 	console.log('Cypress detected. It will use localStorage.');
 }
 
-if (idbAvailable) {
+if (embedPage) {
+	idbAvailable = false;
+	console.log('Embed page detected. It will use safeSessionStorage.');
+} else if (idbAvailable) {
 	await iset('idb-test', 'test')
 		.catch(err => {
 			console.error('idb error', err);

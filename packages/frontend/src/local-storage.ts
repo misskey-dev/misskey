@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { isEmbedPage, initEmbedPageLocalStorage } from "@/scripts/embed-page.js";
+import { isEmbedPage } from '@/scripts/embed-page.js';
 
 export type Keys =
 	'v' |
@@ -45,6 +45,9 @@ export type Keys =
 // セッション毎に廃棄されるLocalStorage代替（embedなどで使用）
 const safeSessionStorage = new Map<Keys, string>();
 
+
+const embedPage = isEmbedPage();
+
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => {
 		if (embedPage) {
@@ -79,6 +82,24 @@ export const miLocalStorage = {
 };
 
 if (embedPage) {
-	initEmbedPageLocalStorage();
+	/**
+	 * EmbedページではlocalStorageを使用できないようにしているが、
+	 * 動作に必要な値はsafeSessionStorageに移動する
+	 */
+	const keysToDuplicate: Keys[] = [
+		'v',
+		'instance',
+		'instanceCachedAt',
+		'lang',
+		'locale',
+		'localeVersion',
+	];
+
+	keysToDuplicate.forEach(key => {
+		const value = window.localStorage.getItem(key);
+		if (value && !miLocalStorage.getItem(key)) {
+			miLocalStorage.setItem(key, value);
+		}
+	});
 	if (_DEV_) console.warn('Using safeSessionStorage as localStorage alternative');
 }

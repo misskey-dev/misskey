@@ -15,9 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.headerTitle" @click="top">
 					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
-							<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
+							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
 								<MkUserName :user="user"/>
 							</a>
+							<span v-else>{{ i18n.ts.user }}</span>
 						</template>
 					</I18n>
 					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
