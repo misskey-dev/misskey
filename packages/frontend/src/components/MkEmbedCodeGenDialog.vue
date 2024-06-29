@@ -191,6 +191,7 @@ function applyToPreview() {
 }
 
 const result = ref('');
+
 function generate() {
 	const _idOrUsername = props.entity === 'user-timeline' ? '@' + props.idOrUsername : props.idOrUsername;
 	result.value = getEmbedCode(`/embed/${props.entity}/${_idOrUsername}`, paramsForUrl.value);
