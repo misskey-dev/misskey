@@ -10104,6 +10104,10 @@ export interface Locale extends ILocale {
          */
         "maxHeightWarn": string;
         /**
+         * プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。
+         */
+        "previewIsNotActual": string;
+        /**
          * 角丸にする
          */
         "rounded": string;
@@ -10116,9 +10120,17 @@ export interface Locale extends ILocale {
          */
         "applyToPreview": string;
         /**
-         * プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。
+         * 埋め込みコードを作成
          */
-        "previewIsNotActual": string;
+        "generateCode": string;
+        /**
+         * コードが生成されました
+         */
+        "codeGenerated": string;
+        /**
+         * 生成されたコードをウェブサイトに貼り付けてご利用ください。
+         */
+        "codeGeneratedDescription": string;
     };
 }
 declare const locales: {
