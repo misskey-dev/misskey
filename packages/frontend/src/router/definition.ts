@@ -569,24 +569,12 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/embed/user-timeline/@:username',
 	component: page(() => import('@/pages/embed/user-timeline.vue')),
-	query: {
-		header: 'showHeader',
-		autoload: 'enableAutoLoad',
-	}
 }, {
 	path: '/embed/clips/:clipId',
 	component: page(() => import('@/pages/embed/clip.vue')),
-	query: {
-		header: 'showHeader',
-		autoload: 'enableAutoLoad',
-	}
 }, {
 	path: '/embed/tags/:tag',
 	component: page(() => import('@/pages/embed/tag.vue')),
-	query: {
-		header: 'showHeader',
-		autoload: 'enableAutoLoad',
-	},
 }, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),

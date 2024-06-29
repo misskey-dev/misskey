@@ -7,44 +7,15 @@ import { url } from '@/config.js';
 import { MOBILE_THRESHOLD } from '@/const.js';
 import * as os from '@/os.js';
 import copy from '@/scripts/copy-to-clipboard.js';
+import type { EmbedParams, EmbeddableEntity } from '@/scripts/embed-page.js';
+import { defaultEmbedParams, embedRouteWithScrollbar } from '@/scripts/embed-page.js';
 import MkEmbedCodeGenDialog from '@/components/MkEmbedCodeGenDialog.vue';
 
-// 埋め込みの対象となるエンティティ（/embed/xxx の xxx の部分と対応させる）
-const embeddableEntities = [
-	'notes',
-	'user-timeline',
-	'clips',
-	'tags',
-] as const;
-
-export type EmbeddableEntity = typeof embeddableEntities[number];
-
-// 内部でスクロールがあるページ
-export const embedRouteWithScrollbar: EmbeddableEntity[] = [
-	'clips',
-	'tags',
-	'user-timeline'
-];
-
-export type EmbedParams = {
-	maxHeight?: number;
-	colorMode?: 'light' | 'dark';
-	rounded?: boolean;
-	border?: boolean;
-	autoload?: boolean;
-	header?: boolean;
-};
-
-// パラメータのデフォルトの値
-export const defaultEmbedParams: EmbedParams = {
-	maxHeight: undefined,
-	colorMode: undefined,
-	rounded: true,
-	border: true,
-	autoload: false,
-	header: true,
-};
-
+/**
+ * パラメータを正規化する（埋め込みコード作成用）
+ * @param params パラメータ
+ * @returns 正規化されたパラメータ
+ */
 export function normalizeEmbedParams(params: EmbedParams): Record<string, string> {
 	// paramsのvalueをすべてstringに変換。undefinedやnullはプロパティごと消す
 	const normalizedParams: Record<string, string> = {};

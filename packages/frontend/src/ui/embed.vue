@@ -31,7 +31,8 @@ import XCommon from './_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 import { mainRouter } from '@/router/main.js';
-import { postMessageToParentWindow } from '@/scripts/post-message';
+import { postMessageToParentWindow } from '@/scripts/post-message.js';
+import { parseEmbedParams } from '@/scripts/embed-page.js';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -61,13 +62,16 @@ mainRouter.navHook = (path, flag): boolean => {
 
 //#region Embed Provide
 provide('EMBED_PAGE', true);
+
+const params = new URLSearchParams(location.search);
+const embedParams = parseEmbedParams(params);
+provide('embedParams', embedParams);
 //#endregion
 
 //#region Embed Style
-const params = new URLSearchParams(location.search);
-const embedRounded = ref(params.get('rounded') !== 'false');
-const embedNoBorder = ref(params.get('border') === 'false');
-const maxHeight = ref(params.get('maxHeight') ? parseInt(params.get('maxHeight')!) : 0);
+const embedRounded = ref(embedParams.rounded);
+const embedNoBorder = ref(!embedParams.border);
+const maxHeight = ref(embedParams.maxHeight ?? 0);
 //#endregion
 
 //#region Embed Resizer

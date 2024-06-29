@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<MkLoading v-if="loading"/>
-	<XEmbedTimelineUI v-else-if="clip" :showHeader="normalizedShowHeader">
+	<XEmbedTimelineUI v-else-if="clip" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNotes
 				ref="notesEl"
 				:pagination="pagination"
-				:disableAutoLoad="!normalizedEnableAutoLoad"
+				:disableAutoLoad="embedParams.autoload"
 				:noGap="true"
 				:ad="false"
 			/>
@@ -52,11 +52,11 @@ import { url, instanceName } from '@/config.js';
 import { scrollToTop } from '@/scripts/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 import { useRouter } from '@/router/supplier.js';
+import { defaultEmbedParams } from '@/scripts/embed-page.js';
+import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
 
 const props = defineProps<{
 	clipId: string;
-	showHeader?: string;
-	enableAutoLoad?: string;
 }>();
 
 function redirectIfNotEmbedPage() {
@@ -72,11 +72,7 @@ redirectIfNotEmbedPage();
 
 onActivated(redirectIfNotEmbedPage);
 
-// デフォルト: true
-const normalizedShowHeader = computed(() => props.showHeader !== 'false');
-
-// デフォルト: false
-const normalizedEnableAutoLoad = computed(() => props.enableAutoLoad === 'true');
+const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 const clip = ref<Misskey.entities.Clip | null>(null);
 const pagination = computed(() => ({

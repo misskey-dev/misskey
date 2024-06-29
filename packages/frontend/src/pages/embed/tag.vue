@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<XEmbedTimelineUI v-if="tag" :showHeader="normalizedShowHeader">
+	<XEmbedTimelineUI v-if="tag" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNotes
 				ref="notesEl"
 				:pagination="pagination"
-				:disableAutoLoad="!normalizedEnableAutoLoad"
+				:disableAutoLoad="embedParams.autoload"
 				:noGap="true"
 				:ad="false"
 			/>
@@ -49,6 +49,8 @@ import { url, instanceName } from '@/config.js';
 import { scrollToTop } from '@/scripts/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 import { useRouter } from '@/router/supplier.js';
+import { defaultEmbedParams } from '@/scripts/embed-page.js';
+import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
 
 const props = defineProps<{
 	tag: string;
@@ -69,11 +71,7 @@ redirectIfNotEmbedPage();
 
 onActivated(redirectIfNotEmbedPage);
 
-// デフォルト: true
-const normalizedShowHeader = computed(() => props.showHeader !== 'false');
-
-// デフォルト: false
-const normalizedEnableAutoLoad = computed(() => props.enableAutoLoad === 'true');
+const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 const pagination = computed(() => ({
 	endpoint: 'notes/search-by-tag',

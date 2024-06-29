@@ -81,8 +81,9 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { url } from '@/config.js';
 import copy from '@/scripts/copy-to-clipboard.js';
-import { normalizeEmbedParams, embedRouteWithScrollbar, getEmbedCode } from '@/scripts/get-embed-code.js';
-import type { EmbeddableEntity, EmbedParams } from '@/scripts/get-embed-code.js';
+import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
+import { embedRouteWithScrollbar } from '@/scripts/embed-page.js';
+import type { EmbeddableEntity, EmbedParams } from '@/scripts/embed-page.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', url: string, code: string): void;
