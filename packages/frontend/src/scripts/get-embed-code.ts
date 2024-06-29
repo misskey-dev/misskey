@@ -48,7 +48,7 @@ export function getEmbedCode(path: string, params?: EmbedParams): string {
 	let paramString = '';
 	if (params) {
 		const searchParams = new URLSearchParams(normalizeEmbedParams(params));
-		paramString = '?' + searchParams.toString();
+		paramString = searchParams.toString() === '' ? '' : '?' + searchParams.toString();
 	}
 
 	const iframeCode = [
