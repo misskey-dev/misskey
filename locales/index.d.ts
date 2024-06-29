@@ -5143,6 +5143,14 @@ export interface Locale extends ILocale {
      */
     "fromX": ParameterizedString<"x">;
     /**
+     * ノートの自己消滅の初期値
+     */
+    "defaultScheduledNoteDeleteTime": string;
+    /**
+     * ノートの自己消滅が有効になっています
+     */
+    "scheduledNoteDeleteEnabled": string;
+    /**
      * 埋め込みコードを生成
      */
     "genEmbedCode": string;

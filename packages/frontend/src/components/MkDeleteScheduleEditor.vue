@@ -1,8 +1,8 @@
 <template>
-<div :class="$style.root">
-	<span v-if="!afterOnly">{{ i18n.ts.scheduledNoteDelete }}</span>
+<div :class="[$style.root, { [$style.padding]: !afterOnly }]">
+	<div v-if="!afterOnly" :class="[$style.label, { [$style.withAccent]: !showDetail }]" @click="showDetail = !showDetail"><i class="ti" :class="showDetail ? 'ti-chevron-up' : 'ti-chevron-down'"></i> {{ showDetail ? i18n.ts.scheduledNoteDelete : i18n.ts.scheduledNoteDeleteEnabled }}</div>
 	<MkInfo v-if="!isValid" warn>{{ i18n.ts.cannotScheduleLaterThanOneYear }}</MkInfo>
-	<section>
+	<section v-if="afterOnly || showDetail">
 		<div>
 			<MkSelect v-if="!afterOnly" v-model="expiration" small>
 				<template #label>{{ i18n.ts._poll.expiration }}</template>
@@ -40,6 +40,7 @@ import MkSelect from './MkSelect.vue';
 import MkInfo from './MkInfo.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import { addTime } from '@/scripts/time.js';
+import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
 export type DeleteScheduleEditorModelValue = {
@@ -56,12 +57,37 @@ const emit = defineEmits<{
 		(ev: 'update:modelValue', v: DeleteScheduleEditorModelValue): void;
 	}>();
 
-const expiration = ref<'at' | 'after'>(props.afterOnly ? 'after' : 'at');
+const expiration = ref<'at' | 'after'>('after');
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
-const unit = ref('second');
+const unit = ref<'second' | 'minute' | 'hour' | 'day'>('second');
 const isValid = ref(true);
+
+const showDetail = ref(!defaultStore.state.defaultScheduledNoteDelete);
+
+const beautifyAfter = (base: number) => {
+	let time = base;
+
+	if (time % 60 === 0) {
+		unit.value = 'minute';
+		time /= 60;
+	}
+
+	if (time % 60 === 0) {
+		unit.value = 'hour';
+		time /= 60;
+	}
+
+	if (time % 24 === 0) {
+		unit.value = 'day';
+		time /= 24;
+	}
+
+	after.value = time;
+};
+
+beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
 
 if (props.modelValue.deleteAt) {
 	expiration.value = 'at';
@@ -70,22 +96,7 @@ if (props.modelValue.deleteAt) {
 	atTime.value = formatDateTimeString(deleteAt, 'HH:mm');
 } else if (typeof props.modelValue.deleteAfter === 'number') {
 	expiration.value = 'after';
-	after.value = props.modelValue.deleteAfter / 1000;
-
-	if (after.value % 60 === 0) {
-		unit.value = 'minute';
-		after.value /= 60;
-	}
-
-	if (after.value % 60 === 0) {
-		unit.value = 'hour';
-		after.value /= 60;
-	}
-
-	if (after.value % 24 === 0) {
-		unit.value = 'day';
-		after.value /= 24;
-	}
+	beautifyAfter(props.modelValue.deleteAfter / 1000);
 }
 
 const calcAt = () => {
@@ -137,8 +148,8 @@ watch([expiration, atDate, atTime, after, unit, isValid], () => {
 	.root {
 		display: flex;
 	flex-direction: column;
-	gap: 16px;
-	padding: 8px 16px;
+	gap: 8px;
+	padding: 8px 0px;
 
 		>span {
 			opacity: 0.7;
@@ -169,8 +180,7 @@ watch([expiration, atDate, atTime, after, unit, isValid], () => {
 
 		>section {
 				>div {
-				margin: 0 8px;
-				display: flex;
+					display: flex;
 				flex-direction: row;
 				flex-wrap: wrap;
 				gap: 12px;
@@ -197,4 +207,22 @@ watch([expiration, atDate, atTime, after, unit, isValid], () => {
 			}
 		}
 	}
-	</style>
+
+.padding {
+	padding: 8px 24px;
+}
+
+.label {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
+}
+
+.withAccent {
+	color: var(--accent);
+}
+
+.chevronOpening {
+	transform: rotateX(180deg);
+}
+</style>
