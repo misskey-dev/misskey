@@ -14,7 +14,7 @@ import { apiUrl } from '@/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
-import { isEmbedPage } from '@/scripts/embed-page.js';
+import { embedPage } from '@/config.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -23,7 +23,7 @@ type Account = Misskey.entities.MeDetailed & { token: string };
 const accountData = miLocalStorage.getItem('account');
 
 function initAccount() {
-	if (isEmbedPage()) return null;
+	if (embedPage) return null;
 	if (accountData) return reactive(JSON.parse(accountData) as Account);
 	return null;
 }
@@ -85,13 +85,13 @@ export async function signout() {
 }
 
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
-	if (isEmbedPage()) return [];
+	if (embedPage) return [];
 
 	return (await get('accounts')) || [];
 }
 
 export async function addAccount(id: Account['id'], token: Account['token']) {
-	if (isEmbedPage()) return;
+	if (embedPage) return;
 
 	const accounts = await getAccounts();
 	if (!accounts.some(x => x.id === id)) {
@@ -194,7 +194,7 @@ export async function refreshAccount() {
 }
 
 export async function login(token: Account['token'], redirect?: string) {
-	if (isEmbedPage()) return;
+	if (embedPage) return;
 
 	const showing = ref(true);
 	popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {

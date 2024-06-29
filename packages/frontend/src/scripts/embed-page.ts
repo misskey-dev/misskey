@@ -4,17 +4,14 @@
  */
 import { miLocalStorage } from "@/local-storage.js";
 import type { Keys } from "@/local-storage.js";
-
-export function isEmbedPage() {
-	return location.pathname.startsWith('/embed');
-}
+import { embedPage } from "@/config.js";
 
 /**
  * EmbedページではlocalStorageを使用できないようにしているが、
  * 動作に必要な値はsafeSessionStorage（miLocalStorage内のやつ）に移動する
  */
 export function initEmbedPageLocalStorage() {
-	if (!isEmbedPage()) {
+	if (!embedPage) {
 		return;
 	}
 

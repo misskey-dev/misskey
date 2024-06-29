@@ -47,20 +47,20 @@ const safeSessionStorage = new Map<Keys, string>();
 
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => {
-		if (isEmbedPage()) {
+		if (embedPage) {
 			return safeSessionStorage.get(key) ?? null;
 		}
 		return window.localStorage.getItem(key);
 	},
 	setItem: (key: Keys, value: string): void => {
-		if (isEmbedPage()) {
+		if (embedPage) {
 			safeSessionStorage.set(key, value);
 		} else {
 			window.localStorage.setItem(key, value);
 		}
 	},
 	removeItem: (key: Keys): void => {
-		if (isEmbedPage()) {
+		if (embedPage) {
 			safeSessionStorage.delete(key);
 		} else {
 			window.localStorage.removeItem(key);
@@ -78,7 +78,7 @@ export const miLocalStorage = {
 	},
 };
 
-if (isEmbedPage()) {
+if (embedPage) {
 	initEmbedPageLocalStorage();
 	if (_DEV_) console.warn('Using safeSessionStorage as localStorage alternative');
 }

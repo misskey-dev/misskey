@@ -11,7 +11,7 @@ import { globalEvents } from '@/events.js';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 import { miLocalStorage } from '@/local-storage.js';
-import { isEmbedPage } from '@/scripts/embed-page.js';
+import { embedPage } from '@/config.js';
 
 export type Theme = {
 	id: string;
@@ -96,7 +96,7 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
-	if (!isEmbedPage()) {
+	if (!embedPage) {
 		document.documentElement.style.setProperty('color-scheme', colorScheme);
 	}
 

@@ -24,7 +24,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { isEmbedPage } from '@/scripts/embed-page.js';
+import { embedPage } from '@/config.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -173,7 +173,7 @@ export async function popup<T extends Component>(
 	events: ComponentEmit<T> = {} as ComponentEmit<T>,
 	disposeEvent?: keyof ComponentEmit<T>,
 ): Promise<{ dispose: () => void }> {
-	if (isEmbedPage()) return { dispose: () => {} };
+	if (embedPage) return { dispose: () => {} };
 
 	markRaw(component);
 
@@ -633,8 +633,8 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 }
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
-	if (isEmbedPage()) return Promise.resolve();
-	
+	if (embedPage) return Promise.resolve();
+
 	ev.preventDefault();
 	return new Promise(resolve => {
 		let dispose;

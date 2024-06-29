@@ -10,12 +10,12 @@ import {
 	set as iset,
 	del as idel,
 } from 'idb-keyval';
-import { isEmbedPage } from './embed-page.js';
+import { embedPage } from '@/config.js';
 import { miLocalStorage } from '@/local-storage.js';
 
 const PREFIX = 'idbfallback::';
 
-let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function' && !isEmbedPage()) : true;
+let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function' && !embedPage) : true;
 
 // iframe.contentWindow.indexedDB.deleteDatabase() がchromeのバグで使用できないため、indexedDBを無効化している。
 // バグが治って再度有効化するのであれば、cypressのコマンド内のコメントアウトを外すこと
