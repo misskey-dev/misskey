@@ -5,7 +5,7 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { genRFC3230DigestHeader, RequestLike, signAsDraftToRequest } from '@misskey-dev/node-http-message-signatures';
+import { genRFC3230DigestHeader, signAsDraftToRequest } from '@misskey-dev/node-http-message-signatures';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
