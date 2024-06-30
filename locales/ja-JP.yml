@@ -154,6 +154,7 @@ editList: "リストを編集"
 selectChannel: "チャンネルを選択"
 selectAntenna: "アンテナを選択"
 editAntenna: "アンテナを編集"
+createAntenna: "アンテナを作成"
 selectWidget: "ウィジェットを選択"
 editWidgets: "ウィジェットを編集"
 editWidgetsExit: "編集を終了"
@@ -1242,6 +1243,8 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
+createdLists: "作成したリスト"
+createdAntennas: "作成したアンテナ"
 
 _delivery:
   status: "配信状態"

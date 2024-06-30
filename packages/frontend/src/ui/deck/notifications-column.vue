@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :column="column" :isStacked="isStacked" :menu="menu" :refresher="() => notificationsComponent.reload()">
+<XColumn :column="column" :isStacked="isStacked" :menu="menu" :refresher="async () => { await notificationsComponent?.reload() }">
 	<template #header><i class="ti ti-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotifications ref="notificationsComponent" :excludeTypes="props.column.excludeTypes"/>
