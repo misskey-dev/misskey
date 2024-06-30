@@ -78,9 +78,9 @@ type SelectItem = {
 };
 
 type Select = {
-	items: (SelectItem<C> | {
+	items: (SelectItem | {
 		sectionTitle: string;
-		items: SelectItem<C>[];
+		items: SelectItem[];
 	})[];
 	default: string | null;
 };
