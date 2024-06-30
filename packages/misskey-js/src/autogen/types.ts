@@ -5100,6 +5100,8 @@ export type operations = {
             urlPreviewRequireContentLength: boolean;
             urlPreviewUserAgent: string | null;
             urlPreviewSummaryProxyUrl: string | null;
+            nirilaBlockMentionsFromUnfamiliarRemoteUsers: boolean;
+            nirilaAllowedUnfamiliarRemoteUserIds: string[];
           };
         };
       };
@@ -9110,6 +9112,8 @@ export type operations = {
           urlPreviewRequireContentLength?: boolean;
           urlPreviewUserAgent?: string | null;
           urlPreviewSummaryProxyUrl?: string | null;
+          nirilaBlockMentionsFromUnfamiliarRemoteUsers?: boolean;
+          nirilaAllowedUnfamiliarRemoteUserIds?: string[];
         };
       };
     };

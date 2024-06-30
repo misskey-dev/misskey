@@ -625,4 +625,16 @@ export class MiMeta {
 		nullable: true,
 	})
 	public urlPreviewUserAgent: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public nirilaBlockMentionsFromUnfamiliarRemoteUsers: boolean;
+
+	@Column('varchar', {
+		length: 32,
+		array: true,
+		default: '{}',
+	})
+	public nirilaAllowedUnfamiliarRemoteUserIds: string[];
 }

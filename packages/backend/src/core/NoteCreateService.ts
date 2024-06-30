@@ -377,7 +377,23 @@ export class NoteCreateService implements OnApplicationShutdown {
 			|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.host === null))
 			|| data.reply?.userHost === null || (this.isRenote(data) && this.isQuote(data) && data.renote?.userHost === null) || false;
 
-		if (this.config.nirila.blockMentionsFromUnfamiliarRemoteUsers && user.host !== null && willCauseNotification) {
+		const isAllowedToCreateNotification = () => {
+			const targetUserIds: string[] = [
+				...mentionedUsers.filter(x => x.host == null).map(x => x.id),
+				...(data.visibility === 'specified' && data.visibleUsers != null ? data.visibleUsers.filter(x => x.host == null).map(x => x.id) : []),
+				...(data.reply != null && data.reply.userHost == null ? [data.reply.userId] : []),
+				...(this.isRenote(data) && this.isQuote(data) && data.renote.userHost === null ? [data.renote.userId] : []),
+			];
+			const allowedIds = new Set(meta.nirilaAllowedUnfamiliarRemoteUserIds);
+			for (const targetUserId of targetUserIds) {
+				if (!allowedIds.has(targetUserId)) {
+					return false;
+				}
+			}
+			return true;
+		};
+
+		if (meta.nirilaBlockMentionsFromUnfamiliarRemoteUsers && user.host !== null && willCauseNotification && !isAllowedToCreateNotification()) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
 			if ((userEntity?.followersCount ?? 0) === 0) {
 				this.logger.error('Request rejected because user has no local followers', { user: user.id, note: data });

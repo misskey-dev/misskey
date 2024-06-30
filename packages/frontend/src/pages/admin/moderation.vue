@@ -55,6 +55,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.hiddenTags }}</template>
 						<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
 					</MkTextarea>
+
+					<MkSwitch v-model="nirilaBlockMentionsFromUnfamiliarRemoteUsers">
+						<template #label>未知のリモートユーザーによる通知が発生するノートをブロックする</template>
+					</MkSwitch>
+
+					<MkTextarea v-model="hiddenTags">
+						<template #label>未知のリモートユーザーによる通知を許可するローカルユーザーのID</template>
+						<template #caption>`@admin`のようなユーザ名ではなく、`9grmcrkrsl`のようなユーザーのIDであることに注意してください。</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -93,6 +102,8 @@ const preservedUsernames = ref<string>('');
 const tosUrl = ref<string | null>(null);
 const privacyPolicyUrl = ref<string | null>(null);
 const inquiryUrl = ref<string | null>(null);
+const nirilaBlockMentionsFromUnfamiliarRemoteUsers = ref<boolean>(false);
+const nirilaAllowedUnfamiliarRemoteUserIds = ref<string>('');
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -105,6 +116,8 @@ async function init() {
 	tosUrl.value = meta.tosUrl;
 	privacyPolicyUrl.value = meta.privacyPolicyUrl;
 	inquiryUrl.value = meta.inquiryUrl;
+	nirilaBlockMentionsFromUnfamiliarRemoteUsers.value = meta.nirilaBlockMentionsFromUnfamiliarRemoteUsers;
+	nirilaAllowedUnfamiliarRemoteUserIds.value = meta.nirilaAllowedUnfamiliarRemoteUserIds.join('\n');
 }
 
 function save() {
@@ -118,6 +131,9 @@ function save() {
 		prohibitedWords: prohibitedWords.value.split('\n'),
 		hiddenTags: hiddenTags.value.split('\n'),
 		preservedUsernames: preservedUsernames.value.split('\n'),
+		nirilaBlockMentionsFromUnfamiliarRemoteUsers: nirilaBlockMentionsFromUnfamiliarRemoteUsers.value,
+		nirilaAllowedUnfamiliarRemoteUserIds: nirilaAllowedUnfamiliarRemoteUserIds.value === ''
+			? [] : nirilaAllowedUnfamiliarRemoteUserIds.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});
