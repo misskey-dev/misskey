@@ -72,7 +72,7 @@ async function setList() {
 		const { canceled, result: name } = await os.inputText({
 			title: i18n.ts.enterListName,
 		});
-		if (canceled || name == null || name == '') return;
+		if (canceled || name == null || name === '') return;
 
 		const res = await os.apiWithDialog('users/lists/create', { name: name });
 		userListsCache.delete();
