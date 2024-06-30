@@ -20,7 +20,6 @@ import type { MiUser } from '@/models/User.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
@@ -98,7 +97,7 @@ export class ChannelEntityService {
 				...(
 					opts?.pinnedNotes
 						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						? channel.pinnedNoteIds.map(it => opts.pinnedNotes!.get(it)).filter(isNotNull)
+						? channel.pinnedNoteIds.map(it => opts.pinnedNotes!.get(it)).filter(it => it != null)
 						: await this.notesRepository.findBy({ id: In(channel.pinnedNoteIds) })
 				),
 			);

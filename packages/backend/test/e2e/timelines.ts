@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// noinspection JSUnusedLocalSymbols
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // How to run:
@@ -12,8 +11,8 @@
 import * as assert from 'assert';
 import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';
-import { loadConfig } from '@/config.js';
 import { afterEach, beforeAll } from '@jest/globals';
+import { loadConfig } from '@/config.js';
 import {
 	api,
 	initTestDb,
@@ -91,6 +90,7 @@ describe('Timelines', () => {
 
 	beforeAll(async () => {
 		redisForTimelines = new Redis(loadConfig().redisForTimelines);
+		root = await signup({ username: 'root' });
 
 		// FTT無効の状態で見たいときはコメントアウトを外す
 		await api('admin/update-meta', { enableFanoutTimeline: false }, root);
