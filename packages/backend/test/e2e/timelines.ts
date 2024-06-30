@@ -93,8 +93,8 @@ describe('Timelines', () => {
 		root = await signup({ username: 'root' });
 
 		// FTT無効の状態で見たいときはコメントアウトを外す
-		await api('admin/update-meta', { enableFanoutTimeline: false }, root);
-		await sleep(1000);
+		// await api('admin/update-meta', { enableFanoutTimeline: false }, root);
+		// await sleep(1000);
 	});
 
 	afterEach(async () => {
