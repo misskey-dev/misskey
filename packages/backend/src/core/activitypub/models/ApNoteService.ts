@@ -394,6 +394,8 @@ export class ApNoteService {
 						originalUrl: tag.icon.url,
 						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
+						// _misskey_license が存在しなければ `null`
+						license: (tag._misskey_license?.freeText ?? null)
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
@@ -415,6 +417,8 @@ export class ApNoteService {
 				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
+				// _misskey_license が存在しなければ `null`
+				license: (tag._misskey_license?.freeText ?? null)
 			});
 		}));
 	}
