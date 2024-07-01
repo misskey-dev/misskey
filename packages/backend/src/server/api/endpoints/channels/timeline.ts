@@ -15,6 +15,8 @@ import { CacheService } from '@/core/CacheService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { MiLocalUser } from '@/models/User.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -71,6 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private activeUsersChart: ActiveUsersChart,
 		private metaService: MetaService,
+		private channelMutingService: ChannelMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -92,6 +95,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(await this.getFromDb({ untilId, sinceId, limit: ps.limit, channelId: channel.id }, me), me);
 			}
 
+			const mutingChannelIds = me
+				? await this.channelMutingService.mutingChannelsCache.get(me.id) ?? new Set<string>()
+				: new Set<string>();
 			return await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
@@ -101,6 +107,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: true,
 				redisTimelines: [`channelTimeline:${channel.id}`],
 				excludePureRenotes: false,
+				noteFilter: note => {
+					// 共通機能を使うと見ているチャンネルそのものもミュートしてしまうので閲覧中のチャンネル以外を除く形にする
+					if (note.channelId === channel.id) return true;
+					return !isChannelRelated(note, mutingChannelIds);
+				},
 				dbFallback: async (untilId, sinceId, limit) => {
 					return await this.getFromDb({ untilId, sinceId, limit, channelId: channel.id }, me);
 				},
@@ -125,6 +136,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('note.channel', 'channel');
 
 		if (me) {
+			const mutingChannelIds = await this.channelMutingService
+				.list({ requestUserId: me.id }, { idOnly: true })
+				.then(x => x.map(x => x.id).filter(x => x !== ps.channelId));
+			if (mutingChannelIds.length > 0) {
+				query.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+				query.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+			}
+
 			this.queryService.generateMutedUserQuery(query, me);
 			this.queryService.generateBlockedUserQuery(query, me);
 		}

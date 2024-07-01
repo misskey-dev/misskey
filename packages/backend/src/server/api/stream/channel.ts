@@ -8,6 +8,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 import type Connection from './Connection.js';
 
 /**
@@ -76,6 +77,9 @@ export default abstract class Channel {
 
 		// 流れてきたNoteがリノートをミュートしてるユーザが行ったもの
 		if (isRenotePacked(note) && !isQuotePacked(note) && this.userIdsWhoMeMutingRenotes.has(note.user.id)) return true;
+
+		// 流れてきたNoteがミュートしているチャンネルと関わる
+		if (isChannelRelated(note, this.mutingChannels)) return true;
 
 		return false;
 	}

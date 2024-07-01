@@ -44,8 +44,8 @@ class HomeTimelineChannel extends Channel {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (note.channelId) {
-			// そのチャンネルをフォローしていない or そのチャンネル(リノート・引用リノート含む）はミュートしている
-			if (!this.followingChannels.has(note.channelId) || isChannelRelated(note, this.mutingChannels)) {
+			// そのチャンネルをフォローしていない
+			if (!this.followingChannels.has(note.channelId)) {
 				return;
 			}
 		} else {

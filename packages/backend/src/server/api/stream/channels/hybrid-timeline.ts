@@ -67,11 +67,7 @@ class HybridTimelineChannel extends Channel {
 			}
 		} else {
 			// 以下の条件に該当するノートのみ後続処理に通す（ので、以下のif文は該当しないノートをすべて弾くようにする）
-			// - ミュートしていないチャンネルの投稿(リノート・引用リノートもチェック対象）
 			// - フォローしているチャンネルの投稿
-			if (isChannelRelated(note, this.mutingChannels)) {
-				return;
-			}
 			if (!this.followingChannels.has(note.channelId)) {
 				return;
 			}
