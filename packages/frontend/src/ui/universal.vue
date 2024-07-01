@@ -1,6 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -256,7 +255,7 @@ body {
 	overscroll-behavior: none;
 }
 
-#misskey_app {
+#type4ny {
 	width: 100%;
 	height: 100%;
 	overflow: clip;

@@ -16,18 +16,18 @@ export interface Locale extends ILocale {
     /**
      * ノートでつながるネットワーク
      */
-    "headlineMisskey": string;
+    "headlineType4ny": string;
     /**
-     * ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。
+     * ようこそ！Type4nyは、オープンソースの分散型マイクロブログサービスです。
      * 「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡
      * 「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍
      * 新しい世界を探検しよう🚀
      */
-    "introMisskey": string;
+    "introType4ny": string;
     /**
-     * {name}は、オープンソースのプラットフォーム<b>Misskey</b>のサーバーのひとつです。
+     * {name}は、オープンソースのプラットフォーム<b>Type4ny</b>のサーバーのひとつです。
      */
-    "poweredByMisskeyDescription": ParameterizedString<"name">;
+    "poweredByType4nyDescription": ParameterizedString<"name">;
     /**
      * {month}月 {day}日
      */
@@ -697,7 +697,7 @@ export interface Locale extends ILocale {
      */
     "flagAsBot": string;
     /**
-     * このアカウントがプログラムによって運用される場合は、このフラグをオンにします。オンにすると、反応の連鎖を防ぐためのフラグとして他の開発者に役立ったり、Misskeyのシステム上での扱いがBotに合ったものになります。
+     * このアカウントがプログラムによって運用される場合は、このフラグをオンにします。オンにすると、反応の連鎖を防ぐためのフラグとして他の開発者に役立ったり、Type4nyのシステム上での扱いがBotに合ったものになります。
      */
     "flagAsBotDescription": string;
     /**
@@ -949,7 +949,7 @@ export interface Locale extends ILocale {
      */
     "pinLimitExceeded": string;
     /**
-     * Misskeyのインストールが完了しました！管理者アカウントを作成しましょう。
+     * Type4nyのインストールが完了しました！管理者アカウントを作成しましょう。
      */
     "intro": string;
     /**
@@ -1729,9 +1729,9 @@ export interface Locale extends ILocale {
      */
     "about": string;
     /**
-     * Misskeyについて
+     * Type4nyについて
      */
-    "aboutMisskey": string;
+    "aboutType4ny": string;
     /**
      * 管理者
      */
@@ -2273,7 +2273,7 @@ export interface Locale extends ILocale {
      */
     "notUseSound": string;
     /**
-     * Misskeyがアクティブな時のみサウンドを出力する
+     * Type4nyがアクティブな時のみサウンドを出力する
      */
     "useSoundOnlyWhenActive": string;
     /**
@@ -2337,7 +2337,7 @@ export interface Locale extends ILocale {
      */
     "scratchpad": string;
     /**
-     * スクラッチパッドは、AiScriptの実験環境を提供します。Misskeyと対話するコードの記述、実行、結果の確認ができます。
+     * スクラッチパッドは、AiScriptの実験環境を提供します。Type4nyと対話するコードの記述、実行、結果の確認ができます。
      */
     "scratchpadDescription": string;
     /**
@@ -2893,7 +2893,7 @@ export interface Locale extends ILocale {
      */
     "private": string;
     /**
-     * Misskeyは有志によって様々な言語に翻訳されています。{link}で翻訳に協力できます。
+     * Type4nyは有志によって様々な言語に翻訳されています。{link}で翻訳に協力できます。
      */
     "i18nInfo": ParameterizedString<"link">;
     /**
@@ -3109,7 +3109,7 @@ export interface Locale extends ILocale {
      */
     "sendErrorReports": string;
     /**
-     * オンにすると、問題が発生したときにエラーの詳細情報がMisskeyに共有され、ソフトウェアの品質向上に役立てることができます。エラー情報には、OSのバージョン、ブラウザの種類、行動履歴などが含まれます。
+     * オンにすると、問題が発生したときにエラーの詳細情報がType4nyに共有され、ソフトウェアの品質向上に役立てることができます。エラー情報には、OSのバージョン、ブラウザの種類、行動履歴などが含まれます。
      */
     "sendErrorReportsDescription": string;
     /**
@@ -3489,9 +3489,9 @@ export interface Locale extends ILocale {
      */
     "learnMore": string;
     /**
-     * Misskeyが更新されました！
+     * Type4nyが更新されました！
      */
-    "misskeyUpdated": string;
+    "type4nyUpdated": string;
     /**
      * 更新情報を見る
      */
@@ -4005,11 +4005,11 @@ export interface Locale extends ILocale {
      */
     "remindMeLater": string;
     /**
-     * Misskeyを気に入っていただけましたか？
+     * Type4nyを気に入っていただけましたか？
      */
-    "didYouLikeMisskey": string;
+    "didYouLikeType4ny": string;
     /**
-     * Misskeyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！
+     * Type4nyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！
      */
     "pleaseDonate": ParameterizedString<"host">;
     /**
@@ -4493,9 +4493,9 @@ export interface Locale extends ILocale {
      */
     "later": string;
     /**
-     * Misskeyへ
+     * Type4nyへ
      */
-    "goToMisskey": string;
+    "goToType4ny": string;
     /**
      * 絵文字の追加辞書
      */
@@ -4741,7 +4741,7 @@ export interface Locale extends ILocale {
      */
     "repositoryUrl": string;
     /**
-     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Type4nyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/type4ny-project/type4ny と記入します。
      */
     "repositoryUrlDescription": string;
     /**
@@ -5166,7 +5166,7 @@ export interface Locale extends ILocale {
          */
         "haveFun": ParameterizedString<"name">;
         /**
-         * このまま{name}(Misskey)の使い方についてのチュートリアルに進むこともできますが、ここで中断してすぐに使い始めることもできます。
+         * このまま{name}(Type4ny)の使い方についてのチュートリアルに進むこともできますが、ここで中断してすぐに使い始めることもできます。
          */
         "youCanContinueTutorial": ParameterizedString<"name">;
         /**
@@ -5205,7 +5205,7 @@ export interface Locale extends ILocale {
              */
             "title": string;
             /**
-             * ここでは、Misskeyの基本的な使い方や機能を確認できます。
+             * ここでは、Type4nyの基本的な使い方や機能を確認できます。
              */
             "description": string;
         };
@@ -5215,7 +5215,7 @@ export interface Locale extends ILocale {
              */
             "title": string;
             /**
-             * Misskeyでの投稿は「ノート」と呼びます。ノートはタイムラインに時系列で並んでいて、リアルタイムで更新されていきます。
+             * Type4nyでの投稿は「ノート」と呼びます。ノートはタイムラインに時系列で並んでいて、リアルタイムで更新されていきます。
              */
             "description": string;
             /**
@@ -5267,7 +5267,7 @@ export interface Locale extends ILocale {
              */
             "title": string;
             /**
-             * Misskeyには、使い方に応じて複数のタイムラインが用意されています（サーバーによってはいずれかが無効になっていることがあります）。
+             * Type4nyには、使い方に応じて複数のタイムラインが用意されています（サーバーによってはいずれかが無効になっていることがあります）。
              */
             "description1": string;
             /**
@@ -5301,7 +5301,7 @@ export interface Locale extends ILocale {
              */
             "title": string;
             /**
-             * Misskeyにノートを投稿する際には、様々なオプションの設定が可能です。投稿フォームはこのようになっています。
+             * Type4nyにノートを投稿する際には、様々なオプションの設定が可能です。投稿フォームはこのようになっています。
              */
             "description1": string;
             "_visibility": {
@@ -5401,7 +5401,7 @@ export interface Locale extends ILocale {
              */
             "title": string;
             /**
-             * ここで紹介した機能はほんの一部にすぎません。Misskeyの使い方をより詳しく知るには、{link}をご覧ください。
+             * ここで紹介した機能はほんの一部にすぎません。Type4nyの使い方をより詳しく知るには、{link}をご覧ください。
              */
             "description": ParameterizedString<"link">;
         };
@@ -5564,7 +5564,7 @@ export interface Locale extends ILocale {
         "_types": {
             "_notes1": {
                 /**
-                 * just setting up my msky
+                 * just setting up my tp4ny
                  */
                 "title": string;
                 /**
@@ -5572,7 +5572,7 @@ export interface Locale extends ILocale {
                  */
                 "description": string;
                 /**
-                 * 良いMisskeyライフを！
+                 * 良いType4nyライフを！
                  */
                 "flavor": string;
             };
@@ -5896,7 +5896,7 @@ export interface Locale extends ILocale {
                  */
                 "description": string;
                 /**
-                 * Misskeyを使ってくれてありがとう！
+                 * Type4nyを使ってくれてありがとう！
                  */
                 "flavor": string;
             };
@@ -6094,17 +6094,17 @@ export interface Locale extends ILocale {
                  */
                 "description": string;
             };
-            "_iLoveMisskey": {
+            "_iLoveType4ny": {
                 /**
-                 * I Love Misskey
+                 * I Love Type4ny
                  */
                 "title": string;
                 /**
-                 * "I ❤ #Misskey"を投稿した
+                 * "I ❤ #Type4ny"を投稿した
                  */
                 "description": string;
                 /**
-                 * Misskeyを使ってくださりありがとうございます！ by 開発チーム
+                 * Type4nyを使ってくださりありがとうございます！ by 開発チーム
                  */
                 "flavor": string;
             };
@@ -6130,7 +6130,7 @@ export interface Locale extends ILocale {
             };
             "_client60min": {
                 /**
-                 * Misskeyの見すぎ
+                 * Type4nyの見すぎ
                  */
                 "title": string;
                 /**
@@ -6370,7 +6370,7 @@ export interface Locale extends ILocale {
             };
             "_tutorialCompleted": {
                 /**
-                 * Misskey初心者講座 修了証
+                 * Type4ny初心者講座 修了証
                  */
                 "title": string;
                 /**
@@ -7034,9 +7034,9 @@ export interface Locale extends ILocale {
          */
         "createKey": string;
     };
-    "_aboutMisskey": {
+    "_aboutType4ny": {
         /**
-         * Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。
+         * Type4nyはType4ny-Projectによって2024年から開発されている、オープンソースのソフトウェアです。
          */
         "about": string;
         /**
@@ -7056,15 +7056,15 @@ export interface Locale extends ILocale {
          */
         "original": string;
         /**
-         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         * {name}はオリジナルのType4nyを改変したバージョンを使用しています。
          */
         "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
-         * Misskeyを翻訳
+         * Type4nyを翻訳
          */
         "translation": string;
         /**
-         * Misskeyに寄付
+         * Type4nyに寄付
          */
         "donate": string;
         /**
@@ -7550,7 +7550,7 @@ export interface Locale extends ILocale {
          */
         "driveFileDurationWarn": string;
         /**
-         * 長い音声を使用するとMisskeyの使用に支障をきたす可能性があります。それでも続行しますか？
+         * 長い音声を使用するとType4nyの使用に支障をきたす可能性があります。それでも続行しますか？
          */
         "driveFileDurationWarnDescription": string;
     };
@@ -9964,7 +9964,7 @@ export interface Locale extends ILocale {
          */
         "shareToTlTheGameWhenStart": string;
         /**
-         * 対局を開始しました！ #MisskeyReversi
+         * 対局を開始しました！ #Type4nyReversi
          */
         "iStartedAGame": string;
         /**
@@ -10044,7 +10044,7 @@ export interface Locale extends ILocale {
          */
         "summaryProxy": string;
         /**
-         * Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
+         * Type4ny本体ではなく、サマリープロキシを使用してプレビューを生成します。
          */
         "summaryProxyDescription": string;
         /**
@@ -10066,6 +10066,10 @@ export interface Locale extends ILocale {
          */
         "loop": string;
     };
+    /**
+     * その他の貢献者
+     */
+    "etcContributor": string;
 }
 declare const locales: {
     [lang: string]: Locale;

@@ -1,5 +1,5 @@
 # Contribution guide
-We're glad you're interested in contributing Misskey! In this document you will find the information you need to contribute to the project.
+We're glad you're interested in contributing Type4ny! In this document you will find the information you need to contribute to the project.
 
 > **Note**
 > This project uses Japanese as its major language, **but you do not need to translate and write the Issues/PRs in Japanese.**

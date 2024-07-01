@@ -1,5 +1,5 @@
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Misskey configuration
+# Type4ny configuration
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #   ┌──────────────────────────────┐
@@ -9,14 +9,14 @@
 # First of all, let me tell you a story that may possibly be
 # boring to you and possibly important to you.
 #
-# Misskey is licensed under the AGPLv3 license. This license is
+# Type4ny is licensed under the AGPLv3 license. This license is
 # known to be often misunderstood.  Please read the following
 # instructions carefully and select the appropriate option so
 # that you do not negligently cause a license violation.
 #
 
 # --------
-# Option 1: If you host Misskey AS-IS (without any changes to
+# Option 1: If you host Type4ny AS-IS (without any changes to
 #           the source code. forks are not included).
 #
 # Step 1: Congratulations! You don't need to do anything.
@@ -28,8 +28,8 @@
 #           this repository.  Strictly speaking, it doesn't have
 #           to be a Git repository, but you'll probably use Git!
 #
-# Step 1: Build and run the Misskey server first.
-# Step 2: Open <https://your.misskey.example/admin/settings> in
+# Step 1: Build and run the Type4ny server first.
+# Step 2: Open <https://your.Type4ny.example/admin/settings> in
 #         your browser with the administrator account.
 # Step 3: Enter the URL of your Git repository in the
 #         "Repository URL" field.
@@ -37,7 +37,7 @@
 # --------
 # Option 3: If neither of the above applies to you.
 #           (In this case, the source code should be published
-#           on the Misskey interface.  IT IS NOT ENOUGH TO
+#           on the Type4ny interface.  IT IS NOT ENOUGH TO
 #           DISCLOSE THE SOURCE CODE WHEN A USER REQUESTS IT BY
 #           E-MAIL OR OTHER MEANS.  If you are not satisfied
 #           with this, it is recommended that you read the
@@ -72,11 +72,11 @@ url: https://example.tld/
 #───┘ Port and TLS settings └───────────────────────────────────
 
 #
-# Misskey requires a reverse proxy to support HTTPS connections.
+# Type4ny requires a reverse proxy to support HTTPS connections.
 #
 #                 +----- https://example.tld/ ------------+
 #   +------+      |+-------------+      +----------------+|
-#   | User | ---> || Proxy (443) | ---> | Misskey (3000) ||
+#   | User | ---> || Proxy (443) | ---> | Type4ny (3000) ||
 #   +------+      |+-------------+      +----------------+|
 #                 +---------------------------------------+
 #
@@ -84,26 +84,26 @@ url: https://example.tld/
 #   An encrypted connection with HTTPS is highly recommended
 #   because tokens may be transferred in GET requests.
 
-# The port that your Misskey server should listen on.
+# The port that your Type4ny server should listen on.
 port: 3000
 
 # You can also use UNIX domain socket.
-# socket: /path/to/misskey.sock
+# socket: /path/to/type4ny.sock
 # chmodSocket: '777'
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 
 db:
-  host: localhost
+  host: db
   port: 5432
 
   # Database name
-  db: misskey
+  db: type4ny
 
   # Auth
-  user: example-misskey-user
-  pass: example-misskey-pass
+  user: example-type4ny-user
+  pass: example-type4ny-pass
 
   # Whether disable Caching queries
   #disableCache: true
@@ -133,7 +133,7 @@ dbReplications: false
 #───┘ Redis configuration └─────────────────────────────────────
 
 redis:
-  host: localhost
+  host: redis
   port: 6379
   #family: 0  # 0=Both, 4=IPv4, 6=IPv6
   #pass: example-pass
@@ -296,4 +296,4 @@ signToActivityPubGet: true
 #maxFileSize: 262144000
 
 # PID File of master process
-#pidFile: /tmp/misskey.pid
+#pidFile: /tmp/type4ny.pid

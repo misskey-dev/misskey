@@ -1,6 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -17,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	See https://github.com/misskey-dev/misskey/issues/10905
 -->
 <div v-if="showBottom" :class="$style.bottom">
-	<button v-tooltip="i18n.ts.goToMisskey" :class="['_button', '_shadow', $style.button]" @click="goToMisskey"><i class="ti ti-home"></i></button>
+	<button v-tooltip="i18n.ts.goToType4ny" :class="['_button', '_shadow', $style.button]" @click="goToType4ny"><i class="ti ti-home"></i></button>
 </div>
 </template>
 
@@ -49,7 +48,7 @@ provideMetadataReceiver((metadataGetter) => {
 });
 provideReactiveMetadata(pageMetadata);
 
-function goToMisskey() {
+function goToType4ny() {
 	window.location.href = '/';
 }
 

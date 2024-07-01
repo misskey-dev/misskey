@@ -38,7 +38,7 @@ coverage
 .devcontainer/compose.yml
 !/.devcontainer/compose.yml
 
-# misskey
+# Type4ny
 /build
 built
 built-test

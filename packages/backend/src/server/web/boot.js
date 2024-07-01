@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -213,7 +213,7 @@
 			font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
 		}
 
-		#misskey_app,
+		#type4ny,
 		#splash {
 			display: none !important;
 		}

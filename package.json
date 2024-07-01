@@ -1,10 +1,10 @@
 {
-	"name": "misskey",
+	"name": "type4ny",
 	"version": "2024.5.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/type4ny-project/type4ny.git"
 	},
 	"packageManager": "pnpm@9.0.6",
 	"workspaces": [

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_レイヤー_1" data-name="レイヤー 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1856 351.36">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        font-family: SeuratProN-DB-90ms-RKSJ-H, 'FOT-Seurat ProN';
+        font-size: 320px;
+      }
+
+      .cls-2 {
+        letter-spacing: .25em;
+      }
+    </style>
+  </defs>
+  <text class="cls-1" transform="translate(0 281.6)"><tspan x="0" y="0">ﾀｲﾌﾟｴﾆｰ</tspan><tspan class="cls-2" x="1120" y="0">(仮</tspan><tspan x="1728" y="0">)</tspan></text>
+</svg>

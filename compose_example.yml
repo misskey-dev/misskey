@@ -18,8 +18,8 @@ services:
       - internal_network
       - external_network
     volumes:
-      - ./files:/misskey/files
-      - ./.config:/misskey/.config:ro
+      - ./files:/type4ny/files
+      - ./.config:/type4ny/.config:ro
 
   redis:
     restart: always

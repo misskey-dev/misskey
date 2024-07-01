@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="shape2"></div>
 	<div class="logo-wrapper">
 		<div class="powered-by">Powered by</div>
-		<img :src="misskeysvg" class="misskey"/>
+		<img :src="type4nySVG" class="type4ny"/>
 	</div>
 	<div class="emojis">
 		<MkEmoji :normal="true" :noStyle="true" emoji="👍"/>
@@ -41,7 +41,7 @@ import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
-import misskeysvg from '/client-assets/misskey.svg';
+import type4nySVG from '/client-assets/Type4ny-Logo.svg';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
@@ -125,7 +125,7 @@ misskeyApiGet('federation/instances', {
 			margin-bottom: 2px;
 		}
 
-		> .misskey {
+		> .type4ny {
 			width: 140px;
 			@media (max-width: 450px) {
 				width: 130px;

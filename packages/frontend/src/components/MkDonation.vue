@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</svg>
 	</div>
 	<div :class="$style.main">
-		<div :class="$style.title">{{ i18n.ts.didYouLikeMisskey }}</div>
+		<div :class="$style.title">{{ i18n.ts.didYouLikeType4ny }}</div>
 		<div :class="$style.text">
 			<I18n :src="i18n.ts.pleaseDonate" tag="span">
 				<template #host>

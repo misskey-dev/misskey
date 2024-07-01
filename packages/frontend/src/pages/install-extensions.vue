@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
 			<div class="_buttonsCenter">
 				<MkButton @click="goBack()">{{ i18n.ts.goBack }}</MkButton>
-				<MkButton @click="goToMisskey()">{{ i18n.ts.goToMisskey }}</MkButton>
+				<MkButton @click="goToType4ny()">{{ i18n.ts.goToType4ny }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -147,7 +147,7 @@ function goBack(): void {
 	history.back();
 }
 
-function goToMisskey(): void {
+function goToType4ny(): void {
 	location.href = '/';
 }
 

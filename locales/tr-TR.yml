@@ -1,8 +1,8 @@
 ---
 _lang_: "Türkçe"
-headlineMisskey: "Notlarla bağlanmış bir ağ"
-introMisskey: "Açık kaynaklı bir dağıtılmış mikroblog hizmeti olan Misskey'e hoş geldiniz.\nMisskey, neler olup bittiğini paylaşmak ve herkese sizden bahsetmek için \"notlar\" oluşturmanıza olanak tanıyan, açık kaynaklı, dağıtılmış bir mikroblog hizmetidir.\nHerkesin notlarına kendi tepkilerinizi hızlıca eklemek için \"Tepkiler\" özelliğini de kullanabilirsiniz👍.\nYeni bir dünyayı keşfedin🚀."
-poweredByMisskeyDescription: "name}Açık kaynak bir platform\n<b>Misskey</b>Dünya'nın en sunucularında biri。"
+headlineType4ny: "Notlarla bağlanmış bir ağ"
+introType4ny: "Açık kaynaklı bir dağıtılmış mikroblog hizmeti olan Misskey'e hoş geldiniz.\nMisskey, neler olup bittiğini paylaşmak ve herkese sizden bahsetmek için \"notlar\" oluşturmanıza olanak tanıyan, açık kaynaklı, dağıtılmış bir mikroblog hizmetidir.\nHerkesin notlarına kendi tepkilerinizi hızlıca eklemek için \"Tepkiler\" özelliğini de kullanabilirsiniz👍.\nYeni bir dünyayı keşfedin🚀."
+poweredByType4nyDescription: "name}Açık kaynak bir platform\n<b>Misskey</b>Dünya'nın en sunucularında biri。"
 monthAndDay: "{month}Ay {day}Gün"
 search: "Arama"
 notifications: "Bildirim"

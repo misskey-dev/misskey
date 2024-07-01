@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+1
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 

@@ -1,6 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -20,14 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</I18n>
 		</div>
 		<div :class="$style.text">
-			<I18n :src="i18n.ts._aboutMisskey.thisIsModifiedVersion" tag="span">
+			<I18n :src="i18n.ts._aboutType4ny.thisIsModifiedVersion" tag="span">
 				<template #name>
 					{{ instance.name ?? host }}
 				</template>
 			</I18n>
 			<I18n :src="i18n.ts.correspondingSourceIsAvailable" tag="span">
 				<template #anchor>
-					<MkA to="/about-misskey" class="_link">{{ i18n.ts.aboutMisskey }}</MkA>
+					<MkA to="/about-type4ny" class="_link">{{ i18n.ts.aboutType4ny }}</MkA>
 				</template>
 			</I18n>
 		</div>

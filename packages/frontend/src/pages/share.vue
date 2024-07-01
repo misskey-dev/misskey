@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 		<div v-else-if="state === 'posted'" class="_buttonsCenter">
 			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
-			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
+			<MkButton @click="goToType4ny">{{ i18n.ts.goToType4ny }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -186,7 +186,7 @@ function close(): void {
 	}, 100);
 }
 
-function goToMisskey(): void {
+function goToType4ny(): void {
 	location.href = '/';
 }
 

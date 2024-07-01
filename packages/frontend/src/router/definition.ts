@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -204,8 +204,8 @@ const routes: RouteDef[] = [{
 	path: '/contact',
 	component: page(() => import('@/pages/contact.vue')),
 }, {
-	path: '/about-misskey',
-	component: page(() => import('@/pages/about-misskey.vue')),
+	path: '/about-type4ny',
+	component: page(() => import('@/pages/about-type4ny.vue')),
 }, {
 	path: '/invite',
 	name: 'invite',

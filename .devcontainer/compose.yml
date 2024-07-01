@@ -34,7 +34,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: misskey
+      POSTGRES_DB: type4ny
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:

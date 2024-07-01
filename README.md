@@ -1,18 +1,18 @@
 <div align="center">
-<a href="https://misskey-hub.net">
-	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
+<a href="https://type4ny-hub.net">
+	<img src="./assets/title_float.svg" alt="type4ny logo" style="border-radius:50%" width="300"/>
 </a>
 
-**🌎 **Misskey** is an open source, federated social media platform that's free forever! 🚀**
+**🌎 **Type4ny** is an open source, federated social media platform that's free forever! 🚀**
 
-[Learn more](https://misskey-hub.net/)
+[Learn more](https://type4ny-hub.net/)
 
 ---
 
-<a href="https://misskey-hub.net/servers/">
+<a href="https://type4ny-hub.net/servers/">
 		<img src="https://custom-icon-badges.herokuapp.com/badge/find_an-instance-acea31?logoColor=acea31&style=for-the-badge&logo=misskey&labelColor=363B40" alt="find an instance"/></a>
 
-<a href="https://misskey-hub.net/docs/for-admin/install/guides/">
+<a href="https://type4ny-hub.net/docs/for-admin/install/guides/">
 		<img src="https://custom-icon-badges.herokuapp.com/badge/create_an-instance-FBD53C?logoColor=FBD53C&style=for-the-badge&logo=server&labelColor=363B40" alt="create an instance"/></a>
 
 <a href="./CONTRIBUTING.md">

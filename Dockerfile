@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 RUN corepack enable
 
-WORKDIR /misskey
+WORKDIR /type4ny
 
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
@@ -48,7 +48,7 @@ RUN apt-get update \
 
 RUN corepack enable
 
-WORKDIR /misskey
+WORKDIR /type4ny
 
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]

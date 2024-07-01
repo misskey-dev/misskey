@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -156,7 +156,7 @@ export class SnowfallEffect {
 		easing: 0.0005,
 	};
 	/**
-	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas 
+	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas
 	 */
 	constructor(options: {
 		sakura?: boolean;
