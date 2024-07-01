@@ -83,7 +83,7 @@ describe('FileInfoService', () => {
 
 	describe('IMAGE', () => {
 		test('Generic JPEG', async () => {
-			const path = `${resources}/Lenna.jpg`;
+			const path = `${resources}/192.jpg`;
 			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 			delete info.warnings;
 			delete info.blurhash;
