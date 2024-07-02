@@ -13,17 +13,8 @@ import { setTimeout } from 'node:timers/promises';
 import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';
 import { afterEach, beforeAll } from '@jest/globals';
+import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, UserToken } from '../utils.js';
 import { loadConfig } from '@/config.js';
-import {
-	api,
-	initTestDb,
-	post,
-	randomString,
-	sendEnvUpdateRequest,
-	signup,
-	uploadUrl,
-	UserToken,
-} from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -59,7 +50,7 @@ async function pushList(listId: string, pushUserIds: string[] = [], user: UserTo
 	for (const userId of pushUserIds) {
 		await api('users/lists/push', { listId, userId }, user);
 	}
-	await sleep(500);
+	await setTimeout(500);
 }
 
 async function createRole(name: string, user: UserToken): Promise<entities.AdminRolesCreateResponse> {
