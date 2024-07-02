@@ -14,15 +14,17 @@ import { IdService } from '@/core/IdService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import {
 	ChannelMutingRepository,
-	ChannelsRepository, DriveFilesRepository,
+	ChannelsRepository,
+	DriveFilesRepository,
 	MiChannel,
-	MiChannelMuting, MiDriveFile,
+	MiChannelMuting,
+	MiDriveFile,
 	MiUser,
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { sleep } from "../utils.js";
+import { setTimeout } from 'node:timers/promises';
 
 describe('ChannelMutingService', () => {
 	let app: TestingModule;
@@ -130,8 +132,8 @@ describe('ChannelMutingService', () => {
 		driveFile1 = await createDriveFile();
 		driveFile2 = await createDriveFile();
 		channel1 = await createChannel({ name: 'channel1', userId: alice.id, bannerId: driveFile1.id });
-		channel2 = await createChannel({ name: 'channel2', userId: alice.id, bannerId: driveFile2.id  });
-		channel3 = await createChannel({ name: 'channel3', userId: alice.id, bannerId: driveFile2.id  });
+		channel2 = await createChannel({ name: 'channel2', userId: alice.id, bannerId: driveFile2.id });
+		channel3 = await createChannel({ name: 'channel3', userId: alice.id, bannerId: driveFile2.id });
 	});
 
 	afterEach(async () => {
@@ -269,7 +271,7 @@ describe('ChannelMutingService', () => {
 			await service.mute({ requestUserId: alice.id, targetChannelId: channel1.id });
 			await service.mute({ requestUserId: alice.id, targetChannelId: channel2.id });
 
-			await sleep(500);
+			await setTimeout(500);
 
 			const result = await service.isMuted({ requestUserId: alice.id, targetChannelId: channel1.id });
 
@@ -279,7 +281,7 @@ describe('ChannelMutingService', () => {
 		test('isMuted: false', async () => {
 			await service.mute({ requestUserId: alice.id, targetChannelId: channel2.id });
 
-			await sleep(500);
+			await setTimeout(500);
 
 			const result = await service.isMuted({ requestUserId: alice.id, targetChannelId: channel1.id });
 
