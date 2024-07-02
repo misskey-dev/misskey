@@ -42,7 +42,7 @@ class EmojiPicker {
 				this.src.value = null;
 				if (this.onClosed) this.onClosed();
 			},
-		});
+		}, 'closed');
 	}
 
 	public show(

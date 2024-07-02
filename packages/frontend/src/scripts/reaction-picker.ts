@@ -38,7 +38,7 @@ class ReactionPicker {
 				this.src.value = null;
 				if (this.onClosed) this.onClosed();
 			},
-		});
+		}, 'closed');
 	}
 
 	public show(src: HTMLElement | null, targetNote: Misskey.entities.Note | null, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {

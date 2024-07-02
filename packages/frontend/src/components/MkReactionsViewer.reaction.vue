@@ -118,7 +118,7 @@ async function menu(ev) {
 				emoji: await misskeyApiGet('emoji', {
 					name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
 				}),
-			});
+			}, {}, 'closed');
 		},
 	}], ev.currentTarget ?? ev.target);
 }
