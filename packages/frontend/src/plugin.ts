@@ -17,26 +17,37 @@ export async function install(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
 	if (plugin.src == null) return;
 
-	const aiscript = new Interpreter(createPluginEnv({
+	const aiscriptForInstall = new Interpreter(createPluginEnv({
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.id,
 	}), {
 		in: aiScriptReadline,
 		out: (value): void => {
 			console.log(value);
-			pluginLogs.value.get(plugin.id).push(utils.reprValue(value));
+			pluginLogs.value.get(plugin.id)?.push(utils.reprValue(value));
 		},
 		log: (): void => {
 		},
 		err: (err): void => {
-			pluginLogs.value.get(plugin.id).push(`${err}`);
+			pluginLogs.value.get(plugin.id)?.push(`${err}`);
 			throw err; // install時のtry-catchに反応させる
 		},
 	});
 
-	initPlugin({ plugin, aiscript });
+	const aiscriptForExec = new Interpreter(createPluginEnv({
+		plugin,
+		storageKey: 'plugins:' + plugin.id,
+	}), {
+		in: aiScriptReadline,
+		out: (value): void => {
+			console.log(value);
+			pluginLogs.value.get(plugin.id)?.push(utils.reprValue(value));
+		},
+	});
 
-	aiscript.exec(parser.parse(plugin.src)).then(
+	initPlugin({ plugin, aiscript: aiscriptForExec });
+
+	aiscriptForInstall.exec(parser.parse(plugin.src)).then(
 		() => {
 			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 		},
@@ -115,7 +126,10 @@ function registerPostFormAction({ pluginId, title, handler }): void {
 					return;
 				}
 				update(utils.valToJs(key), utils.valToJs(value));
-			})]);
+			})]).catch((err) => {
+				pluginLogs.value.get(pluginId)?.push(`${err}`);
+				throw err;
+			});
 		},
 	});
 }
@@ -127,7 +141,10 @@ function registerUserAction({ pluginId, title, handler }): void {
 			if (!pluginContext) {
 				return;
 			}
-			pluginContext.execFn(handler, [utils.jsToVal(user)]);
+			pluginContext.execFn(handler, [utils.jsToVal(user)]).catch((err) => {
+				pluginLogs.value.get(pluginId)?.push(`${err}`);
+				throw err;
+			});
 		},
 	});
 }
@@ -139,7 +156,10 @@ function registerNoteAction({ pluginId, title, handler }): void {
 			if (!pluginContext) {
 				return;
 			}
-			pluginContext.execFn(handler, [utils.jsToVal(note)]);
+			pluginContext.execFn(handler, [utils.jsToVal(note)]).catch((err) => {
+				pluginLogs.value.get(pluginId)?.push(`${err}`);
+				throw err;
+			});
 		},
 	});
 }
@@ -151,7 +171,13 @@ function registerNoteViewInterruptor({ pluginId, handler }): void {
 			if (!pluginContext) {
 				return;
 			}
-			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(note)]));
+			try {
+				const res = await pluginContext.execFn(handler, [utils.jsToVal(note)]);
+				return utils.valToJs(res);
+			} catch (err) {
+				pluginLogs.value.get(pluginId)?.push(`${err}`);
+				throw err;
+			}
 		},
 	});
 }
@@ -163,7 +189,13 @@ function registerNotePostInterruptor({ pluginId, handler }): void {
 			if (!pluginContext) {
 				return;
 			}
-			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(note)]));
+			try {
+				const res = await pluginContext.execFn(handler, [utils.jsToVal(note)]);
+				return utils.valToJs(res);
+			} catch (err) {
+				pluginLogs.value.get(pluginId)?.push(`${err}`);
+				throw err;
+			}
 		},
 	});
 }
@@ -175,7 +207,13 @@ function registerPageViewInterruptor({ pluginId, handler }): void {
 			if (!pluginContext) {
 				return;
 			}
-			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(page)]));
+			try {
+				const res = await pluginContext.execFn(handler, [utils.jsToVal(page)]);
+				return utils.valToJs(res);
+			} catch (err) {
+				pluginLogs.value.get(pluginId)?.push(`${err}`);
+				throw err;
+			}
 		},
 	});
 }
