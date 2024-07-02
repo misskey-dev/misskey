@@ -117,12 +117,20 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.body.birthday, myBirthday);
 		});
 
-		test('名前を空白にできる', async () => {
+		test('名前を空白のみにした場合nullになる', async () => {
 			const res = await api('i/update', {
 				name: ' ',
 			}, alice);
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.body.name, ' ');
+			assert.strictEqual(res.body.name, null);
+		});
+
+		test('名前の前後に空白を入れてもトリムされる', async () => {
+			const res = await api('i/update', {
+				name: ' あ い う  ',
+			}, alice);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.body.name, 'あ い う');
 		});
 
 		test('誕生日の設定を削除できる', async () => {
