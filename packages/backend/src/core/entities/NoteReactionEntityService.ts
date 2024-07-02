@@ -52,6 +52,9 @@ export class NoteReactionEntityService implements OnModuleInit {
 		options?: {
 			withNote: boolean;
 		},
+		hints?: {
+			packedUser?: Packed<'UserLite'>
+		},
 	): Promise<Packed<'NoteReaction'>> {
 		const opts = Object.assign({
 			withNote: false,
@@ -62,11 +65,28 @@ export class NoteReactionEntityService implements OnModuleInit {
 		return {
 			id: reaction.id,
 			createdAt: this.idService.parse(reaction.id).date.toISOString(),
-			user: await this.userEntityService.pack(reaction.user ?? reaction.userId, me),
+			user: hints?.packedUser ?? await this.userEntityService.pack(reaction.user ?? reaction.userId, me),
 			type: this.reactionService.convertLegacyReaction(reaction.reaction),
 			...(opts.withNote ? {
 				note: await this.noteEntityService.pack(reaction.note ?? reaction.noteId, me),
 			} : {}),
 		};
+	}
+
+	@bindThis
+	public async packMany(
+		reactions: MiNoteReaction[],
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			withNote: boolean;
+		},
+	): Promise<Packed<'NoteReaction'>[]> {
+		const opts = Object.assign({
+			withNote: false,
+		}, options);
+		const _users = reactions.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(reactions.map(reaction => this.pack(reaction, me, opts, { packedUser: _userMap.get(reaction.userId) })));
 	}
 }

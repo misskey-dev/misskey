@@ -51,10 +51,10 @@ function onLogin(res): void {
 	login(res.i);
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'OAuth',
 	icon: 'ti ti-apps',
-});
+}));
 </script>
 
 <style lang="scss" module>

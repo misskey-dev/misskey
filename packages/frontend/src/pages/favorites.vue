@@ -38,10 +38,10 @@ const pagination = {
 	limit: 10,
 };
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.favorites,
 	icon: 'ti ti-star',
-});
+}));
 </script>
 
 <style lang="scss" module>

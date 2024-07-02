@@ -230,10 +230,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.muteAndBlock,
 	icon: 'ti ti-ban',
-});
+}));
 </script>
 
 <style lang="scss" module>

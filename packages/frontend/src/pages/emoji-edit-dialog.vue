@@ -135,7 +135,7 @@ async function addRole() {
 	const { canceled, result: role } = await os.select({
 		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
 	});
-	if (canceled) return;
+	if (canceled || role == null) return;
 
 	rolesThatCanBeUsedThisEmojiAsReaction.value.push(role);
 }

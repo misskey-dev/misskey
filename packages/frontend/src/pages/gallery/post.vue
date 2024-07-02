@@ -163,10 +163,12 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => post.value ? {
-	title: post.value.title,
-	avatar: post.value.user,
-} : null));
+definePageMetadata(() => ({
+	title: post.value ? post.value.title : i18n.ts.gallery,
+	...post.value ? {
+		avatar: post.value.user,
+	} : {},
+}));
 </script>
 
 <style lang="scss" scoped>

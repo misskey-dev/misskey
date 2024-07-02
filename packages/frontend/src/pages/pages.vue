@@ -88,8 +88,8 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-heart',
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.pages,
 	icon: 'ti ti-note',
-})));
+}));
 </script>

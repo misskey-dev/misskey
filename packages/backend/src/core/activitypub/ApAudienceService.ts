@@ -40,7 +40,7 @@ export class ApAudienceService {
 		const limit = promiseLimit<MiUser | null>(2);
 		const mentionedUsers = (await Promise.all(
 			others.map(id => limit(() => this.apPersonService.resolvePerson(id, resolver).catch(() => null))),
-		)).filter((x): x is MiUser => x != null);
+		)).filter(x => x != null);
 
 		if (toGroups.public.length > 0) {
 			return {

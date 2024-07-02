@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=20.10.0-bullseye
+ARG NODE_VERSION=20.12.2-bullseye
 
 # build assets & compile TypeScript
 
@@ -28,12 +28,12 @@ COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-revers
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 COPY --link ["packages/misskey-mahjong/package.json", "./packages/misskey-mahjong/"]
 
+ARG NODE_ENV=production
+
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
 
 COPY --link . ./
-
-ARG NODE_ENV=production
 
 RUN git submodule update --init
 RUN pnpm build
@@ -59,6 +59,8 @@ COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-revers
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 COPY --link ["packages/misskey-mahjong/package.json", "./packages/misskey-mahjong/"]
 
+ARG NODE_ENV=production
+
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
 
@@ -81,6 +83,10 @@ RUN apt-get update \
 
 USER misskey
 WORKDIR /misskey
+
+# add package.json to add pnpm
+COPY --chown=misskey:misskey ./package.json ./package.json
+RUN corepack install
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules

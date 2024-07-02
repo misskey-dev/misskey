@@ -35,6 +35,7 @@ import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import * as Misskey from 'misskey-js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -75,17 +76,19 @@ function reload() {
 	});
 }
 
-let connection;
+let connection: Misskey.ChannelConnection<Misskey.Channels['main']>;
 
 onMounted(() => {
 	connection = useStream().useChannel('main');
 	connection.on('notification', onNotification);
+	connection.on('notificationFlushed', reload);
 });
 
 onActivated(() => {
 	pagingComponent.value?.reload();
 	connection = useStream().useChannel('main');
 	connection.on('notification', onNotification);
+	connection.on('notificationFlushed', reload);
 });
 
 onUnmounted(() => {

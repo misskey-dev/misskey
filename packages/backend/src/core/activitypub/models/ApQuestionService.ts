@@ -51,7 +51,7 @@ export class ApQuestionService {
 
 		const choices = question[multiple ? 'anyOf' : 'oneOf']
 			?.map((x) => x.name)
-			.filter((x): x is string => typeof x === 'string')
+			.filter(x => x != null)
 			?? [];
 
 		const votes = question[multiple ? 'anyOf' : 'oneOf']?.map((x) => x.replies?.totalItems ?? x._misskey_votes ?? 0);

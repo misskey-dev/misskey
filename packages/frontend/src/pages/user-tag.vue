@@ -34,9 +34,9 @@ const tagUsers = computed(() => ({
 	},
 }));
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: props.tag,
 	icon: 'ti ti-user-search',
-})));
+}));
 </script>
 

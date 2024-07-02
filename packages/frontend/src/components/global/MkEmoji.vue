@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
+import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@/scripts/emoji-base.js';
 import { defaultStore } from '@/store.js';
 import { colorizeEmoji, getEmojiName } from '@/scripts/emojilist.js';
 import * as os from '@/os.js';
@@ -34,8 +34,7 @@ const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
-	const title = getEmojiName(props.emoji as string) ?? props.emoji as string;
-	(event.target as HTMLElement).title = title;
+	(event.target as HTMLElement).title = getEmojiName(props.emoji);
 }
 
 function onClick(ev: MouseEvent) {

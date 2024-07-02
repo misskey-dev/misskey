@@ -76,8 +76,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts._theme.manage,
 	icon: 'ti ti-tool',
-});
+}));
 </script>

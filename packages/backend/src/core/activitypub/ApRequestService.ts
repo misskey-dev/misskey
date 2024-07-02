@@ -14,6 +14,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 
 type Request = {
 	url: string;
@@ -70,7 +71,7 @@ export class ApRequestCreator {
 			url: u.href,
 			method: 'GET',
 			headers: this.#objectAssignWithLcKey({
-				'Accept': 'application/activity+json, application/ld+json',
+				'Accept': 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				'Date': new Date().toUTCString(),
 				'Host': new URL(args.url).host,
 			}, args.additionalHeaders),
@@ -195,6 +196,9 @@ export class ApRequestService {
 		const res = await this.httpRequestService.send(url, {
 			method: req.request.method,
 			headers: req.request.headers,
+		}, {
+			throwErrorWhenResponseNotOk: true,
+			validators: [validateContentTypeSetAsActivityPub],
 		});
 
 		return await res.json();

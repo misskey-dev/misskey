@@ -87,11 +87,8 @@ async function save() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => role.value ? {
-	title: i18n.ts._role.edit + ': ' + role.value.name,
-	icon: 'ti ti-badge',
-} : {
-	title: i18n.ts._role.new,
+definePageMetadata(() => ({
+	title: role.value ? `${i18n.ts._role.edit}: ${role.value.name}` : i18n.ts._role.new,
 	icon: 'ti ti-badge',
 }));
 </script>

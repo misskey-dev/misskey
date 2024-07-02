@@ -8,6 +8,7 @@ import { EndpointsModule } from '@/server/api/EndpointsModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { ApiCallService } from './api/ApiCallService.js';
 import { FileServerService } from './FileServerService.js';
+import { HealthServerService } from './HealthServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ServerService } from './ServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
@@ -56,6 +57,7 @@ import { MahjongRoomChannelService } from './api/stream/channels/mahjong-room.js
 		ClientServerService,
 		ClientLoggerService,
 		FeedService,
+		HealthServerService,
 		UrlPreviewService,
 		ActivityPubServerService,
 		FileServerService,

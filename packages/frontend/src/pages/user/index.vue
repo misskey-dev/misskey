@@ -126,15 +126,18 @@ const headerTabs = computed(() => user.value ? [{
 	icon: 'ti ti-code',
 }] : []);
 
-definePageMetadata(computed(() => user.value ? {
+definePageMetadata(() => ({
+	title: i18n.ts.user,
 	icon: 'ti ti-user',
-	title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
-	subtitle: `@${getAcct(user.value)}`,
-	userName: user.value,
-	avatar: user.value,
-	path: `/@${user.value.username}`,
-	share: {
-		title: user.value.name,
-	},
-} : null));
+	...user.value ? {
+		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
+		subtitle: `@${getAcct(user.value)}`,
+		userName: user.value,
+		avatar: user.value,
+		path: `/@${user.value.username}`,
+		share: {
+			title: user.value.name,
+		},
+	} : {},
+}));
 </script>

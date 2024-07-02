@@ -114,8 +114,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'Edit webhook',
 	icon: 'ti ti-webhook',
-});
+}));
 </script>

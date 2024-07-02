@@ -69,10 +69,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.followRequests,
 	icon: 'ti ti-user-plus',
-})));
+}));
 </script>
 
 <style lang="scss" scoped>

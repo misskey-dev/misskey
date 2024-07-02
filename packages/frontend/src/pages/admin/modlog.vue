@@ -54,14 +54,12 @@ const pagination = {
 	})),
 };
 
-console.log(Misskey);
-
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.moderationLogs,
 	icon: 'ti ti-list-search',
-});
+}));
 </script>

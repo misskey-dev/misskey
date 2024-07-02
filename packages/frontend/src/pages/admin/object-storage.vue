@@ -143,16 +143,16 @@ function save() {
 		objectStorageSetPublicRead: objectStorageSetPublicRead.value,
 		objectStorageS3ForcePathStyle: objectStorageS3ForcePathStyle.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.objectStorage,
 	icon: 'ti ti-cloud',
-});
+}));
 </script>
 
 <style lang="scss" module>

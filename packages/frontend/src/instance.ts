@@ -11,13 +11,24 @@ import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERR
 
 // TODO: 他のタブと永続化されたstateを同期
 
-const cached = miLocalStorage.getItem('instance');
+//#region loader
+const providedMetaEl = document.getElementById('misskey_meta');
+
+let cachedMeta = miLocalStorage.getItem('instance') ? JSON.parse(miLocalStorage.getItem('instance')!) : null;
+let cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
+const providedMeta = providedMetaEl && providedMetaEl.textContent ? JSON.parse(providedMetaEl.textContent) : null;
+const providedAt = providedMetaEl && providedMetaEl.dataset.generatedAt ? parseInt(providedMetaEl.dataset.generatedAt) : 0;
+if (providedAt > cachedAt) {
+	miLocalStorage.setItem('instance', JSON.stringify(providedMeta));
+	miLocalStorage.setItem('instanceCachedAt', providedAt.toString());
+	cachedMeta = providedMeta;
+	cachedAt = providedAt;
+}
+//#endregion
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.MetaResponse = reactive(cached ? JSON.parse(cached) : {
-	// TODO: set default values
-});
+export const instance: Misskey.entities.MetaDetailed = reactive(cachedMeta ?? {});
 
 export const serverErrorImageUrl = computed(() => instance.serverErrorImageUrl ?? DEFAULT_SERVER_ERROR_IMAGE_URL);
 
@@ -25,9 +36,19 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
-export async function fetchInstance() {
+export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
+
+export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
+	if (!force) {
+		const cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
+
+		if (Date.now() - cachedAt < 1000 * 60 * 60) {
+			return instance;
+		}
+	}
+
 	const meta = await misskeyApi('meta', {
-		detail: false,
+		detail: true,
 	});
 
 	for (const [k, v] of Object.entries(meta)) {
@@ -35,4 +56,7 @@ export async function fetchInstance() {
 	}
 
 	miLocalStorage.setItem('instance', JSON.stringify(instance));
+	miLocalStorage.setItem('instanceCachedAt', Date.now().toString());
+
+	return instance;
 }

@@ -15,6 +15,19 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	res: {
+		type: 'object',
+		properties: {
+			backupCodes: {
+				type: 'array',
+				optional: false,
+				items: {
+					type: 'string',
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

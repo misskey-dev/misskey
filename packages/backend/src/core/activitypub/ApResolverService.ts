@@ -105,7 +105,7 @@ export class Resolver {
 
 		const object = (this.user
 			? await this.apRequestService.signedGet(value, this.user) as IObject
-			: await this.httpRequestService.getJson(value, 'application/activity+json, application/ld+json')) as IObject;
+			: await this.httpRequestService.getActivityJson(value)) as IObject;
 
 		if (
 			Array.isArray(object['@context']) ?

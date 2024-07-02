@@ -58,7 +58,7 @@ const save = async () => {
 	await os.apiWithDialog('admin/update-meta', {
 		serverRules: serverRules.value,
 	});
-	fetchInstance();
+	fetchInstance(true);
 };
 
 const remove = (index: number): void => {
@@ -67,10 +67,10 @@ const remove = (index: number): void => {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.serverRules,
 	icon: 'ti ti-checkbox',
-});
+}));
 </script>
 
 <style lang="scss" module>

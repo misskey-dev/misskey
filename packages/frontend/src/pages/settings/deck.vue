@@ -36,8 +36,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.deck,
 	icon: 'ti ti-columns',
-});
+}));
 </script>

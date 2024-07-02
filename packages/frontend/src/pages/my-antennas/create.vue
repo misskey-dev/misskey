@@ -26,6 +26,7 @@ const draft = ref({
 	users: [],
 	keywords: [],
 	excludeKeywords: [],
+	excludeBots: false,
 	withReplies: false,
 	caseSensitive: false,
 	localOnly: false,
@@ -38,8 +39,8 @@ function onAntennaCreated() {
 	router.push('/my/antennas');
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.manageAntennas,
 	icon: 'ti ti-antenna',
-});
+}));
 </script>

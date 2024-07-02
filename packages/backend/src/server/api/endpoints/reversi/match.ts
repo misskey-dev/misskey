@@ -30,6 +30,9 @@ export const meta = {
 	},
 
 	res: {
+		type: 'object',
+		optional: true,
+		ref: 'ReversiGameDetailed',
 	},
 } as const;
 

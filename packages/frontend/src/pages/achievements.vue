@@ -48,10 +48,10 @@ onDeactivated(() => {
 	}
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
-});
+}));
 </script>
 
 <style lang="scss" module>

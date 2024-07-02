@@ -57,7 +57,10 @@ export const paramDef = {
 			type: 'string',
 		} },
 	},
-	required: ['id', 'name', 'aliases'],
+	anyOf: [
+		{ required: ['id'] },
+		{ required: ['name'] },
+	],
 } as const;
 
 @Injectable()
@@ -70,27 +73,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let driveFile;
-
 			if (ps.fileId) {
 				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
-			const emoji = await this.customEmojiService.getEmojiById(ps.id);
-			if (emoji != null) {
-				if (ps.name !== emoji.name) {
+
+			let emojiId;
+			if (ps.id) {
+				emojiId = ps.id;
+				const emoji = await this.customEmojiService.getEmojiById(ps.id);
+				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
+				if (ps.name && (ps.name !== emoji.name)) {
 					const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
 					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
 				}
 			} else {
-				throw new ApiError(meta.errors.noSuchEmoji);
+				if (!ps.name) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
+				const emoji = await this.customEmojiService.getEmojiByName(ps.name);
+				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
+				emojiId = emoji.id;
 			}
 
-			await this.customEmojiService.update(ps.id, {
+			await this.customEmojiService.update(emojiId, {
 				driveFile,
 				name: ps.name,
-				category: ps.category ?? null,
+				category: ps.category,
 				aliases: ps.aliases,
-				license: ps.license ?? null,
+				license: ps.license,
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,

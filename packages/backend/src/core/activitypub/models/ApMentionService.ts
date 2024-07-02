@@ -27,7 +27,7 @@ export class ApMentionService {
 		const limit = promiseLimit<MiUser | null>(2);
 		const mentionedUsers = (await Promise.all(
 			hrefs.map(x => limit(() => this.apPersonService.resolvePerson(x, resolver).catch(() => null))),
-		)).filter((x): x is MiUser => x != null);
+		)).filter(x => x != null);
 
 		return mentionedUsers;
 	}

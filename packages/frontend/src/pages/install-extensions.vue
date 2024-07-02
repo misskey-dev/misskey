@@ -312,10 +312,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts._externalResourceInstaller.title,
 	icon: 'ti ti-download',
-});
+}));
 </script>
 
 <style lang="scss" module>

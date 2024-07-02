@@ -121,10 +121,10 @@ async function save(): Promise<void> {
 
 init();
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.accountMigration,
 	icon: 'ti ti-plane',
-});
+}));
 </script>
 
 <style lang="scss">

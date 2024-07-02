@@ -87,8 +87,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'API console',
 	icon: 'ti ti-terminal-2',
-});
+}));
 </script>

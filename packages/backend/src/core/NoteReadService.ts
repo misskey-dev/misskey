@@ -88,46 +88,47 @@ export class NoteReadService implements OnApplicationShutdown {
 		userId: MiUser['id'],
 		notes: (MiNote | Packed<'Note'>)[],
 	): Promise<void> {
-		const readMentions: (MiNote | Packed<'Note'>)[] = [];
-		const readSpecifiedNotes: (MiNote | Packed<'Note'>)[] = [];
+		if (notes.length === 0) return;
+
+		const noteIds = new Set<MiNote['id']>();
 
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {
-				readMentions.push(note);
+				noteIds.add(note.id);
 			} else if (note.visibleUserIds && note.visibleUserIds.includes(userId)) {
-				readSpecifiedNotes.push(note);
+				noteIds.add(note.id);
 			}
 		}
 
-		if ((readMentions.length > 0) || (readSpecifiedNotes.length > 0)) {
-			// Remove the record
-			await this.noteUnreadsRepository.delete({
-				userId: userId,
-				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
-			});
+		if (noteIds.size === 0) return;
 
-			// TODO: ↓まとめてクエリしたい
+		// Remove the record
+		await this.noteUnreadsRepository.delete({
+			userId: userId,
+			noteId: In(Array.from(noteIds)),
+		});
 
-			trackPromise(this.noteUnreadsRepository.countBy({
-				userId: userId,
-				isMentioned: true,
-			}).then(mentionsCount => {
-				if (mentionsCount === 0) {
-					// 全て既読になったイベントを発行
-					this.globalEventService.publishMainStream(userId, 'readAllUnreadMentions');
-				}
-			}));
+		// TODO: ↓まとめてクエリしたい
 
-			trackPromise(this.noteUnreadsRepository.countBy({
-				userId: userId,
-				isSpecified: true,
-			}).then(specifiedCount => {
-				if (specifiedCount === 0) {
-					// 全て既読になったイベントを発行
-					this.globalEventService.publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
-				}
-			}));
-		}
+		trackPromise(this.noteUnreadsRepository.countBy({
+			userId: userId,
+			isMentioned: true,
+		}).then(mentionsCount => {
+			if (mentionsCount === 0) {
+				// 全て既読になったイベントを発行
+				this.globalEventService.publishMainStream(userId, 'readAllUnreadMentions');
+			}
+		}));
+
+		trackPromise(this.noteUnreadsRepository.countBy({
+			userId: userId,
+			isSpecified: true,
+		}).then(specifiedCount => {
+			if (specifiedCount === 0) {
+				// 全て既読になったイベントを発行
+				this.globalEventService.publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
+			}
+		}));
 	}
 
 	@bindThis

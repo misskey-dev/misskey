@@ -55,7 +55,7 @@ module.exports = {
 		'vue/no-dupe-keys': 'warn',
 		'vue/valid-v-for': 'warn',
 		'vue/return-in-computed-property': 'warn',
-		'vue/no-setup-props-destructure': 'warn',
+		'vue/no-setup-props-reactivity-loss': 'warn',
 		'vue/max-attributes-per-line': 'off',
 		'vue/html-self-closing': 'off',
 		'vue/singleline-html-element-content-newline': 'off',
