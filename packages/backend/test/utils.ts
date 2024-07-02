@@ -605,14 +605,6 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	return db;
 }
 
-export function sleep(msec: number) {
-	return new Promise<void>(res => {
-		setTimeout(() => {
-			res();
-		}, msec);
-	});
-}
-
 export async function sendEnvUpdateRequest(params: { key: string, value?: string }) {
 	const res = await fetch(
 		`http://localhost:${port + 1000}/env`,
