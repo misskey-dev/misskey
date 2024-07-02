@@ -76,7 +76,6 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
-		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@misskey-dev/summaly": "5.1.0",
 		"@storybook/addon-actions": "8.1.10",
 		"@storybook/addon-essentials": "8.1.10",
@@ -116,7 +115,6 @@
 		"acorn": "8.12.0",
 		"cross-env": "7.0.3",
 		"cypress": "13.12.0",
-		"eslint": "9.5.0",
 		"eslint-plugin-import": "2.29.1",
 		"eslint-plugin-vue": "9.26.0",
 		"fast-glob": "3.3.2",

@@ -186,7 +186,6 @@
 	},
 	"devDependencies": {
 		"@jest/globals": "29.7.0",
-		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@nestjs/platform-express": "10.3.9",
 		"@simplewebauthn/types": "10.0.0",
 		"@swc/jest": "0.2.36",
@@ -231,7 +230,6 @@
 		"@typescript-eslint/parser": "7.13.1",
 		"aws-sdk-client-mock": "4.0.1",
 		"cross-env": "7.0.3",
-		"eslint": "9.5.0",
 		"eslint-plugin-import": "2.29.1",
 		"execa": "9.2.0",
 		"fkill": "9.0.0",
