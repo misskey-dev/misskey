@@ -93,24 +93,24 @@ async function onClick() {
 				userId: props.user.id,
 			});
 		} else {
-			if (defaultStore.state.alwaysConfirmFollow) {
-				const { canceled } = await os.confirm({
-					type: 'question',
-					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
-				});
-
-				if (canceled) {
-					wait.value = false;
-					return;
-				}
-			}
-
 			if (hasPendingFollowRequestFromYou.value) {
 				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou.value = false;
 			} else {
+				if (defaultStore.state.alwaysConfirmFollow) {
+					const { canceled } = await os.confirm({
+						type: 'question',
+						text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+					});
+
+					if (canceled) {
+						wait.value = false;
+						return;
+					}
+				}
+
 				await misskeyApi('following/create', {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,
