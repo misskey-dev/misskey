@@ -325,6 +325,10 @@ export interface Locale extends ILocale {
      */
     "unfollowConfirm": ParameterizedString<"name">;
     /**
+     * {name}へのフォローリクエストを取り消しますか？
+     */
+    "cancelFollowRequestConfirm": ParameterizedString<"name">;
+    /**
      * エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、「ドライブ」に追加されます。
      */
     "exportRequested": string;
