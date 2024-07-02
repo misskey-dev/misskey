@@ -252,8 +252,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
 			const isSecure = token == null;
 
-			const onlyControlCharsAndSpaceRegex = /^[\u0000-\u001F\u007F-\u009F\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069\s]+$/;
-
 			const updates = {} as Partial<MiUser>;
 			const profileUpdates = {} as Partial<MiUserProfile>;
 
@@ -264,13 +262,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					updates.name = null;
 				} else {
 					const trimmedName = ps.name.trim();
-					if (trimmedName === '') {
-						updates.name = null;
-					} else if (onlyControlCharsAndSpaceRegex.test(trimmedName)) {
-						updates.name = null;
-					} else {
-						updates.name = trimmedName;
-					}
+					updates.name = trimmedName === '' ? null : trimmedName;
 				}
 			}
 			if (ps.description !== undefined) profileUpdates.description = ps.description;

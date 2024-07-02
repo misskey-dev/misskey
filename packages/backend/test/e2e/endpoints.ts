@@ -134,14 +134,6 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.body.name, 'あ い う');
 		});
 
-		test('名前にUnicode制御文字とスペースしか含まない場合はnullになる', async () => {
-			const res = await api('i/update', {
-				name: ' \u202e ',
-			}, alice);
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.body.name, null);
-		});
-
 		test('誕生日の設定を削除できる', async () => {
 			await api('i/update', {
 				birthday: '2000-09-07',
