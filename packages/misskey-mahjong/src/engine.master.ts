@@ -4,7 +4,7 @@
  */
 
 import CRC32 from 'crc-32';
-import { TileType, House, Huro, TILE_TYPES, YAKU_DEFINITIONS, TileId } from './common.js';
+import { TileType, House, Huro, TileId } from './common.js';
 import * as Common from './common.js';
 import { PlayerState } from './engine.player.js';
 
