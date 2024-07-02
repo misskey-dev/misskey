@@ -409,6 +409,9 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ name: 'x'.repeat(50) }) },
 		{ parameters: () => ({ name: 'x' }) },
 		{ parameters: () => ({ name: 'My name' }) },
+		{ parameters: () => ({ name: '' }), expect: { name: null } },
+		{ parameters: () => ({ name: '   name  with spaces   ' }), expect: { name: 'name  with spaces' } },
+		{ parameters: () => ({ name: '         ' }), expect: { name: null } },
 		{ parameters: () => ({ description: null }) },
 		{ parameters: () => ({ description: 'x'.repeat(1500) }) },
 		{ parameters: () => ({ description: 'x' }) },
@@ -465,9 +468,9 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ notificationRecieveConfig: {} }) },
 		{ parameters: () => ({ emailNotificationTypes: ['mention', 'reply', 'quote', 'follow', 'receiveFollowRequest'] }) },
 		{ parameters: () => ({ emailNotificationTypes: [] }) },
-	] as const)('を書き換えることができる($#)', async ({ parameters }) => {
+	] as const)('を書き換えることができる($#)', async ({ parameters, expect }) => {
 		const response = await successfulApiCall({ endpoint: 'i/update', parameters: parameters(), user: alice });
-		const expected = { ...meDetailed(alice, true), ...parameters() };
+		const expected = { ...meDetailed(alice, true), ...parameters(), ...expect };
 		assert.deepStrictEqual(response, expected, inspect(parameters()));
 	});
 
