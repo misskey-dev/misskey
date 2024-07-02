@@ -4984,6 +4984,14 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    /**
+     * センシティブなメディアを表示するとき確認する
+     */
+    "confirmWhenRevealingSensitiveMedia": string;
+    /**
+     * センシティブなメディアです。表示しますか？
+     */
+    "sensitiveMediaRevealConfirm": string;
     "_delivery": {
         /**
          * 配信状態
