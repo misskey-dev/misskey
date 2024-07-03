@@ -523,7 +523,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body!.name, 'Lenna.jpg');
+			assert.strictEqual(res.body!.name, '192.jpg');
 		});
 
 		test('ファイルに名前を付けられる', async () => {

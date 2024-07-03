@@ -296,7 +296,7 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	body: misskey.entities.DriveFile | null
 }> => {
 	const absPath = path == null
-		? new URL('resources/Lenna.jpg', import.meta.url)
+		? new URL('resources/192.jpg', import.meta.url)
 		: isAbsolute(path.toString())
 			? new URL(path)
 			: new URL(path, new URL('resources/', import.meta.url));
