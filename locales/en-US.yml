@@ -2411,6 +2411,7 @@ _webhookSettings:
     renote: "When renoted"
     reaction: "When receiving a reaction"
     mention: "When being mentioned"
+  deleteConfirm: "Are you sure you want to delete the Webhook?"
 _abuseReport:
   _notificationRecipient:
     recipientType: "Notification type"
