@@ -243,10 +243,7 @@ export class ApPersonService implements OnModuleInit {
 
 		if (((avatar != null && avatar.id !== null) || (banner != null && banner.id !== null))
 				&& !(await this.roleService.getUserPolicies(user.id)).canUpdateBioMedia) {
-			return {
-				...{},
-				...{},
-			};
+			return {};
 		}
 
 		/*
