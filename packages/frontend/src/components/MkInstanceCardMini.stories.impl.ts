@@ -8,8 +8,9 @@ import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { federationInstance } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
+import { getChartResolver } from '../../.storybook/charts.js';
 import MkInstanceCardMini from './MkInstanceCardMini.vue';
-import { getChartResolver } from './MkChart.stories.impl.js';
+
 export const Default = {
 	render(args) {
 		return {

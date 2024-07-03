@@ -392,11 +392,12 @@ onUnmounted(() => {
 
 						> .name {
 							display: block;
-							margin: 0;
+							margin: -10px;
+							padding: 10px;
 							line-height: 32px;
 							font-weight: bold;
 							font-size: 1.8em;
-							text-shadow: 0 0 8px #000;
+							filter: drop-shadow(0 0 4px #000);
 						}
 
 						> .bottom {
