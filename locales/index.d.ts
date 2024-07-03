@@ -6631,6 +6631,10 @@ export interface Locale extends ILocale {
              */
             "alwaysMarkNsfw": string;
             /**
+             * アイコンとバナーの更新を許可
+             */
+            "canUpdateBioMedia": string;
+            /**
              * ノートのピン留めの最大数
              */
             "pinMax": string;

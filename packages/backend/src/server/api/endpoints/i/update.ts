@@ -322,6 +322,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 			if (ps.avatarId) {
+				if (!(await roleService.getUserPolicies(user.id)).canUpdateBioMedia) throw new ApiError(meta.errors.restrictedByRole);
+
 				const avatar = await this.driveFilesRepository.findOneBy({ id: ps.avatarId });
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
@@ -337,6 +339,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.bannerId) {
+				if (!(await roleService.getUserPolicies(user.id)).canUpdateBioMedia) throw new ApiError(meta.errors.restrictedByRole);
+
 				const banner = await this.driveFilesRepository.findOneBy({ id: ps.bannerId });
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
