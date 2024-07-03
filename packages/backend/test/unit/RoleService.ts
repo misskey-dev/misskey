@@ -5,6 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
+import { setTimeout } from 'node:timers/promises';
 import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
@@ -29,7 +30,6 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { sleep } from '../utils.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -278,7 +278,7 @@ describe('RoleService', () => {
 
 			// ストリーミング経由で反映されるまでちょっと待つ
 			clock.uninstall();
-			await sleep(100);
+			await setTimeout(100);
 
 			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
@@ -807,7 +807,7 @@ describe('RoleService', () => {
 			await roleService.assign(user.id, role.id);
 
 			clock.uninstall();
-			await sleep(100);
+			await setTimeout(100);
 
 			const assignments = await roleAssignmentsRepository.find({
 				where: {
@@ -835,7 +835,7 @@ describe('RoleService', () => {
 			await roleService.assign(user.id, role.id);
 
 			clock.uninstall();
-			await sleep(100);
+			await setTimeout(100);
 
 			const assignments = await roleAssignmentsRepository.find({
 				where: {
