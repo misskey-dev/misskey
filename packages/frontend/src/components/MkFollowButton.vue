@@ -84,7 +84,12 @@ async function onClick() {
 		if (isFollowing.value) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
+				text: {
+					text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
+					plain: true,
+					author: props.user,
+					emojiUrls: props.user.emojis,
+				},
 			});
 
 			if (canceled) return;
@@ -96,7 +101,12 @@ async function onClick() {
 			if (hasPendingFollowRequestFromYou.value) {
 				const { canceled } = await os.confirm({
 					type: 'warning',
-					text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+					text: {
+						text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+						plain: true,
+						author: props.user,
+						emojiUrls: props.user.emojis,
+					},
 				});
 
 				if (canceled) {
@@ -112,7 +122,12 @@ async function onClick() {
 				if (defaultStore.state.alwaysConfirmFollow) {
 					const { canceled } = await os.confirm({
 						type: 'question',
-						text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+						text: {
+							text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+							plain: true,
+							author: props.user,
+							emojiUrls: props.user.emojis,
+						},
 					});
 
 					if (canceled) {

@@ -10,6 +10,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/scripts/form.js';
+import type { MfmProps } from '@/components/global/MkMisskeyFlavoredMarkdown.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
@@ -212,8 +213,8 @@ export function toast(message: string) {
 
 export function alert(props: {
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 }): Promise<void> {
 	return new Promise(resolve => {
 		popup(MkDialog, props, {
@@ -226,8 +227,8 @@ export function alert(props: {
 
 export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	okText?: string;
 	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
@@ -252,8 +253,8 @@ export function actions<T extends {
 	danger?: boolean,
 }[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	actions: T;
 }): Promise<{
 	canceled: true; result: undefined;
@@ -282,8 +283,8 @@ export function actions<T extends {
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string;
@@ -296,8 +297,8 @@ export function inputText(props: {
 }>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: string | null;
@@ -310,8 +311,8 @@ export function inputText(props: {
 }>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: string | null;
@@ -344,8 +345,8 @@ export function inputText(props: {
 
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function inputNumber(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: number;
@@ -355,8 +356,8 @@ export function inputNumber(props: {
 	canceled: false; result: number;
 }>;
 export function inputNumber(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
@@ -366,8 +367,8 @@ export function inputNumber(props: {
 	canceled: false; result: number | null;
 }>;
 export function inputNumber(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
@@ -395,8 +396,8 @@ export function inputNumber(props: {
 }
 
 export function inputDate(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	placeholder?: string | null;
 	default?: string | null;
 }): Promise<{
@@ -437,8 +438,8 @@ export function authenticateDialog(): Promise<{
 
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function select<C = any>(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	default: string;
 	items: {
 		value: C;
@@ -450,8 +451,8 @@ export function select<C = any>(props: {
 	canceled: false; result: C;
 }>;
 export function select<C = any>(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	default?: string | null;
 	items: {
 		value: C;
@@ -463,8 +464,8 @@ export function select<C = any>(props: {
 	canceled: false; result: C | null;
 }>;
 export function select<C = any>(props: {
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	default?: string | null;
 	items: {
 		value: C;

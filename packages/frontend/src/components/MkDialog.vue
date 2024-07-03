@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
-		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
-		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
+		<header v-if="title" :class="$style.title"><Mfm v-bind="titleMfm"/></header>
+		<div v-if="text" :class="$style.text"><Mfm v-bind="textMfm"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
@@ -56,6 +56,7 @@ import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import type { MfmProps } from './global/MkMisskeyFlavoredMarkdown.js';
 import { i18n } from '@/i18n.js';
 
 type Input = {
@@ -79,8 +80,8 @@ type Result = string | number | true | null;
 
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
-	title?: string;
-	text?: string;
+	title?: string | MfmProps;
+	text?: string | MfmProps;
 	input?: Input;
 	select?: Select;
 	icon?: string;
@@ -106,6 +107,18 @@ const emit = defineEmits<{
 	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;
 	(ev: 'closed'): void;
 }>();
+
+const titleMfm = computed<MfmProps>(() => {
+	if (props.title == null) return { text: '' };
+	if (typeof props.title === 'string') return { text: props.title };
+	return props.title;
+});
+
+const textMfm = computed<MfmProps>(() => {
+	if (props.text == null) return { text: '' };
+	if (typeof props.text === 'string') return { text: props.text };
+	return props.text;
+});
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
