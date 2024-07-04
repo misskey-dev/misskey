@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineProps, ref, toRef } from 'vue';
+import { computed, defineAsyncComponent, ref, toRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { notesSearchAvailable } from '@/account.js';
