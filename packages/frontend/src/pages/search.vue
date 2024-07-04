@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<{
 	query?: string,
 	userId?: string,
 	username?: string,
-	host?: string,
+	host?: string | null,
 	type?: 'note' | 'user',
 	origin?: 'combined' | 'local' | 'remote',
 }>(), {

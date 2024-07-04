@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<{
 	query?: string;
 	userId?: string;
 	username?: string;
-	host?: string;
+	host?: string | null;
 }>(), {
 	query: '',
 	userId: undefined,
@@ -86,7 +86,7 @@ const hostInput = ref(toRef(props, 'host').value);
 
 const hostSelect = ref<'all' | 'local' | 'specified'>('all');
 
-const setHostSelectWithInput = (after:string|undefined, before:string|undefined) => {
+const setHostSelectWithInput = (after:string|undefined|null, before:string|undefined|null) => {
 	if (before === after) return;
 	if (after === '') hostSelect.value = 'all';
 	else hostSelect.value = 'specified';
