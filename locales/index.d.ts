@@ -4465,6 +4465,10 @@ export interface Locale extends ILocale {
      */
     "specifyUser": string;
     /**
+     * ホスト指定
+     */
+    "specifyHost": string;
+    /**
      * プレビューできません
      */
     "failedToPreviewUrl": string;

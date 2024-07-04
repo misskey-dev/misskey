@@ -9,26 +9,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
-		<MkFolder>
-			<template #label>{{ i18n.ts.options }}</template>
+		<MkFoldableSection :expanded="true">
+			<template #header>{{ i18n.ts.options }}</template>
 
 			<div class="_gaps_m">
-				<MkSwitch v-model="isLocalOnly">{{ i18n.ts.localOnly }}</MkSwitch>
+				<MkRadios v-model="hostSelect">
+					<template #label>{{ i18n.ts.host }}</template>
+					<option value="all" default>{{ i18n.ts.all }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+					<option value="specified">{{ i18n.ts.specifyHost }}</option>
+				</MkRadios>
+				<MkInput v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
+					<template #prefix><i class="ti ti-server"></i></template>
+				</MkInput>
 
 				<MkFolder :defaultOpen="true">
 					<template #label>{{ i18n.ts.specifyUser }}</template>
-					<template v-if="user" #suffix>@{{ user.username }}</template>
+					<template v-if="user" #suffix>@{{ user.username }}{{ user.host ? `@${user.host}` : "" }}</template>
 
-					<div style="text-align: center;" class="_gaps">
-						<div v-if="user">@{{ user.username }}</div>
-						<div>
-							<MkButton v-if="user == null" primary rounded inline @click="selectUser">{{ i18n.ts.selectUser }}</MkButton>
-							<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
+					<div class="_gaps">
+						<div :class="$style.userItem">
+							<MkUserCardMini v-if="user" :class="$style.userCard" :user="user" :withChart="false"/>
+							<MkButton v-if="user == null" primary :class="$style.addUserButton" @click="selectUser"><div :class="$style.addUserButtonInner">{{ i18n.ts.selectUser }}</div></MkButton>
+							<button class="_button" :class="$style.remove" :disabled="user == null" @click="removeUser"><i class="ti ti-x"></i></button>
 						</div>
 					</div>
 				</MkFolder>
 			</div>
-		</MkFolder>
+		</MkFoldableSection>
 		<div>
 			<MkButton large primary gradate rounded style="margin: 0 auto;" @click="search">{{ i18n.ts.search }}</MkButton>
 		</div>
@@ -42,19 +50,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, toRef } from 'vue';
+import { computed, ref, toRef, watch } from 'vue';
 import type { UserDetailed } from 'misskey-js/entities.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { useRouter } from '@/router/supplier.js';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkRadios from '@/components/MkRadios.vue';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -69,12 +78,29 @@ const props = withDefaults(defineProps<{
 });
 
 const router = useRouter();
-
 const key = ref(0);
 const searchQuery = ref(toRef(props, 'query').value);
 const notePagination = ref<Paging>();
 const user = ref<UserDetailed | null>(null);
-const isLocalOnly = ref(false);
+const hostInput = ref(toRef(props, 'host').value);
+
+const hostSelect = ref<'all' | 'local' | 'specified'>('all');
+
+const setHostSelectWithInput = (after:string|undefined, before:string|undefined) => {
+	if (before === after) return;
+	if (after === '') hostSelect.value = 'all';
+	else hostSelect.value = 'specified';
+};
+
+setHostSelectWithInput(undefined, hostInput.value);
+
+watch(hostInput, setHostSelectWithInput);
+
+const searchHost = computed(() => {
+	if (hostSelect.value === 'local') return '.';
+	if (hostSelect.value === 'specified') return hostInput.value;
+	return null;
+});
 
 if (props.userId != null) {
 	misskeyApi('users/show', { userId: props.userId }).then(_user => {
@@ -89,7 +115,13 @@ if (props.userId != null) {
 function selectUser() {
 	os.selectUser({ includeSelf: true }).then(_user => {
 		user.value = _user;
+		hostInput.value = _user.host ?? '';
 	});
+}
+
+function removeUser() {
+	user.value = null;
+	hostInput.value = '';
 }
 
 async function search() {
@@ -121,11 +153,42 @@ async function search() {
 		params: {
 			query: searchQuery.value,
 			userId: user.value ? user.value.id : null,
+			...(searchHost.value ? { host: searchHost.value } : {}),
 		},
 	};
-
-	if (isLocalOnly.value) notePagination.value.params.host = '.';
 
 	key.value++;
 }
 </script>
+<style lang="scss" module>
+.userItem {
+	display: flex;
+	justify-content: center;
+}
+.addUserButton {
+	padding: 16px;
+	flex-grow: 1;
+}
+.addUserButtonInner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 35px;
+}
+.userCard {
+	flex-grow: 1;
+}
+.remove {
+	width: 32px;
+	height: 32px;
+	align-self: center;
+
+	& > i:before {
+		color: #ff2a2a;
+	}
+
+	&:disabled {
+		opacity: 0;
+	}
+}
+</style>
