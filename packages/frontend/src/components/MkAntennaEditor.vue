@@ -64,17 +64,17 @@ import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/scripts/merge.js';
 import type { DeepPartial } from '@/scripts/merge.js';
 
-type PartialArrowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
+type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;
 	createdAt?: string;
 	updatedAt?: string;
 };
 
 const props = defineProps<{
-	antenna?: DeepPartial<PartialArrowedAntenna>;
+	antenna?: DeepPartial<PartialAllowedAntenna>;
 }>();
 
-const initialAntenna = deepMerge<PartialArrowedAntenna>(props.antenna ?? {}, {
+const initialAntenna = deepMerge<PartialAllowedAntenna>(props.antenna ?? {}, {
 	name: '',
 	src: 'all',
 	userListId: null,
