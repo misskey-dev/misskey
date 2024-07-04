@@ -14,6 +14,7 @@ import { apiUrl } from '@/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
+import { instance } from '@/instance.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -26,6 +27,8 @@ export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : n
 
 export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;
+
+export const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
 export function signinRequired() {
 	if ($i == null) throw new Error('signin required');
