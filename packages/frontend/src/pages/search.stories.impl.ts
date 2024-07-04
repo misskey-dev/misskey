@@ -9,6 +9,8 @@ import search_ from './search.vue';
 import { userDetailed } from '@/../.storybook/fakes.js';
 import { commonHandlers } from '@/../.storybook/mocks.js';
 
+const localUser = userDetailed('someuserid', 'miskist', null, 'Local Misskey User');
+
 export const Default = {
 	render(args) {
 		return {
@@ -41,6 +43,9 @@ export const Default = {
 				http.post('/api/users/show', () => {
 					return HttpResponse.json(userDetailed());
 				}),
+				http.post('/api/users/search', () => {
+					return HttpResponse.json([userDetailed(), localUser]);
+				}),
 			],
 		},
 	},
@@ -50,17 +55,6 @@ export const NoteSearchDisabled = {
 	...Default,
 	args: {},
 } satisfies StoryObj<typeof search_>;
-
-export const WithUsername = {
-	...Default,
-	args: {
-		...Default.args,
-		username: userDetailed().username,
-		host: userDetailed().host,
-	},
-} satisfies StoryObj<typeof search_>;
-
-const localUser = userDetailed('someuserid', 'miskist', null, 'Local Misskey User');
 
 export const WithUsernameLocal = {
 	...Default,
@@ -78,7 +72,17 @@ export const WithUsernameLocal = {
 				http.post('/api/users/show', () => {
 					return HttpResponse.json(localUser);
 				}),
+				http.post('/api/users/search', () => {
+					return HttpResponse.json([userDetailed(), localUser]);
+				}),
 			],
 		},
+	},
+} satisfies StoryObj<typeof search_>;
+
+export const WithUserType = {
+	...Default,
+	args: {
+		type: 'user',
 	},
 } satisfies StoryObj<typeof search_>;
