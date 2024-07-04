@@ -257,6 +257,10 @@ export interface Locale extends ILocale {
      */
     "searchUser": string;
     /**
+     * ユーザーのノートを検索
+     */
+    "searchThisUsersNotes": string;
+    /**
      * 返信
      */
     "reply": string;

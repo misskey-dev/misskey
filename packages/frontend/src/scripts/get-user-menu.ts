@@ -12,7 +12,7 @@ import { host, url } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator, notesSearchAvailable } from '@/account.js';
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
@@ -158,7 +158,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
-	}, ...(iAmModerator ? [{
+	}, ...( notesSearchAvailable ? [{
+		icon: 'ti ti-search',
+		text: i18n.ts.searchThisUsersNotes,
+		action: () => {
+			router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
+		},
+	}] : [])
+	, ...(iAmModerator ? [{
 		icon: 'ti ti-user-exclamation',
 		text: i18n.ts.moderation,
 		action: () => {
