@@ -241,7 +241,7 @@ export class ApPersonService implements OnModuleInit {
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
 
-		if (((avatar != null && avatar.id !== null) || (banner != null && banner.id !== null))
+		if (((avatar != null && avatar.id != null) || (banner != null && banner.id != null))
 				&& !(await this.roleService.getUserPolicies(user.id)).canUpdateBioMedia) {
 			return {};
 		}
