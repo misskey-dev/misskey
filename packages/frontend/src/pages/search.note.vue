@@ -92,7 +92,7 @@ const setHostSelectWithInput = (after:string|undefined, before:string|undefined)
 	else hostSelect.value = 'specified';
 };
 
-setHostSelectWithInput(undefined, hostInput.value);
+setHostSelectWithInput(hostInput.value, undefined);
 
 watch(hostInput, setHostSelectWithInput);
 
