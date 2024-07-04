@@ -42,7 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, toRef } from 'vue';
+import type { UserDetailed } from 'misskey-js/entities.js';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -54,14 +56,35 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { useRouter } from '@/router/supplier.js';
 
+const props = withDefaults(defineProps<{
+	query?: string;
+	userId?: string;
+	username?: string;
+	host?: string;
+}>(), {
+	query: '',
+	userId: undefined,
+	username: undefined,
+	host: '',
+});
+
 const router = useRouter();
 
 const key = ref(0);
-const searchQuery = ref('');
-const searchOrigin = ref('combined');
-const notePagination = ref();
-const user = ref<any>(null);
+const searchQuery = ref(toRef(props, 'query').value);
+const notePagination = ref<Paging>();
+const user = ref<UserDetailed | null>(null);
 const isLocalOnly = ref(false);
+
+if (props.userId != null) {
+	misskeyApi('users/show', { userId: props.userId }).then(_user => {
+		user.value = _user;
+	});
+} else if (props.username != null) {
+	misskeyApi('users/show', { username: props.username, host: props.host }).then(_user => {
+		user.value = _user;
+	});
+}
 
 function selectUser() {
 	os.selectUser({ includeSelf: true }).then(_user => {
