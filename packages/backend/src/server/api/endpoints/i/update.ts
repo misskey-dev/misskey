@@ -25,7 +25,7 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
+import { RolePolicies, RoleService } from '@/core/RoleService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
@@ -256,6 +256,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const profileUpdates = {} as Partial<MiUserProfile>;
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+			let policies: RolePolicies | null = null;
 
 			if (ps.name !== undefined) updates.name = ps.name;
 			if (ps.description !== undefined) profileUpdates.description = ps.description;
@@ -289,14 +290,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.mutedWords !== undefined) {
-				checkMuteWordCount(ps.mutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
+				policies ??= await this.roleService.getUserPolicies(user.id);
+				checkMuteWordCount(ps.mutedWords, policies.wordMuteLimit);
 				validateMuteWordRegex(ps.mutedWords);
 
 				profileUpdates.mutedWords = ps.mutedWords;
 				profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 			}
 			if (ps.hardMutedWords !== undefined) {
-				checkMuteWordCount(ps.hardMutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
+				policies ??= await this.roleService.getUserPolicies(user.id);
+				checkMuteWordCount(ps.hardMutedWords, policies.wordMuteLimit);
 				validateMuteWordRegex(ps.hardMutedWords);
 				profileUpdates.hardMutedWords = ps.hardMutedWords;
 			}
@@ -315,14 +318,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 			if (typeof ps.alwaysMarkNsfw === 'boolean') {
-				if ((await roleService.getUserPolicies(user.id)).alwaysMarkNsfw) throw new ApiError(meta.errors.restrictedByRole);
+				policies ??= await this.roleService.getUserPolicies(user.id);
+				if (policies.alwaysMarkNsfw) throw new ApiError(meta.errors.restrictedByRole);
 				profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 			}
 			if (typeof ps.autoSensitive === 'boolean') profileUpdates.autoSensitive = ps.autoSensitive;
 			if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 			if (ps.avatarId) {
-				if (!(await roleService.getUserPolicies(user.id)).canUpdateBioMedia) throw new ApiError(meta.errors.restrictedByRole);
+				policies ??= await this.roleService.getUserPolicies(user.id);
+				if (!policies.canUpdateBioMedia) throw new ApiError(meta.errors.restrictedByRole);
 
 				const avatar = await this.driveFilesRepository.findOneBy({ id: ps.avatarId });
 
@@ -339,7 +344,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.bannerId) {
-				if (!(await roleService.getUserPolicies(user.id)).canUpdateBioMedia) throw new ApiError(meta.errors.restrictedByRole);
+				policies ??= await this.roleService.getUserPolicies(user.id);
+				if (!policies.canUpdateBioMedia) throw new ApiError(meta.errors.restrictedByRole);
 
 				const banner = await this.driveFilesRepository.findOneBy({ id: ps.bannerId });
 
@@ -356,14 +362,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.avatarDecorations) {
+				policies ??= await this.roleService.getUserPolicies(user.id);
 				const decorations = await this.avatarDecorationService.getAll(true);
-				const [myRoles, myPolicies] = await Promise.all([this.roleService.getUserRoles(user.id), this.roleService.getUserPolicies(user.id)]);
+				const myRoles = await this.roleService.getUserRoles(user.id);
 				const allRoles = await this.roleService.getRoles();
 				const decorationIds = decorations
 					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
 					.map(d => d.id);
 
-				if (ps.avatarDecorations.length > myPolicies.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
+				if (ps.avatarDecorations.length > policies.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
 
 				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
 					id: d.id,
