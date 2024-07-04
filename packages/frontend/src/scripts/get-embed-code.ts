@@ -76,10 +76,12 @@ export function copyEmbedCode(entity: EmbeddableEntity, idOrUsername: string, pa
 		copy(getEmbedCode(`/embed/${entity}/${_idOrUsername}`, _params));
 		os.success();
 	} else {
-		os.popup(MkEmbedCodeGenDialog, {
+		const { dispose } = os.popup(MkEmbedCodeGenDialog, {
 			entity,
 			idOrUsername,
 			params: _params,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}
 }
