@@ -30,7 +30,9 @@ export const Default = {
 			template: '<search_ v-bind="props" />',
 		};
 	},
-	args: {},
+	args: {
+		ignoreNotesSearchAvailable: true,
+	},
 	parameters: {
 		layout: 'fullscreen',
 		msw: {
@@ -44,9 +46,15 @@ export const Default = {
 	},
 } satisfies StoryObj<typeof search_>;
 
+export const NoteSearchDisabled = {
+	...Default,
+	args: {},
+} satisfies StoryObj<typeof search_>;
+
 export const WithUsername = {
 	...Default,
 	args: {
+		...Default.args,
 		username: userDetailed().username,
 		host: userDetailed().host,
 	},
@@ -58,6 +66,7 @@ export const WithUsernameLocal = {
 	...Default,
 
 	args: {
+		...Default.args,
 		username: localUser.username,
 		host: localUser.host,
 	},

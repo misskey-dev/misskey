@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'note'" key="note" :contentMax="800">
-			<div v-if="notesSearchAvailable">
+			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
 				<XNote v-bind="props"/>
 			</div>
 			<div v-else>
@@ -39,6 +39,8 @@ const props = withDefaults(defineProps<{
 	host?: string | null,
 	type?: 'note' | 'user',
 	origin?: 'combined' | 'local' | 'remote',
+	// For storybook only
+	ignoreNotesSearchAvailable?: boolean,
 }>(), {
 	query: '',
 	userId: undefined,
@@ -46,6 +48,7 @@ const props = withDefaults(defineProps<{
 	host: undefined,
 	type: 'note',
 	origin: 'combined',
+	ignoreNotesSearchAvailable: false,
 });
 
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));
