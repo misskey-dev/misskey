@@ -76,7 +76,7 @@ export class ImportAntennasProcessorService {
 					this.logger.warn('Validation Failed');
 					continue;
 				}
-				const result = await this.antennasRepository.insert({
+				const result = await this.antennasRepository.insertOne({
 					id: this.idService.gen(now.getTime()),
 					lastUsedAt: now,
 					userId: job.data.user.id,
@@ -91,7 +91,7 @@ export class ImportAntennasProcessorService {
 					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
-				}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
+				});
 				this.logger.succ('Antenna created: ' + result.id);
 				this.globalEventService.publishInternalEvent('antennaCreated', result);
 			}

@@ -465,7 +465,7 @@ function upload(file: File, name?: string): void {
 }
 
 function setVisibility() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: actualVisibility.value,
 		isSilenced: $i.isSilenced,
 		// チャンネル→ダイレクトの選択変更ができなくなるので、チャンネル選択中の場合は意図的にfalseを渡すようにする
@@ -485,7 +485,8 @@ function setVisibility() {
 			// computedで読み替えをするので、localOnlyとvisibilityの変更はしない
 			postChannel.value = channel;
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 async function toggleLocalOnly() {
@@ -627,8 +628,8 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, "0");
-			const file = new File([paste], `${fileName}.txt`, { type: "text/plain" });
+			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, '0');
+			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
 			upload(file, `${fileName}.txt`);
 		});
 	}
@@ -743,7 +744,9 @@ async function post(ev?: MouseEvent) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
-			os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+				end: () => dispose(),
+			});
 		}
 	}
 

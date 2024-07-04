@@ -160,7 +160,7 @@ function hasFocus() {
 	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
 }
 
-// eslint-disable-next-line vue/no-setup-props-destructure
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
 
 // Menu

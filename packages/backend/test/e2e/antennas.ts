@@ -157,13 +157,13 @@ describe('アンテナ', () => {
 			withReplies: false,
 			excludeBots: false,
 			localOnly: false,
+			notify: false,
 		};
 		assert.deepStrictEqual(response, expected);
 	});
 
 	test('が上限いっぱいまで作成できること', async () => {
-		// antennaLimit + 1まで作れるのがキモ
-		const response = await Promise.all([...Array(DEFAULT_POLICIES.antennaLimit + 1)].map(() => successfulApiCall({
+		const response = await Promise.all([...Array(DEFAULT_POLICIES.antennaLimit)].map(() => successfulApiCall({
 			endpoint: 'antennas/create',
 			parameters: { ...defaultParam },
 			user: alice,
