@@ -129,6 +129,7 @@ async function search() {
 
 	if (query == null || query === '') return;
 
+	//#region AP lookup
 	if (query.startsWith('https://')) {
 		const promise = misskeyApi('ap/show', {
 			uri: query,
@@ -146,6 +147,7 @@ async function search() {
 
 		return;
 	}
+	//#endregion
 
 	notePagination.value = {
 		endpoint: 'notes/search',
