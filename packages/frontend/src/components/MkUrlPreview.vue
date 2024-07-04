@@ -188,11 +188,13 @@ function adjustTweetHeight(message: any) {
 	if (height) tweetHeight.value = height;
 }
 
-const openPlayer = (): void => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
+function openPlayer(): void {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
 		url: requestUrl.href,
+	}, {
+		// TODO
 	});
-};
+}
 
 (window as any).addEventListener('message', adjustTweetHeight);
 

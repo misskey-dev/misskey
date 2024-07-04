@@ -99,10 +99,11 @@ function openAccountMenu(ev: MouseEvent) {
 }
 
 function more(ev: MouseEvent) {
-	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
 		src: ev.currentTarget ?? ev.target,
 	}, {
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 </script>
 
