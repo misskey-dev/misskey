@@ -2403,7 +2403,7 @@ _webhookSettings:
     renote: "リノートされるとき～！"
     reaction: "ツッコまれたとき～！"
     mention: "メンションがあるとき～！"
-  deleteConfirm: "Webhookを削除してもええか？"
+  deleteConfirm: "ほんまにWebhookをほかしてもええんか？"
 _abuseReport:
   _notificationRecipient:
     _recipientType:
