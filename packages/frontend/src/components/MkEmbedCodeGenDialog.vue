@@ -251,9 +251,9 @@ function windowEventHandler(event: MessageEvent) {
 function calcScale() {
 	if (!resizerRootEl.value) return;
 	const previewWidth = resizerRootEl.value.clientWidth - 40; // 左右の余白 20pxずつ
-	const previewHeight = resizerRootEl.value.clientHeight - 40; // 上下の余白 20pxずつ（プレビューの文字は28px）
+	const previewHeight = resizerRootEl.value.clientHeight - 40; // 上下の余白 20pxずつ
 	const iframeWidth = 500;
-	const scale = Math.min(previewWidth / iframeWidth, previewHeight / iframeHeight.value, 1); // 拡大はしない
+	const scale = Math.min(previewWidth / iframeWidth, previewHeight / iframeHeight.value, 1); // 拡大はしないので1を上限に
 	iframeScale.value = scale;
 }
 
