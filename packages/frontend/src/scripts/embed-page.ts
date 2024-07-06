@@ -5,9 +5,14 @@
 
 //#region Embed関連の定義
 
+let _isEmbedPage: boolean | null = null;
+
 /** 埋め込みページかどうか */
 export function isEmbedPage() {
-	return location.pathname.startsWith('/embed');
+	if (_isEmbedPage === null) {
+		_isEmbedPage = location.pathname.startsWith('/embed/');
+	}
+	return _isEmbedPage;
 }
 
 /** 埋め込みの対象となるエンティティ（/embed/xxx の xxx の部分と対応させる） */
