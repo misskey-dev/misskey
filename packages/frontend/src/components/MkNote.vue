@@ -951,10 +951,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 		padding: 20px 22px;
 	}
 
-	.instanceicon {
-		top: calc(14px + var(--stickyTop, 0px));
-	}
-
 	.footer {
 		margin-bottom: -8px;
 	}
