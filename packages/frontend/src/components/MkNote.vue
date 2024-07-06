@@ -47,10 +47,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
+		<MkInstanceIcon v-if="showInstanceIcon && showTicker" :class="$style.instanceicon"/>
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="showTicker && !showInstanceIcon" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
@@ -174,6 +175,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import MkInstanceIcon from '@/components/MkInstanceIcon.vue';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
@@ -268,6 +270,7 @@ const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hard
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
+const showInstanceIcon = ref(defaultStore.state.instanceIcon);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
 const renoteCollapsed = ref(
 	defaultStore.state.collapseRenotes && isRenote && (
@@ -777,6 +780,16 @@ function emitUpdReaction(emoji: string, delta: number) {
 	left: 0;
 }
 
+.instanceicon {
+	display: block !important;
+	padding-top: 33px;
+	margin-right: -25px;
+	height: 25px;
+	z-index: 10;
+	position: sticky !important;
+	top: calc(22px + var(--stickyTop, 0px));
+}
+
 .main {
 	flex: 1;
 	min-width: 0;
@@ -917,6 +930,12 @@ function emitUpdReaction(emoji: string, delta: number) {
 		width: 50px;
 		height: 50px;
 	}
+
+	.instanceicon {
+		padding-top: 29px;
+		height: 21px;
+		margin-right: -21px;
+	}
 }
 
 @container (max-width: 500px) {
@@ -930,6 +949,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 	.article {
 		padding: 20px 22px;
+	}
+
+	.instanceicon {
+		top: calc(14px + var(--stickyTop, 0px));
 	}
 
 	.footer {
@@ -963,9 +986,20 @@ function emitUpdReaction(emoji: string, delta: number) {
 		height: 46px;
 		top: calc(14px + var(--stickyTop, 0px));
 	}
+
+	.instanceicon {
+		padding-top: 27px;
+		height: 19px;
+		margin-right: -19px;
+	}
 }
 
 @container (max-width: 400px) {
+	.instanceicon {
+		height: 17px;
+		margin-right: -17px;
+	}
+
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
