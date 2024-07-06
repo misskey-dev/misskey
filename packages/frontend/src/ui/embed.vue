@@ -26,13 +26,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, ref, shallowRef, onMounted, onUnmounted } from 'vue';
+import { computed, provide, ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
 import XCommon from './_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 import { mainRouter } from '@/router/main.js';
 import { postMessageToParentWindow } from '@/scripts/post-message.js';
-import { parseEmbedParams } from '@/scripts/embed-page.js';
+import { defaultEmbedParams } from '@/scripts/embed-page.js';
+import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
+
+const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -60,14 +63,6 @@ mainRouter.navHook = (path, flag): boolean => {
 };
 //#endregion
 
-//#region Embed Provide
-provide('EMBED_PAGE', true);
-
-const params = new URLSearchParams(location.search);
-const embedParams = parseEmbedParams(params);
-provide('embedParams', embedParams);
-//#endregion
-
 //#region Embed Style
 const embedRounded = ref(embedParams.rounded);
 const embedNoBorder = ref(!embedParams.border);
@@ -93,11 +88,6 @@ onUnmounted(() => {
 	resizeObserver.disconnect();
 });
 //#endregion
-
-document.documentElement.style.maxWidth = '500px';
-
-// サーバー起動の場合はもとから付与されているけど一応
-document.documentElement.classList.add('embed');
 </script>
 
 <style lang="scss" module>
