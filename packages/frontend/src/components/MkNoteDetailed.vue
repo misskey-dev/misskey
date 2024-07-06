@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
 					</div>
 					<div :class="$style.noteHeaderInfo">
-						<a v-if="inEmbedPage" v-tooltip="instanceName" :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
+						<a v-if="inEmbedPage" :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
 							<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
 						</a>
 						<template v-else>
@@ -283,7 +283,7 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview, instance } from '@/instance.js';
-import { url, instanceName } from '@/config.js';
+import { url } from '@/config.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

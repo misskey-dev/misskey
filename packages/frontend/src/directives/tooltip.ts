@@ -59,8 +59,6 @@ export default {
 				targetElement: el,
 			}, {
 				closed: () => dispose(),
-			}, {
-				callEvenOnEmbedPage: true,
 			});
 
 			self._close = () => {
