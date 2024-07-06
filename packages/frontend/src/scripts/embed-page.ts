@@ -62,8 +62,10 @@ export function parseEmbedParams(searchParams: URLSearchParams | string): Parsed
 	let _searchParams: URLSearchParams;
 	if (typeof searchParams === 'string') {
 		_searchParams = new URLSearchParams(searchParams);
-	} else {
+	} else if (searchParams instanceof URLSearchParams) {
 		_searchParams = searchParams;
+	} else {
+		throw new Error('searchParams must be URLSearchParams or string');
 	}
 
 	const params: EmbedParams = {};

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { url } from '@/config.js';
 import { MOBILE_THRESHOLD } from '@/const.js';
@@ -9,7 +10,6 @@ import * as os from '@/os.js';
 import copy from '@/scripts/copy-to-clipboard.js';
 import type { EmbedParams, EmbeddableEntity } from '@/scripts/embed-page.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@/scripts/embed-page.js';
-import MkEmbedCodeGenDialog from '@/components/MkEmbedCodeGenDialog.vue';
 
 /**
  * パラメータを正規化する（埋め込みコード作成用）
@@ -76,7 +76,7 @@ export function copyEmbedCode(entity: EmbeddableEntity, idOrUsername: string, pa
 		copy(getEmbedCode(`/embed/${entity}/${_idOrUsername}`, _params));
 		os.success();
 	} else {
-		const { dispose } = os.popup(MkEmbedCodeGenDialog, {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkEmbedCodeGenDialog.vue')), {
 			entity,
 			idOrUsername,
 			params: _params,
