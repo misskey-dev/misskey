@@ -32,18 +32,6 @@
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
 	}
 
-	const isEmbedPage = document.documentElement.classList.contains('embed');
-
-	if (isEmbedPage) {
-		const params = new URLSearchParams(location.search);
-		if (params.has('rounded') && params.get('rounded') === 'false') {
-			document.documentElement.classList.add('norounded');
-		}
-		if (params.has('border') && params.get('border') === 'false') {
-			document.documentElement.classList.add('noborder');
-		}
-	}
-
 	//#region Detect language & fetch translations
 	if (!localStorage.hasOwnProperty('locale')) {
 		const supportedLangs = LANGS;
@@ -116,51 +104,49 @@
 	}
 	//#endregion
 
-	if (!isEmbedPage) {
-		//#region Theme
-		const theme = localStorage.getItem('theme');
-		if (theme) {
-			for (const [k, v] of Object.entries(JSON.parse(theme))) {
-				document.documentElement.style.setProperty(`--${k}`, v.toString());
+	//#region Theme
+	const theme = localStorage.getItem('theme');
+	if (theme) {
+		for (const [k, v] of Object.entries(JSON.parse(theme))) {
+			document.documentElement.style.setProperty(`--${k}`, v.toString());
 
-				// HTMLの theme-color 適用
-				if (k === 'htmlThemeColor') {
-					for (const tag of document.head.children) {
-						if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-							tag.setAttribute('content', v);
-							break;
-						}
+			// HTMLの theme-color 適用
+			if (k === 'htmlThemeColor') {
+				for (const tag of document.head.children) {
+					if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+						tag.setAttribute('content', v);
+						break;
 					}
 				}
 			}
 		}
-		const colorScheme = localStorage.getItem('colorScheme');
-		if (colorScheme) {
-			document.documentElement.style.setProperty('color-scheme', colorScheme);
-		}
-		//#endregion
+	}
+	const colorScheme = localStorage.getItem('colorScheme');
+	if (colorScheme) {
+		document.documentElement.style.setProperty('color-scheme', colorScheme);
+	}
+	//#endregion
 
-		const fontSize = localStorage.getItem('fontSize');
-		if (fontSize) {
-			document.documentElement.classList.add('f-' + fontSize);
-		}
+	const fontSize = localStorage.getItem('fontSize');
+	if (fontSize) {
+		document.documentElement.classList.add('f-' + fontSize);
+	}
 
-		const useSystemFont = localStorage.getItem('useSystemFont');
-		if (useSystemFont) {
-			document.documentElement.classList.add('useSystemFont');
-		}
+	const useSystemFont = localStorage.getItem('useSystemFont');
+	if (useSystemFont) {
+		document.documentElement.classList.add('useSystemFont');
+	}
 
-		const wallpaper = localStorage.getItem('wallpaper');
-		if (wallpaper) {
-			document.documentElement.style.backgroundImage = `url(${wallpaper})`;
-		}
+	const wallpaper = localStorage.getItem('wallpaper');
+	if (wallpaper) {
+		document.documentElement.style.backgroundImage = `url(${wallpaper})`;
+	}
 
-		const customCss = localStorage.getItem('customCss');
-		if (customCss && customCss.length > 0) {
-			const style = document.createElement('style');
-			style.innerHTML = customCss;
-			document.head.appendChild(style);
-		}
+	const customCss = localStorage.getItem('customCss');
+	if (customCss && customCss.length > 0) {
+		const style = document.createElement('style');
+		style.innerHTML = customCss;
+		document.head.appendChild(style);
 	}
 
 	async function addStyle(styleText) {
@@ -188,7 +174,7 @@
 			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
 			<p>Disable an adblocker / アドブロッカーを無効にする</p>
 	 		<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
-			<details class="hide-when-embed" style="color: #86b300;">
+			<details style="color: #86b300;">
 				<summary>Other options / その他のオプション</summary>
 				<a href="/flush">
 					<button class="button-small">
@@ -240,10 +226,6 @@
 			margin: auto;
 			padding: 10px;
 			text-align: center;
-		}
-
-		html.embed .hide-when-embed {
-			display: none;
 		}
 
 		button {
@@ -332,6 +314,6 @@
 			#errorInfo {
 				width: 50%;
 			}
-		`)
+		}`)
 	}
 })();

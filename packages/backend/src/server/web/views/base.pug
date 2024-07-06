@@ -74,8 +74,12 @@ html(class=embed && 'embed')
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson
 
-		script
-			include ../boot.js
+		if embed
+			script
+				include ../boot.embed.js
+		else
+			script
+				include ../boot.js
 
 	body
 		noscript: p
