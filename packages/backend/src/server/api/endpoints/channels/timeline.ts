@@ -109,7 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludePureRenotes: false,
 				noteFilter: note => {
 					// 共通機能を使うと見ているチャンネルそのものもミュートしてしまうので閲覧中のチャンネル以外を除く形にする
-					if (note.channelId === channel.id) return true;
+					if (note.channelId === channel.id && (note.renoteChannelId === null || note.renoteChannelId === channel.id)) return true;
 					return !isChannelRelated(note, mutingChannelIds);
 				},
 				dbFallback: async (untilId, sinceId, limit) => {
