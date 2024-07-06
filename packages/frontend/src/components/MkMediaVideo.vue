@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			controls
 			@keydown.prevent
 		>
-			<source :src="video.url" :type="audio.type">
+			<source :src="video.url" :type="video.type">
 		</video>
 		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@keydown.prevent
 			@click.self="togglePlayPause"
 		>
-			<source :src="video.url" :type="audio.type">
+			<source :src="video.url" :type="video.type">
 		</video>
 		<button v-if="isReady && !isPlaying" class="_button" :class="$style.videoOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
 		<div v-else-if="!isActuallyPlaying" :class="$style.videoLoading">
