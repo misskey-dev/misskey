@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="$style.nativeAudio"
 			@keydown.prevent
 		>
-			<source :src="audio.url">
+			<source :src="audio.url" :type="audio.type">
 		</audio>
 	</div>
 
@@ -39,8 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<audio
 			ref="audioEl"
 			preload="metadata"
+			tabindex="-1"
+			@keydown.prevent
 		>
-			<source :src="audio.url">
+			<source :src="audio.url" :type="audio.type">
 		</audio>
 		<div :class="[$style.controlsChild, $style.controlsLeft]">
 			<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
