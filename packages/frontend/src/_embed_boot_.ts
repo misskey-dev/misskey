@@ -14,6 +14,7 @@ import type { CommonBootOptions } from '@/boot/common.js';
 import { setIframeId, postMessageToParentWindow } from '@/scripts/post-message.js';
 import { parseEmbedParams } from '@/scripts/embed-page.js';
 import { defaultStore } from '@/store.js';
+import { useRouter } from '@/router/supplier.js';
 
 const bootOptions: Partial<CommonBootOptions> = {};
 
@@ -59,6 +60,15 @@ common(() => createApp(
 	await defaultStore.ready;
 
 	defaultStore.set('sound_notUseSound', true);
+	//#endregion
+
+	//#region Embed Link Behavior
+	//強制的に新しいタブで開く
+	const router = useRouter();
+	router.navHook = (path, flag): boolean => {
+		window.open(path, '_blank', 'noopener');
+		return true;
+	};
 	//#endregion
 
 	// 起動完了を通知（このあとクライアント側から misskey:embedParent:registerIframeId が送信される）

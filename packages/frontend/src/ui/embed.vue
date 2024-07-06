@@ -55,14 +55,6 @@ provideMetadataReceiver((metadataGetter) => {
 });
 provideReactiveMetadata(pageMetadata);
 
-//#region Embed Link Behavior
-//強制的に新しいタブで開く
-mainRouter.navHook = (path, flag): boolean => {
-	window.open(path, '_blank', 'noopener');
-	return true;
-};
-//#endregion
-
 //#region Embed Style
 const embedRounded = ref(embedParams.rounded);
 const embedNoBorder = ref(!embedParams.border);
