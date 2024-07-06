@@ -33,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:poster="video.thumbnailUrl ?? undefined"
 			:title="video.comment ?? undefined"
 			:alt="video.comment"
+			tabindex="-1"
 			preload="metadata"
 			controls
 			@keydown.prevent
@@ -53,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:poster="video.thumbnailUrl ?? undefined"
 			:title="video.comment ?? undefined"
 			:alt="video.comment"
+			tabindex="-1"
 			preload="metadata"
 			playsinline
 			@keydown.prevent
@@ -109,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, shallowRef, computed, watch, inject, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import bytes from '@/filters/bytes.js';
@@ -126,28 +128,35 @@ const props = defineProps<{
 	video: Misskey.entities.DriveFile;
 }>();
 
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
+
 const keymap = {
 	'up': () => {
+		if (inEmbedPage) return;
 		if (hasFocus() && videoEl.value) {
 			volume.value = Math.min(volume.value + 0.1, 1);
 		}
 	},
 	'down': () => {
+		if (inEmbedPage) return;
 		if (hasFocus() && videoEl.value) {
 			volume.value = Math.max(volume.value - 0.1, 0);
 		}
 	},
 	'left': () => {
+		if (inEmbedPage) return;
 		if (hasFocus() && videoEl.value) {
 			videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
 		}
 	},
 	'right': () => {
+		if (inEmbedPage) return;
 		if (hasFocus() && videoEl.value) {
 			videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
 		}
 	},
 	'space': () => {
+		if (inEmbedPage) return;
 		if (hasFocus()) {
 			togglePlayPause();
 		}
