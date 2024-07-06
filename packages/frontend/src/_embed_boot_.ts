@@ -43,6 +43,7 @@ function setIframeIdHandler(event: MessageEvent) {
 		window.removeEventListener('message', setIframeIdHandler);
 	}
 }
+
 window.addEventListener('message', setIframeIdHandler);
 
 // 起動
