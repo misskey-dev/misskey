@@ -412,7 +412,7 @@ onUnmounted(() => {
 }
 
 @container (max-width: 800px) {
-	.embedCodeGenWrapper {
+	.embedCodeGenInputRoot {
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr 1fr;
 	}
