@@ -58,7 +58,6 @@ common(() => createApp(
 	await defaultStore.ready;
 
 	defaultStore.set('sound_notUseSound', true);
-	defaultStore.set('showPreview', false);
 	//#endregion
 
 	// 起動完了を通知（このあとクライアント側から misskey:embedParent:registerIframeId が送信される）
