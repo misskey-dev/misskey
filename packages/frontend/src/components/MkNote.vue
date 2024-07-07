@@ -987,6 +987,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 		padding-top: 27px;
 		height: 19px;
 		margin-right: -19px;
+		top: calc(14px + var(--stickyTop, 0px));
 	}
 }
 
