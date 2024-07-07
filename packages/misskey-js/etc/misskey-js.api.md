@@ -1869,7 +1869,7 @@ type FetchExternalResourcesResponse = operations['fetch-external-resources']['re
 // @public (undocumented)
 type FetchLike = (input: string, init?: {
     method?: string;
-    body?: string;
+    body?: Blob | FormData | string;
     credentials?: RequestCredentials;
     cache?: RequestCache;
     headers: {

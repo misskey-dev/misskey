@@ -257,7 +257,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-			if (ps.name !== undefined) updates.name = ps.name;
+			if (ps.name !== undefined) {
+				if (ps.name === null) {
+					updates.name = null;
+				} else {
+					const trimmedName = ps.name.trim();
+					updates.name = trimmedName === '' ? null : trimmedName;
+				}
+			}
 			if (ps.description !== undefined) profileUpdates.description = ps.description;
 			if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
