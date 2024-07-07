@@ -1001,6 +1001,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'admin/emoji/set-category-bulk': 'application/json',
 	'admin/emoji/set-license-bulk': 'application/json',
 	'admin/emoji/update': 'application/json',
+	'admin/emoji/v2/list': 'application/json',
 	'admin/federation/delete-all-files': 'application/json',
 	'admin/federation/refresh-remote-instance-metadata': 'application/json',
 	'admin/federation/remove-all-following': 'application/json',
