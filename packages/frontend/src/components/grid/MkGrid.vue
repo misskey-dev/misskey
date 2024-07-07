@@ -1272,6 +1272,7 @@ onMounted(() => {
 <style module lang="scss">
 .grid {
 	font-size: 90%;
+	overflow-x: scroll;
 }
 </style>
 
