@@ -11,24 +11,30 @@
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
 - Fix: コントロールパネルでベースロールのポリシーを編集してもUI上では変更が反映されない問題を修正 
 - Fix: アンテナの編集画面のボタンに隙間を追加
+- Fix: テーマプレビューが見れない問題を修正
 - Fix: 子メニューの高さがウィンドウからはみ出ることがある問題を修正
 
 ### Server
-- チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
-- Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
-- Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
 - Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
 - Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
 - Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
 - Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
+- Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
+- Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
 - Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
 - Fix: FTT有効時、タイムライン用エンドポイントで`sinceId`にキャッシュ内最古のものより古いものを指定した場合に正しく結果が返ってこない問題を修正
 - Fix: 自分以外のクリップ内のノート個数が見えることがあるのを修正
 - Fix: 空文字列のリアクションはフォールバックされるように
 - Fix: リノートにリアクションできないように
+- Fix: ユーザー名の前後に空白文字列がある場合は省略するように
+- Fix: プロフィール編集時に名前を空白文字列のみにできる問題を修正
+
+### Misskey.js
+- Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
 
 ## 2024.5.0
 
