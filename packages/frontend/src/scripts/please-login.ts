@@ -11,7 +11,7 @@ import { popup } from '@/os.js';
 export function pleaseLogin(path?: string) {
 	if ($i) return;
 
-	popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
 		autoSet: true,
 		message: i18n.ts.signinRequired,
 	}, {
@@ -20,7 +20,8 @@ export function pleaseLogin(path?: string) {
 				window.location.href = path;
 			}
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 
 	throw new Error('signin required');
 }
