@@ -266,6 +266,67 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
+		test('リノートにリアクションできない', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+			const bobRenote = await post(bob, { renoteId: bobNote.id });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobRenote.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.body.error.code, 'CANNOT_REACT_TO_RENOTE');
+		});
+
+		test('引用にリアクションできる', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+			const bobRenote = await post(bob, { text: 'hi again', renoteId: bobNote.id });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobRenote.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+		});
+
+		test('空文字列のリアクションは\u2764にフォールバックされる', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobNote.id,
+				reaction: '',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+
+			const reaction = await api('notes/reactions', {
+				noteId: bobNote.id,
+			});
+
+			assert.strictEqual(reaction.body.length, 1);
+			assert.strictEqual(reaction.body[0].type, '\u2764');
+		});
+
+		test('絵文字ではない文字列のリアクションは\u2764にフォールバックされる', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobNote.id,
+				reaction: 'Hello!',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+
+			const reaction = await api('notes/reactions', {
+				noteId: bobNote.id,
+			});
+
+			assert.strictEqual(reaction.body.length, 1);
+			assert.strictEqual(reaction.body[0].type, '\u2764');
+		});
+
 		test('空のパラメータで怒られる', async () => {
 			// @ts-expect-error param must not be empty
 			const res = await api('notes/reactions/create', {}, alice);
@@ -523,7 +584,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body!.name, 'Lenna.jpg');
+			assert.strictEqual(res.body!.name, '192.jpg');
 		});
 
 		test('ファイルに名前を付けられる', async () => {

@@ -252,6 +252,9 @@ const routes: RouteDef[] = [{
 	path: '/scratchpad',
 	component: page(() => import('@/pages/scratchpad.vue')),
 }, {
+	path: '/preview',
+	component: page(() => import('@/pages/preview.vue')),
+}, {
 	path: '/auth/:token',
 	component: page(() => import('@/pages/auth.vue')),
 }, {
