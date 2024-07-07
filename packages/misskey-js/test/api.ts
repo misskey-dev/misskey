@@ -111,7 +111,10 @@ describe('API', () => {
 
 		const testFile = new File([], 'foo.txt');
 
-		const res = await cli.request('drive/files/create', { file: testFile });
+		const res = await cli.request('drive/files/create', {
+			file: testFile,
+			name: null, // nullのパラメータは消える
+		});
 
 		expect(res).toEqual({
 			id: 'foo'
@@ -121,7 +124,10 @@ describe('API', () => {
 			url: 'https://misskey.test/api/drive/files/create',
 			method: 'POST',
 			contentType: 'multipart/form-data',
-			body: { i: 'TOKEN', file: testFile }
+			body: {
+				i: 'TOKEN',
+				file: testFile,
+			}
 		});
 	});
 

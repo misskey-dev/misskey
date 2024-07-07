@@ -79,11 +79,14 @@ export class APIClient {
 				if (this.assertIsRecord(params)) {
 					for (const key in params) {
 						const value = params[key];
+
+						if (value == null) continue;
+
 						if (value instanceof File || value instanceof Blob) {
 							payload.append(key, value);
 						} else if (typeof value === 'object') {
 							payload.append(key, JSON.stringify(value));
-						} else if (value != null) {
+						} else {
 							payload.append(key, value);
 						}
 					}
