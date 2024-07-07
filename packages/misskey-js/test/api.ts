@@ -5,13 +5,14 @@ enableFetchMocks();
 
 function getFetchCall(call: any[]) {
 	const { body, method } = call[1];
-	if (body != null && typeof body != 'string') {
+	if (body != null && typeof body != 'string' && !(body instanceof FormData)) {
 		throw new Error('invalid body');
 	}
 	return {
 		url: call[0],
 		method: method,
-		body: JSON.parse(body as any)
+		contentType: call[1].headers['Content-Type'],
+		body: body instanceof FormData ? Object.fromEntries(body.entries()) : JSON.parse(body),
 	};
 }
 
@@ -45,6 +46,7 @@ describe('API', () => {
 		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
 			url: 'https://misskey.test/api/i',
 			method: 'POST',
+			contentType: 'application/json',
 			body: { i: 'TOKEN' }
 		});
 	});
@@ -78,7 +80,43 @@ describe('API', () => {
 		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
 			url: 'https://misskey.test/api/notes/show',
 			method: 'POST',
+			contentType: 'application/json',
 			body: { i: 'TOKEN', noteId: 'aaaaa' }
+		});
+	});
+
+	test('multipart/form-data', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockResponse(async (req) => {
+			if (req.method == 'POST' && req.url == 'https://misskey.test/api/drive/files/create') {
+				if (req.headers.get('Content-Type')?.includes('multipart/form-data')) {
+					return JSON.stringify({ id: 'foo' });
+				} else {
+					return { status: 400 };
+				}
+			} else {
+				return { status: 404 };
+			}
+		});
+
+		const cli = new APIClient({
+			origin: 'https://misskey.test',
+			credential: 'TOKEN',
+		});
+
+		const testFile = new File([], 'foo.txt');
+
+		const res = await cli.request('drive/files/create', { file: testFile });
+
+		expect(res).toEqual({
+			id: 'foo'
+		});
+
+		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
+			url: 'https://misskey.test/api/drive/files/create',
+			method: 'POST',
+			contentType: 'multipart/form-data',
+			body: { i: 'TOKEN', file: testFile }
 		});
 	});
 
@@ -104,6 +142,7 @@ describe('API', () => {
 		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
 			url: 'https://misskey.test/api/reset-password',
 			method: 'POST',
+			contentType: 'application/json',
 			body: { i: 'TOKEN', token: 'aaa', password: 'aaa' }
 		});
 	});
