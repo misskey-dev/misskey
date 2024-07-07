@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
-		<header v-if="title" :class="$style.title"><Mfm v-bind="titleMfm"/></header>
-		<div v-if="text" :class="$style.text"><Mfm v-bind="textMfm"/></div>
+		<header v-if="title" :class="$style.title"><span v-if="titleMfm === null">{{ title ?? '' }}</span><Mfm v-else v-bind="titleMfm"/></header>
+		<div v-if="text" :class="$style.text"><span v-if="textMfm === null">{{ text ?? '' }}</span><Mfm v-else v-bind="textMfm"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
@@ -49,6 +49,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </MkModal>
 </template>
+
+<script lang="ts">
+import * as Misskey from 'misskey-js';
+
+export type DialogTextFormattingProps = string | {
+	text: string;
+	disableMfm?: false;
+	plain?: boolean;
+	author?: Misskey.entities.UserLite;
+	emojiUrls?: Record<string, string>;
+} | {
+	text: string;
+	disableMfm: true;
+};
+</script>
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, shallowRef, computed } from 'vue';
@@ -80,8 +95,8 @@ type Result = string | number | true | null;
 
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
-	title?: string | MfmProps;
-	text?: string | MfmProps;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	input?: Input;
 	select?: Select;
 	icon?: string;
@@ -108,16 +123,28 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const titleMfm = computed<MfmProps>(() => {
+const titleMfm = computed<MfmProps | null>(() => {
 	if (props.title == null) return { text: '' };
 	if (typeof props.title === 'string') return { text: props.title };
-	return props.title;
+	if (props.title.disableMfm === true) return null;
+	return {
+		text: props.title.text,
+		plain: props.title.plain,
+		author: props.title.author,
+		emojiUrls: props.title.emojiUrls,
+	};
 });
 
-const textMfm = computed<MfmProps>(() => {
+const textMfm = computed<MfmProps | null>(() => {
 	if (props.text == null) return { text: '' };
 	if (typeof props.text === 'string') return { text: props.text };
-	return props.text;
+	if (props.text.disableMfm === true) return null;
+	return {
+		text: props.text.text,
+		plain: props.text.plain,
+		author: props.text.author,
+		emojiUrls: props.text.emojiUrls,
+	};
 });
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
