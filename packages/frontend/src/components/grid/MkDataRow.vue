@@ -4,7 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<tr
+<div
+	class="mk_grid_tr"
 	:class="[
 		$style.row,
 		row.ranged ? $style.ranged : {},
@@ -13,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:style="[
 		...(row.additionalStyles ?? []).map(it => it.style ?? {}),
 	]"
+	:data-grid-row="row.index"
 >
 	<MkNumberCell
 		v-if="setting.showNumber"
@@ -31,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@change:value="(sender, newValue) => emit('change:value', sender, newValue)"
 		@change:contentSize="(sender, newSize) => emit('change:contentSize', sender, newSize)"
 	/>
-</tr>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +60,10 @@ defineProps<{
 
 <style module lang="scss">
 .row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
 	&.ranged {
 		background-color: var(--accentedBg);
 	}

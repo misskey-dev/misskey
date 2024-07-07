@@ -4,11 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<td
+<div
 	ref="rootEl"
+	class="mk_grid_td"
 	:class="$style.cell"
 	:style="{ maxWidth: cellWidth, minWidth: cellWidth }"
 	:tabindex="-1"
+	data-grid-cell
+	:data-grid-cell-row="cell.row.index"
+	:data-grid-cell-col="cell.column.index"
 	@keydown="onCellKeyDown"
 	@dblclick.prevent="onCellDoubleClick"
 >
@@ -77,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			/>
 		</div>
 	</div>
-</td>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -143,7 +147,7 @@ function onCellDoubleClick(ev: MouseEvent) {
 
 function onOutsideMouseDown(ev: MouseEvent) {
 	const isOutside = ev.target instanceof Node && !rootEl.value?.contains(ev.target);
-	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement, rowSetting.value))) {
+	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement))) {
 		endEditing(true);
 	}
 }
@@ -352,9 +356,9 @@ $cellHeight: 28px;
 	width: 100%;
 	max-width: 100%;
 	box-sizing: border-box;
-	min-height: $cellHeight;
-	max-height: $cellHeight;
-	height: $cellHeight + 4px;
+	min-height: $cellHeight - 2;
+	max-height: $cellHeight - 2;
+	height: $cellHeight - 2;
 	outline: none;
 	border: none;
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;

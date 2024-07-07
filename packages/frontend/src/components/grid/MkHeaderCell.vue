@@ -4,16 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<th
+<div
 	ref="rootEl"
+	class="mk_grid_th"
 	:class="$style.cell"
 	:style="[{ maxWidth: column.width, minWidth: column.width, width: column.width }]"
+	data-grid-cell
+	:data-grid-cell-row="-1"
+	:data-grid-cell-col="column.index"
 >
 	<div :class="$style.root">
 		<div :class="$style.left"/>
 		<div :class="$style.wrapper">
 			<div ref="contentEl" :class="$style.contentArea">
-				<span v-if="column.setting.icon" class="ti" :class="column.setting.icon"/>
+				<span v-if="column.setting.icon" class="ti" :class="column.setting.icon" style="line-height: normal"/>
 				<span v-else>{{ text }}</span>
 			</div>
 		</div>
@@ -23,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@dblclick="onHandleDoubleClick"
 		/>
 	</div>
-</th>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -161,6 +165,7 @@ onUnmounted(() => {
 
 <style module lang="scss">
 $handleWidth: 5px;
+$cellHeight: 28px;
 
 .cell {
 	cursor: pointer;
@@ -169,7 +174,9 @@ $handleWidth: 5px;
 .root {
 	display: flex;
 	flex-direction: row;
-	height: 100%;
+	height: $cellHeight;
+	max-height: $cellHeight;
+	min-height: $cellHeight;
 
 	.wrapper {
 		flex: 1;

@@ -4,14 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<table
+<div
 	ref="rootEl"
-	:class="[$style.grid, $style.border]"
+	class="mk_grid_border"
+	:class="[$style.grid]"
 	@mousedown.prevent="onMouseDown"
 	@keydown="onKeyDown"
 	@contextmenu.prevent.stop="onContextMenu"
 >
-	<thead>
+	<div class="mk_grid_thead">
 		<MkHeaderRow
 			:columns="columns"
 			:gridSetting="rowSetting"
@@ -22,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@change:width="onHeaderCellChangeWidth"
 			@change:contentSize="onHeaderCellChangeContentSize"
 		/>
-	</thead>
-	<tbody>
+	</div>
+	<div class="mk_grid_tbody">
 		<MkDataRow
 			v-for="row in rows"
 			v-show="row.using"
@@ -39,8 +40,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@change:value="onChangeCellValue"
 			@change:contentSize="onChangeCellContentSize"
 		/>
-	</tbody>
-</table>
+	</div>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -81,14 +82,14 @@ const props = defineProps<{
 }>();
 
 // non-reactive
-// eslint-disable-next-line vue/no-setup-props-destructure
+
 const rowSetting: Required<GridRowSetting> = {
 	...defaultGridRowSetting,
 	...props.settings.row,
 };
 
 // non-reactive
-// eslint-disable-next-line vue/no-setup-props-destructure
+
 const columnSettings = props.settings.cols;
 
 // non-reactive
@@ -448,7 +449,7 @@ function onMouseDown(ev: MouseEvent) {
 }
 
 function onLeftMouseDown(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
+	const cellAddress = getCellAddress(ev.target as HTMLElement);
 	if (_DEV_) {
 		console.log(`[grid][mouse-left] state:${state.value}, button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -582,7 +583,7 @@ function onLeftMouseDown(ev: MouseEvent) {
 }
 
 function onRightMouseDown(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
+	const cellAddress = getCellAddress(ev.target as HTMLElement);
 	if (_DEV_) {
 		console.log(`[grid][mouse-right] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -607,7 +608,7 @@ function onRightMouseDown(ev: MouseEvent) {
 function onMouseMove(ev: MouseEvent) {
 	ev.preventDefault();
 
-	const targetCellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
+	const targetCellAddress = getCellAddress(ev.target as HTMLElement);
 	if (equalCellAddress(previousCellAddress.value, targetCellAddress)) {
 		// セルが変わるまでイベントを起こしたくない
 		return;
@@ -718,7 +719,7 @@ function onMouseUp(ev: MouseEvent) {
 }
 
 function onContextMenu(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement, rowSetting);
+	const cellAddress = getCellAddress(ev.target as HTMLElement);
 	if (_DEV_) {
 		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -1270,22 +1271,22 @@ onMounted(() => {
 </script>
 
 <style module lang="scss">
+.grid {
+	font-size: 90%;
+}
+</style>
+
+<style lang="scss">
 $borderSetting: solid 0.5px var(--divider);
 $borderRadius: var(--radius);
 
-.grid {
-	overflow: scroll;
-	table-layout: fixed;
-	user-select: none;
-	font-size: 90%;
-}
-
-.border {
+// 配下コンポーネントを含めて一括してコントロールするため、scopedもmoduleも使用できない
+.mk_grid_border {
 	border-spacing: 0;
 
-	thead {
-		tr {
-			th {
+	.mk_grid_thead {
+		.mk_grid_tr {
+			.mk_grid_th {
 				border-left: $borderSetting;
 				border-top: $borderSetting;
 
@@ -1303,9 +1304,9 @@ $borderRadius: var(--radius);
 		}
 	}
 
-	tbody {
-		tr {
-			td, th {
+	.mk_grid_tbody {
+		.mk_grid_tr {
+			.mk_grid_td, .mk_grid_th {
 				border-left: $borderSetting;
 				border-top: $borderSetting;
 
@@ -1316,7 +1317,7 @@ $borderRadius: var(--radius);
 			}
 
 			&.lastLine {
-				td, th {
+				.mk_grid_td, .mk_grid_th {
 					// 一番下の行
 					border-bottom: $borderSetting;
 

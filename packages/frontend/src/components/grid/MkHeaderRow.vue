@@ -4,7 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<tr>
+<div
+	class="mk_grid_tr"
+	:class="$style.root"
+	:data-grid-row="-1"
+>
 	<MkNumberCell
 		v-if="gridSetting.showNumber"
 		content="#"
@@ -21,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@change:width="(sender, width) => emit('change:width', sender, width)"
 		@change:contentSize="(sender, newSize) => emit('change:contentSize', sender, newSize)"
 	/>
-</tr>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -46,3 +50,11 @@ defineProps<{
 	bus: GridEventEmitter,
 }>();
 </script>
+
+<style module lang="scss">
+.root {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+</style>

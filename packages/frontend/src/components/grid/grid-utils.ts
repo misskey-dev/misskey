@@ -6,17 +6,17 @@
 import { isRef, Ref } from 'vue';
 import { DataSource, SizeStyle } from '@/components/grid/grid.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
-import { GridRow, GridRowSetting } from '@/components/grid/row.js';
+import { GridRow } from '@/components/grid/row.js';
 import { GridContext } from '@/components/grid/grid-event.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { GridColumn, GridColumnSetting } from '@/components/grid/column.js';
 
-export function isCellElement(elem: any): elem is HTMLTableCellElement {
-	return elem instanceof HTMLTableCellElement;
+export function isCellElement(elem: HTMLElement): boolean {
+	return elem.hasAttribute('data-grid-cell');
 }
 
-export function isRowElement(elem: any): elem is HTMLTableRowElement {
-	return elem instanceof HTMLTableRowElement;
+export function isRowElement(elem: HTMLElement): boolean {
+	return elem.hasAttribute('data-grid-row');
 }
 
 export function calcCellWidth(widthSetting: SizeStyle): string {
@@ -31,20 +31,34 @@ export function calcCellWidth(widthSetting: SizeStyle): string {
 	}
 }
 
-export function getCellAddress(elem: HTMLElement, gridSetting: GridRowSetting, parentNodeCount = 10): CellAddress {
+function getCellRowByAttribute(elem: HTMLElement): number {
+	const row = elem.getAttribute('data-grid-cell-row');
+	if (row === null) {
+		throw new Error('data-grid-cell-row attribute not found');
+	}
+	return Number(row);
+}
+
+function getCellColByAttribute(elem: HTMLElement): number {
+	const col = elem.getAttribute('data-grid-cell-col');
+	if (col === null) {
+		throw new Error('data-grid-cell-col attribute not found');
+	}
+	return Number(col);
+}
+
+export function getCellAddress(elem: HTMLElement, parentNodeCount = 10): CellAddress {
 	let node = elem;
 	for (let i = 0; i < parentNodeCount; i++) {
-		if (isCellElement(node) && isRowElement(node.parentElement)) {
-			return {
-				// ヘッダ行ぶんを除く
-				row: node.parentElement.rowIndex - 1,
-				// 数値列ぶんを除く
-				col: gridSetting.showNumber ? node.cellIndex - 1 : node.cellIndex,
-			};
-		}
-
 		if (!node.parentElement) {
 			break;
+		}
+
+		if (isCellElement(node) && isRowElement(node.parentElement)) {
+			const row = getCellRowByAttribute(node);
+			const col = getCellColByAttribute(node);
+
+			return { row, col };
 		}
 
 		node = node.parentElement;
@@ -53,7 +67,7 @@ export function getCellAddress(elem: HTMLElement, gridSetting: GridRowSetting, p
 	return CELL_ADDRESS_NONE;
 }
 
-export function getCellElement(elem: HTMLElement, parentNodeCount = 10): HTMLTableCellElement | null {
+export function getCellElement(elem: HTMLElement, parentNodeCount = 10): HTMLElement | null {
 	let node = elem;
 	for (let i = 0; i < parentNodeCount; i++) {
 		if (isCellElement(node)) {
