@@ -992,11 +992,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 }
 
 @container (max-width: 400px) {
-	.instanceicon {
-		height: 17px;
-		margin-right: -17px;
-	}
-
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
@@ -1027,6 +1022,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 	.avatar {
 		width: 44px;
 		height: 44px;
+	}
+
+	.instanceicon {
+		margin-right: -17px;
+		height: 17px;
 	}
 
 	.root:not(.showActionsOnlyHover) {
