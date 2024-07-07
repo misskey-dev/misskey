@@ -13979,7 +13979,7 @@ export type operations = {
            * Format: binary
            * @description The file contents.
            */
-          file: string;
+          file: Blob;
         };
       };
     };
