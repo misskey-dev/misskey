@@ -30,6 +30,9 @@
 - Fix: 空文字列のリアクションはフォールバックされるように
 - Fix: リノートにリアクションできないように
 
+### Misskey.js
+- Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
+
 ## 2024.5.0
 
 ### Note
