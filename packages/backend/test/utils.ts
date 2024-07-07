@@ -297,7 +297,7 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	body: misskey.entities.DriveFile | null
 }> => {
 	const absPath = path == null
-		? new URL('resources/Lenna.jpg', import.meta.url)
+		? new URL('resources/192.jpg', import.meta.url)
 		: isAbsolute(path.toString())
 			? new URL(path)
 			: new URL(path, new URL('resources/', import.meta.url));
@@ -603,14 +603,6 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	await db.initialize();
 
 	return db;
-}
-
-export function sleep(msec: number) {
-	return new Promise<void>(res => {
-		setTimeout(() => {
-			res();
-		}, msec);
-	});
 }
 
 export async function sendEnvUpdateRequest(params: { key: string, value?: string }) {

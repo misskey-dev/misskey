@@ -7,16 +7,17 @@
 // pnpm jest -- e2e/timelines.ts
 
 import * as assert from 'assert';
+import { setTimeout } from 'node:timers/promises';
 import { Redis } from 'ioredis';
 import { loadConfig } from '@/config.js';
-import { api, post, randomString, sendEnvUpdateRequest, signup, sleep, uploadUrl } from '../utils.js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';
 }
 
 function waitForPushToTl() {
-	return sleep(500);
+	return setTimeout(500);
 }
 
 let redisForTimelines: Redis;
@@ -44,7 +45,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi' });
 			const carolNote = await post(carol, { text: 'hi' });
 
@@ -60,7 +61,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 			const carolNote = await post(carol, { text: 'hi' });
 
@@ -77,7 +78,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -94,7 +95,7 @@ describe('Timelines', () => {
 
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -111,7 +112,7 @@ describe('Timelines', () => {
 
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
 
@@ -128,7 +129,7 @@ describe('Timelines', () => {
 
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -147,7 +148,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: carol.id }, alice);
 			await api('following/create', { userId: carol.id }, bob);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -166,7 +167,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/create', { userId: carol.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
 
@@ -182,7 +183,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
 
@@ -198,7 +199,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
@@ -228,7 +229,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { renoteId: carolNote.id });
 
@@ -244,7 +245,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { renoteId: carolNote.id });
 
@@ -262,7 +263,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -280,7 +281,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
 
 			await waitForPushToTl();
@@ -295,7 +296,7 @@ describe('Timelines', () => {
 
 			await api('following/create', { userId: bob.id }, alice);
 			await api('mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -313,7 +314,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
 			await api('mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -359,7 +360,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const [bobFile, carolFile] = await Promise.all([
 				uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
 				uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
@@ -384,7 +385,7 @@ describe('Timelines', () => {
 
 			const channel = await api('channels/create', { name: 'channel' }, bob).then(x => x.body);
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
 
 			await waitForPushToTl();
@@ -411,7 +412,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
 
 			await waitForPushToTl();
@@ -438,7 +439,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
 
 			await waitForPushToTl();
@@ -566,7 +567,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'home' });
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -582,7 +583,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -599,7 +600,7 @@ describe('Timelines', () => {
 
 			await api('following/create', { userId: bob.id }, alice);
 			await api('mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -617,7 +618,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
 			await api('mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -633,7 +634,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
@@ -703,7 +704,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();
@@ -717,7 +718,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
@@ -820,7 +821,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi' });
 
 			await waitForPushToTl();
@@ -835,7 +836,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();
@@ -850,7 +851,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
 			await waitForPushToTl();
@@ -865,7 +866,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -881,7 +882,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
 
@@ -899,7 +900,7 @@ describe('Timelines', () => {
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
 			await api('users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: false }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
@@ -916,7 +917,7 @@ describe('Timelines', () => {
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
 			await api('users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: false }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -933,7 +934,7 @@ describe('Timelines', () => {
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
 			await api('users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -950,7 +951,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();
@@ -966,7 +967,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
 			await waitForPushToTl();
@@ -982,7 +983,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: alice.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
 
 			await waitForPushToTl();
@@ -999,7 +1000,7 @@ describe('Timelines', () => {
 			const channel = await api('channels/create', { name: 'channel' }, bob).then(x => x.body);
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
 
 			await waitForPushToTl();
@@ -1031,7 +1032,7 @@ describe('Timelines', () => {
 
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
 
 			await waitForPushToTl();
@@ -1048,7 +1049,7 @@ describe('Timelines', () => {
 			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
 			await api('users/lists/push', { listId: list.id, userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
 
 			await waitForPushToTl();
@@ -1088,7 +1089,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
 			await waitForPushToTl();
@@ -1228,7 +1229,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -1243,7 +1244,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('mute/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
 			const bobNote3 = await post(bob, { text: 'hi', renoteId: bobNote1.id });
