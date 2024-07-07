@@ -5,13 +5,18 @@ enableFetchMocks();
 
 function getFetchCall(call: any[]) {
 	const { body, method } = call[1];
-	if (body != null && typeof body != 'string' && !(body instanceof FormData)) {
+	const contentType = call[1].headers['Content-Type'];
+	if (
+		body == null ||
+		(contentType === 'application/json' && typeof body !== 'string') ||
+		(contentType === 'multipart/form-data' && !(body instanceof FormData))
+	) {
 		throw new Error('invalid body');
 	}
 	return {
 		url: call[0],
 		method: method,
-		contentType: call[1].headers['Content-Type'],
+		contentType: contentType,
 		body: body instanceof FormData ? Object.fromEntries(body.entries()) : JSON.parse(body),
 	};
 }
