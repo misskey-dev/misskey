@@ -26,7 +26,7 @@ async function generateBaseTypes(
 			if ('format' in schemaObject && schemaObject.format === 'binary') {
 				return schemaObject.nullable ? 'Blob | null' : 'Blob';
 			}
-		}
+		},
 	});
 	lines.push(generatedTypes);
 	lines.push('');
