@@ -34,7 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:setting="rowSetting"
 			:bus="bus"
 			:using="row.using"
-			:class="[ lastLine === row.index ? $style.lastLine : {} ]"
 			@operation:beginEdit="onCellEditBegin"
 			@operation:endEdit="onCellEditEnd"
 			@change:value="onChangeCellValue"
@@ -1316,7 +1315,7 @@ $borderRadius: var(--radius);
 				}
 			}
 
-			&.lastLine {
+			&:last-child {
 				.mk_grid_td, .mk_grid_th {
 					// 一番下の行
 					border-bottom: $borderSetting;
