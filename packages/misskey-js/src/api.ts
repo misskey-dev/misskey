@@ -59,7 +59,6 @@ export class APIClient {
 		credential?: string | null,
 	): Promise<SwitchCaseResponseType<E, P>> {
 		return new Promise((resolve, reject) => {
-
 			let mediaType = 'application/json';
 			if (endpoint in endpointReqTypes) {
 				mediaType = endpointReqTypes[endpoint];
