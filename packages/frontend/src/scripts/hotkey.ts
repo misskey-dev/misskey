@@ -45,6 +45,10 @@ const MODIFIER_KEYS = ['ctrl', 'alt', 'shift'];
 const IGNORE_ELEMENTS = ['input', 'textarea'];
 //#endregion
 
+//#region store
+let latestHotkey: Pattern & { callback: CallbackFunction } | null = null;
+//#endregion
+
 //#region impl
 export const makeHotkey = (keymap: Keymap) => {
 	const actions = parseKeymap(keymap);
@@ -54,11 +58,12 @@ export const makeHotkey = (keymap: Keymap) => {
 			if (IGNORE_ELEMENTS.includes(document.activeElement.tagName.toLowerCase())) return;
 			if (getHTMLElementOrNull(document.activeElement)?.isContentEditable) return;
 		}
-		for (const { patterns, callback, options } of actions) {
-			if (matchPatterns(ev, patterns, options)) {
+		for (const action of actions) {
+			if (matchPatterns(ev, action)) {
 				ev.preventDefault();
 				ev.stopPropagation();
-				callback(ev);
+				action.callback(ev);
+				storePattern(ev, action.callback);
 			}
 		}
 	};
@@ -103,16 +108,37 @@ const parseOptions = (rawCallback: Keymap[keyof Keymap]) => {
 	return { ...defaultOptions } as const satisfies Action['options'];
 };
 
-const matchPatterns = (ev: KeyboardEvent, patterns: Action['patterns'], options: Action['options']) => {
+const matchPatterns = (ev: KeyboardEvent, action: Action) => {
+	const { patterns, options, callback } = action;
 	if (ev.repeat && !options.allowRepeat) return false;
 	const key = ev.key.toLowerCase();
 	return patterns.some(({ which, ctrl, shift, alt }) => {
+		if (
+			latestHotkey != null &&
+			latestHotkey.which.includes(key) &&
+			latestHotkey.ctrl === ctrl &&
+			latestHotkey.alt === alt &&
+			latestHotkey.shift === shift &&
+			latestHotkey.callback === callback
+		) {
+			return false;
+		}
 		if (!which.includes(key)) return false;
 		if (ctrl !== (ev.ctrlKey || ev.metaKey)) return false;
 		if (alt !== ev.altKey) return false;
 		if (shift !== ev.shiftKey) return false;
 		return true;
 	});
+};
+
+const storePattern = (ev: KeyboardEvent, callback: CallbackFunction) => {
+	latestHotkey = {
+		which: [ev.key.toLowerCase()],
+		ctrl: ev.ctrlKey || ev.metaKey,
+		alt: ev.altKey,
+		shift: ev.shiftKey,
+		callback,
+	};
 };
 
 const parseKeyCode = (input?: string | null) => {
