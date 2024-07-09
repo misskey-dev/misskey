@@ -13,9 +13,9 @@ export default {
 		el._keyHandler = makeHotkey(binding.value);
 
 		if (el._hotkey_global) {
-			document.addEventListener('keydown', el._keyHandler);
+			document.addEventListener('keydown', el._keyHandler, { passive: false });
 		} else {
-			el.addEventListener('keydown', el._keyHandler);
+			el.addEventListener('keydown', el._keyHandler, { passive: false });
 		}
 	},
 

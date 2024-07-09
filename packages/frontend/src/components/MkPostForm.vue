@@ -164,7 +164,6 @@ provide('mock', props.mock);
 const emit = defineEmits<{
 	(ev: 'posted'): void;
 	(ev: 'cancel'): void;
-	(ev: 'esc'): void;
 
 	// Mock用
 	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
@@ -570,7 +569,6 @@ function clear() {
 
 function onKeydown(ev: KeyboardEvent) {
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost.value) post();
-	if (ev.key === 'Escape') emit('esc');
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
