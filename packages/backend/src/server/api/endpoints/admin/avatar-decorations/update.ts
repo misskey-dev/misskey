@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private avatarDecorationService: AvatarDecorationService,
 		private driveService: DriveService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps: any, me) => {
 			let fileUrl = ps.url;
 			// URLに変更があるか
 			if (typeof ps.url !== 'undefined' || typeof ps.url === 'string' ) {
@@ -52,6 +52,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					force: true,
 				});
 				fileUrl = sysFileData.url;
+
+				// 元ファイルの削除
+				this.driveService.deleteFile(ps);
 			}
 			await this.avatarDecorationService.update(ps.id, {
 				name: ps.name,
