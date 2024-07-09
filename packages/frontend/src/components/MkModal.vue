@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	})"
 	:duration="transitionDuration" appear @afterLeave="emit('closed')" @enter="emit('opening')" @afterEnter="onOpened"
 >
-	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div ref="modalRootEl" v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
@@ -48,6 +48,7 @@ import { isTouchUsing } from '@/scripts/touch.js';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { type Keymap } from '@/scripts/hotkey.js';
+import { focusTrap } from '@/scripts/focus-trap.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -94,6 +95,7 @@ const maxHeight = ref<number>();
 const fixed = ref(false);
 const transformOrigin = ref('center');
 const showing = ref(true);
+const modalRootEl = shallowRef<HTMLElement>();
 const content = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
 const useSendAnime = ref(false);
@@ -132,6 +134,7 @@ const transitionDuration = computed((() =>
 					: 0
 ));
 
+let releaseFocusTrap: (() => void) | null = null;
 let contentClicking = false;
 
 function close(opts: { useSendAnimation?: boolean } = {}) {
@@ -142,6 +145,7 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing.value = false;
+	releaseFocusTrap?.();
 	emit('close');
 }
 
@@ -282,6 +286,13 @@ const onOpened = () => {
 
 	// NOTE: Chromatic テストの際に undefined になる場合がある
 	if (content.value == null) return;
+
+	if (modalRootEl.value != null) {
+		const { release } = focusTrap(modalRootEl.value);
+
+		releaseFocusTrap = release;
+		modalRootEl.value.focus();
+	}
 
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content.value.children[0];
