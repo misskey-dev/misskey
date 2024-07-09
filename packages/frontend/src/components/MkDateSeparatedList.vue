@@ -130,7 +130,7 @@ export default defineComponent({
 			el.style.left = '';
 		}
 
-		// eslint-disable-next-line vue/no-setup-props-destructure
+		// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 		const classes = {
 			[$style['date-separated-list']]: true,
 			[$style['date-separated-list-nogap']]: props.noGap,
