@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Repository } from "typeorm";
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -12,7 +14,7 @@ import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl
 import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
-	let Notes: any;
+	let Notes: Repository<MiNote>;
 
 	let root: misskey.entities.SignupResponse;
 	let alice: misskey.entities.SignupResponse;
@@ -486,7 +488,7 @@ describe('Note', () => {
 						priority: 0,
 						value: true,
 					},
-				} as any,
+				},
 			}, root);
 
 			assert.strictEqual(res.status, 200);
