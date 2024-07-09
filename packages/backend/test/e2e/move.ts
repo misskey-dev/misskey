@@ -20,7 +20,7 @@ describe('Account Move', () => {
 	let jq: INestApplicationContext;
 	let url: URL;
 
-	let root: any;
+	let root: misskey.entities.SignupResponse;
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 	let carol: misskey.entities.SignupResponse;
