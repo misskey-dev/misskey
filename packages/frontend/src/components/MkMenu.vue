@@ -108,8 +108,8 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { type Keymap } from '@/scripts/hotkey.js';
-import { focusParent, isFocusable } from '@/scripts/tms/focus.js';
-import { getNodeOrNull } from '@/scripts/tms/get-or-null.js';
+import { focusParent, isFocusable } from '@/scripts/focus.js';
+import { getNodeOrNull } from '@/scripts/get-or-null.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>

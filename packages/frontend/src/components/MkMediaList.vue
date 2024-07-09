@@ -39,7 +39,7 @@ import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { defaultStore } from '@/store.js';
-import { focusParent } from '@/scripts/tms/focus.js';
+import { focusParent } from '@/scripts/focus.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getElementOrNull, getNodeOrNull } from '@/scripts/tms/get-or-null.js';
+import { getElementOrNull, getNodeOrNull } from '@/scripts/get-or-null.js';
 
 type MaybeHTMLElement = EventTarget | Node | Element | HTMLElement;
 

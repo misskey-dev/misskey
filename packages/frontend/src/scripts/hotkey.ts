@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { getHTMLElementOrNull } from "@/scripts/get-or-null.js";
 
 //#region types
 export type Keymap = Record<string, CallbackFunction | CallbackObject>;
@@ -55,7 +56,7 @@ export const makeHotkey = (keymap: Keymap) => {
 		if ('pswp' in window && window.pswp != null) return;
 		if (document.activeElement != null) {
 			if (IGNORE_ELEMENTS.includes(document.activeElement.tagName.toLowerCase())) return;
-			if ((document.activeElement as HTMLElement).isContentEditable) return;
+			if (getHTMLElementOrNull(document.activeElement)?.isContentEditable) return;
 		}
 		for (const action of actions) {
 			if (matchPatterns(ev, action)) {

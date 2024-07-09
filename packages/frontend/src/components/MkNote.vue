@@ -198,7 +198,7 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
-import { focusPrev, focusNext } from '@/scripts/tms/focus.js';
+import { focusPrev, focusNext } from '@/scripts/focus.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
