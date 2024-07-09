@@ -489,7 +489,7 @@ describe('Note', () => {
 						priority: 0,
 						value: true,
 					},
-				},
+				} as any,
 			}, root);
 
 			assert.strictEqual(res.status, 200);
