@@ -5,6 +5,10 @@
 import { getHTMLElementOrNull } from '@/scripts/get-or-null.js';
 
 const focusTrapElements = new Set<HTMLElement>();
+const ignoreElements = [
+	'script',
+	'style',
+];
 
 function containsFocusTrappedElements(el: HTMLElement): boolean {
 	return Array.from(focusTrapElements).some((focusTrapElement) => {
@@ -13,6 +17,7 @@ function containsFocusTrappedElements(el: HTMLElement): boolean {
 }
 
 function releaseFocusTrap(el: HTMLElement): void {
+	console.log('releaseFocusTrap', el, focusTrapElements.size);
 	focusTrapElements.delete(el);
 	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
@@ -20,8 +25,15 @@ function releaseFocusTrap(el: HTMLElement): void {
 			if (!siblingEl) return;
 			if (siblingEl !== el && (focusTrapElements.has(siblingEl) || containsFocusTrappedElements(siblingEl) || focusTrapElements.size === 0)) {
 				siblingEl.inert = false;
-			} else if (!containsFocusTrappedElements(siblingEl) && !focusTrapElements.has(siblingEl)) {
+			} else if (
+				focusTrapElements.size > 0 &&
+				!containsFocusTrappedElements(siblingEl) &&
+				!focusTrapElements.has(siblingEl) &&
+				!ignoreElements.includes(siblingEl.tagName.toLowerCase())
+			) {
 				siblingEl.inert = true;
+			} else {
+				siblingEl.inert = false;
 			}
 		});
 		releaseFocusTrap(el.parentElement);
@@ -33,7 +45,7 @@ export function focusTrap(el: HTMLElement): { release: () => void; } {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
 			if (!siblingEl) return;
-			if (siblingEl !== el) {
+			if (siblingEl !== el && !ignoreElements.includes(siblingEl.tagName.toLowerCase())) {
 				siblingEl.inert = true;
 			}
 		});
