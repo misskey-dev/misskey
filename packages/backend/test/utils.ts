@@ -17,6 +17,7 @@ import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/val
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { type Response } from 'node-fetch';
 import { ApiError } from "@/server/api/error.js";
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
@@ -299,7 +300,7 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	body: misskey.entities.DriveFile | null
 }> => {
 	const absPath = path == null
-		? new URL('resources/Lenna.jpg', import.meta.url)
+		? new URL('resources/192.jpg', import.meta.url)
 		: isAbsolute(path.toString())
 			? new URL(path)
 			: new URL(path, new URL('resources/', import.meta.url));
@@ -457,7 +458,7 @@ export type SimpleGetResponse = {
 	type: string | null,
 	location: string | null
 };
-export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
+export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,
@@ -485,7 +486,7 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
 		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
-		null;
+		await bodyExtractor(res);
 
 	return {
 		status: res.status,
@@ -605,14 +606,6 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	await db.initialize();
 
 	return db;
-}
-
-export function sleep(msec: number) {
-	return new Promise<void>(res => {
-		setTimeout(() => {
-			res();
-		}, msec);
-	});
 }
 
 export async function sendEnvUpdateRequest(params: { key: string, value?: string }) {
