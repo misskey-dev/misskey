@@ -50,7 +50,7 @@ export const successfulApiCall = async <E extends keyof misskey.Endpoints, P ext
 	const status = assertion.status ?? (res.body == null ? 204 : 200);
 	assert.strictEqual(res.status, status, inspect(res.body, { depth: 5, colors: true }));
 	assert.ok(res.body);
-	return res.body;
+	return res.body as misskey.api.SwitchCaseResponseType<E, P>;
 };
 
 export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
