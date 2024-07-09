@@ -30,8 +30,8 @@ type Action = {
 //#region consts
 const KEY_ALIASES = {
 	'esc': 'Escape',
-	'enter': 'Enter',
-	'space': ' ',
+	'enter': ['Enter', 'NumpadEnter'],
+	'space': [' ', 'Spacebar'],
 	'up': 'ArrowUp',
 	'down': 'ArrowDown',
 	'left': 'ArrowLeft',
