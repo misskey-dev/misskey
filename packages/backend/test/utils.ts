@@ -63,8 +63,8 @@ export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends
 	const res = await api(endpoint, parameters, user);
 	assert.strictEqual(res.status, status, inspect(res.body));
 	assert.ok(res.body);
-	assert.strictEqual(res.body.error.code, code, inspect(res.body));
-	assert.strictEqual(res.body.error.id, id, inspect(res.body));
+	assert.strictEqual(castAsError(res.body as any).error.code, code, inspect(res.body));
+	assert.strictEqual(castAsError(res.body as any).error.id, id, inspect(res.body));
 	return res.body;
 };
 
