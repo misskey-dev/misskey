@@ -56,11 +56,12 @@ function calcCollapse() {
 			shouldCollapse.value = true;
 		}
 	}
-};
+}
 
 onMounted(() => {
 	calcCollapse();
 });
+
 onUpdated(() => {
 	calcCollapse();
 });
