@@ -17,11 +17,6 @@ function containsFocusTrappedElements(el: HTMLElement): boolean {
 }
 
 function releaseFocusTrap(el: HTMLElement): void {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	//@ts-expect-error
-	if (window.Cypress) return;
-
-	console.log('releaseFocusTrap', el, focusTrapElements.size);
 	focusTrapElements.delete(el);
 	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
@@ -44,11 +39,9 @@ function releaseFocusTrap(el: HTMLElement): void {
 	}
 }
 
-export function focusTrap(el: HTMLElement): { release: () => void; } {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-expect-error
-	if (window.Cypress) return;
-
+export function focusTrap(el: HTMLElement, parent: true): void;
+export function focusTrap(el: HTMLElement, parent?: false): { release: () => void; };
+export function focusTrap(el: HTMLElement, parent = false): { release: () => void; } | void {
 	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
@@ -57,14 +50,16 @@ export function focusTrap(el: HTMLElement): { release: () => void; } {
 				siblingEl.inert = true;
 			}
 		});
-		focusTrap(el.parentElement);
+		focusTrap(el.parentElement, true);
 	}
 
-	focusTrapElements.add(el);
+	if (!parent) {
+		focusTrapElements.add(el);
 
-	return {
-		release: () => {
-			releaseFocusTrap(el);
-		},
-	};
+		return {
+			release: () => {
+				releaseFocusTrap(el);
+			},
+		};
+	}
 }
