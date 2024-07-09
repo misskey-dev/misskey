@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { api, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
+import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
@@ -61,8 +61,8 @@ describe('Note', () => {
 		}, alice);
 
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.code, 'NO_SUCH_FILE');
-		assert.strictEqual(res.body.error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
+		assert.strictEqual(castAsError(res.body).error.code, 'NO_SUCH_FILE');
+		assert.strictEqual(castAsError(res.body).error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
 	}, 1000 * 10);
 
 	test('存在しないファイルで怒られる', async () => {
@@ -72,8 +72,8 @@ describe('Note', () => {
 		}, alice);
 
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.code, 'NO_SUCH_FILE');
-		assert.strictEqual(res.body.error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
+		assert.strictEqual(castAsError(res.body).error.code, 'NO_SUCH_FILE');
+		assert.strictEqual(castAsError(res.body).error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
 	});
 
 	test('不正なファイルIDで怒られる', async () => {
@@ -81,8 +81,8 @@ describe('Note', () => {
 			fileIds: ['kyoppie'],
 		}, alice);
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.code, 'NO_SUCH_FILE');
-		assert.strictEqual(res.body.error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
+		assert.strictEqual(castAsError(res.body).error.code, 'NO_SUCH_FILE');
+		assert.strictEqual(castAsError(res.body).error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
 	});
 
 	test('返信できる', async () => {
@@ -218,7 +218,7 @@ describe('Note', () => {
 		}, bob);
 
 		assert.strictEqual(bobReply.status, 400);
-		assert.strictEqual(bobReply.body.error.code, 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE');
+		assert.strictEqual(castAsError(bobReply.body).error.code, 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE');
 	});
 
 	test('visibility: specifiedなノートに対してvisibility: specifiedで返信できる', async () => {
@@ -256,7 +256,7 @@ describe('Note', () => {
 		}, bob);
 
 		assert.strictEqual(bobReply.status, 400);
-		assert.strictEqual(bobReply.body.error.code, 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY');
+		assert.strictEqual(castAsError(bobReply.body).error.code, 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY');
 	});
 
 	test('文字数ぎりぎりで怒られない', async () => {
@@ -506,7 +506,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(liftnsfw.status, 400);
-			assert.strictEqual(liftnsfw.body.error.code, 'RESTRICTED_BY_ROLE');
+			assert.strictEqual(castAsError(liftnsfw.body).error.code, 'RESTRICTED_BY_ROLE');
 
 			const oldaddnsfw = await api('drive/files/update', {
 				fileId: file.body!.id,
@@ -718,7 +718,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(note1.status, 400);
-			assert.strictEqual(note1.body.error.code, 'CONTAINS_PROHIBITED_WORDS');
+			assert.strictEqual(castAsError(note1.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
 		});
 
 		test('禁止ワードを含む投稿はエラーになる (正規表現)', async () => {
@@ -735,7 +735,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(note2.status, 400);
-			assert.strictEqual(note2.body.error.code, 'CONTAINS_PROHIBITED_WORDS');
+			assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
 		});
 
 		test('禁止ワードを含む投稿はエラーになる (スペースアンド)', async () => {
@@ -752,7 +752,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(note2.status, 400);
-			assert.strictEqual(note2.body.error.code, 'CONTAINS_PROHIBITED_WORDS');
+			assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
 		});
 
 		test('禁止ワードを含んでるリモートノートもエラーになる', async () => {
@@ -815,7 +815,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(note.status, 400);
-			assert.strictEqual(note.body.error.code, 'CONTAINS_TOO_MANY_MENTIONS');
+			assert.strictEqual(castAsError(note.body).error.code, 'CONTAINS_TOO_MANY_MENTIONS');
 
 			await api('admin/roles/unassign', {
 				userId: alice.id,
@@ -871,7 +871,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(note.status, 400);
-			assert.strictEqual(note.body.error.code, 'CONTAINS_TOO_MANY_MENTIONS');
+			assert.strictEqual(castAsError(note.body).error.code, 'CONTAINS_TOO_MANY_MENTIONS');
 
 			await api('admin/roles/unassign', {
 				userId: alice.id,
@@ -988,7 +988,7 @@ describe('Note', () => {
 				}, alice);
 
 				assert.strictEqual(res.status, 400);
-				assert.strictEqual(res.body.error.code, 'UNAVAILABLE');
+				assert.strictEqual(castAsError(res.body).error.code, 'UNAVAILABLE');
 			});
 
 			afterAll(async () => {
@@ -1000,7 +1000,7 @@ describe('Note', () => {
 			const res = await api('notes/translate', { noteId: 'foo', targetLang: 'ja' }, alice);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'NO_SUCH_NOTE');
+			assert.strictEqual(castAsError(res.body).error.code, 'NO_SUCH_NOTE');
 		});
 
 		test('不可視なノートは翻訳できない', async () => {
@@ -1008,7 +1008,7 @@ describe('Note', () => {
 			const bobTranslateAttempt = await api('notes/translate', { noteId: aliceNote.id, targetLang: 'ja' }, bob);
 
 			assert.strictEqual(bobTranslateAttempt.status, 400);
-			assert.strictEqual(bobTranslateAttempt.body.error.code, 'CANNOT_TRANSLATE_INVISIBLE_NOTE');
+			assert.strictEqual(castAsError(bobTranslateAttempt.body).error.code, 'CANNOT_TRANSLATE_INVISIBLE_NOTE');
 		});
 
 		test('text: null なノートを翻訳すると空のレスポンスが返ってくる', async () => {
@@ -1024,7 +1024,7 @@ describe('Note', () => {
 
 			// NOTE: デフォルトでは登録されていないので落ちる
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'UNAVAILABLE');
+			assert.strictEqual(castAsError(res.body).error.code, 'UNAVAILABLE');
 		});
 	});
 });
