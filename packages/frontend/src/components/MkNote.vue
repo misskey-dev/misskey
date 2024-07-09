@@ -198,7 +198,7 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

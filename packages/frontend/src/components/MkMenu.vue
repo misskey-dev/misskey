@@ -98,7 +98,7 @@ import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>

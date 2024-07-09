@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getHTMLElementOrNull } from '@/scripts/tms/get-or-null.js';
+import { getHTMLElementOrNull } from '@/scripts/get-or-null.js';
 
 //#region types
 export type Keymap = Record<string, CallbackFunction | CallbackObject>;

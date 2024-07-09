@@ -20,7 +20,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
-import { type Keymap, makeHotkey } from '@/scripts/tms/hotkey.js';
+import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(

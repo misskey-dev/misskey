@@ -47,7 +47,7 @@ import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;

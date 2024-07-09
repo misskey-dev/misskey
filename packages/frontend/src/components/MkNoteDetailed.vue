@@ -233,7 +233,7 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
