@@ -338,6 +338,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.text, post.text);
 
 		const noteDoc = await Notes.findOneBy({ id: res.body.createdNote.id });
+		assert.ok(noteDoc);
 		assert.deepStrictEqual(noteDoc.mentions, [bob.id]);
 	});
 
@@ -965,6 +966,7 @@ describe('Note', () => {
 
 			assert.strictEqual(deleteOneRes.status, 204);
 			let mainNote = await Notes.findOneBy({ id: mainNoteRes.body.createdNote.id });
+			assert.ok(mainNote);
 			assert.strictEqual(mainNote.repliesCount, 1);
 
 			const deleteTwoRes = await api('notes/delete', {
@@ -973,6 +975,7 @@ describe('Note', () => {
 
 			assert.strictEqual(deleteTwoRes.status, 204);
 			mainNote = await Notes.findOneBy({ id: mainNoteRes.body.createdNote.id });
+			assert.ok(mainNote);
 			assert.strictEqual(mainNote.repliesCount, 0);
 		});
 	});
