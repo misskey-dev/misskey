@@ -101,6 +101,7 @@ describe('Note', () => {
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 		assert.strictEqual(res.body.createdNote.text, alicePost.text);
 		assert.strictEqual(res.body.createdNote.replyId, alicePost.replyId);
+		assert.ok(res.body.createdNote.reply);
 		assert.strictEqual(res.body.createdNote.reply.text, bobPost.text);
 	});
 
@@ -118,6 +119,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 		assert.strictEqual(res.body.createdNote.renoteId, alicePost.renoteId);
+		assert.ok(res.body.createdNote.renote);
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
 	});
 
@@ -137,6 +139,7 @@ describe('Note', () => {
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 		assert.strictEqual(res.body.createdNote.text, alicePost.text);
 		assert.strictEqual(res.body.createdNote.renoteId, alicePost.renoteId);
+		assert.ok(res.body.createdNote.renote);
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
 	});
 
@@ -345,6 +348,7 @@ describe('Note', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.ok(res.body.createdNote.files);
 			assert.strictEqual(res.body.createdNote.files.length, 1);
 			assert.strictEqual(res.body.createdNote.files[0].id, file.body!.id);
 		});
