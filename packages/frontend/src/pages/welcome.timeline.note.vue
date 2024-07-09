@@ -6,7 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :key="note.id" :class="$style.note">
 	<div class="_panel _gaps_s" :class="$style.content">
-		<div ref="noteTextEl" :class="[$style.text, { [$style.collapsed]: shouldCollapse }]">
+		<div v-if="note.cw != null" :class="$style.richcontent">
+			<div><Mfm :text="note.cw" :author="note.user"/></div>
+			<MkCwButton v-model="showContent" :text="note.text" :renote="note.renote" :files="note.files" :poll="note.poll" style="margin: 4px 0;"/>
+			<div v-if="showContent">
+				<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+				<Mfm v-if="note.text" :text="note.text" :author="note.user"/>
+				<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
+			</div>
+		</div>
+		<div v-else ref="noteTextEl" :class="[$style.text, { [$style.collapsed]: shouldCollapse }]">
 			<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 			<Mfm v-if="note.text" :text="note.text" :author="note.user"/>
 			<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
@@ -30,6 +39,7 @@ import * as Misskey from 'misskey-js';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
+import MkCwButton from '@/components/MkCwButton.vue';
 
 defineProps<{
 	note: Misskey.entities.Note;
@@ -37,6 +47,7 @@ defineProps<{
 
 const noteTextEl = shallowRef<HTMLDivElement>();
 const shouldCollapse = ref(false);
+const showContent = ref(false);
 
 onUpdated(() => {
 	if (noteTextEl.value) {
