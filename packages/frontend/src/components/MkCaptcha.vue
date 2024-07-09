@@ -104,7 +104,6 @@ async function requestRender() {
 		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
-		// @ts-expect-error avoid typecheck error
 		new Widget({
 			siteKey: {
 				instanceUrl: new URL(props.instanceUrl),

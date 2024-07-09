@@ -6,7 +6,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { api, post, signup, sleep, waitFire } from '../utils.js';
+import { setTimeout } from 'node:timers/promises';
+import { api, post, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Renote Mute', () => {
@@ -35,7 +36,7 @@ describe('Renote Mute', () => {
 		const carolNote = await post(carol, { text: 'hi' });
 
 		// redisに追加されるのを待つ
-		await sleep(100);
+		await setTimeout(100);
 
 		const res = await api('notes/local-timeline', {}, alice);
 
@@ -52,7 +53,7 @@ describe('Renote Mute', () => {
 		const carolNote = await post(carol, { text: 'hi' });
 
 		// redisに追加されるのを待つ
-		await sleep(100);
+		await setTimeout(100);
 
 		const res = await api('notes/local-timeline', {}, alice);
 
@@ -69,7 +70,7 @@ describe('Renote Mute', () => {
 		const bobRenote = await post(bob, { renoteId: carolNote.id });
 
 		// redisに追加されるのを待つ
-		await sleep(100);
+		await setTimeout(100);
 
 		const res = await api('notes/local-timeline', {}, alice);
 
