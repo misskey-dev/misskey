@@ -14,7 +14,7 @@ function containsFocusTrappedElements(el: HTMLElement): boolean {
 
 function releaseFocusTrap(el: HTMLElement): void {
 	focusTrapElements.delete(el);
-	if (el.parentElement && el.parentElement !== document.body) {
+	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
 			if (!siblingEl) return;
@@ -29,7 +29,7 @@ function releaseFocusTrap(el: HTMLElement): void {
 }
 
 export function focusTrap(el: HTMLElement): { release: () => void; } {
-	if (el.parentElement && el.parentElement !== document.body) {
+	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
 			if (!siblingEl) return;
