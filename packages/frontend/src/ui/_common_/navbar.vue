@@ -166,6 +166,15 @@ function more(ev: MouseEvent) {
 		display: block;
 		text-align: center;
 		width: 100%;
+
+		&:focus-visible {
+			outline: none;
+
+			> .instanceIcon {
+				outline: 2px solid var(--focus);
+				outline-offset: 2px;
+			}
+		}
 	}
 
 	.instanceIcon {
@@ -207,6 +216,15 @@ function more(ev: MouseEvent) {
 			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 		}
 
+		&:focus-visible {
+			outline: none;
+
+			&:before {
+				outline: 2px solid var(--fgOnAccent);
+				outline-offset: -4px;
+			}
+		}
+
 		&:hover, &.active {
 			&:before {
 				background: var(--accentLighten);
@@ -234,6 +252,14 @@ function more(ev: MouseEvent) {
 		text-align: left;
 		box-sizing: border-box;
 		overflow: clip;
+
+		&:focus-visible {
+			outline: none;
+
+			> .avatar {
+				box-shadow: 0 0 0 4px var(--focus);
+			}
+		}
 	}
 
 	.avatar {
@@ -282,7 +308,16 @@ function more(ev: MouseEvent) {
 			color: var(--navActive);
 		}
 
-		&:hover, &.active {
+		&:focus-visible {
+			outline: none;
+
+			&:before {
+				outline: 2px solid var(--focus);
+				outline-offset: -2px;
+			}
+		}
+
+		&:hover, &.active, &:focus {
 			color: var(--accent);
 
 			&:before {
@@ -352,6 +387,15 @@ function more(ev: MouseEvent) {
 		display: block;
 		text-align: center;
 		width: 100%;
+
+		&:focus-visible {
+			outline: none;
+
+			> .instanceIcon {
+				outline: 2px solid var(--focus);
+				outline-offset: 2px;
+			}
+		}
 	}
 
 	.instanceIcon {
@@ -391,6 +435,15 @@ function more(ev: MouseEvent) {
 			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 		}
 
+		&:focus-visible {
+			outline: none;
+
+			&:before {
+				outline: 2px solid var(--fgOnAccent);
+				outline-offset: -4px;
+			}
+		}
+
 		&:hover, &.active {
 			&:before {
 				background: var(--accentLighten);
@@ -413,6 +466,14 @@ function more(ev: MouseEvent) {
 		padding: 20px 0;
 		width: 100%;
 		overflow: clip;
+
+		&:focus-visible {
+			outline: none;
+
+			> .avatar {
+				box-shadow: 0 0 0 4px var(--focus);
+			}
+		}
 	}
 
 	.avatar {
@@ -442,7 +503,16 @@ function more(ev: MouseEvent) {
 		width: 100%;
 		text-align: center;
 
-		&:hover, &.active {
+		&:focus-visible {
+			outline: none;
+
+			&:before {
+				outline: 2px solid var(--focus);
+				outline-offset: -2px;
+			}
+		}
+
+		&:hover, &.active, &:focus {
 			text-decoration: none;
 			color: var(--accent);
 
