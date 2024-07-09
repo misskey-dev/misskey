@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onUpdated } from 'vue';
+import { ref, shallowRef, onUpdated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -49,13 +49,20 @@ const noteTextEl = shallowRef<HTMLDivElement>();
 const shouldCollapse = ref(false);
 const showContent = ref(false);
 
-onUpdated(() => {
+function calcCollapse() {
 	if (noteTextEl.value) {
 		const height = noteTextEl.value.scrollHeight;
 		if (height > 200) {
 			shouldCollapse.value = true;
 		}
 	}
+};
+
+onMounted(() => {
+	calcCollapse();
+});
+onUpdated(() => {
+	calcCollapse();
 });
 </script>
 
