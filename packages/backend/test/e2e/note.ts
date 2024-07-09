@@ -367,7 +367,7 @@ describe('Note', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			const myNote = res.body.find((note: { id: string; files: { id: string }[] }) => note.id === createdNote.body.createdNote.id);
+			const myNote = res.body.find(note => note.id === createdNote.body.createdNote.id);
 			assert.ok(myNote);
 			assert.ok(myNote.files);
 			assert.strictEqual(myNote.files.length, 1);
