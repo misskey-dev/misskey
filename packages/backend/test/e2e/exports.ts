@@ -61,14 +61,14 @@ describe('export-clips', () => {
 	});
 
 	test('basic export', async () => {
-		let res = await api('clips/create', {
+		const res1 = await api('clips/create', {
 			name: 'foo',
 			description: 'bar',
 		}, alice);
-		assert.strictEqual(res.status, 200);
+		assert.strictEqual(res1.status, 200);
 
-		res = await api('i/export-clips', {}, alice);
-		assert.strictEqual(res.status, 204);
+		const res2 = await api('i/export-clips', {}, alice);
+		assert.strictEqual(res2.status, 204);
 
 		const exported = await pollFirstDriveFile();
 		assert.strictEqual(exported[0].name, 'foo');
@@ -77,7 +77,7 @@ describe('export-clips', () => {
 	});
 
 	test('export with notes', async () => {
-		let res = await api('clips/create', {
+		const res = await api('clips/create', {
 			name: 'foo',
 			description: 'bar',
 		}, alice);
@@ -96,15 +96,15 @@ describe('export-clips', () => {
 		});
 
 		for (const note of [note1, note2]) {
-			res = await api('clips/add-note', {
+			const res2 = await api('clips/add-note', {
 				clipId: clip.id,
 				noteId: note.id,
 			}, alice);
-			assert.strictEqual(res.status, 204);
+			assert.strictEqual(res2.status, 204);
 		}
 
-		res = await api('i/export-clips', {}, alice);
-		assert.strictEqual(res.status, 204);
+		const res3 = await api('i/export-clips', {}, alice);
+		assert.strictEqual(res3.status, 204);
 
 		const exported = await pollFirstDriveFile();
 		assert.strictEqual(exported[0].name, 'foo');
