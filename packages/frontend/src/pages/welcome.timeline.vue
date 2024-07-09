@@ -94,4 +94,9 @@ onUpdated(() => {
 		animation: scrollConstant 30s linear infinite;
 	}
 }
+
+.root:has(.note:hover) .scrollBoxMain,
+.root:has(.note:hover) .scrollBoxSub {
+	animation-play-state: paused;
+}
 </style>
