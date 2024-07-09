@@ -143,7 +143,8 @@ export const post = async (user: UserToken, params: misskey.Endpoints['notes/cre
 
 	const res = await api('notes/create', q, user);
 
-	return res.body ? res.body.createdNote : null;
+	// FIXME: the return type should reflect this fact.
+	return (res.body ? res.body.createdNote : null)!;
 };
 
 export const createAppToken = async (user: UserToken, permissions: (typeof misskey.permissions)[number][]) => {
