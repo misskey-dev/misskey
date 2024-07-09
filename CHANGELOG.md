@@ -6,6 +6,7 @@
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 
 ### Client
+- Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
 - Enhance: フロントエンドのアクセシビリティ改善  
   (Based on https://github.com/taiyme/misskey/pull/226)
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
