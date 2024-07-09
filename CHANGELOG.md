@@ -12,6 +12,8 @@
 - Fix: コントロールパネルでベースロールのポリシーを編集してもUI上では変更が反映されない問題を修正 
 - Fix: アンテナの編集画面のボタンに隙間を追加
 - Fix: テーマプレビューが見れない問題を修正
+- Fix: ショートカットキーが連打できる問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
