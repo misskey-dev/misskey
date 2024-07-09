@@ -79,10 +79,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			/>
 		</div>
 		<MkMediaRange
-			v-model="volume"
-			:class="$style.volumeSeekbar"
-		/>
-		<MkMediaRange
 			v-model="rangePercent"
 			:class="$style.seekbarRoot"
 			:buffer="bufferedDataRatio"
