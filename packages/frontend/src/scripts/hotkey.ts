@@ -53,7 +53,7 @@ export const makeHotkey = (keymap: Keymap) => {
 		if ('pswp' in window && window.pswp != null) return;
 		if (document.activeElement != null) {
 			if (IGNORE_ELEMENTS.includes(document.activeElement.tagName.toLowerCase())) return;
-			if (getHTMLElementOrNull(document.activeElement)?.isContentEditable) return;
+			if ((document.activeElement as HTMLElement).isContentEditable) return;
 		}
 		for (const { patterns, callback, options } of actions) {
 			if (matchPatterns(ev, patterns, options)) {
