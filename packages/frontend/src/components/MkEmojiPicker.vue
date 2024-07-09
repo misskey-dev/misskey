@@ -702,11 +702,6 @@ defineExpose({
 					border-radius: 4px;
 					font-size: 24px;
 
-					&:focus-visible {
-						outline: solid 2px var(--focus);
-						z-index: 1;
-					}
-
 					&:hover {
 						background: rgba(0, 0, 0, 0.05);
 					}

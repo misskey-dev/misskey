@@ -5,7 +5,7 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
+import { Component, markRaw, Ref, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
@@ -24,6 +24,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import { getHTMLElementOrNull } from '@/scripts/tms/get-or-null.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -622,46 +623,49 @@ export async function cropImage(image: Misskey.entities.DriveFile, options: {
 export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | null, options?: {
 	align?: string;
 	width?: number;
-	viaKeyboard?: boolean;
 	onClosing?: () => void;
 }): Promise<void> {
-	return new Promise(resolve => {
+	let returnFocusElement = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(document.activeElement);
+	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
 			items,
 			src,
 			width: options?.width,
 			align: options?.align,
-			viaKeyboard: options?.viaKeyboard,
+			returnFocusElement,
 		}, {
 			closed: () => {
 				resolve();
 				dispose();
+				returnFocusElement = null;
 			},
 			closing: () => {
-				if (options?.onClosing) options.onClosing();
+				options?.onClosing?.();
 			},
 		});
-	});
+	}));
 }
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
+	let returnFocusElement = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
 	ev.preventDefault();
-	return new Promise(resolve => {
+	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkContextMenu, {
 			items,
 			ev,
+			returnFocusElement,
 		}, {
 			closed: () => {
 				resolve();
-				dispose();
+				dispose?.();
+				returnFocusElement = null;
 			},
 		});
-	});
+	}));
 }
 
 export function post(props: Record<string, any> = {}): Promise<void> {
 	showMovedDialog();
-
 	return new Promise(resolve => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、
@@ -671,7 +675,7 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		const { dispose } = popup(MkPostFormDialog, props, {
 			closed: () => {
 				resolve();
-				dispose();
+				dispose?.();
 			},
 		});
 	});

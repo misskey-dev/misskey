@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="onModalClose" @closed="onModalClosed">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :returnFocusElement="returnFocusElement" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
 </MkModal>
 </template>
 
@@ -19,8 +19,8 @@ defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;
-	viaKeyboard?: boolean;
 	src?: any;
+	returnFocusElement?: HTMLElement | null;
 }>();
 
 const emit = defineEmits<{
