@@ -17,6 +17,7 @@ import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/val
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { ApiError } from "@/server/api/error.js";
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -643,4 +644,10 @@ export async function sendEnvResetRequest() {
 	if (res.status !== 200) {
 		throw new Error('server env update failed.');
 	}
+}
+
+// 与えられた値を強制的にエラーとみなす。この関数は型安全性を破壊するため、異常系のアサーション以外で用いられるべきではない。
+// FIXME(misskey-js): misskey-jsがエラー情報を公開するようになったらこの関数を廃止する
+export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
+	return obj as { error: ApiError };
 }
