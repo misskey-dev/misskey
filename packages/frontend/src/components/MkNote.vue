@@ -319,7 +319,7 @@ const keymap = {
 	},
 	'o': () => {
 		if (renoteCollapsed.value) return;
-		showMenu();
+		galleryEl.value?.openGallery();
 	},
 	'v|enter': () => {
 		if (renoteCollapsed.value) {
