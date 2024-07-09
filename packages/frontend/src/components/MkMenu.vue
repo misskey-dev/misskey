@@ -30,7 +30,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
-			<MkA v-else-if="item.type === 'link'" role="menuitem" tabindex="0" :class="['_button', $style.item]" :to="item.to" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<MkA
+				v-else-if="item.type === 'link'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				:to="item.to"
+				@click.passive="close(true)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
@@ -38,20 +47,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</MkA>
-			<a v-else-if="item.type === 'a'" role="menuitem" tabindex="0" :class="['_button', $style.item]" :href="item.href" :target="item.target" :download="item.download" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<a
+				v-else-if="item.type === 'a'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				:href="item.href"
+				:target="item.target"
+				:download="item.download"
+				@click.passive="close(true)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
 					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</a>
-			<button v-else-if="item.type === 'user'" role="menuitem" tabindex="0" :class="['_button', $style.item, { [$style.active]: item.active }]" @click.prevent="item.active ? close(false) : clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<button
+				v-else-if="item.type === 'user'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, { [$style.active]: item.active }]"
+				@click.prevent="item.active ? close(false) : clicked(item.action, $event)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<div v-if="item.indicate" :class="$style.item_content">
 					<span :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" tabindex="0" :class="['_button', $style.item]" :disabled="unref(item.disabled)" @click.prevent="switchItem(item)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<button
+				v-else-if="item.type === 'switch'"
+				role="menuitemcheckbox"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				:disabled="unref(item.disabled)"
+				@click.prevent="switchItem(item)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
@@ -59,14 +96,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'radio'" role="menuitem" tabindex="0" :class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]" :disabled="unref(item.disabled)" @mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)" @click.prevent="!preferClick ? null : showRadioOptions(item, $event)">
+			<button
+				v-else-if="item.type === 'radio'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
+				:disabled="unref(item.disabled)"
+				@mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)"
+				@keydown.enter.prevent="preferClick ? null : showRadioOptions(item, $event)"
+				@click.prevent="!preferClick ? null : showRadioOptions(item, $event)"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'radioOption'" role="menuitemradio" tabindex="0" :class="['_button', $style.item, $style.radio, { [$style.active]: unref(item.active) }]" @click.prevent="unref(item.active) ? null : clicked(item.action, $event, false)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<button
+				v-else-if="item.type === 'radioOption'"
+				role="menuitemradio"
+				tabindex="0"
+				:class="['_button', $style.item, $style.radio, { [$style.active]: unref(item.active) }]"
+				@click.prevent="unref(item.active) ? null : clicked(item.action, $event, false)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<div :class="$style.icon">
 					<span :class="[$style.radioIcon, { [$style.radioChecked]: unref(item.active) }]"></span>
 				</div>
@@ -74,14 +128,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.item_content_text">{{ item.text }}</span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'parent'" role="menuitem" tabindex="0" :class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]" @mouseenter.prevent="preferClick ? null : showChildren(item, $event)" @click.prevent="!preferClick ? null : showChildren(item, $event)">
+			<button
+				v-else-if="item.type === 'parent'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
+				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
+				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
+				@click.prevent="!preferClick ? null : showChildren(item, $event)"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
-			<button v-else role="menuitem" tabindex="0" :class="['_button', $style.item, { [$style.danger]: item.danger, [$style.active]: unref(item.active) }]" @click.prevent="unref(item.active) ? close(false) : clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<button
+				v-else role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, { [$style.danger]: item.danger, [$style.active]: unref(item.active) }]"
+				@click.prevent="unref(item.active) ? close(false) : clicked(item.action, $event)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
@@ -202,7 +271,7 @@ function onItemMouseLeave() {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-async function showRadioOptions(item: MenuRadio, ev: MouseEvent) {
+async function showRadioOptions(item: MenuRadio, ev: Event) {
 	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
 		const value = item.options[key];
 		return {
@@ -227,7 +296,7 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent) {
 	}
 }
 
-async function showChildren(item: MenuParent, ev: MouseEvent) {
+async function showChildren(item: MenuParent, ev: Event) {
 	const children: MenuItem[] = await (async () => {
 		if (childrenCache.has(item)) {
 			return childrenCache.get(item)!;
