@@ -131,7 +131,13 @@ const matchPatterns = (ev: KeyboardEvent, action: Action) => {
 	});
 };
 
+let lastHotKeyStoreTimer: number | null = null;
+
 const storePattern = (ev: KeyboardEvent, callback: CallbackFunction) => {
+	if (lastHotKeyStoreTimer != null) {
+		clearTimeout(lastHotKeyStoreTimer);
+	}
+
 	latestHotkey = {
 		which: [ev.key.toLowerCase()],
 		ctrl: ev.ctrlKey || ev.metaKey,
@@ -139,6 +145,10 @@ const storePattern = (ev: KeyboardEvent, callback: CallbackFunction) => {
 		shift: ev.shiftKey,
 		callback,
 	};
+
+	lastHotKeyStoreTimer = window.setTimeout(() => {
+		latestHotkey = null;
+	}, 500);
 };
 
 const parseKeyCode = (input?: string | null) => {
