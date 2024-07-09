@@ -55,20 +55,22 @@
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.38",
 		"tar": "6.2.1",
-		"terser": "5.30.3",
-		"typescript": "5.4.5",
-		"esbuild": "0.20.2",
+		"terser": "5.31.1",
+		"typescript": "5.5.3",
+		"esbuild": "0.22.0",
 		"glob": "10.3.12"
 	},
 	"devDependencies": {
-		"@types/node": "20.12.7",
-		"@typescript-eslint/eslint-plugin": "7.7.1",
-		"@typescript-eslint/parser": "7.7.1",
+		"@misskey-dev/eslint-plugin": "2.0.2",
+		"@types/node": "20.14.9",
+		"@typescript-eslint/eslint-plugin": "7.15.0",
+		"@typescript-eslint/parser": "7.15.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.7.3",
-		"eslint": "8.57.0",
+		"cypress": "13.13.0",
+		"eslint": "9.6.0",
+		"globals": "15.7.0",
 		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.3"
+		"start-server-and-test": "2.0.4"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"

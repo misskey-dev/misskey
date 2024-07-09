@@ -83,21 +83,21 @@ describe('FileInfoService', () => {
 
 	describe('IMAGE', () => {
 		test('Generic JPEG', async () => {
-			const path = `${resources}/Lenna.jpg`;
+			const path = `${resources}/192.jpg`;
 			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 			delete info.warnings;
 			delete info.blurhash;
 			delete info.sensitive;
 			delete info.porn;
 			assert.deepStrictEqual(info, {
-				size: 25360,
-				md5: '091b3f259662aa31e2ffef4519951168',
+				size: 5131,
+				md5: '8c9ed0677dd2b8f9f7472c3af247e5e3',
 				type: {
 					mime: 'image/jpeg',
 					ext: 'jpg',
 				},
-				width: 512,
-				height: 512,
+				width: 192,
+				height: 192,
 				orientation: undefined,
 			});
 		});
