@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { getScrollPosition, getScrollContainer, getStickyBottom, getStickyTop } from '@/scripts/scroll.js';
 import { getElementOrNull, getNodeOrNull } from '@/scripts/get-or-null.js';
 
 type MaybeHTMLElement = EventTarget | Node | Element | HTMLElement;
@@ -56,15 +57,24 @@ export const focusParent = (input: MaybeHTMLElement | null | undefined, self = f
 };
 
 const focusOrScroll = (element: HTMLElement, scroll: boolean) => {
-	if (document.activeElement === element) {
-		if (scroll) {
-			element.scrollIntoView({
-				behavior: 'instant',
-				block: 'nearest',
-				inline: 'nearest',
-			});
+	if (scroll) {
+		const scrollContainer = getScrollContainer(element) ?? document.documentElement;
+		const scrollContainerTop = getScrollPosition(scrollContainer);
+		const stickyTop = getStickyTop(element, scrollContainer);
+		const stickyBottom = getStickyBottom(element, scrollContainer);
+		const top = element.getBoundingClientRect().top;
+		const bottom = element.getBoundingClientRect().bottom;
+
+		let scrollTo = scrollContainerTop;
+		if (top < stickyTop) {
+			scrollTo += top - stickyTop;
+		} else if (bottom > window.innerHeight - stickyBottom) {
+			scrollTo += bottom - window.innerHeight + stickyBottom;
 		}
-	} else {
-		element.focus({ preventScroll: !scroll });
+		scrollContainer.scrollTo({ top: scrollTo, behavior: 'instant' });
+	}
+
+	if (document.activeElement !== element) {
+		element.focus({ preventScroll: true });
 	}
 };
