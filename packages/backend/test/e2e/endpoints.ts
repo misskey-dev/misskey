@@ -10,7 +10,7 @@ import * as assert from 'assert';
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
 import { MiUser } from '@/models/_.js';
-import {api, castAsError, initTestDb, post, signup, simpleGet, uploadFile} from '../utils.js';
+import { api, castAsError, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Endpoints', () => {

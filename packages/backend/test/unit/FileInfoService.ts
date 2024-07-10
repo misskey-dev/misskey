@@ -12,7 +12,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { afterAll, beforeAll, describe, test } from '@jest/globals';
 import { GlobalModule } from '@/GlobalModule.js';
-import {FileInfo, FileInfoService} from '@/core/FileInfoService.js';
+import { FileInfo, FileInfoService } from '@/core/FileInfoService.js';
 //import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
