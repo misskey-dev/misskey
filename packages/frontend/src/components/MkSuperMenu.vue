@@ -67,6 +67,10 @@ defineProps<{
 					background: var(--panelHighlight);
 				}
 
+				&:focus-visible {
+					outline-offset: -2px;
+				}
+
 				&.active {
 					color: var(--accent);
 					background: var(--accentedBg);
