@@ -30,7 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps">
 						<div :class="$style.userItem">
 							<MkUserCardMini v-if="user" :class="$style.userCard" :user="user" :withChart="false"/>
-							<MkButton v-if="user == null" primary :class="$style.addUserButton" @click="selectUser"><div :class="$style.addUserButtonInner">{{ i18n.ts.selectUser }}</div></MkButton>
+							<MkButton v-if="user == null && $i != null" transparent :class="$style.addMeButton" @click="selectSelf"><div :class="$style.addUserButtonInner"><span><i class="ti ti-plus"></i><i class="ti ti-user"></i></span><span>{{ i18n.ts.selectSelf }}</span></div></MkButton>
+							<MkButton v-if="user == null" transparent :class="$style.addUserButton" @click="selectUser"><div :class="$style.addUserButtonInner"><i class="ti ti-plus"></i><span>{{ i18n.ts.selectUser }}</span></div></MkButton>
 							<button class="_button" :class="$style.remove" :disabled="user == null" @click="removeUser"><i class="ti ti-x"></i></button>
 						</div>
 					</div>
@@ -64,6 +65,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import { useRouter } from '@/router/supplier.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -119,6 +121,11 @@ function selectUser() {
 	});
 }
 
+function selectSelf() {
+	user.value = $i as UserDetailed | null;
+	hostInput.value = null;
+}
+
 function removeUser() {
 	user.value = null;
 	hostInput.value = '';
@@ -167,15 +174,22 @@ async function search() {
 	display: flex;
 	justify-content: center;
 }
+.addMeButton {
+  border: 2px dashed var(--fgTransparent);
+	padding: 12px;
+	margin-right: 16px;
+}
 .addUserButton {
-	padding: 16px;
+  border: 2px dashed var(--fgTransparent);
+	padding: 12px;
 	flex-grow: 1;
 }
 .addUserButtonInner {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	min-height: 35px;
+	justify-content: space-between;
+	min-height: 38px;
 }
 .userCard {
 	flex-grow: 1;

@@ -781,6 +781,10 @@ export interface Locale extends ILocale {
      */
     "host": string;
     /**
+     * 自分を選択
+     */
+    "selectSelf": string;
+    /**
      * ユーザーを選択
      */
     "selectUser": string;
