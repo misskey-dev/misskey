@@ -318,7 +318,7 @@ const keymap = {
 	},
 	'o': () => {
 		if (renoteCollapsed.value) return;
-		galleryEl.value?.openGallery();
+		showMenu();
 	},
 	'v|enter': () => {
 		if (renoteCollapsed.value) {
