@@ -489,7 +489,7 @@ describe('Note', () => {
 						priority: 0,
 						value: true,
 					},
-				} as any,
+				},
 			}, root);
 
 			assert.strictEqual(res.status, 200);
@@ -801,7 +801,7 @@ describe('Note', () => {
 						priority: 1,
 						value: 0,
 					},
-				} as any,
+				},
 			}, root);
 
 			assert.strictEqual(res.status, 200);
@@ -855,7 +855,7 @@ describe('Note', () => {
 						priority: 1,
 						value: 0,
 					},
-				} as any,
+				},
 			}, root);
 
 			assert.strictEqual(res.status, 200);
@@ -911,7 +911,7 @@ describe('Note', () => {
 						priority: 1,
 						value: 1,
 					},
-				} as any,
+				},
 			}, root);
 
 			assert.strictEqual(res.status, 200);
