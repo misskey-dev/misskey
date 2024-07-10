@@ -2736,7 +2736,7 @@ function parse(acct: string): Acct;
 //
 // @public (undocumented)
 type PartialRolePolicyOverride = Partial<{
-    [k in keyof RolePolicies]: Omit<Values<Role["policies"]>, "value"> & {
+    [k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & {
         value: RolePolicies[k];
     };
 }>;
