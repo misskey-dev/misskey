@@ -264,7 +264,7 @@ describe('API', () => {
 		fetchMock.resetMocks();
 		fetchMock.mockResponse(async () => {
 			return {
-				// 本来返すべき値は`Role型`だが、テストなのでお茶を濁す
+				// 本来返すべき値は`Role`型だが、テストなのでお茶を濁す
 				status: 200,
 				body: '{}'
 			};
