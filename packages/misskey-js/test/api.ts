@@ -262,7 +262,14 @@ describe('API', () => {
 
 	test('admin/roles/create の型が合う', async() => {
 		fetchMock.resetMocks();
-		// レスポンスに依存しないのでホックの注入は不要
+		fetchMock.mockResponse(async () => {
+			return {
+				// 本来返すべき値は`Role型`だが、テストなのでお茶を濁す
+				status: 200,
+				body: '{}'
+			};
+		});
+
 		const cli = new APIClient({
 			origin: 'https://misskey.test',
 			credential: 'TOKEN',
