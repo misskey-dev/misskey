@@ -271,11 +271,11 @@ describe('API', () => {
 			name: 'aaa',
 			asBadge: false,
 			canEditMembersByModerator: false,
-			color: "#123456",
+			color: '#123456',
 			condFormula: {},
 			description: '',
 			displayOrder: 0,
-			iconUrl: "",
+			iconUrl: '',
 			isAdministrator: false,
 			isExplorable: false,
 			isModerator: false,
@@ -287,7 +287,7 @@ describe('API', () => {
 					useDefault: false,
 				},
 			},
-			target: "manual",
+			target: 'manual',
 		});
 	})
 });
