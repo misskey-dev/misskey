@@ -433,7 +433,7 @@ function detachFile(id) {
 	files.value = files.value.filter(x => x.id !== id);
 }
 
-function updateFileSensitive(file, sensitive) {
+function updateFileSensitive(file: Misskey.entities.DriveFile, sensitive: boolean) {
 	if (props.mock) {
 		emit('fileChangeSensitive', file.id, sensitive);
 	}
@@ -448,12 +448,19 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 	files.value[files.value.findIndex(x => x.id === file.id)] = newFile;
 }
 
-async function upload(file: File, name?: string, keepOriginal?: boolean, token?: string): Promise<void> {
+async function upload(file: File, name?: string, keepOriginal?: boolean, options?: { isSensitive?: boolean, comment?: string | null }, token?: string): Promise<Misskey.entities.DriveFile | void> {
 	if (props.mock) return;
 
-	await uploadFile(file, defaultStore.state.uploadFolder, name, keepOriginal, token).then(res => {
+	let uploaded : Misskey.entities.DriveFile | null = null;
+
+	await uploadFile(file, defaultStore.state.uploadFolder, name, keepOriginal, options, token).then(res => {
 		files.value.push(res);
+		uploaded = res;
 	});
+
+	if (uploaded != null) {
+		return uploaded;
+	}
 }
 
 function setVisibility() {
@@ -783,7 +790,7 @@ async function post(ev?: MouseEvent) {
 			for (let f of files.value) {
 				const fileBase = await fetch(f.url).then(res => res.blob()).then(blob => new File([blob], f.name, { type: blob.type }));
 				detachFile(f.id);
-				await upload(fileBase, f.name, undefined, token);
+				await upload(fileBase, f.name, undefined, { isSensitive: f.isSensitive, comment: f.comment }, token);
 			}
 		}
 	}
