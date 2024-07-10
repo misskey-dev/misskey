@@ -145,7 +145,6 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing.value = false;
-	releaseFocusTrap?.();
 	emit('close');
 }
 
@@ -287,13 +286,6 @@ const onOpened = () => {
 	// NOTE: Chromatic テストの際に undefined になる場合がある
 	if (content.value == null) return;
 
-	if (modalRootEl.value != null) {
-		const { release } = focusTrap(modalRootEl.value);
-
-		releaseFocusTrap = release;
-		modalRootEl.value.focus();
-	}
-
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content.value.children[0];
 	el.addEventListener('mousedown', ev => {
@@ -308,7 +300,6 @@ const onOpened = () => {
 };
 
 const onClosed = () => {
-	releaseFocusTrap?.();
 	emit('closed');
 };
 
@@ -327,6 +318,19 @@ onMounted(() => {
 		await nextTick();
 
 		align();
+	}, { immediate: true });
+
+	watch([showing, () => props.manualShowing], ([showing, manualShowing]) => {
+		if (manualShowing === true || (manualShowing == null && showing === true)) {
+			if (modalRootEl.value != null) {
+				const { release } = focusTrap(modalRootEl.value);
+
+				releaseFocusTrap = release;
+				modalRootEl.value.focus();
+			}
+		} else {
+			releaseFocusTrap?.();
+		}
 	}, { immediate: true });
 
 	nextTick(() => {
