@@ -15,6 +15,7 @@
 - Fix: テーマプレビューが見れない問題を修正
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
+- Fix: 投稿フォームで投稿先アカウントを切り替えた際、添付ファイルがあるとノートに失敗する問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
