@@ -49,6 +49,7 @@ import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusTrap } from '@/scripts/focus-trap.js';
+import { focusParent } from '@/scripts/focus.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -70,6 +71,7 @@ const props = withDefaults(defineProps<{
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
 	transparentBg?: boolean;
+	returnFocusElement?: HTMLElement | null;
 }>(), {
 	manualShowing: null,
 	src: null,
@@ -78,6 +80,7 @@ const props = withDefaults(defineProps<{
 	zPriority: 'low',
 	noOverlap: true,
 	transparentBg: false,
+	returnFocusElement: null,
 });
 
 const emit = defineEmits<{
@@ -330,6 +333,7 @@ onMounted(() => {
 			}
 		} else {
 			releaseFocusTrap?.();
+			focusParent(props.returnFocusElement ?? props.src, true, false);
 		}
 	}, { immediate: true });
 

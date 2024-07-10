@@ -177,7 +177,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { type Keymap } from '@/scripts/hotkey.js';
-import { focusParent, isFocusable } from '@/scripts/focus.js';
+import { isFocusable } from '@/scripts/focus.js';
 import { getNodeOrNull } from '@/scripts/get-or-null.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
@@ -192,7 +192,6 @@ const props = defineProps<{
 	align?: 'center' | string;
 	width?: number;
 	maxHeight?: number;
-	returnFocusElement?: HTMLElement | null;
 }>();
 
 const emit = defineEmits<{
@@ -336,7 +335,6 @@ function close(actioned = false) {
 	nextTick(() => {
 		closeChild();
 		emit('close', actioned);
-		focusParent(props.returnFocusElement, true, false);
 	});
 }
 

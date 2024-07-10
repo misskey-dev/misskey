@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
+	role="checkbox"
 	@click="toggle"
 >
 	<input
@@ -67,6 +68,11 @@ function toggle(): void {
 
 	&:hover {
 		border-color: var(--inputBorderHover) !important;
+	}
+
+	&:focus-within {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--focus);
 	}
 
 	&.checked {
