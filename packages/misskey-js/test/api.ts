@@ -259,4 +259,35 @@ describe('API', () => {
 			expect(isAPIError(e)).toEqual(false);
 		}
 	});
+
+	test('admin/roles/create の型が合う', async() => {
+		fetchMock.resetMocks();
+		// レスポンスに依存しないのでホックの注入は不要
+		const cli = new APIClient({
+			origin: 'https://misskey.test',
+			credential: 'TOKEN',
+		});
+		await cli.request('admin/roles/create', {
+			name: 'aaa',
+			asBadge: false,
+			canEditMembersByModerator: false,
+			color: "#123456",
+			condFormula: {},
+			description: '',
+			displayOrder: 0,
+			iconUrl: "",
+			isAdministrator: false,
+			isExplorable: false,
+			isModerator: false,
+			isPublic: false,
+			policies: {
+				ltlAvailable: {
+					value: true,
+					priority: 0,
+					useDefault: false,
+				},
+			},
+			target: "manual",
+		});
+	})
 });
