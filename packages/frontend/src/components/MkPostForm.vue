@@ -448,10 +448,10 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 	files.value[files.value.findIndex(x => x.id === file.id)] = newFile;
 }
 
-function upload(file: File, name?: string): void {
+async function upload(file: File, name?: string, keepOriginal?: boolean, token?: string): Promise<void> {
 	if (props.mock) return;
 
-	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
+	await uploadFile(file, defaultStore.state.uploadFolder, name, keepOriginal, token).then(res => {
 		files.value.push(res);
 	});
 }
@@ -771,6 +771,23 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
+	let token: string | undefined = undefined;
+
+	if (postAccount.value) {
+		const storedAccounts = await getAccounts();
+		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
+
+		// 投稿ユーザーが現在のユーザーと違う場合に再アップロードを行う
+		// もしアカウントに応じたアップロードが実装された場合は削除が必要
+		if (token != null) {
+			for (let f of files.value) {
+				const fileBase = await fetch(f.url).then(res => res.blob()).then(blob => new File([blob], f.name, { type: blob.type }));
+				detachFile(f.id);
+				await upload(fileBase, f.name, undefined, token);
+			}
+		}
+	}
+
 	let postData = {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
@@ -809,13 +826,6 @@ async function post(ev?: MouseEvent) {
 				console.error(err);
 			}
 		}
-	}
-
-	let token: string | undefined = undefined;
-
-	if (postAccount.value) {
-		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
 	}
 
 	posting.value = true;
