@@ -67,7 +67,7 @@ export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends
 	assert.strictEqual(castAsError(res.body as any).error.id, id, inspect(res.body));
 };
 
-export const api = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(path: E, params: misskey.Endpoints[E]['req'], me?: UserToken): Promise<{
+export const api = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(path: E, params: P, me?: UserToken): Promise<{
 	status: number,
 	headers: Headers,
 	body: misskey.api.SwitchCaseResponseType<E, P>
