@@ -70,7 +70,7 @@ export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends
 export const api = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(path: E, params: misskey.Endpoints[E]['req'], me?: UserToken): Promise<{
 	status: number,
 	headers: Headers,
-	body: misskey.api.SwitchCaseResponseType<E, P> | null
+	body: misskey.api.SwitchCaseResponseType<E, P>
 }> => {
 	const bodyAuth: Record<string, string> = {};
 	const headers: Record<string, string> = {
@@ -97,7 +97,8 @@ export const api = async <E extends keyof misskey.Endpoints, P extends misskey.E
 	return {
 		status: res.status,
 		headers: res.headers,
-		body: body,
+		// FIXME: removing this non-null assertion: requires better typing around empty response.
+		body: body!,
 	};
 };
 
