@@ -40,6 +40,7 @@
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
+- Feat: `/admin/role/create` のロールポリシーの型を修正
 
 ## 2024.5.0
 
