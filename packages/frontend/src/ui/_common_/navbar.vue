@@ -201,7 +201,7 @@ function more(ev: MouseEvent) {
 		font-weight: bold;
 		text-align: left;
 
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			width: calc(100% - 38px);
@@ -219,14 +219,14 @@ function more(ev: MouseEvent) {
 		&:focus-visible {
 			outline: none;
 
-			&:before {
+			&::before {
 				outline: 2px solid var(--fgOnAccent);
 				outline-offset: -4px;
 			}
 		}
 
 		&:hover, &.active {
-			&:before {
+			&::before {
 				background: var(--accentLighten);
 			}
 		}
@@ -311,7 +311,7 @@ function more(ev: MouseEvent) {
 		&:focus-visible {
 			outline: none;
 
-			&:before {
+			&::before {
 				outline: 2px solid var(--focus);
 				outline-offset: -2px;
 			}
@@ -320,7 +320,7 @@ function more(ev: MouseEvent) {
 		&:hover, &.active, &:focus {
 			color: var(--accent);
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				width: calc(100% - 34px);
@@ -420,7 +420,7 @@ function more(ev: MouseEvent) {
 		height: 52px;
 		text-align: center;
 
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			position: absolute;
@@ -438,14 +438,14 @@ function more(ev: MouseEvent) {
 		&:focus-visible {
 			outline: none;
 
-			&:before {
+			&::before {
 				outline: 2px solid var(--fgOnAccent);
 				outline-offset: -4px;
 			}
 		}
 
 		&:hover, &.active {
-			&:before {
+			&::before {
 				background: var(--accentLighten);
 			}
 		}
@@ -506,7 +506,7 @@ function more(ev: MouseEvent) {
 		&:focus-visible {
 			outline: none;
 
-			&:before {
+			&::before {
 				outline: 2px solid var(--focus);
 				outline-offset: -2px;
 			}
@@ -516,7 +516,7 @@ function more(ev: MouseEvent) {
 			text-decoration: none;
 			color: var(--accent);
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				height: 100%;

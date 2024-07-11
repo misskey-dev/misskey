@@ -84,7 +84,7 @@ function toggle(): void {
 		> .button {
 			border-color: var(--accent);
 
-			&:after {
+			&::after {
 				background-color: var(--accent);
 				transform: scale(1);
 				opacity: 1;
@@ -110,7 +110,7 @@ function toggle(): void {
 	border-radius: 100%;
 	transition: inherit;
 
-	&:after {
+	&::after {
 		content: '';
 		display: block;
 		position: absolute;

@@ -296,7 +296,7 @@ function onContextmenu(ev: MouseEvent) {
 	cursor: pointer;
 
 	&.draghover {
-		&:after {
+		&::after {
 			content: "";
 			pointer-events: none;
 			position: absolute;
