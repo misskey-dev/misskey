@@ -1612,8 +1612,6 @@ _sfx:
   note: "Заметки"
   noteMy: "Собственные заметки"
   notification: "Уведомления"
-  antenna: "Антенна"
-  channel: "Канал"
 _ago:
   future: "Из будущего"
   justNow: "Только что"
