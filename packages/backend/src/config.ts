@@ -210,8 +210,8 @@ export function loadConfig(): Config {
 	const wsScheme = scheme.replace('http', 'ws');
 
 	const dbDb = config.db.db ?? process.env.DATABASE_DB ?? '';
-	const dbUser =  config.db.user ?? process.env.DATABASE_USER ?? '';
-	const dbPass = config.db.pass?? process.env.DATABASE_PASSWORD ?? '';
+	const dbUser = config.db.user ?? process.env.DATABASE_USER ?? '';
+	const dbPass = config.db.pass ?? process.env.DATABASE_PASSWORD ?? '';
 
 	const externalMediaProxy = config.mediaProxy ?
 		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
