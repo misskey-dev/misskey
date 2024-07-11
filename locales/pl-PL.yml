@@ -1221,8 +1221,6 @@ _sfx:
   note: "Wpisy"
   noteMy: "Mój wpis"
   notification: "Powiadomienia"
-  antenna: "Anteny"
-  channel: "Powiadomienia kanału"
 _ago:
   future: "W przyszłości"
   justNow: "Przed chwilą"
