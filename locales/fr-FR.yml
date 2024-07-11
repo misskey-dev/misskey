@@ -1712,8 +1712,6 @@ _sfx:
   note: "Nouvelle note"
   noteMy: "Ma note"
   notification: "Notifications"
-  antenna: "Réception de l’antenne"
-  channel: "Notifications de canal"
   reaction: "Lors de la sélection de la réaction"
 _soundSettings:
   driveFile: "Utiliser un effet sonore sur le Disque"
