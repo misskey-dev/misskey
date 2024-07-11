@@ -16,8 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		autocapitalize="off"
 		@input="input()"
 		@paste.stop="paste"
-		@keydown.stop.prevent.enter="onEnter"
-		@keydown.stop.prevent.esc="emit('esc')"
+		@keydown.stop="onKeydown"
 	>
 	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 	<div ref="emojisEl" class="emojis" tabindex="-1">
@@ -447,9 +446,18 @@ function paste(event: ClipboardEvent): void {
 	}
 }
 
-function onEnter(ev: KeyboardEvent) {
+function onKeydown(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-	done();
+	if (ev.key === 'Enter') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		done();
+	}
+	if (ev.key === 'Escape') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		emit('esc');
+	}
 }
 
 function done(query?: string): boolean | void {
