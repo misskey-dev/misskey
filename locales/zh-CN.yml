@@ -1936,8 +1936,6 @@ _sfx:
   note: "帖子"
   noteMy: "我的帖子"
   notification: "通知"
-  antenna: "天线接收"
-  channel: "频道通知"
   reaction: "选择回应时"
 _soundSettings:
   driveFile: "使用网盘内的音频"
