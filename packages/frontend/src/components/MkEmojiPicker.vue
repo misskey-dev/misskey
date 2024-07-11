@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		autocapitalize="off"
 		@input="input()"
 		@paste.stop="paste"
-		@keydown.stop="onKeydown"
+		@keydown="onKeydown"
 	>
 	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 	<div ref="emojisEl" class="emojis" tabindex="-1">
