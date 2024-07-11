@@ -1920,8 +1920,6 @@ _sfx:
   note: "Notas"
   noteMy: "Nota (a mí mismo)"
   notification: "Notificaciones"
-  antenna: "Antena receptora"
-  channel: "Notificaciones del canal"
   reaction: "Al seleccionar una reacción"
 _soundSettings:
   driveFile: "Usar un archivo de audio en Drive"
