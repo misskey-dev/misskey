@@ -7516,14 +7516,6 @@ export interface Locale extends ILocale {
          */
         "notification": string;
         /**
-         * アンテナ受信
-         */
-        "antenna": string;
-        /**
-         * チャンネル通知
-         */
-        "channel": string;
-        /**
          * リアクション選択時
          */
         "reaction": string;
