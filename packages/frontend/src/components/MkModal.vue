@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
 	transparentBg?: boolean;
-	returnFocusElement?: HTMLElement | null;
+	returnFocusTo?: HTMLElement | null;
 }>(), {
 	manualShowing: null,
 	src: null,
@@ -80,7 +80,7 @@ const props = withDefaults(defineProps<{
 	zPriority: 'low',
 	noOverlap: true,
 	transparentBg: false,
-	returnFocusElement: null,
+	returnFocusTo: null,
 });
 
 const emit = defineEmits<{
@@ -333,7 +333,7 @@ onMounted(() => {
 			}
 		} else {
 			releaseFocusTrap?.();
-			focusParent(props.returnFocusElement ?? props.src, true, false);
+			focusParent(props.returnFocusTo ?? props.src, true, false);
 		}
 	}, { immediate: true });
 

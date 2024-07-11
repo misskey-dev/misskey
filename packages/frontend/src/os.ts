@@ -626,19 +626,19 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 	width?: number;
 	onClosing?: () => void;
 }): Promise<void> {
-	let returnFocusElement = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
 			items,
 			src,
 			width: options?.width,
 			align: options?.align,
-			returnFocusElement,
+			returnFocusTo,
 		}, {
 			closed: () => {
 				resolve();
 				dispose();
-				returnFocusElement = null;
+				returnFocusTo = null;
 			},
 			closing: () => {
 				options?.onClosing?.();
@@ -648,7 +648,7 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 }
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
-	let returnFocusElement = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
 	ev.preventDefault();
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkContextMenu, {
@@ -658,8 +658,8 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 			closed: () => {
 				resolve();
 				dispose?.();
-				if (returnFocusElement != null) {
-					focusParent(returnFocusElement, true, false);
+				if (returnFocusTo != null) {
+					focusParent(returnFocusTo, true, false);
 				}
 			},
 		});
