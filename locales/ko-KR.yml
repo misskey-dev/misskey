@@ -1937,8 +1937,6 @@ _sfx:
   note: "새 노트"
   noteMy: "내 노트"
   notification: "알림"
-  antenna: "안테나 수신"
-  channel: "채널 알림"
   reaction: "리액션 선택"
 _soundSettings:
   driveFile: "드라이브에 있는 오디오를 사용"
@@ -2449,7 +2447,7 @@ _moderationLogTypes:
   updateUserNote: "조정 기록 갱신"
   deleteDriveFile: "파일 삭제"
   deleteNote: "노트 삭제"
-  createGlobalAnnouncement: "모든 공지사항 만들기"
+  createGlobalAnnouncement: "전역 공지사항 생성"
   createUserAnnouncement: "사용자 공지사항 만들기"
   updateGlobalAnnouncement: "모든 공지사항 수정"
   updateUserAnnouncement: "사용자 공지사항 수정"
