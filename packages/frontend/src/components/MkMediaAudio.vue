@@ -82,6 +82,7 @@ import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
@@ -94,29 +95,41 @@ const props = defineProps<{
 const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const keymap = {
-	'up': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && audioEl.value) {
-			volume.value = Math.min(volume.value + 0.1, 1);
-		}
+	'up': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && audioEl.value) {
+				volume.value = Math.min(volume.value + 0.1, 1);
+			}
+		},
 	},
-	'down': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && audioEl.value) {
-			volume.value = Math.max(volume.value - 0.1, 0);
-		}
+	'down': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && audioEl.value) {
+				volume.value = Math.max(volume.value - 0.1, 0);
+			}
+		},
 	},
-	'left': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && audioEl.value) {
-			audioEl.value.currentTime = Math.max(audioEl.value.currentTime - 5, 0);
-		}
+	'left': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && audioEl.value) {
+				audioEl.value.currentTime = Math.max(audioEl.value.currentTime - 5, 0);
+			}
+		},
 	},
-	'right': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && audioEl.value) {
-			audioEl.value.currentTime = Math.min(audioEl.value.currentTime + 5, audioEl.value.duration);
-		}
+	'right': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && audioEl.value) {
+				audioEl.value.currentTime = Math.min(audioEl.value.currentTime + 5, audioEl.value.duration);
+			}
+		},
 	},
 	'space': () => {
 		if (inEmbedPage) return;
@@ -124,7 +137,7 @@ const keymap = {
 			togglePlayPause();
 		}
 	},
-};
+} as const satisfies Keymap;
 
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {

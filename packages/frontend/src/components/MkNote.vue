@@ -217,6 +217,7 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { url } from '@/config.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -314,15 +315,53 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 }
 
 const keymap = {
-	'r': () => reply(true),
-	'e|a|plus': () => react(true),
-	'q': () => renote(true),
-	'up|k|shift+tab': focusBefore,
-	'down|j|tab': focusAfter,
-	'esc': blur,
-	'm|o': () => showMenu(true),
-	's': () => showContent.value !== showContent.value,
-};
+	'r': () => {
+		if (renoteCollapsed.value) return;
+		reply();
+	},
+	'e|a|plus': () => {
+		if (renoteCollapsed.value) return;
+		react();
+	},
+	'q': () => {
+		if (renoteCollapsed.value) return;
+		renote();
+	},
+	'm': () => {
+		if (renoteCollapsed.value) return;
+		showMenu();
+	},
+	'c': () => {
+		if (renoteCollapsed.value) return;
+		if (!defaultStore.state.showClipButtonInNoteFooter) return;
+		clip();
+	},
+	'o': () => {
+		if (renoteCollapsed.value) return;
+		showMenu();
+	},
+	'v|enter': () => {
+		if (renoteCollapsed.value) {
+			renoteCollapsed.value = false;
+		} else if (appearNote.value.cw != null) {
+			showContent.value = !showContent.value;
+		} else if (isLong) {
+			collapsed.value = !collapsed.value;
+		}
+	},
+	'esc': {
+		allowRepeat: true,
+		callback: () => blur(),
+	},
+	'up|k|shift+tab': {
+		allowRepeat: true,
+		callback: () => focusBefore(),
+	},
+	'down|j|tab': {
+		allowRepeat: true,
+		callback: () => focusAfter(),
+	},
+} as const satisfies Keymap;
 
 provide('react', (reaction: string) => {
 	misskeyApi('notes/reactions/create', {

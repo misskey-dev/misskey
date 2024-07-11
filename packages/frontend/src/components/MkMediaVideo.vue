@@ -113,6 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, watch, inject, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import { defaultStore } from '@/store.js';
@@ -130,29 +131,41 @@ const props = defineProps<{
 const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const keymap = {
-	'up': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && videoEl.value) {
-			volume.value = Math.min(volume.value + 0.1, 1);
-		}
+	'up': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && videoEl.value) {
+				volume.value = Math.min(volume.value + 0.1, 1);
+			}
+		},
 	},
-	'down': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && videoEl.value) {
-			volume.value = Math.max(volume.value - 0.1, 0);
-		}
+	'down': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && videoEl.value) {
+				volume.value = Math.max(volume.value - 0.1, 0);
+			}
+		},
 	},
-	'left': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && videoEl.value) {
-			videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
-		}
+	'left': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && videoEl.value) {
+				videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
+			}
+		},
 	},
-	'right': () => {
-		if (inEmbedPage) return;
-		if (hasFocus() && videoEl.value) {
-			videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
-		}
+	'right': {
+		allowRepeat: true,
+		callback: () => {
+    	if (inEmbedPage) return;
+			if (hasFocus() && videoEl.value) {
+				videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
+			}
+		},
 	},
 	'space': () => {
 		if (inEmbedPage) return;
@@ -160,7 +173,7 @@ const keymap = {
 			togglePlayPause();
 		}
 	},
-};
+} as const satisfies Keymap;
 
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
