@@ -1928,8 +1928,6 @@ _sfx:
   note: "โน้ต"
   noteMy: "โน้ตของตัวเอง"
   notification: "การเเจ้งเตือน"
-  antenna: "เสาอากาศ"
-  channel: "การแจ้งเตือนช่อง"
   reaction: "เมื่อเลือกรีแอคชั่น"
 _soundSettings:
   driveFile: "ใช้เสียงจากไดรฟ์"
