@@ -1800,8 +1800,6 @@ _sfx:
   note: "Notizen"
   noteMy: "Meine Notizen"
   notification: "Benachrichtigungen"
-  antenna: "Antennen"
-  channel: "Kanalbenachrichtigung"
 _ago:
   future: "Zukunft"
   justNow: "Gerade eben"
