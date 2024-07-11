@@ -13,14 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONTENT_TRUST: 1
+      DOCKLE_VERSION: 0.4.14
     steps:
       - uses: actions/checkout@v4.1.1
-      - run: |
-          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v0.4.10/dockle_0.4.10_Linux-64bit.deb"
+      - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
+        run: |
+          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${DOCKLE_VERSION}/dockle_${DOCKLE_VERSION}_Linux-64bit.deb"
           sudo dpkg -i dockle.deb
       - run: |
           cp .config/docker_example.env .config/docker.env
-          cp ./docker-compose_example.yml ./docker-compose.yml
+          cp ./compose_example.yml ./compose.yml
       - run: |
           docker compose up -d web
           docker tag "$(docker compose images web | awk 'OFS=":" {print $4}' | tail -n +2)" misskey-web:latest

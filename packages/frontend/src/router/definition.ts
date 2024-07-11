@@ -252,6 +252,9 @@ const routes: RouteDef[] = [{
 	path: '/scratchpad',
 	component: page(() => import('@/pages/scratchpad.vue')),
 }, {
+	path: '/preview',
+	component: page(() => import('@/pages/preview.vue')),
+}, {
 	path: '/auth/:token',
 	component: page(() => import('@/pages/auth.vue')),
 }, {
@@ -471,6 +474,14 @@ const routes: RouteDef[] = [{
 		path: '/invites',
 		name: 'invites',
 		component: page(() => import('@/pages/admin/invites.vue')),
+	}, {
+		path: '/abuse-report-notification-recipient',
+		name: 'abuse-report-notification-recipient',
+		component: page(() => import('@/pages/admin/abuse-report/notification-recipient.vue')),
+	}, {
+		path: '/system-webhook',
+		name: 'system-webhook',
+		component: page(() => import('@/pages/admin/system-webhook.vue')),
 	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
