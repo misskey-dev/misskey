@@ -657,9 +657,12 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 		}, {
 			closed: () => {
 				resolve();
-				dispose?.();
+				dispose();
+				
+				// MkModalを通していないのでここでフォーカスを戻す処理を行う
 				if (returnFocusTo != null) {
 					focusParent(returnFocusTo, true, false);
+					returnFocusTo = null;
 				}
 			},
 		});
