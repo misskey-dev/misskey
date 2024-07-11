@@ -1318,8 +1318,6 @@ _sfx:
   note: "Нотатки"
   noteMy: "Мої нотатки"
   notification: "Сповіщення"
-  antenna: "Прийом антени"
-  channel: "Повідомлення каналу"
 _ago:
   future: "Майбутнє"
   justNow: "Щойно"
