@@ -12,7 +12,6 @@ import type { MiUser } from '@/models/User.js';
 import type { MiRegistrationTicket } from '@/models/RegistrationTicket.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -59,8 +58,8 @@ export class InviteCodeEntityService {
 		tickets: MiRegistrationTicket[],
 		me: { id: MiUser['id'] },
 	) {
-		const _createdBys = tickets.map(({ createdBy, createdById }) => createdBy ?? createdById).filter(isNotNull);
-		const _usedBys = tickets.map(({ usedBy, usedById }) => usedBy ?? usedById).filter(isNotNull);
+		const _createdBys = tickets.map(({ createdBy, createdById }) => createdBy ?? createdById).filter(x => x != null);
+		const _usedBys = tickets.map(({ usedBy, usedById }) => usedBy ?? usedById).filter(x => x != null);
 		const _userMap = await this.userEntityService.packMany([..._createdBys, ..._usedBys], me)
 			.then(users => new Map(users.map(u => [u.id, u])));
 		return Promise.all(

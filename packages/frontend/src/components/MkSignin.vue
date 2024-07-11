@@ -227,8 +227,9 @@ function loginFailed(err: any): void {
 }
 
 function resetPassword(): void {
-	os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
-	}, 'closed');
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
+		closed: () => dispose(),
+	});
 }
 
 function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {

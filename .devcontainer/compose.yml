@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -8,6 +6,7 @@ services:
 
     volumes:
       - ../:/workspace:cached
+      - node_modules:/workspace/node_modules
 
     command: sleep infinity
 
@@ -46,6 +45,7 @@ services:
 volumes:
   postgres-data:
   redis-data:
+  node_modules:
 
 networks:
   internal_network:
