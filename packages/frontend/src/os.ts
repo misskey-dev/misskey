@@ -25,6 +25,7 @@ import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { getHTMLElementOrNull } from '@/scripts/get-or-null.js';
+import { focusParent } from './scripts/focus.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -653,12 +654,13 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 		const { dispose } = popup(MkContextMenu, {
 			items,
 			ev,
-			returnFocusElement,
 		}, {
 			closed: () => {
 				resolve();
 				dispose?.();
-				returnFocusElement = null;
+				if (returnFocusElement != null) {
+					focusParent(returnFocusElement, true, false);
+				}
 			},
 		});
 	}));
