@@ -1933,8 +1933,6 @@ _sfx:
   note: "Catatan"
   noteMy: "Catatan (Saya)"
   notification: "Notifikasi"
-  antenna: "Penerimaan Antenna"
-  channel: "Notifikasi Kanal"
   reaction: "Ketika memilih reaksi"
 _soundSettings:
   driveFile: "Menggunakan berkas audio dalam Drive"
