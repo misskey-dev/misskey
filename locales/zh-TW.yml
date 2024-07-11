@@ -1937,8 +1937,6 @@ _sfx:
   note: "貼文"
   noteMy: "我的貼文"
   notification: "通知"
-  antenna: "天線接收"
-  channel: "頻道通知"
   reaction: "選擇反應時"
 _soundSettings:
   driveFile: "使用雲端硬碟的音效檔案"
