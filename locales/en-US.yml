@@ -1935,8 +1935,6 @@ _sfx:
   note: "New note"
   noteMy: "Own note"
   notification: "Notifications"
-  antenna: "Antennas"
-  channel: "Channel notifications"
   reaction: "On choosing a reaction"
 _soundSettings:
   driveFile: "Use an audio file in Drive."
