@@ -61,7 +61,7 @@ const props = defineProps<{
 		outline: none;
 
 		&::after {
-			content: '';
+			content: "";
 			position: absolute;
 			top: 0;
 			left: 0;

@@ -680,7 +680,7 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		const { dispose } = popup(MkPostFormDialog, props, {
 			closed: () => {
 				resolve();
-				dispose?.();
+				dispose();
 			},
 		});
 	});

@@ -395,11 +395,11 @@ if (appearNote.value.reactionAcceptance === 'likeOnly') {
 	});
 }
 
-async function renote() {
+function renote() {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = await getRenoteMenu({ note: note.value, renoteButton, canRenote: canRenote.value });
+	const { menu } = getRenoteMenu({ note: note.value, renoteButton });
 	os.popupMenu(menu, renoteButton.value);
 }
 
