@@ -131,6 +131,7 @@ export class UserSearchService {
 			}));
 		inactiveFollowingUsersQuery.setParameters(followingUserQuery.getParameters());
 
+		// 自分自身がヒットするとしたらここ
 		const activeUserQuery = this.generateUserQueryBuilder(params)
 			.andWhere(`user.id NOT IN (${followingUserQuery.getQuery()})`)
 			.andWhere('user.updatedAt > :activeThreshold', { activeThreshold });
