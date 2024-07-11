@@ -512,7 +512,6 @@ _theme:
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
-  antenna: "Antenner"
 _2fa:
   renewTOTPCancel: "Nej tack"
 _antennaSources:
