@@ -181,9 +181,8 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('invalid Actor: id has different host');
 		}
 
+		x.publicKey = toSingle(x.publicKey);
 		if (x.publicKey) {
-			x.publicKey = toSingle(x.publicKey);
-
 			if (typeof x.publicKey.id !== 'string') {
 				throw new Error('invalid Actor: publicKey.id is not a string');
 			}
