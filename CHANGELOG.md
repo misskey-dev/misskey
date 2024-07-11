@@ -6,6 +6,7 @@
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 
 ### Client
+- Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
 - Enhance: ブラウザのコンテキストメニューを使用できるように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
@@ -13,6 +14,8 @@
 - Fix: コントロールパネルでベースロールのポリシーを編集してもUI上では変更が反映されない問題を修正 
 - Fix: アンテナの編集画面のボタンに隙間を追加
 - Fix: テーマプレビューが見れない問題を修正
+- Fix: ショートカットキーが連打できる問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -35,6 +38,7 @@
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
+- Feat: `/admin/role/create` のロールポリシーの型を修正
 
 ## 2024.5.0
 
