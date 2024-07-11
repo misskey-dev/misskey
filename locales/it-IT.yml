@@ -1916,8 +1916,6 @@ _sfx:
   note: "Nota"
   noteMy: "Mia nota"
   notification: "Notifiche"
-  antenna: "Ricezione dell'antenna"
-  channel: "Notifiche di canale"
   reaction: "Quando seleziono una reazione"
 _soundSettings:
   driveFile: "Suoni del Drive"
