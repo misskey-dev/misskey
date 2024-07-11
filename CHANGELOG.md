@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
+
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
@@ -7,6 +10,7 @@
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
+- Enhance: 非ログイン時のハイライトTLのデザインを改善
 - Enhance: フロントエンドのアクセシビリティ改善  
   (Based on https://github.com/taiyme/misskey/pull/226)
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
@@ -39,6 +43,7 @@
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
+- Feat: `/admin/role/create` のロールポリシーの型を修正
 
 ## 2024.5.0
 
