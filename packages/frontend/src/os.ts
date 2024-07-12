@@ -26,7 +26,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { embedPage } from '@/config.js';
 import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
-import { focusParent } from '/scripts/focus.js';
+import { focusParent } from '@/scripts/focus.js';
 
 export const openingWindowsCount = ref(0);
 
