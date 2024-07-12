@@ -11,6 +11,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
+import type { Packed } from '@/misc/json-schema.js';
 
 export const meta = {
 	tags: ['role', 'users'],
@@ -92,10 +93,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.limit(ps.limit)
 				.getMany();
 
-			return await Promise.all(assigns.map(async assign => ({
+			return (await Promise.allSettled(assigns.map(async assign => ({
 				id: assign.id,
 				user: await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
-			})));
+			}))))
+				.filter((result): result is PromiseFulfilledResult<{ id: string; user: Packed<'UserDetailed'> }> => result.status === 'fulfilled')
+				.map(result => result.value);
 		});
 	}
 }

@@ -14,6 +14,7 @@ import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
+import { Packed } from '@/misc/json-schema.js';
 
 export const meta = {
 	tags: ['users'],
@@ -131,10 +132,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
 
 			// Make replies object (includes weights)
-			const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
+			const repliesObj = (await Promise.allSettled(topRepliedUsers.map(async (user) => ({
 				user: await this.userEntityService.pack(user, me, { schema: 'UserDetailed' }),
 				weight: repliedUsers[user] / peak,
-			})));
+			}))))
+				.filter((result): result is PromiseFulfilledResult<{ user: Packed<'UserDetailed'>; weight: number }> => result.status === 'fulfilled')
+				.map(result => result.value);
 
 			return repliesObj;
 		});
