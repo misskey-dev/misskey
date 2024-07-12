@@ -64,7 +64,7 @@ function resolve() {
 		forward: forward.value,
 		reportId: props.report.id,
 	}).then(() => {
-		emit('resolved', props.report.id);
+		emit('resolved', props.report.id satisfies string);
 	});
 }
 </script>
