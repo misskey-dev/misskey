@@ -52,4 +52,12 @@ export default class PerUserPvChart extends Chart<typeof schema> { // eslint-dis
 			'pv.visitor': 1,
 		}, user.id);
 	}
+
+	@bindThis
+	public async getChartUsers(span: 'hour' | 'day', amount: number, cursor: Date | null, limit = 0, offset = 0): Promise<{
+    userId: string;
+    count: number;
+}[]> {
+		return await this.getChartPv(span, amount, cursor, limit, offset);
+	}
 }
