@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "FORMATTED_BRANCH_NAME=$(echo ${{ github.ref_name }} | sed -e 's/\//-/g' )" >> $GITHUB_ENV
       - name: Build and Push to GitHub Container Registry
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
