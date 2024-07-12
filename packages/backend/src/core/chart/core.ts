@@ -15,7 +15,7 @@ import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MiRepository, miRepository } from '@/models/_.js';
-import type { DataSource, Repository } from 'typeorm';
+import type { DataSource, ObjectLiteral, Repository } from 'typeorm';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
@@ -94,6 +94,8 @@ type ToJsonSchema<S> = {
 	required: (keyof S)[];
 };
 
+type MiAndOrmRepository<T extends ObjectLiteral> = Repository<T> & MiRepository<T>;
+
 export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
 	const unflatten = (str: string, parent: Record<string, any>) => {
 		const keys = str.split('.');
@@ -146,11 +148,12 @@ export default abstract class Chart<T extends Schema> {
 		group: string | null;
 	}[] = [];
 	// ↓にしたいけどfindOneとかで型エラーになる
-	//private repositoryForHour: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
-	//private repositoryForDay: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
-	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
-	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
-
+	//private repositoryForHour: MiAndOrmRepository<RawRecord<T>>;
+	//private repositoryForDay: MiAndOrmRepository<RawRecord<T>>;
+	private repositoryForHour: MiAndOrmRepository<{ id: number; group?: string | null; date: number;}>;
+	private repositoryForDay: MiAndOrmRepository<{ id: number; group?: string | null; date: number;}>;
+	private repositoryUserPvForHour: MiAndOrmRepository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>;
+	private repositoryUserPvForDay: MiAndOrmRepository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>;
 	/**
 	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
 	 */
@@ -276,8 +279,10 @@ export default abstract class Chart<T extends Schema> {
 		this.logger = logger;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour).extend(miRepository as MiRepository<{ id: number; group?: string | null; date: number; }>);
-		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day).extend(miRepository as MiRepository<{ id: number; group?: string | null; date: number; }>);
+		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour).extend(miRepository);
+		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day).extend(miRepository);
+		this.repositoryUserPvForHour = db.getRepository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>(hour).extend(miRepository);
+		this.repositoryUserPvForDay = db.getRepository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>(day).extend(miRepository);
 	}
 
 	@bindThis
@@ -726,5 +731,52 @@ export default abstract class Chart<T extends Schema> {
 			nestedProperty.set(object, k, v);
 		}
 		return object as Unflatten<ChartResult<T>>;
+	}
+
+	@bindThis
+	public async getChartPv(span: 'hour' | 'day', amount: number, cursor: Date | null, limit: number, offset: number): Promise<
+		{
+			userId: string,
+			count: number,
+		}[]
+	> {
+		const [y, m, d, h, _m, _s, _ms] = cursor ? Chart.parseDate(subtractTime(addTime(cursor, 1, span), 1)) : Chart.getCurrentDate();
+		const [y2, m2, d2, h2] = cursor ? Chart.parseDate(addTime(cursor, 1, span)) : [] as never;
+
+		const lt = dateUTC([y, m, d, h, _m, _s, _ms]);
+
+		const gt =
+			span === 'day' ? subtractTime(cursor ? dateUTC([y2, m2, d2, 0]) : dateUTC([y, m, d, 0]), amount - 1, 'day') :
+			span === 'hour' ? subtractTime(cursor ? dateUTC([y2, m2, d2, h2]) : dateUTC([y, m, d, h]), amount - 1, 'hour') :
+			new Error('not happen') as never;
+
+		const repository =
+			span === 'hour' ? this.repositoryUserPvForHour :
+			span === 'day' ? this.repositoryUserPvForDay :
+			new Error('not happen') as never;
+
+		// ログ取得
+		const logs = await repository.createQueryBuilder()
+			.where('date BETWEEN :gt AND :lt', { gt: Chart.dateToTimestamp(gt), lt: Chart.dateToTimestamp(lt) })
+			.orderBy('___pv_visitor + ___upv_visitor + ___pv_user + ___upv_user', 'DESC')
+			.skip(offset)
+			.take(limit)
+			.getMany() as {
+					___pv_visitor: number,
+					___upv_visitor: number,
+					___pv_user: number,
+					___upv_user: number,
+					group: string,
+			}[];
+		const result = [] as {
+			userId: string,
+			count: number,
+		}[];
+		for (const row of logs) {
+			const userId = row.group;
+			const count = row.___pv_user + row.___upv_user + row.___pv_visitor + row.___upv_visitor;
+			result.push({ userId, count });
+		}
+		return result;
 	}
 }
