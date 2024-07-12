@@ -4,7 +4,7 @@
  */
 
 import { getScrollPosition, getScrollContainer, getStickyBottom, getStickyTop } from '@/scripts/scroll.js';
-import { getElementOrNull, getNodeOrNull } from '@/scripts/get-or-null.js';
+import { getElementOrNull, getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
 
 type MaybeHTMLElement = EventTarget | Node | Element | HTMLElement;
 

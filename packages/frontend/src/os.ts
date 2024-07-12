@@ -24,7 +24,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { getHTMLElementOrNull } from '@/scripts/get-or-null.js';
+import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
 import { focusParent } from './scripts/focus.js';
 
 export const openingWindowsCount = ref(0);
@@ -658,7 +658,7 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 			closed: () => {
 				resolve();
 				dispose();
-				
+
 				// MkModalを通していないのでここでフォーカスを戻す処理を行う
 				if (returnFocusTo != null) {
 					focusParent(returnFocusTo, true, false);
