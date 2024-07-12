@@ -116,10 +116,10 @@ export class ReactionService {
 		if (!await this.noteEntityService.isVisibleForMe(note, user.id)) {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
 		}
+		const policies = await this.roleService.getUserPolicies(user.id);
 
 		let reaction = _reaction ?? FALLBACK;
-
-		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
+		if (note.reactionAcceptance === 'likeOnly' || !policies.canUseReaction || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
 			reaction = '\u2764';
 		} else if (_reaction) {
 			const custom = reaction.match(isCustomEmojiRegexp);

@@ -1768,6 +1768,7 @@ _role:
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
     canUseDriveFileInSoundSettings: "サウンド設定でドライブのファイルを利用"
+    canUseReaction: "リアクションの利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"

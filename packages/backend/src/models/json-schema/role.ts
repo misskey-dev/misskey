@@ -248,6 +248,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canUseReaction: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canHideAds: {
 			type: 'boolean',
 			optional: false, nullable: false,
