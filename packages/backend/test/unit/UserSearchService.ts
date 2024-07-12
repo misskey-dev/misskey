@@ -250,6 +250,7 @@ describe('UserSearchService', () => {
 		});
 
 		test('サスペンド済みユーザは出ない', async () => {
+			await setActive([alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setSuspended([alice, alyce, alycia]);
 
 			const result = await service.search(
