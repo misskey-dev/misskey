@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkLoading v-if="iframeLoading" :class="$style.embedCodeGenPreviewSpinner"/>
 					<div :class="$style.embedCodeGenPreviewWrapper">
 						<div :class="$style.embedCodeGenPreviewTitle">{{ i18n.ts.preview }}</div>
-						<div ref="resizerRootEl" :class="$style.embedCodeGenPreviewResizerRoot">
+						<div ref="resizerRootEl" :class="$style.embedCodeGenPreviewResizerRoot" inert>
 							<div
 								:class="$style.embedCodeGenPreviewResizer"
 								:style="{ transform: iframeStyle }"
