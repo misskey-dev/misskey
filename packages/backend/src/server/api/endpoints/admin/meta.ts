@@ -481,6 +481,11 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			preferPopularUserFactor: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['follower', 'pv', 'none'],
+			},
 		},
 	},
 } as const;
@@ -614,6 +619,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
 				urlPreviewUserAgent: instance.urlPreviewUserAgent,
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
+				preferPopularUserFactor: instance.preferPopularUserFactor,
 			};
 		});
 	}

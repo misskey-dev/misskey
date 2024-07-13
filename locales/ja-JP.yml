@@ -1242,6 +1242,9 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
+pageViewCount: "ページ閲覧数"
+preferPopularUserFactor: "人気のユーザーの算出基準"
+preferPopularUserFactorDescription: "ページ閲覧数はローカルユーザーにのみ適用されます（リモートユーザーはフォロワー数で表示されます）。「無効」に設定すると、ローカル・リモートどちらの「人気のユーザー」セクションも表示されなくなります。"
 
 _delivery:
   status: "配信状態"
