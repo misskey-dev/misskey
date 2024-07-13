@@ -5,24 +5,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<TmsServerBanner/>
+	<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
+		<div style="overflow: clip;">
+			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+			<div :class="$style.bannerName">
+				<b>{{ instance.name ?? host }}</b>
+			</div>
+		</div>
+	</div>
 
 	<MkKeyValue>
 		<template #key>{{ i18n.ts.description }}</template>
-		<template #value><div v-html="instance.description || i18n.ts.headlineMisskey"></div></template>
+		<template #value><div v-html="instance.description"></div></template>
 	</MkKeyValue>
 
 	<FormSection>
 		<div class="_gaps_m">
-			<TmsSoftwareVersions/>
-			<div v-html="i18n.tsx._tms.poweredByTaiyme({ name: instance.name ?? host })"></div>
-			<div class="_gaps_s">
-				<FormLink to="/tms/about">
-					<template #icon><i class="ti ti-info-circle"></i></template>
-					<template #default>{{ i18n.ts._tms.aboutTaiyme }}</template>
-				</FormLink>
-				<TmsSoftwareRepository/>
+			<MkKeyValue :copy="version">
+				<template #key>Misskey</template>
+				<template #value>{{ version }}</template>
+			</MkKeyValue>
+			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 			</div>
+			<FormLink to="/about-misskey">
+				<template #icon><i class="ti ti-info-circle"></i></template>
+				{{ i18n.ts.aboutMisskey }}
+			</FormLink>
+			<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
+				<template #icon><i class="ti ti-code"></i></template>
+				{{ i18n.ts.sourceCode }}
+			</FormLink>
+			<MkInfo v-else warn>
+				{{ i18n.ts.sourceCodeIsNotYetProvided }}
+			</MkInfo>
 		</div>
 	</FormSection>
 
@@ -33,21 +48,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #key>{{ i18n.ts.administrator }}</template>
 					<template #value>
 						<template v-if="instance.maintainerName">{{ instance.maintainerName }}</template>
-						<span v-else style="opacity: 0.7;">({{ i18n.ts._tms.notYetProvided }})</span>
+						<span v-else style="opacity: 0.7;">({{ i18n.ts.notYetProvided }})</span>
 					</template>
 				</MkKeyValue>
 				<MkKeyValue :copy="instance.maintainerEmail">
 					<template #key>{{ i18n.ts.contact }}</template>
 					<template #value>
 						<template v-if="instance.maintainerEmail">{{ instance.maintainerEmail }}</template>
-						<span v-else style="opacity: 0.7;">({{ i18n.ts._tms.notYetProvided }})</span>
+						<span v-else style="opacity: 0.7;">({{ i18n.ts.notYetProvided }})</span>
 					</template>
 				</MkKeyValue>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.inquiry }}</template>
 					<template #value>
 						<MkLink v-if="instance.inquiryUrl" :url="instance.inquiryUrl" target="_blank">{{ instance.inquiryUrl }}</MkLink>
-						<span v-else style="opacity: 0.7;">({{ i18n.ts._tms.notYetProvided }})</span>
+						<span v-else style="opacity: 0.7;">({{ i18n.ts.notYetProvided }})</span>
 					</template>
 				</MkKeyValue>
 			</FormSplit>
@@ -111,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { host } from '@/config.js';
+import { host, version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import number from '@/filters/number.js';
@@ -123,14 +138,34 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
-import TmsServerBanner from '@/components/TmsServerBanner.vue';
-import TmsSoftwareRepository from '@/components/TmsSoftwareRepository.vue';
-import TmsSoftwareVersions from '@/components/TmsSoftwareVersions.vue';
 
 const initStats = () => misskeyApi('stats', {});
 </script>
 
 <style lang="scss" module>
+.banner {
+	text-align: center;
+	border-radius: 10px;
+	overflow: clip;
+	background-size: cover;
+	background-position: center center;
+}
+
+.bannerIcon {
+	display: block;
+	margin: 16px auto 0 auto;
+	height: 64px;
+	border-radius: 8px;
+}
+
+.bannerName {
+	display: block;
+	padding: 16px;
+	color: #fff;
+	text-shadow: 0 0 8px #000;
+	background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+}
+
 .rules {
 	counter-reset: item;
 	list-style: none;
