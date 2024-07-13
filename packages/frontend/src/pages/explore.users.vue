@@ -98,7 +98,7 @@ const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };
 const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
 	state: 'alive',
 	origin: 'local',
-	sort: '+follower',
+	sort: '+pv',
 } };
 const recentlyUpdatedUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
 	origin: 'local',
