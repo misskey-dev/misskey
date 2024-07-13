@@ -8,6 +8,7 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { MiNote } from '@/models/Note.js';
 import { MiUser } from '@/models/_.js';
 import type { NotesRepository } from '@/models/_.js';
@@ -16,7 +17,9 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
+import type Logger from '@/logger.js';
 import type { Index, MeiliSearch } from 'meilisearch';
+import type { Client as ElasticSearch } from '@elastic/elasticsearch';
 
 type K = string;
 type V = string | number | boolean;
@@ -65,6 +68,8 @@ function compileQuery(q: Q): string {
 export class SearchService {
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
+	private elasticsearchNoteIndex: string | null = null;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -73,15 +78,24 @@ export class SearchService {
 		@Inject(DI.meilisearch)
 		private meilisearch: MeiliSearch | null,
 
+		@Inject(DI.elasticsearch)
+		private elasticsearch: ElasticSearch | null,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private idService: IdService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('note:search');
+
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
+			if (config.meilisearch?.scope) {
+				this.meilisearchIndexScope = config.meilisearch.scope;
+			}
 			/*this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
@@ -104,10 +118,52 @@ export class SearchService {
 					maxTotalHits: 10000,
 				},
 			});*/
-		}
-
-		if (config.meilisearch?.scope) {
-			this.meilisearchIndexScope = config.meilisearch.scope;
+		} else if (this.elasticsearch) {
+			this.elasticsearchNoteIndex = `${config.elasticsearch!.index}---notes`;
+			this.elasticsearch.indices.exists({
+				index: this.elasticsearchNoteIndex,
+			}).then((indexExists) => {
+				if (!indexExists) {
+					this.elasticsearch?.indices.create(
+						{
+							index: this.elasticsearchNoteIndex + `-${new Date().toISOString().slice(0, 7).replace(/-/g, '')}`,
+							mappings: {
+								properties: {
+									text: { type: 'text' },
+									cw: { type: 'text' },
+									createdAt: { type: 'long' },
+									userId: { type: 'keyword' },
+									userHost: { type: 'keyword' },
+									channelId: { type: 'keyword' },
+									tags: { type: 'keyword' },
+								},
+							},
+							settings: {
+								index: {
+									analysis: {
+										tokenizer: {
+											kuromoji: {
+												type: 'kuromoji_tokenizer',
+												mode: 'search',
+											},
+										},
+										analyzer: {
+											kuromoji_analyzer: {
+												type: 'custom',
+												tokenizer: 'kuromoji',
+											},
+										},
+									},
+								},
+							},
+						},
+					).catch((error) => {
+						this.logger.error(error);
+					});
+				}
+			}).catch((error) => {
+				this.logger.error('Error while checking if index exists', error);
+			});
 		}
 	}
 
@@ -143,6 +199,23 @@ export class SearchService {
 				tags: note.tags,
 			}], {
 				primaryKey: 'id',
+			});
+		}	else if (this.elasticsearch) {
+			const body = {
+				createdAt: this.idService.parse(note.id).date.getTime(),
+				userId: note.userId,
+				userHost: note.userHost,
+				channelId: note.channelId,
+				cw: note.cw,
+				text: note.text,
+				tags: note.tags,
+			};
+			await this.elasticsearch.index({
+				index: this.elasticsearchNoteIndex + `-${new Date().toISOString().slice(0, 7).replace(/-/g, '')}` as string,
+				id: note.id,
+				body: body,
+			}).catch((error) => {
+				console.error(error);
 			});
 		}
 	}
@@ -204,6 +277,67 @@ export class SearchService {
 				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 				return true;
 			});
+			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
+		} else if (this.elasticsearch) {
+			const esFilter: any = {
+				bool: {
+					must: [],
+				},
+			};
+
+			if (pagination.untilId) esFilter.bool.must.push({ range: { createdAt: { lt: this.idService.parse(pagination.untilId).date.getTime() } } });
+			if (pagination.sinceId) esFilter.bool.must.push({ range: { createdAt: { gt: this.idService.parse(pagination.sinceId).date.getTime() } } });
+			if (opts.userId) esFilter.bool.must.push({ term: { userId: opts.userId } });
+			if (opts.channelId) esFilter.bool.must.push({ term: { channelId: opts.channelId } });
+			if (opts.host) {
+				if (opts.host === '.') {
+					esFilter.bool.must.push({ bool: { must_not: [{ exists: { field: 'userHost' } }] } });
+				} else {
+					esFilter.bool.must.push({ term: { userHost: opts.host } });
+				}
+			}
+
+			if (q !== '') {
+				esFilter.bool.must.push({
+					bool: {
+						should: [
+							{ wildcard: { 'text': { value: q } } },
+							{ simple_query_string: { fields: ['text'], 'query': q, default_operator: 'and' } },
+							{ wildcard: { 'cw': { value: q } } },
+							{ simple_query_string: { fields: ['cw'], 'query': q, default_operator: 'and' } },
+						],
+						minimum_should_match: 1,
+					},
+				});
+			}
+
+			const res = await (this.elasticsearch.search)({
+				index: this.elasticsearchNoteIndex + '*' as string,
+				body: {
+					query: esFilter,
+					sort: [{ createdAt: { order: 'desc' } }],
+				},
+				_source: ['id', 'createdAt'],
+				size: pagination.limit,
+			});
+
+			const noteIds = res.hits.hits.map((hit: any) => hit._id);
+			if (noteIds.length === 0) return [];
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>()];
+			const notes = (await this.notesRepository.findBy({
+				id: In(noteIds),
+			})).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+				return true;
+			});
+
 			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
 		} else {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
