@@ -1,7 +1,8 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
 import { UserDetailed } from './autogen/models.js';
-import { UsersShowRequest } from './autogen/entities.js';
+import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest } from './autogen/entities.js';
 import {
+	PartialRolePolicyOverride,
 	SigninRequest,
 	SigninResponse,
 	SignupPendingRequest,
@@ -79,5 +80,9 @@ export type Endpoints = Overwrite<
 			req: SigninRequest;
 			res: SigninResponse;
 		},
+		'admin/roles/create': {
+			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
+			res: AdminRolesCreateResponse;
+		}
 	}
 >
