@@ -2427,6 +2427,11 @@ _abuseReport:
       webhook: "Webhook"
       _captions:
         mail: "Quando ricevi un abuso, notifica l'amministrazione via email"
+        webhook: "Spedire una notifica al SystemWebhook specificato (sia quando si riceve una segnalazione, che quando viene risolta)"
+    keywords: "Parole chiave"
+    notifiedUser: "Profili da notificare"
+    notifiedWebhook: "Webhook da usare"
+    deleteConfirm: "Vuoi davvero rimuovere il destinatario della notifica?"
 _moderationLogTypes:
   createRole: "Ruolo creato"
   deleteRole: "Ruolo eliminato"
@@ -2464,6 +2469,12 @@ _moderationLogTypes:
   deleteAvatarDecoration: "Eliminazione decorazione della foto profilo"
   unsetUserAvatar: "Rimossa foto profilo"
   unsetUserBanner: "Rimossa intestazione profilo"
+  createSystemWebhook: "Crea un SystemWebhook"
+  updateSystemWebhook: "Modifica SystemWebhook"
+  deleteSystemWebhook: "Elimina SystemWebhook"
+  createAbuseReportNotificationRecipient: "Crea destinatario per le notifiche di segnalazioni"
+  updateAbuseReportNotificationRecipient: "Aggiorna destinatario notifiche di segnalazioni"
+  deleteAbuseReportNotificationRecipient: "Elimina destinatario notifiche di segnalazioni"
 _fileViewer:
   title: "Dettagli del file"
   type: "Tipo di file"
@@ -2589,6 +2600,8 @@ _urlPreviewSetting:
   userAgent: "User-Agent"
   userAgentDescription: "Definire con quale User-Agent si intende identificarsi durante l'acquisizione di un'anteprima. Se è vuoto, useremo il valore predefinito."
   summaryProxy: "Endpoint proxy che genera l'anteprima"
+  summaryProxyDescription: "Genera anteprime utilizzando un proxy Summaly anziché Misskey."
+  summaryProxyDescription2: "I parametri sono collegano al proxy come stringa query. Se il proxy non li supporta, verranno ignorati."
 _mediaControls:
   pip: "Sovraimpressione"
   playbackRate: "Velocità di riproduzione"
