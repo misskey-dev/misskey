@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSection>
 
-	<FormSuspense :p="initStats" v-slot="{ result: stats }">
+	<FormSuspense v-slot="{ result: stats }" :p="initStats">
 		<FormSection>
 			<template #label>{{ i18n.ts.statistics }}</template>
 			<FormSplit>
