@@ -56,6 +56,8 @@ if (props.showUrlPreview && isEnabledUrlPreview.value) {
 			source: el.value instanceof HTMLElement ? el.value : el.value?.$el,
 		}, {
 			closed: () => dispose(),
+		}, {
+			allowMultiple: true,
 		});
 	});
 }

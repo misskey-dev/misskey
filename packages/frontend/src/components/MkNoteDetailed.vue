@@ -368,6 +368,8 @@ useTooltip(renoteButton, async (showing) => {
 		targetElement: renoteButton.value,
 	}, {
 		closed: () => dispose(),
+	}, {
+		allowMultiple: true,
 	});
 });
 
@@ -391,6 +393,8 @@ if (appearNote.value.reactionAcceptance === 'likeOnly') {
 			targetElement: reactButton.value!,
 		}, {
 			closed: () => dispose(),
+		}, {
+			allowMultiple: true,
 		});
 	});
 }
@@ -431,6 +435,8 @@ function react(): void {
 			const y = rect.top + (el.offsetHeight / 2);
 			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
 				end: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 		}
 	} else {

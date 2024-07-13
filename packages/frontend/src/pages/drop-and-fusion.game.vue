@@ -1012,12 +1012,16 @@ function attachGameEvents() {
 		{
 			const { dispose } = os.popup(MkRippleEffect, { x: domX, y: domY }, {
 				end: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 		}
 
 		{
 			const { dispose } = os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {
 				end: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 		}
 

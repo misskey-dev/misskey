@@ -30,6 +30,8 @@ if (props.withTooltip) {
 			targetElement: elRef.value.$el,
 		}, {
 			closed: () => dispose(),
+		}, {
+			allowMultiple: true,
 		});
 	});
 }

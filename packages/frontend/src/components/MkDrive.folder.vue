@@ -261,6 +261,8 @@ function onContextmenu(ev: MouseEvent) {
 				initialFolder: props.folder,
 			}, {
 				closed: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 		},
 	}, { type: 'divider' }, {

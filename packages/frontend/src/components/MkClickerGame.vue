@@ -37,6 +37,8 @@ function onClick(ev: MouseEvent) {
 	const y = ev.clientY;
 	const { dispose } = os.popup(MkPlusOneEffect, { x, y }, {
 		end: () => dispose(),
+	}, {
+		allowMultiple: true,
 	});
 
 	saveData.value!.cookies++;

@@ -23,7 +23,9 @@ export function useChartTooltip(opts: { position: 'top' | 'middle' } = { positio
 		y: tooltipY,
 		title: tooltipTitle,
 		series: tooltipSeries,
-	}, {});
+	}, {}, {
+		allowMultiple: true,
+	});
 
 	onUnmounted(() => {
 		disposeTooltipComponent();

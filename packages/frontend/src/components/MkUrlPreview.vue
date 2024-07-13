@@ -193,6 +193,8 @@ function openPlayer(): void {
 		url: requestUrl.href,
 	}, {
 		// TODO
+	}, {
+		allowMultiple: true,
 	});
 }
 

@@ -48,6 +48,8 @@ export class UserPreview {
 				this.hideTimer = window.setTimeout(this.close, 500);
 			},
 			closed: () => dispose(),
+		}, {
+			allowMultiple: true,
 		});
 
 		this.promise = {
