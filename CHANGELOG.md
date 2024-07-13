@@ -14,6 +14,8 @@
 - Enhance: 非ログイン時のハイライトTLのデザインを改善
 - Enhance: フロントエンドのアクセシビリティ改善  
   (Based on https://github.com/taiyme/misskey/pull/226)
+- Enhance: サーバー情報ページ・お問い合わせページを改善  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
