@@ -18,6 +18,9 @@ function containsFocusTrappedElements(el: HTMLElement): boolean {
 
 function releaseFocusTrap(el: HTMLElement): void {
 	focusTrapElements.delete(el);
+	if (el.inert === true) {
+		el.inert = false;
+	}
 	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
@@ -39,18 +42,28 @@ function releaseFocusTrap(el: HTMLElement): void {
 	}
 }
 
-export function focusTrap(el: HTMLElement, parent: true): void;
-export function focusTrap(el: HTMLElement, parent?: false): { release: () => void; };
-export function focusTrap(el: HTMLElement, parent = false): { release: () => void; } | void {
+export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEls: boolean, parent: true): void;
+export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEls?: boolean, parent?: false): { release: () => void; };
+export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEls = false, parent = false): { release: () => void; } | void {
+	if (el.inert === true) {
+		el.inert = false;
+	}
 	if (el.parentElement != null && el !== document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
 			if (!siblingEl) return;
-			if (siblingEl !== el && !ignoreElements.includes(siblingEl.tagName.toLowerCase())) {
+			if (
+				siblingEl !== el &&
+				(
+					hasInteractionWithOtherFocusTrappedEls === false ||
+					(!focusTrapElements.has(siblingEl) && !containsFocusTrappedElements(siblingEl))
+				) &&
+				!ignoreElements.includes(siblingEl.tagName.toLowerCase())
+			) {
 				siblingEl.inert = true;
 			}
 		});
-		focusTrap(el.parentElement, true);
+		focusTrap(el.parentElement, hasInteractionWithOtherFocusTrappedEls, true);
 	}
 
 	if (!parent) {
