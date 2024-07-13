@@ -147,6 +147,7 @@ const initStats = () => misskeyApi('stats', {});
 	text-align: center;
 	border-radius: 10px;
 	overflow: clip;
+	background-color: var(--panel);
 	background-size: cover;
 	background-position: center center;
 }
