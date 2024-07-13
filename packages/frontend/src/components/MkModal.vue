@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
 	transparentBg?: boolean;
-	hasIntractionWithOtherFocusTrappedEls?: boolean;
+	hasInteractionWithOtherFocusTrappedEls?: boolean;
 	returnFocusTo?: HTMLElement | null;
 }>(), {
 	manualShowing: null,
@@ -81,7 +81,7 @@ const props = withDefaults(defineProps<{
 	zPriority: 'low',
 	noOverlap: true,
 	transparentBg: false,
-	hasIntractionWithOtherFocusTrappedEls: false,
+	hasInteractionWithOtherFocusTrappedEls: false,
 	returnFocusTo: null,
 });
 
@@ -328,7 +328,7 @@ onMounted(() => {
 	watch([showing, () => props.manualShowing], ([showing, manualShowing]) => {
 		if (manualShowing === true || (manualShowing == null && showing === true)) {
 			if (modalRootEl.value != null) {
-				const { release } = focusTrap(modalRootEl.value, props.hasIntractionWithOtherFocusTrappedEls);
+				const { release } = focusTrap(modalRootEl.value, props.hasInteractionWithOtherFocusTrappedEls);
 
 				releaseFocusTrap = release;
 				modalRootEl.value.focus();
