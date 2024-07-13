@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="500"
 	:height="550"
 	data-cy-user-setup
-	@close="close(true)"
 	@closed="emit('closed')"
 >
 	<template v-if="page === 1" #header><i class="ti ti-user-edit"></i> {{ i18n.ts._initialAccountSetting.profileSetting }}</template>
@@ -48,12 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
 						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-							<XProfile/>
+							<XProfile :onNextButtonEnabled="(state) => page1NextButtonDisabled = !state"/>
 						</MkSpacer>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue :disabled="page1NextButtonDisabled" @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 							</div>
 						</div>
 					</div>
@@ -150,6 +149,8 @@ const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
 const page = ref(defaultStore.state.accountSetupWizard);
+
+const page1NextButtonDisabled = ref(false);
 
 watch(page, () => {
 	defaultStore.set('accountSetupWizard', page.value);

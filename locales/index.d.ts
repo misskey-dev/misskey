@@ -5347,6 +5347,10 @@ export interface Locale extends ILocale {
          * 初期設定をあとでやり直しますか？
          */
         "laterAreYouSure": string;
+        /**
+         * Botアカウントは管理者を必ず記載する必要があります。以下から管理者のアカウントを選択してください。
+         */
+        "mustBeSetBotOwner": string;
     };
     "_initialTutorial": {
         /**

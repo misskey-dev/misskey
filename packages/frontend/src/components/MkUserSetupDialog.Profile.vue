@@ -25,12 +25,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.description }}</template>
 	</MkTextarea>
 
+	<MkSwitch v-model="useAsBot">
+		<template #label>{{ i18n.ts.flagAsBot }}</template>
+	</MkSwitch>
+
+	<div v-if="useAsBot" class="_gaps_m">
+		<div>
+			<MkInfo>{{ i18n.ts._initialAccountSetting.mustBeSetBotOwner }}</MkInfo>
+		</div>
+		<div>
+			<MkButton @click="selectBotOwner">{{ i18n.ts.selectUser }}</MkButton>
+			<MkUserCardMini v-if="botOwner" :user="botOwner"></MkUserCardMini>
+		</div>
+	</div>
+
 	<MkInfo>{{ i18n.ts._initialAccountSetting.youCanEditMoreSettingsInSettingsPageLater }}</MkInfo>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -45,6 +62,12 @@ const $i = signinRequired();
 
 const name = ref($i.name ?? '');
 const description = ref($i.description ?? '');
+const useAsBot = ref($i.isBot ?? false);
+const botOwner = ref<Misskey.entities.UserDetailed | null>(null);
+
+const emit = defineEmits<{
+	(ev: 'nextButtonEnabled', value: boolean): void;
+}>();
 
 watch(name, () => {
 	os.apiWithDialog('i/update', {
@@ -61,6 +84,12 @@ watch(description, () => {
 		description: description.value || null,
 	});
 });
+
+watch(useAsBot, () => {
+	watchBotSettings();
+	os.apiWithDialog('i/update', { isBot: useAsBot.value });
+});
+watch(botOwner, watchBotSettings);
 
 function setAvatar(ev) {
 	chooseFileFromPc(false).then(async (files) => {
@@ -87,6 +116,25 @@ function setAvatar(ev) {
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
 	});
+}
+
+function selectBotOwner() {
+	os.selectUser({ includeSelf: false, localOnly: true }).then(_user => {
+		botOwner.value = _user;
+	});
+}
+
+function watchBotSettings() {
+	if (useAsBot.value) {
+		if (botOwner.value != null) {
+			description.value = (description.value + '\n管理者: @' + botOwner.value.username).trim();
+			emit('nextButtonEnabled', true);
+		} else {
+			emit('nextButtonEnabled', false);
+		}
+	} else {
+		emit('nextButtonEnabled', true);
+	}
 }
 </script>
 
