@@ -5004,7 +5004,7 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
-     /**
+    /**
      * もう一度お試しください。
      */
     "tryAgain": string;

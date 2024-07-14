@@ -239,7 +239,7 @@ function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 			let _path = options.path;
 
 			if (options.type === 'lookup') {
-				// TODO: v2024.2.0以降が浸透してきたら正式なURLに変更する▼
+				// TODO: v2024.7.0以降が浸透してきたら正式なURLに変更する▼
 				// _path = `/lookup?uri=${encodeURIComponent(_path)}`;
 				_path = `/authorize-follow?acct=${encodeURIComponent(_path)}`;
 			}
@@ -252,7 +252,7 @@ function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 			break;
 		}
 		case 'share': {
-			const params = query(options.params);			
+			const params = query(options.params);
 			if (targetHost) {
 				window.open(`https://${targetHost}/share?${params}`, '_blank', 'noopener');
 			} else {

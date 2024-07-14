@@ -9,13 +9,38 @@ import { i18n } from '@/i18n.js';
 import { popup } from '@/os.js';
 
 export type OpenOnRemoteOptions = {
+	/**
+	 * 外部のMisskey Webで特定のパスを開く
+	 */
 	type: 'web';
+
+	/**
+	 * 内部パス（例: `/settings`）
+	 */
 	path: string;
 } | {
+	/**
+	 * 外部のMisskey Webで照会する
+	 */
 	type: 'lookup';
-	path: string;	
+
+	/**
+	 * 照会したいエンティティのURI
+	 *
+	 * （例: `https://misskey.example.com/notes/abcdexxxxyz`）
+	 */
+	uri: string;
 } | {
+	/**
+	 * 外部のMisskeyでノートする
+	 */
 	type: 'share';
+
+	/**
+	 * `/share` ページに渡すクエリストリング
+	 *
+	 * @see https://go.misskey-hub.net/spec/share/
+	 */
 	params: Record<string, string>;
 };
 
