@@ -60,7 +60,7 @@ function onChange({ resolved, key: newKey }) {
 	if (current == null || 'redirect' in current.route) return;
 	currentPageComponent.value = current.route.component;
 	currentPageProps.value = current.props;
-	key.value = current.route.path + JSON.stringify(Object.fromEntries(current.props));
+	key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化
