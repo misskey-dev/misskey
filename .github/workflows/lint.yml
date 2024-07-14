@@ -67,7 +67,7 @@ jobs:
         path: node_modules/.cache/eslint
         key: eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          eslint-${{ eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-
+          eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-
     - run: pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location node_modules/.cache/eslint --cache-strategy content
 
   typecheck:
