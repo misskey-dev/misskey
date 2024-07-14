@@ -8,11 +8,12 @@ on:
     branches: [ develop ]
     paths:
       - packages/misskey-js/**
+      - .github/workflows/test-misskey-js.yml
   pull_request:
     branches: [ develop ]
     paths:
       - packages/misskey-js/**
-
+      - .github/workflows/test-misskey-js.yml
 jobs:
   test:
 

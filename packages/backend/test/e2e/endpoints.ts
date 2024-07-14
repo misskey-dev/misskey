@@ -10,7 +10,7 @@ import * as assert from 'assert';
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
 import { MiUser } from '@/models/_.js';
-import { api, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
+import { api, castAsError, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Endpoints', () => {
@@ -164,7 +164,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.id, alice.id);
+			assert.strictEqual((res.body as unknown as { id: string }).id, alice.id);
 		});
 
 		test('ユーザーが存在しなかったら怒る', async () => {
@@ -285,7 +285,8 @@ describe('Endpoints', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'CANNOT_REACT_TO_RENOTE');
+			assert.ok(res.body);
+			assert.strictEqual(castAsError(res.body).error.code, 'CANNOT_REACT_TO_RENOTE');
 		});
 
 		test('引用にリアクションできる', async () => {
@@ -1063,7 +1064,7 @@ describe('Endpoints', () => {
 				userId: bob.id,
 			}, alice);
 			assert.strictEqual(res1.status, 204);
-			assert.strictEqual(res2.body?.memo, memo);
+			assert.strictEqual((res2.body as unknown as { memo: string })?.memo, memo);
 		});
 
 		test('自分に関するメモを更新できる', async () => {
@@ -1078,7 +1079,7 @@ describe('Endpoints', () => {
 				userId: alice.id,
 			}, alice);
 			assert.strictEqual(res1.status, 204);
-			assert.strictEqual(res2.body?.memo, memo);
+			assert.strictEqual((res2.body as unknown as { memo: string })?.memo, memo);
 		});
 
 		test('メモを削除できる', async () => {
@@ -1099,7 +1100,7 @@ describe('Endpoints', () => {
 			}, alice);
 
 			// memoには常に文字列かnullが入っている(5cac151)
-			assert.strictEqual(res.body.memo, null);
+			assert.strictEqual((res.body as unknown as { memo: string | null }).memo, null);
 		});
 
 		test('メモは個人ごとに独立して保存される', async () => {
@@ -1126,8 +1127,8 @@ describe('Endpoints', () => {
 				}, carol),
 			]);
 
-			assert.strictEqual(resAlice.body.memo, memoAliceToBob);
-			assert.strictEqual(resCarol.body.memo, memoCarolToBob);
+			assert.strictEqual((resAlice.body as unknown as { memo: string }).memo, memoAliceToBob);
+			assert.strictEqual((resCarol.body as unknown as { memo: string }).memo, memoCarolToBob);
 		});
 	});
 });
