@@ -281,7 +281,7 @@ const renoteCollapsed = ref(
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
-	uri: `https://${host}/notes/${appearNote.value.id}`,
+	url: `https://${host}/notes/${appearNote.value.id}`,
 }));
 
 /* Overload FunctionにLintが対応していないのでコメントアウト

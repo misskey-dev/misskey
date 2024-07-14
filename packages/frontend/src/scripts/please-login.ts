@@ -25,11 +25,11 @@ export type OpenOnRemoteOptions = {
 	type: 'lookup';
 
 	/**
-	 * 照会したいエンティティのURI
+	 * 照会したいエンティティのURL
 	 *
 	 * （例: `https://misskey.example.com/notes/abcdexxxxyz`）
 	 */
-	uri: string;
+	url: string;
 } | {
 	/**
 	 * 外部のMisskeyでノートする

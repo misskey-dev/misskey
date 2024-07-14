@@ -64,7 +64,7 @@ const showResult = ref(props.readOnly || isVoted.value);
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
-	uri: `https://${host}/notes/${props.noteId}`,
+	url: `https://${host}/notes/${props.noteId}`,
 }));
 
 // 期限付きアンケート

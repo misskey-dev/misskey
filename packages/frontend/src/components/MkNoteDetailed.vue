@@ -299,7 +299,7 @@ const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.vi
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
-	uri: `https://${host}/notes/${appearNote.value.id}`,
+	url: `https://${host}/notes/${appearNote.value.id}`,
 }));
 
 const keymap = {

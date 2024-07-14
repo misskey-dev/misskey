@@ -236,12 +236,14 @@ function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 	switch (options.type) {
 		case 'web':
 		case 'lookup': {
-			let _path = options.path;
+			let _path: string;
 
 			if (options.type === 'lookup') {
 				// TODO: v2024.7.0以降が浸透してきたら正式なURLに変更する▼
 				// _path = `/lookup?uri=${encodeURIComponent(_path)}`;
-				_path = `/authorize-follow?acct=${encodeURIComponent(_path)}`;
+				_path = `/authorize-follow?acct=${encodeURIComponent(options.url)}`;
+			} else {
+				_path = options.path;
 			}
 
 			if (targetHost) {
