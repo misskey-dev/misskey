@@ -8,7 +8,7 @@ on:
   pull_request:
     paths:
       - locales/**
-
+      - .github/workflows/locale.yml
 jobs:
   locale_verify:
     runs-on: ubuntu-latest

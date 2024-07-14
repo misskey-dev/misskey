@@ -12,7 +12,7 @@ on:
     paths:
       - packages/misskey-js/package.json
       - package.json
-
+      - .github/workflows/check-misskey-js-version.yml
 jobs:
   check-version:
     # ルートの package.json と packages/misskey-js/package.json のバージョンが一致しているかを確認する

@@ -19,7 +19,7 @@ on:
       - packages/misskey-js/**
       # for e2e
       - packages/backend/**
-
+      - .github/workflows/test-frontend.yml
 jobs:
   vitest:
     runs-on: ubuntu-latest

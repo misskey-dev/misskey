@@ -13,7 +13,7 @@ on:
     branches: [ develop ]
     paths:
       - packages/misskey-js/**
-
+      - .github/workflows/test-misskey-js.yml
 jobs:
   test:
 
