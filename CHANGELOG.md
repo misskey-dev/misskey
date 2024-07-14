@@ -46,6 +46,8 @@
   2. フォロー中かつ非アクティブなユーザ
   3. フォローしていないアクティブなユーザ
   4. フォローしていない非アクティブなユーザ
+- Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
