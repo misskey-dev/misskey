@@ -13,6 +13,7 @@
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
+- Enhance: 非ログイン時に他サーバーに遷移するアクションを追加
 - Enhance: 非ログイン時のハイライトTLのデザインを改善
 - Enhance: フロントエンドのアクセシビリティ改善  
   (Based on https://github.com/taiyme/misskey/pull/226)
