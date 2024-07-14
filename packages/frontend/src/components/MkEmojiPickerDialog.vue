@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
 	:preferType="defaultStore.state.emojiPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
+	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
 	:src="src"
