@@ -4984,10 +4984,6 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
-    /**
-     * まだ提供されていません
-     */
-    "notYetProvided": string;
     "_delivery": {
         /**
          * 配信状態
