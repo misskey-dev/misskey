@@ -7,6 +7,7 @@ on:
       - develop
     paths:
       - packages/backend/**
+      - .github/workflows/validate-api-json.yml
   pull_request:
     paths:
       - packages/backend/**

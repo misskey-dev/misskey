@@ -6,6 +6,7 @@ on:
     paths:
       - packages/misskey-js/package.json
       - package.json
+      - .github/workflows/check-misskey-js-version.yml
   pull_request:
     branches: [ develop ]
     paths:

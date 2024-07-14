@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - locales/**
+      - .github/workflows/locale.yml
   pull_request:
     paths:
       - locales/**

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - packages/misskey-js/**
+      - .github/workflows/api-misskey-js.yml
   pull_request:
     paths:
       - packages/misskey-js/**
