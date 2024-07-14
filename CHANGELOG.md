@@ -5,6 +5,8 @@
 
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
+- Feat: ユーザーのアイコン/バナーの変更可否をロールで設定可能に
+  - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
 - Enhance: 人気ユーザーの算出基準を変更できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/653 , https://github.com/MisskeyIO/misskey/pull/664)
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
@@ -48,6 +50,8 @@
   2. フォロー中かつ非アクティブなユーザ
   3. フォローしていないアクティブなユーザ
   4. フォローしていない非アクティブなユーザ
+- Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
