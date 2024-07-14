@@ -47,7 +47,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 
 		const suspendedInstancesQuery = this.instancesRepository.createQueryBuilder('instance')
 			.select('instance.host')
-			.where('instance.isSuspended = true');
+			.where('instance.suspensionState != \'none\'');
 
 		const pubsubSubQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followerHost')
@@ -89,7 +89,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 				.select('COUNT(instance.id)')
 				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT ILIKE ANY(ARRAY[:...blocked])', { blocked: meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere('instance.isSuspended = false')
+				.andWhere('instance.suspensionState = \'none\'')
 				.andWhere('instance.isNotResponding = false')
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
@@ -97,7 +97,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 				.select('COUNT(instance.id)')
 				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT ILIKE ANY(ARRAY[:...blocked])', { blocked: meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere('instance.isSuspended = false')
+				.andWhere('instance.suspensionState = \'none\'')
 				.andWhere('instance.isNotResponding = false')
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),

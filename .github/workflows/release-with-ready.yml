@@ -16,23 +16,26 @@ jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      ref: ${{ steps.get_pr.outputs.ref }}
+      head: ${{ steps.get_pr.outputs.head }}
+      base: ${{ steps.get_pr.outputs.base }}
     steps:
       - uses: actions/checkout@v4
       # PR情報を取得
       - name: Get PR
         run: |
-          pr_json=$(gh pr view "$PR_NUMBER" --json isDraft,headRefName)
-          echo "ref=$(echo $pr_json | jq -r '.headRefName')" >> $GITHUB_OUTPUT
+          pr_json=$(gh pr view "$PR_NUMBER" --json isDraft,headRefName,baseRefName)
+          echo "head=$(echo $pr_json | jq -r '.headRefName')" >> $GITHUB_OUTPUT
+          echo "base=$(echo $pr_json | jq -r '.baseRefName')" >> $GITHUB_OUTPUT
         id: get_pr
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
   release:
-    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v1
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v2
     needs: check
-    if: startsWith(needs.check.outputs.ref, 'release/')
+    if: needs.check.outputs.head == github.event.repository.default_branch && needs.check.outputs.base == vars.STABLE_BRANCH
     with:
       pr_number: ${{ github.event.pull_request.number }}
+      user: 'github-actions[bot]'
       package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
       use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
       indent: ${{ vars.INDENT }}
