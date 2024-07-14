@@ -12,6 +12,7 @@ import {
 } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { UserSearchService } from '@/core/UserSearchService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
@@ -202,6 +203,7 @@ const $UserFollowingService: Provider = { provide: 'UserFollowingService', useEx
 const $UserKeypairService: Provider = { provide: 'UserKeypairService', useExisting: UserKeypairService };
 const $UserListService: Provider = { provide: 'UserListService', useExisting: UserListService };
 const $UserMutingService: Provider = { provide: 'UserMutingService', useExisting: UserMutingService };
+const $UserSearchService: Provider = { provide: 'UserSearchService', useExisting: UserSearchService };
 const $UserSuspendService: Provider = { provide: 'UserSuspendService', useExisting: UserSuspendService };
 const $UserAuthService: Provider = { provide: 'UserAuthService', useExisting: UserAuthService };
 const $VideoProcessingService: Provider = { provide: 'VideoProcessingService', useExisting: VideoProcessingService };
@@ -348,6 +350,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserKeypairService,
 		UserListService,
 		UserMutingService,
+		UserSearchService,
 		UserSuspendService,
 		UserAuthService,
 		VideoProcessingService,
@@ -490,6 +493,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
+		$UserSearchService,
 		$UserSuspendService,
 		$UserAuthService,
 		$VideoProcessingService,
@@ -633,6 +637,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserKeypairService,
 		UserListService,
 		UserMutingService,
+		UserSearchService,
 		UserSuspendService,
 		UserAuthService,
 		VideoProcessingService,
@@ -774,6 +779,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
+		$UserSearchService,
 		$UserSuspendService,
 		$UserAuthService,
 		$VideoProcessingService,
