@@ -1711,6 +1711,7 @@ _role:
     canManageAvatarDecorations: "アバターデコレーションの管理"
     driveCapacity: "ドライブ容量"
     alwaysMarkNsfw: "ファイルにNSFWを常に付与"
+    canUpdateBioMedia: "アイコンとバナーの更新を許可"
     pinMax: "ノートのピン留めの最大数"
     antennaMax: "アンテナの作成可能数"
     wordMuteMax: "ワードミュートの最大文字数"
@@ -1977,8 +1978,6 @@ _sfx:
   note: "ノート"
   noteMy: "ノート(自分)"
   notification: "通知"
-  antenna: "アンテナ受信"
-  channel: "チャンネル通知"
   reaction: "リアクション選択時"
 
 _soundSettings:

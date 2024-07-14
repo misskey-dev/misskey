@@ -6619,6 +6619,10 @@ export interface Locale extends ILocale {
              */
             "alwaysMarkNsfw": string;
             /**
+             * アイコンとバナーの更新を許可
+             */
+            "canUpdateBioMedia": string;
+            /**
              * ノートのピン留めの最大数
              */
             "pinMax": string;
@@ -7539,14 +7543,6 @@ export interface Locale extends ILocale {
          * 通知
          */
         "notification": string;
-        /**
-         * アンテナ受信
-         */
-        "antenna": string;
-        /**
-         * チャンネル通知
-         */
-        "channel": string;
         /**
          * リアクション選択時
          */
