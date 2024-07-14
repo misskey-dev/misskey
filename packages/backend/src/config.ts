@@ -259,7 +259,7 @@ export function loadConfig(): Config {
 		deliverJobMaxAttempts: config.deliverJobMaxAttempts,
 		inboxJobMaxAttempts: config.inboxJobMaxAttempts,
 		proxyRemoteFiles: config.proxyRemoteFiles,
-		signToActivityPubGet: config.signToActivityPubGet,
+		signToActivityPubGet: config.signToActivityPubGet ?? true,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
 		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
