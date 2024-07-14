@@ -13,7 +13,6 @@ import * as sound from '@/scripts/sound.js';
 import { $i, signout, updateAccount } from '@/account.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
@@ -21,6 +20,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -69,14 +69,6 @@ export async function mainBoot() {
 		});
 	}
 
-	const hotkeys = {
-		'd': (): void => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
-		's': (): void => {
-			mainRouter.push('/search');
-		},
-	};
 	try {
 		if (defaultStore.state.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
@@ -105,9 +97,6 @@ export async function mainBoot() {
 	}
 
 	if ($i) {
-		// only add post shortcuts if logged in
-		hotkeys['p|n'] = post;
-
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
@@ -334,7 +323,19 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	document.addEventListener('keydown', makeHotkey(hotkeys));
+	const keymap = {
+		'p|n': () => {
+			if ($i == null) return;
+			post();
+		},
+		'd': () => {
+			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		},
+		's': () => {
+			mainRouter.push('/search');
+		},
+	} as const satisfies Keymap;
+	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }
