@@ -1694,6 +1694,7 @@ _role:
     canManageAvatarDecorations: "管理頭像裝飾"
     driveCapacity: "雲端硬碟容量"
     alwaysMarkNsfw: "總是將檔案標記為NSFW"
+    canUpdateBioMedia: "允許更新大頭貼和橫幅"
     pinMax: "置頂貼文的最大數量"
     antennaMax: "可建立的天線數量"
     wordMuteMax: "靜音文字的最大字數"
