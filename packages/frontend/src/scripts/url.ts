@@ -23,6 +23,6 @@ export function appendQuery(url: string, query: string): string {
 }
 
 export function extractDomain(url: string) {
-	const match = url.match(/^(https)?:?\/{0,2}([^\/]+)/);
-	return match ? match[2] : null;
+	const match = url.match(/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?([^:\/\n]+)/im);
+	return match ? match[1] : null;
 }
