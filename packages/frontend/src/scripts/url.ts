@@ -24,5 +24,5 @@ export function appendQuery(url: string, query: string): string {
 
 export function extractDomain(url: string) {
 	const match = url.match(/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?([^:\/\n]+)/im);
-	return match ? match[2] : null;
+	return match ? match[1] : null;
 }
