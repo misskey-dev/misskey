@@ -6,6 +6,7 @@
 #───┘ URL └─────────────────────────────────────────────────────
 
 # Final accessible URL seen by a user.
+# You can set url from an environment variable instead.
 url: https://example.tld/
 
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
@@ -38,9 +39,11 @@ db:
   port: 5432
 
   # Database name
+  # You can set db from an environment variable instead.
   db: misskey
 
   # Auth
+  # You can set user and pass from environment variables instead.
   user: example-misskey-user
   pass: example-misskey-pass
 

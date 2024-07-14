@@ -11,7 +11,6 @@ import { bindThis } from '@/decorators.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { Packed } from '@/misc/json-schema.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 
 @Injectable()
 export class AbuseReportNotificationRecipientEntityService {
@@ -66,13 +65,13 @@ export class AbuseReportNotificationRecipientEntityService {
 			);
 		}
 
-		const userIds = objs.map(it => it.userId).filter(isNotNull);
+		const userIds = objs.map(it => it.userId).filter(x => x != null);
 		const users: Map<string, Packed<'UserLite'>> = (userIds.length > 0)
 			? await this.userEntityService.packMany(userIds)
 				.then(it => new Map(it.map(it => [it.id, it])))
 			: new Map();
 
-		const systemWebhookIds = objs.map(it => it.systemWebhookId).filter(isNotNull);
+		const systemWebhookIds = objs.map(it => it.systemWebhookId).filter(x => x != null);
 		const systemWebhooks: Map<string, Packed<'SystemWebhook'>> = (systemWebhookIds.length > 0)
 			? await this.systemWebhookEntityService.packMany(systemWebhookIds)
 				.then(it => new Map(it.map(it => [it.id, it])))

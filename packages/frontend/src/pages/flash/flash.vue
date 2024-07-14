@@ -81,6 +81,7 @@ import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { MenuItem } from '@/types/menu';
+import { pleaseLogin } from '@/scripts/please-login.js';
 
 const props = defineProps<{
 	id: string;
@@ -145,6 +146,7 @@ function shareWithNote() {
 
 function like() {
 	if (!flash.value) return;
+	pleaseLogin();
 
 	os.apiWithDialog('flash/like', {
 		flashId: flash.value.id,
@@ -156,6 +158,7 @@ function like() {
 
 async function unlike() {
 	if (!flash.value) return;
+	pleaseLogin();
 
 	const confirm = await os.confirm({
 		type: 'warning',
