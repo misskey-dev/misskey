@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
+		<MkAvatar :class="$style.avatar" :user="note.user" link :preview="!inEmbedPage"/>
 		<div :class="$style.body">
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
@@ -61,6 +61,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 	depth: 1,
 });
+
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const muted = ref($i ? checkWordMute(props.note, $i, $i.mutedWords) : false);
 

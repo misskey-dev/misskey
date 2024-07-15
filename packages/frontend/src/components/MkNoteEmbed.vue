@@ -11,12 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<span :class="$style.renoteText">
 			<I18n :src="i18n.ts.renotedBy" tag="span">
 				<template #user>
-					<MkA v-user-preview="note.userId" :class="$style.renoteName" :to="userPage(note.user)">
+					<MkA :class="$style.renoteName" :to="userPage(note.user)">
 						<MkUserName :user="note.user"/>
 					</MkA>
 				</template>
@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article :class="$style.note">
 		<header :class="$style.noteHeader">
-			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
+			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link/>
 			<div :class="$style.noteHeaderBody">
 				<div :class="$style.noteHeaderBodyUpper">
 					<div style="min-width: 0;">
 						<div class="_nowrap">
-							<MkA v-user-preview="appearNote.user.id" :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
+							<MkA :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
 								<MkUserName :nowrap="true" :user="appearNote.user"/>
 							</MkA>
 							<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
@@ -72,14 +72,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:author="appearNote.user"
 					:nyaize="'respect'"
 					:emojiUrls="appearNote.emojis"
-					:enableEmojiMenu="true"
-					:enableEmojiMenuReaction="true"
 				/>
 				<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
 				<div v-if="appearNote.files && appearNote.files.length > 0">
 					<MkMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 				</div>
-				<MkPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
+				<MkPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
 				<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 				<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 					<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>

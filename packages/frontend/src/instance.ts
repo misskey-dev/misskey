@@ -8,6 +8,7 @@ import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
+import { embedPage } from '@/config.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -36,7 +37,7 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
-export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
+export const isEnabledUrlPreview = computed(() => (instance.enableUrlPreview ?? true) && !embedPage);
 
 export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
 	if (!force) {

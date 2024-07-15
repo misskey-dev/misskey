@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="{ [$style.done]: closed || isVoted }">
+<div :class="{ [$style.done]: closed || isVoted || readOnly }">
 	<ul :class="$style.choices">
 		<li v-for="(choice, i) in poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
 			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
@@ -83,9 +83,9 @@ if (props.poll.expiresAt) {
 }
 
 const vote = async (id) => {
-	pleaseLogin(undefined, pleaseLoginContext.value);
-
 	if (props.readOnly || closed.value || isVoted.value) return;
+
+	pleaseLogin(undefined, pleaseLoginContext.value);
 
 	const { canceled } = await os.confirm({
 		type: 'question',
@@ -145,7 +145,7 @@ const vote = async (id) => {
 
 .done {
 	.choice {
-		cursor: default;
+		cursor: initial;
 	}
 }
 </style>

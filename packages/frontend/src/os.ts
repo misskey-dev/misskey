@@ -172,22 +172,11 @@ type EmitsExtractor<T> = {
 	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
 };
 
-type PopupOptions = {
-	callEvenOnEmbedPage?: boolean;
-};
-
 export function popup<T extends Component>(
 	component: T,
 	props: ComponentProps<T>,
 	events: ComponentEmit<T> = {} as ComponentEmit<T>,
-	options: PopupOptions = {},
 ): { dispose: () => void } {
-	const _options = Object.assign({
-		callEvenOnEmbedPage: false,
-	}, options) as Required<PopupOptions>;
-
-	if (embedPage && !_options.callEvenOnEmbedPage) return { dispose: () => {} };
-
 	markRaw(component);
 
 	const id = ++popupIdCount;

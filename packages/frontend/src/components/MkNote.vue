@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link :preview="!inEmbedPage && !mock"/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+				<MkA v-user-preview="inEmbedPage ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
+		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link :preview="!inEmbedPage && !mock"/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!inEmbedPage && !mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:author="appearNote.user"
 							:nyaize="'respect'"
 							:emojiUrls="appearNote.emojis"
-							:enableEmojiMenu="true"
+							:enableEmojiMenu="!inEmbedPage"
 							:enableEmojiMenuReaction="true"
 						/>
 						<div v-if="translating || translation" :class="$style.translation">
@@ -81,8 +81,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="appearNote.files && appearNote.files.length > 0">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
-					<div v-if="isEnabledUrlPreview && !inEmbedPage">
+					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
+					<div v-if="isEnabledUrlPreview">
 						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					</div>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
@@ -156,14 +156,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="!hardMuted" :class="$style.muted" @click="muted = false">
 	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+			<MkA v-user-preview="inEmbedPage ? undefined : appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
 	<I18n v-else :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+			<MkA v-user-preview="inEmbedPage ? undefined : appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
