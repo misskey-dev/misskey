@@ -34,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:setting="rowSetting"
 			:bus="bus"
 			:using="row.using"
+			:class="[lastLine === row.index ? 'last_row' : '']"
 			@operation:beginEdit="onCellEditBegin"
 			@operation:endEdit="onCellEditEnd"
 			@change:value="onChangeCellValue"
@@ -1273,6 +1274,8 @@ onMounted(() => {
 .grid {
 	font-size: 90%;
 	overflow-x: scroll;
+	// firefoxだとスクロールバーがセルに重なって見づらくなってしまうのでスペースを空けておく
+	padding-bottom: 8px;
 }
 </style>
 
@@ -1315,21 +1318,21 @@ $borderRadius: var(--radius);
 					border-right: $borderSetting;
 				}
 			}
+		}
 
-			&:last-child {
-				.mk_grid_td, .mk_grid_th {
-					// 一番下の行
-					border-bottom: $borderSetting;
+		.last_row {
+			.mk_grid_td, .mk_grid_th {
+				// 一番下の行
+				border-bottom: $borderSetting;
 
-					&:first-child {
-						// 左下セル
-						border-bottom-left-radius: $borderRadius;
-					}
+				&:first-child {
+					// 左下セル
+					border-bottom-left-radius: $borderRadius;
+				}
 
-					&:last-child {
-						// 右下セル
-						border-bottom-right-radius: $borderRadius;
-					}
+				&:last-child {
+					// 右下セル
+					border-bottom-right-radius: $borderRadius;
 				}
 			}
 		}
