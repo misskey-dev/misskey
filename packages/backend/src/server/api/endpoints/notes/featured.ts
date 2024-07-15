@@ -102,6 +102,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
+			// TODO: ミュート等考慮
+
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

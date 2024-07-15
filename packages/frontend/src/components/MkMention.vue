@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe && gamingType === '' , [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
 	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
@@ -14,13 +14,15 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
-import { computed } from 'vue';
+import {computed, ref, watch} from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { MkABehavior } from '@/components/global/MkA.vue';
+
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const props = defineProps<{
 	username: string;
@@ -38,12 +40,13 @@ const isMe = $i && (
 
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 bg.setAlpha(0.1);
-const bgCss = bg.toRgbString();
 
 const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );
+const bgCss = (gamingType.value === '') ? bg.toRgbString() : "";
+//const bgCss = `background:${bg.toRgbString()}; ${result}` ;
 </script>
 
 <style lang="scss" module>
@@ -53,8 +56,26 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	border-radius: 999px;
 	color: var(--mention);
 
+  &.gamingLight{
+    color: white;
+    opacity: 0.9;
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+    -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+    animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+  }
+  &.gamingDark{
+    opacity: 0.9;
+    color: white;
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
+    -webkit-animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    -moz-animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  }
+
 	&.isMe {
 		color: var(--mentionMe);
+
 	}
 }
 
@@ -69,5 +90,70 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 
 .host {
 	opacity: 0.5;
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

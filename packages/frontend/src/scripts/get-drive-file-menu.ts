@@ -74,7 +74,34 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 		fileId: file.id,
 	});
 }
+async function MultideleteFile(files: Misskey.entities.DriveFile[] | null) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveMultiFileDeleteConfirm', { name: files.length }),
+	});
 
+	if (canceled) return;
+	files.forEach((e)=>{
+		misskeyApi('drive/files/delete', {
+			fileId: e.id,
+        });
+	})
+}
+function isSensitive(files: Misskey.entities.DriveFile[] | null ,sensitive:boolean) {
+	files.forEach((e)=>{
+		misskeyApi('drive/files/update', {
+			fileId: e.id,
+			isSensitive: sensitive,
+		}).catch(err => {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.error,
+				text: err.message,
+			});
+		});
+	})
+
+}
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
 	const isImage = file.type.startsWith('image/');
 	let menu;
@@ -135,6 +162,25 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 			},
 		}]);
 	}
+
+	return menu;
+}
+export function getDriveMultiFileMenu(files: string[] & boolean): MenuItem[] {
+	let menu;
+	menu = [{
+		text:  i18n.ts.unmarkAsSensitive,
+		icon: 'ti ti-eye',
+		action: () => isSensitive(files,false),
+	},{
+		text: i18n.ts.markAsSensitive,
+		icon:  'ti ti-eye-exclamation',
+		action: () => isSensitive(files,true),
+	}, {
+		text: i18n.ts.delete,
+		icon: 'ti ti-trash',
+		danger: true,
+		action: () => MultideleteFile(files),
+	}];
 
 	return menu;
 }

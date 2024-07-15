@@ -8,22 +8,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700" :class="$style.main">
 		<div v-if="list" class="_gaps">
-			<MkFolder>
-				<template #label>{{ i18n.ts.settings }}</template>
+			<div>{{ i18n.ts.settings }}</div>
 
-				<div class="_gaps">
-					<MkInput v-model="name">
-						<template #label>{{ i18n.ts.name }}</template>
-					</MkInput>
-					<MkSwitch v-model="isPublic">{{ i18n.ts.public }}</MkSwitch>
-					<div class="_buttons">
-						<MkButton rounded primary @click="updateSettings">{{ i18n.ts.save }}</MkButton>
-						<MkButton rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
-					</div>
+			<div class="_gaps" style="margin: 8px 0; ">
+				<MkInput v-model="name">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkSwitch v-model="isPublic">{{ i18n.ts.public }}</MkSwitch>
+				<div class="_buttons">
+					<MkButton rounded primary @click="updateSettings">{{ i18n.ts.save }}</MkButton>
+					<MkButton rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
 				</div>
-			</MkFolder>
+			</div>
 
-			<MkFolder defaultOpen>
+			<MkFolder>
 				<template #label>{{ i18n.ts.members }}</template>
 				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
@@ -104,14 +102,22 @@ function fetchList() {
 }
 
 function addUser() {
-	os.selectUser().then(user => {
+	os.selectUser( { multiple: true }).then(user => {
 		if (!list.value) return;
-		os.apiWithDialog('users/lists/push', {
-			listId: list.value.id,
-			userId: user.id,
-		}).then(() => {
-			paginationEl.value.reload();
-		});
+		if (Array.isArray(user)) {
+			user.forEach(u => {
+				misskeyApi('users/lists/push', {
+					listId: list.value.id,
+					userId: u.id,
+				});
+			});
+		} else if (typeof user === 'string') {
+			os.apiWithDialog('users/lists/push', {
+				listId: list.value.id,
+				userId: user.id,
+			});
+		}
+		paginationEl.value.reload();
 	});
 }
 

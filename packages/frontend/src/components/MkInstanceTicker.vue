@@ -5,16 +5,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" :style="bg">
-	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
+	<img v-if="faviconUrl && !defaultStore.state.enableUltimateDataSaverMode" :class="$style.icon" :src="faviconUrl"/>
 	<div :class="$style.name">{{ instance.name }}</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { instanceName } from '@/config.js';
-import { instance as Instance } from '@/instance.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { instanceName } from '@/config';
+import { instance as Instance } from '@/instance';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
+import {defaultStore} from "@/store";
 
 const props = defineProps<{
 	instance?: {

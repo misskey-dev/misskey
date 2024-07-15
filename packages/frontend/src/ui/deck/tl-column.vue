@@ -8,6 +8,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
+		<i v-else-if="column.tl === 'media'" class="ti ti-photo"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -100,6 +101,8 @@ async function setType() {
 			value: 'home' as const, text: i18n.ts._timelines.home,
 		}, {
 			value: 'local' as const, text: i18n.ts._timelines.local,
+		}, {
+			value: 'media' as const, text: i18n.ts._timelines.media,
 		}, {
 			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {

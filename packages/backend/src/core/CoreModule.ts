@@ -40,6 +40,7 @@ import { MetaService } from './MetaService.js';
 import { MfmService } from './MfmService.js';
 import { ModerationLogService } from './ModerationLogService.js';
 import { NoteCreateService } from './NoteCreateService.js';
+import { NoteUpdateService } from './NoteUpdateService.js';
 import { NoteDeleteService } from './NoteDeleteService.js';
 import { NotePiningService } from './NotePiningService.js';
 import { NoteReadService } from './NoteReadService.js';
@@ -101,6 +102,7 @@ import { ClipEntityService } from './entities/ClipEntityService.js';
 import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
 import { DriveFolderEntityService } from './entities/DriveFolderEntityService.js';
 import { EmojiEntityService } from './entities/EmojiEntityService.js';
+import { EmojiRequestsEntityService } from './entities/EmojiRequestsEntityService.js';
 import { FollowingEntityService } from './entities/FollowingEntityService.js';
 import { FollowRequestEntityService } from './entities/FollowRequestEntityService.js';
 import { GalleryLikeEntityService } from './entities/GalleryLikeEntityService.js';
@@ -181,6 +183,7 @@ const $MetaService: Provider = { provide: 'MetaService', useExisting: MetaServic
 const $MfmService: Provider = { provide: 'MfmService', useExisting: MfmService };
 const $ModerationLogService: Provider = { provide: 'ModerationLogService', useExisting: ModerationLogService };
 const $NoteCreateService: Provider = { provide: 'NoteCreateService', useExisting: NoteCreateService };
+const $NoteUpdateService: Provider = { provide: 'NoteUpdateService', useExisting: NoteUpdateService };
 const $NoteDeleteService: Provider = { provide: 'NoteDeleteService', useExisting: NoteDeleteService };
 const $NotePiningService: Provider = { provide: 'NotePiningService', useExisting: NotePiningService };
 const $NoteReadService: Provider = { provide: 'NoteReadService', useExisting: NoteReadService };
@@ -245,6 +248,7 @@ const $ClipEntityService: Provider = { provide: 'ClipEntityService', useExisting
 const $DriveFileEntityService: Provider = { provide: 'DriveFileEntityService', useExisting: DriveFileEntityService };
 const $DriveFolderEntityService: Provider = { provide: 'DriveFolderEntityService', useExisting: DriveFolderEntityService };
 const $EmojiEntityService: Provider = { provide: 'EmojiEntityService', useExisting: EmojiEntityService };
+const $EmojiRequestsEntityService: Provider = { provide: 'EmojiRequestsEntityService', useExisting: EmojiRequestsEntityService };
 const $FollowingEntityService: Provider = { provide: 'FollowingEntityService', useExisting: FollowingEntityService };
 const $FollowRequestEntityService: Provider = { provide: 'FollowRequestEntityService', useExisting: FollowRequestEntityService };
 const $GalleryLikeEntityService: Provider = { provide: 'GalleryLikeEntityService', useExisting: GalleryLikeEntityService };
@@ -327,6 +331,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		MfmService,
 		ModerationLogService,
 		NoteCreateService,
+		NoteUpdateService,
 		NoteDeleteService,
 		NotePiningService,
 		NoteReadService,
@@ -391,6 +396,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		DriveFileEntityService,
 		DriveFolderEntityService,
 		EmojiEntityService,
+		EmojiRequestsEntityService,
 		FollowingEntityService,
 		FollowRequestEntityService,
 		GalleryLikeEntityService,
@@ -469,6 +475,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$MfmService,
 		$ModerationLogService,
 		$NoteCreateService,
+		$NoteUpdateService,
 		$NoteDeleteService,
 		$NotePiningService,
 		$NoteReadService,
@@ -533,6 +540,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$DriveFileEntityService,
 		$DriveFolderEntityService,
 		$EmojiEntityService,
+		$EmojiRequestsEntityService,
 		$FollowingEntityService,
 		$FollowRequestEntityService,
 		$GalleryLikeEntityService,
@@ -612,6 +620,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		MfmService,
 		ModerationLogService,
 		NoteCreateService,
+		NoteUpdateService,
 		NoteDeleteService,
 		NotePiningService,
 		NoteReadService,
@@ -675,6 +684,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		DriveFileEntityService,
 		DriveFolderEntityService,
 		EmojiEntityService,
+		EmojiRequestsEntityService,
 		FollowingEntityService,
 		FollowRequestEntityService,
 		GalleryLikeEntityService,
@@ -753,6 +763,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$MfmService,
 		$ModerationLogService,
 		$NoteCreateService,
+		$NoteUpdateService,
 		$NoteDeleteService,
 		$NotePiningService,
 		$NoteReadService,
@@ -816,6 +827,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$DriveFileEntityService,
 		$DriveFolderEntityService,
 		$EmojiEntityService,
+		$EmojiRequestsEntityService,
 		$FollowingEntityService,
 		$FollowRequestEntityService,
 		$GalleryLikeEntityService,

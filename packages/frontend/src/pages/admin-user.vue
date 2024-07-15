@@ -98,6 +98,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>
 							<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 						</div>
+						<div>
+							<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="presentsPoints">ぷりずむを付与する</MkButton>
+						</div>
 
 						<MkFolder>
 							<template #icon><i class="ti ti-license"></i></template>
@@ -310,6 +313,15 @@ async function resetPassword() {
 			text: i18n.tsx.newPasswordIs({ password }),
 		});
 	}
+}
+
+async function presentsPoints() {
+	const { canceled, result } = await os.inputText({
+		title: 'ポイント',
+	});
+	if (canceled) return;
+	if (result === null) return;
+	await misskeyApi('admin/accounts/present-points', { userId: user.value.id, points: parseInt(result) });
 }
 
 async function toggleSuspend(v) {

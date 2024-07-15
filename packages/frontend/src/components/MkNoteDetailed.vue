@@ -76,7 +76,6 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					v-if="appearNote.text"
 					:parsedNodes="parsed"
 					:text="appearNote.text"
-					:author="appearNote.user"
 					:nyaize="'respect'"
 					:emojiUrls="appearNote.emojis"
 					:enableEmojiMenu="true"
@@ -87,7 +86,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					<MkLoading v-if="translating" mini/>
 					<div v-else-if="translation">
 						<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
-						<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
+						<Mfm :text="translation.text" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
 					</div>
 				</div>
 				<div v-if="appearNote.files && appearNote.files.length > 0">
@@ -103,6 +102,9 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		</div>
 		<footer>
 			<div :class="$style.noteFooterInfo">
+				<div v-if="appearNote.updatedAt">
+					{{ i18n.ts.edited }}: <MkTime :time="appearNote.updatedAt" mode="detail"/>
+				</div>
 				<MkA :to="notePage(appearNote)">
 					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
 				</MkA>
@@ -126,8 +128,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				<i class="ti ti-ban"></i>
 			</button>
 			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReactions?.length >= 4 " class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+				<i v-else-if="appearNote.myReactions?.length >= 4 || appearNote.myReaction && appearNote.user.host " class="ti ti-minus" style="color: var(--accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
 				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
@@ -141,9 +143,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		</footer>
 	</article>
 	<div :class="$style.tabs">
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' },{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'replies'}]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes'},{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'renotes'}]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions'},{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'reactions'}]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'history' },{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]" @click="tab = 'history'"><i class="ti ti-pencil"></i> {{ i18n.ts.edited }}</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'">
@@ -180,25 +183,46 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				</template>
 			</MkPagination>
 		</div>
+		<div v-else-if="tab === 'history'" :class="$style.tab_history">
+			<div style="display: grid;">
+				<div v-for="(text, index) in appearNote.noteEditHistory" :key="text" :class="$style.historyRoot">
+					<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
+					<div :class="$style.historyMain">
+						<div :class="$style.historyHeader">
+							<MkUserName :user="appearNote.user" :nowrap="true"/>
+							<MkTime :class="$style.updatedAt" :time="appearNote.updatedAtHistory![index]"/>
+						</div>
+						<div>
+							<div>
+								<Mfm :text="text.trim()" :author="appearNote.user" :i="$i"/>
+							</div>
+							<CodeDiff
+								:oldString="appearNote.noteEditHistory[index - 1] || ''"
+								:newString="text"
+								:trim="true"
+								:hideHeader="true"
+								diffStyle="char"
+							/>
+						</div>
+					</div>
+				</div>
+				<div v-if="appearNote.noteEditHistory == null" class="_fullinfo">
+					<img :src="infoImageUrl" class="_ghost"/>
+					<div>{{ i18n.ts.nothing }}</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div v-else class="_panel" :class="$style.muted" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
-		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
-		</template>
-	</I18n>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, shallowRef, watch } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkNotePreview from '@/components/MkNotePreview.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -231,7 +255,12 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { infoImageUrl, instance, isEnabledUrlPreview } from '@/instance.js';
+import MkPostForm from '@/components/MkPostFormSimple.vue';
+import { deviceKind } from '@/scripts/device-kind.js';
+
+const MOBILE_THRESHOLD = 500;
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -244,6 +273,37 @@ const inChannel = inject('inChannel', null);
 
 const note = ref(deepClone(props.note));
 
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+	gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+	gaming.value = 'light';
+} else {
+	gaming.value = '';
+}
+
+watch(darkMode, () => {
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
+
+watch(gamingMode, () => {
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
@@ -441,10 +501,8 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 }
 
 function toggleReact() {
-	if (appearNote.value.myReaction == null) {
+	if (appearNote.value.myReactions?.length < 4 || appearNote.value.myReaction && appearNote.value.user.host || !appearNote.value.myReactions ) {
 		react();
-	} else {
-		undoReact(appearNote.value);
 	}
 }
 
@@ -748,6 +806,9 @@ function loadConversation() {
 
 .tabActive {
 	border-bottom: solid 2px var(--accent);
+  &.gamingLight{
+    border-bottom: solid 2px black;
+  }
 }
 
 .tab_renotes {
@@ -758,6 +819,9 @@ function loadConversation() {
 	padding: 16px;
 }
 
+.tab_history {
+	padding: 16px;
+}
 .reactionTabs {
 	display: flex;
 	gap: 8px;
@@ -773,6 +837,12 @@ function loadConversation() {
 
 .reactionTabActive {
 	border-color: var(--accent);
+  &.gamingLight{
+    border-bottom: solid 2px black;
+  }
+  &.gamingDark{
+    border-bottom: solid 2px black;
+  }
 }
 
 @container (max-width: 500px) {
@@ -813,17 +883,82 @@ function loadConversation() {
 		width: 50px;
 		height: 50px;
 	}
+  .noteFooterButton {
+    &:not(:last-child) {
+      margin-right: 12px;
+    }
+  }
+}
+.historyRoot {
+	display: flex;
+	margin: 0;
+	padding: 10px;
+	overflow: clip;
+	font-size: 0.95em;
+}
 
-	.noteFooterButton {
-		&:not(:last-child) {
-			margin-right: 12px;
-		}
-	}
+.historyMain {
+	flex: 1;
+	min-width: 0;
+}
+
+.historyHeader {
+	display: flex;
+	margin-bottom: 2px;
+	font-weight: bold;
+	width: 100%;
+	overflow: clip;
+	text-overflow: ellipsis;
+}
+
+.historyNote {
+	padding-top: 10px;
+	min-height: 75px;
+	overflow: auto;
+}
+
+.updatedAt {
+	flex-shrink: 0;
+	margin-left: auto;
+	font-size: 0.9em;
 }
 
 .muted {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

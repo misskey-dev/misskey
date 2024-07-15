@@ -28,6 +28,7 @@ import { MiClipFavorite } from '@/models/ClipFavorite.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { MiDriveFolder } from '@/models/DriveFolder.js';
 import { MiEmoji } from '@/models/Emoji.js';
+import { MiEmojiRequest } from '@/models/EmojiRequest.js';
 import { MiFollowing } from '@/models/Following.js';
 import { MiFollowRequest } from '@/models/FollowRequest.js';
 import { MiGalleryLike } from '@/models/GalleryLike.js';
@@ -76,6 +77,7 @@ import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
+import { MiScheduledNote } from '@/models/ScheduledNote.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
 
@@ -99,7 +101,7 @@ class MyCustomLogger implements Logger {
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+		sqlLogger.info(this.highlight(query));
 	}
 
 	@bindThis
@@ -153,6 +155,7 @@ export const entities = [
 	MiRenoteMuting,
 	MiBlocking,
 	MiNote,
+	MiScheduledNote,
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,
@@ -166,6 +169,7 @@ export const entities = [
 	MiPoll,
 	MiPollVote,
 	MiEmoji,
+	MiEmojiRequest,
 	MiHashtag,
 	MiSwSubscription,
 	MiAbuseUserReport,

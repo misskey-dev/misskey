@@ -35,12 +35,15 @@ export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
+	canEditNote: boolean;
+	canScheduleNote: boolean;
 	mentionLimit: number;
 	canInvite: boolean;
 	inviteLimit: number;
 	inviteLimitCycle: number;
 	inviteExpirationTime: number;
 	canManageCustomEmojis: boolean;
+	canRequestCustomEmojis: boolean;
 	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
 	canUseTranslator: boolean;
@@ -57,6 +60,9 @@ export type RolePolicies = {
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
+	emojiPickerProfileLimit: number;
+	listPinnedLimit: number;
+	localTimelineAnyLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -64,11 +70,14 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	ltlAvailable: true,
 	canPublicNote: true,
 	mentionLimit: 20,
+	canEditNote: true,
+	canScheduleNote: true,
 	canInvite: false,
 	inviteLimit: 0,
 	inviteLimitCycle: 60 * 24 * 7,
 	inviteExpirationTime: 0,
 	canManageCustomEmojis: false,
+	canRequestCustomEmojis: false,
 	canManageAvatarDecorations: false,
 	canSearchNotes: false,
 	canUseTranslator: true,
@@ -85,6 +94,9 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
+	emojiPickerProfileLimit: 2,
+	listPinnedLimit: 2,
+	localTimelineAnyLimit: 3,
 };
 
 @Injectable()
@@ -364,13 +376,17 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+			canScheduleNote: calc('canScheduleNote', vs => vs.some(v => v === true)),
+			canEditNote: calc('canEditNote', vs => vs.some(v => v === true)),
 			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
 			inviteLimit: calc('inviteLimit', vs => Math.max(...vs)),
 			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
 			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canRequestCustomEmojis: calc('canRequestCustomEmojis', vs => vs.some(v => v === true)),
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
+			canRequestCustomEmojis: calc('canRequestCustomEmojis', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
@@ -386,6 +402,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+			emojiPickerProfileLimit: calc('emojiPickerProfileLimit', vs => Math.max(...vs)),
+			listPinnedLimit: calc('listPinnedLimit', vs => Math.max(...vs)),
+			localTimelineAnyLimit: calc('localTimelineAnyLimit', vs => Math.max(...vs)),
 		};
 	}
 

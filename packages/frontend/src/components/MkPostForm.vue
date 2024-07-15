@@ -31,21 +31,18 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
 				</button>
 			</template>
+			<button v-click-anime v-tooltip="i18n.ts.drafts" class="_button" :class="$style.headerRightItem" @click="chooseDraft"><i class="ti ti-note"></i></button>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
-			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
-				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
-				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
-				<span v-else><i class="ti ti-icons"></i></span>
-			</button>
+			<button v-tooltip="i18n.ts.otherSettings" class="_button" :class="[$style.headerRightItem]" @click="openOtherSettingsMenu"><i class="ti ti-dots"></i></button>
 			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
-				<div :class="$style.submitInner">
+				<div :class="[$style.submitInner ,{ [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
-					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<template v-else-if="screenWidth >= 355">{{ submitText }}</template>
+					<i :class="[posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : schedule ? 'ti ti-clock-hour-4' : 'ti ti-send',$style.mgnlft]"></i>
 				</div>
 			</button>
 		</div>
@@ -72,7 +69,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
-	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+	<div :class="$style.postOptionsRoot">
+		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+		<MkScheduleEditor v-if="schedule" v-model="schedule" @destroyed="schedule = null"/>
+	</div>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
@@ -86,6 +86,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
+			<button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
+			<button v-tooltip="i18n.ts.saveAsDraft" class="_button" :class="$style.footerButton" @click="saveDraft(false)"><i class="ti ti-device-floppy"></i></button>
 		</div>
 		<div :class="$style.footerRight">
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
@@ -114,9 +116,19 @@ import { extractMentions } from '@/scripts/extract-mentions.js';
 import { formatTimeString } from '@/scripts/format-time-string.js';
 import { Autocomplete } from '@/scripts/autocomplete.js';
 import * as os from '@/os.js';
+import * as noteDrafts from '@/scripts/note-drafts.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFiles } from '@/scripts/select-file.js';
-import { defaultStore, notePostInterruptors, postFormActions } from '@/store.js';
+import { dateTimeFormat } from '@/scripts/intl-const.js';
+import {
+	bannerDark,
+	bannerLight,
+	defaultStore,
+	iconDark,
+	iconLight,
+	notePostInterruptors,
+	postFormActions,
+} from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -128,10 +140,13 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import MkScheduleEditor from '@/components/MkScheduleEditor.vue';
+import { listSchedulePost } from '@/os.js';
 
 const $i = signinRequired();
 
 const modal = inject('modal');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
@@ -151,6 +166,7 @@ const props = withDefaults(defineProps<{
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
 	mock?: boolean;
+	updateMode?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
@@ -161,9 +177,9 @@ const props = withDefaults(defineProps<{
 provide('mock', props.mock);
 
 const emit = defineEmits<{
-	(ev: 'posted'): void;
-	(ev: 'cancel'): void;
-	(ev: 'esc'): void;
+  (ev: 'posted'): void;
+  (ev: 'cancel'): void;
+  (ev: 'esc'): void;
 
 	// Mock用
 	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
@@ -179,13 +195,19 @@ const posted = ref(false);
 const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
+let schedule = ref<{
+    scheduledAt: string | null;
+}| null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
+const renote = ref(props.renote);
+const reply = ref(props.reply);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
+
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
@@ -201,24 +223,19 @@ const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 
-const draftKey = computed((): string => {
-	let key = props.channel ? `channel:${props.channel.id}` : '';
-
-	if (props.renote) {
-		key += `renote:${props.renote.id}`;
-	} else if (props.reply) {
-		key += `reply:${props.reply.id}`;
-	} else {
-		key += `note:${$i.id}`;
-	}
-
-	return key;
+const draftType = computed(() => {
+	if (props.channel) return 'channel';
+	if (renote.value) return 'quote';
+	if (reply.value) return 'reply';
+	return 'note';
 });
 
+const draftAuxId = computed<string | null>(() => props.channel ? props.channel.id : renote.value ? renote.value.id : reply.value ? reply.value.id : null);
+
 const placeholder = computed((): string => {
-	if (props.renote) {
+	if (renote.value) {
 		return i18n.ts._postForm.quotePlaceholder;
-	} else if (props.reply) {
+	} else if (reply.value) {
 		return i18n.ts._postForm.replyPlaceholder;
 	} else if (props.channel) {
 		return i18n.ts._postForm.channelPlaceholder;
@@ -236,11 +253,13 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return props.renote
+	return renote.value
 		? i18n.ts.quote
-		: props.reply
+		: reply.value
 			? i18n.ts.reply
-			: i18n.ts.note;
+			: schedule.value
+				? i18n.ts._schedulePost.addSchedule
+				: i18n.ts.note;
 });
 
 const textLength = computed((): number => {
@@ -253,13 +272,7 @@ const maxTextLength = computed((): number => {
 
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
-		(
-			1 <= textLength.value ||
-			1 <= files.value.length ||
-			poll.value != null ||
-			props.renote != null ||
-			(props.reply != null && quoteId.value != null)
-		) &&
+		(1 <= textLength.value || 1 <= files.value.length || !!poll.value || !!renote.value) &&
 		(textLength.value <= maxTextLength.value) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
@@ -267,11 +280,103 @@ const canPost = computed((): boolean => {
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
 const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
+const bottomItemActionDef = ref({
+	attachFile: {
+		action: chooseFileFrom,
+	},
+	poll: {
+		active: poll,
+		action: togglePoll,
+	},
+	useCw: {
+		active: useCw,
+		action: () => useCw.value = !useCw.value,
+	},
+	mention: {
+		action: insertMention,
+	},
+	hashtags: {
+		active: withHashtags,
+		action: () => withHashtags.value = !withHashtags.value,
+	},
+	plugins: {
+		hide: postFormActions.length === 0,
+		action: showActions,
+	},
+	emoji: {
+		action: insertEmoji,
+	},
+	addMfmFunction: {
+		hide: computed(() => !showAddMfmFunction.value),
+		action: insertMfmFunction,
+	},
+	clearPost: {
+		action: clear,
+	},
+	saveAsDraft: {
+		action: () => saveDraft(false),
+	},
+});
+
 watch(text, () => {
 	checkMissingMention();
 }, { immediate: true });
+const bottomItemDef = {
+	attachFile: {
+		title: i18n.ts.attachFile,
+		icon: 'ti-photo-plus',
+	},
+	poll: {
+		title: i18n.ts.poll,
+		icon: 'ti-chart-arrows',
+	},
+	useCw: {
+		title: i18n.ts.useCw,
+		icon: 'ti-eye-off',
+	},
+	mention: {
+		title: i18n.ts.mention,
+		icon: 'ti-at',
+	},
+	hashtags: {
+		title: i18n.ts.hashtags,
+		icon: 'ti-hash',
+	},
+	plugins: {
+		title: i18n.ts.plugins,
+		icon: 'ti-plug',
+	},
+	emoji: {
+		title: i18n.ts.emoji,
+		icon: 'ti-mood-happy',
+	},
+	addMfmFunction: {
+		title: i18n.ts.addMfmFunction,
+		icon: 'ti-palette',
+	},
+	clearPost: {
+		title: i18n.ts.clearPost,
+		icon: 'ti-trash',
+	},
+	saveAsDraft: {
+		title: i18n.ts.saveAsDraft,
+		icon: 'ti-note',
+	},
+};
 
 watch(visibility, () => {
+	switch (visibility.value) {
+		case 'public':
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+			break;
+		case 'home':
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultHomeNoteLocalOnly;
+			break;
+		case 'followers':
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultFollowersNoteLocalOnly;
+			break;
+	}
+
 	checkMissingMention();
 }, { immediate: true });
 
@@ -281,82 +386,86 @@ watch(visibleUsers, () => {
 	deep: true,
 });
 
-if (props.mention) {
-	text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
-	text.value += ' ';
-}
-
-if (props.reply && (props.reply.user.username !== $i.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
-	text.value = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
-}
-
-if (props.reply && props.reply.text != null) {
-	const ast = mfm.parse(props.reply.text);
-	const otherHost = props.reply.user.host;
-
-	for (const x of extractMentions(ast)) {
-		const mention = x.host ?
-			`@${x.username}@${toASCII(x.host)}` :
-			(otherHost == null || otherHost === host) ?
-				`@${x.username}` :
-				`@${x.username}@${toASCII(otherHost)}`;
-
-		// 自分は除外
-		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
-
-		// 重複は除外
-		if (text.value.includes(`${mention} `)) continue;
-
-		text.value += `${mention} `;
+function initialize() {
+	if (props.mention) {
+		text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
+		text.value += ' ';
 	}
-}
 
-if ($i.isSilenced && visibility.value === 'public') {
-	visibility.value = 'home';
-}
+	if (reply.value && (reply.value.user.username !== $i.username || (reply.value.user.host != null && reply.value.user.host !== host))) {
+		text.value = `@${reply.value.user.username}${reply.value.user.host != null ? '@' + toASCII(reply.value.user.host) : ''} `;
+	}
 
-if (props.channel) {
-	visibility.value = 'public';
-	localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-}
+	if (reply.value && reply.value.text != null) {
+		const ast = mfm.parse(reply.value.text);
+		const otherHost = reply.value.user.host;
 
-// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
-	if (props.reply.visibility === 'home' && visibility.value === 'followers') {
-		visibility.value = 'followers';
-	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility.value === 'specified') {
+		for (const x of extractMentions(ast)) {
+			const mention = x.host ?
+				`@${x.username}@${toASCII(x.host)}` :
+				(otherHost == null || otherHost === host) ?
+					`@${x.username}` :
+					`@${x.username}@${toASCII(otherHost)}`;
+
+			// 自分は除外
+			if ($i.username === x.username && (x.host == null || x.host === host)) continue;
+
+			// 重複は除外
+			if (text.value.includes(`${mention} `)) continue;
+
+			text.value += `${mention} `;
+		}
+	}
+
+	if ($i.isSilenced && visibility.value === 'public') {
+		visibility.value = 'home';
+	}
+
+	if (props.channel) {
+		visibility.value = 'public';
+		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
+	}
+
+	// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
+	if (reply.value && ['home', 'followers', 'specified'].includes(reply.value.visibility)) {
+		if (reply.value.visibility === 'home' && visibility.value === 'followers') {
+			visibility.value = 'followers';
+		} else if (['home', 'followers'].includes(reply.value.visibility) && visibility.value === 'specified') {
+			visibility.value = 'specified';
+		} else {
+			visibility.value = reply.value.visibility;
+		}
+
+		if (visibility.value === 'specified') {
+			if (reply.value.visibleUserIds) {
+				misskeyApi('users/show', {
+					userIds: reply.value.visibleUserIds.filter(uid => uid !== $i.id && uid !== reply.value?.userId),
+				}).then(users => {
+					users.forEach(u => pushVisibleUser(u));
+				});
+			}
+
+			if (reply.value.userId !== $i.id) {
+				misskeyApi('users/show', { userId: reply.value.userId }).then(user => {
+					pushVisibleUser(user);
+				});
+			}
+		}
+	}
+
+	if (props.specified) {
 		visibility.value = 'specified';
-	} else {
-		visibility.value = props.reply.visibility;
+		pushVisibleUser(props.specified);
 	}
 
-	if (visibility.value === 'specified') {
-		if (props.reply.visibleUserIds) {
-			misskeyApi('users/show', {
-				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
-			}).then(users => {
-				users.forEach(u => pushVisibleUser(u));
-			});
-		}
-
-		if (props.reply.userId !== $i.id) {
-			misskeyApi('users/show', { userId: props.reply.userId }).then(user => {
-				pushVisibleUser(user);
-			});
-		}
+	// keep cw when reply
+	if (defaultStore.state.keepCw && reply.value && reply.value.cw) {
+		useCw.value = true;
+		cw.value = reply.value.cw;
 	}
 }
 
-if (props.specified) {
-	visibility.value = 'specified';
-	pushVisibleUser(props.specified);
-}
-
-// keep cw when reply
-if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
-	useCw.value = true;
-	cw.value = props.reply.cw;
-}
+initialize();
 
 function watchForDraft() {
 	watch(text, () => saveDraft());
@@ -394,6 +503,10 @@ function addMissingMention() {
 	}
 }
 
+function insertRuby() {
+	insertTextAtCursor(textareaEl.value, '$[ruby 本文 上につくやつ]');
+}
+
 function togglePoll() {
 	if (poll.value) {
 		poll.value = null;
@@ -403,6 +516,16 @@ function togglePoll() {
 			multiple: false,
 			expiresAt: null,
 			expiredAfter: null,
+		};
+	}
+}
+
+function toggleSchedule() {
+	if (schedule.value) {
+		schedule.value = null;
+	} else {
+		schedule.value = {
+			scheduledAt: null,
 		};
 	}
 }
@@ -419,9 +542,7 @@ function focus() {
 }
 
 function chooseFileFrom(ev) {
-	if (props.mock) return;
-
-	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
+	if (props.mock) return; selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
 		for (const file of files_) {
 			files.value.push(file);
 		}
@@ -448,9 +569,7 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 }
 
 function upload(file: File, name?: string): void {
-	if (props.mock) return;
-
-	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
+	if (props.mock) return; uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.value.push(res);
 	});
 }
@@ -464,10 +583,9 @@ function setVisibility() {
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility.value,
-		isSilenced: $i.isSilenced,
-		localOnly: localOnly.value,
+		isSilenced: $i.isSilenced, localOnly: localOnly.value,
 		src: visibilityButton.value,
-		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
+		...(reply.value ? { isReplyVisibilitySpecified: reply.value.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
@@ -561,7 +679,7 @@ function removeVisibleUser(user) {
 
 function clear() {
 	text.value = '';
-	files.value = [];
+	schedule.value = null; files.value = [];
 	poll.value = null;
 	quoteId.value = null;
 }
@@ -580,13 +698,11 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
-	if (props.mock) return;
-	if (!ev.clipboardData) return;
+	if (props.mock) return; if (!ev.clipboardData) return;
 
 	for (const { item, i } of Array.from(ev.clipboardData.items, (data, x) => ({ item: data, i: x }))) {
 		if (item.kind === 'file') {
-			const file = item.getAsFile();
-			if (!file) continue;
+			const file = item.getAsFile(); if (!file) continue;
 			const lio = file.name.lastIndexOf('.');
 			const ext = lio >= 0 ? file.name.slice(lio) : '';
 			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
@@ -596,7 +712,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -684,34 +800,87 @@ function onDrop(ev: DragEvent): void {
 	//#endregion
 }
 
-function saveDraft() {
+async function saveDraft(auto = true) {
 	if (props.instant || props.mock) return;
 
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	if (auto && defaultStore.state.draftSavingBehavior !== 'auto') return;
 
-	draftData[draftKey.value] = {
-		updatedAt: new Date(),
-		data: {
-			text: text.value,
-			useCw: useCw.value,
-			cw: cw.value,
-			visibility: visibility.value,
-			localOnly: localOnly.value,
-			files: files.value,
-			poll: poll.value,
-			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
-		},
-	};
+	if (!auto) {
+		// 手動での保存の場合は自動保存したものを削除した上で保存
+		await noteDrafts.remove(draftType.value, $i.id, 'default', draftAuxId.value as string);
+	}
 
-	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+	await noteDrafts.set(draftType.value, $i.id, auto ? 'default' : Date.now().toString(), {
+		text: text.value,
+		useCw: useCw.value,
+		cw: cw.value,
+		visibility: visibility.value,
+		localOnly: localOnly.value,
+		files: files.value,
+		poll: poll.value,
+		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+	}, draftAuxId.value as string);
+
+	if (!auto) {
+		clear();
+	}
 }
 
 function deleteDraft() {
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	noteDrafts.remove(draftType.value, $i.id, 'default', draftAuxId.value as string);
+}
 
-	delete draftData[draftKey.value];
+function chooseDraft() {
+	os.popup(defineAsyncComponent(() => import('@/components/MkPostFormDrafts.vue')), {
+		channelId: props.channel?.id,
+	}, {
+		selected: async (res) => {
+			const draft = await res as noteDrafts.NoteDraft;
 
-	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+			if (text.value !== '' || files.value.length > 0) {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: i18n.ts.draftOverwriteConfirm,
+				});
+				if (canceled) return;
+			}
+
+			applyDraft(draft);
+		},
+	}, 'closed');
+}
+
+async function applyDraft(draft: noteDrafts.NoteDraft, native = false) {
+	if (!native) {
+		switch (draft.type) {
+			case 'quote': {
+				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
+					renote.value = note;
+					reply.value = undefined;
+				});
+				break;
+			}
+			case 'reply': {
+				await os.apiWithDialog('notes/show', { noteId: draft.auxId as string }).then(note => {
+					reply.value = note;
+					renote.value = undefined;
+				});
+				break;
+			}
+		}
+
+		initialize();
+	}
+
+	text.value = draft.data.text;
+	useCw.value = draft.data.useCw;
+	cw.value = draft.data.cw;
+	visibility.value = draft.data.visibility;
+	localOnly.value = draft.data.localOnly;
+	files.value = (draft.data.files || []).filter(draftFile => draftFile);
+	if (draft.data.poll) {
+		poll.value = draft.data.poll;
+	}
 }
 
 async function post(ev?: MouseEvent) {
@@ -721,9 +890,7 @@ async function post(ev?: MouseEvent) {
 			text: i18n.ts.cwNotationRequired,
 		});
 		return;
-	}
-
-	if (ev) {
+	} if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
 		if (el) {
@@ -734,14 +901,12 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
-	if (props.mock) return;
-
-	const annoying =
-		text.value.includes('$[x2') ||
-		text.value.includes('$[x3') ||
-		text.value.includes('$[x4') ||
-		text.value.includes('$[scale') ||
-		text.value.includes('$[position');
+	if (props.mock) return; const annoying =
+      text.value.includes('$[x2') ||
+      text.value.includes('$[x3') ||
+      text.value.includes('$[x4') ||
+      text.value.includes('$[scale') ||
+      text.value.includes('$[position');
 
 	if (annoying && visibility.value === 'public') {
 		const { canceled, result } = await os.actions({
@@ -770,15 +935,18 @@ async function post(ev?: MouseEvent) {
 	let postData = {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
-		replyId: props.reply ? props.reply.id : undefined,
-		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
+		replyId: reply.value ? reply.value.id : undefined,
+		renoteId: renote.value ? renote.value.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
+		schedule: schedule.value,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
 		localOnly: localOnly.value,
 		visibility: visibility.value,
 		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
 		reactionAcceptance: reactionAcceptance.value,
+
+		noteId: props.updateMode ? props.initialNote?.id : undefined,
 	};
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
@@ -815,7 +983,7 @@ async function post(ev?: MouseEvent) {
 	}
 
 	posting.value = true;
-	misskeyApi('notes/create', postData, token).then(() => {
+	misskeyApi(props.updateMode ? 'notes/update' : 'notes/create', postData, token).then(() => {
 		if (props.freezeAfterPosted) {
 			posted.value = true;
 		} else {
@@ -835,6 +1003,12 @@ async function post(ev?: MouseEvent) {
 			incNotesCount();
 			if (notesCount === 1) {
 				claimAchievement('notes1');
+			}
+
+			if (postData.schedule?.scheduledAt) {
+				const d = new Date(postData.schedule.scheduledAt);
+				const str = dateTimeFormat.format(d);
+				os.toast(i18n.t('_schedulePost.willBePostedAtX', { date: str }));
 			}
 
 			const text = postData.text ?? '';
@@ -859,7 +1033,7 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('brainDiver');
 			}
 
-			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+			if (renote.value && (renote.value.userId === $i.id) && text.length > 0) {
 				claimAchievement('selfQuote');
 			}
 
@@ -873,6 +1047,7 @@ async function post(ev?: MouseEvent) {
 			if (m === 0 && s === 0) {
 				claimAchievement('postedAt0min0sec');
 			}
+			clear();
 		});
 	}).catch(err => {
 		posting.value = false;
@@ -885,6 +1060,18 @@ async function post(ev?: MouseEvent) {
 
 function cancel() {
 	emit('cancel');
+}
+
+async function closed() {
+	if (defaultStore.state.draftSavingBehavior === 'manual' && (text.value !== '' || files.value.length > 0)) {
+		os.confirm({
+			type: 'question',
+			text: i18n.ts.saveConfirm,
+		}).then(({ canceled }) => {
+			if (canceled) return;
+			saveDraft(false);
+		});
+	}
 }
 
 function insertMention() {
@@ -937,9 +1124,7 @@ function showActions(ev: MouseEvent) {
 const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
 function openAccountMenu(ev: MouseEvent) {
-	if (props.mock) return;
-
-	openAccountMenu_({
+	if (props.mock) return; openAccountMenu_({
 		withExtraOperation: false,
 		includeCurrentAccount: true,
 		active: postAccount.value != null ? postAccount.value.id : $i.id,
@@ -953,7 +1138,51 @@ function openAccountMenu(ev: MouseEvent) {
 	}, ev);
 }
 
+function openOtherSettingsMenu(ev: MouseEvent) {
+	let reactionAcceptanceIcon: string;
+	switch (reactionAcceptance.value) {
+		case 'likeOnly':
+			reactionAcceptanceIcon = 'ti ti-heart';
+			break;
+		case 'likeOnlyForRemote':
+			reactionAcceptanceIcon = 'ti ti-heart-plus';
+			break;
+		default:
+			reactionAcceptanceIcon = 'ti ti-icons';
+			break;
+	}
+
+	os.popupMenu([{
+		type: 'button',
+		text: i18n.ts.reactionAcceptance,
+		icon: reactionAcceptanceIcon,
+		action: toggleReactionAcceptance,
+	}, ($i.policies.canScheduleNote) ? {
+		type: 'button',
+		text: i18n.ts.schedulePost,
+		icon: 'ti ti-calendar-time',
+		indicate: (schedule.value != null),
+		action: toggleSchedule,
+	} : undefined, ...(($i.policies.canScheduleNote) ? [{ type: 'divider' }, {
+		type: 'button',
+		text: i18n.ts._schedulePost.list,
+		icon: 'ti ti-calendar-event',
+		action: () => {
+			// 投稿フォームが二重に出ないようにとじておく
+			emit('cancel');
+			listSchedulePost();
+		},
+	}] : [])], ev.currentTarget ?? ev.target, {
+		align: 'right',
+	});
+}
+
+const screenWidth = ref(0);
 onMounted(() => {
+	screenWidth.value = window.innerWidth;
+	window.addEventListener('resize', () => {
+		screenWidth.value = window.innerWidth;
+	});
 	if (props.autofocus) {
 		focus();
 
@@ -967,26 +1196,13 @@ onMounted(() => {
 	if (cwInputEl.value) new Autocomplete(cwInputEl.value, cw);
 	if (hashtagsInputEl.value) new Autocomplete(hashtagsInputEl.value, hashtags);
 
-	nextTick(() => {
+	nextTick(async () => {
+		await noteDrafts.migrate($i.id);
+
 		// 書きかけの投稿を復元
-		if (!props.instant && !props.mention && !props.specified && !props.mock) {
-			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value];
-			if (draft) {
-				text.value = draft.data.text;
-				useCw.value = draft.data.useCw;
-				cw.value = draft.data.cw;
-				visibility.value = draft.data.visibility;
-				localOnly.value = draft.data.localOnly;
-				files.value = (draft.data.files || []).filter(draftFile => draftFile);
-				if (draft.data.poll) {
-					poll.value = draft.data.poll;
-				}
-				if (draft.data.visibleUserIds) {
-					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
-						users.forEach(u => pushVisibleUser(u));
-					});
-				}
-			}
+		if (!props.instant && !props.mention && !props.specified && !props.mock && !defaultStore.state.disableNoteDrafting) {
+			const draft = await noteDrafts.get(draftType.value, $i.id, 'default', draftAuxId.value as string);
+			if (draft) applyDraft(draft, true);
 		}
 
 		// 削除して編集
@@ -996,6 +1212,11 @@ onMounted(() => {
 			files.value = init.files ?? [];
 			cw.value = init.cw ?? null;
 			useCw.value = init.cw != null;
+			if (init.isSchedule) {
+				schedule.value = {
+					scheduledAt: init.createdAt,
+				};
+			}
 			if (init.poll) {
 				poll.value = {
 					choices: init.poll.choices.map(x => x.text),
@@ -1015,89 +1236,90 @@ onMounted(() => {
 
 defineExpose({
 	clear,
+	closed,
 });
 </script>
 
 <style lang="scss" module>
 .root {
-	position: relative;
-	container-type: inline-size;
+  position: relative;
+  container-type: inline-size;
 
-	&.modal {
-		width: 100%;
-		max-width: 520px;
-	}
+  &.modal {
+    width: 100%;
+    max-width: 520px;
+  }
 }
 
 //#region header
 .header {
-	z-index: 1000;
-	min-height: 50px;
-	display: flex;
-	flex-wrap: nowrap;
-	gap: 4px;
+  z-index: 1000;
+  min-height: 50px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
 }
 
 .headerLeft {
-	display: flex;
-	flex: 0 1 100px;
+  display: flex;
+  flex: 0 1 100px;
 }
 
 .cancel {
-	padding: 0;
-	font-size: 1em;
-	height: 100%;
-	flex: 0 1 50px;
+  padding: 0;
+  font-size: 1em;
+  height: 100%;
+  flex: 0 1 50px;
 }
 
 .account {
-	height: 100%;
-	display: inline-flex;
-	vertical-align: bottom;
-	flex: 0 1 50px;
+  height: 100%;
+  display: inline-flex;
+  vertical-align: bottom;
+  flex: 0 1 50px;
 }
 
 .avatar {
-	width: 28px;
-	height: 28px;
-	margin: auto;
+  width: 28px;
+  height: 28px;
+  margin: auto;
 }
 
 .headerRight {
-	display: flex;
-	min-height: 48px;
-	font-size: 0.9em;
-	flex-wrap: nowrap;
-	align-items: center;
-	margin-left: auto;
-	gap: 4px;
-	overflow: clip;
-	padding-left: 4px;
+  display: flex;
+  min-height: 48px;
+  font-size: 0.9em;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-left: auto;
+  gap: 4px;
+  overflow: clip;
+  padding-left: 4px;
 }
 
 .submit {
-	margin: 12px 12px 12px 6px;
-	vertical-align: bottom;
+  margin: 12px 12px 12px 6px;
+  vertical-align: bottom;
 
-	&:disabled {
-		opacity: 0.7;
-	}
+  &:disabled {
+    opacity: 0.7;
+  }
 
-	&.posting {
-		cursor: wait;
-	}
+  &.posting {
+    cursor: wait;
+  }
 
-	&:not(:disabled):hover {
-		> .inner {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
-		}
-	}
+  &:not(:disabled):hover {
+    > .inner {
+      background: linear-gradient(90deg, var(--X8), var(--X8));
+    }
+  }
 
-	&:not(:disabled):active {
-		> .inner {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
-		}
-	}
+  &:not(:disabled):active {
+    > .inner {
+      background: linear-gradient(90deg, var(--X8), var(--X8));
+    }
+  }
 }
 
 .colorBar {
@@ -1109,265 +1331,367 @@ defineExpose({
 	border-radius: 999px;
 	pointer-events: none;
 }
-
+.submitInner i::after {
+	content: "";
+}
+@media (width < 355px) {
+	.submitInner {
+		min-width: 20px !important;
+	}
+	.mgnlft{
+		margin-left: 0 !important;
+	}
+}
+.mgnlft{
+	margin-left: 6px;
+}
 .submitInner {
-	padding: 0 12px;
-	line-height: 34px;
-	font-weight: bold;
-	border-radius: 6px;
-	min-width: 90px;
-	box-sizing: border-box;
-	color: var(--fgOnAccent);
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+  padding: 0 12px;
+  line-height: 34px;
+  font-weight: bold;
+  border-radius: 6px;
+  min-width: 90px;
+  box-sizing: border-box;
+  color: var(--fgOnAccent);
+  background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+  &.gamingLight{
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+    background-size: 1800% 1800%;
+    -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+  }
+  &.gamingDark{
+    color: white;
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
 }
 
 .headerRightItem {
-	margin: 0;
-	padding: 8px;
-	border-radius: 6px;
+  margin: 0;
+  padding: 8px;
+  border-radius: 6px;
 
-	&:hover {
-		background: var(--X5);
-	}
+  &:hover {
+    background: var(--X5);
+  }
 
-	&:disabled {
-		background: none;
-	}
+  &:disabled {
+    background: none;
+  }
+
+  &.headerRightButtonActive {
+    color: var(--accent);
+  }
 
 	&.danger {
-		color: #ff2a2a;
-	}
+    color: #ff2a2a;
+  }
 }
 
 .headerRightButtonText {
-	padding-left: 6px;
+  padding-left: 6px;
 }
 
 .visibility {
-	overflow: clip;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	max-width: 210px;
+  overflow: clip;
+  text-overflow: ellipsis;
+  white-space: nowrap;max-width: 210px;
 
-	&:enabled {
-		> .headerRightButtonText {
-			opacity: 0.8;
-		}
-	}
+  &:enabled {
+    > .headerRightButtonText {
+      opacity: 0.8;
+    }
+  }
 }
 //#endregion
 
 .preview {
-	padding: 16px 20px 0 20px;
-	min-height: 75px;
-	max-height: 150px;
-	overflow: auto;
+  padding: 16px 20px 0 20px;
+  min-height: 75px;max-height: 150px;
+  overflow: auto;
 }
 
 .targetNote {
-	padding: 0 20px 16px 20px;
+  padding: 0 20px 16px 20px;
 }
 
 .withQuote {
-	margin: 0 0 8px 0;
-	color: var(--accent);
+  margin: 0 0 8px 0;
+  color: var(--accent);
 }
 
 .toSpecified {
-	padding: 6px 24px;
-	margin-bottom: 8px;
-	overflow: auto;
-	white-space: nowrap;
+  padding: 6px 24px;
+  margin-bottom: 8px;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 .visibleUsers {
-	display: inline;
-	top: -1px;
-	font-size: 14px;
+  display: inline;
+  top: -1px;
+  font-size: 14px;
 }
 
 .visibleUser {
-	margin-right: 14px;
-	padding: 8px 0 8px 8px;
-	border-radius: 8px;
-	background: var(--X4);
+  margin-right: 14px;
+  padding: 8px 0 8px 8px;
+  border-radius: 8px;
+  background: var(--X4);
 }
 
 .hasNotSpecifiedMentions {
-	margin: 0 20px 16px 20px;
+  margin: 0 20px 16px 20px;
 }
 
 .cw,
 .hashtags,
 .text {
-	display: block;
-	box-sizing: border-box;
-	padding: 0 24px;
-	margin: 0;
-	width: 100%;
-	font-size: 16px;
-	border: none;
-	border-radius: 0;
-	background: transparent;
-	color: var(--fg);
-	font-family: inherit;
+  display: block;
+  box-sizing: border-box;
+  padding: 0 24px;
+  margin: 0;
+  width: 100%;
+  font-size: 16px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg);
+  font-family: inherit;
 
-	&:focus {
-		outline: none;
-	}
+  &:focus {
+    outline: none;
+  }
 
-	&:disabled {
-		opacity: 0.5;
-	}
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 .cw {
-	z-index: 1;
-	padding-bottom: 8px;
-	border-bottom: solid 0.5px var(--divider);
+  z-index: 1;
+  padding-bottom: 8px;
+  border-bottom: solid 1px var(--divider);
+}
+
+.postOptionsRoot {
+	>* {
+		border-bottom: solid 1px var(--divider);
+	}
+
 }
 
 .hashtags {
-	z-index: 1;
-	padding-top: 8px;
-	padding-bottom: 8px;
-	border-top: solid 0.5px var(--divider);
+  z-index: 1;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-top: solid 1px var(--divider);
 }
 
 .textOuter {
-	width: 100%;
-	position: relative;
+  width: 100%;
+  position: relative;
 
-	&.withCw {
-		padding-top: 8px;
-	}
+  &.withCw {
+    padding-top: 8px;
+  }
 }
 
 .text {
-	max-width: 100%;
-	min-width: 100%;
-	width: 100%;
-	min-height: 90px;
-	height: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
+  min-height: 90px;
+  height: 100%;
 }
 
 .textCount {
-	position: absolute;
-	top: 0;
-	right: 2px;
-	padding: 4px 6px;
-	font-size: .9em;
-	color: var(--warn);
-	border-radius: 6px;
-	min-width: 1.6em;
-	text-align: center;
+  position: absolute;
+  top: 0;
+  right: 2px;
+  padding: 4px 6px;
+  font-size: .9em;
+  color: var(--warn);
+  border-radius: 6px;
+  min-width: 1.6em;
+  text-align: center;
 
-	&.textOver {
-		color: #ff2a2a;
-	}
+  &.textOver {
+    color: #ff2a2a;
+  }
 }
 
 .footer {
-	display: flex;
-	padding: 0 16px 16px 16px;
-	font-size: 1em;
+  display: flex;
+  padding: 0 16px 16px 16px;
+  font-size: 1em;
 }
 
 .footerLeft {
-	flex: 1;
-	display: grid;
-	grid-auto-flow: row;
-	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 40px;
+  flex: 1;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  grid-auto-rows: 40px;
 }
 
 .footerRight {
-	flex: 0;
-	margin-left: auto;
-	display: grid;
-	grid-auto-flow: row;
-	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 40px;
-	direction: rtl;
+  flex: 0;
+  margin-left: auto;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  grid-auto-rows: 40px;
+  direction: rtl;
 }
 
 .footerButton {
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-	font-size: 1em;
-	width: auto;
-	height: 100%;
-	border-radius: 6px;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-size: 1em;
+  width: auto;
+  height: 100%;
+  border-radius: 6px;
 
-	&:hover {
-		background: var(--X5);
-	}
+  &:hover {
+    background: var(--X5);
+  }
 
-	&.footerButtonActive {
-		color: var(--accent);
-	}
+  &.footerButtonActive {
+    color: var(--accent);
+  }
 }
 
 .previewButtonActive {
-	color: var(--accent);
+  color: var(--accent);
 }
 
 @container (max-width: 500px) {
-	.headerRight {
-		font-size: .9em;
-	}
+  .headerRight {
+    font-size: .9em;
+  }
 
-	.headerRightButtonText {
-		display: none;
-	}
+  .headerRightButtonText {
+    display: none;
+  }
 
-	.visibility {
-		overflow: initial;
-	}
+  .visibility {
+    overflow: initial;
+  }
 
-	.submit {
-		margin: 8px 8px 8px 4px;
-	}
+  .submit {
+    margin: 8px 8px 8px 4px;
+  }
 
-	.toSpecified {
-		padding: 6px 16px;
-	}
+  .toSpecified {
+    padding: 6px 16px;
+  }
 
-	.preview {
-		padding: 16px 14px 0 14px;
-	}
-	.cw,
-	.hashtags,
-	.text {
-		padding: 0 16px;
-	}
+  .preview {
+    padding: 16px 14px 0 14px;
+  }
+  .cw,
+  .hashtags,
+  .text {
+    padding: 0 16px;
+  }
 
-	.text {
-		min-height: 80px;
-	}
+  .text {
+    min-height: 80px;
+  }
 
-	.footer {
-		padding: 0 8px 8px 8px;
-	}
+  .footer {
+    padding: 0 8px 8px 8px;
+  }
 }
 
 @container (max-width: 350px) {
-	.footer {
-		font-size: 0.9em;
-	}
+  .footer {
+    font-size: 0.9em;
+  }
 
-	.footerLeft {
-		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-	}
+  .footerLeft {
+    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  }
 
-	.footerRight {
-		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-	}
+  .footerRight {
+    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  }
 
-	.headerRight {
-		gap: 0;
-	}
-
+  .headerRight {
+    gap: 0;
+  }
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

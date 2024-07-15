@@ -8,7 +8,14 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	v-show="!isDeleted"
 	ref="rootEl"
 	v-hotkey="keymap"
-	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
+	:class="[$style.root,
+		{ [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover } ,
+		{[$style.home] : defaultStore.state.showVisibilityColor && note.visibility === 'home'
+			,[$style.followers] : defaultStore.state.showVisibilityColor && note.visibility === 'followers'
+			,[$style.specified] : defaultStore.state.showVisibilityColor && note.visibility === 'specified'
+		},{[$style.localonly] : defaultStore.state.showVisibilityColor && note.localOnly }
+	]"
+
 	:tabindex="!isDeleted ? '-1' : undefined"
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
@@ -31,7 +38,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+			<span
+				v-if="note.visibility !== 'public'" style="margin-left: 0.5em;"
+				:title="i18n.ts._visibility[note.visibility]"
+			>
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
@@ -118,8 +128,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					<i class="ti ti-ban"></i>
 				</button>
 				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReactions?.length >= 4 " class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+					<i v-else-if="appearNote.myReactions?.length >= 3 || appearNote.myReaction && appearNote.user.host" class="ti ti-minus" style="color: var(--accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
@@ -134,7 +144,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		</div>
 	</article>
 </div>
-<div v-else-if="!hardMuted" :class="$style.muted" @click="muted = false">
+<div v-else-if="muted && !hideMutedNotes" :class="$style.muted" @click="muted = false">
 	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -199,7 +209,7 @@ import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {myReactions: string[]};
 	pinned?: boolean;
 	mock?: boolean;
 	withHardMute?: boolean;
@@ -217,7 +227,6 @@ const emit = defineEmits<{
 const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
-
 const note = ref(deepClone(props.note));
 
 // plugin
@@ -433,25 +442,9 @@ function react(viaKeyboard = false): void {
 	}
 }
 
-function undoReact(targetNote: Misskey.entities.Note): void {
-	const oldReaction = targetNote.myReaction;
-	if (!oldReaction) return;
-
-	if (props.mock) {
-		emit('removeReaction', oldReaction);
-		return;
-	}
-
-	misskeyApi('notes/reactions/delete', {
-		noteId: targetNote.id,
-	});
-}
-
 function toggleReact() {
-	if (appearNote.value.myReaction == null) {
+	if (appearNote.value.myReactions?.length < 4 || appearNote.value.myReaction && appearNote.value.user.host || !appearNote.value.myReactions ) {
 		react();
-	} else {
-		undoReact(appearNote.value);
 	}
 }
 
@@ -477,7 +470,14 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted, currentClip: currentClip?.value });
+		const { menu, cleanup } = getNoteMenu({
+			note: note.value,
+			translating,
+			translation,
+
+			isDeleted,
+			currentClip: currentClip?.value,
+		});
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
@@ -487,7 +487,14 @@ function showMenu(viaKeyboard = false): void {
 		return;
 	}
 
-	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted, currentClip: currentClip?.value });
+	const { menu, cleanup } = getNoteMenu({
+		note: note.value,
+		translating,
+		translation,
+
+		isDeleted,
+		currentClip: currentClip?.value,
+	});
 	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
 	}).then(focus).finally(cleanup);
@@ -498,7 +505,11 @@ async function clip() {
 		return;
 	}
 
-	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
+	os.popupMenu(await getNoteClipMenu({
+		note: note.value,
+		isDeleted,
+		currentClip: currentClip?.value,
+	}), clipButton.value).then(focus);
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
@@ -557,13 +568,6 @@ function focusAfter() {
 	focusNext(rootEl.value ?? null);
 }
 
-function readPromo() {
-	misskeyApi('promo/read', {
-		noteId: appearNote.value.id,
-	});
-	isDeleted.value = true;
-}
-
 function emitUpdReaction(emoji: string, delta: number) {
 	if (delta < 0) {
 		emit('removeReaction', emoji);
@@ -581,6 +585,20 @@ function emitUpdReaction(emoji: string, delta: number) {
 	overflow: clip;
 	contain: content;
 
+	&.home {
+		background-color: rgba(var(--homeColor), 0.20) !important;
+	}
+
+	&.followers {
+		background-color: rgba(var(--followerColor), 0.20) !important;
+	}
+
+	&.specified {
+		background-color: rgba(var(--specifiedColor), 0.20) !important;
+	}
+  &.localonly {
+    background-color: rgba(var(--localOnlyColor), 0.20) !important;
+  }
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
 	// 下の方までスクロールすると上のノートの高さがここで決め打ちされたものに変化し、表示しているノートの位置が変わってしまう
 	// ノートがマウントされたときに自身の高さを取得し contain-intrinsic-size を設定しなおせばほぼ解決できそうだが、
@@ -1023,5 +1041,9 @@ function emitUpdReaction(emoji: string, delta: number) {
 	margin-left: 8px;
 	opacity: .8;
 	font-size: 95%;
+}
+
+.root:has(.ti-home) {
+	background-color: rgba(255, 255, 100, 0.10) !important;
 }
 </style>

@@ -42,6 +42,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		noteId: { type: 'string', format: 'misskey:id' },
+		reaction: { type: 'string' },
 	},
 	required: ['noteId'],
 } as const;
@@ -57,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
-			await this.reactionService.delete(me, note).catch(err => {
+			await this.reactionService.delete(me, note, ps.reaction ?? undefined).catch(err => {
 				if (err.id === '60527ec9-b4cb-4a88-a6bd-32d3ad26817d') throw new ApiError(meta.errors.notReacted);
 				throw err;
 			});

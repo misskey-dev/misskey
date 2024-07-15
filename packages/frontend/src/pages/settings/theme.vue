@@ -4,90 +4,107 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m rsljpzjq">
-	<div v-adaptive-border class="rfqxtzch _panel">
-		<div class="toggle">
-			<div class="toggleWrapper">
-				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-				<label for="dn" class="toggle">
-					<span class="before">{{ i18n.ts.light }}</span>
-					<span class="after">{{ i18n.ts.dark }}</span>
-					<span class="toggle__handler">
+	<div class="_gaps_m rsljpzjq">
+		<div v-adaptive-border class="rfqxtzch _panel">
+			<div class="toggle">
+				<div class="toggleWrapper">
+					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
+					<label for="dn" class="toggle">
+						<span class="before">{{ i18n.ts.light }}</span>
+						<span class="after">{{ i18n.ts.dark }}</span>
+						<span class="toggle__handler">
 						<span class="crater crater--1"></span>
 						<span class="crater crater--2"></span>
 						<span class="crater crater--3"></span>
 					</span>
-					<span class="star star--1"></span>
-					<span class="star star--2"></span>
-					<span class="star star--3"></span>
-					<span class="star star--4"></span>
-					<span class="star star--5"></span>
-					<span class="star star--6"></span>
-				</label>
+						<span class="star star--1"></span>
+						<span class="star star--2"></span>
+						<span class="star star--3"></span>
+						<span class="star star--4"></span>
+						<span class="star star--5"></span>
+						<span class="star star--6"></span>
+					</label>
+				</div>
+			</div>
+			<div class="sync">
+				<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
 			</div>
 		</div>
-		<div class="sync">
-			<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
+
+		<div class="selects">
+			<MkSelect v-model="lightThemeId" large class="select">
+				<template #label>{{ i18n.ts.themeForLightMode }}</template>
+				<template #prefix><i class="ti ti-sun"></i></template>
+				<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">
+					{{ instanceLightTheme.name }}
+				</option>
+				<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
+					<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
+				</optgroup>
+				<optgroup :label="i18n.ts._theme.builtinThemes">
+					<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
+				</optgroup>
+			</MkSelect>
+			<MkSelect v-model="darkThemeId" large class="select">
+				<template #label>{{ i18n.ts.themeForDarkMode }}</template>
+				<template #prefix><i class="ti ti-moon"></i></template>
+				<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">
+					{{ instanceDarkTheme.name }}
+				</option>
+				<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
+					<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
+				</optgroup>
+				<optgroup :label="i18n.ts._theme.builtinThemes">
+					<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
+				</optgroup>
+			</MkSelect>
 		</div>
+
+		<FormSection>
+			<div class="_formLinksGrid">
+				<FormLink to="/settings/theme/manage">
+					<template #icon><i class="ti ti-tool"></i></template>
+					{{ i18n.ts._theme.manage }}
+					<template #suffix>{{ themesCount }}</template>
+				</FormLink>
+				<FormLink to="https://assets.misskey.io/theme/list" external>
+					<template #icon><i class="ti ti-world"></i></template>
+					{{ i18n.ts._theme.explore }}
+				</FormLink>
+				<FormLink to="/settings/theme/install">
+					<template #icon><i class="ti ti-download"></i></template>
+					{{ i18n.ts._theme.install }}
+				</FormLink>
+				<FormLink to="/theme-editor">
+					<template #icon><i class="ti ti-paint"></i></template>
+					{{ i18n.ts._theme.make }}
+				</FormLink>
+			</div>
+		</FormSection>
+
+		<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
+		<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
 	</div>
-
-	<div class="selects">
-		<MkSelect v-model="lightThemeId" large class="select">
-			<template #label>{{ i18n.ts.themeForLightMode }}</template>
-			<template #prefix><i class="ti ti-sun"></i></template>
-			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
-			<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</MkSelect>
-		<MkSelect v-model="darkThemeId" large class="select">
-			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
-			<template #prefix><i class="ti ti-moon"></i></template>
-			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
-			<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</MkSelect>
-	</div>
-
-	<FormSection>
-		<div class="_formLinksGrid">
-			<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
-			<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
-			<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
-		</div>
-	</FormSection>
-
-	<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
-	<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
-</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, ref, watch } from 'vue';
+import {computed, onActivated, ref, watch} from 'vue';
 import JSON5 from 'json5';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef } from '@/scripts/theme.js';
-import { selectFile } from '@/scripts/select-file.js';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { uniqueBy } from '@/scripts/array.js';
-import { fetchThemes, getThemes } from '@/theme-store.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { miLocalStorage } from '@/local-storage.js';
+import {getBuiltinThemesRef} from '@/scripts/theme';
+import {selectFile} from '@/scripts/select-file';
+import {isDeviceDarkmode} from '@/scripts/is-device-darkmode';
+import {ColdDeviceStorage, defaultStore, bannerDark, bannerLight, iconDark, iconLight} from '@/store';
+import {i18n} from '@/i18n';
+import {instance} from '@/instance';
+import {uniqueBy} from '@/scripts/array';
+import {fetchThemes, getThemes} from '@/theme-store.js';
+import {definePageMetadata} from '@/scripts/page-metadata';
+import {miLocalStorage} from '@/local-storage';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
 
@@ -141,6 +158,18 @@ const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
+watch(darkMode, () => {
+	if (darkMode.value) {
+		defaultStore.set('bannerUrl', bannerDark)
+    defaultStore.set('iconUrl', iconDark)
+	}else if(!darkMode.value) {
+    defaultStore.set('bannerUrl', bannerLight)
+    defaultStore.set('iconUrl', iconLight)
+	}else{
+    defaultStore.set('bannerUrl', bannerDark)
+    defaultStore.set('iconUrl', iconDark)
+  }
+})
 
 watch(syncDeviceDarkMode, () => {
 	if (syncDeviceDarkMode.value) {
@@ -250,9 +279,9 @@ definePageMetadata(() => ({
 			height: 50px - 6;
 			background-color: #FFCF96;
 			border-radius: 50px;
-			box-shadow: 0 2px 6px rgba(0,0,0,.3);
+			box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
 			transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-			transform:  rotate(-45deg);
+			transform: rotate(-45deg);
 
 			.crater {
 				position: absolute;
@@ -328,7 +357,7 @@ definePageMetadata(() => ({
 			z-index: 0;
 			width: 2px;
 			height: 2px;
-			transform: translate3d(3px,0,0);
+			transform: translate3d(3px, 0, 0);
 		}
 
 		.star--5 {
@@ -337,7 +366,7 @@ definePageMetadata(() => ({
 			z-index: 0;
 			width: 3px;
 			height: 3px;
-			transform: translate3d(3px,0,0);
+			transform: translate3d(3px, 0, 0);
 		}
 
 		.star--6 {
@@ -346,7 +375,7 @@ definePageMetadata(() => ({
 			z-index: 0;
 			width: 2px;
 			height: 2px;
-			transform: translate3d(3px,0,0);
+			transform: translate3d(3px, 0, 0);
 		}
 
 		input:checked {
@@ -365,7 +394,9 @@ definePageMetadata(() => ({
 					background-color: #FFE5B5;
 					transform: translate3d(40px, 0, 0) rotate(0);
 
-					.crater { opacity: 1; }
+					.crater {
+						opacity: 1;
+					}
 				}
 
 				.star--1 {
@@ -389,7 +420,7 @@ definePageMetadata(() => ({
 				.star--5,
 				.star--6 {
 					opacity: 1;
-					transform: translate3d(0,0,0);
+					transform: translate3d(0, 0, 0);
 				}
 
 				.star--4 {

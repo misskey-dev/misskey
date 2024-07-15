@@ -14,6 +14,23 @@ import type { MiDriveFile } from './DriveFile.js';
 export class MiNote {
 	@PrimaryColumn(id())
 	public id: string;
+	@Column('timestamp with time zone', {
+		default: null,
+	})
+	public updatedAt: Date | null;
+
+	@Column('timestamp with time zone', {
+		array: true,
+		default: null,
+	})
+	public updatedAtHistory: Date[] | null;
+
+	@Column('varchar', {
+		length: 3000,
+		array: true,
+		default: '{}',
+	})
+	public noteEditHistory: string[];
 
 	@Index()
 	@Column({

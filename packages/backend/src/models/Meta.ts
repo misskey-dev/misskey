@@ -139,6 +139,11 @@ export class MiMeta {
 		nullable: true,
 	})
 	public serverErrorImageUrl: string | null;
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public googleAnalyticsId: string | null;
 
 	@Column('varchar', {
 		length: 1024,
@@ -228,7 +233,29 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public DiscordWebhookUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public DiscordWebhookUrlWordBlock: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public EmojiBotToken: string | null;
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public recaptchaSiteKey: string | null;
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public ApiBase: string | null;
 
 	@Column('varchar', {
 		length: 1024,
@@ -421,6 +448,30 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public bannerDark: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public bannerLight: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public iconDark: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public iconLight: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public objectStorageEndpoint: string | null;
 
 	@Column('varchar', {
@@ -588,6 +639,27 @@ export class MiMeta {
 		default: 0,
 	})
 	public notesPerOneAd: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public requestEmojiAllOk: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableGDPRMode: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableProxyCheckio: boolean;
+
+	@Column('varchar', {
+		length: 32,
+		nullable: true,
+	})
+	public proxyCheckioApiKey: string;
 
 	@Column('boolean', {
 		default: true,

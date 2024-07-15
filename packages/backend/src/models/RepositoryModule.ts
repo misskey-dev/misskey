@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Provider } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import {
 	MiAbuseReportNotificationRecipient,
+
 	MiAbuseUserReport,
 	MiAccessToken,
 	MiAd,
@@ -18,7 +18,6 @@ import {
 	MiAuthSession,
 	MiAvatarDecoration,
 	MiBlocking,
-	MiBubbleGameRecord,
 	MiChannel,
 	MiChannelFavorite,
 	MiChannelFollowing,
@@ -28,10 +27,11 @@ import {
 	MiDriveFile,
 	MiDriveFolder,
 	MiEmoji,
+	MiEmojiRequest,
 	MiFlash,
 	MiFlashLike,
-	MiFollowing,
 	MiFollowRequest,
+	MiFollowing,
 	MiGalleryLike,
 	MiGalleryPost,
 	MiHashtag,
@@ -51,19 +51,19 @@ import {
 	MiPollVote,
 	MiPromoNote,
 	MiPromoRead,
-	MiRegistrationTicket,
-	MiRegistryItem,
-	MiRelay,
-	MiRenoteMuting,
 	MiRepository,
 	miRepository,
-	MiRetentionAggregation,
+	MiRegistrationTicket,
+	MiRegistryItem,
 	MiReversiGame,
+	MiSystemWebhook,
+	MiRelay,
+	MiRenoteMuting,
+	MiRetentionAggregation,
 	MiRole,
 	MiRoleAssignment,
 	MiSignin,
 	MiSwSubscription,
-	MiSystemWebhook,
 	MiUsedUsername,
 	MiUser,
 	MiUserIp,
@@ -77,8 +77,10 @@ import {
 	MiUserProfile,
 	MiUserPublickey,
 	MiUserSecurityKey,
-	MiWebhook
-} from './_.js';
+	MiWebhook,
+	MiScheduledNote,
+	MiBubbleGameRecord } from './_.js';
+import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
 
 const $usersRepository: Provider = {
@@ -90,6 +92,12 @@ const $usersRepository: Provider = {
 const $notesRepository: Provider = {
 	provide: DI.notesRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiNote).extend(miRepository as MiRepository<MiNote>),
+	inject: [DI.db],
+};
+
+const $scheduledNotesRepository: Provider = {
+	provide: DI.scheduledNotesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiScheduledNote),
 	inject: [DI.db],
 };
 
@@ -240,6 +248,12 @@ const $instancesRepository: Provider = {
 const $emojisRepository: Provider = {
 	provide: DI.emojisRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiEmoji).extend(miRepository as MiRepository<MiEmoji>),
+	inject: [DI.db],
+};
+
+const $emojiRequestsRepository: Provider = {
+	provide: DI.emojiRequestsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiEmojiRequest),
 	inject: [DI.db],
 };
 
@@ -500,6 +514,7 @@ const $reversiGamesRepository: Provider = {
 	providers: [
 		$usersRepository,
 		$notesRepository,
+		$scheduledNotesRepository,
 		$announcementsRepository,
 		$announcementReadsRepository,
 		$appsRepository,
@@ -525,6 +540,7 @@ const $reversiGamesRepository: Provider = {
 		$followRequestsRepository,
 		$instancesRepository,
 		$emojisRepository,
+		$emojiRequestsRepository,
 		$driveFilesRepository,
 		$driveFoldersRepository,
 		$metasRepository,
@@ -571,6 +587,7 @@ const $reversiGamesRepository: Provider = {
 	exports: [
 		$usersRepository,
 		$notesRepository,
+		$scheduledNotesRepository,
 		$announcementsRepository,
 		$announcementReadsRepository,
 		$appsRepository,
@@ -596,6 +613,7 @@ const $reversiGamesRepository: Provider = {
 		$followRequestsRepository,
 		$instancesRepository,
 		$emojisRepository,
+		$emojiRequestsRepository,
 		$driveFilesRepository,
 		$driveFoldersRepository,
 		$metasRepository,

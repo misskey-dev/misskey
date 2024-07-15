@@ -29,6 +29,7 @@ import { MiClipFavorite } from '@/models/ClipFavorite.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { MiDriveFolder } from '@/models/DriveFolder.js';
 import { MiEmoji } from '@/models/Emoji.js';
+import { MiEmojiRequest } from '@/models/EmojiRequest.js';
 import { MiFollowing } from '@/models/Following.js';
 import { MiFollowRequest } from '@/models/FollowRequest.js';
 import { MiGalleryLike } from '@/models/GalleryLike.js';
@@ -80,6 +81,7 @@ import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
+import { MiScheduledNote } from './ScheduledNote.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
 	createTableColumnNames(this: Repository<T> & MiRepository<T>): string[];
@@ -144,6 +146,7 @@ export {
 	MiDriveFile,
 	MiDriveFolder,
 	MiEmoji,
+	MiEmojiRequest,
 	MiFollowing,
 	MiFollowRequest,
 	MiGalleryLike,
@@ -159,6 +162,7 @@ export {
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiNoteUnread,
+	MiScheduledNote,
 	MiPage,
 	MiPageLike,
 	MiPasswordResetRequest,
@@ -215,6 +219,7 @@ export type ClipFavoritesRepository = Repository<MiClipFavorite> & MiRepository<
 export type DriveFilesRepository = Repository<MiDriveFile> & MiRepository<MiDriveFile>;
 export type DriveFoldersRepository = Repository<MiDriveFolder> & MiRepository<MiDriveFolder>;
 export type EmojisRepository = Repository<MiEmoji> & MiRepository<MiEmoji>;
+export type EmojiRequestsRepository = Repository<MiEmojiRequest>;
 export type FollowingsRepository = Repository<MiFollowing> & MiRepository<MiFollowing>;
 export type FollowRequestsRepository = Repository<MiFollowRequest> & MiRepository<MiFollowRequest>;
 export type GalleryLikesRepository = Repository<MiGalleryLike> & MiRepository<MiGalleryLike>;
@@ -230,6 +235,7 @@ export type NoteFavoritesRepository = Repository<MiNoteFavorite> & MiRepository<
 export type NoteReactionsRepository = Repository<MiNoteReaction> & MiRepository<MiNoteReaction>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting> & MiRepository<MiNoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<MiNoteUnread> & MiRepository<MiNoteUnread>;
+export type ScheduledNotesRepository = Repository<MiScheduledNote>;
 export type PagesRepository = Repository<MiPage> & MiRepository<MiPage>;
 export type PageLikesRepository = Repository<MiPageLike> & MiRepository<MiPageLike>;
 export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest> & MiRepository<MiPasswordResetRequest>;

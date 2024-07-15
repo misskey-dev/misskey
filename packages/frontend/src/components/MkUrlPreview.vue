@@ -13,10 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			scrolling="no"
-			:allow="player.allow == null ? 'autoplay;encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
+			:allow="player.allow == null ? 'encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
 			:class="$style.playerIframe"
-			:src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')"
-			:style="{ border: 0 }"
+			:src="player.url"
+			:style="{ border: 0, backgroundColor: 'transparent' }"
+			allowtransparency="true"
 		></iframe>
 		<span v-else>invalid url</span>
 	</div>
@@ -27,14 +28,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </template>
 <template v-else-if="tweetId && tweetExpanded">
-	<div ref="twitter">
+	<div ref="twitter" :class="$style.twitter">
 		<iframe
 			ref="tweet"
 			allow="fullscreen;web-share"
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
-			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
+			data-transparent="true"
+
+			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0,borderRadius: '14px'}"
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
+			frameborder="0"
+			allowtransparency="true"
 		></iframe>
 	</div>
 	<div :class="$style.action">
@@ -83,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
+import { defineAsyncComponent, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@/config.js';
 import { i18n } from '@/i18n.js';
@@ -133,6 +138,15 @@ const unknownUrl = ref(false);
 
 onDeactivated(() => {
 	playerEnabled.value = false;
+});
+
+onMounted(() => {
+	if (defaultStore.state.alwaysShowPlayer) {
+		playerEnabled.value = true;
+	}
+	if (defaultStore.state.alwaysExpandTweet) {
+		tweetExpanded.value = true;
+	}
 });
 
 const requestUrl = new URL(props.url);
@@ -206,7 +220,13 @@ onUnmounted(() => {
 	position: relative;
 	width: 100%;
 }
+.twitter{
+	width: 70%;
 
+}
+.app{
+	background: red;
+}
 .disablePlayer {
 	position: absolute;
 	top: -1.5em;

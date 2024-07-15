@@ -470,9 +470,8 @@ export class UserEntityService implements OnModuleInit {
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
 				...announcement,
 			})) : null;
-
+		console.log(user.getPoints);
 		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
-
 		const packed = {
 			id: user.id,
 			name: user.name,
@@ -506,7 +505,7 @@ export class UserEntityService implements OnModuleInit {
 				iconUrl: r.iconUrl,
 				displayOrder: r.displayOrder,
 			}))) : undefined,
-
+			...(user.host == null ? { getPoints: user.getPoints } : {}),
 			...(isDetailed ? {
 				url: profile!.url,
 				uri: user.uri,

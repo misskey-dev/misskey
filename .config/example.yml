@@ -252,7 +252,9 @@ id: 'aidx'
 #outgoingAddressFamily: ipv4
 
 # Proxy for HTTP/HTTPS
-#proxy: http://127.0.0.1:3128
+#
+
+
 
 proxyBypassHosts:
   - api.deepl.com

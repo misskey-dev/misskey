@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
+import ProxyCheck from 'proxycheck-ts';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -107,6 +108,24 @@ export class SignupApiService {
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
+
+		const { DiscordWebhookUrl } = (await this.metaService.fetch());
+		if (DiscordWebhookUrl) {
+			const data_disc = { 'username': 'ユーザー登録お知らせ',
+																							'content':
+					'ユーザー名 :' + username + '\n' +
+					'メールアドレス : ' + emailAddress + '\n' +
+					'IPアドレス : ' + request.headers['x-real-ip'] ?? request.ip,
+			};
+
+			await fetch(DiscordWebhookUrl, {
+				'method': 'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data_disc),
+			});
+		}
 
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {

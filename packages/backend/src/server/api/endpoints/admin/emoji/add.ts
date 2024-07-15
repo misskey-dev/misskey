@@ -47,15 +47,19 @@ export const paramDef = {
 			nullable: true,
 			description: 'Use `null` to reset the category.',
 		},
-		aliases: { type: 'array', items: {
-			type: 'string',
-		} },
+		aliases: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		license: { type: 'string', nullable: true },
 		isSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
-		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-			type: 'string',
-		} },
+		roleIdsThatCanBeUsedThisEmojiAsReaction: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 	},
 	required: ['name', 'fileId'],
 } as const;
@@ -67,13 +71,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-
 		private customEmojiService: CustomEmojiService,
-
 		private emojiEntityService: EmojiEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
 			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);

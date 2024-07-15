@@ -950,3 +950,299 @@ export const SWEETS_MONOS: Mono[] = [{
 	score: 30,
 	dropCandidate: true,
 }];
+
+const PRISMISSKEY_BASE_SIZE = 28;
+
+export const PRISMISSKEY_MONOS: Mono[] = [{
+	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
+	level: 10,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'custom',
+	vertices: [[
+		{ 'x': 1680, 'y': 270 },
+		{ 'x': 2150, 'y': 560 },
+		{ 'x': 2600, 'y': 910 },
+		{ 'x': 3279, 'y': 650 },
+		{ 'x': 3130, 'y': 1100 },
+		{ 'x': 2750, 'y': 1250 },
+		{ 'x': 2800, 'y': 1860 },
+		{ 'x': 1760, 'y': 1980 },
+		{ 'x': 1500, 'y': 1840 },
+		{ 'x': 989, 'y': 1800 },
+		{ 'x': 888, 'y': 1900 },
+		{ 'x': 688, 'y': 1540 },
+		{ 'x': 783, 'y': 1250 },
+		{ 'x': 660, 'y': 1190 },
+		{ 'x': 600, 'y': 800 },
+		{ 'x': 722, 'y': 382 },
+		{ 'x': 1100, 'y': 835 },
+		{ 'x': 1400, 'y': 670 },
+	]],
+	verticesSize: 1800,
+	score: 10000,
+	dropCandidate: false,
+}, {
+	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
+	level: 9,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'custom',
+	vertices: [
+		[
+			{ 'x': 1023, 'y': 266 },
+			{ 'x': 1476, 'y': 474 },
+			{ 'x': 1595, 'y': 362 },
+			{ 'x': 1747, 'y': 359 },
+			{ 'x': 1939, 'y': 481 },
+			{ 'x': 1769, 'y': 700 },
+			{ 'x': 1666, 'y': 690 },
+			{ 'x': 1711, 'y': 982 },
+			{ 'x': 1638, 'y': 1227 },
+			{ 'x': 1494, 'y': 1300 },
+			{ 'x': 1037, 'y': 1300 },
+			{ 'x': 914, 'y': 1183 },
+			{ 'x': 447, 'y': 1200 },
+			{ 'x': 290, 'y': 1300 },
+			{ 'x': 204, 'y': 1280 },
+			{ 'x': 170, 'y': 835 },
+			{ 'x': 321, 'y': 523 },
+			{ 'x': 647, 'y': 323 },
+			{ 'x': 857, 'y': 277 },
+
+		],
+	],
+	verticesSize: 1300,
+	score: 1000,
+	dropCandidate: false,
+}, {
+	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
+	level: 8,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'custom',
+	vertices: [
+		[
+			{ 'x': 1177, 'y': 85 },
+			{ 'x': 1498, 'y': 404 },
+			{ 'x': 1370, 'y': 374 },
+			{ 'x': 1737, 'y': 619 },
+			{ 'x': 1946, 'y': 721 },
+			{ 'x': 1764, 'y': 975 },
+			{ 'x': 1674, 'y': 949 },
+			{ 'x': 1715, 'y': 1183 },
+			{ 'x': 1641, 'y': 1498 },
+			{ 'x': 1479, 'y': 1555 },
+			{ 'x': 1008, 'y': 1566 },
+			{ 'x': 912, 'y': 1447 },
+			{ 'x': 456, 'y': 1453 },
+			{ 'x': 298, 'y': 1561 },
+			{ 'x': 240, 'y': 1551 },
+			{ 'x': 187, 'y': 1017 },
+			{ 'x': 283, 'y': 825 },
+			{ 'x': 517, 'y': 609 },
+			{ 'x': 187, 'y': 1017 },
+			{ 'x': 352, 'y': 521 },
+			{ 'x': 821, 'y': 333 },
+		],
+	],
+	verticesSize: 1300,
+	score: 800,
+	dropCandidate: false,
+}, {
+	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
+	level: 7,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 64,
+	dropCandidate: false,
+}, {
+	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
+	level: 6,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 500,
+	dropCandidate: false,
+}, {
+	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
+	level: 5,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 410,
+				'y': 14,
+			},
+			{
+				'x': 741,
+				'y': 160,
+			},
+			{
+				'x': 834,
+				'y': 346,
+			},
+			{
+				'x': 853,
+				'y': 637,
+			},
+			{
+				'x': 768,
+				'y': 760,
+			},
+			{
+				'x': 422,
+				'y': 813,
+			},			{
+				'x': 66,
+				'y': 748,
+			},
+			{
+				'x': 27,
+				'y': 702,
+			},
+			{
+				'x': 7,
+				'y': 543,
+			}, {
+				'x': 63,
+				'y': 263,
+			},	{
+				'x': 170,
+				'y': 108,
+			},
+			{
+				'x': 310,
+				'y': 26,
+			},
+		],
+	],
+	verticesSize: 1024,
+	score: 16,
+	dropCandidate: true,
+}, {
+	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
+	level: 4,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 200,
+	dropCandidate: true,
+}, {
+	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
+	level: 3,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25,
+
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 87,
+				'y': 6,
+			},
+			{
+				'x': 169,
+				'y': 53,
+			},
+			{
+				'x': 169,
+				'y': 147,
+			},
+			{
+				'x': 87,
+				'y': 195,
+			},
+			{
+				'x': 6,
+				'y': 147,
+			},
+			{
+				'x': 6,
+				'y': 53,
+			},
+		],
+	],
+	verticesSize: 128,
+	score: 100,
+	dropCandidate: true,
+}, {
+	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
+	level: 2,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25,
+
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 749,
+				'y': 12,
+			},
+			{
+				'x': 1386,
+				'y': 379,
+			},
+			{
+				'x': 1387,
+				'y': 1116,
+			},
+			{
+				'x': 749,
+				'y': 1484,
+			},
+			{
+				'x': 111,
+				'y': 1116,
+			},
+			{
+				'x': 111,
+				'y': 380,
+			},
+		],
+	],
+	verticesSize: 1536,
+	score: 50,
+	dropCandidate: true,
+}, {
+	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
+	level: 1,
+	sizeX: PRISMISSKEY_BASE_SIZE,
+	sizeY: PRISMISSKEY_BASE_SIZE,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 87,
+				'y': 6,
+			},
+			{
+				'x': 169,
+				'y': 53,
+			},
+			{
+				'x': 169,
+				'y': 147,
+			},
+			{
+				'x': 87,
+				'y': 195,
+			},
+			{
+				'x': 6,
+				'y': 147,
+			},
+			{
+				'x': 6,
+				'y': 53,
+			},
+		],
+	],
+	verticesSize: 128,
+	score: 10,
+	dropCandidate: true,
+}];

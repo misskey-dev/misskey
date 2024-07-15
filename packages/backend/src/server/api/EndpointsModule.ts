@@ -6,6 +6,7 @@
 import { Module } from '@nestjs/common';
 
 import { CoreModule } from '@/core/CoreModule.js';
+import * as ep___users_lists_list_favorite from '@/server/api/endpoints/users/lists/list-favorite.js';
 import * as ep___admin_abuseReport_notificationRecipient_list from '@/server/api/endpoints/admin/abuse-report/notification-recipient/list.js';
 import * as ep___admin_abuseReport_notificationRecipient_show from '@/server/api/endpoints/admin/abuse-report/notification-recipient/show.js';
 import * as ep___admin_abuseReport_notificationRecipient_create from '@/server/api/endpoints/admin/abuse-report/notification-recipient/create.js';
@@ -36,18 +37,23 @@ import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
 import * as ep___admin_drive_showFile from './endpoints/admin/drive/show-file.js';
 import * as ep___admin_emoji_addAliasesBulk from './endpoints/admin/emoji/add-aliases-bulk.js';
+import * as ep___admin_emoji_setlocalOnlyBulk from './endpoints/admin/emoji/set-localonly-bulk.js';
+import * as ep___admin_emoji_setisSensitiveBulk from './endpoints/admin/emoji/set-issensitive-bulk.js';
 import * as ep___admin_emoji_add from './endpoints/admin/emoji/add.js';
+import * as ep___admin_emoji_addRequest from './endpoints/admin/emoji/add-request.js';
 import * as ep___admin_emoji_copy from './endpoints/admin/emoji/copy.js';
 import * as ep___admin_emoji_deleteBulk from './endpoints/admin/emoji/delete-bulk.js';
 import * as ep___admin_emoji_delete from './endpoints/admin/emoji/delete.js';
 import * as ep___admin_emoji_importZip from './endpoints/admin/emoji/import-zip.js';
 import * as ep___admin_emoji_listRemote from './endpoints/admin/emoji/list-remote.js';
 import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
+import * as ep___admin_emoji_listRequest from './endpoints/admin/emoji/list-request.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
+import * as ep___admin_emoji_updateRequest from './endpoints/admin/emoji/update-request.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -264,6 +270,7 @@ import * as ep___invite_list from './endpoints/invite/list.js';
 import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
+import * as ep___emojiRequests from './endpoints/emoji-requests.js';
 import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -278,13 +285,17 @@ import * as ep___notes_children from './endpoints/notes/children.js';
 import * as ep___notes_clips from './endpoints/notes/clips.js';
 import * as ep___notes_conversation from './endpoints/notes/conversation.js';
 import * as ep___notes_create from './endpoints/notes/create.js';
+import * as ep___notes_schedule_delete from './endpoints/notes/schedule/delete.js';
+import * as ep___notes_schedule_list from './endpoints/notes/schedule/list.js';
 import * as ep___notes_delete from './endpoints/notes/delete.js';
+import * as ep___notes_update from './endpoints/notes/update.js';
 import * as ep___notes_favorites_create from './endpoints/notes/favorites/create.js';
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
 import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
+import * as ep___notes_anyLocalTimeline from './endpoints/notes/any-local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
 import * as ep___notes_polls_recommendation from './endpoints/notes/polls/recommendation.js';
 import * as ep___notes_polls_vote from './endpoints/notes/polls/vote.js';
@@ -349,6 +360,7 @@ import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
 import * as ep___users_featuredNotes from './endpoints/users/featured-notes.js';
+import * as ep___users_user_stats from './endpoints/users/stats.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
 import * as ep___users_lists_list from './endpoints/users/lists/list.js';
@@ -387,8 +399,9 @@ import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
 import * as ep___reversi_verify from './endpoints/reversi/verify.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
+import * as ep___admin_accounts_present_points from './endpoints/admin/accounts/present-points.js';
 import type { Provider } from '@nestjs/common';
-
+import * as ep___emoji_speedtest from './endpoints/admin/emoji/speedtest.js';
 const $admin_meta: Provider = { provide: 'ep:admin/meta', useClass: ep___admin_meta.default };
 const $admin_abuseUserReports: Provider = { provide: 'ep:admin/abuse-user-reports', useClass: ep___admin_abuseUserReports.default };
 const $admin_abuseReport_notificationRecipient_list: Provider = { provide: 'ep:admin/abuse-report/notification-recipient/list', useClass: ep___admin_abuseReport_notificationRecipient_list.default };
@@ -399,6 +412,7 @@ const $admin_abuseReport_notificationRecipient_delete: Provider = { provide: 'ep
 const $admin_accounts_create: Provider = { provide: 'ep:admin/accounts/create', useClass: ep___admin_accounts_create.default };
 const $admin_accounts_delete: Provider = { provide: 'ep:admin/accounts/delete', useClass: ep___admin_accounts_delete.default };
 const $admin_accounts_findByEmail: Provider = { provide: 'ep:admin/accounts/find-by-email', useClass: ep___admin_accounts_findByEmail.default };
+const $admin_accounts_present_points: Provider = { provide: 'ep:admin/accounts/present-points', useClass: ep___admin_accounts_present_points.default };
 const $admin_ad_create: Provider = { provide: 'ep:admin/ad/create', useClass: ep___admin_ad_create.default };
 const $admin_ad_delete: Provider = { provide: 'ep:admin/ad/delete', useClass: ep___admin_ad_delete.default };
 const $admin_ad_list: Provider = { provide: 'ep:admin/ad/list', useClass: ep___admin_ad_list.default };
@@ -414,23 +428,29 @@ const $admin_avatarDecorations_update: Provider = { provide: 'ep:admin/avatar-de
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
 const $admin_unsetUserAvatar: Provider = { provide: 'ep:admin/unset-user-avatar', useClass: ep___admin_unsetUserAvatar.default };
 const $admin_unsetUserBanner: Provider = { provide: 'ep:admin/unset-user-banner', useClass: ep___admin_unsetUserBanner.default };
+const $emoji_speedtest: Provider = { provide: 'ep:emoji/speedtest', useClass: ep___emoji_speedtest.default };
 const $admin_drive_cleanRemoteFiles: Provider = { provide: 'ep:admin/drive/clean-remote-files', useClass: ep___admin_drive_cleanRemoteFiles.default };
 const $admin_drive_cleanup: Provider = { provide: 'ep:admin/drive/cleanup', useClass: ep___admin_drive_cleanup.default };
 const $admin_drive_files: Provider = { provide: 'ep:admin/drive/files', useClass: ep___admin_drive_files.default };
 const $admin_drive_showFile: Provider = { provide: 'ep:admin/drive/show-file', useClass: ep___admin_drive_showFile.default };
 const $admin_emoji_addAliasesBulk: Provider = { provide: 'ep:admin/emoji/add-aliases-bulk', useClass: ep___admin_emoji_addAliasesBulk.default };
+const $admin_emoji_setlocalOnlyBulk: Provider = { provide: 'ep:admin/emoji/set-localonly-bulk', useClass: ep___admin_emoji_setlocalOnlyBulk.default };
+const $admin_emoji_setisSensitiveBulk: Provider = { provide: 'ep:admin/emoji/set-issensitive-bulk', useClass: ep___admin_emoji_setisSensitiveBulk.default };
 const $admin_emoji_add: Provider = { provide: 'ep:admin/emoji/add', useClass: ep___admin_emoji_add.default };
+const $admin_emoji_addRequest: Provider = { provide: 'ep:admin/emoji/add-request', useClass: ep___admin_emoji_addRequest.default };
 const $admin_emoji_copy: Provider = { provide: 'ep:admin/emoji/copy', useClass: ep___admin_emoji_copy.default };
 const $admin_emoji_deleteBulk: Provider = { provide: 'ep:admin/emoji/delete-bulk', useClass: ep___admin_emoji_deleteBulk.default };
 const $admin_emoji_delete: Provider = { provide: 'ep:admin/emoji/delete', useClass: ep___admin_emoji_delete.default };
 const $admin_emoji_importZip: Provider = { provide: 'ep:admin/emoji/import-zip', useClass: ep___admin_emoji_importZip.default };
 const $admin_emoji_listRemote: Provider = { provide: 'ep:admin/emoji/list-remote', useClass: ep___admin_emoji_listRemote.default };
 const $admin_emoji_list: Provider = { provide: 'ep:admin/emoji/list', useClass: ep___admin_emoji_list.default };
+const $admin_emoji_listRequest: Provider = { provide: 'ep:admin/emoji/list-request', useClass: ep___admin_emoji_listRequest.default };
 const $admin_emoji_removeAliasesBulk: Provider = { provide: 'ep:admin/emoji/remove-aliases-bulk', useClass: ep___admin_emoji_removeAliasesBulk.default };
 const $admin_emoji_setAliasesBulk: Provider = { provide: 'ep:admin/emoji/set-aliases-bulk', useClass: ep___admin_emoji_setAliasesBulk.default };
 const $admin_emoji_setCategoryBulk: Provider = { provide: 'ep:admin/emoji/set-category-bulk', useClass: ep___admin_emoji_setCategoryBulk.default };
 const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-license-bulk', useClass: ep___admin_emoji_setLicenseBulk.default };
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
+const $admin_emoji_updateRequest: Provider = { provide: 'ep:admin/emoji/update-request', useClass: ep___admin_emoji_updateRequest.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
 const $admin_federation_removeAllFollowing: Provider = { provide: 'ep:admin/federation/remove-all-following', useClass: ep___admin_federation_removeAllFollowing.default };
@@ -615,6 +635,7 @@ const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep_
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
 const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
+const $i_userstats: Provider = { provide: 'ep:i/stats', useClass: ep___users_user_stats.default };
 const $i_notificationsGrouped: Provider = { provide: 'ep:i/notifications-grouped', useClass: ep___i_notificationsGrouped.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
@@ -647,6 +668,7 @@ const $invite_list: Provider = { provide: 'ep:invite/list', useClass: ep___invit
 const $invite_limit: Provider = { provide: 'ep:invite/limit', useClass: ep___invite_limit.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
+const $emoji_requests: Provider = { provide: 'ep:emoji-requests', useClass: ep___emojiRequests.default };
 const $emoji: Provider = { provide: 'ep:emoji', useClass: ep___emoji.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
@@ -661,13 +683,17 @@ const $notes_children: Provider = { provide: 'ep:notes/children', useClass: ep__
 const $notes_clips: Provider = { provide: 'ep:notes/clips', useClass: ep___notes_clips.default };
 const $notes_conversation: Provider = { provide: 'ep:notes/conversation', useClass: ep___notes_conversation.default };
 const $notes_create: Provider = { provide: 'ep:notes/create', useClass: ep___notes_create.default };
+const $notes_schedule_delete: Provider = { provide: 'ep:notes/schedule/delete', useClass: ep___notes_schedule_delete.default };
+const $notes_schedule_list: Provider = { provide: 'ep:notes/schedule/list', useClass: ep___notes_schedule_list.default };
 const $notes_delete: Provider = { provide: 'ep:notes/delete', useClass: ep___notes_delete.default };
+const $notes_update: Provider = { provide: 'ep:notes/update', useClass: ep___notes_update.default };
 const $notes_favorites_create: Provider = { provide: 'ep:notes/favorites/create', useClass: ep___notes_favorites_create.default };
 const $notes_favorites_delete: Provider = { provide: 'ep:notes/favorites/delete', useClass: ep___notes_favorites_delete.default };
 const $notes_featured: Provider = { provide: 'ep:notes/featured', useClass: ep___notes_featured.default };
 const $notes_globalTimeline: Provider = { provide: 'ep:notes/global-timeline', useClass: ep___notes_globalTimeline.default };
 const $notes_hybridTimeline: Provider = { provide: 'ep:notes/hybrid-timeline', useClass: ep___notes_hybridTimeline.default };
 const $notes_localTimeline: Provider = { provide: 'ep:notes/local-timeline', useClass: ep___notes_localTimeline.default };
+const $notes_anyLocalTimeline: Provider = { provide: 'ep:notes/any-local-timeline', useClass: ep___notes_anyLocalTimeline.default };
 const $notes_mentions: Provider = { provide: 'ep:notes/mentions', useClass: ep___notes_mentions.default };
 const $notes_polls_recommendation: Provider = { provide: 'ep:notes/polls/recommendation', useClass: ep___notes_polls_recommendation.default };
 const $notes_polls_vote: Provider = { provide: 'ep:notes/polls/vote', useClass: ep___notes_polls_vote.default };
@@ -735,6 +761,7 @@ const $users_featuredNotes: Provider = { provide: 'ep:users/featured-notes', use
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
 const $users_lists_delete: Provider = { provide: 'ep:users/lists/delete', useClass: ep___users_lists_delete.default };
 const $users_lists_list: Provider = { provide: 'ep:users/lists/list', useClass: ep___users_lists_list.default };
+const $users_lists_list_favorite: Provider = { provide: 'ep:users/lists/list-favorite', useClass: ep___users_lists_list_favorite.default };
 const $users_lists_pull: Provider = { provide: 'ep:users/lists/pull', useClass: ep___users_lists_pull.default };
 const $users_lists_push: Provider = { provide: 'ep:users/lists/push', useClass: ep___users_lists_push.default };
 const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: ep___users_lists_show.default };
@@ -786,6 +813,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_accounts_create,
 		$admin_accounts_delete,
 		$admin_accounts_findByEmail,
+		$admin_accounts_present_points,
 		$admin_ad_create,
 		$admin_ad_delete,
 		$admin_ad_list,
@@ -800,24 +828,30 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_avatarDecorations_update,
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
+		$emoji_speedtest,
 		$admin_unsetUserBanner,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
 		$admin_drive_files,
 		$admin_drive_showFile,
 		$admin_emoji_addAliasesBulk,
+		$admin_emoji_setlocalOnlyBulk,
+		$admin_emoji_setisSensitiveBulk,
 		$admin_emoji_add,
+		$admin_emoji_addRequest,
 		$admin_emoji_copy,
 		$admin_emoji_deleteBulk,
 		$admin_emoji_delete,
 		$admin_emoji_importZip,
 		$admin_emoji_listRemote,
 		$admin_emoji_list,
+		$admin_emoji_listRequest,
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
+		$admin_emoji_updateRequest,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
@@ -890,6 +924,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+		$i_userstats,
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
@@ -1034,6 +1069,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$invite_limit,
 		$meta,
 		$emojis,
+		$emoji_requests,
 		$emoji,
 		$miauth_genToken,
 		$mute_create,
@@ -1048,13 +1084,17 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_clips,
 		$notes_conversation,
 		$notes_create,
+		$notes_schedule_delete,
+		$notes_schedule_list,
 		$notes_delete,
+		$notes_update,
 		$notes_favorites_create,
 		$notes_favorites_delete,
 		$notes_featured,
 		$notes_globalTimeline,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
+		$notes_anyLocalTimeline,
 		$notes_mentions,
 		$notes_polls_recommendation,
 		$notes_polls_vote,
@@ -1122,6 +1162,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
+		$users_lists_list_favorite,
 		$users_lists_pull,
 		$users_lists_push,
 		$users_lists_show,
@@ -1167,6 +1208,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_accounts_create,
 		$admin_accounts_delete,
 		$admin_accounts_findByEmail,
+		$admin_accounts_present_points,
 		$admin_ad_create,
 		$admin_ad_delete,
 		$admin_ad_list,
@@ -1182,24 +1224,31 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
 		$admin_unsetUserBanner,
+		$emoji_speedtest,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
 		$admin_drive_files,
 		$admin_drive_showFile,
 		$admin_emoji_addAliasesBulk,
 		$admin_emoji_add,
+		$admin_emoji_addRequest,
 		$admin_emoji_copy,
 		$admin_emoji_deleteBulk,
 		$admin_emoji_delete,
 		$admin_emoji_importZip,
 		$admin_emoji_listRemote,
 		$admin_emoji_list,
+		$admin_emoji_listRequest,
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
+		$admin_emoji_setlocalOnlyBulk,
+		$admin_emoji_setisSensitiveBulk,
 		$admin_emoji_update,
+		$admin_emoji_updateRequest,
 		$admin_federation_deleteAllFiles,
+		$i_userstats,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
 		$admin_federation_updateInstance,
@@ -1415,6 +1464,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$invite_limit,
 		$meta,
 		$emojis,
+		$emoji_requests,
 		$emoji,
 		$miauth_genToken,
 		$mute_create,
@@ -1429,13 +1479,17 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_clips,
 		$notes_conversation,
 		$notes_create,
+		$notes_schedule_delete,
+		$notes_schedule_list,
 		$notes_delete,
+		$notes_update,
 		$notes_favorites_create,
 		$notes_favorites_delete,
 		$notes_featured,
 		$notes_globalTimeline,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
+		$notes_anyLocalTimeline,
 		$notes_mentions,
 		$notes_polls_recommendation,
 		$notes_polls_vote,
@@ -1501,6 +1555,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
+		$users_lists_list_favorite,
 		$users_lists_pull,
 		$users_lists_push,
 		$users_lists_show,

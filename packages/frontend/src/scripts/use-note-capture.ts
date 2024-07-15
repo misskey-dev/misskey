@@ -39,6 +39,13 @@ export function useNoteCapture(props: {
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = reaction;
+					console.log(note.value.myReactions);
+					if (!note.value.myReactions) {
+						note.value.myReactions = [];
+						note.value.myReactions.push(reaction);
+					} else if (!note.value.myReactions.includes(reaction)) {
+						note.value.myReactions.push(reaction);
+					}
 				}
 				break;
 			}
@@ -55,6 +62,7 @@ export function useNoteCapture(props: {
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = null;
+					note.value.myReactions = note.value.myReactions.filter(r => r !== reaction);
 				}
 				break;
 			}
@@ -72,6 +80,13 @@ export function useNoteCapture(props: {
 				};
 
 				note.value.poll.choices = choices;
+				break;
+			}
+
+			case 'updated': {
+				note.value.updatedAt = new Date().toISOString();
+				note.value.cw = body.cw;
+				note.value.text = body.text;
 				break;
 			}
 

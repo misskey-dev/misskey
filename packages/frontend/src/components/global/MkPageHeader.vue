@@ -8,10 +8,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
 			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
-		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft"/>
+		<div v-else-if="!thin_ && narrow && !hideTitle"/>
 
 		<template v-if="pageMetadata">
-			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
+			<div v-if="!hideTitle && !hide" :class="$style.titleContainer" @click="top">
 				<div v-if="pageMetadata.avatar" :class="$style.titleAvatarContainer">
 					<MkAvatar :class="$style.titleAvatar" :user="pageMetadata.avatar" indicator/>
 				</div>
@@ -55,6 +55,7 @@ const props = withDefaults(defineProps<{
 	actions?: PageHeaderItem[] | null;
 	thin?: boolean;
 	displayMyAvatar?: boolean;
+    hide?:boolean;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -142,14 +143,14 @@ onUnmounted(() => {
 }
 
 .upper {
-	--height: 50px;
+	--height: 55px;
 	display: flex;
 	gap: var(--margin);
 	height: var(--height);
 
 	.tabs:first-child {
-		margin-left: auto;
 		padding: 0 12px;
+		width: 100%;
 	}
 	.tabs {
 		margin-right: auto;
@@ -166,14 +167,16 @@ onUnmounted(() => {
 	}
 
 	&.slim {
+		width: 100%;
 		text-align: center;
 		gap: 0;
-
+        .buttonsRight {
+          margin-left: auto;
+        }
 		.tabs:first-child {
 			margin-left: 0;
 		}
 		> .titleContainer {
-			margin: 0 auto;
 			max-width: 100%;
 		}
 	}

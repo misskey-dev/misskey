@@ -132,13 +132,10 @@ export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): Men
 		icon: 'ti ti-exclamation-circle',
 		text,
 		action: (): void => {
-			const localUrl = `${url}/notes/${note.id}`;
-			let noteInfo = '';
-			if (note.url ?? note.uri != null) noteInfo = `Note: ${note.url ?? note.uri}\n`;
-			noteInfo += `Local Note: ${localUrl}\n`;
+			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
 			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 				user: note.user,
-				initialComment: `${noteInfo}-----\n`,
+				initialNoteId: note.id,
 			}, {}, 'closed');
 		},
 	};
@@ -207,6 +204,10 @@ export function getNoteMenu(props: {
 				claimAchievement('noteDeletedWithin1min');
 			}
 		});
+	}
+
+	function edit(): void {
+		os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel, updateMode: true });
 	}
 
 	function toggleFavorite(favorite: boolean): void {
@@ -425,6 +426,11 @@ export function getNoteMenu(props: {
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				{ type: 'divider' },
+				appearNote.userId === $i.id && $i.policies.canEditNote ? {
+					icon: 'ti ti-edit',
+					text: i18n.ts.edit,
+					action: edit,
+				} : undefined,
 				appearNote.userId === $i.id ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,

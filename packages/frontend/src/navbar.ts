@@ -147,6 +147,13 @@ export const navbarItemDef = reactive({
 					miLocalStorage.setItem('ui', 'classic');
 					unisonReload();
 				},
+			}, {
+				text: 'twilike',
+				active: ui === 'twilike',
+				action: () => {
+					miLocalStorage.setItem('ui', 'twilike');
+					unisonReload();
+				},
 			}], ev.currentTarget ?? ev.target);
 		},
 	},
@@ -176,6 +183,14 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-user',
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
+	},
+	scheduledNotes: {
+		title: i18n.ts._schedulePost.list,
+		icon: 'ti ti-calendar-event',
+		show: computed(() => $i && $i.policies?.canScheduleNote),
+		action: (ev) => {
+			os.listSchedulePost();
+		},
 	},
 	cacheClear: {
 		title: i18n.ts.clearCache,

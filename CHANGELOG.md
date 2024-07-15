@@ -16,19 +16,7 @@
 ### Server
 - チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
-- Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
-- Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
-- Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
-- Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
-- Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
-- Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
-- Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
-- Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
-- Fix: FTT有効時、タイムライン用エンドポイントで`sinceId`にキャッシュ内最古のものより古いものを指定した場合に正しく結果が返ってこない問題を修正
-- Fix: 自分以外のクリップ内のノート個数が見えることがあるのを修正
-- Fix: 空文字列のリアクションはフォールバックされるように
-- Fix: リノートにリアクションできないように
 
 ## 2024.5.0
 

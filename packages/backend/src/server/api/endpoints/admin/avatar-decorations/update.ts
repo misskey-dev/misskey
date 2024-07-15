@@ -30,6 +30,7 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
 			type: 'string',
 		} },
+		category: { type: 'string', nullable: true },
 	},
 	required: ['id'],
 } as const;
@@ -45,6 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				description: ps.description,
 				url: ps.url,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
+				category: ps.category ?? '',
 			}, me);
 		});
 	}

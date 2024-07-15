@@ -4,10 +4,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <header :class="$style.root">
-	<div v-if="mock" :class="$style.name">
-		<MkUserName :user="note.user"/>
-	</div>
-	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -16,12 +13,14 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
 	<div :class="$style.info">
-		<div v-if="mock">
-			<MkTime :time="note.createdAt" colored/>
-		</div>
+        <span v-if="note.updatedAt" style="margin-right: 0.5em;" :title="i18n.ts.edited"><i class="ti ti-pencil"></i></span>
+        <div v-if="mock">
+            <MkTime :time="note.createdAt" colored/>
+        </div>
+        <MkTime v-else-if="note.isSchedule" mode="absolute" :time="note.createdAt" colored/>
 		<MkA v-else :to="notePage(note)">
-			<MkTime :time="note.createdAt" colored/>
-		</MkA>
+            <MkTime :time="note.createdAt" colored/>
+        </MkA>
 		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
@@ -34,17 +33,16 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import {inject} from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
-
-defineProps<{
-	note: Misskey.entities.Note;
-}>();
-
 const mock = inject<boolean>('mock', false);
+defineProps<{
+	note: Misskey.entities.Note & {isSchedule? : boolean};
+  scheduled?: boolean;
+}>();
 </script>
 
 <style lang="scss" module>

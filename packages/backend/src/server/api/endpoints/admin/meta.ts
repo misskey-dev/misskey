@@ -457,6 +457,25 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			enableGDPRMode: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			DiscordWebhookUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},			DiscordWebhookUrlWordBlock: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableProxyCheckio: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			proxyCheckioApiKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			urlPreviewEnabled: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -481,6 +500,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			iconLight: { type: 'string', nullable: true },
+			iconDark: { type: 'string', nullable: true },
+			bannerLight: { type: 'string', nullable: true },
+			bannerDark: { type: 'string', nullable: true },
 		},
 	},
 } as const;
@@ -531,6 +554,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				turnstileSiteKey: instance.turnstileSiteKey,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
+				requestEmojiAllOk: instance.requestEmojiAllOk,
 				mascotImageUrl: instance.mascotImageUrl,
 				bannerUrl: instance.bannerUrl,
 				serverErrorImageUrl: instance.serverErrorImageUrl,
@@ -607,6 +631,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				notesPerOneAd: instance.notesPerOneAd,
+				DiscordWebhookUrl: instance.DiscordWebhookUrl,
+				DiscordWebhookUrlWordBlock: instance.DiscordWebhookUrlWordBlock,
+				EmojiBotToken: instance.EmojiBotToken,
+				ApiBase: instance.ApiBase,
+				enableGDPRMode: instance.enableGDPRMode,
+				enableProxyCheckio: instance.enableProxyCheckio,
+				proxyCheckioApiKey: instance.proxyCheckioApiKey,
 				summalyProxy: instance.urlPreviewSummaryProxyUrl,
 				urlPreviewEnabled: instance.urlPreviewEnabled,
 				urlPreviewTimeout: instance.urlPreviewTimeout,
@@ -614,6 +645,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
 				urlPreviewUserAgent: instance.urlPreviewUserAgent,
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
+				iconLight: instance.iconLight,
+				iconDark: instance.iconDark,
+				bannerLight: instance.bannerLight,
+				bannerDark: instance.bannerDark,
 			};
 		});
 	}

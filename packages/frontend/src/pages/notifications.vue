@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs" :hide="true" :actions="headerActions"/></template>
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'all'" key="all">
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
@@ -31,6 +31,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { notificationTypes } from '@/const.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
@@ -67,18 +68,12 @@ function setFilter(ev) {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-const headerActions = computed(() => [tab.value === 'all' ? {
+const headerActions = computed(() => [{
 	text: i18n.ts.filter,
 	icon: 'ti ti-filter',
 	highlighted: includeTypes.value != null,
 	handler: setFilter,
-} : undefined, tab.value === 'all' ? {
-	text: i18n.ts.markAllAsRead,
-	icon: 'ti ti-check',
-	handler: () => {
-		os.apiWithDialog('notifications/mark-all-as-read');
-	},
-} : undefined].filter(x => x !== undefined));
+}].filter(x => x !== undefined));
 
 const headerTabs = computed(() => [{
 	key: 'all',
@@ -98,6 +93,9 @@ definePageMetadata(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
 }));
+onMounted(() => {
+	misskeyApi('notifications/mark-all-as-read');
+});
 </script>
 
 <style module lang="scss">

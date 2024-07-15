@@ -51,6 +51,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		publicAll: { type: 'boolean', nullable: false },
 	},
 	required: [],
 } as const;
@@ -67,22 +68,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListEntityService: UserListEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (typeof ps.userId !== 'undefined') {
-				const user = await this.usersRepository.findOneBy({ id: ps.userId });
-				if (user === null) throw new ApiError(meta.errors.noSuchUser);
-				if (user.host !== null) throw new ApiError(meta.errors.remoteUser);
-			} else if (me === null) {
-				throw new ApiError(meta.errors.invalidParam);
+			if (!ps.publicAll ) {
+				if (typeof ps.userId !== 'undefined') {
+					const user = await this.usersRepository.findOneBy({ id: ps.userId });
+					if (user === null) throw new ApiError(meta.errors.noSuchUser);
+					if (user.host !== null) throw new ApiError(meta.errors.remoteUser);
+				} else if (me === null) {
+					throw new ApiError(meta.errors.invalidParam);
+				}
+
+				const userLists = await this.userListsRepository.findBy(typeof ps.userId === 'undefined' && me !== null ? {
+					userId: me.id,
+				} : {
+					userId: ps.userId,
+					isPublic: true,
+				});
+
+				return await Promise.all(userLists.map(x => this.userListEntityService.pack(x)));
+			} else {
+				const userLists = await this.userListsRepository.findBy({
+					isPublic: true,
+				});
+				return await Promise.all(userLists.map(x => this.userListEntityService.pack(x)));
 			}
-
-			const userLists = await this.userListsRepository.findBy(typeof ps.userId === 'undefined' && me !== null ? {
-				userId: me.id,
-			} : {
-				userId: ps.userId,
-				isPublic: true,
-			});
-
-			return await Promise.all(userLists.map(x => this.userListEntityService.pack(x)));
 		});
 	}
 }

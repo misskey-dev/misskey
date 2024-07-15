@@ -173,6 +173,7 @@ export const paramDef = {
 		preventAiLearning: { type: 'boolean' },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
+		isGorilla: { type: 'boolean' },
 		injectFeaturedNote: { type: 'boolean' },
 		receiveAnnouncementEmail: { type: 'boolean' },
 		alwaysMarkNsfw: { type: 'boolean' },
@@ -311,7 +312,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
-			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
+			if (typeof ps.isCat === 'boolean' && !ps.isGorilla) {
+				updates.isCat = ps.isCat;
+			}
+			if (typeof ps.isGorilla === 'boolean' && !ps.isCat) {
+				updates.isGorilla = ps.isGorilla;
+			}
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 			if (typeof ps.alwaysMarkNsfw === 'boolean') {
@@ -356,11 +362,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const [myRoles, myPolicies] = await Promise.all([this.roleService.getUserRoles(user.id), this.roleService.getUserPolicies(user.id)]);
 				const allRoles = await this.roleService.getRoles();
 				const decorationIds = decorations
-					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
+					.filter(d => (d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id))))
 					.map(d => d.id);
 
 				if (ps.avatarDecorations.length > myPolicies.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
-
 				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
 					id: d.id,
 					angle: d.angle ?? 0,
@@ -427,7 +432,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const newName = updates.name === undefined ? user.name : updates.name;
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
-			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
+			const newFields = profileUpdates.fields ?? profile.fields;
 
 			if (newName != null) {
 				const tokens = mfm.parseSimple(newName);
@@ -455,10 +460,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// ハッシュタグ更新
 			this.hashtagService.updateUsertags(user, tags);
 			//#endregion
-
 			if (Object.keys(updates).length > 0) {
 				await this.usersRepository.update(user.id, updates);
-				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
+				//this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
 			await this.userProfilesRepository.update(user.id, {
@@ -473,24 +477,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const updatedProfile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-			this.cacheService.userProfileCache.set(user.id, updatedProfile);
+			await this.cacheService.userProfileCache.set(user.id, updatedProfile);
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {
-				this.userFollowingService.acceptAllFollowRequests(user);
+				await this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
 			// フォロワーにUpdateを配信
-			this.accountUpdateService.publishToFollowers(user.id);
+			await this.accountUpdateService.publishToFollowers(user.id);
 
 			const urls = updatedProfile.fields.filter(x => x.value.startsWith('https://'));
 			for (const url of urls) {
-				this.verifyLink(url.value, user);
+				await this.verifyLink(url.value, user);
 			}
-
 			return iObj;
 		});
 	}

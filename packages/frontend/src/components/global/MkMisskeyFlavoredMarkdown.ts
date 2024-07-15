@@ -6,20 +6,24 @@
 import { VNode, h, SetupContext, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { ID, Instance } from 'misskey-js/built/entities.js';
 import MkUrl from '@/components/global/MkUrl.vue';
 import MkTime from '@/components/global/MkTime.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmojiKitchen from '@/components/global/MkEmojiKitchen.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
-import { host } from '@/config.js';
-import { defaultStore } from '@/store.js';
+import { host } from '@/config';
+import { defaultStore } from '@/store';
+import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
+import { uhoize as doUhoize } from '@/scripts/uhoize.js';
 import { safeParseFloat } from '@/scripts/safe-parse.js';
 
 const QUOTE_STYLE = `
@@ -35,11 +39,42 @@ type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
-	author?: Misskey.entities.UserLite;
+	emojireq?: boolean;
+	author?: {
+		id: ID;
+		username: string;
+		host: string | null;
+		name: string | null;
+		onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
+		avatarUrl: string;
+		avatarBlurhash: string;
+		avatarDecorations: {
+			id: ID;
+			url: string;
+			angle?: number;
+			flipH?: boolean;
+		}[];
+		emojis: {
+			name: string;
+			url: string;
+		}[];
+		instance?: {
+			name: Instance['name'];
+			softwareName: Instance['softwareName'];
+			softwareVersion: Instance['softwareVersion'];
+			iconUrl: Instance['iconUrl'];
+			faviconUrl: Instance['faviconUrl'];
+			themeColor: Instance['themeColor'];
+		};
+		isGorilla?: boolean;
+		isCat?: boolean;
+		isBot?: boolean;};
+	i?: Misskey.entities.UserLite | null;
 	isNote?: boolean;
 	emojiUrls?: Record<string, string>;
 	rootScale?: number;
 	nyaize?: boolean | 'respect';
+	uhoize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
@@ -56,14 +91,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
-
+	const shouldUhoize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isGorilla : false : false;
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
 	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
 	const validTime = (t: string | boolean | null | undefined) => {
-		if (t == null) return null;
+		if (t == null || typeof t === 'boolean') return null;
 		if (typeof t === 'boolean') return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
@@ -80,15 +115,18 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
 	 * @param disableNyaize Whether nyaize is disabled or not
+	 * @param disableUhoize
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false, disableUhoize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 				if (!disableNyaize && shouldNyaize) {
 					text = doNyaize(text);
 				}
-
+				if (!disableUhoize && shouldUhoize) {
+					text = doUhoize(text);
+				}
 				if (!props.plain) {
 					const res: (VNode | string)[] = [];
 					for (const t of text.split('\n')) {
@@ -206,19 +244,16 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
 					case 'blur': {
+						const radius = parseFloat(token.props.args.rad ?? '6');
 						return h('span', {
 							class: '_mfm_blur_',
+							style: `--blur-px: ${radius}px;`,
 						}, genEl(token.children, scale));
 					}
 					case 'rainbow': {
-						if (!useAnim) {
-							return h('span', {
-								class: '_mfm_rainbow_fallback_',
-							}, genEl(token.children, scale));
-						}
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = `animation: mfm-rainbow ${speed} linear infinite; animation-delay: ${delay};`;
+						style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'sparkle': {
@@ -229,7 +264,23 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					}
 					case 'rotate': {
 						const degrees = safeParseFloat(token.props.args.deg) ?? 90;
-						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+						let rotateText = `rotate(${degrees}deg)`;
+						if (!token.props.args.deg && (token.props.args.x || token.props.args.y || token.props.args.z)) {
+							rotateText = '';
+						}
+						if (token.props.args.x) {
+							const degrees = parseFloat(token.props.args.x ?? '0');
+							rotateText += ` rotateX(${degrees}deg)`;
+						}
+						if (token.props.args.y) {
+							const degrees = parseFloat(token.props.args.y ?? '0');
+							rotateText += ` rotateY(${degrees}deg)`;
+						}
+						if (token.props.args.z) {
+							const degrees = parseFloat(token.props.args.z ?? '0');
+							rotateText += ` rotateZ(${degrees}deg)`;
+						}
+						style = `transform: ${rotateText}; transform-origin: center center;`;
 						break;
 					}
 					case 'position': {
@@ -292,6 +343,29 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							}
 							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
+					}
+					case 'mix': {
+						const ch = token.children;
+						if (ch.length != 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
+							style = null;
+							break;
+						}
+
+						const emoji1 = ch[0].props.emoji;
+						const emoji2 = ch[1].props.emoji;
+
+						const mixedEmojiUrl = mixEmoji(emoji1, emoji2);
+						if (!mixedEmojiUrl) {
+							style = null;
+							break;
+						}
+
+						return h(MkEmojiKitchen, {
+							key: Math.random(),
+							name: emoji1 + emoji2,
+							normal: props.plain,
+							url: mixedEmojiUrl,
+						});
 					}
 					case 'unixtime': {
 						const child = token.children[0];
@@ -401,7 +475,8 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'emojiCode': {
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (props.author?.host == null) {
+				console.log('emojiCode', props.emojireq);
+				if (props.author?.host == null && !props.emojireq ) {
 					return [h(MkCustomEmoji, {
 						key: Math.random(),
 						name: token.props.name,
@@ -422,7 +497,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							name: token.props.name,
 							url: props.emojiUrls && props.emojiUrls[token.props.name],
 							normal: props.plain,
-							host: props.author.host,
+							host: props.author.host ? props.author.host : null,
 							useOriginalSize: scale >= 2.5,
 						})];
 					}

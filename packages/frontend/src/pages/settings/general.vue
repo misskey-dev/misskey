@@ -36,17 +36,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+			<MkSwitch v-model="alwaysShowPlayer">Youtube.comや、nicovideo.jpのプレイヤーを全て開いた状態にする</MkSwitch>
+			<MkSwitch v-model="alwaysExpandTweet">Xのポストを常時表示させる</MkSwitch>
+			<MkSelect v-model="draftSavingBehavior">
+				<template #label>{{ i18n.ts.draftSavingBehavior }}<span class="_beta">{{ i18n.ts.kakuregaFeature }}</span></template>
+				<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
+				<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
+			</MkSelect>
+			<MkSwitch v-model="disableNoteDrafting">
+				<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
+				{{ i18n.ts.disableNoteDrafting }}
+				<span class="_beta">{{ i18n.ts.kakuregaFeature }}</span>
+			</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
-				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
-				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
-				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value" class="_margin">
+					{{ pinnedLists.name }}
+					<MkButton danger @click="removePinnedList(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				</div>
+				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedUserLists.value.length " @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
 			</MkFolder>
+			<MkFolder>
+				<template #label>{{ i18n.ts.pinnedChannel }}</template>
+				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedChannels.value" class="_margin">
+					{{ pinnedLists.name }}
+					<MkButton danger @click="removePinnedChannel(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				</div>
+				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedChannels.value.length " @click="setPinnedChannel()">{{ i18n.ts.add }}</MkButton>
+				<MkButton v-if="defaultStore.reactiveState.pinnedChannels.value.length " danger @click="removePinnedChannel('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
+			</MkFolder>
+			<MkFoldableSection :expanded="false" class="item">
+				<template #header>{{ i18n.ts.topbarCustom }}</template>
+
+				{{ i18n.ts._timelines.home }}
+				<MkSwitch v-model="showHomeTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.local }}
+				<MkSwitch v-model="showLocalTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.social }}
+				<MkSwitch v-model="showSocialTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.media }}
+				<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.global }}
+				<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts.topBarNameShown }}
+				<MkSwitch v-model="topBarNameShown">{{ i18n.ts.enable }}</MkSwitch>
+			</MkFoldableSection>
 		</div>
 	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.displayOfNote }}</template>
+	<MkFoldableSection :expanded="false" class="item">
+		<template #header>{{ i18n.ts.displayOfNote }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -56,6 +100,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
+				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
+				<MkSwitch v-model="showVisibilityColor">{{ i18n.ts.showVisibilityColor }}</MkSwitch>
+				<MkColorInput v-if="showVisibilityColor" v-model="homeColor">
+					<template #label>{{ i18n.ts._visibility.home }}</template>
+				</MkColorInput>
+				<MkColorInput v-if="showVisibilityColor" v-model="followerColor">
+					<template #label>{{ i18n.ts._visibility.followers }}</template>
+				</MkColorInput>
+				<MkColorInput v-if="showVisibilityColor" v-model="specifiedColor">
+					<template #label>{{ i18n.ts._visibility.specified }}</template>
+				</MkColorInput>
+				<MkColorInput v-if="showVisibilityColor" v-model="localOnlyColor">
+					<template #label>{{ i18n.ts.localOnly }}</template>
+				</MkColorInput>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
@@ -93,10 +151,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 			</MkRadios>
 		</div>
-	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.notificationDisplay }}</template>
+	</MkFoldableSection>
+	<MkFoldableSection :expanded="false" class="item">
+		<template #header>{{ i18n.ts.notificationDisplay }}</template>
 
 		<div class="_gaps_m">
 			<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
@@ -117,11 +174,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 		</div>
-	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.appearance }}</template>
-
+	</MkFoldableSection>
+	<MkFoldableSection :expanded="false" class="item">
+		<template #header>{{ i18n.ts.appearance }}</template>
 		<div class="_gaps_m">
 			<div class="_gaps_s">
 				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
@@ -134,6 +189,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
+				<MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave }}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
+				<MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
 				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
 				<MkSwitch v-model="useNativeUIForVideoAudioPlayer">{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</MkSwitch>
 			</div>
@@ -155,10 +213,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
 			</MkRadios>
 		</div>
-	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.behavior }}</template>
+	</MkFoldableSection>
+	<MkFoldableSection :expanded="false" class="item">
+		<template #header>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -180,7 +237,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 			</MkRange>
-
+			<MkRange v-model="numberOfGamingSpeed" :min="1" :max="60" :step="1" easing>
+				<template #label>{{ i18n.ts.GamingSpeedChange }}</template>
+				<template #caption>{{ i18n.ts.GamingSpeedChangeInfo }}</template>
+			</MkRange>
 			<MkFolder>
 				<template #label>{{ i18n.ts.dataSaver }}</template>
 
@@ -212,8 +272,94 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</div>
-	</FormSection>
+	</MkFoldableSection>
+	<MkFoldableSection :expanded="false">
+		<template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
+		<div class="_gaps_m">
+			<div v-if="maxLocalTimeline >= 1">
+				<MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain1" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken1" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable1">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
+			<div v-if="maxLocalTimeline >= 2">
+				<MkInput v-model="remoteLocalTimelineName2" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain2" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken2" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable2">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
 
+			<div v-if="maxLocalTimeline >= 3">
+				<MkInput v-model="remoteLocalTimelineName3" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain3" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken3" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable3">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
+
+			<div v-if="maxLocalTimeline >= 4">
+				<MkInput v-model="remoteLocalTimelineName4" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain4" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken4" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable4">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
+
+			<div v-if="maxLocalTimeline >= 5">
+				<MkInput v-model="remoteLocalTimelineName5" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain5" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken5" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable5">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
+
+			<MkButton @click="remoteLocaltimelineSave">
+				{{ i18n.ts.save }}
+			</MkButton>
+		</div>
+	</MkFoldableSection>
 	<FormSection>
 		<template #label>{{ i18n.ts.other }}</template>
 
@@ -250,13 +396,17 @@ import MkInfo from '@/components/MkInfo.vue';
 import { langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { signinRequired } from '@/account.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import MkColorInput from '@/components/MkColorInput.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInput from '@/components/MkInput.vue';
+import { userChannelFollowingsCache, userChannelsCache, userFavoriteListsCache, userListsCache } from '@/cache.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -299,7 +449,17 @@ const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
+const alwaysShowPlayer = computed(defaultStore.makeGetterSetter('alwaysShowPlayer'));
+
+const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
+const draftSavingBehavior = computed(defaultStore.makeGetterSetter('draftSavingBehavior'));
+const alwaysExpandTweet = computed(defaultStore.makeGetterSetter('alwaysExpandTweet'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
+const numberOfGamingSpeed = computed(defaultStore.makeGetterSetter('numberOfGamingSpeed'));
+const homeColor = computed(defaultStore.makeGetterSetter('homeColor'));
+const followerColor = computed(defaultStore.makeGetterSetter('followerColor'));
+const specifiedColor = computed(defaultStore.makeGetterSetter('specifiedColor'));
+const localOnlyColor = computed(defaultStore.makeGetterSetter('localOnlyColor'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
@@ -309,19 +469,77 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
+const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const enableonlyAndWithSave = computed(defaultStore.makeGetterSetter('onlyAndWithSave'));
+const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
+const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
+const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTimeline'));
+const showLocalTimeline = computed(defaultStore.makeGetterSetter('showLocalTimeline'));
+const showHomeTimeline = computed(defaultStore.makeGetterSetter('showHomeTimeline'));
+const showSocialTimeline = computed(defaultStore.makeGetterSetter('showSocialTimeline'));
+const topBarNameShown = computed(defaultStore.makeGetterSetter('topBarNameShown'));
+const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
 const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
+const remoteLocalTimelineDomain1 = ref(defaultStore.state['remoteLocalTimelineDomain1']);
+const remoteLocalTimelineToken1 = ref(defaultStore.state['remoteLocalTimelineToken1']);
+const remoteLocalTimelineDomain2 = ref(defaultStore.state['remoteLocalTimelineDomain2']);
+const remoteLocalTimelineToken2 = ref(defaultStore.state['remoteLocalTimelineToken2']);
+const remoteLocalTimelineDomain3 = ref(defaultStore.state['remoteLocalTimelineDomain3']);
+const remoteLocalTimelineToken3 = ref(defaultStore.state['remoteLocalTimelineToken3']);
+const remoteLocalTimelineDomain4 = ref(defaultStore.state['remoteLocalTimelineDomain4']);
+const remoteLocalTimelineToken4 = ref(defaultStore.state['remoteLocalTimelineToken4']);
+const remoteLocalTimelineDomain5 = ref(defaultStore.state['remoteLocalTimelineDomain5']);
+const remoteLocalTimelineToken5 = ref(defaultStore.state['remoteLocalTimelineToken5']);
+const remoteLocalTimelineName1 = ref(defaultStore.state['remoteLocalTimelineName1']);
+const remoteLocalTimelineName2 = ref(defaultStore.state['remoteLocalTimelineName2']);
+const remoteLocalTimelineName3 = ref(defaultStore.state['remoteLocalTimelineName3']);
+const remoteLocalTimelineName4 = ref(defaultStore.state['remoteLocalTimelineName4']);
+const remoteLocalTimelineName5 = ref(defaultStore.state['remoteLocalTimelineName5']);
 const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
 const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
 
+const remoteLocalTimelineEnable1 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable1'));
+const remoteLocalTimelineEnable2 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable2'));
+const remoteLocalTimelineEnable3 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable3'));
+const remoteLocalTimelineEnable4 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable4'));
+const remoteLocalTimelineEnable5 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable5'));
+const $i = signinRequired();
+const pinnedMax = $i.policies.listPinnedLimit;
+const maxLocalTimeline = $i.policies.localTimelineAnyLimit;
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
 	miLocalStorage.removeItem('localeVersion');
 });
 
+document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value + 's');
+
+function hexToRgb(hex) {
+	// 16進数のカラーコードから "#" を除去
+	hex = hex.replace(/^#/, '');
+
+	// 16進数をRGBに変換
+	const r = parseInt(hex.substring(0, 2), 16);
+	const g = parseInt(hex.substring(2, 4), 16);
+	const b = parseInt(hex.substring(4, 6), 16);
+
+	return `${r},${g},${b}`;
+}
+
+document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
+document.documentElement.style.setProperty('--followerColor', hexToRgb(followerColor.value));
+document.documentElement.style.setProperty('--specifiedColor', hexToRgb(specifiedColor.value));
+watch([homeColor, specifiedColor, followerColor], () => {
+	document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
+	document.documentElement.style.setProperty('--followerColor', hexToRgb(followerColor.value));
+	document.documentElement.style.setProperty('--specifiedColor', hexToRgb(specifiedColor.value));
+});
+watch(numberOfGamingSpeed, () => {
+	document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value + 's');
+});
 watch(fontSize, () => {
 	if (fontSize.value == null) {
 		miLocalStorage.removeItem('fontSize');
@@ -354,12 +572,45 @@ watch([
 	limitWidthOfReaction,
 	highlightSensitiveMedia,
 	keepScreenOn,
+	showMediaTimeline,
+	showVisibilityColor,
+	enableonlyAndWithSave,
+	showGlobalTimeline,
+	showSocialTimeline,
+	showLocalTimeline,
+	showHomeTimeline,
+	topBarNameShown,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
 	alwaysConfirmFollow,
+	alwaysShowPlayer,
+	alwaysExpandTweet,
 ], async () => {
 	await reloadAsk();
 });
+
+async function remoteLocaltimelineSave() {
+	os.alert({
+		type: 'success',
+		text: i18n.ts.saved,
+	});
+	defaultStore.set('remoteLocalTimelineDomain1', remoteLocalTimelineDomain1.value);
+	defaultStore.set('remoteLocalTimelineToken1', remoteLocalTimelineToken1.value);
+	defaultStore.set('remoteLocalTimelineDomain2', remoteLocalTimelineDomain2.value);
+	defaultStore.set('remoteLocalTimelineToken2', remoteLocalTimelineToken2.value);
+	defaultStore.set('remoteLocalTimelineDomain3', remoteLocalTimelineDomain3.value);
+	defaultStore.set('remoteLocalTimelineToken3', remoteLocalTimelineToken3.value);
+	defaultStore.set('remoteLocalTimelineDomain4', remoteLocalTimelineDomain4.value);
+	defaultStore.set('remoteLocalTimelineToken4', remoteLocalTimelineToken4.value);
+	defaultStore.set('remoteLocalTimelineDomain5', remoteLocalTimelineDomain5.value);
+	defaultStore.set('remoteLocalTimelineToken5', remoteLocalTimelineToken5.value);
+	defaultStore.set('remoteLocalTimelineName1', remoteLocalTimelineName1.value);
+	defaultStore.set('remoteLocalTimelineName2', remoteLocalTimelineName2.value);
+	defaultStore.set('remoteLocalTimelineName3', remoteLocalTimelineName3.value);
+	defaultStore.set('remoteLocalTimelineName4', remoteLocalTimelineName4.value);
+	defaultStore.set('remoteLocalTimelineName5', remoteLocalTimelineName5.value);
+	await reloadAsk();
+}
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 
@@ -406,7 +657,9 @@ function removeEmojiIndex(lang: string) {
 }
 
 async function setPinnedList() {
-	const lists = await misskeyApi('users/lists/list');
+	const myLists = await userListsCache.fetch();
+	const favoriteLists = await userFavoriteListsCache.fetch();
+	let lists = [...new Set([...myLists, ...favoriteLists])];
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
@@ -414,12 +667,73 @@ async function setPinnedList() {
 		})),
 	});
 	if (canceled) return;
+	let pinnedLists = defaultStore.state.pinnedUserLists;
 
-	defaultStore.set('pinnedUserLists', [list]);
+	// Check if the id is already present in pinnedLists
+	if (!pinnedLists.some(pinnedList => pinnedList.id === list.id)) {
+		pinnedLists.push(list);
+		defaultStore.set('pinnedUserLists', pinnedLists);
+	}
 }
 
-function removePinnedList() {
-	defaultStore.set('pinnedUserLists', []);
+async function removePinnedList(id, name?:string) {
+	if (!id) return;
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.removeAreYouSure({ x: name ?? id }),
+	});
+	if (canceled) return;
+
+	if (id === 'all') {
+		if (canceled) return;
+
+		defaultStore.set('pinnedUserLists', []);
+		return;
+	}
+
+	const pinnedLists = defaultStore.state.pinnedUserLists;
+	const newPinnedLists = pinnedLists.filter(pinnedList => pinnedList.id !== id);
+	defaultStore.set('pinnedUserLists', newPinnedLists);
+}
+
+async function setPinnedChannel() {
+	const myChannels = await userChannelsCache.fetch();
+	const favoriteChannels = await userChannelFollowingsCache.fetch();
+	let channels = [...new Set([...myChannels, ...favoriteChannels])];
+	const { canceled, result: channel } = await os.select({
+		title: i18n.ts.selectList,
+		items: channels.map(x => ({
+			value: x, text: x.name,
+		})),
+	});
+	if (canceled) return;
+	let pinnedChannels = defaultStore.state.pinnedChannels;
+
+	// Check if the id is already present in pinnedLists
+	if (!pinnedChannels.some(pinnedChannel => pinnedChannel.id === channel.id)) {
+		pinnedChannels.push(channel);
+		defaultStore.set('pinnedChannels', pinnedChannels);
+	}
+}
+
+async function removePinnedChannel(id, name?:string) {
+	if (!id) return;
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.removeAreYouSure({ x: name ?? id }),
+	});
+	if (canceled) return;
+
+	if (id === 'all') {
+		if (canceled) return;
+
+		defaultStore.set('pinnedChannels', []);
+		return;
+	}
+
+	const pinnedChannels = defaultStore.state.pinnedChannels;
+	const newPinnedChannels = pinnedChannels.filter(pinnedchannel => pinnedchannel.id !== id);
+	defaultStore.set('pinnedChannels', newPinnedChannels);
 }
 
 let smashCount = 0;

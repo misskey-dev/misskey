@@ -155,6 +155,14 @@ export const packedUserLiteSchema = {
 		onlineStatus: {
 			type: 'string',
 			nullable: false, optional: false,
+		isGorilla: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
+		onlineStatus: {
+			type: 'string',
+			format: 'url',
+			nullable: true, optional: false,
 			enum: ['unknown', 'online', 'active', 'offline'],
 		},
 		badgeRoles: {
@@ -180,7 +188,8 @@ export const packedUserLiteSchema = {
 			},
 		},
 	},
-} as const;
+}
+} as const
 
 export const packedUserDetailedNotMeOnlySchema = {
 	type: 'object',

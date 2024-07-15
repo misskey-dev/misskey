@@ -31,7 +31,9 @@ import type {
 	EndedPollNotificationQueue,
 	InboxQueue,
 	ObjectStorageQueue,
+	ScheduleNotePostQueue,
 	SystemQueue,
+	WebhookDeliverQueue,
 	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
 } from '@/core/QueueModule.js';
@@ -62,7 +64,6 @@ const clientAssets = `${_dirname}/../../../../frontend/assets/`;
 const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
-const tarball = `${_dirname}/../../../../../built/tarball/`;
 
 @Injectable()
 export class ClientServerService {
@@ -116,6 +117,7 @@ export class ClientServerService {
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
+		@Inject('queue:scheduleNotePost') public scheduleNotePostQueue: ScheduleNotePostQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
@@ -192,6 +194,7 @@ export class ClientServerService {
 			appleTouchIcon: meta.app512IconUrl,
 			themeColor: meta.themeColor,
 			serverErrorImageUrl: meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
+			googleAnalyticsId: meta.googleAnalyticsId ?? null,
 			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
 			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
 			instanceUrl: this.config.url,
@@ -245,6 +248,7 @@ export class ClientServerService {
 			queues: [
 				this.systemQueue,
 				this.endedPollNotificationQueue,
+				this.scheduleNotePostQueue,
 				this.deliverQueue,
 				this.inboxQueue,
 				this.dbQueue,
@@ -320,18 +324,6 @@ export class ClientServerService {
 			prefix: '/assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
-		});
-
-		fastify.register((fastify, options, done) => {
-			fastify.register(fastifyStatic, {
-				root: tarball,
-				prefix: '/tarball/',
-				maxAge: ms('30 days'),
-				immutable: true,
-				decorateReply: false,
-			});
-			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
-			done();
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {

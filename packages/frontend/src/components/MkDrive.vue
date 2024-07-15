@@ -9,6 +9,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			<XNavFolder
 				:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
 				:parentFolder="folder"
+				:selectedFiles="selectedFiles"
 				@move="move"
 				@upload="upload"
 				@removeFile="removeFile"
@@ -20,16 +21,30 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					:folder="f"
 					:parentFolder="folder"
 					:class="[$style.navPathItem]"
+					:selectedFiles="selectedFiles"
 					@move="move"
 					@upload="upload"
 					@removeFile="removeFile"
 					@removeFolder="removeFolder"
 				/>
 			</template>
-			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
+			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i
+				class="ti ti-chevron-right"
+			></i></span>
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
-		<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
+		<button v-if="!multiple" class="_button" :class="$style.navMenu" @click="filesSelect">複数選択モード</button>
+		<span v-if="multiple && selectedFiles.length > 0" style="padding-right: 12px; margin-top: auto; margin-bottom: auto;opacity: 0.5;">
+			({{ number(selectedFiles.length) }})
+		</span>
+		<button v-if="multiple" class="_button" :class="$style.navMenu" @click="filesSelect">複数選択モード解除</button>
+		<button v-if="multiple && selectedFiles.length === 0" style="padding-right: 12px;" class="_button" @click="filesAllSelect">
+			全選択
+		</button>
+		<button v-if="multiple && selectedFiles.length !== 0" style="padding-right: 12px;" class="_button" @click="filesAllSelect">
+			全選択解除
+		</button>
+		<button class="_button" @click="showMenu"><i class="ti ti-dots"></i></button>
 	</nav>
 	<div
 		ref="main"
@@ -50,6 +65,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
+					:selectedFiles="selectedFiles"
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
@@ -71,7 +87,9 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					:file="file"
 					:folder="folder"
 					:selectMode="select === 'file'"
+					:SelectFiles="selectedFiles"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					@click.shift.left.exact="filesSelect"
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
@@ -82,14 +100,21 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
-				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
+				<div v-if="!draghover && folder == null">
+					<strong>{{
+						i18n.ts.emptyDrive
+					}}</strong><br/>{{ i18n.ts['empty-drive-description'] }}
+				</div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>
 	</div>
 	<div v-if="draghover" :class="$style.dropzone"></div>
-	<input ref="fileInput" style="display: none;" type="file" accept="*/*" multiple tabindex="-1" @change="onChangeFileInput"/>
+	<input
+		ref="fileInput" style="display: none;" type="file" accept="*/*" multiple tabindex="-1"
+		@change="onChangeFileInput"
+	/>
 </div>
 </template>
 
@@ -108,23 +133,24 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile, uploads } from '@/scripts/upload.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import number from '@/filters/number.js';
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder;
-	type?: string;
-	multiple?: boolean;
-	select?: 'file' | 'folder' | null;
+  initialFolder?: Misskey.entities.DriveFolder;
+  type?: string;
+  multiple?: boolean;
+  select?: 'file' | 'folder' | null;
 }>(), {
 	multiple: false,
 	select: null,
 });
 
 const emit = defineEmits<{
-	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
-	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
-	(ev: 'move-root'): void;
-	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
-	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
+  (ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
+  (ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
+  (ev: 'move-root'): void;
+  (ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
+  (ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
 const loadMoreFiles = shallowRef<InstanceType<typeof MkButton>>();
@@ -141,6 +167,8 @@ const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = useStream().useChannel('drive');
 const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
+const multiple = ref(props.multiple || false);
+const select = ref(props.select || null);
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -391,7 +419,7 @@ function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null
 
 function chooseFile(file: Misskey.entities.DriveFile) {
 	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
-	if (props.multiple) {
+	if (multiple.value) {
 		if (isAlreadySelected) {
 			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
 		} else {
@@ -410,7 +438,7 @@ function chooseFile(file: Misskey.entities.DriveFile) {
 
 function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 	const isAlreadySelected = selectedFolders.value.some(f => f.id === folderToChoose.id);
-	if (props.multiple) {
+	if (multiple.value) {
 		if (isAlreadySelected) {
 			selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToChoose.id);
 		} else {
@@ -497,6 +525,7 @@ function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
 	files.value = files.value.filter(f => f.id !== fileId);
+	selectedFiles.value = selectedFiles.value.filter(f => f.id !== fileId);
 }
 
 function appendFile(file: Misskey.entities.DriveFile) {
@@ -623,33 +652,129 @@ function getMenu() {
 	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
-		action: () => { selectLocalFile(); },
+		action: () => {
+			selectLocalFile();
+		},
 	}, {
 		text: i18n.ts.fromUrl,
 		icon: 'ti ti-link',
-		action: () => { urlUpload(); },
+		action: () => {
+			urlUpload();
+		},
 	}, { type: 'divider' }, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
 		icon: 'ti ti-forms',
-		action: () => { if (folder.value) renameFolder(folder.value); },
+		action: () => {
+			if (folder.value)renameFolder(folder.value);
+		},
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,
 		icon: 'ti ti-trash',
-		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
+		action: () => {
+			deleteFolder(folder.value as Misskey.entities.DriveFolder);
+		},
 	} : undefined, {
 		text: i18n.ts.createFolder,
 		icon: 'ti ti-folder-plus',
-		action: () => { createFolder(); },
+		action: () => {
+			createFolder();
+		},
 	}];
 
 	return menu;
 }
 
+async function isSensitive(Files, isSensitive: boolean) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t(isSensitive ? 'driveFilesSensitiveonConfirm' : 'driveFilesSensitiveoffConfirm', { name: Files.length }),
+	});
+
+	if (canceled) return;
+	Files.forEach((file) => {
+		misskeyApi('drive/files/update', {
+			fileId: file.id,
+			isSensitive,
+		});
+	});
+}
+
+async function fileDelete(Files) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveFilesDeleteConfirm', { name: Files.length }),
+	});
+
+	if (canceled) return;
+	Files.forEach((file) => {
+		misskeyApi('drive/files/delete', {
+			fileId: file.id,
+		});
+	});
+}
+
+function getFilesMenu(Files) {
+	return [{
+		text: i18n.ts.createNoteFromTheFile,
+		icon: 'ti ti-pencil',
+		action: () => {
+			if (Files.length >= 16) {
+				os.confirm({
+					type: 'warning',
+					text: '16ファイル以上添付しようとしています',
+				});
+				return;
+			} else {
+				os.post({
+					initialFiles: [...Files],
+				});
+			}
+		},
+	}, {
+		text: i18n.ts.unmarkAsSensitive,
+		icon: 'ti ti-eye',
+		action: () => {
+			isSensitive(Files, false);
+		},
+	}, {
+		text: i18n.ts.markAsSensitive,
+		icon: 'ti ti-eye-exclamation',
+		action: () => {
+			isSensitive(Files, true);
+		},
+	}, {
+		text: i18n.ts.delete,
+		icon: 'ti ti-trash',
+		danger: true,
+		action: () => {
+			fileDelete(Files);
+		},
+	}];
+}
+
+function filesSelect() {
+	multiple.value = !multiple.value;
+	select.value = (select.value === null) ? 'file' : null;
+	selectedFiles.value = [];
+}
+
+function filesAllSelect() {
+	if (selectedFiles.value.length === 0) {
+		selectedFiles.value = files.value;
+	} else {
+		selectedFiles.value = [];
+	}
+}
+
 function showMenu(ev: MouseEvent) {
-	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	if (selectedFiles.value.length === 0) {
+		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	} else {
+		os.popupMenu(getFilesMenu(selectedFiles.value), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	}
 }
 
 function onContextmenu(ev: MouseEvent) {
@@ -693,114 +818,119 @@ onBeforeUnmount(() => {
 
 <style lang="scss" module>
 .root {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .nav {
-	display: flex;
-	z-index: 2;
-	width: 100%;
-	padding: 0 8px;
-	box-sizing: border-box;
-	overflow: auto;
-	font-size: 0.9em;
-	box-shadow: 0 1px 0 var(--divider);
-	user-select: none;
+  display: flex;
+  top: 0;
+  position: sticky;
+  z-index: 1000;
+  background-color: var(--bg);
+  width: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+  overflow: auto;
+  font-size: 0.9em;
+  box-shadow: 0 1px 0 var(--divider);
+  user-select: none;
+  height: 55px;
 }
 
 .navPath {
-	display: inline-block;
-	vertical-align: bottom;
-	line-height: 42px;
-	white-space: nowrap;
+  display: inline-block;
+  vertical-align: bottom;
+  line-height: 42px;
+  white-space: nowrap;
+  margin: auto 0;
 }
 
 .navPathItem {
-	display: inline-block;
-	margin: 0;
-	padding: 0 8px;
-	line-height: 42px;
-	cursor: pointer;
+  display: inline-block;
+  margin: 0;
+  padding: 0 8px;
+  line-height: 42px;
+  cursor: pointer;
 
-	&:hover {
-		text-decoration: underline;
-	}
+  &:hover {
+    text-decoration: underline;
+  }
 
-	&.navCurrent {
-		font-weight: bold;
-		cursor: default;
+  &.navCurrent {
+    font-weight: bold;
+    cursor: default;
 
-		&:hover {
-			text-decoration: none;
-		}
-	}
+    &:hover {
+      text-decoration: none;
+    }
+  }
 
-	&.navSeparator {
-		margin: 0;
-		padding: 0;
-		opacity: 0.5;
-		cursor: default;
-	}
+  &.navSeparator {
+    margin: 0;
+    padding: 0;
+    opacity: 0.5;
+    cursor: default;
+  }
 }
 
 .navMenu {
-	margin-left: auto;
-	padding: 0 12px;
+  margin-left: auto;
+  padding: 0 12px;
 }
 
 .main {
-	flex: 1;
-	overflow: auto;
-	padding: var(--margin);
-	user-select: none;
+  flex: 1;
+  overflow: auto;
+  padding: var(--margin);
+  user-select: none;
 
-	&.fetching {
-		cursor: wait !important;
-		opacity: 0.5;
-		pointer-events: none;
-	}
+  &.fetching {
+    cursor: wait !important;
+    opacity: 0.5;
+    pointer-events: none;
+  }
 
-	&.uploading {
-		height: calc(100% - 38px - 100px);
-	}
+  &.uploading {
+    height: calc(100% - 38px - 100px);
+  }
 }
 
 .folders,
 .files {
-	display: flex;
-	flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .folder,
 .file {
-	flex-grow: 1;
-	width: 128px;
-	margin: 4px;
-	box-sizing: border-box;
+  flex-grow: 1;
+  width: 128px;
+  margin: 4px;
+  box-sizing: border-box;
 }
 
 .padding {
-	flex-grow: 1;
-	pointer-events: none;
-	width: 128px + 8px;
+  flex-grow: 1;
+  pointer-events: none;
+  width: 128px + 8px;
 }
 
 .empty {
-	padding: 16px;
-	text-align: center;
-	pointer-events: none;
-	opacity: 0.5;
+  padding: 16px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .dropzone {
-	position: absolute;
-	left: 0;
-	top: 38px;
-	width: 100%;
-	height: calc(100% - 38px);
-	border: dashed 2px var(--focus);
-	pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 38px;
+  width: 100%;
+  height: calc(100% - 38px);
+  border: dashed 2px var(--focus);
+  pointer-events: none;
 }
 </style>

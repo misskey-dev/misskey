@@ -14,6 +14,7 @@ import { NotePiningService } from '@/core/NotePiningService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
@@ -73,6 +74,7 @@ export class ApInboxService {
 		private notePiningService: NotePiningService,
 		private userBlockingService: UserBlockingService,
 		private noteCreateService: NoteCreateService,
+		private noteUpdateService: NoteUpdateService,
 		private noteDeleteService: NoteDeleteService,
 		private appLockService: AppLockService,
 		private apResolverService: ApResolverService,
@@ -751,11 +753,13 @@ export class ApInboxService {
 
 	@bindThis
 	private async update(actor: MiRemoteUser, activity: IUpdate): Promise<string> {
+		const uri = getApId(activity);
+
 		if (actor.uri !== activity.actor) {
 			return 'skip: invalid actor';
 		}
 
-		this.logger.debug('Update');
+		this.logger.debug(`Update: ${uri}`);
 
 		const resolver = this.apResolverService.createResolver();
 
@@ -767,11 +771,48 @@ export class ApInboxService {
 		if (isActor(object)) {
 			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
-		} else if (getApType(object) === 'Question') {
+		} /*else if (getApType(object) === 'Question') {
 			await this.apQuestionService.updateQuestion(object, resolver).catch(err => console.error(err));
 			return 'ok: Question updated';
+		}*/ else if (getApType(object) === 'Note' || getApType(object) === 'Question') {
+			await this.updateNote(resolver, actor, object, false, activity);
+			return 'ok: Note updated';
 		} else {
 			return `skip: Unknown type: ${getApType(object)}`;
+		}
+	}
+
+	@bindThis
+	private async updateNote(resolver: Resolver, actor: MiRemoteUser, note: IObject, silent = false, activity?: IUpdate): Promise<string> {
+		const uri = getApId(note);
+
+		if (typeof note === 'object') {
+			if (actor.uri !== note.attributedTo) {
+				return 'skip: actor.uri !== note.attributedTo';
+			}
+
+			if (typeof note.id === 'string') {
+				if (this.utilityService.extractDbHost(actor.uri) !== this.utilityService.extractDbHost(note.id)) {
+					return 'skip: host in actor.uri !== note.id';
+				}
+			}
+		}
+
+		const unlock = await this.appLockService.getApLock(uri);
+
+		try {
+			const target = await this.notesRepository.findOneBy({uri: uri});
+			if (!target) return `skip: target note not located: ${uri}`;
+			await this.apNoteService.updateNote(note, target, resolver, silent);
+			return 'ok';
+		} catch (err) {
+			if (err instanceof StatusError && err.isClientError) {
+				return `skip ${err.statusCode}`;
+			} else {
+				throw err;
+			}
+		} finally {
+			unlock();
 		}
 	}
 

@@ -31,6 +31,7 @@ const props = withDefaults(defineProps<{
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
+	updateMode?: boolean;
 }>(), {
 	initialLocalOnly: undefined,
 });
@@ -49,6 +50,7 @@ function onPosted() {
 }
 
 function onModalClosed() {
+	form.value?.closed();
 	emit('closed');
 }
 </script>

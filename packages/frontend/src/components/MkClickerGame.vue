@@ -6,9 +6,18 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <div>
 	<div v-if="game.ready" :class="$style.game">
 		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-		<div :class="$style.count" class="" data-testid="count"><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(cookies) }}</div>
+		<div :class="$style.count" class="" data-testid="count">
+			<img
+				:class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
+				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
+			/>
+			{{ number(cookies) }}
+		</div>
 		<button v-click-anime class="_button" @click="onClick">
-			<img src="/client-assets/cookie.png" :class="$style.img">
+			<img
+				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
+				:class="$style.img"
+			>
 		</button>
 	</div>
 	<div v-else>
@@ -25,7 +34,9 @@ import { useInterval } from '@/scripts/use-interval.js';
 import * as game from '@/scripts/clicker-game.js';
 import number from '@/filters/number.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import { defaultStore } from '@/store.js';
 
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);
 const cps = ref(0);
@@ -90,5 +101,16 @@ onUnmounted(() => {
 
 .img {
 	max-width: 90px;
+}
+
+$color-scheme: var(--color-scheme);
+
+.icon {
+	width: 1.3em;
+	vertical-align: -24%;
+}
+
+.dark {
+	filter: invert(1);
 }
 </style>

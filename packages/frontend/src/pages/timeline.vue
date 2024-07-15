@@ -12,7 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
-				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostForm.value && ui !== 'twilike'" :channel="channelInfo" :autofocus="deviceKind === 'desktop'" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<XPostForm v-if="$i && ui === 'twilike' " :channel="channelInfo" :autofocus="deviceKind === 'desktop'" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 				<div :class="$style.tl">
 					<MkTimeline
@@ -20,9 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:key="src + withRenotes + withReplies + onlyFiles"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
+						:channel="src.split(':')[1]"
+						:antenna="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
+						:withCw="withCw"
 						:sound="true"
 						@queue="queueUpdated"
 					/>
@@ -45,19 +49,20 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
+import { antennasCache, userFavoriteListsCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { timelineHeaderItemDef } from '@/timeline-header.js';
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+import { ui } from '@/config.js';
+import XPostForm from '@/components/XPostForm.vue';
 
 provide('shouldOmitHeaderTitle', true);
 
-const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
-const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 const keymap = {
 	't': focus,
 };
@@ -74,6 +79,10 @@ const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>(
 const withRenotes = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
+});
+const withCw = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withCw,
+	set: (x) => saveTlFilter('withCw', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
@@ -116,8 +125,19 @@ const withSensitive = computed<boolean>({
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
-watch(src, () => {
+const channelInfo = ref();
+if (src.value.split(':')[0] === 'channel') {
+	const channelId = src.value.split(':')[1];
+	channelInfo.value = await misskeyApi('channels/show', { channelId });
+}
+watch(src, async () => {
 	queue.value = 0;
+	if (src.value.split(':')[0] === 'channel') {
+		const channelId = src.value.split(':')[1];
+		channelInfo.value = await misskeyApi('channels/show', { channelId });
+	} else {
+		channelInfo.value = null;
+	}
 });
 
 watch(withSensitive, () => {
@@ -134,9 +154,11 @@ function top(): void {
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await userListsCache.fetch();
-	const items: MenuItem[] = [
-		...lists.map(list => ({
+	const myLists = await userListsCache.fetch();
+	const favoriteLists = await userFavoriteListsCache.fetch();
+	let lists = [...new Set([...myLists, ...favoriteLists])];
+	const items : MenuItem[] = [
+		... lists.map(list => ({
 			type: 'link' as const,
 			text: list.name,
 			to: `/timeline/list/${list.id}`,
@@ -154,13 +176,12 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	const antennas = await antennasCache.fetch();
-	const items: MenuItem[] = [
-		...antennas.map(antenna => ({
+	const items : MenuItem[] = [
+		... antennas.map(antenna => ({
 			type: 'link' as const,
 			text: antenna.name,
 			indicate: antenna.hasUnreadNote,
-			to: `/timeline/antenna/${antenna.id}`,
-		})),
+			to: `/timeline/antenna/${antenna.id}` })),
 		(antennas.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
@@ -179,12 +200,10 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
 			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
 
-			return {
-				type: 'link' as const,
-				text: channel.name,
-				indicate: hasUnreadNote,
-				to: `/channels/${channel.id}`,
-			};
+			return { type: 'link' as const,
+												text: channel.name,
+												indicate: hasUnreadNote,
+												to: `/channels/${channel.id}` };
 		}),
 		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
@@ -197,9 +216,8 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
+function saveSrc(newSrc: 'home' | 'local' | 'media' | 'social' | 'global' | `list:${string}`): void {
 	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
-
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
 		out.userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id) ?? null;
@@ -240,30 +258,33 @@ function closeTutorial(): void {
 
 const headerActions = computed(() => {
 	const tmp = [
-		{
-			icon: 'ti ti-dots',
-			text: i18n.ts.options,
-			handler: (ev) => {
-				os.popupMenu([{
-					type: 'switch',
-					text: i18n.ts.showRenotes,
-					ref: withRenotes,
-				}, src.value === 'local' || src.value === 'social' ? {
-					type: 'switch',
-					text: i18n.ts.showRepliesToOthersInTimeline,
-					ref: withReplies,
-					disabled: onlyFiles,
-				} : undefined, {
-					type: 'switch',
-					text: i18n.ts.withSensitive,
-					ref: withSensitive,
-				}, {
-					type: 'switch',
-					text: i18n.ts.fileAttachedOnly,
-					ref: onlyFiles,
-					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
-				}], ev.currentTarget ?? ev.target);
-			},
+		{ icon: 'ti ti-dots',
+				text: i18n.ts.options,
+				handler: (ev) => {
+					os.popupMenu([{
+						type: 'switch',
+						text: i18n.ts.showRenotes,
+						ref: withRenotes,
+					}, {
+						type: 'switch',
+						text: i18n.ts.showCw,
+						ref: withCw,
+					}, src.value === 'local' || src.value === 'social' ? {
+						type: 'switch',
+						text: i18n.ts.showRepliesToOthersInTimeline,
+						ref: withReplies,
+						disabled: onlyFiles } : undefined, {
+						type: 'switch',
+						text: i18n.ts.withSensitive,
+						ref: withSensitive,
+					}, {
+						type: 'switch',
+						text: i18n.ts.fileAttachedOnly,
+
+						ref: onlyFiles,
+						disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
+					}], ev.currentTarget ?? ev.target);
+				},
 		},
 	];
 	if (deviceKind === 'desktop') {
@@ -277,48 +298,36 @@ const headerActions = computed(() => {
 	}
 	return tmp;
 });
+const headerTabs = computed(() => defaultStore.reactiveState.timelineHeader.value.map(tab => {
+	if ((tab === 'local' || tab === 'social') && !isLocalTimelineAvailable) {
+		return {};
+	} else if (tab === 'global' && !isGlobalTimelineAvailable) {
+		return {};
+	}
 
-const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
-	title: l.name,
-	icon: 'ti ti-star',
-	iconOnly: true,
-}))), {
-	key: 'home',
-	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
-	iconOnly: true,
-}, ...(isLocalTimelineAvailable ? [{
-	key: 'local',
-	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
-	iconOnly: true,
-}, {
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
-	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
-	key: 'global',
-	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: true,
-}] : []), {
-	icon: 'ti ti-list',
-	title: i18n.ts.lists,
-	iconOnly: true,
-	onClick: chooseList,
-}, {
-	icon: 'ti ti-antenna',
-	title: i18n.ts.antennas,
-	iconOnly: true,
-	onClick: chooseAntenna,
-}, {
-	icon: 'ti ti-device-tv',
-	title: i18n.ts.channel,
-	iconOnly: true,
-	onClick: chooseChannel,
-}] as Tab[]);
+	const tabDef = timelineHeaderItemDef[tab];
+	if (!tabDef) {
+		return {};
+	}
+
+	return {
+		...(!['channels', 'antennas', 'lists'].includes(tab) ? {
+			key: tab,
+		} : {}),
+		title: tabDef.title,
+		icon: tabDef.icon,
+		iconOnly: tabDef.iconOnly,
+		...(tab === 'lists' ? {
+			onClick: (ev) => chooseList(ev),
+		} : {}),
+		...(tab === 'antennas' ? {
+			onClick: (ev) => chooseAntenna(ev),
+		} : {}),
+		...(tab === 'channels' ? {
+			onClick: (ev) => chooseChannel(ev),
+		} : {}),
+	};
+}) as Tab[]);
 
 const headerTabsWhenNotLogin = computed(() => [
 	...(isLocalTimelineAvailable ? [{

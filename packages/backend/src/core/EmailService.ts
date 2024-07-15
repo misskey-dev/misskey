@@ -213,6 +213,17 @@ export class EmailService {
 				reason: validated.reason ? formatReason[validated.reason] ?? null : null,
 			};
 		}
+		if (meta.enableActiveEmailValidation) {
+			const dispose = await this.httpRequestService.send('https://raw.githubusercontent.com/mattyatea/disposable-email-domains/master/disposable_email_blocklist.conf', {
+				method: 'GET',
+			});
+			const disposableEmailDomains = (await dispose.text()).split('\n');
+			const domain = emailAddress.split('@')[1];
+			console.log(domain)
+			if (disposableEmailDomains.includes(domain)) {
+				validated = { valid: false, reason: 'disposable' };
+			}
+		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
 		const isBanned = this.utilityService.isBlockedHost(meta.bannedEmailDomains, emailDomain);

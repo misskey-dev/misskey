@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16">
 			<div class="lxpfedzu">
 				<div class="banner">
-					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+					<img :src="iconUrl" alt="" class="icon"/>
 				</div>
 
 				<div class="_gaps_s">
@@ -40,8 +40,9 @@ import { lookup } from '@/scripts/lookup.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail, lookupFile } from '@/scripts/admin-lookup.js';
-import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
+import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -67,7 +68,20 @@ let noEmailServer = !instance.enableEmail;
 let noInquiryUrl = isEmpty(instance.inquiryUrl);
 const thereIsUnresolvedAbuseReport = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
-
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+let iconUrl = ref();
+if (darkMode.value) {
+	iconUrl.value = iconDark;
+} else {
+	iconUrl.value = iconLight;
+}
+watch(darkMode, () => {
+	if (darkMode.value) {
+		iconUrl.value = iconDark;
+	} else {
+		iconUrl.value = iconLight;
+	}
+});
 misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,

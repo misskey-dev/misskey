@@ -9,9 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 			<div class="_gaps_m">
-				<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
+				<div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }">
 					<div style="overflow: clip;">
-						<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+						<img :src="iconUrl" alt="" :class="$style.bannerIcon"/>
 						<div :class="$style.bannerName">
 							<b>{{ instance.name ?? host }}</b>
 						</div>
@@ -31,10 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkKeyValue>
 						<div v-html="i18n.tsx.poweredByType4nyDescription({ name: instance.name ?? host })">
 						</div>
-						<FormLink to="/about-type4ny">
-							<template #icon><i class="ti ti-info-circle"></i></template>
-							{{ i18n.ts.aboutType4ny }}
-						</FormLink>
+						<FormLink to="/about-type4ny">{{ i18n.ts.aboutType4ny }}</FormLink>
 						<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts.sourceCode }}
@@ -42,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo v-else warn>
 							{{ i18n.ts.sourceCodeIsNotYetProvided }}
 						</MkInfo>
+						ソースコード含め問い合わせは下記のメールアドレスへよろしくお願いします。
 					</div>
 				</FormSection>
 
@@ -116,9 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSection>
 			</div>
 		</MkSpacer>
-		<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
-			<XEmojis/>
-		</MkSpacer>
+		<XEmojis v-else-if="tab === 'emojis'"/>
 		<MkSpacer v-else-if="tab === 'federation'" :contentMax="1000" :marginMin="20">
 			<XFederation/>
 		</MkSpacer>
@@ -130,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
@@ -150,6 +146,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { instance } from '@/instance.js';
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -163,6 +160,27 @@ const tab = ref(props.initialTab);
 watch(tab, () => {
 	if (tab.value === 'charts') {
 		claimAchievement('viewInstanceChart');
+	}
+});
+let bannerUrl = ref(defaultStore.state.bannerUrl);
+let iconUrl = ref(defaultStore.state.iconUrl);
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+
+if (darkMode.value) {
+	bannerUrl.value = bannerDark;
+	iconUrl.value = iconDark;
+} else {
+	bannerUrl.value = bannerLight;
+	iconUrl.value = iconLight;
+}
+
+watch(darkMode, () => {
+	if (darkMode.value) {
+		bannerUrl.value = bannerDark;
+		iconUrl.value = iconDark;
+	} else {
+		bannerUrl.value = bannerLight;
+		iconUrl.value = iconLight;
 	}
 });
 

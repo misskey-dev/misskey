@@ -119,7 +119,7 @@ export interface NoteEventTypes {
 	};
 	updated: {
 		cw: string | null;
-		text: string;
+		text: string | null;
 	};
 	reacted: {
 		reaction: string;
@@ -160,6 +160,8 @@ export interface AdminEventTypes {
 		targetUserId: MiUser['id'],
 		reporterId: MiUser['id'],
 		comment: string;
+		notes: any[];
+		noteIds: string[];
 	};
 }
 

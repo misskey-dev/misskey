@@ -21,7 +21,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="item" activeClass="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
 			<span v-if="navbarItemDef[item].indicated" class="indicator">
-				<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
+				<span v-if="navbarItemDef[item].indicateValue && indicatorCounterToggle" class="_indicateCounter itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
 				<i v-else class="_indicatorCircle"></i>
 			</span>
 		</component>
@@ -63,6 +63,7 @@ import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 
 const WINDOW_THRESHOLD = 1400;
+const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 
 const menu = ref(defaultStore.state.menu);
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));

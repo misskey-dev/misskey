@@ -20,6 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decorations="decorationsForPreview" forceShowDecoration/>
 			</div>
 			<div class="_gaps_s">
+				{{ i18n.ts.description }}
+				<p style="white-space: pre-wrap;">{{ decoration.description }}</p>
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
 					<template #label>{{ i18n.ts.angle }}</template>
 				</MkRange>
@@ -61,6 +63,7 @@ const props = defineProps<{
 		id: string;
 		url: string;
 		name: string;
+        description: string;
 	};
 }>();
 

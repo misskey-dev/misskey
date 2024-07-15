@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <div
-	:class="[$style.root, { [$style.isSelected]: isSelected }]"
+	:class="[$style.root, { [$style.isSelected]: isSelected || isSelectedFile }]"
 	draggable="true"
 	:title="title"
 	@click="onClick"
@@ -37,14 +37,15 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
+import { getDriveFileMenu, getDriveMultiFileMenu } from '@/scripts/get-drive-file-menu.js';
+import { isTouchUsing } from '@/scripts/touch.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
 	selectMode?: boolean;
+  SelectFiles?: string[];
 }>(), {
 	isSelected: false,
 	selectMode: false,
@@ -67,13 +69,25 @@ const emit = defineEmits<{
 }>();
 
 const isDragging = ref(false);
-
+const isSelectedFile = ref(false);
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
 
+watch(props.SelectFiles, () => {
+	const index = props.SelectFiles.findIndex(item => item.id === props.file.id);
+	isSelectedFile.value = index !== -1;
+});
+
 function onClick(ev: MouseEvent) {
+
 	if (props.selectMode) {
 		emit('chosen', props.file);
-	} else {
+	} else if (!ev.shiftKey && !isTouchUsing && !isSelectedFile.value) {
+		os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	} else if (!ev.shiftKey && isSelectedFile.value && props.SelectFiles.length === 0) {
+		os.popupMenu(getDriveMultiFileMenu(props.SelectFiles), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	} else if (isTouchUsing && !isSelectedFile.value && props.SelectFiles.length === 0) {
+    os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	}else {
 		if (deviceKind === 'desktop') {
 			router.push(`/my/drive/file/${props.file.id}`);
 		} else {
@@ -83,7 +97,14 @@ function onClick(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
+
+	if (!isTouchUsing) {
+		if (!ev.shiftKey && !isSelectedFile.value) {
+			os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
+		} else if (isSelectedFile.value) {
+			os.contextMenu(getDriveMultiFileMenu(props.SelectFiles), ev);
+		}
+	}
 }
 
 function onDragstart(ev: DragEvent) {
@@ -92,7 +113,7 @@ function onDragstart(ev: DragEvent) {
 		ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
 	}
 	isDragging.value = true;
-
+	 (isDragging.value)
 	emit('dragstart');
 }
 

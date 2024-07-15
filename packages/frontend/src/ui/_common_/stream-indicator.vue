@@ -23,12 +23,17 @@ import { defaultStore } from '@/store.js';
 const zIndex = os.claimZIndex('high');
 
 const hasDisconnected = ref(false);
+let timeoutId = ref<number>();
 
 function onDisconnected() {
-	hasDisconnected.value = true;
+	window.clearTimeout(timeoutId.value);
+	timeoutId.value = window.setTimeout(() => {
+		hasDisconnected.value = true;
+	}, 1000 * 10);
 }
 
 function resetDisconnected() {
+	window.clearTimeout(timeoutId.value);
 	hasDisconnected.value = false;
 }
 
@@ -36,9 +41,12 @@ function reload() {
 	location.reload();
 }
 
+useStream().on('_connected_', resetDisconnected);
 useStream().on('_disconnected_', onDisconnected);
 
 onUnmounted(() => {
+	window.clearTimeout(timeoutId);
+	useStream().off('_connected_', resetDisconnected);
 	useStream().off('_disconnected_', onDisconnected);
 });
 </script>

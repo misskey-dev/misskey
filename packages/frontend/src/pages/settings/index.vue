@@ -23,7 +23,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-	<MkFooterSpacer/>
 </mkstickycontainer>
 </template>
 
@@ -115,6 +114,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.navbar,
 		to: '/settings/navbar',
 		active: currentPage.value?.route.name === 'navbar',
+	}, {
+		icon: 'ti ti-layout-navbar',
+		text: i18n.ts.timelineHeader,
+		to: '/settings/timeline-header',
+		active: currentPage.value?.route.name === 'timelineHeader',
 	}, {
 		icon: 'ti ti-equal-double',
 		text: i18n.ts.statusbar,

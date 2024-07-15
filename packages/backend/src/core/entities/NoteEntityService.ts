@@ -208,6 +208,30 @@ export class NoteEntityService implements OnModuleInit {
 
 		return undefined;
 	}
+	@bindThis
+	public async populateMyReactions(note: { id: MiNote['id']; reactions: MiNote['reactions']; reactionAndUserPairCache?: MiNote['reactionAndUserPairCache']; }, meId: MiUser['id'], _hint_?: {
+		myReactions: Map<MiNote['id'], string | null>;
+	}) {
+		const reactionsCount = Object.values(note.reactions).reduce((a, b) => a + b, 0);
+
+		if (reactionsCount === 0) return undefined;
+
+		// パフォーマンスのためノートが作成されてから2秒以上経っていない場合はリアクションを取得しない
+		if (this.idService.parse(note.id).date.getTime() + 2000 > Date.now()) {
+			return undefined;
+		}
+
+		const reactions = await this.noteReactionsRepository.findBy({
+			userId: meId,
+			noteId: note.id,
+		});
+
+		if (reactions.length > 0) {
+			return reactions.map(reaction => this.reactionService.convertLegacyReaction(reaction.reaction));
+		}
+
+		return undefined;
+	}
 
 	@bindThis
 	public async isVisibleForMe(note: MiNote, meId: MiUser['id'] | null): Promise<boolean> {
@@ -324,6 +348,9 @@ export class NoteEntityService implements OnModuleInit {
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: this.idService.parse(note.id).date.toISOString(),
+			updatedAt: note.updatedAt ? note.updatedAt.toISOString() : undefined,
+			updatedAtHistory: note.updatedAtHistory ? note.updatedAtHistory.map(x => x.toISOString()) : undefined,
+			noteEditHistory: note.noteEditHistory.length ? note.noteEditHistory : undefined,
 			userId: note.userId,
 			user: packedUsers?.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
 			text: text,
@@ -378,6 +405,7 @@ export class NoteEntityService implements OnModuleInit {
 
 				...(meId && Object.keys(note.reactions).length > 0 ? {
 					myReaction: this.populateMyReaction(note, meId, options?._hint_),
+					myReactions: this.populateMyReactions(note, meId, options?._hint_),
 				} : {}),
 			} : {}),
 		});

@@ -25,6 +25,11 @@ export class MiUser {
 	})
 	public lastFetchedAt: Date | null;
 
+	@Column('integer', {
+		default: '0',
+	})
+	public getPoints: number;
+
 	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,
@@ -178,6 +183,12 @@ export class MiUser {
 		comment: 'Whether the User is a cat.',
 	})
 	public isCat: boolean;
+
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether the User is a gorilla.',
+	})
+	public isGorilla: boolean;
 
 	@Column('boolean', {
 		default: false,

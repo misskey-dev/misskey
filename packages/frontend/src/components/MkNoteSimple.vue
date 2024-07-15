@@ -3,17 +3,21 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-<div :class="$style.root">
+<div v-show="!isDeleted" :class="$style.root" :tabindex="!isDeleted ? '-1' : undefined">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
 			<p v-if="note.cw != null" :class="$style.cw">
-				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
+				<Mfm v-if="note.cw != ''" :emojireq="emojireq" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
 				<MkCwButton v-model="showContent" :text="note.text" :files="note.files" :poll="note.poll"/>
 			</p>
 			<div v-show="note.cw == null || showContent">
-				<MkSubNoteContent :class="$style.text" :note="note"/>
+				<MkSubNoteContent :emojireq="emojireq" :class="$style.text" :note="note"/>
+			</div>
+			<div v-if="note.isSchedule" style="margin-top: 10px;">
+				<MkButton :class="$style.button" inline @click="editScheduleNote()"><i class="ti ti-pencil"></i> {{ i18n.ts.deleteAndEdit }}</MkButton>
+				<MkButton :class="$style.button" inline danger @click="deleteScheduleNote()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -23,13 +27,61 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '../i18n.js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-
+import MkButton from '@/components/MkButton.vue';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+const isDeleted = ref(false);
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {
+		id: string | null;
+		isSchedule?: boolean;
+		scheduledNoteId?: string;
+	};
+	emojireq:boolean;
 }>();
+
+const emit = defineEmits<{
+  (ev: 'editScheduleNote'): void;
+}>();
+
+async function deleteScheduleNote() {
+	if (!props.note.isSchedule || !props.note.scheduledNoteId) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts._schedulePost.deleteAreYouSure,
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('notes/schedule/delete', { scheduledNoteId: props.note.scheduledNoteId })
+		.then(() => {
+			isDeleted.value = true;
+		});
+}
+
+async function editScheduleNote() {
+	if (!props.note.isSchedule || !props.note.scheduledNoteId) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts._schedulePost.deleteAndEditConfirm,
+	});
+
+	if (canceled) return;
+
+	await misskeyApi('notes/schedule/delete', { scheduledNoteId: props.note.scheduledNoteId })
+		.then(() => {
+			isDeleted.value = true;
+		});
+
+	await os.post({ initialNote: props.note, renote: props.note.renote, reply: props.note.reply, channel: props.note.channel });
+
+	emit('editScheduleNote');
+}
 
 const showContent = ref(false);
 </script>
@@ -40,8 +92,12 @@ const showContent = ref(false);
 	margin: 0;
 	padding: 0;
 	font-size: 0.95em;
-}
 
+}
+.button{
+  margin-right: var(--margin);
+  margin-bottom: var(--margin);
+}
 .avatar {
 	flex-shrink: 0;
 	display: block;

@@ -9,6 +9,8 @@ import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
+import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+import { instance } from '@/instance.js';
 
 interface PostFormAction {
 	title: string,
@@ -52,13 +54,13 @@ export type SoundStore = {
 
 	volume: number;
 }
-
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
+export const { bannerDark, bannerLight, iconDark, iconLight } = instance;
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -88,15 +90,30 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: true,
 	},
-	rememberNoteVisibility: {
-		where: 'account',
-		default: false,
-	},
 	defaultNoteVisibility: {
 		where: 'account',
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],
 	},
 	defaultNoteLocalOnly: {
+		where: 'account',
+		default: false,
+	},
+	defaultHomeNoteLocalOnly: {
+		where: 'account',
+		default: false,
+	},	defaultFollowersNoteLocalOnly: {
+		where: 'account',
+		default: false,
+	},
+	draftSavingBehavior: {
+		where: 'account',
+		default: 'auto' as 'auto' | 'manual',
+	},
+	rememberNoteVisibility: {
+		where: 'account',
+		default: false,
+	},
+	rememberReactionAcceptance: {
 		where: 'account',
 		default: false,
 	},
@@ -107,6 +124,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	pastedFileName: {
 		where: 'account',
 		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
+	},
+	disableNoteDrafting: {
+		where: 'account',
+		default: false,
 	},
 	keepOriginalUploading: {
 		where: 'account',
@@ -123,6 +144,74 @@ export const defaultStore = markRaw(new Storage('base', {
 	pinnedEmojis: {
 		where: 'account',
 		default: [],
+	},
+	reactions1: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis1: {
+		where: 'account',
+		default: [],
+	},
+	reactions2: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis2: {
+		where: 'account',
+		default: [],
+	},
+	reactions3: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis3: {
+		where: 'account',
+		default: [],
+	},
+	reactions4: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis4: {
+		where: 'account',
+		default: [],
+	},
+	reactions5: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis5: {
+		where: 'account',
+		default: [],
+	},
+	pickerProfileName: {
+		where: 'account',
+		default: 'default',
+	},
+	pickerProfileName1: {
+		where: 'account',
+		default: '1',
+	},
+	pickerProfileName2: {
+		where: 'account',
+		default: '2',
+	},
+	pickerProfileName3: {
+		where: 'account',
+		default: '3',
+	},
+	pickerProfileName4: {
+		where: 'account',
+		default: '4',
+	},
+	pickerProfileName5: {
+		where: 'account',
+		default: '5',
+	},
+	pickerProfileDefault: {
+		where: 'account',
+		default: 1,
 	},
 	reactionAcceptance: {
 		where: 'account',
@@ -146,7 +235,24 @@ export const defaultStore = markRaw(new Storage('base', {
 			'search',
 			'-',
 			'ui',
+			'cacheclear',
 		],
+	},
+	timelineHeader: {
+		where: 'deviceAccount',
+		default: [
+			'home',
+			...(isLocalTimelineAvailable ? [
+				'local',
+				'social',
+			] : []),
+			...(isGlobalTimelineAvailable ? [
+				'global',
+			] : []),
+			'lists',
+			'antennas',
+			'channels',
+		] as TimelineHeaderItem[],
 	},
 	visibility: {
 		where: 'deviceAccount',
@@ -190,6 +296,7 @@ export const defaultStore = markRaw(new Storage('base', {
 				withRenotes: true,
 				withSensitive: true,
 				onlyFiles: false,
+				withCw: false,
 			},
 		},
 	},
@@ -197,7 +304,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: [] as Misskey.entities.UserList[],
 	},
-
+	pinnedChannels: {
+		where: 'deviceAccount',
+		default: [] as Misskey.entities.Channel[],
+	},
 	overridedDeviceKind: {
 		where: 'device',
 		default: null as null | 'smartphone' | 'tablet' | 'desktop',
@@ -230,6 +340,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	alwaysShowPlayer: {
+		where: 'device',
+		default: true,
+	},
+	alwaysExpandTweet: {
+		where: 'device',
+		default: false,
+	},
 	enableQuickAddMfmFunction: {
 		where: 'device',
 		default: false,
@@ -239,6 +357,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: false,
 	},
 	imageNewTab: {
+		where: 'device',
+		default: false,
+	},
+	enableDataSaverMode: {
+		where: 'device',
+		default: false,
+	},
+	enableCellularWithDataSaver: {
 		where: 'device',
 		default: false,
 	},
@@ -278,6 +404,22 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	topBarNameShown: {
+		where: 'device',
+		default: false,
+	},
+	showHomeTimeline: {
+		where: 'device',
+		default: true,
+	},
+	showLocalTimeline: {
+		where: 'device',
+		default: true,
+	},
+	showSocialTimeline: {
+		where: 'device',
+		default: true,
+	},
 	showGapBetweenNotesInTimeline: {
 		where: 'device',
 		default: false,
@@ -285,6 +427,26 @@ export const defaultStore = markRaw(new Storage('base', {
 	darkMode: {
 		where: 'device',
 		default: false,
+	},
+	gamingMode: {
+		where: 'device',
+		default: true,
+	},
+	gamingType: {
+		where: 'device',
+		default: 'dark',
+	},
+	indicatorCounterToggle: {
+		where: 'device',
+		default: 'true',
+	},
+	bannerUrl: {
+		where: 'device',
+		default: bannerDark,
+	},
+	iconUrl: {
+		where: 'device',
+		default: iconDark,
 	},
 	instanceTicker: {
 		where: 'device',
@@ -309,6 +471,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	recentlyUsedEmojis: {
 		where: 'device',
 		default: [] as string[],
+	},
+	enablehanntenn: {
+		where: 'device',
+		default: false,
 	},
 	recentlyUsedUsers: {
 		where: 'device',
@@ -350,11 +516,63 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 3,
 	},
+	specifiedColor: {
+		where: 'device',
+		default: '#FFFF64',
+	},
+	followerColor: {
+		where: 'device',
+		default: '#FF00FF',
+	},
+	homeColor: {
+		where: 'device',
+		default: '#00FFFF',
+	},
+	localOnlyColor: {
+		where: 'device',
+		default: '#2b2c41',
+	},
+	numberOfGamingSpeed: {
+		where: 'device',
+		default: 44,
+	},
+	remoteLocalTimeline: {
+		where: 'device',
+		default: [],
+	},
+	onlyAndWithSave: {
+		where: 'device',
+		default: false,
+	},
+	onlyFiles: {
+		where: 'device',
+		default: false,
+	},
+	withReplies: {
+		where: 'device',
+		default: true,
+	},
+	withRenotes: {
+		where: 'device',
+		default: true,
+	},
 	showNoteActionsOnlyHover: {
 		where: 'device',
 		default: false,
 	},
 	showClipButtonInNoteFooter: {
+		where: 'device',
+		default: false,
+	},
+	showMediaTimeline: {
+		where: 'device',
+		default: true,
+	},
+	showGlobalTimeline: {
+		where: 'device',
+		default: true,
+	},
+	showVisibilityColor: {
 		where: 'device',
 		default: false,
 	},
@@ -404,6 +622,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultWithReplies: {
 		where: 'account',
+		default: false,
+	},
+	hideMutedNotes: {
+		where: 'device',
 		default: false,
 	},
 	disableStreamingTimeline: {
@@ -522,6 +744,7 @@ interface Watcher {
  */
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
+import { TimelineHeaderItem } from '@/timeline-header.js';
 
 export class ColdDeviceStorage {
 	public static default = {

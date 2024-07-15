@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { IPoll } from '@/models/Poll.js';
+import type { MiChannel } from '@/models/Channel.js';
+import type { MiApp } from '@/models/App.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiScheduledNote } from '@/models/ScheduledNote.js';
+
 /**
  * note - 通知オンにしているユーザーが投稿した
  * follow - フォローされた
@@ -34,6 +42,7 @@ export const notificationTypes = [
 	'achievementEarned',
 	'app',
 	'test',
+	'loginbonus',
 ] as const;
 
 export const groupedNotificationTypes = [
@@ -57,6 +66,7 @@ export const moderationLogTypes = [
 	'unsuspend',
 	'updateUserNote',
 	'addCustomEmoji',
+	'requestCustomEmoji',
 	'updateCustomEmoji',
 	'deleteCustomEmoji',
 	'assignRole',
@@ -121,6 +131,10 @@ export type ModerationLogPayloads = {
 		after: string | null;
 	};
 	addCustomEmoji: {
+		emojiId: string;
+		emoji: any;
+	};
+	requestCustomEmoji: {
 		emojiId: string;
 		emoji: any;
 	};
@@ -314,6 +328,36 @@ export type ModerationLogPayloads = {
 		recipientId: string;
 		recipient: any;
 	};
+};
+
+export type MiMinimumUser = {
+	id: MiUser['id'];
+	host: MiUser['host'];
+	username: MiUser['username'];
+	uri: MiUser['uri'];
+};
+
+export type MiNoteCreateOption = {
+	createdAt?: Date | null;
+	name?: string | null;
+	text?: string | null;
+	reply?: MiNote | null;
+	renote?: MiNote | null;
+	files?: MiDriveFile[] | null;
+	poll?: IPoll | null;
+	schedule?: MiScheduledNote | null;
+	localOnly?: boolean | null;
+	reactionAcceptance?: MiNote['reactionAcceptance'];
+	cw?: string | null;
+	visibility?: string;
+	visibleUsers?: MiMinimumUser[] | null;
+	channel?: MiChannel | null;
+	apMentions?: MiMinimumUser[] | null;
+	apHashtags?: string[] | null;
+	apEmojis?: string[] | null;
+	uri?: string | null;
+	url?: string | null;
+	app?: MiApp | null;
 };
 
 export type Serialized<T> = {

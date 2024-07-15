@@ -9,7 +9,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	src="/client-assets/dummy.png"
 	:title="alt"
 />
-<span v-else-if="errored">:{{ customEmojiName }}:</span>
+<span v-else-if="errored || isDraft">:{{ customEmojiName }}:</span>
 <img
 	v-else
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
@@ -51,6 +51,7 @@ const react = inject<((name: string) => void) | null>('react', null);
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
+const isDraft = computed(() => customEmojisMap.get(customEmojiName.value)?.draft ?? false);
 
 const rawUrl = computed(() => {
 	if (props.url) {
@@ -64,13 +65,20 @@ const rawUrl = computed(() => {
 
 const url = computed(() => {
 	if (rawUrl.value == null) return undefined;
-
+  const useOriginalSize = props.useOriginalSize;
+  const enableDataSaverMode = defaultStore.state.enableUltimateDataSaverMode;
+  let datasaver_result ;
+  if (enableDataSaverMode) {
+    datasaver_result = useOriginalSize ? undefined : 'datasaver';
+  } else {
+    datasaver_result = useOriginalSize ? undefined : 'emoji';
+  }
 	const proxied =
 		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
 			? rawUrl.value
 			: getProxiedImageUrl(
 				rawUrl.value,
-				props.useOriginalSize ? undefined : 'emoji',
+            datasaver_result,
 				false,
 				true,
 			);
@@ -123,7 +131,8 @@ function onClick(ev: MouseEvent) {
 	height: 2em;
 	vertical-align: middle;
 	transition: transform 0.2s ease;
-
+	max-width: 100% !important;
+	object-fit: contain !important;
 	&:hover {
 		transform: scale(1.2);
 	}

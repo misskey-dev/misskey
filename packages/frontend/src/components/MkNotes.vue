@@ -23,7 +23,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
+				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>
@@ -42,8 +42,8 @@ const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
+    withCw?: boolean;
 }>();
-
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 defineExpose({

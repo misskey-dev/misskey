@@ -4,6 +4,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <div
+
 	ref="playerEl"
 	v-hotkey="keymap"
 	tabindex="0"
@@ -28,9 +29,9 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			preload="metadata"
 			controls
 			:class="$style.nativeAudio"
+			:src="audio.url"
 			@keydown.prevent
 		>
-			<source :src="audio.url">
 		</audio>
 	</div>
 
@@ -38,8 +39,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		<audio
 			ref="audioEl"
 			preload="metadata"
+			:src="audio.url"
 		>
-			<source :src="audio.url">
 		</audio>
 		<div :class="[$style.controlsChild, $style.controlsLeft]">
 			<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
@@ -63,10 +64,24 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				:class="$style.volumeSeekbar"
 			/>
 		</div>
+
+		<WaveSurferPlayer
+			v-if="!defaultStore.state.dataSaver.media && audioEl"
+			:class="$style.seekbarRoot"
+			:options="{ media: audioEl,
+				height: 32,
+				waveColor: 'gray',
+				progressColor: accent,
+				barGap: 3,
+				barWidth: 3,
+				barRadius: 5,
+				duration: 80,
+			}"
+		></WaveSurferPlayer>
 		<MkMediaRange
+			v-if="defaultStore.state.dataSaver.media && !hide"
 			v-model="rangePercent"
 			:class="$style.seekbarRoot"
-			:buffer="bufferedDataRatio"
 		/>
 	</div>
 </div>
@@ -75,6 +90,9 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <script lang="ts" setup>
 import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { WaveSurferPlayer } from '@meersagor/wavesurfer-vue';
+import tinycolor from 'tinycolor2';
+import type WaveSurfer from 'wavesurfer.js';
 import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -83,7 +101,6 @@ import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/account.js';
-
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
@@ -130,6 +147,7 @@ const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.data
 
 // Menu
 const menuShowing = ref(false);
+const accent = ref();
 
 function showMenu(ev: MouseEvent) {
 	let menu: MenuItem[] = [];
@@ -225,10 +243,7 @@ const volume = ref(.25);
 const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
-const bufferedDataRatio = computed(() => {
-	if (!audioEl.value) return 0;
-	return bufferedEnd.value / audioEl.value.duration;
-});
+let audioContext = new AudioContext();
 
 // MediaControl Events
 function togglePlayPause() {
@@ -259,7 +274,8 @@ let stopAudioElWatch: () => void;
 function init() {
 	if (onceInit) return;
 	onceInit = true;
-
+	const computedStyle = getComputedStyle(document.documentElement);
+	accent.value = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
 	stopAudioElWatch = watch(audioEl, () => {
 		if (audioEl.value) {
 			isReady.value = true;
@@ -324,7 +340,7 @@ watch(loop, (to) => {
 	if (audioEl.value) audioEl.value.loop = to;
 });
 
-onMounted(() => {
+onMounted(async () => {
 	init();
 });
 

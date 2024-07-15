@@ -36,7 +36,12 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		</section>
 
 		<div v-if="tab === 'index'" class="group index">
-			<section v-if="showPinned && (pinned && pinned.length > 0)">
+			<section v-if="showPinned">
+				<div style="display: flex; ">
+					<div v-for="a in profileMax" :key="a" :title="defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`]" class="sllfktkhgl" :class="{ active: activeIndex === a || isDefaultProfile === a }" @click="pinnedProfileSelect(a)">
+						{{ defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`] }}
+					</div>
+				</div>
 				<div class="body">
 					<button
 						v-for="emoji in pinnedEmojisDef"
@@ -121,12 +126,15 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
-
+import { deepClone } from '@/scripts/clone.js';
+import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
+const $i = signinRequired();
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
-  pinnedEmojis?: string[];
+	pinnedEmojis?: string[];
 	maxHeight?: number;
 	asDrawer?: boolean;
 	asWindow?: boolean;
@@ -139,7 +147,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
-
+const profileMax = $i.policies.emojiPickerProfileLimit;
 const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 
@@ -154,7 +162,7 @@ const recentlyUsedEmojisDef = computed(() => {
 	return recentlyUsedEmojis.value.map(getDef);
 });
 const pinnedEmojisDef = computed(() => {
-	return pinned.value?.map(getDef);
+	return pinnedEmojis.value?.map(getDef);
 });
 
 const pinned = computed(() => props.pinnedEmojis);
@@ -165,25 +173,29 @@ const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.EmojiSimple[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
-
+const pinnedEmojis = ref(pinned.value);
 const customEmojiFolderRoot: CustomEmojiFolderTree = { value: '', category: '', children: [] };
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
-	const parts = input.split('/').map(p => p.trim());
-	let currentNode: CustomEmojiFolderTree = root;
-
-	for (const part of parts) {
-		let existingNode = currentNode.children.find((node) => node.value === part);
-
-		if (!existingNode) {
-			const newNode: CustomEmojiFolderTree = { value: part, category: input, children: [] };
-			currentNode.children.push(newNode);
-			existingNode = newNode;
-		}
-
-		currentNode = existingNode;
+	const parts = input.split('/').map(p => p.trim()); // スラッシュで区切って配列にしてる
+	let currentNode: CustomEmojiFolderTree = root; // currentNode は root
+	let includesPart = customEmojis.value.some(emoji => emoji.category !== null && emoji.category.includes(parts[0] + '/'));
+	if (parts.length === 1 && parts[0] !== '' && includesPart) { // parts が 1 つで空じゃなかったら
+		parts.push(parts[0]); // parts に parts[0] を追加 (test category だったら test/test category になる)
 	}
 
+	for (const part of parts) { // parts を順番に見ていく
+		let existingNode = currentNode.children.find((node) => node.value === part); // currentNode の children から part と同じ value を持つ node を探す
+
+		if (!existingNode) { // なかったら
+			const newNode: CustomEmojiFolderTree = { value: part, category: input, children: [] }; // 新しい node を作る
+
+			currentNode.children.push(newNode); // currentNode の children に newNode を追加
+			existingNode = newNode; // existingNode に newNode を代入
+		}
+
+		currentNode = existingNode; // currentNode に existingNode を代入
+	}
 	return currentNode;
 }
 
@@ -245,9 +257,7 @@ watch(q, () => {
 					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
+			if (matches.size >= max) return matches; for (const emoji of emojis) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -357,7 +367,7 @@ function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef | string
 }
 
 function filterCategory(emoji: Misskey.entities.EmojiSimple, category: string): boolean {
-	return category === '' ? (emoji.category === 'null' || !emoji.category) : emoji.category === category;
+	return category === '' ? (emoji.category === 'null' || !emoji.category) : emoji.category === category && !customEmojis.value.some(e => e.category !== null && e.category.includes(emoji.category + '/')) || emoji.category === category + '/' + category && !emoji.category;
 }
 
 function focus() {
@@ -433,6 +443,14 @@ function paste(event: ClipboardEvent): void {
 function onEnter(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 	done();
+}
+
+const activeIndex = ref(defaultStore.state.pickerProfileDefault);
+pinnedEmojis.value = props.asReactionPicker ? deepClone(defaultStore.state[`reactions${activeIndex.value > 1 ? activeIndex.value - 1 : ''}`]) : deepClone(defaultStore.state[`pinnedEmojis${activeIndex.value > 1 ? activeIndex.value - 1 : ''}`]);
+
+function pinnedProfileSelect(index:number) {
+	pinnedEmojis.value = props.asReactionPicker ? deepClone(defaultStore.state[`reactions${index > 1 ? index - 1 : ''}`]) : deepClone(defaultStore.state[`pinnedEmojis${index > 1 ? index - 1 : ''}`]);
+	activeIndex.value = index;
 }
 
 function done(query?: string): boolean | void {
@@ -660,8 +678,8 @@ defineExpose({
 
 			> header {
 				/*position: sticky;
-				top: 0;
-				left: 0;*/
+top: 0;
+left: 0;*/
 				height: 32px;
 				line-height: 32px;
 				z-index: 2;
@@ -675,7 +693,8 @@ defineExpose({
 				position: sticky;
 				top: 0;
 				left: 0;
-				line-height: 28px;
+				height: 32px;
+				line-height: 32px;
 				z-index: 1;
 				padding: 0 8px;
 				font-size: 12px;
@@ -743,6 +762,26 @@ defineExpose({
 				}
 			}
 		}
+	}
+}
+.sllfktkhgl{
+	display: inline-block;
+	padding: 0 4px;
+	font-size: 12px;
+	line-height: 32px;
+	text-align: center;
+	color: var(--fg);
+	cursor: pointer;
+	width: 100%;
+	transition: transform 0.3s ease;
+	box-shadow: 0 1.5px 0 var(--divider);
+	height: 32px;
+	overflow: hidden;
+	&:hover {
+		transform: translateY(1.5px);
+	}
+	&.active {
+		transform: translateY(5px);
 	}
 }
 </style>

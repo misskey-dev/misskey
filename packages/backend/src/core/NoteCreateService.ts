@@ -15,19 +15,16 @@ import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
 import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { IPoll } from '@/models/Poll.js';
 import { MiPoll } from '@/models/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
-import type { MiChannel } from '@/models/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
+import type { MiNoteCreateOption as Option, MiMinimumUser as MinimumUser } from '@/types.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -128,14 +125,17 @@ type MinimumUser = {
 
 type Option = {
 	createdAt?: Date | null;
+	updatedAt?: Date | null;
 	name?: string | null;
 	text?: string | null;
 	reply?: MiNote | null;
 	renote?: MiNote | null;
 	files?: MiDriveFile[] | null;
 	poll?: IPoll | null;
+	event?: IEvent | null;
 	localOnly?: boolean | null;
 	reactionAcceptance?: MiNote['reactionAcceptance'];
+	disableRightClick?: boolean | null;
 	cw?: string | null;
 	visibility?: string;
 	visibleUsers?: MinimumUser[] | null;
@@ -227,6 +227,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
+		isGorilla: MiUser['isGorilla'];
 	}, data: Option, silent = false): Promise<MiNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
@@ -262,13 +263,50 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		const hasProhibitedWords = await this.checkProhibitedWordsContain({
-			cw: data.cw,
-			text: data.text,
-			pollChoices: data.poll?.choices,
-		}, meta.prohibitedWords);
+		if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', meta.prohibitedWords)) {
+			const { DiscordWebhookUrlWordBlock } = (await this.metaService.fetch());
+			const regexpregexp = /^\/(.+)\/(.*)$/;
+			let matchedString = '';
+			for (const filter of meta.prohibitedWords) {
+				// represents RegExp
+				const regexp = filter.match(regexpregexp);
+				// This should never happen due to input sanitisation.
+				if (!regexp) {
+					const words = filter.split(' ');
+					const foundWord = words.find(keyword => (data.cw ?? data.text ?? '').includes(keyword));
+					if (foundWord) {
+						matchedString = foundWord;
+						break;
+					}
+				} else {
+					const match = new RE2(regexp[1], regexp[2]).exec(data.cw ?? data.text ?? '');
+					if (match) {
+						matchedString = match[0];
+						break;
+					}
+				}
+			}
 
-		if (hasProhibitedWords) {
+			if (DiscordWebhookUrlWordBlock) {
+				const data_disc = { 'username': 'ノートブロックお知らせ',
+																								'content':
+						'ユーザー名 :' + user.username + '\n' +
+						'url : ' + user.host + '\n' +
+						'contents : ' + data.text + '\n' +
+						'引っかかったワード :' + matchedString,
+																								'allowed_mentions': {
+																									'parse': [],
+																								},
+				};
+
+				await fetch(DiscordWebhookUrlWordBlock, {
+					'method': 'post',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data_disc),
+				});
+			}
 			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 		}
 
@@ -362,6 +400,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
 			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
+		}
+
+		const willCauseNotification = mentionedUsers.filter(u => u.host === null).length > 0 || data.reply?.userHost === null || data.renote?.userHost === null;
+
+		if (user.host !== null && willCauseNotification) {
+			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
+			if ((userEntity?.followersCount ?? 0) === 0) {
+				throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
+			}
 		}
 
 		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
@@ -961,6 +1008,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 					if (note.fileIds.length > 0) {
 						this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
 					}
+				}
+				if (note.visibility === 'public' && note.userHost !== null) {
+					this.fanoutTimelineService.push(`remoteLocalTimeline:${note.userHost}`, note.id, 1000, r);
 				}
 			}
 

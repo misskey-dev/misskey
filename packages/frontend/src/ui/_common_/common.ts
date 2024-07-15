@@ -25,8 +25,13 @@ function toolsMenuItems(): MenuItem[] {
 	}, {
 		type: 'link',
 		to: '/clicker',
-		text: '🍪👈',
+		text: '●👈',
 		icon: 'ti ti-cookie',
+	}, {
+		type: 'link',
+		to: '/bubble-game',
+		text: i18n.ts.bubbleGame,
+		icon: 'ti ti-apple',
 	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
 		to: '/custom-emojis-manager',

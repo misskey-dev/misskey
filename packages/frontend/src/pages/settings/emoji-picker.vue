@@ -5,6 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
+	<MkSelect v-model="nowProfileId">
+		<template #label>{{ i18n.ts.emojiPickerProfile }}</template>
+		<option v-for="a in profileMax" :key="a" :value="a">{{ a }}. {{ defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`] }} {{ nowDefaultProfileId === a ? `(${i18n.ts.default})`: '' }} </option>
+	</MkSelect>
+	<MkInput v-model="profileName">
+		<template #label>{{ i18n.ts.name }}</template>
+	</MkInput>
 	<MkFolder :defaultOpen="true">
 		<template #icon><i class="ti ti-pin"></i></template>
 		<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.reaction }})</template>
@@ -84,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkFolder>
-
+	<MkButton inline primary @click="setDefaultProfile"> {{ i18n.ts.default }}</MkButton>
 	<FormSection>
 		<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
 
@@ -139,6 +146,9 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import { signinRequired } from '@/account.js';
+import MkInput from '@/components/MkInput.vue';
 
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
@@ -155,6 +165,23 @@ const setDefaultReaction = () => setDefault(pinnedEmojisForReaction);
 const removeEmoji = (reaction: string, ev: MouseEvent) => remove(pinnedEmojis, reaction, ev);
 const chooseEmoji = (ev: MouseEvent) => pickEmoji(pinnedEmojis, ev);
 const setDefaultEmoji = () => setDefault(pinnedEmojis);
+const nowProfileId = ref(defaultStore.state.pickerProfileDefault);
+
+const $i = signinRequired();
+const profileMax = $i.policies.emojiPickerProfileLimit;
+const profileName = ref(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+const nowDefaultProfileId = ref(defaultStore.state['pickerProfileDefault']);
+const nowDefaultProfileName = ref();
+nowDefaultProfileName.value = deepClone(defaultStore.state[`pickerProfileName${nowDefaultProfileId.value > 1 ? nowDefaultProfileId.value - 1 : ''}`]);
+pinnedEmojisForReaction.value = deepClone(defaultStore.state[`reactions${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+pinnedEmojis.value = deepClone(defaultStore.state[`pinnedEmojis${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+profileName.value = deepClone(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+
+watch(nowProfileId, () => {
+	pinnedEmojisForReaction.value = deepClone(defaultStore.state[`reactions${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+	pinnedEmojis.value = deepClone(defaultStore.state[`pinnedEmojis${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+	profileName.value = deepClone(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+});
 
 function previewReaction(ev: MouseEvent) {
 	reactionPicker.show(getHTMLElement(ev), null);
@@ -226,16 +253,33 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 }
 
 watch(pinnedEmojisForReaction, () => {
-	defaultStore.set('reactions', pinnedEmojisForReaction.value);
+	defaultStore.set(`reactions${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`, pinnedEmojisForReaction.value);
 }, {
 	deep: true,
 });
 
 watch(pinnedEmojis, () => {
-	defaultStore.set('pinnedEmojis', pinnedEmojis.value);
+	defaultStore.set( `pinnedEmojis${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`, pinnedEmojis.value);
 }, {
 	deep: true,
 });
+
+watch(profileName, () => {
+	defaultStore.set(`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`, profileName.value);
+}, {
+	deep: true,
+});
+
+async function setDefaultProfile() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.setDefaultProfileConfirm,
+	});
+	if (canceled) return;
+	nowDefaultProfileId.value = nowProfileId.value;
+	nowDefaultProfileName.value = deepClone(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+	await defaultStore.set('pickerProfileDefault', nowProfileId.value);
+}
 
 definePageMetadata(() => ({
 	title: i18n.ts.emojiPicker,

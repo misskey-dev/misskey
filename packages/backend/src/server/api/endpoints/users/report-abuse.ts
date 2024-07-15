@@ -2,9 +2,18 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import { Injectable } from '@nestjs/common';
+import { setImmediate } from 'node:timers/promises';
+import sanitizeHtml from 'sanitize-html';
+import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
+import type { AbuseUserReportsRepository, NotesRepository } from '@/models/_.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { EmailService } from '@/core/EmailService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
@@ -44,6 +53,7 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		comment: { type: 'string', minLength: 1, maxLength: 2048 },
+		noteIds: { type: 'array', items: { type: 'string', format: 'misskey:id', maxLength: 16 } },
 	},
 	required: ['userId', 'comment'],
 } as const;
@@ -51,8 +61,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.abuseUserReportsRepository)
+		private abuseUserReportsRepository: AbuseUserReportsRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		private idService: IdService,
+		private metaService: MetaService,
+		private emailService: EmailService,
 		private getterService: GetterService,
 		private roleService: RoleService,
+		private noteEntityService: NoteEntityService,
+		private globalEventService: GlobalEventService,
 		private abuseReportService: AbuseReportService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -70,13 +91,59 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
-			await this.abuseReportService.report([{
+			const notes = ps.noteIds ? await this.notesRepository.find({
+				where: { id: In(ps.noteIds), userId: targetUser.id },
+			}) : [];
+
+			const report = await this.abuseUserReportsRepository.insert({
+				id: this.idService.gen(),
 				targetUserId: targetUser.id,
 				targetUserHost: targetUser.host,
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
-			}]);
+				notes: (ps.noteIds && !((await this.metaService.fetch()).enableGDPRMode)) ? await this.noteEntityService.packMany(notes) : [],
+				noteIds: (ps.noteIds && (await this.metaService.fetch()).enableGDPRMode) ? ps.noteIds : [],
+			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
+
+			// Publish event to moderators
+			setImmediate(async () => {
+				const moderators = await this.roleService.getModerators();
+
+				for (const moderator of moderators) {
+					this.globalEventService.publishAdminStream(moderator.id, 'newAbuseUserReport', {
+						id: report.id,
+						targetUserId: report.targetUserId,
+						reporterId: report.reporterId,
+						comment: report.comment,
+						notes: report.notes,
+						noteIds: report.noteIds ?? [],
+					});
+				}
+				const meta = await this.metaService.fetch();
+				if (meta.DiscordWebhookUrl) {
+					const data_disc = { 'username': '絵文字追加通知ちゃん',
+																									'content':
+
+							'通報' + '\n' +
+																										'通報' + report.comment + '\n' +
+							'通報したユーザー : ' + '@' + me.username + '\n' +
+							'通報されたユーザー : ' + report.targetUserId + '\n',
+					};
+					await fetch(meta.DiscordWebhookUrl, {
+						'method': 'post',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(data_disc),
+					});
+				}
+				if (meta.email) {
+					this.emailService.sendEmail(meta.email, 'New abuse report',
+						sanitizeHtml(ps.comment),
+						sanitizeHtml(ps.comment));
+				}
+			});
 		});
 	}
 }

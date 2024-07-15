@@ -81,11 +81,11 @@ const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadM
 const userLists = await misskeyApi('users/lists/list');
 
 async function readAllUnreadNotes() {
-	await os.apiWithDialog('i/read-all-unread-notes');
+	await misskeyApi('i/read-all-unread-notes');
 }
 
 async function readAllNotifications() {
-	await os.apiWithDialog('notifications/mark-all-as-read');
+	await misskeyApi('notifications/mark-all-as-read');
 }
 
 async function updateReceiveConfig(type, value) {

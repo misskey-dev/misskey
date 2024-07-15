@@ -7,45 +7,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
+		<MkSwitch v-model="select">SelectMode</MkSwitch>
+		<MkButton @click="setCategoryBulk">Set Category</MkButton>
+		<MkButton @click="deletes">Delete</MkButton>
 		<div class="_gaps">
-			<MkFolder v-for="avatarDecoration in avatarDecorations" :key="avatarDecoration.id ?? avatarDecoration._id" :defaultOpen="avatarDecoration.id == null">
-				<template #label>{{ avatarDecoration.name }}</template>
-				<template #caption>{{ avatarDecoration.description }}</template>
-
-				<div class="_gaps_m">
-					<MkInput v-model="avatarDecoration.name">
-						<template #label>{{ i18n.ts.name }}</template>
-					</MkInput>
-					<MkTextarea v-model="avatarDecoration.description">
-						<template #label>{{ i18n.ts.description }}</template>
-					</MkTextarea>
-					<MkInput v-model="avatarDecoration.url">
-						<template #label>{{ i18n.ts.imageUrl }}</template>
-					</MkInput>
-					<div class="buttons _buttons">
-						<MkButton class="button" inline primary @click="save(avatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-						<MkButton v-if="avatarDecoration.id != null" class="button" inline danger @click="del(avatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-					</div>
-				</div>
-			</MkFolder>
+			<div :class="$style.decorations">
+				<XDecoration
+					v-for="avatarDecoration in avatarDecorations"
+					:key="avatarDecoration.id"
+					:class=" selectItemsId.includes(avatarDecoration.id) ? $style.selected : '' "
+					:decoration="avatarDecoration"
+					@click="select ? selectItems(avatarDecoration.id) : openDecorationEdit(avatarDecoration)"
+				/>
+			</div>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, defineAsyncComponent, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import MkFolder from '@/components/MkFolder.vue';
+import XDecoration from '@/pages/settings/avatar-decoration.decoration.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
+const select = ref(false);
+const selectItemsId = ref<string[]>([]);
 
 function add() {
 	avatarDecorations.value.unshift({
@@ -54,7 +47,17 @@ function add() {
 		name: '',
 		description: '',
 		url: '',
+		category: '',
 	});
+}
+
+function selectItems(decorationId) {
+	if (selectItemsId.value.includes(decorationId)) {
+		const index = selectItemsId.value.indexOf(decorationId);
+		selectItemsId.value.splice(index, 1);
+	} else {
+		selectItemsId.value.push(decorationId);
+	}
 }
 
 function del(avatarDecoration) {
@@ -73,8 +76,27 @@ async function save(avatarDecoration) {
 		await os.apiWithDialog('admin/avatar-decorations/create', avatarDecoration);
 		load();
 	} else {
-		os.apiWithDialog('admin/avatar-decorations/update', avatarDecoration);
+		selectItemsId.value.push(decorationId);
 	}
+}
+
+function openDecorationEdit(avatarDecoration) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkAvatarDecoEditDialog.vue')), {
+		avatarDecoration: avatarDecoration,
+	}, {
+		del: () => {
+			window.location.reload();
+		},
+	});
+}
+
+function openDecorationCreate() {
+	os.popup(defineAsyncComponent(() => import('@/components/MkAvatarDecoEditDialog.vue')), {
+	}, {
+		del: result => {
+			avatarDecorations.value.unshift(result);
+		},
+	});
 }
 
 function load() {
@@ -84,12 +106,40 @@ function load() {
 }
 
 load();
+watch(select, () => {
+	selectItemsId.value = [];
+});
+
+async function setCategoryBulk() {
+	const { canceled, result } = await os.inputText({
+		title: 'Category',
+	});
+	if (canceled) return;
+	if (selectItemsId.value.length > 1) {
+		for (let i = 0; i < selectItemsId.value.length; i++) {
+			let decorationId = selectItemsId.value[i];
+			await misskeyApi('admin/avatar-decorations/update', {
+				id: decorationId,
+				category: result,
+			});
+		}
+	}
+}
+
+async function deletes() {
+	if (selectItemsId.value.length > 0) {
+		selectItemsId.value.forEach(decorationId => {
+			console.log(decorationId);
+			misskeyApi('admin/avatar-decorations/delete', { id: decorationId });
+		});
+	}
+}
 
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
-	handler: add,
+	handler: openDecorationCreate,
 }]);
 
 const headerTabs = computed(() => []);
@@ -99,3 +149,13 @@ definePageMetadata(() => ({
 	icon: 'ti ti-sparkles',
 }));
 </script>
+<style module>
+.decorations {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-gap: 12px;
+}
+.selected{
+			border: 0.1px solid var(--accent);
+}
+</style>

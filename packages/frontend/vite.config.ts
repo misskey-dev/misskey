@@ -1,7 +1,7 @@
 import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { type UserConfig, defineConfig } from 'vite';
+import {type UserConfig, defineConfig} from 'vite';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';

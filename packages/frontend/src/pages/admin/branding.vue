@@ -14,6 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }}</template>
 					</MkInput>
+					<MkInput v-model="iconDark" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (Dark)</template>
+					</MkInput>
+					<MkInput v-model="iconLight" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (Light)</template>
+					</MkInput>
 
 					<MkInput v-model="app192IconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
@@ -41,6 +49,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.bannerUrl }}</template>
 					</MkInput>
+					<MkInput v-model="bannerDark" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.bannerUrl }} (Dark)</template>
+					</MkInput>
+					<MkInput v-model="bannerLight" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.bannerUrl }} (Light)</template>
+					</MkInput>
 
 					<MkInput v-model="backgroundImageUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
@@ -60,6 +76,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="serverErrorImageUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.somethingHappened }}</template>
+					</MkInput>
+					<MkInput v-model="googleAnalyticsId" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>googleAnal </template>
 					</MkInput>
 
 					<MkColorInput v-model="themeColor">
@@ -128,10 +148,16 @@ const themeColor = ref<string | null>(null);
 const defaultLightTheme = ref<string | null>(null);
 const defaultDarkTheme = ref<string | null>(null);
 const serverErrorImageUrl = ref<string | null>(null);
+const googleAnalyticsId = ref<string | null>(null);
+
 const infoImageUrl = ref<string | null>(null);
 const notFoundImageUrl = ref<string | null>(null);
 const repositoryUrl = ref<string | null>(null);
 const feedbackUrl = ref<string | null>(null);
+const iconDark = ref<string | null>(null);
+const iconLight = ref<string | null>(null);
+const bannerDark = ref<string | null>(null);
+const bannerLight = ref<string | null>(null);
 const manifestJsonOverride = ref<string>('{}');
 
 async function init() {
@@ -150,6 +176,10 @@ async function init() {
 	repositoryUrl.value = meta.repositoryUrl;
 	feedbackUrl.value = meta.feedbackUrl;
 	manifestJsonOverride.value = meta.manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON.parse(meta.manifestJsonOverride), null, '\t');
+	iconDark.value = meta.iconDark;
+	iconLight.value = meta.iconLight;
+	bannerDark.value = meta.bannerDark;
+	bannerLight.value = meta.bannerLight;
 }
 
 function save() {
@@ -165,9 +195,14 @@ function save() {
 		infoImageUrl: infoImageUrl.value === '' ? null : infoImageUrl.value,
 		notFoundImageUrl: notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
 		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
+		googleAnalyticsId: googleAnalyticsId.value === '' ? null : googleAnalyticsId.value,
 		repositoryUrl: repositoryUrl.value === '' ? null : repositoryUrl.value,
 		feedbackUrl: feedbackUrl.value === '' ? null : feedbackUrl.value,
 		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
+		iconDark: iconDark.value === '' ? null : iconDark.value,
+		iconLight: iconLight.value === '' ? null : iconLight.value,
+		bannerDark: bannerDark.value === '' ? null : bannerDark.value,
+		bannerLight: bannerLight.value === '' ? null : bannerLight.value,
 	}).then(() => {
 		fetchInstance(true);
 	});

@@ -13,6 +13,7 @@ import type { Form, GetFormResultType } from '@/scripts/form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
+import XPostFormDialog from '@/components/XPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
@@ -24,6 +25,8 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import MkSwitch from '@/components/MkSwitch.vue';
+import { ui } from '@/config.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -223,15 +226,32 @@ export function alert(props: {
 		}, 'closed');
 	});
 }
-
 export function confirm(props: {
-	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question'|'mksw';
 	title?: string;
 	text?: string;
 	okText?: string;
 	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
 	return new Promise(resolve => {
+		popup(MkDialog, {
+			...props,
+			showCancelButton: true,
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+export function switch1(props: {
+	type: 'mksw';
+	title?: string | null;
+	text?: string | null;
+	okText?: string;
+	cancelText?: string;
+}): Promise<{ canceled: boolean, result: boolean }> {
+	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			...props,
 			showCancelButton: true,
@@ -528,11 +548,12 @@ export function form<F extends Form>(title: string, f: F): Promise<{ canceled: t
 	});
 }
 
-export async function selectUser(opts: { includeSelf?: boolean; localOnly?: boolean; } = {}): Promise<Misskey.entities.UserDetailed> {
+export async function selectUser(opts: { includeSelf?: boolean; localOnly?: boolean; multiple?: boolean; } = {}): Promise<Misskey.entities.UserDetailed> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
 			localOnly: opts.localOnly,
+			multiple: opts.multiple,
 		}, {
 			ok: user => {
 				resolve(user);
@@ -540,7 +561,13 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 		}, 'closed');
 	});
 }
-
+export async function listSchedulePost() {
+	return new Promise((resolve, reject) => {
+		popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {
+		}, {
+		}, 'closed');
+	});
+}
 export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
@@ -657,14 +684,25 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 		let dispose;
-		popup(MkPostFormDialog, props, {
-			closed: () => {
-				resolve();
-				dispose();
-			},
-		}).then(res => {
-			dispose = res.dispose;
-		});
+		if (ui !== 'twilike') {
+			popup(MkPostFormDialog, props, {
+				closed: () => {
+					resolve();
+					dispose();
+				},
+			}).then(res => {
+				dispose = res.dispose;
+			});
+		} else {
+			popup(XPostFormDialog, props, {
+				closed: () => {
+					resolve();
+					dispose();
+				},
+			}).then(res => {
+				dispose = res.dispose;
+			});
+		}
 	});
 }
 

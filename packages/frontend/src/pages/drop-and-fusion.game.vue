@@ -234,7 +234,7 @@ const NORAML_MONOS: FrontendMonoDefinition[] = [{
 	img: '/client-assets/drop-and-fusion/normal_monos/face_with_symbols_on_mouth.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
-	spriteScale: 1.12,
+	spriteScale: 1.0,
 }, {
 	id: 'beb30459-b064-4888-926b-f572e4e72e0c',
 	sfxPitch: 0.75,
@@ -508,9 +508,81 @@ const SWEETS_MONOS: FrontendMonoDefinition[] = [{
 	imgSizeY: 32,
 	spriteScale: 1,
 }];
+const PRISMISSKEY_MONOS: FrontendMonoDefinition[] = [{
+	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
+	sfxPitch: 0.25,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2Fc4c7e430-bd92-415a-a7d3-031ddb7f0641.apng',
+	imgSizeX: 3400,
+	imgSizeY: 3400,
+	spriteScale: 2.3,
+}, {
+	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
+	sfxPitch: 0.5,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2F5ba71ab2-1673-4eb0-bd3b-b44e063365ba.apng',
 
+	imgSizeX: 2000,
+	imgSizeY: 2000,
+	spriteScale: 1.65,
+}, {
+	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
+	sfxPitch: 0.75,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2Fd6fe438b-c550-484f-95d1-1739a2b5173d.apng',
+
+	imgSizeX: 2000,
+	imgSizeY: 2000,
+	spriteScale: 1.8,
+}, {
+	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
+	sfxPitch: 1,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2F8226211b-58e2-46ba-be20-4ea635d614ab.webp',
+	imgSizeX: 500,
+	imgSizeY: 501,
+	spriteScale: 1.0,
+}, {
+	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
+	sfxPitch: 1.5,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2Fde30a66c-5c98-4c2e-a425-4d1f73d96899.png',
+	imgSizeX: 340,
+	imgSizeY: 351,
+	spriteScale: 0.98,
+}, {
+	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
+	sfxPitch: 2,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2Fdc8d893a-6d1f-4a86-847e-a30e56270249.png',
+	imgSizeX: 1023,
+	imgSizeY: 1000,
+	spriteScale: 1.0,
+}, {
+	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
+	sfxPitch: 2.5,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2F56a303b9-4385-44bb-a4d4-2453450eef01.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.4,
+}, {
+	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
+	sfxPitch: 3,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2F96a87c60-543d-4e83-a24d-c2a3247eb2ea.webp',
+	imgSizeX: 630,
+	imgSizeY: 620,
+	spriteScale: 0.6,
+}, {
+	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
+	sfxPitch: 3.5,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2Fdff2812b-2c80-4ecf-b5f1-b2874048899e.webp',
+	imgSizeX: 1500,
+	imgSizeY: 1500,
+	spriteScale: 1.15,
+}, {
+	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
+	sfxPitch: 4,
+	img: '/proxy/image.webp?url=https%3A%2F%2Ffiles.prismisskey.space%2Fmisskey%2Fc4448bf6-d95f-49e5-844d-b6b9530e82cc.png',
+	imgSizeX: 200,
+	imgSizeY: 200,
+	spriteScale: 1.5,
+}];
 const props = defineProps<{
-	gameMode: 'normal' | 'square' | 'yen' | 'sweets' | 'space';
+	gameMode: 'normal' | 'square' | 'yen' | 'sweets' | 'prismisskey' | 'space';
 	mute: boolean;
 }>();
 
@@ -524,6 +596,7 @@ const monoDefinitions = computed(() => {
 		props.gameMode === 'yen' ? YEN_MONOS :
 		props.gameMode === 'sweets' ? SWEETS_MONOS :
 		props.gameMode === 'space' ? NORAML_MONOS :
+		props.gameMode === 'prismisskey' ? PRISMISSKEY_MONOS :
 		[] as never;
 });
 
@@ -532,6 +605,7 @@ function getScoreUnit(gameMode: string) {
 		gameMode === 'square' ? 'pt' :
 		gameMode === 'yen' ? '円' :
 		gameMode === 'sweets' ? 'kcal' :
+		gameMode === 'prismisskey' ? 'pt' :
 		'' as never;
 }
 

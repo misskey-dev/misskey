@@ -3,7 +3,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <script lang="ts">
-import { defineComponent, h, resolveDirective, withDirectives } from 'vue';
+import {computed, defineComponent, h, resolveDirective, withDirectives , ref , watch} from 'vue';
+import {defaultStore} from "@/store.js";
+
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 export default defineComponent({
 	props: {
@@ -17,7 +20,7 @@ export default defineComponent({
 		return () => h('div', {
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
-			class: ['_button', { active: props.modelValue === option.props?.value }],
+			class: ['_button', { active: props.modelValue === option.props?.value , gamingDark: gamingType.value == 'dark' && props.modelValue === option.props.value,gamingLight: gamingType.value == 'light' && props.modelValue === option.props.value } ],
 			key: option.key as string,
 			disabled: props.modelValue === option.props?.value,
 			onClick: () => {
@@ -48,6 +51,24 @@ export default defineComponent({
 		&.active {
 			color: var(--accent);
 			background: var(--accentedBg);
+
+      &.gamingDark{
+				color: black !important;
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+        background-size: 1800% 1800%;
+        -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+        -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+        animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      }
+      &.gamingLight{
+
+				color:white !important;
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      }
 		}
 
 		&:not(.active):hover {
@@ -73,5 +94,70 @@ export default defineComponent({
 			padding: 11px 8px;
 		}
 	}
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

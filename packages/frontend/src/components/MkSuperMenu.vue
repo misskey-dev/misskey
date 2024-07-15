@@ -9,15 +9,15 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 		<div class="items">
 			<template v-for="(item, i) in group.items">
-				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
+				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active, gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</a>
-				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
+				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }" :disabled="item.active" @click="ev => item.action(ev)">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</button>
-				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
+				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
@@ -28,7 +28,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import {ref , computed , watch } from 'vue';
+import {defaultStore} from "@/store.js";
+
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 defineProps<{
 	def: any[];
@@ -69,6 +72,21 @@ defineProps<{
 				&.active {
 					color: var(--accent);
 					background: var(--accentedBg);
+          &.gamingDark{
+            color: black !important;
+            background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);            background-size: 1800% 1800%;
+            -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+            -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+            animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+          }
+          &.gamingLight{
+            color: white;
+            background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+            background-size: 1800% 1800% !important;
+            -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+            -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+            animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+          }
 				}
 
 				&.danger {
@@ -153,4 +171,70 @@ defineProps<{
 		}
 	}
 }
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
 </style>
+

@@ -50,6 +50,7 @@ export const paramDef = {
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
 		serverErrorImageUrl: { type: 'string', nullable: true },
+		googleAnalyticsId: { type: 'string', nullable: true },
 		infoImageUrl: { type: 'string', nullable: true },
 		notFoundImageUrl: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
@@ -90,6 +91,9 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		summalyProxy: { type: 'string', nullable: true },
+		DiscordWebhookUrl: { type: 'string', nullable: true },
+		DiscordWebhookUrlWordBlock: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
 		enableEmail: { type: 'boolean' },
@@ -110,6 +114,7 @@ export const paramDef = {
 		inquiryUrl: { type: 'string', nullable: true },
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
+		requestEmojiAllOk: { type: 'boolean', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
 		objectStoragePrefix: { type: 'string', nullable: true },
 		objectStorageEndpoint: { type: 'string', nullable: true },
@@ -160,6 +165,19 @@ export const paramDef = {
 		urlPreviewRequireContentLength: { type: 'boolean' },
 		urlPreviewUserAgent: { type: 'string', nullable: true },
 		urlPreviewSummaryProxyUrl: { type: 'string', nullable: true },
+		EmojiBotToken: { type: 'string', nullable: true },
+		ApiBase: { type: 'string', nullable: true },
+		enableGDPRMode: { type: 'boolean' },
+		enableProxyCheckio: {
+			type: 'boolean', nullable: true,
+		},
+		proxyCheckioApiKey: {
+			type: 'string', nullable: true,
+		},
+		iconLight: { type: 'string', nullable: true },
+		iconDark: { type: 'string', nullable: true },
+		bannerLight: { type: 'string', nullable: true },
+		bannerDark: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
@@ -206,7 +224,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
-
+			if (ps.DiscordWebhookUrl !== undefined) {
+				set.DiscordWebhookUrl = ps.DiscordWebhookUrl;
+			}
+			if (ps.DiscordWebhookUrlWordBlock !== undefined) {
+				set.DiscordWebhookUrlWordBlock = ps.DiscordWebhookUrlWordBlock;
+			}
+			if (ps.EmojiBotToken !== undefined) {
+				set.EmojiBotToken = ps.EmojiBotToken;
+			}
+			if (ps.ApiBase !== undefined) {
+				set.ApiBase = ps.ApiBase;
+			}
 			if (ps.mascotImageUrl !== undefined) {
 				set.mascotImageUrl = ps.mascotImageUrl;
 			}
@@ -230,11 +259,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.serverErrorImageUrl !== undefined) {
 				set.serverErrorImageUrl = ps.serverErrorImageUrl;
 			}
+			if (ps.googleAnalyticsId !== undefined) {
+				set.googleAnalyticsId = ps.googleAnalyticsId;
+			}
+			if (ps.enableProxyCheckio !== undefined) {
+				set.enableProxyCheckio = ps.enableProxyCheckio;
+			}
+
+			if (ps.proxyCheckioApiKey !== undefined) {
+				set.proxyCheckioApiKey = ps.proxyCheckioApiKey;
+			}
 
 			if (ps.infoImageUrl !== undefined) {
 				set.infoImageUrl = ps.infoImageUrl;
 			}
 
+			if (ps.enableGDPRMode !== undefined) {
+				set.enableGDPRMode = ps.enableGDPRMode;
+			}
+
+			if (ps.requestEmojiAllOk !== undefined) {
+				set.requestEmojiAllOk = ps.requestEmojiAllOk;
+			}
 			if (ps.notFoundImageUrl !== undefined) {
 				set.notFoundImageUrl = ps.notFoundImageUrl;
 			}
@@ -616,7 +662,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const value = ((ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy) ?? '').trim();
 				set.urlPreviewSummaryProxyUrl = value === '' ? null : value;
 			}
-
+			if (ps.bannerDark !== undefined) {
+				set.bannerDark = ps.bannerDark;
+			}
+			if (ps.bannerLight !== undefined) {
+				set.bannerLight = ps.bannerLight;
+			}
+			if (ps.iconDark !== undefined) {
+				set.iconDark = ps.iconDark;
+			}
+			if (ps.iconLight !== undefined) {
+				set.iconLight = ps.iconLight;
+			}
 			const before = await this.metaService.fetch(true);
 
 			await this.metaService.update(set);

@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="profile _gaps">
 				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
-
+				<MkRemoteInfoUpdate v-if="user.host != null" :UserId="user.id" class="warn"/>
 				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
 						<div ref="bannerEl" class="banner" :style="style"></div>
@@ -23,7 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserName class="name" :user="user" :nowrap="true"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
+								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i
+									class="ti ti-shield"
+								></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 								<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
@@ -34,7 +36,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 						<div v-if="$i" class="actions">
 							<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
-							<MkFollowButton v-if="$i.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+							<MkNotifyButton v-if="$i.id != user.id " :user="user"></MkNotifyButton>
+							<MkFollowButton
+								v-if="$i.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true"
+								class="koudoku"
+							/>
 						</div>
 					</div>
 					<MkAvatar class="avatar" :user="user" indicator/>
@@ -42,13 +48,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
-							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
+							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i
+								class="ti ti-shield"
+							></i></span>
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
 					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+						<span
+							v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role"
+							:style="{ '--color': role.color }"
+						>
 							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
 								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
 								{{ role.name }}
@@ -56,7 +67,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</span>
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
-						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
+						<MkTextarea
+							v-if="editModerationNote || (moderationNote != null && moderationNote !== '')"
+							v-model="moderationNote" manualSave
+						>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
 						</MkTextarea>
 						<div v-else>
@@ -87,11 +101,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</dl>
 						<dl v-if="user.birthday" class="field">
 							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
+							<dd class="value">
+								{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{
+									i18n.tsx.yearsOld({age})
+								}})
+							</dd>
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
-							<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
+							<dd class="value">
+								{{ dateString(user.createdAt) }} (
+								<MkTime :time="user.createdAt"/>
+								)
+							</dd>
 						</dl>
 					</div>
 					<div v-if="user.fields.length > 0" class="fields">
@@ -101,7 +123,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dt>
 							<dd class="value">
 								<Mfm :text="field.value" :author="user" :colored="false"/>
-								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
+								<i
+									v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink"
+									class="ti ti-circle-check" :class="$style.verifiedLink"
+								></i>
 							</dd>
 						</dl>
 					</div>
@@ -117,6 +142,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
+						</MkA>
+						<MkA v-if="!user.host">
+							<b> {{ number(user.getPoints) }}</b>
+							<span>{{ i18n.ts.points }}</span>
 						</MkA>
 					</div>
 				</div>
@@ -135,10 +164,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<XActivity :key="user.id" :user="user"/>
 					</MkLazy>
 				</template>
-				<div v-if="!disableNotes">
-					<MkLazy>
-						<XTimeline :user="user"/>
-					</MkLazy>
+				<div>
+					<div style="margin-bottom: 8px;">{{ i18n.ts._sfx.note }}</div>
+					<MkNotes :class="$style.tl" :noGap="true" :pagination="Notes"/>
 				</div>
 			</div>
 		</div>
@@ -166,13 +194,17 @@ import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
+import { useRouter } from '@/router/supplier.js';
 import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
-import { useRouter } from '@/router/supplier.js';
+import MkNotifyButton from '@/components/MkNotifyButton.vue';
+import MkRemoteInfoUpdate from '@/components/MkRemoteInfoUpdate.vue';
+import MkNotes from '@/components/MkNotes.vue';
+import MkLazy from '@/components/global/MkLazy.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -194,9 +226,9 @@ const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.UserDetailed;
-	/** Test only; MkNotes currently causes problems in vitest */
-	disableNotes: boolean;
+  user: Misskey.entities.UserDetailed;
+  /** Test only; MkNotes currently causes problems in vitest */
+  disableNotes: boolean;
 }>(), {
 	disableNotes: false,
 });
@@ -218,10 +250,25 @@ watch(moderationNote, async () => {
 	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
 
+const pagination = {
+	endpoint: 'users/featured-notes' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
+const Notes = {
+	endpoint: 'users/notes' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
+
 const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
 	return {
-		backgroundImage: `url(${ props.user.bannerUrl })`,
+		backgroundImage: `url(${props.user.bannerUrl})`,
 	};
 });
 
@@ -307,379 +354,379 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .ftskorzw {
 
-	> .main {
+  > .main {
 
-		> .punished {
-			font-size: 0.8em;
-			padding: 16px;
-		}
+    > .punished {
+      font-size: 0.8em;
+      padding: 16px;
+    }
 
-		> .profile {
+    > .profile {
 
-			> .main {
-				position: relative;
-				overflow: clip;
+      > .main {
+        position: relative;
+        overflow: clip;
 
-				> .banner-container {
-					position: relative;
-					height: 250px;
-					overflow: clip;
-					background-size: cover;
-					background-position: center;
+        > .banner-container {
+          position: relative;
+          height: 250px;
+          overflow: clip;
+          background-size: cover;
+          background-position: center;
 
-					> .banner {
-						height: 100%;
-						background-color: #4c5e6d;
-						background-size: cover;
-						background-position: center;
-						box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
-						will-change: background-position;
-					}
+          > .banner {
+            height: 100%;
+            background-color: #4c5e6d;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
+            will-change: background-position;
+          }
 
-					> .fade {
-						position: absolute;
-						bottom: 0;
-						left: 0;
-						width: 100%;
-						height: 78px;
-						background: linear-gradient(transparent, rgba(#000, 0.7));
-					}
+          > .fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 78px;
+            background: linear-gradient(transparent, rgba(#000, 0.7));
+          }
 
-					> .followed {
-						position: absolute;
-						top: 12px;
-						left: 12px;
-						padding: 4px 8px;
-						color: #fff;
-						background: rgba(0, 0, 0, 0.7);
-						font-size: 0.7em;
-						border-radius: 6px;
-					}
+          > .followed {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 4px 8px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            font-size: 0.7em;
+            border-radius: 6px;
+          }
 
-					> .actions {
-						position: absolute;
-						top: 12px;
-						right: 12px;
-						-webkit-backdrop-filter: var(--blur, blur(8px));
-						backdrop-filter: var(--blur, blur(8px));
-						background: rgba(0, 0, 0, 0.2);
-						padding: 8px;
-						border-radius: 24px;
+          > .actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            -webkit-backdrop-filter: var(--blur, blur(8px));
+            backdrop-filter: var(--blur, blur(8px));
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 24px;
 
-						> .menu {
-							vertical-align: bottom;
-							height: 31px;
-							width: 31px;
-							color: #fff;
-							text-shadow: 0 0 8px #000;
-							font-size: 16px;
-						}
+            > .menu {
+              vertical-align: bottom;
+              height: 31px;
+              width: 31px;
+              color: #fff;
+              text-shadow: 0 0 8px #000;
+              font-size: 16px;
+            }
 
-						> .koudoku {
-							margin-left: 4px;
-							vertical-align: bottom;
-						}
-					}
+            > .koudoku {
+              margin-left: 4px;
+              vertical-align: bottom;
+            }
+          }
 
-					> .title {
-						position: absolute;
-						bottom: 0;
-						left: 0;
-						width: 100%;
-						padding: 0 0 8px 154px;
-						box-sizing: border-box;
-						color: #fff;
+          > .title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0 0 8px 154px;
+            box-sizing: border-box;
+            color: #fff;
 
-						> .name {
-							display: block;
-							margin: -10px;
+            > .name {
+              display: block;
+              margin: -10px;
 							padding: 10px;
-							line-height: 32px;
-							font-weight: bold;
-							font-size: 1.8em;
-							filter: drop-shadow(0 0 4px #000);
-						}
+              line-height: 32px;
+              font-weight: bold;
+              font-size: 1.8em;
+              filter: drop-shadow(0 0 4px #000);
+            }
 
-						> .bottom {
-							> * {
-								display: inline-block;
-								margin-right: 16px;
-								line-height: 20px;
-								opacity: 0.8;
+            > .bottom {
+              > * {
+                display: inline-block;
+                margin-right: 16px;
+                line-height: 20px;
+                opacity: 0.8;
 
-								&.username {
-									font-weight: bold;
-								}
-							}
+                &.username {
+                  font-weight: bold;
+                }
+              }
 
-							> .add-note-button {
-								background: rgba(0, 0, 0, 0.2);
-								color: #fff;
-								-webkit-backdrop-filter: var(--blur, blur(8px));
-								backdrop-filter: var(--blur, blur(8px));
-								border-radius: 24px;
-								padding: 4px 8px;
-								font-size: 80%;
-							}
-						}
-					}
-				}
+              > .add-note-button {
+                background: rgba(0, 0, 0, 0.2);
+                color: #fff;
+                -webkit-backdrop-filter: var(--blur, blur(8px));
+                backdrop-filter: var(--blur, blur(8px));
+                border-radius: 24px;
+                padding: 4px 8px;
+                font-size: 80%;
+              }
+            }
+          }
+        }
 
-				> .title {
-					display: none;
-					text-align: center;
-					padding: 50px 8px 16px 8px;
-					font-weight: bold;
-					border-bottom: solid 0.5px var(--divider);
+        > .title {
+          display: none;
+          text-align: center;
+          padding: 50px 8px 16px 8px;
+          font-weight: bold;
+          border-bottom: solid 0.5px var(--divider);
 
-					> .bottom {
-						> * {
-							display: inline-block;
-							margin-right: 8px;
-							opacity: 0.8;
-						}
-					}
-				}
+          > .bottom {
+            > * {
+              display: inline-block;
+              margin-right: 8px;
+              opacity: 0.8;
+            }
+          }
+        }
 
-				> .avatar {
-					display: block;
-					position: absolute;
-					top: 170px;
-					left: 16px;
-					z-index: 2;
-					width: 120px;
-					height: 120px;
-					box-shadow: 1px 1px 3px rgba(#000, 0.2);
-				}
+        > .avatar {
+          display: block;
+          position: absolute;
+          top: 170px;
+          left: 16px;
+          z-index: 2;
+          width: 120px;
+          height: 120px;
+          box-shadow: 1px 1px 3px rgba(#000, 0.2);
+        }
 
-				> .roles {
-					padding: 24px 24px 0 154px;
-					font-size: 0.95em;
-					display: flex;
-					flex-wrap: wrap;
-					gap: 8px;
+        > .roles {
+          padding: 24px 24px 0 154px;
+          font-size: 0.95em;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
 
-					> .role {
-						border: solid 1px var(--color, var(--divider));
-						border-radius: 999px;
-						margin-right: 4px;
-						padding: 3px 8px;
-					}
-				}
+          > .role {
+            border: solid 1px var(--color, var(--divider));
+            border-radius: 999px;
+            margin-right: 4px;
+            padding: 3px 8px;
+          }
+        }
 
-				> .moderationNote {
-					margin: 12px 24px 0 154px;
-				}
+        > .moderationNote {
+          margin: 12px 24px 0 154px;
+        }
 
-				> .memo {
-					margin: 12px 24px 0 154px;
-					background: transparent;
-					color: var(--fg);
-					border: 1px solid var(--divider);
-					border-radius: 8px;
-					padding: 8px;
-					line-height: 0;
+        > .memo {
+          margin: 12px 24px 0 154px;
+          background: transparent;
+          color: var(--fg);
+          border: 1px solid var(--divider);
+          border-radius: 8px;
+          padding: 8px;
+          line-height: 0;
 
-					> .heading {
-						text-align: left;
-						color: var(--fgTransparent);
-						line-height: 1.5;
-						font-size: 85%;
-					}
+          > .heading {
+            text-align: left;
+            color: var(--fgTransparent);
+            line-height: 1.5;
+            font-size: 85%;
+          }
 
-					textarea {
-						margin: 0;
-						padding: 0;
-						resize: none;
-						border: none;
-						outline: none;
-						width: 100%;
-						height: auto;
-						min-height: 0;
-						line-height: 1.5;
-						color: var(--fg);
-						overflow: hidden;
-						background: transparent;
-						font-family: inherit;
-					}
-				}
+          textarea {
+            margin: 0;
+            padding: 0;
+            resize: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            line-height: 1.5;
+            color: var(--fg);
+            overflow: hidden;
+            background: transparent;
+            font-family: inherit;
+          }
+        }
 
-				> .description {
-					padding: 24px 24px 24px 154px;
-					font-size: 0.95em;
+        > .description {
+          padding: 24px 24px 24px 154px;
+          font-size: 0.95em;
 
-					> .empty {
-						margin: 0;
-						opacity: 0.5;
-					}
-				}
+          > .empty {
+            margin: 0;
+            opacity: 0.5;
+          }
+        }
 
-				> .fields {
-					padding: 24px;
-					font-size: 0.9em;
-					border-top: solid 0.5px var(--divider);
+        > .fields {
+          padding: 24px;
+          font-size: 0.9em;
+          border-top: solid 0.5px var(--divider);
 
-					> .field {
-						display: flex;
-						padding: 0;
-						margin: 0;
-						align-items: center;
+          > .field {
+            display: flex;
+            padding: 0;
+            margin: 0;
+            align-items: center;
 
-						&:not(:last-child) {
-							margin-bottom: 8px;
-						}
+            &:not(:last-child) {
+              margin-bottom: 8px;
+            }
 
-						> .name {
-							width: 30%;
-							overflow: hidden;
-							white-space: nowrap;
-							text-overflow: ellipsis;
-							font-weight: bold;
-							text-align: center;
-						}
+            > .name {
+              width: 30%;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              font-weight: bold;
+              text-align: center;
+            }
 
-						> .value {
-							width: 70%;
-							overflow: hidden;
-							white-space: nowrap;
-							text-overflow: ellipsis;
-							margin: 0;
-						}
-					}
+            > .value {
+              width: 70%;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              margin: 0;
+            }
+          }
 
-					&.system > .field > .name {
-					}
-				}
+          &.system > .field > .name {
+          }
+        }
 
-				> .status {
-					display: flex;
-					padding: 24px;
-					border-top: solid 0.5px var(--divider);
+        > .status {
+          display: flex;
+          padding: 24px;
+          border-top: solid 0.5px var(--divider);
 
-					> a {
-						flex: 1;
-						text-align: center;
+          > a {
+            flex: 1;
+            text-align: center;
 
-						&.active {
-							color: var(--accent);
-						}
+            &.active {
+              color: var(--accent);
+            }
 
-						&:hover {
-							text-decoration: none;
-						}
+            &:hover {
+              text-decoration: none;
+            }
 
-						> b {
-							display: block;
-							line-height: 16px;
-						}
+            > b {
+              display: block;
+              line-height: 16px;
+            }
 
-						> span {
-							font-size: 70%;
-						}
-					}
-				}
-			}
-		}
+            > span {
+              font-size: 70%;
+            }
+          }
+        }
+      }
+    }
 
-		> .contents {
-			> .content {
-				margin-bottom: var(--margin);
-			}
-		}
-	}
+    > .contents {
+      > .content {
+        margin-bottom: var(--margin);
+      }
+    }
+  }
 
-	&.wide {
-		display: flex;
-		width: 100%;
+  &.wide {
+    display: flex;
+    width: 100%;
 
-		> .main {
-			width: 100%;
-			min-width: 0;
-		}
+    > .main {
+      width: 100%;
+      min-width: 0;
+    }
 
-		> .sub {
-			max-width: 350px;
-			min-width: 350px;
-			margin-left: var(--margin);
-		}
-	}
+    > .sub {
+      max-width: 350px;
+      min-width: 350px;
+      margin-left: var(--margin);
+    }
+  }
 }
 
 @container (max-width: 500px) {
-	.ftskorzw {
-		> .main {
-			> .profile > .main {
-				> .banner-container {
-					height: 140px;
+  .ftskorzw {
+    > .main {
+      > .profile > .main {
+        > .banner-container {
+          height: 140px;
 
-					> .fade {
-						display: none;
-					}
+          > .fade {
+            display: none;
+          }
 
-					> .title {
-						display: none;
-					}
-				}
+          > .title {
+            display: none;
+          }
+        }
 
-				> .title {
-					display: block;
-				}
+        > .title {
+          display: block;
+        }
 
-				> .avatar {
-					top: 90px;
-					left: 0;
-					right: 0;
-					width: 92px;
-					height: 92px;
-					margin: auto;
-				}
+        > .avatar {
+          top: 90px;
+          left: 0;
+          right: 0;
+          width: 92px;
+          height: 92px;
+          margin: auto;
+        }
 
-				> .roles {
-					padding: 16px 16px 0 16px;
-					justify-content: center;
-				}
+        > .roles {
+          padding: 16px 16px 0 16px;
+          justify-content: center;
+        }
 
-				> .moderationNote {
-					margin: 16px 16px 0 16px;
-				}
+        > .moderationNote {
+          margin: 16px 16px 0 16px;
+        }
 
-				> .memo {
-					margin: 16px 16px 0 16px;
-				}
+        > .memo {
+          margin: 16px 16px 0 16px;
+        }
 
-				> .description {
-					padding: 16px;
-					text-align: center;
-				}
+        > .description {
+          padding: 16px;
+          text-align: center;
+        }
 
-				> .fields {
-					padding: 16px;
-				}
+        > .fields {
+          padding: 16px;
+        }
 
-				> .status {
-					padding: 16px;
-				}
-			}
+        > .status {
+          padding: 16px;
+        }
+      }
 
-			> .contents {
-				> .nav {
-					font-size: 80%;
-				}
-			}
-		}
-	}
+      > .contents {
+        > .nav {
+          font-size: 80%;
+        }
+      }
+    }
+  }
 }
 </style>
 
 <style lang="scss" module>
 .tl {
-	background: var(--bg);
-	border-radius: var(--radius);
-	overflow: clip;
+  background: var(--bg);
+  border-radius: var(--radius);
+  overflow: clip;
 }
 
 .verifiedLink {
-	margin-left: 4px;
-	color: var(--success);
+  margin-left: 4px;
+  color: var(--success);
 }
 </style>
