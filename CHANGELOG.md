@@ -56,6 +56,7 @@
 - Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
+- Fix: エラーメッセージの誤字を修正 (#14213)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
