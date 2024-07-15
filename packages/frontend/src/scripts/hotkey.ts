@@ -114,6 +114,7 @@ const matchPatterns = (ev: KeyboardEvent, action: Action) => {
 	const key = ev.key.toLowerCase();
 	return patterns.some(({ which, ctrl, shift, alt }) => {
 		if (
+			options.allowRepeat === false &&
 			latestHotkey != null &&
 			latestHotkey.which.includes(key) &&
 			latestHotkey.ctrl === ctrl &&
