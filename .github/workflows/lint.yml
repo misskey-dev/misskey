@@ -64,11 +64,11 @@ jobs:
     - name: Restore eslint cache
       uses: actions/cache@v4.0.2
       with:
-        path: node_modules/.cache/eslint
+        path: packages/${{ matrix.workspace }}/.eslintcache
         key: eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
           eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-
-    - run: pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location node_modules/.cache/eslint --cache-strategy content
+    - run: pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-strategy content
 
   typecheck:
     needs: [pnpm_install]
