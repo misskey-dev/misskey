@@ -30,7 +30,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-else-if="item.type === 'link'"
 				role="menuitem"
 				:to="item.to"
-				:tabindex="i"
 				class="_button"
 				:class="[$style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
 				@click.passive="close(true)"
@@ -49,7 +48,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:href="item.href"
 				:target="item.target"
 				:download="item.download"
-				:tabindex="i"
 				class="_button"
 				:class="[$style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
 				@click.passive="close(true)"
@@ -78,7 +76,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button
 				v-else-if="item.type === 'switch'"
 				role="menuitemcheckbox"
-				:tabindex="i"
 				class="_button"
 				:class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } , {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
 				:disabled="unref(item.disabled)"
@@ -803,5 +800,7 @@ onBeforeUnmount(() => {
   100% {
     background-position: 0% 50%
   }
+}
+	}
 }
 </style>

@@ -281,8 +281,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkFolder>
 						</MkFoldableSection>
 
-						<MkButton primary rounded @cl
-											ick="updateBaseRole">{{ i18n.ts.save }}</MkButton>
+						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
