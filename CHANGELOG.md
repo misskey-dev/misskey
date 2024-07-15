@@ -10,6 +10,7 @@
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
@@ -40,6 +41,7 @@
 - Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
+- Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
 - Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
@@ -57,6 +59,8 @@
   4. フォローしていない非アクティブなユーザ
 - Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
+- Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
+- Fix: エラーメッセージの誤字を修正 (#14213)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
