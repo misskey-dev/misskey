@@ -708,7 +708,7 @@ importers:
         version: 0.1.0-alpha-3
       '@meersagor/wavesurfer-vue':
         specifier: ^0.1.0
-        version: 0.1.0(typescript@5.4.5)
+        version: 0.1.0(typescript@5.5.2)
       '@misskey-dev/browser-image-resizer':
         specifier: 2024.1.0
         version: 2024.1.0
@@ -11165,8 +11165,8 @@ packages:
   vue-component-type-helpers@2.0.16:
     resolution: {integrity: sha512-qisL/iAfdO++7w+SsfYQJVPj6QKvxp4i1MMxvsNO41z/8zu3KuAw9LkhKUfP/kcOWGDxESp+pQObWppXusejCA==}
 
-  vue-component-type-helpers@2.0.21:
-    resolution: {integrity: sha512-3NaicyZ7N4B6cft4bfb7dOnPbE9CjLcx+6wZWAg5zwszfO4qXRh+U52dN5r5ZZfc6iMaxKCEcoH9CmxxoFZHLg==}
+  vue-component-type-helpers@2.0.26:
+    resolution: {integrity: sha512-sO9qQ8oC520SW6kqlls0iqDak53gsTVSrYylajgjmkt1c0vcgjsGSy1KzlDrbEx8pm02IEYhlUkU5hCYf8rwtg==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -13772,9 +13772,9 @@ snapshots:
       '@types/react': 18.0.28
       react: 18.3.1
 
-  '@meersagor/wavesurfer-vue@0.1.0(typescript@5.4.5)':
+  '@meersagor/wavesurfer-vue@0.1.0(typescript@5.5.2)':
     dependencies:
-      vue: 3.4.26(typescript@5.4.5)
+      vue: 3.4.26(typescript@5.5.2)
       wavesurfer.js: 7.7.14
     transitivePeerDependencies:
       - typescript
@@ -15534,7 +15534,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.26(typescript@5.5.2)
-      vue-component-type-helpers: 2.0.21
+      vue-component-type-helpers: 2.0.26
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -17380,7 +17380,7 @@ snapshots:
   canvas@2.11.2(encoding@0.1.13):
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9(encoding@0.1.13)
-      nan: 2.18.0
+      nan: 2.20.0
       simple-get: 3.1.1
     transitivePeerDependencies:
       - encoding
@@ -23926,7 +23926,7 @@ snapshots:
 
   vue-component-type-helpers@2.0.16: {}
 
-  vue-component-type-helpers@2.0.21: {}
+  vue-component-type-helpers@2.0.26: {}
 
   vue-demi@0.14.7(vue@3.4.26(typescript@5.5.2)):
     dependencies:

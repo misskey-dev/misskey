@@ -257,7 +257,6 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { infoImageUrl, instance, isEnabledUrlPreview } from '@/instance.js';
-import MkPostForm from '@/components/MkPostFormSimple.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 
 const MOBILE_THRESHOLD = 500;

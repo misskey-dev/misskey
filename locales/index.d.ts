@@ -7404,6 +7404,10 @@ export interface Locale extends ILocale {
          */
         "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
+         * 当フォークのソースコード
+         */
+        "forksource": string;
+        /**
          * Type4nyを翻訳
          */
         "translation": string;

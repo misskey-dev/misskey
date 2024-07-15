@@ -8,19 +8,20 @@
 	base: 'dark',
 
 	props: {
-		bg: '#232323',
-		fg: 'rgb(199, 209, 216)',
-		fgHighlighted: '#fff',
-		fgOnWhite: '@accent',
-		divider: 'rgba(255, 255, 255, 0.14)',
-		panel: '#2d2d2d',
-		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
-		header: ':alpha<0.7<@panel',
-		navBg: '#363636',
-		renote: '@accent',
-		mention: '#da6d35',
-		mentionMe: '#d44c4c',
-		hashtag: '#4cb8d4',
-		link: '@accent',
+		accent: '#2ECC71', // エメラルドグリーン
+		bg: '#1B2B34', // ダーク背景色
+		buttonGradateA: '#2ECC71', // エメラルドグリーン
+		buttonGradateB: '#27AE60', // 濃いエメラルドグリーン
+		divider: '#e7fffb24', // 分割線の色をそのまま
+		fg: '#C0C0C0', // 前景色を少し暗く
+		fgHighlighted: '#FFFFFF', // ハイライトされた前景色を白に
+		fgOnAccent: '#FFFFFF', // アクセント上の前景色を白に
+		fgOnWhite: '#C0C0C0', // 白上の前景色を少し暗く
+		link: '@accent', // リンク色をアクセントと同じ
+		mentionMe: '#1ABC9C', // メンションの色を薄いエメラルドグリーンに
+		panel: '#22313F', // パネル背景色を暗めに
+		panelHeaderDivider: 'rgba(0, 0, 0, 0)', // パネルヘッダー分割線を透明に
+		popup: '#2C3E50', // ポップアップ背景色を暗く
+		renote: '@accent' // リノートの色をアクセントと同じ
 	},
 }

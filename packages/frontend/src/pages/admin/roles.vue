@@ -23,7 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 							</MkRange>
 						</MkFolder>
-						<MkFoldableSection :expanded="false">
+
+						<MkFoldableSection>
 							<template #header>タイムライン系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.gtlAvailable, 'gtlAvailable'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
@@ -41,7 +42,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+
+						<MkFoldableSection>
 							<template #header>ノート系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canPublicNote, 'canPublicNote'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
@@ -50,12 +52,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<template #label>{{ i18n.ts.enable }}</template>
 								</MkSwitch>
 							</MkFolder>
+
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
 								<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 								<template #suffix>{{ policies.mentionLimit }}</template>
 								<MkInput v-model="policies.mentionLimit" type="number">
 								</MkInput>
 							</MkFolder>
+
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canEditNote, 'canEditNote'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canEditNote }}</template>
 								<template #suffix>{{ policies.canEditNote ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -71,6 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<template #label>{{ i18n.ts.enable }}</template>
 								</MkSwitch>
 							</MkFolder>
+
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canSearchNotes, 'canSearchNotes'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canSearchNotes }}</template>
 								<template #suffix>{{ policies.canSearchNotes ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -79,13 +84,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkFolder>
 
-							<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canSearchNotes'])" class="_margin">
+							<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canUseTranslator'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canUseTranslator }}</template>
 								<template #suffix>{{ policies.canUseTranslator ? i18n.ts.yes : i18n.ts.no }}</template>
 								<MkSwitch v-model="policies.canUseTranslator">
 									<template #label>{{ i18n.ts.enable }}</template>
 								</MkSwitch>
 							</MkFolder>
+
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.pinMax, 'pinLimit'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.pinMax }}</template>
 								<template #suffix>{{ policies.pinLimit }}</template>
@@ -93,31 +99,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+
+						<MkFoldableSection>
 							<template #header>招待系</template>
-							<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
+
+							<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canInvite }}</template>
 								<template #suffix>{{ policies.canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
 								<MkSwitch v-model="policies.canInvite">
 									<template #label>{{ i18n.ts.enable }}</template>
 								</MkSwitch>
 							</MkFolder>
+
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimit, 'inviteLimit'])" class="_margin">
-								<template #label>{{ i18n.ts._role._options.inviteLimit }}</template>
-								<template #suffix>{{ policies.inviteLimit }}</template>
-								<MkInput v-model="policies.inviteLimit" type="number">
-								</MkInput>
-							</MkFolder>
-
-							<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
-								<template #label>{{ i18n.ts._role._options.canInvite }}</template>
-								<template #suffix>{{ policies.canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
-								<MkSwitch v-model="policies.canInvite">
-									<template #label>{{ i18n.ts.enable }}</template>
-								</MkSwitch>
-							</MkFolder>
-
-							<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimit, 'inviteLimit'])">
 								<template #label>{{ i18n.ts._role._options.inviteLimit }}</template>
 								<template #suffix>{{ policies.inviteLimit }}</template>
 								<MkInput v-model="policies.inviteLimit" type="number">
@@ -132,16 +126,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 
-							<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteExpirationTime, 'inviteExpirationTime'])" class="_margin">
+							<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteExpirationTime, 'inviteExpirationTime'])" >
 								<template #label>{{ i18n.ts._role._options.inviteExpirationTime }}</template>
 								<template #suffix>{{ policies.inviteExpirationTime + i18n.ts._time.minute }}</template>
 								<MkInput v-model="policies.inviteExpirationTime" type="number">
 									<template #suffix>{{ i18n.ts._time.minute }}</template>
 								</MkInput>
 							</MkFolder>
+
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
-							<template #header>PrisMisskey独自機能系</template>
+						<MkFoldableSection >
+							<template #header>Type4ny独自機能系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.emojiPickerProfileLimit, 'pickerProfileDefault'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.emojiPickerProfileLimit }}</template>
 								<template #suffix>{{ policies.emojiPickerProfileLimit }}</template>
@@ -162,7 +157,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+						<MkFoldableSection>
 							<template #header>カスタム絵文字系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canManageCustomEmojis, 'canManageCustomEmojis'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
@@ -180,7 +175,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+						<MkFoldableSection >
 							<template #header>ドライブ、ファイル系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.driveCapacity, 'driveCapacityMb'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
@@ -198,7 +193,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+						<MkFoldableSection >
 							<template #header>アイコンデコレーション系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canManageAvatarDecorations, 'canManageAvatarDecorations'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canManageAvatarDecorations }}</template>
@@ -214,7 +209,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+						<MkFoldableSection >
 							<template #header>クリップ系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.clipMax, 'clipLimit'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.clipMax }}</template>
@@ -230,7 +225,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+						<MkFoldableSection >
 							<template #header>リスト系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.userListMax, 'userListLimit'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.userListMax }}</template>
@@ -246,7 +241,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :expanded="false">
+						<MkFoldableSection >
 							<template #header>その他</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.antennaMax, 'antennaLimit'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.antennaMax }}</template>

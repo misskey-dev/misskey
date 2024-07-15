@@ -9,7 +9,7 @@
 	kind: 'dark',
 
 	props: {
-		accent: '#86b300',
+		accent: '#65B535',
 		accentDarken: ':darken<10<@accent',
 		accentLighten: ':lighten<10<@accent',
 		accentedBg: ':alpha<0.15<@accent',

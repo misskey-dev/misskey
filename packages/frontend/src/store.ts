@@ -430,7 +430,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	gamingMode: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	gamingType: {
 		where: 'device',

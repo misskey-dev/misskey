@@ -8,14 +8,22 @@
 	base: 'light',
 
 	props: {
-		bg: '#f9f9f9',
-		fg: '#676767',
-		fgOnWhite: '@accent',
-		divider: '#e8e8e8',
-		header: ':alpha<0.7<@panel',
-		navBg: '#fff',
-		panel: '#fff',
-		panelHeaderDivider: '@divider',
-		mentionMe: 'rgb(0, 179, 70)',
+		accent: '#2ECC71', // エメラルドグリーン
+		bg: '#f2f2f2', // 明るい背景色
+		buttonGradateA: '#2ECC71', // エメラルドグリーン
+		buttonGradateB: '#27AE60', // 濃いエメラルドグリーン
+		buttonHoverBg: '#27AE60', // 濃いエメラルドグリーン
+		divider: '#BDBDBD', // 分割線の色を薄いグレーに
+		fg: '#37474F', // 前景色をダークグレーに
+		fgHighlighted: '#2C3E50', // ハイライトされた前景色を濃いダークグレーに
+		fgOnAccent: '#FFFFFF', // アクセント上の前景色を白に
+		fgOnWhite: '#37474F', // 白上の前景色をダークグレーに
+		link: '@accent', // リンク色をアクセントと同じ
+		mentionMe: '#1ABC9C', // メンションの色を薄いエメラルドグリーンに
+		panel: '#F6FFFB', // パネル背景色を薄いグレーに
+		panelHeaderDivider: 'rgba(0, 0, 0, 0)', // パネルヘッダー分割線を透明に
+		popup: '#FFFFFF', // ポップアップ背景色を白に
+		renote: '@accent' // リノートの色をアクセントと同じ
+
 	},
 }

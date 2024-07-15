@@ -39,54 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="alwaysShowPlayer">Youtube.comや、nicovideo.jpのプレイヤーを全て開いた状態にする</MkSwitch>
 			<MkSwitch v-model="alwaysExpandTweet">Xのポストを常時表示させる</MkSwitch>
 			<MkSelect v-model="draftSavingBehavior">
-				<template #label>{{ i18n.ts.draftSavingBehavior }}<span class="_beta">{{ i18n.ts.kakuregaFeature }}</span></template>
+				<template #label>{{ i18n.ts.draftSavingBehavior }}</template>
 				<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
 				<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
 			</MkSelect>
 			<MkSwitch v-model="disableNoteDrafting">
 				<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
 				{{ i18n.ts.disableNoteDrafting }}
-				<span class="_beta">{{ i18n.ts.kakuregaFeature }}</span>
 			</MkSwitch>
-			<MkFolder>
-				<template #label>{{ i18n.ts.pinnedList }}</template>
-				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value" class="_margin">
-					{{ pinnedLists.name }}
-					<MkButton danger @click="removePinnedList(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
-				</div>
-				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedUserLists.value.length " @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
-				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
-			</MkFolder>
-			<MkFolder>
-				<template #label>{{ i18n.ts.pinnedChannel }}</template>
-				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedChannels.value" class="_margin">
-					{{ pinnedLists.name }}
-					<MkButton danger @click="removePinnedChannel(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
-				</div>
-				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedChannels.value.length " @click="setPinnedChannel()">{{ i18n.ts.add }}</MkButton>
-				<MkButton v-if="defaultStore.reactiveState.pinnedChannels.value.length " danger @click="removePinnedChannel('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
-			</MkFolder>
-			<MkFoldableSection :expanded="false" class="item">
-				<template #header>{{ i18n.ts.topbarCustom }}</template>
 
-				{{ i18n.ts._timelines.home }}
-				<MkSwitch v-model="showHomeTimeline">{{ i18n.ts.enable }}</MkSwitch>
-				<br>
-				{{ i18n.ts._timelines.local }}
-				<MkSwitch v-model="showLocalTimeline">{{ i18n.ts.enable }}</MkSwitch>
-				<br>
-				{{ i18n.ts._timelines.social }}
-				<MkSwitch v-model="showSocialTimeline">{{ i18n.ts.enable }}</MkSwitch>
-				<br>
-				{{ i18n.ts._timelines.media }}
-				<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.enable }}</MkSwitch>
-				<br>
-				{{ i18n.ts._timelines.global }}
-				<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.enable }}</MkSwitch>
-				<br>
-				{{ i18n.ts.topBarNameShown }}
-				<MkSwitch v-model="topBarNameShown">{{ i18n.ts.enable }}</MkSwitch>
-			</MkFoldableSection>
 		</div>
 	</FormSection>
 	<MkFoldableSection :expanded="false" class="item">
@@ -271,93 +232,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</MkFolder>
-		</div>
-	</MkFoldableSection>
-	<MkFoldableSection :expanded="false">
-		<template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
-		<div class="_gaps_m">
-			<div v-if="maxLocalTimeline >= 1">
-				<MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineDomain1" placeholder="prismisskey.space">
-					<template #label>サーバーURL</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineToken1" placeholder="">
-					<template #prefix><i class="ti ti-key"></i></template>
-					<template #label>{{ i18n.ts.accessToken }}</template>
-				</MkInput>
-				<MkSwitch v-model="remoteLocalTimelineEnable1">
-					{{ i18n.ts.enable }}
-				</MkSwitch>
-			</div>
-			<div v-if="maxLocalTimeline >= 2">
-				<MkInput v-model="remoteLocalTimelineName2" placeholder="prismisskey">
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineDomain2" placeholder="prismisskey.space">
-					<template #label>サーバーURL</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineToken2" placeholder="">
-					<template #prefix><i class="ti ti-key"></i></template>
-					<template #label>{{ i18n.ts.accessToken }}</template>
-				</MkInput>
-				<MkSwitch v-model="remoteLocalTimelineEnable2">
-					{{ i18n.ts.enable }}
-				</MkSwitch>
-			</div>
-
-			<div v-if="maxLocalTimeline >= 3">
-				<MkInput v-model="remoteLocalTimelineName3" placeholder="prismisskey">
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineDomain3" placeholder="prismisskey.space">
-					<template #label>サーバーURL</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineToken3" placeholder="">
-					<template #prefix><i class="ti ti-key"></i></template>
-					<template #label>{{ i18n.ts.accessToken }}</template>
-				</MkInput>
-				<MkSwitch v-model="remoteLocalTimelineEnable3">
-					{{ i18n.ts.enable }}
-				</MkSwitch>
-			</div>
-
-			<div v-if="maxLocalTimeline >= 4">
-				<MkInput v-model="remoteLocalTimelineName4" placeholder="prismisskey">
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineDomain4" placeholder="prismisskey.space">
-					<template #label>サーバーURL</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineToken4" placeholder="">
-					<template #prefix><i class="ti ti-key"></i></template>
-					<template #label>{{ i18n.ts.accessToken }}</template>
-				</MkInput>
-				<MkSwitch v-model="remoteLocalTimelineEnable4">
-					{{ i18n.ts.enable }}
-				</MkSwitch>
-			</div>
-
-			<div v-if="maxLocalTimeline >= 5">
-				<MkInput v-model="remoteLocalTimelineName5" placeholder="prismisskey">
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineDomain5" placeholder="prismisskey.space">
-					<template #label>サーバーURL</template>
-				</MkInput>
-				<MkInput v-model="remoteLocalTimelineToken5" placeholder="">
-					<template #prefix><i class="ti ti-key"></i></template>
-					<template #label>{{ i18n.ts.accessToken }}</template>
-				</MkInput>
-				<MkSwitch v-model="remoteLocalTimelineEnable5">
-					{{ i18n.ts.enable }}
-				</MkSwitch>
-			</div>
-
-			<MkButton @click="remoteLocaltimelineSave">
-				{{ i18n.ts.save }}
-			</MkButton>
 		</div>
 	</MkFoldableSection>
 	<FormSection>
