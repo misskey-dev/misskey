@@ -17,7 +17,7 @@ export class MiModerationLog {
 	public userId: MiUser['id'];
 
 	@ManyToOne(type => MiUser, {
-		onDelete: 'CASCADE',
+		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
 	public user: MiUser | null;
