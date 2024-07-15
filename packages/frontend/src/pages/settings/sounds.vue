@@ -54,8 +54,6 @@ const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	note: defaultStore.reactiveState.sound_note,
 	noteMy: defaultStore.reactiveState.sound_noteMy,
 	notification: defaultStore.reactiveState.sound_notification,
-	antenna: defaultStore.reactiveState.sound_antenna,
-	channel: defaultStore.reactiveState.sound_channel,
 	reaction: defaultStore.reactiveState.sound_reaction,
 });
 

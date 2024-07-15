@@ -272,9 +272,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<template #label>{{ i18n.ts.enable }}</template>
 								</MkSwitch>
 							</MkFolder>
+							<MkFolder v-if="matchQuery([i18n.ts._role._options.canUpdateBioMedia, 'canUpdateBioMedia'])">
+								<template #label>{{ i18n.ts._role._options.canUpdateBioMedia }}</template>
+								<template #suffix>{{ policies.canUpdateBioMedia ? i18n.ts.yes : i18n.ts.no }}</template>
+								<MkSwitch v-model="policies.canUpdateBioMedia">
+									<template #label>{{ i18n.ts.enable }}</template>
+								</MkSwitch>
+							</MkFolder>
 						</MkFoldableSection>
 
-						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
+						<MkButton primary rounded @cl
+											ick="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>

@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <div :class="$style.root">
-	<MkAvatar :class="$style.avatar" :user="user" link preview/>
+	<MkAvatar :class="$style.avatar" :user="user"/>
 	<div :class="$style.main">
 		<div :class="$style.header">
 			<MkUserName :user="user" :nowrap="true"/>

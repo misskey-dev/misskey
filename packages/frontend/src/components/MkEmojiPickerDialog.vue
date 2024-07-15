@@ -8,10 +8,12 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
 	:preferType="defaultStore.state.emojiPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
+	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
 	:src="src"
 	@click="modal?.close()"
+	@esc="modal?.close()"
 	@opening="opening"
 	@close="emit('close')"
 	@closed="emit('closed')"
@@ -27,6 +29,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		:asDrawer="type === 'drawer'"
 		:max-height="maxHeight"
 		@chosen="chosen"
+		@esc="modal?.close()"
 	/>
 </MkModal>
 </template>

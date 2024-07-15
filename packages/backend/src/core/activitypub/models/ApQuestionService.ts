@@ -74,10 +74,10 @@ export class ApQuestionService {
 
 		//#region このサーバーに既に登録されているか
 		const note = await this.notesRepository.findOneBy({ uri });
-		if (note == null) throw new Error('Question is not registed');
+		if (note == null) throw new Error('Question is not registered');
 
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
-		if (poll == null) throw new Error('Question is not registed');
+		if (poll == null) throw new Error('Question is not registered');
 		//#endregion
 
 		// resolve new Question object

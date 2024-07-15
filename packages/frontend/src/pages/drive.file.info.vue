@@ -160,7 +160,7 @@ function rename() {
 function describe() {
 	if (!file.value) return;
 
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.value.comment ?? '',
 		file: file.value,
 	}, {
@@ -172,7 +172,8 @@ function describe() {
 				await fetch();
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 async function deleteFile() {
@@ -233,6 +234,7 @@ onMounted(async () => {
 			background-color: var(--accentedBg);
 			color: var(--accent);
 			text-decoration: none;
+			outline: none;
 		}
 
 		&.danger {

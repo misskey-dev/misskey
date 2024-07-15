@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
+SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -185,7 +186,8 @@ function openAccountMenu(ev: MouseEvent) {
 }
 
 function more() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {}, 'closed');
+	const { dispose } =os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {closed: () => dispose(),
+	});
 }
 </script>
 
@@ -248,7 +250,7 @@ function more() {
   font-weight: bold;
   text-align: left;
 
-  &:before {
+  &::before {
     content: "";
     display: block;
     width: calc(100% - 38px);
@@ -264,7 +266,7 @@ function more() {
   }
 
   &:hover, &.active {
-    &:before {
+    &::before {
       background: var(--accentLighten);
     }
   }
@@ -326,7 +328,6 @@ function more() {
       animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     }
   }
-
 }
 
 .postIcon {
@@ -394,7 +395,7 @@ function more() {
   }
 
   &:hover, &.active {
-    &:before {
+    &::before {
       content: "";
       display: block;
       width: calc(100% - 24px);

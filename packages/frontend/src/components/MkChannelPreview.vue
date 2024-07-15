@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <div style="position: relative;">
-	<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1" @click="updateLastReadedAt">
+	<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" @click="updateLastReadedAt">
 		<div class="banner" :style="bannerStyle">
 			<div class="fade"></div>
 			<div class="name"><i class="ti ti-device-tv"></i> {{ channel.name }}</div>
@@ -79,11 +79,28 @@ const bannerStyle = computed(() => {
 <style lang="scss" scoped>
 .eftoefju {
 	display: block;
+	position: relative;
 	overflow: hidden;
 	width: 100%;
 
 	&:hover {
 		text-decoration: none;
+	}
+
+	&:focus-within {
+		outline: none;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: inherit;
+			pointer-events: none;
+			box-shadow: inset 0 0 0 2px var(--focus);
+		}
 	}
 
 	> .banner {

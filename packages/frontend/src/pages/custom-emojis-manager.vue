@@ -38,16 +38,33 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const tab = ref('request');
 
 const add = async (ev: MouseEvent) => {
-	os.popup(defineAsyncComponent(() => import('../components/MkEmojiEditDialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('../components/MkEmojiEditDialog.vue')), {
 	}, {
 		done: result => {
-			//TODO: emitにして追加を反映
-			// if (result.created) {
-			// 	emojisPaginationComponent.value.prepend(result.created);
-			// 	emojisPaginationComponent.value.reload();
-			// }
+			if (result.created) {
+				emojisPaginationComponent.value.prepend(result.created);
+			}
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
+};
+
+const edit = (emoji) => {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('../components/MkEmojiEditDialog.vue')), {
+		emoji: emoji,
+	}, {
+		done: result => {
+			if (result.updated) {
+				emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
+					...oldEmoji,
+					...result.updated,
+				}));
+			} else if (result.deleted) {
+				emojisPaginationComponent.value.removeItem(emoji.id);
+			}
+		},
+		closed: () => dispose(),
+	});
 };
 
 const menu = (ev: MouseEvent) => {

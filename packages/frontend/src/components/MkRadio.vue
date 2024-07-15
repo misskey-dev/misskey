@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
+SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -8,6 +9,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
   :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked ,[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' } ]"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
+	role="checkbox"
 	@click="toggle"
 >
 	<input
@@ -71,6 +73,11 @@ function toggle(): void {
 		border-color: var(--inputBorderHover) !important;
 	}
 
+	&:focus-within {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--focus);
+	}
+
 	&.checked {
 		background-color: var(--accentedBg) !important;
 		border-color: var(--accentedBg) !important;
@@ -113,7 +120,7 @@ function toggle(): void {
         transform: scale(1);
         opacity: 1;
       }
-			&:after {
+			&::after {
 				background-color: var(--accent);
 				transform: scale(1);
 				opacity: 1;
@@ -140,7 +147,7 @@ function toggle(): void {
 	border-radius: 100%;
 	transition: inherit;
 
-	&:after {
+	&::after {
 		content: '';
 		display: block;
 		position: absolute;

@@ -28,7 +28,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</div>
 	</div>
-	<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
+	<MkFollowButton v-if="user.id != $i?.id" :class="$style.follow" :user="user" mini/>
 </div>
 </template>
 

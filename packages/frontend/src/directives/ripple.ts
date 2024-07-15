@@ -17,7 +17,9 @@ export default {
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
 
-			popup(MkRippleEffect, { x, y }, {}, 'end');
+			const { dispose } = popup(MkRippleEffect, { x, y }, {
+				end: () => dispose(),
+			});
 		});
 	},
 };

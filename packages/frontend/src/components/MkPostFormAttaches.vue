@@ -107,7 +107,7 @@ async function rename(file) {
 async function describe(file) {
 	if (mock) return;
 
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
 	}, {
@@ -120,7 +120,8 @@ async function describe(file) {
 				file.comment = comment;
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {

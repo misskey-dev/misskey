@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
+SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -117,17 +118,7 @@ async function onClick() {
   }
 
   &:focus-visible {
-    &:after {
-      content: "";
-      pointer-events: none;
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      bottom: -5px;
-      left: -5px;
-      border: 2px solid var(--focus);
-      border-radius: 32px;
-    }
+    outline-offset: 2px;
   }
 
   &:hover {

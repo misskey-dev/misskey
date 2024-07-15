@@ -7,7 +7,11 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
-	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
+	<div
+		ref="bodyEl"
+		:data-sticky-container-header-height="headerHeight"
+		:data-sticky-container-footer-height="footerHeight"
+	>
 		<slot></slot>
 	</div>
 	<div ref="footerEl">

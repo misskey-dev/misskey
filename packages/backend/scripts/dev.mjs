@@ -30,6 +30,7 @@ function execStart() {
 
 async function killProc() {
 	if (backendProcess) {
+		backendProcess.catch(() => {}); // backendProcess.kill()によって発生する例外を無視するためにcatch()を呼び出す
 		backendProcess.kill();
 		await new Promise(resolve => backendProcess.on('exit', resolve));
 		backendProcess = undefined;
@@ -46,6 +47,7 @@ async function killProc() {
 		],
 		{
 			stdio: [process.stdin, process.stdout, process.stderr, 'ipc'],
+			serialization: "json",
 		})
 		.on('message', async (message) => {
 			if (message.type === 'exit') {

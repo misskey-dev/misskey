@@ -44,7 +44,9 @@ async function save() {
 
 onMounted(() => {
 	if (props.token == null) {
-		os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {}, 'closed');
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
+			closed: () => dispose(),
+		});
 		mainRouter.push('/');
 	}
 });

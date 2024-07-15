@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" tabindex="-1">
+<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel">
 	<article>
 		<header>
 			<h1 :title="flash.title">{{ flash.title }}</h1>
@@ -36,6 +36,10 @@ const props = defineProps<{
 	&:hover {
 		text-decoration: none;
 		color: var(--accent);
+	}
+
+	&:focus-visible {
+		outline-offset: -2px;
 	}
 
 	> article {

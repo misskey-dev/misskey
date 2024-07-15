@@ -138,7 +138,7 @@ const categories = computed(() => {
 });
 
 function openDecoration(avatarDecoration, index?: number) {
-	os.popup(defineAsyncComponent(() => import('./avatar-decoration.dialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('./avatar-decoration.dialog.vue')), {
 		decoration: avatarDecoration,
 		usingIndex: index,
 	}, {
@@ -179,7 +179,8 @@ function openDecoration(avatarDecoration, index?: number) {
 			});
 			$i.avatarDecorations = update;
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 function detachAllDecorations() {

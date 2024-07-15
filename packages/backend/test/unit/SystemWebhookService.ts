@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setTimeout } from 'node:timers/promises';
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MiUser } from '@/models/User.js';
@@ -16,7 +17,7 @@ import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { randomString, sleep } from '../utils.js';
+import { randomString } from '../utils.js';
 
 describe('SystemWebhookService', () => {
 	let app: TestingModule;
@@ -358,7 +359,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks).toEqual([webhook]);
@@ -377,7 +378,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks).toEqual([]);
@@ -407,7 +408,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks).toEqual([webhook2]);
@@ -434,7 +435,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks.length).toEqual(0);
@@ -457,7 +458,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks).toEqual([webhook2]);
@@ -481,7 +482,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks.length).toEqual(0);
@@ -504,7 +505,7 @@ describe('SystemWebhookService', () => {
 					);
 
 					// redisでの配信経由で更新されるのでちょっと待つ
-					await sleep(500);
+					await setTimeout(500);
 
 					const fetchedWebhooks = await service.fetchActiveSystemWebhooks();
 					expect(fetchedWebhooks.length).toEqual(0);

@@ -114,7 +114,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	font-weight: bold;
 	text-align: left;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);

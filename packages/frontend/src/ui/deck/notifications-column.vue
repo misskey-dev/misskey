@@ -26,7 +26,7 @@ const props = defineProps<{
 const notificationsComponent = shallowRef<InstanceType<typeof XNotifications>>();
 
 function func() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSelectWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSelectWindow.vue')), {
 		excludeTypes: props.column.excludeTypes,
 	}, {
 		done: async (res) => {
@@ -35,7 +35,8 @@ function func() {
 				excludeTypes: excludeTypes,
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 const menu = [{

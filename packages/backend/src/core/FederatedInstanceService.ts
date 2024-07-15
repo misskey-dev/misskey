@@ -40,6 +40,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 					firstRetrievedAt: new Date(parsed.firstRetrievedAt),
 					latestRequestReceivedAt: parsed.latestRequestReceivedAt ? new Date(parsed.latestRequestReceivedAt) : null,
 					infoUpdatedAt: parsed.infoUpdatedAt ? new Date(parsed.infoUpdatedAt) : null,
+					notRespondingSince: parsed.notRespondingSince ? new Date(parsed.notRespondingSince) : null,
 				};
 			},
 		});

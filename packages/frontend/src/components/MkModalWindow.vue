@@ -3,8 +3,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick" @closed="$emit('closed')">
-	<div ref="rootEl" :class="$style.root" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }" @keydown="onKeydown">
+<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
+	<div ref="rootEl" :class="$style.root" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }">
 		<div ref="headerEl" :class="$style.header">
 			<button v-if="withOkButton" :class="$style.headerButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
 			<span :class="$style.title">
@@ -41,6 +41,7 @@ const emit = defineEmits<{
 	(event: 'close'): void;
 	(event: 'closed'): void;
 	(event: 'ok'): void;
+	(event: 'esc'): void;
 }>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
@@ -55,14 +56,6 @@ const close = () => {
 
 const onBgClick = () => {
 	emit('click');
-};
-
-const onKeydown = (evt) => {
-	if (evt.which === 27) { // Esc
-		evt.preventDefault();
-		evt.stopPropagation();
-		close();
-	}
 };
 
 const ro = new ResizeObserver((entries, observer) => {

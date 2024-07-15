@@ -350,7 +350,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	margin-right: 4px;
 	position: relative;
 
-	&:before {
+	&::before {
 		position: absolute;
 		transform: rotate(180deg);
 	}

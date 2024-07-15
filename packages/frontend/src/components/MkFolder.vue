@@ -6,10 +6,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <div ref="rootEl" :class="$style.root" role="group" :aria-expanded="opened">
 	<MkStickyContainer>
 		<template #header>
-			<div :class="[$style.header, { [$style.opened]: opened }]" class="_button" role="button" data-cy-folder-header @click="toggle">
+			<button :class="[$style.header, { [$style.opened]: opened }]" class="_button" role="button" data-cy-folder-header @click="toggle">
 				<div :class="$style.headerIcon"><slot name="icon"></slot></div>
 				<div :class="$style.headerText">
-					<div>
+					<div :class="$style.headerTextMain">
 						<MkCondensedLine :minScale="2 / 3"><slot name="label"></slot></MkCondensedLine>
 					</div>
 					<div :class="$style.headerTextSub">
@@ -21,7 +21,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					<i v-if="opened" class="ti ti-chevron-up icon"></i>
 					<i v-else class="ti ti-chevron-down icon"></i>
 				</div>
-			</div>
+			</button>
 		</template>
 
 		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
@@ -146,6 +146,10 @@ onMounted(() => {
 		background: var(--buttonHoverBg);
 	}
 
+	&:focus-within {
+		outline-offset: 2px;
+	}
+
 	&.active {
 		color: var(--accent);
 		background: var(--buttonHoverBg);
@@ -187,6 +191,12 @@ onMounted(() => {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	padding-right: 12px;
+}
+
+.headerTextMain,
+.headerTextSub {
+	width: fit-content;
+	max-width: 100%;
 }
 
 .headerTextSub {

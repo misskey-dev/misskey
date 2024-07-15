@@ -4,7 +4,19 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" autocapitalize="off" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
+	<input
+		ref="searchEl"
+		:value="q"
+		class="search"
+		data-prevent-emoji-insert
+		:class="{ filled: q != null && q != '' }"
+		:placeholder="i18n.ts.search"
+		type="search"
+		autocapitalize="off"
+		@input="input()"
+		@paste.stop="paste"
+		@keydown="onKeydown"
+	>
 	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 	<div ref="emojisEl" class="emojis" tabindex="-1">
 		<section class="result">
@@ -146,6 +158,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
+	(ev: 'esc'): void;
 }>();
 const profileMax = $i.policies.emojiPickerProfileLimit;
 const searchEl = shallowRef<HTMLInputElement>();
@@ -411,7 +424,9 @@ function chosen(emoji: any, ev?: MouseEvent) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+			end: () => dispose(),
+		});
 	}
 
 	const key = getKey(emoji);
@@ -440,9 +455,18 @@ function paste(event: ClipboardEvent): void {
 	}
 }
 
-function onEnter(ev: KeyboardEvent) {
+function onKeydown(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-	done();
+	if (ev.key === 'Enter') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		done();
+	}
+	if (ev.key === 'Escape') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		emit('esc');
+	}
 }
 
 const activeIndex = ref(defaultStore.state.pickerProfileDefault);
@@ -717,11 +741,6 @@ left: 0;*/
 					contain: strict;
 					border-radius: 4px;
 					font-size: 24px;
-
-					&:focus-visible {
-						outline: solid 2px var(--focus);
-						z-index: 1;
-					}
 
 					&:hover {
 						background: rgba(0, 0, 0, 0.05);
