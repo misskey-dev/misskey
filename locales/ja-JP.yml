@@ -180,6 +180,10 @@ addAccount: "アカウントを追加"
 reloadAccountsList: "アカウントリストの情報を更新"
 loginFailed: "ログインに失敗しました"
 showOnRemote: "リモートで表示"
+continueOnRemote: "リモートで続行"
+chooseServerOnMisskeyHub: "Misskey Hubからサーバーを選択"
+specifyServerHost: "サーバーのドメインを直接指定"
+inputHostName: "ドメインを入力してください"
 general: "全般"
 wallpaper: "壁紙"
 setWallpaper: "壁紙を設定"
@@ -319,6 +323,7 @@ selectFile: "ファイルを選択"
 selectFiles: "ファイルを選択"
 selectFolder: "フォルダーを選択"
 selectFolders: "フォルダーを選択"
+fileNotSelected: "ファイルが選択されていません"
 renameFile: "ファイル名を変更"
 folderName: "フォルダー名"
 createFolder: "フォルダーを作成"
@@ -478,7 +483,8 @@ attachAsFileQuestion: "クリップボードのテキストが長いです。テ
 noMessagesYet: "まだチャットはありません"
 newMessageExists: "新しいメッセージがあります"
 onlyOneFileCanBeAttached: "メッセージに添付できるファイルはひとつです"
-signinRequired: "続行する前に、サインアップまたはサインインが必要です"
+signinRequired: "続行する前に、登録またはログインが必要です"
+signinOrContinueOnRemote: "続行するには、お使いのサーバーに移動するか、このサーバーに登録・ログインする必要があります"
 invitations: "招待"
 invitationCode: "招待コード"
 checking: "確認しています"
@@ -839,6 +845,7 @@ administration: "管理"
 accounts: "アカウント"
 switch: "切り替え"
 noMaintainerInformationWarning: "管理者情報が設定されていません。"
+noInquiryUrlWarning: "問い合わせ先URLが設定されていません。"
 noBotProtectionWarning: "Botプロテクションが設定されていません。"
 configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
@@ -1027,7 +1034,8 @@ thisPostMayBeAnnoying: "この投稿は迷惑になる可能性があります�
 thisPostMayBeAnnoyingHome: "ホームに投稿"
 thisPostMayBeAnnoyingCancel: "やめる"
 thisPostMayBeAnnoyingIgnore: "このまま投稿"
-collapseRenotes: "見たことのあるリノートを省略して表示"
+collapseRenotes: "リノートのスマート省略"
+collapseRenotesDescription: "リアクションやリノートをしたことがあるノートをたたんで表示します。"
 internalServerError: "サーバー内部エラー"
 internalServerErrorDescription: "サーバー内部で予期しないエラーが発生しました。"
 copyErrorInfo: "エラー情報をコピー"
@@ -1242,6 +1250,7 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
+tryAgain: "もう一度お試しください。"
 
 _delivery:
   status: "配信状態"
@@ -1384,6 +1393,8 @@ _serverSettings:
   fanoutTimelineDescription: "有効にすると、各種タイムラインを取得する際のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。サーバーのメモリ容量が少ない場合、または動作が不安定な場合は無効にすることができます。"
   fanoutTimelineDbFallback: "データベースへのフォールバック"
   fanoutTimelineDbFallbackDescription: "有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。"
+  inquiryUrl: "問い合わせ先URL"
+  inquiryUrlDescription: "サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
@@ -1703,6 +1714,7 @@ _role:
     canManageAvatarDecorations: "アバターデコレーションの管理"
     driveCapacity: "ドライブ容量"
     alwaysMarkNsfw: "ファイルにNSFWを常に付与"
+    canUpdateBioMedia: "アイコンとバナーの更新を許可"
     pinMax: "ノートのピン留めの最大数"
     antennaMax: "アンテナの作成可能数"
     wordMuteMax: "ワードミュートの最大文字数"
@@ -1969,8 +1981,6 @@ _sfx:
   note: "ノート"
   noteMy: "ノート(自分)"
   notification: "通知"
-  antenna: "アンテナ受信"
-  channel: "チャンネル通知"
   reaction: "リアクション選択時"
 
 _soundSettings:
@@ -2422,6 +2432,7 @@ _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
   addColumn: "カラムを追加"
+  newNoteNotificationSettings: "新着ノート通知の設定"
   configureColumn: "カラムの設定"
   swapLeft: "左に移動"
   swapRight: "右に移動"
@@ -2465,6 +2476,7 @@ _drivecleaner:
 
 _webhookSettings:
   createWebhook: "Webhookを作成"
+  modifyWebhook: "Webhookを編集"
   name: "名前"
   secret: "シークレット"
   events: "Webhookを実行するタイミング"
@@ -2477,6 +2489,26 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+  _systemEvents:
+    abuseReport: "ユーザーから通報があったとき"
+    abuseReportResolved: "ユーザーからの通報を処理したとき"
+  deleteConfirm: "Webhookを削除しますか？"
+
+_abuseReport:
+  _notificationRecipient:
+    createRecipient: "通報の通知先を追加"
+    modifyRecipient: "通報の通知先を編集"
+    recipientType: "通知先の種類"
+    _recipientType:
+      mail: "メール"
+      webhook: "Webhook"
+      _captions:
+        mail: "モデレーター権限を持つユーザーのメールアドレスに通知を送ります(通報を受けた時のみ)"
+        webhook: "指定したSystemWebhookに通知を送ります(通報を受けた時と通報を解決した時にそれぞれ発信)"
+    keywords: "キーワード"
+    notifiedUser: "通知先ユーザー"
+    notifiedWebhook: "使用するWebhook"
+    deleteConfirm: "通知先を削除しますか？"
 
 _moderationLogTypes:
   createRole: "ロールを作成"
@@ -2515,6 +2547,12 @@ _moderationLogTypes:
   deleteAvatarDecoration: "アイコンデコレーションを削除"
   unsetUserAvatar: "ユーザーのアイコンを解除"
   unsetUserBanner: "ユーザーのバナーを解除"
+  createSystemWebhook: "SystemWebhookを作成"
+  updateSystemWebhook: "SystemWebhookを更新"
+  deleteSystemWebhook: "SystemWebhookを削除"
+  createAbuseReportNotificationRecipient: "通報の通知先を作成"
+  updateAbuseReportNotificationRecipient: "通報の通知先を更新"
+  deleteAbuseReportNotificationRecipient: "通報の通知先を削除"
 
 _fileViewer:
   title: "ファイルの詳細"
@@ -2569,16 +2607,16 @@ _externalResourceInstaller:
 
 _dataSaver:
   _media:
-    title: "メディアの読み込み"
+    title: "メディアの読み込みを無効化"
     description: "画像・動画が自動で読み込まれるのを防止します。隠れている画像・動画はタップすると読み込まれます。"
   _avatar:
-    title: "アイコン画像"
+    title: "アイコン画像のアニメーションを無効化"
     description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
   _urlPreview:
-    title: "URLプレビューのサムネイル"
+    title: "URLプレビューのサムネイルを非表示"
     description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
   _code:
-    title: "コードハイライト"
+    title: "コードハイライトを非表示"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
 
 _hemisphere:

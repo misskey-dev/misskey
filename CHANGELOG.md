@@ -1,11 +1,75 @@
 ## Unreleased
 
 ### Note
+- デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
+
+### General
+- Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
+- Feat: ユーザーのアイコン/バナーの変更可否をロールで設定可能に
+  - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
+- Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
+- Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
+- Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
+
+### Client
+- Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
+- Enhance: 非ログイン時に他サーバーに遷移するアクションを追加
+- Enhance: 非ログイン時のハイライトTLのデザインを改善
+- Enhance: フロントエンドのアクセシビリティ改善  
+  (Based on https://github.com/taiyme/misskey/pull/226)
+- Enhance: サーバー情報ページ・お問い合わせページを改善  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
+- Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
+- Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
+- Fix: リバーシの対局を正しく共有できないことがある問題を修正
+- Fix: コントロールパネルでベースロールのポリシーを編集してもUI上では変更が反映されない問題を修正 
+- Fix: アンテナの編集画面のボタンに隙間を追加
+- Fix: テーマプレビューが見れない問題を修正
+- Fix: ショートカットキーが連打できる問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
+
+### Server
+- Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
+- Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
+- Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
+- Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
+- Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
+- Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
+- Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
+- Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
+- Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
+- Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
+- Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
+- Fix: FTT有効時、タイムライン用エンドポイントで`sinceId`にキャッシュ内最古のものより古いものを指定した場合に正しく結果が返ってこない問題を修正
+- Fix: 自分以外のクリップ内のノート個数が見えることがあるのを修正
+- Fix: 空文字列のリアクションはフォールバックされるように
+- Fix: リノートにリアクションできないように
+- Fix: ユーザー名の前後に空白文字列がある場合は省略するように
+- Fix: プロフィール編集時に名前を空白文字列のみにできる問題を修正
+- Fix: ユーザ名のサジェスト時に表示される内容と順番を調整(以下の順番になります) #14149
+  1. フォロー中かつアクティブなユーザ
+  2. フォロー中かつ非アクティブなユーザ
+  3. フォローしていないアクティブなユーザ
+  4. フォローしていない非アクティブなユーザ
+- Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
+- Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
+
+### Misskey.js
+- Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
+- Feat: `/admin/role/create` のロールポリシーの型を修正
+
+## 2024.5.0
+
+### Note
 - コントロールパネル内にあるサマリープロキシの設定個所がセキュリティから全般へ変更となります。
 - 悪意のある第三者がリモートユーザーになりすましたアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-2vxv-pv3m-3wvj)をご覧ください。
 - 管理者向け権限 `read:admin:show-users` は `read:admin:show-user` に統合されました。必要に応じてAPIトークンを再発行してください。
 
 ### General
+- Feat: エラートラッキングにSentryを使用できるようになりました
 - Enhance: URLプレビューの有効化・無効化を設定できるように #13569
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
@@ -19,12 +83,15 @@
 - Enhance: Goneを出さずに終了したサーバーへの配信停止を自動的に行うように
   - もしそのようなサーバーからから配信が届いた場合には自動的に配信を再開します
 - Enhance: 配信停止の理由を表示するように
+- Enhance: サーバーのお問い合わせ先URLを設定できるようになりました
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
 - Fix: 正規化されていない状態のhashtagが連合されてきたhtmlに含まれているとhashtagが正しくhashtagに復元されない問題を修正
 - Fix: みつけるのアンケート欄にてチャンネルのアンケートが含まれてしまう問題を修正
 
 ### Client
 - Feat: アップロードするファイルの名前をランダム文字列にできるように
+- Feat: 個別のお知らせにリンクで飛べるように  
+  (Based on https://github.com/MisskeyIO/misskey/pull/639)
 - Enhance: 自分のノートの添付ファイルから直接ファイルの詳細ページに飛べるように
 - Enhance: 広告がMisskeyと同一ドメインの場合はRouterで遷移するように
 - Enhance: リアクション・いいねの総数を表示するように
@@ -47,6 +114,9 @@
 - Enhance: AiScriptを0.18.0にバージョンアップ
 - Enhance: 通常のノートでも、お気に入りに登録したチャンネルにリノートできるように
 - Enhance: 長いテキストをペーストした際にテキストファイルとして添付するかどうかを選択できるように
+- Enhance: 新着ノートをサウンドで通知する機能をdeck UIに追加しました
+- Enhance: コントロールパネルのクイックアクションからファイルを照会できるように
+- Enhance: コントロールパネルのクイックアクションから通常の照会を行えるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -67,6 +137,7 @@
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
 - Fix: 連合なしの状態の読み書きができない問題を修正
 - Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
+- Fix: ファイルを5つ以上添付してもテキストがないとノートが折りたたまれない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
@@ -92,6 +163,8 @@
 - Fix: `/i/notifications`に `includeTypes`か`excludeTypes`を指定しているとき、通知が存在するのに空配列を返すことがある問題を修正
 - Fix: 複数idを指定する`users/show`が関係ないユーザを返すことがある問題を修正
 - Fix: `/tags` と `/user-tags` が検索エンジンにインデックスされないように
+- Fix: もともとセンシティブではないと連合されていたファイルがセンシティブとして連合された場合にセンシティブとしてそのファイルを扱うように
+  - センシティブとして連合したファイルは非センシティブとして連合されてもセンシティブとして扱われます
 
 ## 2024.3.1
 

@@ -39,11 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
-			<MkSwitch v-model="notify">{{ i18n.ts.notifyAntenna }}</MkSwitch>
 		</div>
 		<div :class="$style.actions">
-			<MkButton inline primary @click="saveAntenna()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-			<MkButton v-if="antenna.id != null" inline danger @click="deleteAntenna()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			<div class="_buttons">
+				<MkButton inline primary @click="saveAntenna()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton v-if="antenna.id != null" inline danger @click="deleteAntenna()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			</div>
 		</div>
 	</div>
 </MkSpacer>
@@ -82,7 +83,6 @@ const localOnly = ref<boolean>(props.antenna.localOnly);
 const excludeBots = ref<boolean>(props.antenna.excludeBots);
 const withReplies = ref<boolean>(props.antenna.withReplies);
 const withFile = ref<boolean>(props.antenna.withFile);
-const notify = ref<boolean>(props.antenna.notify);
 const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
@@ -99,7 +99,6 @@ async function saveAntenna() {
 		excludeBots: excludeBots.value,
 		withReplies: withReplies.value,
 		withFile: withFile.value,
-		notify: notify.value,
 		caseSensitive: caseSensitive.value,
 		localOnly: localOnly.value,
 		users: users.value.trim().split('\n').map(x => x.trim()),

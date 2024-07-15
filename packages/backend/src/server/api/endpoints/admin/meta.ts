@@ -437,6 +437,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			inquiryUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			repositoryUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -523,6 +527,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				feedbackUrl: instance.feedbackUrl,
 				impressumUrl: instance.impressumUrl,
 				privacyPolicyUrl: instance.privacyPolicyUrl,
+				inquiryUrl: instance.inquiryUrl,
 				disableRegistration: instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
