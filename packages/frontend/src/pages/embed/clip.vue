@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNotes
 				ref="notesEl"
 				:pagination="pagination"
-				:disableAutoLoad="embedParams.autoload"
+				:disableAutoLoad="!embedParams.autoload"
 				:noGap="true"
 				:ad="false"
 			/>

@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNotes
 				ref="notesEl"
 				:pagination="pagination"
-				:disableAutoLoad="embedParams.autoload"
+				:disableAutoLoad="!embedParams.autoload"
 				:noGap="true"
 				:ad="false"
 			/>
@@ -64,8 +64,6 @@ import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
 
 const props = defineProps<{
 	username: string;
-	showHeader?: string;
-	enableAutoLoad?: string;
 }>();
 
 function redirectIfNotEmbedPage() {
