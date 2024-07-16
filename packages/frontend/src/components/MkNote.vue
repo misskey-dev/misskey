@@ -174,7 +174,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import number from '@/filters/number.js';
@@ -196,6 +196,7 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { host } from '@/config.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
@@ -277,6 +278,11 @@ const renoteCollapsed = ref(
 		(appearNote.value.myReaction != null)
 	),
 );
+
+const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
+	type: 'lookup',
+	url: `https://${host}/notes/${appearNote.value.id}`,
+}));
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
@@ -411,7 +417,7 @@ if (!props.mock) {
 }
 
 function renote(viaKeyboard = false) {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
@@ -421,7 +427,7 @@ function renote(viaKeyboard = false) {
 }
 
 function reply(): void {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	if (props.mock) {
 		return;
 	}
@@ -434,7 +440,7 @@ function reply(): void {
 }
 
 function react(): void {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -565,7 +571,7 @@ function showRenoteMenu(): void {
 	}
 
 	if (isMyRenote) {
-		pleaseLogin();
+		pleaseLogin(undefined, pleaseLoginContext.value);
 		os.popupMenu([
 			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
