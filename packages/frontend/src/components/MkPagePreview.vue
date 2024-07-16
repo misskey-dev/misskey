@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj">
 	<div v-if="page.eyeCatchingImage" class="thumbnail">
 		<MediaImage
 			:image="page.eyeCatchingImage"
@@ -50,10 +50,27 @@ const props = defineProps<{
 <style lang="scss" scoped>
 .vhpxefrj {
 	display: block;
+	position: relative;
 
 	&:hover {
 		text-decoration: none;
 		color: var(--accent);
+	}
+
+	&:focus-within {
+		outline: none;
+
+		&::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: var(--radius);
+			pointer-events: none;
+			box-shadow: inset 0 0 0 2px var(--focus);
+		}
 	}
 
 	> .thumbnail {
