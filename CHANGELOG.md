@@ -5,14 +5,21 @@
 
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
+- Feat: ユーザーのアイコン/バナーの変更可否をロールで設定可能に
+  - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
+- Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
+- Enhance: 非ログイン時に他サーバーに遷移するアクションを追加
 - Enhance: 非ログイン時のハイライトTLのデザインを改善
 - Enhance: フロントエンドのアクセシビリティ改善  
   (Based on https://github.com/taiyme/misskey/pull/226)
+- Enhance: サーバー情報ページ・お問い合わせページを改善  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
@@ -21,6 +28,7 @@
 - Fix: テーマプレビューが見れない問題を修正
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
+- Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
 - Fix: フォローリクエストが承認待ちの状態でフォロー確認ダイアログが表示される問題を修正
 - Fix: ユーザー名にMFMが含まれていた際にダイアログの表示が崩れる問題を修正
 
@@ -32,6 +40,7 @@
 - Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
+- Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
 - Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
@@ -42,6 +51,17 @@
 - Fix: リノートにリアクションできないように
 - Fix: ユーザー名の前後に空白文字列がある場合は省略するように
 - Fix: プロフィール編集時に名前を空白文字列のみにできる問題を修正
+- Fix: ユーザ名のサジェスト時に表示される内容と順番を調整(以下の順番になります) #14149
+  1. フォロー中かつアクティブなユーザ
+  2. フォロー中かつ非アクティブなユーザ
+  3. フォローしていないアクティブなユーザ
+  4. フォローしていない非アクティブなユーザ
+
+  また、自分自身のアカウントもサジェストされるようになりました。
+- Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
+- Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
+- Fix: エラーメッセージの誤字を修正 (#14213)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）

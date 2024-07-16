@@ -65,7 +65,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;
 		if (typeof t === 'boolean') return null;
-		return t.match(/^[0-9.]+s$/) ? t : null;
+		return t.match(/^\-?[0-9.]+s$/) ? t : null;
 	};
 
 	const validColor = (c: unknown): string | null => {
