@@ -1160,6 +1160,12 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SigninRequest;
         res: SigninResponse;
     };
+    'admin/roles/create': {
+        req: Overwrite<AdminRolesCreateRequest, {
+            policies: PartialRolePolicyOverride;
+        }>;
+        res: AdminRolesCreateResponse;
+    };
 }>;
 
 // @public (undocumented)
@@ -1185,6 +1191,7 @@ declare namespace entities {
         SignupPendingResponse,
         SigninRequest,
         SigninResponse,
+        PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -1869,7 +1876,7 @@ type FetchExternalResourcesResponse = operations['fetch-external-resources']['re
 // @public (undocumented)
 type FetchLike = (input: string, init?: {
     method?: string;
-    body?: string;
+    body?: Blob | FormData | string;
     credentials?: RequestCredentials;
     cache?: RequestCache;
     headers: {
@@ -2725,6 +2732,15 @@ type PagesUpdateRequest = operations['pages___update']['requestBody']['content']
 // @public (undocumented)
 function parse(acct: string): Acct;
 
+// Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type PartialRolePolicyOverride = Partial<{
+    [k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & {
+        value: RolePolicies[k];
+    };
+}>;
+
 // @public (undocumented)
 export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse"];
 
@@ -3213,7 +3229,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:25:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:34:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
