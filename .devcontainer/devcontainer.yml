@@ -157,11 +157,11 @@ id: 'aidx'
 #clusterLimit: 1
 
 # Job concurrency per worker
-# deliverJobConcurrency: 128
-# inboxJobConcurrency: 16
+# deliverJobConcurrency: 16
+# inboxJobConcurrency: 4
 
 # Job rate limiter
-# deliverJobPerSec: 128
+# deliverJobPerSec: 1024
 # inboxJobPerSec: 32
 
 # Job attempts
