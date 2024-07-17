@@ -106,10 +106,10 @@ If your language is not listed in Crowdin, please open an issue.
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Development
-Before developing, you should set up Devcontainer with VSCode. Devcontainer has necessary setting for development server such as Redis and PostgreSQL.
+Before developing, you could set up Devcontainer with VSCode. Devcontainer has necessary setting for development server such as Redis and PostgreSQL.
 
 > [!NOTE]
-> WebStorm support may be limited. In doubtful situation, we recommend using VSCode.
+> Support from JetBrain's IDE may be limited. In doubtful situation, we recommend using VSCode.
 
 During development, it is useful to use the
 
