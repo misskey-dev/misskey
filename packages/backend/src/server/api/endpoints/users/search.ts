@@ -57,11 +57,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 			ps.query = ps.query.trim();
-			const isUsername = ps.query.startsWith('@');
+			const isLocalUsername = ps.query.startsWith('@') && !ps.query.includes(' ') && ps.query.indexOf('@', 1) == -1;
 
 			let users: MiUser[] = [];
 
-			if (isUsername) {
+			if (isLocalUsername) {
 				const usernameQuery = this.usersRepository.createQueryBuilder('user')
 					.where('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' })
 					.andWhere(new Brackets(qb => {
