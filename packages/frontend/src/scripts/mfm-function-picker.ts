@@ -13,12 +13,10 @@ import { MenuItem } from '@/types/menu.js';
  * MFMの装飾のリストを表示する
  */
 export function mfmFunctionPicker(src: HTMLElement | EventTarget | null, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
-	return new Promise((res, rej) => {
-		os.popupMenu([{
-			text: i18n.ts.addMfmFunction,
-			type: 'label',
-		}, ...getFunctionList(textArea, textRef)], src);
-	});
+	os.popupMenu([{
+		text: i18n.ts.addMfmFunction,
+		type: 'label',
+	}, ...getFunctionList(textArea, textRef)], src);
 }
 
 function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) : MenuItem[] {
