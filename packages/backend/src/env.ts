@@ -11,7 +11,7 @@ const envOption = {
 	verbose: false,
 	withLogTime: false,
 	quiet: false,
-	managed: true,
+	managed: false,
 };
 
 for (const key of Object.keys(envOption) as (keyof typeof envOption)[]) {
