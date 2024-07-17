@@ -67,7 +67,8 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
 - Fix: エラーメッセージの誤字を修正 (#14213)
-- Fix: `users/search`において `@` から始まるqueryに対する処理が正しくなかった問題を修正
+- Fix: `users/search`において `@` から始まる文字列が与えられた際の処理が正しくなかった問題を修正
+  - 名前や自己紹介に `@` から始まる文言が含まれるユーザーも検索できるようになります
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
