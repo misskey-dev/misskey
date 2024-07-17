@@ -12,7 +12,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { afterAll, beforeAll, describe, test } from '@jest/globals';
 import { GlobalModule } from '@/GlobalModule.js';
-import { FileInfoService } from '@/core/FileInfoService.js';
+import { FileInfo, FileInfoService } from '@/core/FileInfoService.js';
 //import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -28,6 +28,15 @@ const moduleMocker = new ModuleMocker(global);
 describe('FileInfoService', () => {
 	let app: TestingModule;
 	let fileInfoService: FileInfoService;
+	const strip = (fileInfo: FileInfo): Omit<Partial<FileInfo>, 'warnings' | 'blurhash' | 'sensitive' | 'porn'> => {
+		const fi: Partial<FileInfo> = fileInfo;
+		delete fi.warnings;
+		delete fi.sensitive;
+		delete fi.blurhash;
+		delete fi.porn;
+		
+		return fi;
+	}
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -63,11 +72,7 @@ describe('FileInfoService', () => {
 
 	test('Empty file', async () => {
 		const path = `${resources}/emptyfile`;
-		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-		delete info.warnings;
-		delete info.blurhash;
-		delete info.sensitive;
-		delete info.porn;
+		const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 		assert.deepStrictEqual(info, {
 			size: 0,
 			md5: 'd41d8cd98f00b204e9800998ecf8427e',
@@ -83,32 +88,24 @@ describe('FileInfoService', () => {
 
 	describe('IMAGE', () => {
 		test('Generic JPEG', async () => {
-			const path = `${resources}/Lenna.jpg`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const path = `${resources}/192.jpg`;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
-				size: 25360,
-				md5: '091b3f259662aa31e2ffef4519951168',
+				size: 5131,
+				md5: '8c9ed0677dd2b8f9f7472c3af247e5e3',
 				type: {
 					mime: 'image/jpeg',
 					ext: 'jpg',
 				},
-				width: 512,
-				height: 512,
+				width: 192,
+				height: 192,
 				orientation: undefined,
 			});
 		});
 
 		test('Generic APNG', async () => {
 			const path = `${resources}/anime.png`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 1868,
 				md5: '08189c607bea3b952704676bb3c979e0',
@@ -124,11 +121,7 @@ describe('FileInfoService', () => {
 
 		test('Generic AGIF', async () => {
 			const path = `${resources}/anime.gif`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 2248,
 				md5: '32c47a11555675d9267aee1a86571e7e',
@@ -144,11 +137,7 @@ describe('FileInfoService', () => {
 
 		test('PNG with alpha', async () => {
 			const path = `${resources}/with-alpha.png`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 3772,
 				md5: 'f73535c3e1e27508885b69b10cf6e991',
@@ -164,11 +153,7 @@ describe('FileInfoService', () => {
 
 		test('Generic SVG', async () => {
 			const path = `${resources}/image.svg`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 505,
 				md5: 'b6f52b4b021e7b92cdd04509c7267965',
@@ -185,11 +170,7 @@ describe('FileInfoService', () => {
 		test('SVG with XML definition', async () => {
 			// https://github.com/misskey-dev/misskey/issues/4413
 			const path = `${resources}/with-xml-def.svg`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 544,
 				md5: '4b7a346cde9ccbeb267e812567e33397',
@@ -205,11 +186,7 @@ describe('FileInfoService', () => {
 
 		test('Dimension limit', async () => {
 			const path = `${resources}/25000x25000.png`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 75933,
 				md5: '268c5dde99e17cf8fe09f1ab3f97df56',
@@ -225,11 +202,7 @@ describe('FileInfoService', () => {
 
 		test('Rotate JPEG', async () => {
 			const path = `${resources}/rotate.jpg`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			assert.deepStrictEqual(info, {
 				size: 12624,
 				md5: '68d5b2d8d1d1acbbce99203e3ec3857e',
@@ -247,11 +220,7 @@ describe('FileInfoService', () => {
 	describe('AUDIO', () => {
 		test('MP3', async () => {
 			const path = `${resources}/kick_gaba7.mp3`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			delete info.width;
 			delete info.height;
 			delete info.orientation;
@@ -267,11 +236,7 @@ describe('FileInfoService', () => {
 
 		test('WAV', async () => {
 			const path = `${resources}/kick_gaba7.wav`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			delete info.width;
 			delete info.height;
 			delete info.orientation;
@@ -287,11 +252,7 @@ describe('FileInfoService', () => {
 
 		test('AAC', async () => {
 			const path = `${resources}/kick_gaba7.aac`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			delete info.width;
 			delete info.height;
 			delete info.orientation;
@@ -307,11 +268,7 @@ describe('FileInfoService', () => {
 
 		test('FLAC', async () => {
 			const path = `${resources}/kick_gaba7.flac`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			delete info.width;
 			delete info.height;
 			delete info.orientation;
@@ -327,11 +284,7 @@ describe('FileInfoService', () => {
 
 		test('MPEG-4 AUDIO (M4A)', async () => {
 			const path = `${resources}/kick_gaba7.m4a`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			delete info.width;
 			delete info.height;
 			delete info.orientation;
@@ -347,11 +300,7 @@ describe('FileInfoService', () => {
 
 		test('WEBM AUDIO', async () => {
 			const path = `${resources}/kick_gaba7.webm`;
-			const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
-			delete info.warnings;
-			delete info.blurhash;
-			delete info.sensitive;
-			delete info.porn;
+			const info = strip(await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }));
 			delete info.width;
 			delete info.height;
 			delete info.orientation;
