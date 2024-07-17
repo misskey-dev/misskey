@@ -30,6 +30,7 @@
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
 - Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
+- Fix: フォロー中のユーザーに関する"TLに他の人への返信を含める"の設定が分かりづらい問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -143,7 +144,6 @@
 - Fix: 連合なしの状態の読み書きができない問題を修正
 - Fix: `/share` で日本語等を含むurlがurlエンコードされない問題を修正
 - Fix: ファイルを5つ以上添付してもテキストがないとノートが折りたたまれない問題を修正
-- Fix: フォロー中のユーザーに関する"TLに他の人への返信を含める"の設定が分かりづらい問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
