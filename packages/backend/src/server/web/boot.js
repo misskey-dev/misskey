@@ -21,7 +21,8 @@ var misskey_loader = new Set();
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 function boot() {
 	const defaultSolutions = [
-		'Clear the browser cache / ブラウザのキャッシュをクリアする',
+		'Reload / リロードする',
+		'Clear the browser cache then reload / ブラウザのキャッシュをクリアしてリロードする',
 		'Update your os and browser / ブラウザおよびOSを最新バージョンに更新する',
 		'Disable an adblocker / アドブロッカーを無効にする',
 		'&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する'
@@ -284,12 +285,13 @@ function boot() {
 			// 古いデータがなぜか提供された場合は、エラーを描画する
 			renderError(
 				'META_PROVIDED_AT_TOO_OLD',
-				'This view is too old. Please reload.',
+				'This view is too old. Please reload. (It is also possible that the reverse proxy is unable to connect to the server and is serving the outdated view.)',
 				[
 					'Reload / リロードする',
 					'Clear the browser cache then reload / ブラウザのキャッシュをクリアしてリロードする',
+					'Update your os and browser / ブラウザおよびOSを最新バージョンに更新する',
 					'Disable an adblocker / アドブロッカーを無効にする',
-				]
+				],
 			);
 			return;
 		}
