@@ -1,9 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
+SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
+<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad" :virtualScrollOn="true">
 	<template #empty>
 		<div class="_fullinfo">
 			<img :src="infoImageUrl" class="_ghost"/>
@@ -11,20 +12,24 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		</div>
 	</template>
 
-	<template #default="{ items: notes }">
-		<div :class="[$style.root, { [$style.noGap]: noGap }]">
-			<MkDateSeparatedList
-				ref="notes"
-				v-slot="{ item: note }"
-				:items="notes"
-				:direction="pagination.reversed ? 'up' : 'down'"
-				:reversed="pagination.reversed"
-				:noGap="noGap"
-				:ad="true"
-				:class="$style.notes"
-			>
+	<template #default="{ item: note, index, items }">
+		<div :class="[$style.root, { [$style.noGap]: noGap },{ [$style['date-separated-list']]: noGap}]">
+			<div :class="$style.notes,{ [$style['date-separated-list-nogap']]: noGap}" >
+				<p :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
 				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
-			</MkDateSeparatedList>
+				<div v-if="index !== items.length - 1 && note?.createdAt && items[index + 1]?.createdAt && (new Date(note?.createdAt).getDate()) !== ( new Date(items[index + 1]?.createdAt).getDate())" :key="note.id" :class="$style.separator">
+					<p :class="$style.date">
+						<span :class="$style['date-1']">
+							<i class="ti ti-chevron-up"></i>
+							{{ getDateText(note.createdAt) }}
+						</span>
+						<span :class="$style['date-2']">
+							{{ getDateText(items[index + 1].createdAt) }}
+							<i class="ti ti-chevron-down"></i>
+						</span>
+					</p>
+				</div>
+			</div>
 		</div>
 	</template>
 </MkPagination>
@@ -33,10 +38,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
 import MkNote from '@/components/MkNote.vue';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
+const dateTextCache = new Map<string, string>();
 
 const props = defineProps<{
 	pagination: Paging;
@@ -45,6 +50,20 @@ const props = defineProps<{
     withCw?: boolean;
 }>();
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+
+function getDateText(time: string) {
+	if (dateTextCache.has(time)) {
+		return dateTextCache.get(time)!;
+	}
+	const date = new Date(time).getDate();
+	const month = new Date(time).getMonth() + 1;
+	const text = i18n.tsx.monthAndDay({
+		month: month.toString(),
+		day: date.toString(),
+	});
+	dateTextCache.set(time, text);
+	return text;
+}
 
 defineExpose({
 	pagingComponent,
@@ -57,17 +76,120 @@ defineExpose({
 		> .notes {
 			background: var(--panel);
 		}
+		.note{
+			&:not(:last-child) {
+				border-bottom: solid 0.5px var(--divider);
+			}
+		}
 	}
 
 	&:not(.noGap) {
 		> .notes {
 			background: var(--bg);
-
 			.note {
 				background: var(--panel);
 				border-radius: var(--radius);
 			}
 		}
 	}
+}
+.date-separated-list {
+	container-type: inline-size;
+
+	&:global {
+		> .list-move {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
+
+		&.deny-move-transition > .list-move {
+			transition: none !important;
+		}
+
+		> .list-enter-active {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
+
+		> *:empty {
+			display: none;
+		}
+	}
+
+	&:not(.date-separated-list-nogap) > *:not(:last-child) {
+		margin-bottom: var(--margin);
+	}
+}
+
+.date-separated-list-nogap {
+	> * {
+		margin: 0 !important;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+
+		&:not(:last-child) {
+			border-bottom: solid 0.5px var(--divider);
+		}
+	}
+}
+
+.direction-up {
+	&:global {
+		> .list-enter-from,
+		> .list-leave-to {
+			opacity: 0;
+			transform: translateY(64px);
+		}
+	}
+}
+.direction-down {
+	&:global {
+		> .list-enter-from,
+		> .list-leave-to {
+			opacity: 0;
+			transform: translateY(-64px);
+		}
+	}
+}
+
+.reversed {
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.separator {
+	border-bottom: solid 1px var(--divider);
+
+	text-align: center;
+}
+
+.date {
+	display: inline-block;
+	position: relative;
+	margin: 0;
+	padding: 0 16px;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+	color: var(--dateLabelFg);
+}
+
+.date-1 {
+	margin-right: 8px;
+}
+
+.date-1-icon {
+	margin-right: 8px;
+}
+
+.date-2 {
+	margin-left: 8px;
+}
+
+.date-2-icon {
+	margin-left: 8px;
+}
+
+.before-leave {
+	position: absolute !important;
 }
 </style>

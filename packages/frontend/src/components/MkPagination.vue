@@ -30,7 +30,24 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
+		<DynamicScroller
+			v-if="props.virtualScrollOn"
+			:items="Array.from(items.values())"
+			:minItemSize="110"
+			:pageMode="true"
+			:style="{height: '100%'}"
+		>
+			<template #default="{ item, index, active }">
+				<DynamicScrollerItem
+					:item="item"
+					:active="active"
+					:data-index="index"
+				>
+					<slot :item="item" :index="index" :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
+				</DynamicScrollerItem>
+			</template>
+		</DynamicScroller>
+		<slot v-else :items="Array.from(items.values())" item="none" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -44,7 +61,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <script lang="ts">
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
+
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll.js';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility.js';
@@ -91,9 +108,12 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
+	virtualScrollOn?: boolean;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
 }>(), {

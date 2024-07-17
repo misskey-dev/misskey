@@ -470,7 +470,6 @@ export class UserEntityService implements OnModuleInit {
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
 				...announcement,
 			})) : null;
-		console.log(user.getPoints);
 		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
 		const packed = {
 			id: user.id,
