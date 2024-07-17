@@ -55,7 +55,7 @@ export function getOneApId(value: ApObject): string {
 export function getApId(value: string | IObject): string {
 	if (typeof value === 'string') return value;
 	if (typeof value.id === 'string') return value.id;
-	throw new Error('cannot detemine id');
+	throw new Error('cannot determine id');
 }
 
 /**

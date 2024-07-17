@@ -69,7 +69,7 @@ export class InboxProcessorService {
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
-		const host = this.utilityService.toPuny(new URL(activity.actor).hostname);
+		const host = this.utilityService.toPuny(new URL(actorUri).hostname);
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
