@@ -146,9 +146,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * @param uri AP Actor id
 	 * @param keyId Key id to find. If not specified, main key will be selected.
 	 * @returns
-	 *	1. ユーザーとキーのホストが一致しない場合`null`
-	 *	2. userが見つからない場合`{ user: null, key: null }`
-	 *	3. keyが見つからない場合`{ user, key: null }`
+	 *	1. `null` if the user and key host do not match
+	 *	2. `{ user: null, key: null }` if the user is not found
+	 *	3. `{ user: MiRemoteUser, key: null }` if key is not found
+	 *  4. `{ user: MiRemoteUser, key: MiUserPublickey }` if both are found
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string, keyId?: string): Promise<{
@@ -165,11 +166,21 @@ export class ApDbResolverService implements OnApplicationShutdown {
 				 * keyIdはURL形式かつkeyIdのホストはuriのホストと一致するはず
 				 * （ApPersonService.validateActorに由来）
 				 *
-				 * ただ、Mastodonはリプライ関連で他人のノートをHTTP Signature署名して送ってくることがある
+				 * ただ、Mastodonはリプライ関連で他人のトゥートをHTTP Signature署名して送ってくることがある
 				 * そのような署名は有効性に疑問があるので無視することにする
 				 * ここではuriとkeyIdのホストが一致しない場合は無視する
 				 * ハッシュをなくしたkeyIdとuriの同一性を比べてみてもいいが、`uri#*-key`というkeyIdを設定するのが
 				 * 決まりごとというわけでもないため幅を持たせることにする
+				 *
+				 *
+				 * The keyId should be in URL format and its host should match the host of the uri
+				 * (derived from ApPersonService.validateActor)
+				 *
+				 * However, Mastodon sometimes sends toots from other users with HTTP Signature signing for reply-related purposes
+				 * Such signatures are of questionable validity, so we choose to ignore them
+				 * Here, we ignore cases where the hosts of uri and keyId do not match
+				 * We could also compare the equality of keyId without the hash and uri, but since setting a keyId like `uri#*-key`
+				 * is not a strict rule, we decide to allow for some flexibility
 				 */
 				this.logger.warn(`actor uri and keyId are not matched uri=${uri} keyId=${keyId}`);
 				return null;
@@ -187,7 +198,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		}
 
 		if (!keyId) {
-			// mainっぽいのを選ぶ
+			// Choose the main-like
 			const mainKey = keys.find(x => {
 				try {
 					const url = new URL(x.keyId);
@@ -209,15 +220,20 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const exactKey = keys.find(x => x.keyId === keyId);
 		if (exactKey) return { user, key: exactKey };
 
-		// keyIdで見つからない場合
-		// まずはキャッシュを更新して再取得
+		/**
+		 * keyIdで見つからない場合、まずはキャッシュを更新して再取得
+		 * If not found with keyId, update cache and reacquire
+		 */
 		const cacheRaw = this.publicKeyByUserIdCache.cache.get(user.id);
 		if (cacheRaw && cacheRaw.date > Date.now() - 1000 * 60 * 12) {
 			const exactKey = await this.refreshAndFindKey(user.id, keyId);
 			if (exactKey) return { user, key: exactKey };
 		}
 
-		// lastFetchedAtでの更新制限を弱めて再取得
+		/**
+		 * lastFetchedAtでの更新制限を弱めて再取得
+		 * Reacquisition with weakened update limit at lastFetchedAt
+		 */
 		if (user.lastFetchedAt == null || user.lastFetchedAt < new Date(Date.now() - 1000 * 60 * 12)) {
 			this.logger.info(`Fetching user to find public key uri=${uri} userId=${user.id} keyId=${keyId}`);
 			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
