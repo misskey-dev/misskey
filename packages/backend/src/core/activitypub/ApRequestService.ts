@@ -40,9 +40,6 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 		['(request-target)', 'date', 'host', 'digest'],
 	);
 
-	// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
-	delete request.headers['Host'];
-
 	return {
 		request,
 		...result,
@@ -68,9 +65,6 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 		args.key,
 		['(request-target)', 'date', 'host', 'accept'],
 	);
-
-	// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
-	delete request.headers['Host'];
 
 	return {
 		request,
@@ -109,6 +103,9 @@ export class ApRequestService {
 			digest,
 		});
 
+		// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
+		delete req.request.headers['Host'];
+
 		this.logger.debug('create signed post', {
 			version: 'draft',
 			level,
@@ -139,6 +136,9 @@ export class ApRequestService {
 				'User-Agent': this.config.userAgent,
 			},
 		});
+
+		// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
+		delete req.request.headers['Host'];
 
 		this.logger.debug('create signed get', {
 			version: 'draft',
