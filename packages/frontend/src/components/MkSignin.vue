@@ -86,7 +86,7 @@ const host = ref(toUnicode(configHost));
 const totpLogin = ref(false);
 const isBackupCode = ref(false);
 const queryingKey = ref(false);
-const credentialRequest = ref<CredentialRequestOptions | null>(null);
+let credentialRequest: CredentialRequestOptions | null = null;
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -121,14 +121,14 @@ function onLogin(res: any): Promise<void> | void {
 }
 
 async function queryKey(): Promise<void> {
-	if (credentialRequest.value == null) return;
+	if (credentialRequest == null) return;
 	queryingKey.value = true;
-	await webAuthnRequest(credentialRequest.value)
+	await webAuthnRequest(credentialRequest)
 		.catch(() => {
 			queryingKey.value = false;
 			return Promise.reject(null);
 		}).then(credential => {
-			credentialRequest.value = null;
+			credentialRequest = null;
 			queryingKey.value = false;
 			signing.value = true;
 			return misskeyApi('signin', {
@@ -159,7 +159,7 @@ function onSubmit(): void {
 			}).then(res => {
 				totpLogin.value = true;
 				signing.value = false;
-				credentialRequest.value = parseRequestOptionsFromJSON({
+				credentialRequest = parseRequestOptionsFromJSON({
 					publicKey: res,
 				});
 			})
