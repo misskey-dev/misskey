@@ -35,6 +35,7 @@ import { StatusError } from '@/misc/status-error.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
@@ -102,6 +103,8 @@ export class ApPersonService implements OnModuleInit {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
+
+		private roleService: RoleService,
 	) {
 	}
 
@@ -291,6 +294,11 @@ export class ApPersonService implements OnModuleInit {
 
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
+
+		if (((avatar != null && avatar.id != null) || (banner != null && banner.id != null))
+				&& !(await this.roleService.getUserPolicies(user.id)).canUpdateBioMedia) {
+			return {};
+		}
 
 		/*
 			we don't want to return nulls on errors! if the database fields

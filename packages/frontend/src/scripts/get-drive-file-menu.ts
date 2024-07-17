@@ -27,7 +27,7 @@ function rename(file: Misskey.entities.DriveFile) {
 }
 
 function describe(file: Misskey.entities.DriveFile) {
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment ?? '',
 		file: file,
 	}, {
@@ -37,7 +37,8 @@ function describe(file: Misskey.entities.DriveFile) {
 				comment: caption.length === 0 ? null : caption,
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {

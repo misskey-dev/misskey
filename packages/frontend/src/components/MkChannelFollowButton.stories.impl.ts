@@ -12,14 +12,12 @@ import { expect, userEvent, within } from '@storybook/test';
 import { channel } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkChannelFollowButton from './MkChannelFollowButton.vue';
-import { semaphore } from '@/scripts/test-utils.js';
 import { i18n } from '@/i18n.js';
 
 function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const s = semaphore();
 export const Default = {
 	render(args) {
 		return {
@@ -46,17 +44,13 @@ export const Default = {
 		full: true,
 	},
 	async play({ canvasElement }) {
-		await s.acquire();
-		await sleep(1000);
 		const canvas = within(canvasElement);
 		const buttonElement = canvas.getByRole<HTMLButtonElement>('button');
 		await expect(buttonElement).toHaveTextContent(i18n.ts.follow);
 		await userEvent.click(buttonElement);
 		await sleep(1000);
 		await expect(buttonElement).toHaveTextContent(i18n.ts.unfollow);
-		await sleep(100);
 		await userEvent.click(buttonElement);
-		s.release();
 	},
 	parameters: {
 		layout: 'centered',

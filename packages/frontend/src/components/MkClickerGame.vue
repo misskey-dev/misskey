@@ -35,7 +35,9 @@ const prevCookies = ref(0);
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
 	const y = ev.clientY;
-	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
+	const { dispose } = os.popup(MkPlusOneEffect, { x, y }, {
+		end: () => dispose(),
+	});
 
 	saveData.value!.cookies++;
 	saveData.value!.totalCookies++;
