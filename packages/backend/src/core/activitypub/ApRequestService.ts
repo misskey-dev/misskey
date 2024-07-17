@@ -40,6 +40,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 		['(request-target)', 'date', 'host', 'digest'],
 	);
 
+	// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
 	delete request.headers['Host'];
 
 	return {
@@ -68,6 +69,7 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 		['(request-target)', 'date', 'host', 'accept'],
 	);
 
+	// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
 	delete request.headers['Host'];
 
 	return {
