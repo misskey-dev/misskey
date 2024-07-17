@@ -292,7 +292,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				autorun: false,
 				concurrency: this.config.inboxJobConcurrency ?? 4,
 				limiter: {
-					max: this.config.inboxJobPerSec ?? 32,
+					max: this.config.inboxJobPerSec ?? 64,
 					duration: 1000,
 				},
 				settings: {

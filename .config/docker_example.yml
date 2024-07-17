@@ -169,7 +169,7 @@ id: 'aidx'
 
 # Job rate limiter
 # deliverJobPerSec: 128
-# inboxJobPerSec: 32
+# inboxJobPerSec: 64
 
 # Job attempts
 # deliverJobMaxAttempts: 12
