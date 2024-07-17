@@ -21,5 +21,6 @@ for (const key of Object.keys(envOption) as (keyof typeof envOption)[]) {
 if (process.env.NODE_ENV === 'test') envOption.disableClustering = true;
 if (process.env.NODE_ENV === 'test') envOption.quiet = true;
 if (process.env.NODE_ENV === 'test') envOption.noDaemons = true;
+if (process.env.MANAGED === 'true') envOption.managed = true;
 
 export { envOption };
