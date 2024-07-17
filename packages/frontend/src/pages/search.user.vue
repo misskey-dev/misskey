@@ -75,31 +75,33 @@ async function search() {
 		}
 	}
 
-	if (query.startsWith('@') && query.length > 1 && !query.includes(' ')) {
-		//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
-		await new Promise(x => setTimeout(x, 2));
+	if (query.length > 1 && !query.includes(' ')) {
+		if (query.startsWith('@')) {
+			//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
+			await new Promise(x => setTimeout(x, 2));
 
-		const confirm = await os.confirm({
-			type: 'info',
-			text: i18n.ts.lookupConfirm,
-		});
-		if (!confirm.canceled) {
-			router.push(`/${query}`);
-			return;
+			const confirm = await os.confirm({
+				type: 'info',
+				text: i18n.ts.lookupConfirm,
+			});
+			if (!confirm.canceled) {
+				router.push(`/${query}`);
+				return;
+			}
 		}
-	}
 
-	if (query.startsWith('#') && query.length > 1 && !query.includes(' ')) {
-		//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
-		await new Promise(x => setTimeout(x, 2));
+		if (query.startsWith('#')) {
+			//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
+			await new Promise(x => setTimeout(x, 2));
 
-		const confirm = await os.confirm({
-			type: 'info',
-			text: i18n.ts.openTagPageConfirm,
-		});
-		if (!confirm.canceled) {
-			router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
-			return;
+			const confirm = await os.confirm({
+				type: 'info',
+				text: i18n.ts.openTagPageConfirm,
+			});
+			if (!confirm.canceled) {
+				router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+				return;
+			}
 		}
 	}
 

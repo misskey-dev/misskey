@@ -16,14 +16,14 @@ export async function lookup(router?: Router) {
 		title: i18n.ts.lookup,
 	});
 	const query = temp ? temp.trim() : '';
-	if (canceled) return;
+	if (canceled || query.length <= 1) return;
 
-	if (query.startsWith('@') && query.length > 1 && !query.includes(' ')) {
+	if (query.startsWith('@') && !query.includes(' ')) {
 		_router.push(`/${query}`);
 		return;
 	}
 
-	if (query.startsWith('#') && query.length > 1) {
+	if (query.startsWith('#')) {
 		_router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
 		return;
 	}
