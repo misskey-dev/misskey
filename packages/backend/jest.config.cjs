@@ -23,7 +23,7 @@ module.exports = {
 	collectCoverageFrom: ['src/**/*.ts', '!src/**/*.test.ts'],
 
 	// The directory where Jest should output its coverage files
-	coverageDirectory: "coverage",
+	coverageDirectory: 'coverage',
 
 	// An array of regexp pattern strings used to skip coverage collection
 	// coveragePathIgnorePatterns: [
@@ -31,7 +31,7 @@ module.exports = {
 	// ],
 
 	// Indicates which provider should be used to instrument code for coverage
-	coverageProvider: "v8",
+	coverageProvider: 'v8',
 
 	// A list of reporter names that Jest uses when writing coverage reports
 	// coverageReporters: [
@@ -129,7 +129,7 @@ module.exports = {
 
 	// A list of paths to directories that Jest should use to search for files in
 	roots: [
-		"<rootDir>"
+		'<rootDir>',
 	],
 
 	// Allows you to use a custom runner instead of Jest's default test runner
@@ -148,7 +148,7 @@ module.exports = {
 	// snapshotSerializers: [],
 
 	// The test environment that will be used for testing
-	testEnvironment: "node",
+	testEnvironment: 'node',
 
 	// Options that will be passed to the testEnvironment
 	// testEnvironmentOptions: {},
@@ -158,8 +158,8 @@ module.exports = {
 
 	// The glob patterns Jest uses to detect test files
 	testMatch: [
-		"<rootDir>/test/unit/**/*.ts",
-		"<rootDir>/src/**/*.test.ts",
+		'<rootDir>/test/unit/**/*.ts',
+		'<rootDir>/src/**/*.test.ts',
 	],
 
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
@@ -184,7 +184,7 @@ module.exports = {
 
 	// A map from regular expressions to paths to transformers
 	transform: {
-		"^.+\\.(t|j)sx?$": ["@swc/jest"],
+		'^.+\\.(t|j)sx?$': ['@swc/jest'],
 	},
 
 	// An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
@@ -212,7 +212,7 @@ module.exports = {
 	// Let Jest kill the test worker whenever it grows too much
 	// (It seems there's a known memory leak issue in Node.js' vm.Script used by Jest)
 	// https://github.com/facebook/jest/issues/11956
-	maxWorkers: 1, // Make it use worker (that can be killed and restarted)
+	maxWorkers: '90%', // Make it use worker (that can be killed and restarted)
 	logHeapUsage: true, // To debug when out-of-memory happens on CI
 	workerIdleMemoryLimit: '1GiB', // Limit the worker to 1GB (GitHub Workflows dies at 2GB)
 
