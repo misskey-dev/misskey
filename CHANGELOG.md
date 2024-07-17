@@ -10,7 +10,6 @@
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
-- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
@@ -21,6 +20,7 @@
 - Enhance: サーバー情報ページ・お問い合わせページを改善  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Enhance: AiScriptを0.19.0にアップデート
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 - Enhance: Unicode絵文字をslugから入力する際に`:ok:`のように最後の`:`を入力したあとにUnicode絵文字に変換できるように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
