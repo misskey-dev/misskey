@@ -21,9 +21,10 @@
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Enhance: AiScriptを0.19.0にアップデート
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
-- Enhance: 検索(ノート/ユーザー)で `#` から始まる文字列を入力すると、そのハッシュタグのノート/ユーザー一覧ページが表示されるように
+- Enhance: 検索(ノート/ユーザー)で `#` から始まる文字列を入力すると、そのハッシュタグのノート/ユーザー一覧ページが表示できるように
 - Enhance: 検索(ノート/ユーザー)において、入力に空白が含まれている場合は照会を行わないように
 - Enhance: 検索(ノート/ユーザー)において、照会を行うかどうか、ハッシュタグのノート/ユーザー一覧ページを表示するかどうかの確認ダイアログを出すように
+- Enhance: 検索(ノート/ユーザー)で `@` から始まる文字列(`@user@host`など)を入力すると、そのユーザーを照会できるように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
@@ -34,6 +35,7 @@
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
 - Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
 - Fix: 照会に `#` から始まる文字列を入力してそのハッシュタグのページを表示する際、入力が `#` のみの場合に「指定されたURLに該当するページはありませんでした。」が表示されてしまう問題を修正
+- Fix: 照会に `@` から始まる文字列を入力してユーザーを照会する際、入力が `@` のみの場合に「問題が発生しました」が表示されてしまう問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -65,6 +67,7 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
 - Fix: エラーメッセージの誤字を修正 (#14213)
+- Fix: `users/search`において `@` から始まるqueryに対する処理が正しくなかった問題を修正
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
