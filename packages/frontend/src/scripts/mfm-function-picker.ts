@@ -7,11 +7,12 @@ import { Ref, nextTick } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { MFM_TAGS } from '@/const.js';
+import { MenuItem } from '@/types/menu.js';
 
 /**
  * MFMの装飾のリストを表示する
  */
-export function mfmFunctionPicker(src: any, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
+export function mfmFunctionPicker(src: HTMLElement | EventTarget | null, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
 	return new Promise((res, rej) => {
 		os.popupMenu([{
 			text: i18n.ts.addMfmFunction,
@@ -20,8 +21,8 @@ export function mfmFunctionPicker(src: any, textArea: HTMLInputElement | HTMLTex
 	});
 }
 
-function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) : object[] {
-	const ret: object[] = [];
+function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) : MenuItem[] {
+	const ret: MenuItem[] = [];
 	MFM_TAGS.forEach(tag => {
 		ret.push({
 			text: tag,
