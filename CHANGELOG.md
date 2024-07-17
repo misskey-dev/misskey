@@ -11,6 +11,8 @@
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
+- Feat: 連合に使うHTTP SignaturesがEd25519鍵に対応するように #13464
+  - Ed25519署名に対応するサーバーが増えると、deliverで要求されるサーバーリソースが削減されます
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
