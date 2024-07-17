@@ -107,7 +107,7 @@ If your language is not listed in Crowdin, please open an issue.
 
 ## Development
 ### Setup
-Before developing, you set up environment. Misskey requires Redis, PostgreSQL, and FFmpeg. There are a few ways to proceed.
+Before developing, you have to set up environment. Misskey requires Redis, PostgreSQL, and FFmpeg. There are a few ways to proceed.
 
 #### Use system-wide software
 You could install them in system-wide (such as from package manager).
@@ -116,10 +116,7 @@ You could install them in system-wide (such as from package manager).
 You could obtain all-in-one container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml`.
 
 #### Use Devcontainer
-Devcontainer also has necessary setting.
-
-> [!NOTE]
-> Support from JetBrain's IDE may be limited. In doubtful situation, we recommend using VSCode.
+Devcontainer also has necessary setting. This method can be done by connecting from VSCode.
 
 ### Start developing
 During development, it is useful to use the
