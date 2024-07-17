@@ -125,7 +125,7 @@ export class RelayService {
 		const copy = deepClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 		privateKey = privateKey ?? await this.userKeypairService.getLocalUserPrivateKeyPem(user.id);
-		const signed = await this.apRendererService.attachLdSignature(copy, user, privateKey);
+		const signed = await this.apRendererService.attachLdSignature(copy, privateKey);
 
 		this.queueService.deliverMany(user, signed, new Map(relays.map(({ inbox }) => [inbox, false])), privateKey);
 	}
