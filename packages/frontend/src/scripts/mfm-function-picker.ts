@@ -20,15 +20,11 @@ export function mfmFunctionPicker(src: HTMLElement | EventTarget | null, textAre
 }
 
 function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) : MenuItem[] {
-	const ret: MenuItem[] = [];
-	MFM_TAGS.forEach(tag => {
-		ret.push({
-			text: tag,
-			icon: 'ti ti-icons',
-			action: () => add(textArea, textRef, tag),
-		});
-	});
-	return ret;
+	return MFM_TAGS.map(tag => ({
+		text: tag,
+		icon: 'ti ti-icons',
+		action: () => add(textArea, textRef, tag),
+	}));
 }
 
 function add(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>, type: string) {
