@@ -73,25 +73,33 @@ export class DeliverProcessorService {
 		}
 
 		try {
-			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, job.data.digest);
+			const _server = await this.federatedInstanceService.fetch(host);
+			await this.fetchInstanceMetadataService.fetchInstanceMetadata(_server).then(() => {});
+			const server = await this.federatedInstanceService.fetch(host);
+
+			await this.apRequestService.signedPost(
+				job.data.user,
+				job.data.to,
+				job.data.content,
+				server.httpMessageSignaturesImplementationLevel,
+				job.data.digest,
+				job.data.privateKey,
+			);
 
 			// Update stats
-			this.federatedInstanceService.fetch(host).then(i => {
-				if (i.isNotResponding) {
-					this.federatedInstanceService.update(i.id, {
-						isNotResponding: false,
-						notRespondingSince: null,
-					});
-				}
+			if (server.isNotResponding) {
+				this.federatedInstanceService.update(server.id, {
+					isNotResponding: false,
+					notRespondingSince: null,
+				});
+			}
 
-				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-				this.apRequestChart.deliverSucc();
-				this.federationChart.deliverd(i.host, true);
+			this.apRequestChart.deliverSucc();
+			this.federationChart.deliverd(server.host, true);
 
-				if (meta.enableChartsForFederatedInstances) {
-					this.instanceChart.requestSent(i.host, true);
-				}
-			});
+			if (meta.enableChartsForFederatedInstances) {
+				this.instanceChart.requestSent(server.host, true);
+			}
 
 			return 'Success';
 		} catch (res) {
