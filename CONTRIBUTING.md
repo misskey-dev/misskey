@@ -106,11 +106,22 @@ If your language is not listed in Crowdin, please open an issue.
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Development
-Before developing, you could set up Devcontainer with VSCode. Devcontainer has necessary setting for development server such as Redis and PostgreSQL.
+### Setup
+Before developing, you set up environment. Misskey requires Redis, PostgreSQL, and FFmpeg. There are a few ways to proceed.
+
+#### Use system-wide software
+You could install them in system-wide (such as from package manager).
+
+#### Use `docker compose`
+You could obtain all-in-one container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml`.
+
+#### Use Devcontainer
+Devcontainer also has necessary setting.
 
 > [!NOTE]
 > Support from JetBrain's IDE may be limited. In doubtful situation, we recommend using VSCode.
 
+### Start developing
 During development, it is useful to use the
 
 ```
