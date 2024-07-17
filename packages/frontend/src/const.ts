@@ -89,6 +89,7 @@ export const ROLE_POLICIES = [
 	'alwaysMarkNsfw',
 	'canUpdateBioMedia',
 	'pinLimit',
+	'reactionsPerNoteLimit',
 	'antennaLimit',
 	'wordMuteLimit',
 	'webhookLimit',

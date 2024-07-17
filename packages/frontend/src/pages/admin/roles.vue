@@ -149,6 +149,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.reactionsPerNoteLimit, 'reactionsPerNoteLimit'])">
+							<template #label>{{ i18n.ts._role._options.reactionsPerNoteLimit }}</template>
+							<template #suffix>{{ policies.reactionsPerNoteLimit }}</template>
+							<MkInput v-model="policies.reactionsPerNoteLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.antennaMax, 'antennaLimit'])">
 							<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
 							<template #suffix>{{ policies.antennaLimit }}</template>

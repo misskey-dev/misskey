@@ -170,10 +170,10 @@ export class NoteEntityService implements OnModuleInit {
 
 	@bindThis
 	public async populateMyReaction(note: { id: MiNote['id']; reactions: MiNote['reactions']; reactionAndUserPairCache?: MiNote['reactionAndUserPairCache']; }, meId: MiUser['id'], _hint_?: {
-		myReactions: Map<MiNote['id'], string | null>;
+		myReactionsMap: Map<MiNote['id'], string | null>;
 	}) {
-		if (_hint_?.myReactions) {
-			const reaction = _hint_.myReactions.get(note.id);
+		if (_hint_?.myReactionsMap) {
+			const reaction = _hint_.myReactionsMap.get(note.id);
 			if (reaction) {
 				return this.reactionService.convertLegacyReaction(reaction);
 			} else {
