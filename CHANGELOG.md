@@ -72,6 +72,8 @@
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
 - Fix: エラーメッセージの誤字を修正 (#14213)
 - Fix: ソーシャルタイムラインにローカルタイムラインに表示される自分へのリプライが表示されない問題を修正
+- Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
+  (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
