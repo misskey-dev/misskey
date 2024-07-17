@@ -10,9 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSuspense :p="init">
 			<div class="_gaps">
 				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableServerMachineStats">
+					<MkSwitch v-model="enableServerMachineStats" :disabled="isManaged">
 						<template #label>{{ i18n.ts.enableServerMachineStats }}</template>
-						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						<template #caption>
+							{{ i18n.ts.turnOffToImprovePerformance }}
+							<span v-if="isManaged">{{ i18n.ts.managedInstanceIsNotEditable }}</span>
+						</template>
 					</MkSwitch>
 				</div>
 
@@ -78,6 +81,7 @@ const enableIdenticonGeneration = ref<boolean>(false);
 const enableChartsForRemoteUser = ref<boolean>(false);
 const enableChartsForFederatedInstances = ref<boolean>(false);
 const requestEmojiAllOk = ref(false);
+const isManaged = ref(false);
 let DiscordWebhookUrl = ref(null);
 let DiscordWebhookUrlWordBlock = ref(null);
 let EmojiBotToken = ref(null);
@@ -89,6 +93,7 @@ async function init() {
 	enableIdenticonGeneration.value = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser.value = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances.value = meta.enableChartsForFederatedInstances;
+	isManaged.value = meta.isManaged;
 	requestEmojiAllOk.value = meta.requestEmojiAllOk;
 	DiscordWebhookUrl.value = meta.DiscordWebhookUrl;
 	DiscordWebhookUrlWordBlock.value = meta.DiscordWebhookUrlWordBlock;

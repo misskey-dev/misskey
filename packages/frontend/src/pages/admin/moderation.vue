@@ -10,8 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkSwitch v-model="enableRegistration">
-						<template #label>{{ i18n.ts.enableRegistration }}</template>
+					<MkSwitch v-model="enableRegistration" :disabled="isManaged" >
+						<template #label>
+							{{ i18n.ts.enableRegistration }}
+						</template>
+						<template #caption v-if="isManaged">{{ i18n.ts.managedInstanceIsNotEditable }}</template>
 					</MkSwitch>
 
 					<MkSwitch v-model="emailRequiredForSignup">
@@ -89,6 +92,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 
 const enableRegistration = ref<boolean>(false);
+const isManaged = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
@@ -101,6 +105,7 @@ const enableGDPRMode = ref<boolean>(false);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
+	isManaged.value = meta.isManaged;
 	enableRegistration.value = !meta.disableRegistration;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');

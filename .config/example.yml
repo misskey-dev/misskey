@@ -186,6 +186,24 @@ redis:
 #  index: ''
 #  scope: local
 
+#   ┌─────────────────────────────┐
+#───┘ ObjectStorage configuration └─────────────────────────────
+
+#objectStorage:
+#  useObjectStorage: true
+#  objectStorageBaseUrl: 'https://'
+#  objectStorageBucket: ''
+#  objectStoragePrefix: ''
+#  objectStorageEndpoint: '' # Please enter the following format: s3.example.com
+#  objectStorageRegion: ''
+#  objectStoragePort: 443
+#  objectStorageAccessKey: ''
+#  objectStorageSecretKey: ''
+#  objectStorageUseSSL: true
+#  objectStorageUseProxy: false
+#  objectStorageSetPublicRead: true
+#  objectStorageS3ForcePathStyle: true
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 

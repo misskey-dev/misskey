@@ -73,24 +73,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const range = max - min + 1;
 				const randomBuffer = new Uint32Array(1);
 				crypto.getRandomValues(randomBuffer);
-				const randomNumber = randomBuffer[0] / (0xFFFFFFFF + 1); // 0から1未満の浮動小数点数
+				const randomNumber = randomBuffer[0] / (0xFFFFFFFF + 1);
 				return Math.floor(randomNumber * range) + min;
 			}
 
 			if (!userProfile.loggedInDates.includes(today)) {
+
 				todayGetPoints = generateSecureRandomNumber(1, 5);
-				this.userProfilesRepository.update({ userId: user.id }, {
+
+				void this.userProfilesRepository.update({ userId: user.id }, {
 					loggedInDates: [...userProfile.loggedInDates, today],
 				});
+
 				const user_ = await this.usersRepository.findOne({
 					where: {
 						id: user.id,
 					},
 				});
+
 				if (user_ == null) {
 					throw new ApiError(meta.errors.userIsDeleted);
 				}
-				this.usersRepository.update( user.id, {
+				void this.usersRepository.update( user.id, {
 					getPoints: user_.getPoints + todayGetPoints,
 				});
 				this.notificationService.createNotification(user.id, 'loginbonus', {

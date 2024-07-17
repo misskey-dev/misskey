@@ -57,9 +57,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
-
+						<template #description v-if="isManaged">{{ i18n.ts.managedInstanceIsNotEditable }}</template>
 						<div class="_gaps_m">
-							<MkSwitch v-model="cacheRemoteFiles">
+							<MkSwitch v-model="cacheRemoteFiles" :disabled="isManaged">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
 							</MkSwitch>
@@ -98,31 +98,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<FormSection>
 						<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
+						<template #description v-if="isManaged">{{ i18n.ts.managedInstanceIsNotEditable }}</template>
 
 						<div class="_gaps_m">
-							<MkSwitch v-model="enableFanoutTimeline">
+							<MkSwitch v-model="enableFanoutTimeline" :disabled="isManaged">
 								<template #label>{{ i18n.ts.enable }}</template>
 								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
 							</MkSwitch>
 
-							<MkSwitch v-model="enableFanoutTimelineDbFallback">
+							<MkSwitch v-model="enableFanoutTimelineDbFallback" :disabled="isManaged">
 								<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</template>
 								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
 							</MkSwitch>
 
-							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
+							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number" :disabled="isManaged">
 								<template #label>perLocalUserUserTimelineCacheMax</template>
 							</MkInput>
 
-							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
+							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number" :disabled="isManaged">
 								<template #label>perRemoteUserUserTimelineCacheMax</template>
 							</MkInput>
 
-							<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
+							<MkInput v-model="perUserHomeTimelineCacheMax" type="number" :disabled="isManaged">
 								<template #label>perUserHomeTimelineCacheMax</template>
 							</MkInput>
 
-							<MkInput v-model="perUserListTimelineCacheMax" type="number">
+							<MkInput v-model="perUserListTimelineCacheMax" type="number" :disabled="isManaged">
 								<template #label>perUserListTimelineCacheMax</template>
 							</MkInput>
 						</div>
@@ -249,7 +250,7 @@ const urlPreviewMaximumContentLength = ref<number>(1024 * 1024 * 10);
 const urlPreviewRequireContentLength = ref<boolean>(true);
 const urlPreviewUserAgent = ref<string | null>(null);
 const urlPreviewSummaryProxyUrl = ref<string | null>(null);
-
+const isManaged = ref<boolean>(false);
 async function init(): Promise<void> {
 	const meta = await misskeyApi('admin/meta');
 	name.value = meta.name;
@@ -278,6 +279,7 @@ async function init(): Promise<void> {
 	urlPreviewRequireContentLength.value = meta.urlPreviewRequireContentLength;
 	urlPreviewUserAgent.value = meta.urlPreviewUserAgent;
 	urlPreviewSummaryProxyUrl.value = meta.urlPreviewSummaryProxyUrl;
+	isManaged.value = meta.isManaged;
 }
 
 async function save() {

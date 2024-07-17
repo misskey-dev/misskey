@@ -21,6 +21,7 @@ import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { MetaService } from '@/core/MetaService.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class SignupService {
@@ -33,6 +34,9 @@ export class SignupService {
 
 		@Inject(DI.usedUsernamesRepository)
 		private usedUsernamesRepository: UsedUsernamesRepository,
+
+		@Inject(DI.config)
+		private config: Config,
 
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
@@ -58,7 +62,9 @@ export class SignupService {
 		if (!this.userEntityService.validateLocalUsername(username)) {
 			throw new Error('INVALID_USERNAME');
 		}
-
+		if (this.config.maxLocalUsers !== -1 && await this.usersRepository.count({ where: { host: IsNull() } }) >= this.config.maxLocalUsers) {
+			throw new Error('MAX_LOCAL_USERS');
+		}
 		if (password != null && passwordHash == null) {
 			// Validate password
 			if (!this.userEntityService.validatePassword(password)) {

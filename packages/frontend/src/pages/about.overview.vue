@@ -22,14 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<MkKeyValue :copy="version">
-				<template #key>Misskey</template>
+				<template #key>Type4ny</template>
 				<template #value>{{ version }}</template>
 			</MkKeyValue>
-			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
+			<div v-html="i18n.tsx.poweredByType4nyDescription({ name: instance.name ?? host })">
 			</div>
-			<FormLink to="/about-misskey">
+			<FormLink to="/about-type4ny">
 				<template #icon><i class="ti ti-info-circle"></i></template>
-				{{ i18n.ts.aboutMisskey }}
+				{{ i18n.ts.aboutType4ny }}
 			</FormLink>
 			<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
 				<template #icon><i class="ti ti-code"></i></template>
@@ -138,6 +138,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
+import MkInfo from "@/components/MkInfo.vue";
 
 const initStats = () => misskeyApi('stats', {});
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +10,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-hotkey="keymap"
 		tabindex="0"
 		class="_popup _shadow"
-		:class="[$style.root, { [$style.center]: align === 'center', [$style.asDrawer]: asDrawer },{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+		:class="{
+			[$style.root]: true,
+			[$style.center]: align === 'center',
+			[$style.asDrawer]: asDrawer,
+			[$style.gamingDark]: gamingType === 'dark',
+			[$style.gamingLight]: gamingType === 'light'
+		}"
 		:style="{
 			width: (width && !asDrawer) ? `${width}px` : '',
 			maxHeight: maxHeight ? `${maxHeight}px` : '',
@@ -20,21 +26,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<template v-for="item in (items2 ?? [])">
 			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
-			<span v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label, $style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
+			<span v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label, $style.item, {[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]">
 				<span style="opacity: 0.7;">{{ item.text }}</span>
 			</span>
-			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
+			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item,{[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]">
 				<span><MkEllipsis/></span>
 			</span>
 			<MkA
 				v-else-if="item.type === 'link'"
 				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item	,{[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]"
 				:to="item.to"
-				class="_button"
-				:class="[$style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
 				@click.passive="close(true)"
 				@mouseenter.passive="onItemMouseEnter"
-				@mouseleave.passive="onItemMouseLeave">
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
@@ -45,14 +52,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<a
 				v-else-if="item.type === 'a'"
 				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item,{[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]"
 				:href="item.href"
 				:target="item.target"
+				:rel="item.target === '_blank' ? 'noopener noreferrer' : undefined"
 				:download="item.download"
-				class="_button"
-				:class="[$style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
 				@click.passive="close(true)"
 				@mouseenter.passive="onItemMouseEnter"
-				@mouseleave.passive="onItemMouseLeave">
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
@@ -63,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-else-if="item.type === 'user'"
 				role="menuitem"
 				tabindex="0"
-				:class="['_button', $style.item, { [$style.active]: item.active },{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				:class="['_button', $style.item, { [$style.active]: item.active },{[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]"
 				@click.prevent="item.active ? close(false) : clicked(item.action, $event)"
 				@mouseenter.passive="onItemMouseEnter"
 				@mouseleave.passive="onItemMouseLeave"
@@ -76,14 +85,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button
 				v-else-if="item.type === 'switch'"
 				role="menuitemcheckbox"
-				class="_button"
-				:class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } , {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				tabindex="0"
+				:class="['_button', $style.item]"
 				:disabled="unref(item.disabled)"
 				@click.prevent="switchItem(item)"
 				@mouseenter.passive="onItemMouseEnter"
-				@mouseleave.passive="onItemMouseLeave">
-                <i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
-				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" model-value/>
+				@mouseleave.passive="onItemMouseLeave"
+			>
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
+				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
 					<span :class="[$style.item_content_text, { [$style.switchText]: !item.icon }]">{{ item.text }}</span>
 					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
@@ -125,7 +135,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-else-if="item.type === 'parent'"
 				role="menuitem"
 				tabindex="0"
-				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item } , {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item },{[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]"
 				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
 				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
 				@click.prevent="!preferClick ? null : showChildren(item, $event)"
@@ -139,12 +149,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button
 				v-else role="menuitem"
 				tabindex="0"
-				:class="['_button', $style.item, { [$style.danger]: item.danger, [$style.active]: unref(item.active) }, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				:class="['_button', $style.item, { [$style.danger]: item.danger, [$style.active]: unref(item.active) },{[$style.gamingDark]: gamingType === 'dark', [$style.gamingLight]: gamingType === 'light'}]"
 				@click.prevent="unref(item.active) ? close(false) : clicked(item.action, $event)"
 				@mouseenter.passive="onItemMouseEnter"
 				@mouseleave.passive="onItemMouseLeave"
 			>
-				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"></i>
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
@@ -163,18 +173,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { inject, computed, defineAsyncComponent,  nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch, unref } from 'vue';
-import { focusPrev, focusNext } from '@/scripts/focus.js';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, unref, watch } from 'vue';
+import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
-import {defaultStore} from '@/store.js'
-import MkSwitchButton from '@/components/MkSwitch.button.vue';
-let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 import { type Keymap } from '@/scripts/hotkey.js';
 import { isFocusable } from '@/scripts/focus.js';
 import { getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
+import {defaultStore} from '@/store.js'
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
@@ -488,35 +497,6 @@ onBeforeUnmount(() => {
 		border-radius: 6px;
 	}
 
-	&:not(:disabled):hover {
-		color: var(--accent);
-		text-decoration: none;
-    &:before {
-      background: var(--accentedBg);
-    }
-    &.gamingDark{
-      color:black !important;
-    }
-    &.gamingLight{
-      color:white !important;
-    }
-    &.gamingDark:before{
-      color:black !important;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
-      -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-
-    }
-    &.gamingLight:before{
-      color:white !important;
-      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);      background-size: 1800% 1800% !important;
-      -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-
-    }
-
 	&:focus-visible {
 		outline: none;
 
@@ -531,6 +511,27 @@ onBeforeUnmount(() => {
 		&:focus-visible:active,
 		&:focus-visible.active {
 			color: var(--menuHoverFg, var(--accent));
+			&.gamingDark{
+				color:black !important;
+			}
+			&.gamingLight{
+				color:white !important;
+			}
+			&.gamingDark:before{
+				color:black !important;
+				background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
+				-webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+				-moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+				animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+
+			}
+			&.gamingLight:before{
+				color:white !important;
+				background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);      background-size: 1800% 1800% !important;
+				-webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+				-moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+				animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+			}
 
 			&::before {
 				background-color: var(--menuHoverBg, var(--accentedBg));
@@ -587,9 +588,6 @@ onBeforeUnmount(() => {
       -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     }
-	&.radio {
-		--menuActiveFg: var(--accent);
-		--menuActiveBg: var(--accentedBg);
 	}
 
 	&.parent {
@@ -611,45 +609,6 @@ onBeforeUnmount(() => {
 	&.none {
 		pointer-events: none;
 		opacity: 0.7;
-	}
-
-	&.parent {
-		pointer-events: auto;
-		display: flex;
-		align-items: center;
-		cursor: default;
-
-		&.childShowing {
-			color: var(--accent);
-			text-decoration: none;
-
-      &:before {
-        background: var(--accentedBg);
-      }
-      &.gamingDark{
-        color:black !important;
-      }
-      &.gamingLight{
-        color:white !important;
-      }
-      &.gamingDark:before{
-        color:black !important;
-        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);        background-size: 1800% 1800%;
-        -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-        -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-        animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      }
-
-      &.gamingLight:before{
-        color:white !important;
-        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);        background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-        -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-        animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-
-      }
-
-		}
 	}
 }
 
@@ -696,11 +655,10 @@ onBeforeUnmount(() => {
 }
 
 .indicator {
-	position: absolute;
-	top: 5px;
-	right: 18px;
+	display: flex;
+	align-items: center;
 	color: var(--indicator);
-	font-size: 8px;
+	font-size: 12px;
 	animation: global-blink 1s infinite;
 }
 
@@ -800,7 +758,5 @@ onBeforeUnmount(() => {
   100% {
     background-position: 0% 50%
   }
-}
-	}
 }
 </style>

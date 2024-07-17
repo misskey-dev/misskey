@@ -27,28 +27,29 @@ const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
 
-const themeColor = chalk.hex('#86b300');
+const themeColor = chalk.hex('#00a968');
 
 function greet() {
 	if (!envOption.quiet) {
-		//#region Misskey logo
+		//#region Type4ny logo
 		const v = `v${meta.version}`;
-		console.log(themeColor('  _____ _         _           '));
-		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
-		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
-		console.log(themeColor(' |_|_|_|_|___|___|_,_|___|_  |'));
-		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
+		console.log(themeColor(' _____               _ _           '));
+		console.log(themeColor('|_   _|  _ _ __  ___| | | _ _ _  _ '));
+		console.log(themeColor('  | || || | \'_ \\/ -_)_  _| \' \\ || |'));
+		console.log(themeColor('  |_| \\_, | .__/\\___| |_||_||_\\_, |'));
+		console.log(themeColor('      |__/|_|                 |__/ '));
+		console.log(chalk.gray(v));
 		//#endregion
 
-		console.log(' Misskey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(' Type4ny is an open-source decentralized microblogging platform.');
+		console.log(chalk.rgb(255, 136, 0)(' If you like Type4ny, please donate to support development. https://mattyatea.fanbox.cc'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
 	}
 
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${meta.version}`, null, true);
+	bootLogger.info('Welcome to Type4ny!');
+	bootLogger.info(`Type4ny v${meta.version}`, null, true);
 }
 
 /**
@@ -71,7 +72,7 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
-	bootLogger.succ('Misskey initialized');
+	bootLogger.succ('Type4ny initialized');
 
 	if (config.sentryForBackend) {
 		Sentry.init({
@@ -121,12 +122,16 @@ export async function masterMain() {
 
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
+	const managed = process.env.IS_MANAGED === 'true';
 	const logger = bootLogger.createSubLogger('env');
 	logger.info(typeof env === 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
 
 	if (env !== 'production') {
 		logger.warn('The environment is not in production mode.');
 		logger.warn('DO NOT USE FOR PRODUCTION PURPOSE!', null, true);
+	}
+	if (managed) {
+		logger.info('Type4ny is running in a managed mode.');
 	}
 }
 

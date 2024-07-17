@@ -61,6 +61,10 @@ export interface Locale extends ILocale {
      */
     "ok": string;
     /**
+     * マネージドインスタンスではこの設定は変更することができません。
+     */
+    "managedInstanceIsNotEditable": string;
+    /**
      * ノートの投稿フォームを開き直した際に、下書きを復元しないようにします。
      */
     "disableNoteDraftingDescription": string;

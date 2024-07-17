@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
-			<div class="_gaps_m">
+			<div v-if="!isManaged" class="_gaps_m">
 				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
@@ -70,12 +70,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</template>
 			</div>
+			<div v-else class="_gaps_m">
+				{{i18n.ts.managedInstanceIsNotEditable}}
+			</div>
 		</FormSuspense>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton primary rounded @click="save" v-if="!isManaged"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</MkSpacer>
 		</div>
 	</template>
@@ -109,9 +112,11 @@ const objectStorageUseSSL = ref<boolean>(false);
 const objectStorageUseProxy = ref<boolean>(false);
 const objectStorageSetPublicRead = ref<boolean>(false);
 const objectStorageS3ForcePathStyle = ref<boolean>(true);
+const isManaged = ref<boolean>(false);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
+	isManaged.value = meta.isManaged;
 	useObjectStorage.value = meta.useObjectStorage;
 	objectStorageBaseUrl.value = meta.objectStorageBaseUrl;
 	objectStorageBucket.value = meta.objectStorageBucket;

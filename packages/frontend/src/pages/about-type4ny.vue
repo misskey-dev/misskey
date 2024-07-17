@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</FormLink>
 					</div>
 				</FormSection>
-				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
+				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/type4ny-project/type4ny'">
 					<div class="_gaps_s">
 						<MkInfo>
 							{{ i18n.tsx._aboutType4ny.thisIsModifiedVersion({ name: instance.name }) }}

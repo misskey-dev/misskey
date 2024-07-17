@@ -62,6 +62,22 @@ type Source = {
 
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
+	objectStorage?: {
+		useObjectStorage: boolean;
+		objectStorageBaseUrl: string;
+		objectStorageBucket: string;
+		objectStoragePrefix: string;
+		objectStorageEndpoint: string;
+		objectStorageRegion: string;
+		objectStoragePort?: number;
+		objectStorageAccessKey: string;
+		objectStorageSecretKey: string;
+		objectStorageUseSSL?: boolean;
+		objectStorageUseProxy?: boolean;
+		objectStorageSetPublicRead?: boolean;
+		objectStorageS3ForcePathStyle?: boolean;
+	};
+
 	proxy?: string;
 	proxySmtp?: string;
 	proxyBypassHosts?: string[];
@@ -95,6 +111,7 @@ type Source = {
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
+	maxLocalUsers?: number;
 	pidFile: string;
 };
 
@@ -174,6 +191,22 @@ export type Config = {
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
+	maxLocalUsers: number;
+	objectStorage?: {
+		useObjectStorage?: boolean;
+		objectStorageBaseUrl?: string;
+		objectStorageBucket?: string;
+		objectStoragePrefix?: string;
+		objectStorageEndpoint?: string;
+		objectStorageRegion?: string;
+		objectStoragePort?: number;
+		objectStorageAccessKey?: string;
+		objectStorageSecretKey?: string;
+		objectStorageUseSSL?: boolean;
+		objectStorageUseProxy?: boolean;
+		objectStorageSetPublicRead?: boolean;
+		objectStorageS3ForcePathStyle?: boolean;
+	};
 	pidFile: string;
 };
 
@@ -269,12 +302,14 @@ export function loadConfig(): Config {
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
-		userAgent: `Misskey/${version} (${config.url})`,
+		userAgent: `Type4ny/${version} (${config.url})`,
 		clientEntry: clientManifest['src/_boot_.ts'],
 		clientManifestExists: clientManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
+		maxLocalUsers: config.maxLocalUsers ?? -1,
+		objectStorage: config.objectStorage ?? {},
 		pidFile: config.pidFile,
 	};
 }

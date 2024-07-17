@@ -8,6 +8,7 @@ import type { MiMeta } from '@/models/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
+import { envOption } from '@/env.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -91,7 +92,6 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
-		summalyProxy: { type: 'string', nullable: true },
 		DiscordWebhookUrl: { type: 'string', nullable: true },
 		DiscordWebhookUrlWordBlock: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
@@ -190,9 +190,98 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const set = {} as Partial<MiMeta>;
+			if (!envOption.managed) {
+				if (typeof ps.disableRegistration === 'boolean') {
+					set.disableRegistration = ps.disableRegistration;
+				}
 
-			if (typeof ps.disableRegistration === 'boolean') {
-				set.disableRegistration = ps.disableRegistration;
+				if (ps.useObjectStorage !== undefined) {
+					set.useObjectStorage = ps.useObjectStorage;
+				}
+
+				if (ps.objectStorageBaseUrl !== undefined) {
+					set.objectStorageBaseUrl = ps.objectStorageBaseUrl;
+				}
+
+				if (ps.objectStorageBucket !== undefined) {
+					set.objectStorageBucket = ps.objectStorageBucket;
+				}
+
+				if (ps.objectStoragePrefix !== undefined) {
+					set.objectStoragePrefix = ps.objectStoragePrefix;
+				}
+
+				if (ps.objectStorageEndpoint !== undefined) {
+					set.objectStorageEndpoint = ps.objectStorageEndpoint;
+				}
+
+				if (ps.objectStorageRegion !== undefined) {
+					set.objectStorageRegion = ps.objectStorageRegion;
+				}
+
+				if (ps.objectStoragePort !== undefined) {
+					set.objectStoragePort = ps.objectStoragePort;
+				}
+
+				if (ps.objectStorageAccessKey !== undefined) {
+					set.objectStorageAccessKey = ps.objectStorageAccessKey;
+				}
+
+				if (ps.objectStorageSecretKey !== undefined) {
+					set.objectStorageSecretKey = ps.objectStorageSecretKey;
+				}
+
+				if (ps.objectStorageUseSSL !== undefined) {
+					set.objectStorageUseSSL = ps.objectStorageUseSSL;
+				}
+
+				if (ps.objectStorageUseProxy !== undefined) {
+					set.objectStorageUseProxy = ps.objectStorageUseProxy;
+				}
+
+				if (ps.objectStorageSetPublicRead !== undefined) {
+					set.objectStorageSetPublicRead = ps.objectStorageSetPublicRead;
+				}
+
+				if (ps.objectStorageS3ForcePathStyle !== undefined) {
+					set.objectStorageS3ForcePathStyle = ps.objectStorageS3ForcePathStyle;
+				}
+
+				if (ps.enableServerMachineStats !== undefined) {
+					set.enableServerMachineStats = ps.enableServerMachineStats;
+				}
+
+				if (ps.cacheRemoteFiles !== undefined) {
+					set.cacheRemoteFiles = ps.cacheRemoteFiles;
+				}
+
+				if (ps.cacheRemoteSensitiveFiles !== undefined) {
+					set.cacheRemoteSensitiveFiles = ps.cacheRemoteSensitiveFiles;
+				}
+
+				if (ps.enableFanoutTimeline !== undefined) {
+					set.enableFanoutTimeline = ps.enableFanoutTimeline;
+				}
+
+				if (ps.enableFanoutTimelineDbFallback !== undefined) {
+					set.enableFanoutTimelineDbFallback = ps.enableFanoutTimelineDbFallback;
+				}
+
+				if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
+					set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
+				}
+
+				if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {
+					set.perRemoteUserUserTimelineCacheMax = ps.perRemoteUserUserTimelineCacheMax;
+				}
+
+				if (ps.perUserHomeTimelineCacheMax !== undefined) {
+					set.perUserHomeTimelineCacheMax = ps.perUserHomeTimelineCacheMax;
+				}
+
+				if (ps.perUserListTimelineCacheMax !== undefined) {
+					set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
+				}
 			}
 
 			if (Array.isArray(ps.pinnedUsers)) {
@@ -311,14 +400,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.defaultDarkTheme !== undefined) {
 				set.defaultDarkTheme = ps.defaultDarkTheme;
-			}
-
-			if (ps.cacheRemoteFiles !== undefined) {
-				set.cacheRemoteFiles = ps.cacheRemoteFiles;
-			}
-
-			if (ps.cacheRemoteSensitiveFiles !== undefined) {
-				set.cacheRemoteSensitiveFiles = ps.cacheRemoteSensitiveFiles;
 			}
 
 			if (ps.emailRequiredForSignup !== undefined) {
@@ -473,58 +554,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.inquiryUrl = ps.inquiryUrl;
 			}
 
-			if (ps.useObjectStorage !== undefined) {
-				set.useObjectStorage = ps.useObjectStorage;
-			}
-
-			if (ps.objectStorageBaseUrl !== undefined) {
-				set.objectStorageBaseUrl = ps.objectStorageBaseUrl;
-			}
-
-			if (ps.objectStorageBucket !== undefined) {
-				set.objectStorageBucket = ps.objectStorageBucket;
-			}
-
-			if (ps.objectStoragePrefix !== undefined) {
-				set.objectStoragePrefix = ps.objectStoragePrefix;
-			}
-
-			if (ps.objectStorageEndpoint !== undefined) {
-				set.objectStorageEndpoint = ps.objectStorageEndpoint;
-			}
-
-			if (ps.objectStorageRegion !== undefined) {
-				set.objectStorageRegion = ps.objectStorageRegion;
-			}
-
-			if (ps.objectStoragePort !== undefined) {
-				set.objectStoragePort = ps.objectStoragePort;
-			}
-
-			if (ps.objectStorageAccessKey !== undefined) {
-				set.objectStorageAccessKey = ps.objectStorageAccessKey;
-			}
-
-			if (ps.objectStorageSecretKey !== undefined) {
-				set.objectStorageSecretKey = ps.objectStorageSecretKey;
-			}
-
-			if (ps.objectStorageUseSSL !== undefined) {
-				set.objectStorageUseSSL = ps.objectStorageUseSSL;
-			}
-
-			if (ps.objectStorageUseProxy !== undefined) {
-				set.objectStorageUseProxy = ps.objectStorageUseProxy;
-			}
-
-			if (ps.objectStorageSetPublicRead !== undefined) {
-				set.objectStorageSetPublicRead = ps.objectStorageSetPublicRead;
-			}
-
-			if (ps.objectStorageS3ForcePathStyle !== undefined) {
-				set.objectStorageS3ForcePathStyle = ps.objectStorageS3ForcePathStyle;
-			}
-
 			if (ps.deeplAuthKey !== undefined) {
 				if (ps.deeplAuthKey === '') {
 					set.deeplAuthKey = null;
@@ -585,10 +614,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
 			}
 
-			if (ps.enableServerMachineStats !== undefined) {
-				set.enableServerMachineStats = ps.enableServerMachineStats;
-			}
-
 			if (ps.enableIdenticonGeneration !== undefined) {
 				set.enableIdenticonGeneration = ps.enableIdenticonGeneration;
 			}
@@ -603,30 +628,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.manifestJsonOverride !== undefined) {
 				set.manifestJsonOverride = ps.manifestJsonOverride;
-			}
-
-			if (ps.enableFanoutTimeline !== undefined) {
-				set.enableFanoutTimeline = ps.enableFanoutTimeline;
-			}
-
-			if (ps.enableFanoutTimelineDbFallback !== undefined) {
-				set.enableFanoutTimelineDbFallback = ps.enableFanoutTimelineDbFallback;
-			}
-
-			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
-				set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
-			}
-
-			if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {
-				set.perRemoteUserUserTimelineCacheMax = ps.perRemoteUserUserTimelineCacheMax;
-			}
-
-			if (ps.perUserHomeTimelineCacheMax !== undefined) {
-				set.perUserHomeTimelineCacheMax = ps.perUserHomeTimelineCacheMax;
-			}
-
-			if (ps.perUserListTimelineCacheMax !== undefined) {
-				set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
 			}
 
 			if (ps.notesPerOneAd !== undefined) {
