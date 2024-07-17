@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 					if (isUsername) {
-						qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' })
+						qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' });
 					} else if (this.userEntityService.validateLocalUsername(ps.query)) { // Also search username if it qualifies as username
 						qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(ps.query.toLowerCase()) + '%' });
 					}
