@@ -58,6 +58,11 @@ export const timelineHeaderItemDef = reactive<Partial<Record<TimelineHeaderItem,
 			title: i18n.ts._timelines.social,
 			icon: 'ti ti-universe',
 			iconOnly: true,
+		},
+		media: {
+			title: i18n.ts._timelines.media,
+			icon: 'ti ti-photo',
+			iconOnly: true,
 		} } : {}),
 	...(isGlobalTimelineAvailable ? { global: {
 		title: i18n.ts._timelines.global,
