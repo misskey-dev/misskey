@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
+		<MkMenu :items="items" :align="'left'" @close="emit('closed')"/>
 	</div>
 </Transition>
 </template>
@@ -47,12 +47,12 @@ onMounted(() => {
 	const width = rootEl.value!.offsetWidth;
 	const height = rootEl.value!.offsetHeight;
 
-	if (left + width - window.pageXOffset >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
-		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset;
+	if (left + width - window.scrollX >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
+		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.scrollX;
 	}
 
-	if (top + height - window.pageYOffset >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
-		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.pageYOffset;
+	if (top + height - window.scrollY >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
+		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.scrollY;
 	}
 
 	if (top < 0) {

@@ -291,7 +291,9 @@ export abstract class Connection<Channel extends AnyOf<Channels> = any> extends 
 
 		this.stream = stream;
 		this.channel = channel;
-		this.name = name;
+		if (name !== undefined) {
+			this.name = name;
+		}
 	}
 
 	public send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void {

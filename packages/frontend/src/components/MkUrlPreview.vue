@@ -152,15 +152,16 @@ requestUrl.hash = '';
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`)
 	.then(res => {
 		if (!res.ok) {
-			fetching.value = false;
-			unknownUrl.value = true;
-			return;
+			if (_DEV_) {
+				console.warn(`[HTTP${res.status}] Failed to fetch url preview`);
+			}
+			return null;
 		}
 
 		return res.json();
 	})
-	.then((info: SummalyResult) => {
-		if (info.url == null) {
+	.then((info: SummalyResult | null) => {
+		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
 			return;
@@ -187,11 +188,13 @@ function adjustTweetHeight(message: any) {
 	if (height) tweetHeight.value = height;
 }
 
-const openPlayer = (): void => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
+function openPlayer(): void {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
 		url: requestUrl.href,
+	}, {
+		// TODO
 	});
-};
+}
 
 (window as any).addEventListener('message', adjustTweetHeight);
 

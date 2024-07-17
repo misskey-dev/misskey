@@ -50,6 +50,22 @@ export class MetaEntityService {
 			}))
 			.getMany();
 
+		// クライアントの手間を減らすためあらかじめJSONに変換しておく
+		let defaultLightTheme = null;
+		let defaultDarkTheme = null;
+		if (instance.defaultLightTheme) {
+			try {
+				defaultLightTheme = JSON.stringify(JSON5.parse(instance.defaultLightTheme));
+			} catch (e) {
+			}
+		}
+		if (instance.defaultDarkTheme) {
+			try {
+				defaultDarkTheme = JSON.stringify(JSON5.parse(instance.defaultDarkTheme));
+			} catch (e) {
+			}
+		}
+
 		const packed: Packed<'MetaLite'> = {
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
@@ -67,6 +83,7 @@ export class MetaEntityService {
 			feedbackUrl: instance.feedbackUrl,
 			impressumUrl: instance.impressumUrl,
 			privacyPolicyUrl: instance.privacyPolicyUrl,
+			inquiryUrl: instance.inquiryUrl,
 			disableRegistration: instance.disableRegistration,
 			emailRequiredForSignup: instance.emailRequiredForSignup,
 			enableHcaptcha: instance.enableHcaptcha,
@@ -89,9 +106,8 @@ export class MetaEntityService {
 			backgroundImageUrl: instance.backgroundImageUrl,
 			logoImageUrl: instance.logoImageUrl,
 			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
-			// クライアントの手間を減らすためあらかじめJSONに変換しておく
-			defaultLightTheme: instance.defaultLightTheme ? JSON.stringify(JSON5.parse(instance.defaultLightTheme)) : null,
-			defaultDarkTheme: instance.defaultDarkTheme ? JSON.stringify(JSON5.parse(instance.defaultDarkTheme)) : null,
+			defaultLightTheme,
+			defaultDarkTheme,
 			ads: ads.map(ad => ({
 				id: ad.id,
 				url: ad.url,
@@ -111,6 +127,7 @@ export class MetaEntityService {
 			policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
 			mediaProxy: this.config.mediaProxy,
+			enableUrlPreview: instance.urlPreviewEnabled,
 		};
 
 		return packed;

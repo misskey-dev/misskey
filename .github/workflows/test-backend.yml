@@ -9,19 +9,20 @@ on:
       - packages/backend/**
       # for permissions
       - packages/misskey-js/**
+      - .github/workflows/test-backend.yml
   pull_request:
     paths:
       - packages/backend/**
       # for permissions
       - packages/misskey-js/**
-
+      - .github/workflows/test-backend.yml
 jobs:
   unit:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
 
     services:
       postgres:
@@ -41,12 +42,11 @@ jobs:
       with:
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8
-        run_install: false
+      uses: pnpm/action-setup@v4
+    - name: Install FFmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.0.3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -71,7 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
 
     services:
       postgres:
@@ -91,12 +91,9 @@ jobs:
         with:
           submodules: true
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-          run_install: false
+        uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
