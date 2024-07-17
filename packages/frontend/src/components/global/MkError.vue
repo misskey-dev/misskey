@@ -28,7 +28,6 @@ const emit = defineEmits<{
 .root {
 	padding: 32px;
 	text-align: center;
-  align-items: center;
 }
 
 .text {
@@ -41,7 +40,6 @@ const emit = defineEmits<{
 
 .img {
 	vertical-align: bottom;
-  width: 128px;
 	height: 128px;
 	margin-bottom: 16px;
 	border-radius: 16px;
