@@ -128,16 +128,16 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async refreshAndfindKey(userId: MiUser['id'], keyId: string): Promise<MiUserPublickey | null> {
+	private async refreshAndFindKey(userId: MiUser['id'], keyId: string): Promise<MiUserPublickey | null> {
 		this.refreshCacheByUserId(userId);
 		const keys = await this.getPublicKeyByUserId(userId);
 		if (keys == null || !Array.isArray(keys) || keys.length === 0) {
-			this.logger.warn(`No key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${JSON.stringify(keys)}`);
+			this.logger.warn(`No key found (refreshAndFindKey) userId=${userId} keyId=${keyId} keys=${JSON.stringify(keys)}`);
 			return null;
 		}
 		const exactKey = keys.find(x => x.keyId === keyId);
 		if (exactKey) return exactKey;
-		this.logger.warn(`No exact key found (refreshAndfindKey) userId=${userId} keyId=${keyId} keys=${JSON.stringify(keys)}`);
+		this.logger.warn(`No exact key found (refreshAndFindKey) userId=${userId} keyId=${keyId} keys=${JSON.stringify(keys)}`);
 		return null;
 	}
 
@@ -213,7 +213,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		// まずはキャッシュを更新して再取得
 		const cacheRaw = this.publicKeyByUserIdCache.cache.get(user.id);
 		if (cacheRaw && cacheRaw.date > Date.now() - 1000 * 60 * 12) {
-			const exactKey = await this.refreshAndfindKey(user.id, keyId);
+			const exactKey = await this.refreshAndFindKey(user.id, keyId);
 			if (exactKey) return { user, key: exactKey };
 		}
 
@@ -223,7 +223,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
 			if (renewed == null || renewed.isDeleted) return null;
 
-			return { user, key: await this.refreshAndfindKey(user.id, keyId) };
+			return { user, key: await this.refreshAndFindKey(user.id, keyId) };
 		}
 
 		this.logger.warn(`No key found uri=${uri} userId=${user.id} keyId=${keyId}`);
