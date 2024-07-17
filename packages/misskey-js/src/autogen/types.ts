@@ -4786,6 +4786,7 @@ export type components = {
       canHideAds: boolean;
       driveCapacityMb: number;
       alwaysMarkNsfw: boolean;
+      canUpdateBioMedia: boolean;
       pinLimit: number;
       antennaLimit: number;
       wordMuteLimit: number;
@@ -13850,7 +13851,7 @@ export type operations = {
            * Format: binary
            * @description The file contents.
            */
-          file: string;
+          file: Blob;
         };
       };
     };

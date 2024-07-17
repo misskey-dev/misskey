@@ -129,18 +129,19 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
 	}, {
 		done: result => {
 			if (result.created) {
 				emojisPaginationComponent.value.prepend(result.created);
 			}
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 };
 
 const edit = (emoji) => {
-	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
 		emoji: emoji,
 	}, {
 		done: result => {
@@ -153,7 +154,8 @@ const edit = (emoji) => {
 				emojisPaginationComponent.value.removeItem(emoji.id);
 			}
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 };
 
 const importEmoji = (emoji) => {
