@@ -23,6 +23,14 @@ export function getStickyTop(el: HTMLElement, container: HTMLElement | null = nu
 	return getStickyTop(el.parentElement, container, newTop);
 }
 
+export function getStickyBottom(el: HTMLElement, container: HTMLElement | null = null, bottom = 0) {
+	if (!el.parentElement) return bottom;
+	const data = el.dataset.stickyContainerFooterHeight;
+	const newBottom = data ? Number(data) + bottom : bottom;
+	if (el === container) return newBottom;
+	return getStickyBottom(el.parentElement, container, newBottom);
+}
+
 export function getScrollPosition(el: HTMLElement | null): number {
 	const container = getScrollContainer(el);
 	return container == null ? window.scrollY : container.scrollTop;

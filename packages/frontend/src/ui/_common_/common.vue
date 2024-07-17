@@ -227,7 +227,7 @@ if ($i) {
 	right: 15px;
 	pointer-events: none;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: 18px;

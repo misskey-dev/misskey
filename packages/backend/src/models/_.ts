@@ -82,34 +82,14 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
-	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
-	createTableColumnNamesWithPrimaryKey(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	createTableColumnNames(this: Repository<T> & MiRepository<T>): string[];
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
 	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
 }
 
 export const miRepository = {
-	createTableColumnNames(queryBuilder) {
-		// @ts-expect-error -- protected
-		const insertedColumns = queryBuilder.getInsertedColumns();
-		if (insertedColumns.length) {
-			return insertedColumns.map(column => column.databaseName);
-		}
-		if (!queryBuilder.expressionMap.mainAlias?.hasMetadata && !queryBuilder.expressionMap.insertColumns.length) {
-			// @ts-expect-error -- protected
-			const valueSets = queryBuilder.getValueSets();
-			if (valueSets.length === 1) {
-				return Object.keys(valueSets[0]);
-			}
-		}
-		return queryBuilder.expressionMap.insertColumns;
-	},
-	createTableColumnNamesWithPrimaryKey(queryBuilder) {
-		const columnNames = this.createTableColumnNames(queryBuilder);
-		if (!columnNames.includes('id')) {
-			columnNames.unshift('id');
-		}
-		return columnNames;
+	createTableColumnNames() {
+		return this.metadata.columns.filter(column => column.isSelect && !column.isVirtual).map(column => column.databaseName);
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
@@ -117,7 +97,7 @@ export const miRepository = {
 		const mainAlias = queryBuilder.expressionMap.mainAlias!;
 		const name = mainAlias.name;
 		mainAlias.name = 't';
-		const columnNames = this.createTableColumnNamesWithPrimaryKey(queryBuilder);
+		const columnNames = this.createTableColumnNames();
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -138,7 +118,7 @@ export const miRepository = {
 			selectOrAddSelect = (selection, selectionAliasName) => builder.addSelect(selection, selectionAliasName);
 			return builder.select(selection, selectionAliasName);
 		};
-		for (const columnName of this.createTableColumnNamesWithPrimaryKey(queryBuilder)) {
+		for (const columnName of this.createTableColumnNames()) {
 			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
 		}
 	},
