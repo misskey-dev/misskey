@@ -168,7 +168,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/create', { userId: alice.id }, bob);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
@@ -755,7 +755,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: carol.id }, bob);
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -774,7 +774,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: carol.id }, alice);
 			await api('following/create', { userId: carol.id }, bob);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -784,7 +784,7 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === carolNote.id).text, 'hi');
+			assert.strictEqual(res.body.find((note: any) => note.id === carolNote.id)?.text, 'hi');
 		});
 
 		test.concurrent('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
@@ -793,7 +793,7 @@ describe('Timelines', () => {
 			await api('following/create', { userId: bob.id }, alice);
 			await api('following/create', { userId: alice.id }, bob);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
+			await setTimeout(1000);
 			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
 
