@@ -113,7 +113,7 @@ Before developing, you have to set up environment. Misskey requires Redis, Postg
 You could install them in system-wide (such as from package manager).
 
 #### Use `docker compose`
-You could obtain all-in-one container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml`.
+You could obtain middleware container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml up -d`.
 
 #### Use Devcontainer
 Devcontainer also has necessary setting. This method can be done by connecting from VSCode.
