@@ -7,12 +7,11 @@
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Feat: ユーザーのアイコン/バナーの変更可否をロールで設定可能に
   - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
+- Feat: 連合に使うHTTP SignaturesがEd25519鍵に対応するように #13464
+  - Ed25519署名に対応するサーバーが増えると、deliverで要求されるサーバーリソースが削減されます
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
-- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
-- Feat: 連合に使うHTTP SignaturesがEd25519鍵に対応するように #13464
-  - Ed25519署名に対応するサーバーが増えると、deliverで要求されるサーバーリソースが削減されます
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
@@ -23,6 +22,7 @@
 - Enhance: サーバー情報ページ・お問い合わせページを改善  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Enhance: AiScriptを0.19.0にアップデート
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
