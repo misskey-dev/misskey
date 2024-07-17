@@ -106,12 +106,12 @@ function onClick(ev: MouseEvent) {
 			text: i18n.ts.info,
 			icon: 'ti ti-info-circle',
 			action: async () => {
-				os.popup(MkCustomEmojiDetailedDialog, {
+				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
 					emoji: await misskeyApiGet('emoji', {
 						name: customEmojiName.value,
 					}),
 				}, {
-					anchor: ev.target,
+					closed: () => dispose(),
 				});
 			},
 		}], ev.currentTarget ?? ev.target);

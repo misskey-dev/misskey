@@ -220,7 +220,7 @@ export class DriveService {
 			file.size = size;
 			file.storedInternal = false;
 
-			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+			return await this.driveFilesRepository.insertOne(file);
 		} else { // use internal storage
 			const accessKey = randomUUID();
 			const thumbnailAccessKey = 'thumbnail-' + randomUUID();
@@ -254,7 +254,7 @@ export class DriveService {
 			file.md5 = hash;
 			file.size = size;
 
-			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+			return await this.driveFilesRepository.insertOne(file);
 		}
 	}
 
@@ -615,7 +615,7 @@ export class DriveService {
 				file.type = info.type.mime;
 				file.storedInternal = false;
 
-				file = await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+				file = await this.driveFilesRepository.insertOne(file);
 			} catch (err) {
 			// duplicate key error (when already registered)
 				if (isDuplicateKeyValueError(err)) {

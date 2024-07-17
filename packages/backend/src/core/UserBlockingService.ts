@@ -16,7 +16,7 @@ import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { WebhookService } from '@/core/WebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -46,7 +46,7 @@ export class UserBlockingService implements OnModuleInit {
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
-		private webhookService: WebhookService,
+		private webhookService: UserWebhookService,
 		private apRendererService: ApRendererService,
 		private loggerService: LoggerService,
 	) {
@@ -121,7 +121,7 @@ export class UserBlockingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'unfollow', {
+					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
 						user: packed,
 					});
 				}
