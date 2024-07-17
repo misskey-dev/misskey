@@ -125,6 +125,35 @@ export function file(isSensitive = false) {
 	};
 }
 
+export function federationInstance(): entities.FederationInstance {
+	return {
+		id: 'someinstanceid',
+		firstRetrievedAt: '2021-01-01T00:00:00.000Z',
+		host: 'misskey-hub.net',
+		usersCount: 10,
+		notesCount: 20,
+		followingCount: 5,
+		followersCount: 15,
+		isNotResponding: false,
+		isSuspended: false,
+		suspensionState: 'none',
+		isBlocked: false,
+		softwareName: 'misskey',
+		softwareVersion: '2024.5.0',
+		openRegistrations: false,
+		name: 'Misskey Hub',
+		description: '',
+		maintainerName: '',
+		maintainerEmail: '',
+		isSilenced: false,
+		iconUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
+		faviconUrl: '',
+		themeColor: '',
+		infoUpdatedAt: '',
+		latestRequestReceivedAt: '',
+	};
+}
+
 export function userDetailed(id = 'someuserid', username = 'miskist', host = 'misskey-hub.net', name = 'Misskey User'): entities.UserDetailed {
 	return {
 		id,

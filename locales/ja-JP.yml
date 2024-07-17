@@ -180,6 +180,10 @@ addAccount: "アカウントを追加"
 reloadAccountsList: "アカウントリストの情報を更新"
 loginFailed: "ログインに失敗しました"
 showOnRemote: "リモートで表示"
+continueOnRemote: "リモートで続行"
+chooseServerOnMisskeyHub: "Misskey Hubからサーバーを選択"
+specifyServerHost: "サーバーのドメインを直接指定"
+inputHostName: "ドメインを入力してください"
 general: "全般"
 wallpaper: "壁紙"
 setWallpaper: "壁紙を設定"
@@ -476,7 +480,8 @@ attachAsFileQuestion: "クリップボードのテキストが長いです。テ
 noMessagesYet: "まだチャットはありません"
 newMessageExists: "新しいメッセージがあります"
 onlyOneFileCanBeAttached: "メッセージに添付できるファイルはひとつです"
-signinRequired: "続行する前に、サインアップまたはサインインが必要です"
+signinRequired: "続行する前に、登録またはログインが必要です"
+signinOrContinueOnRemote: "続行するには、お使いのサーバーに移動するか、このサーバーに登録・ログインする必要があります"
 invitations: "招待"
 invitationCode: "招待コード"
 checking: "確認しています"
@@ -1242,6 +1247,7 @@ keepOriginalFilenameDescription: "この設定をオフにすると、アップ�
 noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
+tryAgain: "もう一度お試しください。"
 
 _delivery:
   status: "配信状態"
@@ -1705,6 +1711,7 @@ _role:
     canManageAvatarDecorations: "アバターデコレーションの管理"
     driveCapacity: "ドライブ容量"
     alwaysMarkNsfw: "ファイルにNSFWを常に付与"
+    canUpdateBioMedia: "アイコンとバナーの更新を許可"
     pinMax: "ノートのピン留めの最大数"
     antennaMax: "アンテナの作成可能数"
     wordMuteMax: "ワードミュートの最大文字数"
@@ -1971,8 +1978,6 @@ _sfx:
   note: "ノート"
   noteMy: "ノート(自分)"
   notification: "通知"
-  antenna: "アンテナ受信"
-  channel: "チャンネル通知"
   reaction: "リアクション選択時"
 
 _soundSettings:
@@ -2599,16 +2604,16 @@ _externalResourceInstaller:
 
 _dataSaver:
   _media:
-    title: "メディアの読み込み"
+    title: "メディアの読み込みを無効化"
     description: "画像・動画が自動で読み込まれるのを防止します。隠れている画像・動画はタップすると読み込まれます。"
   _avatar:
-    title: "アイコン画像"
+    title: "アイコン画像のアニメーションを無効化"
     description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
   _urlPreview:
-    title: "URLプレビューのサムネイル"
+    title: "URLプレビューのサムネイルを非表示"
     description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
   _code:
-    title: "コードハイライト"
+    title: "コードハイライトを非表示"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
 
 _hemisphere:
