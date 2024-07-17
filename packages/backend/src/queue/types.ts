@@ -13,6 +13,7 @@ import type { ParsedSignature, PrivateKeyWithPem } from '@misskey-dev/node-http-
 
 /**
  * @peertube/http-signature 時代の古いデータにも対応しておく
+ * TODO: 2026年ぐらいには消す
  */
 export interface OldParsedSignature {
 	scheme: 'Signature';
