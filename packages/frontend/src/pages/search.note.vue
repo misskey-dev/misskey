@@ -17,9 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.host }}</template>
 					<option value="all" default>{{ i18n.ts.all }}</option>
 					<option value="local">{{ i18n.ts.local }}</option>
-					<option value="specified">{{ i18n.ts.specifyHost }}</option>
+					<option v-if="noteSearchableScope === 'global'" value="specified">{{ i18n.ts.specifyHost }}</option>
 				</MkRadios>
-				<MkInput v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
+				<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
 					<template #prefix><i class="ti ti-server"></i></template>
 				</MkInput>
 
@@ -66,6 +66,7 @@ import { useRouter } from '@/router/supplier.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -85,6 +86,8 @@ const searchQuery = ref(toRef(props, 'query').value);
 const notePagination = ref<Paging>();
 const user = ref<UserDetailed | null>(null);
 const hostInput = ref(toRef(props, 'host').value);
+
+const noteSearchableScope = instance.noteSearchableScope ?? 'local';
 
 const hostSelect = ref<'all' | 'local' | 'specified'>('all');
 
