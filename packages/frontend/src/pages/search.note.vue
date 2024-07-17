@@ -121,7 +121,7 @@ if (props.userId != null) {
 }
 
 function selectUser() {
-	os.selectUser({ includeSelf: true }).then(_user => {
+	os.selectUser({ includeSelf: true, localOnly: instance.noteSearchableScope === 'local' }).then(_user => {
 		user.value = _user;
 		hostInput.value = _user.host ?? '';
 	});
