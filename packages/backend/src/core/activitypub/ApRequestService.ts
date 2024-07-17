@@ -40,7 +40,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 		['(request-target)', 'date', 'host', 'digest'],
 	);
 
-	delete request.headers['host'];
+	delete request.headers['Host'];
 
 	return {
 		request,
@@ -68,7 +68,7 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 		['(request-target)', 'date', 'host', 'accept'],
 	);
 
-	delete request.headers['host'];
+	delete request.headers['Host'];
 
 	return {
 		request,
