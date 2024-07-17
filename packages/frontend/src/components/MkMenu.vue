@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="['_button', $style.item]"
 				:href="item.href"
 				:target="item.target"
+				:rel="item.target === '_blank' ? 'noopener noreferrer' : undefined"
 				:download="item.download"
 				@click.passive="close(true)"
 				@mouseenter.passive="onItemMouseEnter"
