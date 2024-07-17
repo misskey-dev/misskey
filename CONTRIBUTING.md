@@ -118,6 +118,25 @@ You could obtain all-in-one container by typing `docker compose -f $PROJECT_ROOT
 #### Use Devcontainer
 Devcontainer also has necessary setting. This method can be done by connecting from VSCode.
 
+Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
+To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
+**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
+
+It will run the following command automatically inside the container.
+``` bash
+git submodule update --init
+pnpm install --frozen-lockfile
+cp .devcontainer/devcontainer.yml .config/default.yml
+pnpm build
+pnpm migrate
+```
+
+After finishing the migration, run the `pnpm dev` command to start the development server.
+
+``` bash
+pnpm dev
+```
+
 ### Start developing
 During development, it is useful to use the
 
@@ -147,26 +166,6 @@ MK_DEV_PREFER=backend pnpm dev
 - You can see Misskey by accessing `http://localhost:3000` (Replace `3000` with the port configured with `port` in .config/default.yml).
 - To change the port of Vite, specify with `VITE_PORT` environment variable.
 - HMR may not work in some environments such as Windows.
-
-### Dev Container
-Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
-To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
-**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
-
-It will run the following command automatically inside the container.
-``` bash
-git submodule update --init
-pnpm install --frozen-lockfile
-cp .devcontainer/devcontainer.yml .config/default.yml
-pnpm build
-pnpm migrate
-```
-
-After finishing the migration, run the `pnpm dev` command to start the development server.
-
-``` bash
-pnpm dev
-```
 
 ## Testing
 - Test codes are located in [`/packages/backend/test`](/packages/backend/test).
