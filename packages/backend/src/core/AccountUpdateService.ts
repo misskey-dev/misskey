@@ -36,9 +36,9 @@ export class AccountUpdateService implements OnModuleInit {
 
 	@bindThis
 	/**
-	 * ユーザーのアップデートをフォロワーに配信する
-	 * @param userId ユーザーID
-	 * @param isKeyUpdation Ed25519キーの作成など公開鍵のアップデートによる呼び出しか？ trueにするとメインキーを使うようになる
+	 * Deliver account update to followers
+	 * @param userId user id
+	 * @param deliverKey optional. Private key to sign the deliver.
 	 */
 	public async publishToFollowers(userId: MiUser['id'], deliverKey?: PrivateKeyWithPem) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
