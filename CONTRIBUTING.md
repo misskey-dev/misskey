@@ -131,11 +131,7 @@ pnpm build
 pnpm migrate
 ```
 
-After finishing the migration, run the `pnpm dev` command to start the development server.
-
-``` bash
-pnpm dev
-```
+After finishing the migration, you can proceed.
 
 ### Start developing
 During development, it is useful to use the
