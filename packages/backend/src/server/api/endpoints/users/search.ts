@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 			ps.query = ps.query.trim();
-			const isLocalUsername = ps.query.startsWith('@') && !ps.query.includes(' ') && ps.query.indexOf('@', 1) == -1;
+			const isLocalUsername = ps.query.startsWith('@') && !ps.query.includes(' ') && ps.query.indexOf('@', 1) === -1;
 
 			let users: MiUser[] = [];
 
