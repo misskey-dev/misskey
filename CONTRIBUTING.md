@@ -109,7 +109,7 @@ If your language is not listed in Crowdin, please open an issue.
 ### Setup
 Before developing, you have to set up environment. Misskey requires Redis, PostgreSQL, and FFmpeg.
 
-You would want to Meilisearch to experiment related features. Technically, meilisearch is not strict requirement, but some features and tests require it.
+You would want to install Meilisearch to experiment related features. Technically, meilisearch is not strict requirement, but some features and tests require it.
 
 There are a few ways to proceed.
 
