@@ -136,7 +136,8 @@ export class UserKeypairService implements OnApplicationShutdown {
 	}
 
 	/**
-	 *
+	 * If DB has ed25519 keypair, refresh cache and return it.
+	 * If not, create, save and return ed25519 keypair.
 	 * @param userId user id
 	 * @returns MiUserKeypair if keypair is created, void if keypair is already exists
 	 */
@@ -154,11 +155,13 @@ export class UserKeypairService implements OnApplicationShutdown {
 			ed25519PrivateKey: ed25519.privateKey,
 		});
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
-		return {
+		const result = {
 			...keypair,
 			ed25519PublicKey: ed25519.publicKey,
 			ed25519PrivateKey: ed25519.privateKey,
 		};
+		this.keypairEntityCache.set(userId, result);
+		return result;
 	}
 
 	@bindThis
