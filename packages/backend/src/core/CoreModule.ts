@@ -62,6 +62,7 @@ import { UserFollowingService } from './UserFollowingService.js';
 import { UserKeypairService } from './UserKeypairService.js';
 import { UserListService } from './UserListService.js';
 import { UserMutingService } from './UserMutingService.js';
+import { UserRenoteMutingService } from './UserRenoteMutingService.js';
 import { UserSuspendService } from './UserSuspendService.js';
 import { UserAuthService } from './UserAuthService.js';
 import { VideoProcessingService } from './VideoProcessingService.js';
@@ -206,6 +207,7 @@ const $UserFollowingService: Provider = { provide: 'UserFollowingService', useEx
 const $UserKeypairService: Provider = { provide: 'UserKeypairService', useExisting: UserKeypairService };
 const $UserListService: Provider = { provide: 'UserListService', useExisting: UserListService };
 const $UserMutingService: Provider = { provide: 'UserMutingService', useExisting: UserMutingService };
+const $UserRenoteMutingService: Provider = { provide: 'UserRenoteMutingService', useExisting: UserRenoteMutingService };
 const $UserSearchService: Provider = { provide: 'UserSearchService', useExisting: UserSearchService };
 const $UserSuspendService: Provider = { provide: 'UserSuspendService', useExisting: UserSuspendService };
 const $UserAuthService: Provider = { provide: 'UserAuthService', useExisting: UserAuthService };
@@ -355,6 +357,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserKeypairService,
 		UserListService,
 		UserMutingService,
+		UserRenoteMutingService,
 		UserSearchService,
 		UserSuspendService,
 		UserAuthService,
@@ -500,6 +503,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
+		$UserRenoteMutingService,
 		$UserSearchService,
 		$UserSuspendService,
 		$UserAuthService,
@@ -646,6 +650,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserKeypairService,
 		UserListService,
 		UserMutingService,
+		UserRenoteMutingService,
 		UserSearchService,
 		UserSuspendService,
 		UserAuthService,
@@ -790,6 +795,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
+		$UserRenoteMutingService,
 		$UserSearchService,
 		$UserSuspendService,
 		$UserAuthService,
