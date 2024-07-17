@@ -216,5 +216,5 @@ module.exports = {
 	logHeapUsage: true, // To debug when out-of-memory happens on CI
 	workerIdleMemoryLimit: '1GiB', // Limit the worker to 1GB (GitHub Workflows dies at 2GB)
 
-	maxConcurrency: 8,
+	maxConcurrency: 16,
 };
