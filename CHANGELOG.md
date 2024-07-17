@@ -7,6 +7,8 @@
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
 - Feat: ユーザーのアイコン/バナーの変更可否をロールで設定可能に
   - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
+- Feat: 連合に使うHTTP SignaturesがEd25519鍵に対応するように #13464
+  - Ed25519署名に対応するサーバーが増えると、deliverで要求されるサーバーリソースが削減されます
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
@@ -30,6 +32,8 @@
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
 - Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
+- Fix: 「アニメーション画像を再生しない」がオンのときでもサーバーのバナー画像・背景画像がアニメーションしてしまう問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
