@@ -4,10 +4,11 @@ on:
   push:
     paths:
       - locales/**
+      - .github/workflows/locale.yml
   pull_request:
     paths:
       - locales/**
-
+      - .github/workflows/locale.yml
 jobs:
   locale_verify:
     runs-on: ubuntu-latest
@@ -18,7 +19,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.2
+    - uses: actions/setup-node@v4.0.3
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

@@ -8,7 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
-	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
+	<div
+		ref="bodyEl"
+		:data-sticky-container-header-height="headerHeight"
+		:data-sticky-container-footer-height="footerHeight"
+	>
 		<slot></slot>
 	</div>
 	<div ref="footerEl">
