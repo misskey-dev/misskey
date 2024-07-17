@@ -22,6 +22,7 @@ import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
+import { envOption } from "@/env.js";
 
 @Injectable()
 export class SignupService {
@@ -62,7 +63,7 @@ export class SignupService {
 		if (!this.userEntityService.validateLocalUsername(username)) {
 			throw new Error('INVALID_USERNAME');
 		}
-		if (this.config.maxLocalUsers !== -1 && await this.usersRepository.count({ where: { host: IsNull() } }) >= this.config.maxLocalUsers) {
+		if (envOption.managed && this.config.maxLocalUsers !== -1 && await this.usersRepository.count({ where: { host: IsNull() } }) >= this.config.maxLocalUsers) {
 			throw new Error('MAX_LOCAL_USERS');
 		}
 		if (password != null && passwordHash == null) {
