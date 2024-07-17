@@ -19,7 +19,7 @@ export function mfmFunctionPicker(src: HTMLElement | EventTarget | null, textAre
 	}, ...getFunctionList(textArea, textRef)], src);
 }
 
-function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) : MenuItem[] {
+function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>): MenuItem[] {
 	return MFM_TAGS.map(tag => ({
 		text: tag,
 		icon: 'ti ti-icons',
