@@ -13,17 +13,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<template #default="{ item: note, index, items }">
-		<div :class="[$style.root, { [$style.noGap]: noGap },{ [$style['date-separated-list']]: noGap}]">
-			<div :class="$style.notes,{ [$style['date-separated-list-nogap']]: noGap}" >
+		<div :class="[$style.root, { [$style.noGap]: noGap },{ [$style.dateseparatedlist]: noGap}]">
+			<div :class="$style.notes,{ [$style.dateseparatedlistnogap]: noGap}" >
 				<p :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
 				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
 				<div v-if="index !== items.length - 1 && note?.createdAt && items[index + 1]?.createdAt && (new Date(note?.createdAt).getDate()) !== ( new Date(items[index + 1]?.createdAt).getDate())" :key="note.id" :class="$style.separator">
 					<p :class="$style.date">
-						<span :class="$style['date-1']">
+						<span :class="$style.date1">
 							<i class="ti ti-chevron-up"></i>
 							{{ getDateText(note.createdAt) }}
 						</span>
-						<span :class="$style['date-2']">
+						<span :class="$style.date2">
 							{{ getDateText(items[index + 1].createdAt) }}
 							<i class="ti ti-chevron-down"></i>
 						</span>
@@ -93,7 +93,7 @@ defineExpose({
 		}
 	}
 }
-.date-separated-list {
+.dateseparatedlist {
 	container-type: inline-size;
 
 	&:global {
@@ -119,7 +119,7 @@ defineExpose({
 	}
 }
 
-.date-separated-list-nogap {
+.dateseparatedlistnogap {
 	> * {
 		margin: 0 !important;
 		border: none;
@@ -158,7 +158,6 @@ defineExpose({
 
 .separator {
 	border-bottom: solid 1px var(--divider);
-
 	text-align: center;
 }
 
@@ -173,19 +172,19 @@ defineExpose({
 	color: var(--dateLabelFg);
 }
 
-.date-1 {
+.date1 {
 	margin-right: 8px;
 }
 
-.date-1-icon {
+.date1icon {
 	margin-right: 8px;
 }
 
-.date-2 {
+.date2 {
 	margin-left: 8px;
 }
 
-.date-2-icon {
+.date2icon {
 	margin-left: 8px;
 }
 
