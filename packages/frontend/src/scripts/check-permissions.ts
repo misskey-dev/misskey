@@ -13,3 +13,7 @@ export const notesSearchAvailable = (
 	($i != null && $i.policies.canSearchNotes) ||
 	false
 ) as boolean;
+
+export const canSearchNonLocalNotes = (
+	instance.noteSearchableScope === 'global'
+);
