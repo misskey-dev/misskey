@@ -112,7 +112,10 @@ if (props.userId != null) {
 		user.value = _user;
 	});
 } else if (props.username != null) {
-	misskeyApi('users/show', { username: props.username, host: props.host }).then(_user => {
+	misskeyApi('users/show', {
+		username: props.username,
+		...(props.host != null && props.host !== '') ? { host: props.host } : {},
+	}).then(_user => {
 		user.value = _user;
 	});
 }
