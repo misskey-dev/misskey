@@ -135,7 +135,7 @@ class DeliverManager {
 			/**
 			 * ed25519の署名がなければ追加する
 			 */
-			const created = await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
+			const created = await this.userKeypairService.refreshAndPrepareEd25519KeyPair(this.actor.id);
 			if (created) {
 				// createdが存在するということは新規作成されたということなので、フォロワーに配信する
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
