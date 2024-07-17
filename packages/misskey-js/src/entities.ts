@@ -1,5 +1,14 @@
 import { ModerationLogPayloads } from './consts.js';
-import { Announcement, EmojiDetailed, MeDetailed, Page, User, UserDetailedNotMe } from './autogen/models.js';
+import {
+	Announcement,
+	EmojiDetailed,
+	MeDetailed,
+	Page,
+	Role,
+	RolePolicies,
+	User,
+	UserDetailedNotMe
+} from './autogen/models.js';
 
 export * from './autogen/entities.js';
 export * from './autogen/models.js';
@@ -132,8 +141,23 @@ export type ModerationLog = {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
-	type: 'unsetUserBanner';
-	info: ModerationLogPayloads['unsetUserBanner'];
+	type: 'createSystemWebhook';
+	info: ModerationLogPayloads['createSystemWebhook'];
+} | {
+	type: 'updateSystemWebhook';
+	info: ModerationLogPayloads['updateSystemWebhook'];
+} | {
+	type: 'deleteSystemWebhook';
+	info: ModerationLogPayloads['deleteSystemWebhook'];
+} | {
+	type: 'createAbuseReportNotificationRecipient';
+	info: ModerationLogPayloads['createAbuseReportNotificationRecipient'];
+} | {
+	type: 'updateAbuseReportNotificationRecipient';
+	info: ModerationLogPayloads['updateAbuseReportNotificationRecipient'];
+} | {
+	type: 'deleteAbuseReportNotificationRecipient';
+	info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
 });
 
 export type ServerStats = {
@@ -221,3 +245,7 @@ export type SigninResponse = {
 	id: User['id'],
 	i: string,
 };
+
+type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];
+
+export type PartialRolePolicyOverride = Partial<{[k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k] }}>;
