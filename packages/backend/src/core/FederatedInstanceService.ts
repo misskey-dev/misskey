@@ -40,6 +40,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 					firstRetrievedAt: new Date(parsed.firstRetrievedAt),
 					latestRequestReceivedAt: parsed.latestRequestReceivedAt ? new Date(parsed.latestRequestReceivedAt) : null,
 					infoUpdatedAt: parsed.infoUpdatedAt ? new Date(parsed.infoUpdatedAt) : null,
+					notRespondingSince: parsed.notRespondingSince ? new Date(parsed.notRespondingSince) : null,
 				};
 			},
 		});
@@ -55,11 +56,11 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		const index = await this.instancesRepository.findOneBy({ host });
 
 		if (index == null) {
-			const i = await this.instancesRepository.insert({
+			const i = await this.instancesRepository.insertOne({
 				id: this.idService.gen(),
 				host,
 				firstRetrievedAt: new Date(),
-			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			this.federatedInstanceCache.set(host, i);
 			return i;
