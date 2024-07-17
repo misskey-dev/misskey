@@ -1,4 +1,4 @@
-## Unreleased
+## 2024.7.0
 
 ### Note
 - デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
@@ -10,7 +10,6 @@
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
-- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 
 ### Client
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
@@ -20,6 +19,8 @@
   (Based on https://github.com/taiyme/misskey/pull/226)
 - Enhance: サーバー情報ページ・お問い合わせページを改善  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
+- Enhance: AiScriptを0.19.0にアップデート
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 - Enhance: 検索(ノート/ユーザー)で `#` から始まる文字列を入力すると、そのハッシュタグのノート/ユーザー一覧ページが表示されるように
 - Enhance: 検索(ノート/ユーザー)において、入力に空白が含まれている場合は照会を行わないように
 - Enhance: 検索(ノート/ユーザー)において、照会を行うかどうか、ハッシュタグのノート/ユーザー一覧ページを表示するかどうかの確認ダイアログを出すように
@@ -31,6 +32,7 @@
 - Fix: テーマプレビューが見れない問題を修正
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
+- Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
 - Fix: 照会に `#` から始まる文字列を入力してそのハッシュタグのページを表示する際、入力が `#` のみの場合に「指定されたURLに該当するページはありませんでした。」が表示されてしまう問題を修正
 
 ### Server
@@ -42,7 +44,7 @@
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
 - Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
-- Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Fix: チャート生成時にinstance.suspensionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
 - Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
@@ -57,6 +59,8 @@
   2. フォロー中かつ非アクティブなユーザ
   3. フォローしていないアクティブなユーザ
   4. フォローしていない非アクティブなユーザ
+
+  また、自分自身のアカウントもサジェストされるようになりました。
 - Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
