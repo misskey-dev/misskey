@@ -40,6 +40,7 @@
 - Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
 - Fix: 「アニメーション画像を再生しない」がオンのときでもサーバーのバナー画像・背景画像がアニメーションしてしまう問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
+- Fix: 一部の画像がセンシティブ指定されているときに画面に何も表示されないことがあるのを修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
