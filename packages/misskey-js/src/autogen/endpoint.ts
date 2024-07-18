@@ -18,6 +18,7 @@ import type {
 	AdminAccountsDeleteRequest,
 	AdminAccountsFindByEmailRequest,
 	AdminAccountsFindByEmailResponse,
+	AdminAccountsPresentPointsRequest,
 	AdminAdCreateRequest,
 	AdminAdCreateResponse,
 	AdminAdDeleteRequest,
@@ -45,6 +46,7 @@ import type {
 	AdminEmojiAddAliasesBulkRequest,
 	AdminEmojiAddRequest,
 	AdminEmojiAddResponse,
+	AdminEmojiAddRequestRequest,
 	AdminEmojiCopyRequest,
 	AdminEmojiCopyResponse,
 	AdminEmojiDeleteBulkRequest,
@@ -54,11 +56,17 @@ import type {
 	AdminEmojiListRemoteResponse,
 	AdminEmojiListRequest,
 	AdminEmojiListResponse,
+	AdminEmojiListRequestRequest,
+	AdminEmojiListRequestResponse,
 	AdminEmojiRemoveAliasesBulkRequest,
 	AdminEmojiSetAliasesBulkRequest,
 	AdminEmojiSetCategoryBulkRequest,
+	AdminEmojiSetLocalonlyBulkRequest,
+	AdminEmojiSetIssensitiveBulkRequest,
 	AdminEmojiSetLicenseBulkRequest,
 	AdminEmojiUpdateRequest,
+	AdminEmojiUpdateRequestRequest,
+	EmojiSpeedtestRequest,
 	AdminFederationDeleteAllFilesRequest,
 	AdminFederationRefreshRemoteInstanceMetadataRequest,
 	AdminFederationRemoveAllFollowingRequest,
@@ -376,6 +384,8 @@ import type {
 	IWebhooksShowResponse,
 	IWebhooksUpdateRequest,
 	IWebhooksDeleteRequest,
+	IStatsRequest,
+	IStatsResponse,
 	InviteCreateResponse,
 	InviteDeleteRequest,
 	InviteListRequest,
@@ -384,6 +394,7 @@ import type {
 	MetaRequest,
 	MetaResponse,
 	EmojisResponse,
+	EmojiRequestsResponse,
 	EmojiRequest,
 	EmojiResponse,
 	MiauthGenTokenRequest,
@@ -408,7 +419,11 @@ import type {
 	NotesConversationResponse,
 	NotesCreateRequest,
 	NotesCreateResponse,
+	NotesScheduleDeleteRequest,
+	NotesScheduleListRequest,
+	NotesScheduleListResponse,
 	NotesDeleteRequest,
+	NotesUpdateRequest,
 	NotesFavoritesCreateRequest,
 	NotesFavoritesDeleteRequest,
 	NotesFeaturedRequest,
@@ -419,6 +434,8 @@ import type {
 	NotesHybridTimelineResponse,
 	NotesLocalTimelineRequest,
 	NotesLocalTimelineResponse,
+	NotesAnyLocalTimelineRequest,
+	NotesAnyLocalTimelineResponse,
 	NotesMentionsRequest,
 	NotesMentionsResponse,
 	NotesPollsRecommendationRequest,
@@ -517,6 +534,8 @@ import type {
 	UsersListsDeleteRequest,
 	UsersListsListRequest,
 	UsersListsListResponse,
+	UsersListsListFavoriteRequest,
+	UsersListsListFavoriteResponse,
 	UsersListsPullRequest,
 	UsersListsPushRequest,
 	UsersListsShowRequest,
@@ -584,6 +603,7 @@ export type Endpoints = {
 	'admin/accounts/create': { req: AdminAccountsCreateRequest; res: AdminAccountsCreateResponse };
 	'admin/accounts/delete': { req: AdminAccountsDeleteRequest; res: EmptyResponse };
 	'admin/accounts/find-by-email': { req: AdminAccountsFindByEmailRequest; res: AdminAccountsFindByEmailResponse };
+	'admin/accounts/present-points': { req: AdminAccountsPresentPointsRequest; res: EmptyResponse };
 	'admin/ad/create': { req: AdminAdCreateRequest; res: AdminAdCreateResponse };
 	'admin/ad/delete': { req: AdminAdDeleteRequest; res: EmptyResponse };
 	'admin/ad/list': { req: AdminAdListRequest; res: AdminAdListResponse };
@@ -605,17 +625,23 @@ export type Endpoints = {
 	'admin/drive/show-file': { req: AdminDriveShowFileRequest; res: AdminDriveShowFileResponse };
 	'admin/emoji/add-aliases-bulk': { req: AdminEmojiAddAliasesBulkRequest; res: EmptyResponse };
 	'admin/emoji/add': { req: AdminEmojiAddRequest; res: AdminEmojiAddResponse };
+	'admin/emoji/add-request': { req: AdminEmojiAddRequestRequest; res: EmptyResponse };
 	'admin/emoji/copy': { req: AdminEmojiCopyRequest; res: AdminEmojiCopyResponse };
 	'admin/emoji/delete-bulk': { req: AdminEmojiDeleteBulkRequest; res: EmptyResponse };
 	'admin/emoji/delete': { req: AdminEmojiDeleteRequest; res: EmptyResponse };
 	'admin/emoji/import-zip': { req: AdminEmojiImportZipRequest; res: EmptyResponse };
 	'admin/emoji/list-remote': { req: AdminEmojiListRemoteRequest; res: AdminEmojiListRemoteResponse };
 	'admin/emoji/list': { req: AdminEmojiListRequest; res: AdminEmojiListResponse };
+	'admin/emoji/list-request': { req: AdminEmojiListRequestRequest; res: AdminEmojiListRequestResponse };
 	'admin/emoji/remove-aliases-bulk': { req: AdminEmojiRemoveAliasesBulkRequest; res: EmptyResponse };
 	'admin/emoji/set-aliases-bulk': { req: AdminEmojiSetAliasesBulkRequest; res: EmptyResponse };
 	'admin/emoji/set-category-bulk': { req: AdminEmojiSetCategoryBulkRequest; res: EmptyResponse };
+	'admin/emoji/set-localonly-bulk': { req: AdminEmojiSetLocalonlyBulkRequest; res: EmptyResponse };
+	'admin/emoji/set-issensitive-bulk': { req: AdminEmojiSetIssensitiveBulkRequest; res: EmptyResponse };
 	'admin/emoji/set-license-bulk': { req: AdminEmojiSetLicenseBulkRequest; res: EmptyResponse };
 	'admin/emoji/update': { req: AdminEmojiUpdateRequest; res: EmptyResponse };
+	'admin/emoji/update-request': { req: AdminEmojiUpdateRequestRequest; res: EmptyResponse };
+	'emoji/speedtest': { req: EmojiSpeedtestRequest; res: EmptyResponse };
 	'admin/federation/delete-all-files': { req: AdminFederationDeleteAllFilesRequest; res: EmptyResponse };
 	'admin/federation/refresh-remote-instance-metadata': { req: AdminFederationRefreshRemoteInstanceMetadataRequest; res: EmptyResponse };
 	'admin/federation/remove-all-following': { req: AdminFederationRemoveAllFollowingRequest; res: EmptyResponse };
@@ -826,12 +852,14 @@ export type Endpoints = {
 	'i/webhooks/show': { req: IWebhooksShowRequest; res: IWebhooksShowResponse };
 	'i/webhooks/update': { req: IWebhooksUpdateRequest; res: EmptyResponse };
 	'i/webhooks/delete': { req: IWebhooksDeleteRequest; res: EmptyResponse };
+	'i/stats': { req: IStatsRequest; res: IStatsResponse };
 	'invite/create': { req: EmptyRequest; res: InviteCreateResponse };
 	'invite/delete': { req: InviteDeleteRequest; res: EmptyResponse };
 	'invite/list': { req: InviteListRequest; res: InviteListResponse };
 	'invite/limit': { req: EmptyRequest; res: InviteLimitResponse };
 	'meta': { req: MetaRequest; res: MetaResponse };
 	'emojis': { req: EmptyRequest; res: EmojisResponse };
+	'emoji-requests': { req: EmptyRequest; res: EmojiRequestsResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
 	'miauth/gen-token': { req: MiauthGenTokenRequest; res: MiauthGenTokenResponse };
 	'mute/create': { req: MuteCreateRequest; res: EmptyResponse };
@@ -846,13 +874,17 @@ export type Endpoints = {
 	'notes/clips': { req: NotesClipsRequest; res: NotesClipsResponse };
 	'notes/conversation': { req: NotesConversationRequest; res: NotesConversationResponse };
 	'notes/create': { req: NotesCreateRequest; res: NotesCreateResponse };
+	'notes/schedule/delete': { req: NotesScheduleDeleteRequest; res: EmptyResponse };
+	'notes/schedule/list': { req: NotesScheduleListRequest; res: NotesScheduleListResponse };
 	'notes/delete': { req: NotesDeleteRequest; res: EmptyResponse };
+	'notes/update': { req: NotesUpdateRequest; res: EmptyResponse };
 	'notes/favorites/create': { req: NotesFavoritesCreateRequest; res: EmptyResponse };
 	'notes/favorites/delete': { req: NotesFavoritesDeleteRequest; res: EmptyResponse };
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };
 	'notes/global-timeline': { req: NotesGlobalTimelineRequest; res: NotesGlobalTimelineResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
+	'notes/any-local-timeline': { req: NotesAnyLocalTimelineRequest; res: NotesAnyLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
 	'notes/polls/vote': { req: NotesPollsVoteRequest; res: EmptyResponse };
@@ -920,6 +952,7 @@ export type Endpoints = {
 	'users/lists/create': { req: UsersListsCreateRequest; res: UsersListsCreateResponse };
 	'users/lists/delete': { req: UsersListsDeleteRequest; res: EmptyResponse };
 	'users/lists/list': { req: UsersListsListRequest; res: UsersListsListResponse };
+	'users/lists/list-favorite': { req: UsersListsListFavoriteRequest; res: UsersListsListFavoriteResponse };
 	'users/lists/pull': { req: UsersListsPullRequest; res: EmptyResponse };
 	'users/lists/push': { req: UsersListsPushRequest; res: EmptyResponse };
 	'users/lists/show': { req: UsersListsShowRequest; res: UsersListsShowResponse };
@@ -966,6 +999,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'admin/accounts/create': 'application/json',
 	'admin/accounts/delete': 'application/json',
 	'admin/accounts/find-by-email': 'application/json',
+	'admin/accounts/present-points': 'application/json',
 	'admin/ad/create': 'application/json',
 	'admin/ad/delete': 'application/json',
 	'admin/ad/list': 'application/json',
@@ -987,17 +1021,23 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'admin/drive/show-file': 'application/json',
 	'admin/emoji/add-aliases-bulk': 'application/json',
 	'admin/emoji/add': 'application/json',
+	'admin/emoji/add-request': 'application/json',
 	'admin/emoji/copy': 'application/json',
 	'admin/emoji/delete-bulk': 'application/json',
 	'admin/emoji/delete': 'application/json',
 	'admin/emoji/import-zip': 'application/json',
 	'admin/emoji/list-remote': 'application/json',
 	'admin/emoji/list': 'application/json',
+	'admin/emoji/list-request': 'application/json',
 	'admin/emoji/remove-aliases-bulk': 'application/json',
 	'admin/emoji/set-aliases-bulk': 'application/json',
 	'admin/emoji/set-category-bulk': 'application/json',
+	'admin/emoji/set-localonly-bulk': 'application/json',
+	'admin/emoji/set-issensitive-bulk': 'application/json',
 	'admin/emoji/set-license-bulk': 'application/json',
 	'admin/emoji/update': 'application/json',
+	'admin/emoji/update-request': 'application/json',
+	'emoji/speedtest': 'application/json',
 	'admin/federation/delete-all-files': 'application/json',
 	'admin/federation/refresh-remote-instance-metadata': 'application/json',
 	'admin/federation/remove-all-following': 'application/json',
@@ -1208,12 +1248,14 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'i/webhooks/show': 'application/json',
 	'i/webhooks/update': 'application/json',
 	'i/webhooks/delete': 'application/json',
+	'i/stats': 'application/json',
 	'invite/create': 'application/json',
 	'invite/delete': 'application/json',
 	'invite/list': 'application/json',
 	'invite/limit': 'application/json',
 	'meta': 'application/json',
 	'emojis': 'application/json',
+	'emoji-requests': 'application/json',
 	'emoji': 'application/json',
 	'miauth/gen-token': 'application/json',
 	'mute/create': 'application/json',
@@ -1228,13 +1270,17 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'notes/clips': 'application/json',
 	'notes/conversation': 'application/json',
 	'notes/create': 'application/json',
+	'notes/schedule/delete': 'application/json',
+	'notes/schedule/list': 'application/json',
 	'notes/delete': 'application/json',
+	'notes/update': 'application/json',
 	'notes/favorites/create': 'application/json',
 	'notes/favorites/delete': 'application/json',
 	'notes/featured': 'application/json',
 	'notes/global-timeline': 'application/json',
 	'notes/hybrid-timeline': 'application/json',
 	'notes/local-timeline': 'application/json',
+	'notes/any-local-timeline': 'application/json',
 	'notes/mentions': 'application/json',
 	'notes/polls/recommendation': 'application/json',
 	'notes/polls/vote': 'application/json',
@@ -1302,6 +1348,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'users/lists/create': 'application/json',
 	'users/lists/delete': 'application/json',
 	'users/lists/list': 'application/json',
+	'users/lists/list-favorite': 'application/json',
 	'users/lists/pull': 'application/json',
 	'users/lists/push': 'application/json',
 	'users/lists/show': 'application/json',

@@ -183,6 +183,7 @@ export const paramDef = {
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
 		mutedWords: muteWords,
 		hardMutedWords: muteWords,
+		mutedReactions: muteWords,
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -310,6 +311,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				checkMuteWordCount(ps.hardMutedWords, policies.wordMuteLimit);
 				validateMuteWordRegex(ps.hardMutedWords);
 				profileUpdates.hardMutedWords = ps.hardMutedWords;
+			}
+			if (ps.mutedReactions !== undefined) {
+				policies ??= await this.roleService.getUserPolicies(user.id);
+				checkMuteWordCount(ps.mutedReactions, policies.wordMuteLimit);
+				validateMuteWordRegex(ps.mutedReactions);
+				profileUpdates.mutedReactions = ps.mutedReactions;
 			}
 			if (ps.mutedInstances !== undefined) profileUpdates.mutedInstances = ps.mutedInstances;
 			if (ps.notificationRecieveConfig !== undefined) profileUpdates.notificationRecieveConfig = ps.notificationRecieveConfig;

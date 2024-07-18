@@ -19,6 +19,13 @@ SPDX-License-Identifier: AGPL-3.0-only
       <XWordMute :muted="$i.hardMutedWords" @save="saveHardMutedWords"/>
     </MkFolder>
 
+		<MkFolder>
+      <template #icon><i class="ti ti-message-off"></i></template>
+      <template #label>{{ i18n.ts.mutedReactions }}</template>
+
+      <XWordMute :notCaption="true" :muted="$i.mutedReactions" @save="saveMutedReactions"/>
+    </MkFolder>
+
     <MkFolder>
       <template #icon><i class="ti ti-planet-off"></i></template>
       <template #label>{{ i18n.ts.instanceMute }}</template>
@@ -224,6 +231,9 @@ async function saveMutedWords(mutedWords: (string | string[])[]) {
 
 async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
   await misskeyApi('i/update', { hardMutedWords });
+}
+async function saveMutedReactions(mutedReactions: (string | string[])[]) {
+  await misskeyApi('i/update', { mutedReactions });
 }
 
 const headerActions = computed(() => []);

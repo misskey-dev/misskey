@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <div>
       <MkTextarea v-model="mutedWords">
         <span>{{ i18n.ts._wordMute.muteWords }}</span>
-        <template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
+        <template v-if="!notCaption" #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
       </MkTextarea>
     </div>
     <MkButton primary inline :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -24,6 +24,7 @@ import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
   muted: (string[] | string)[];
+	notCaption?: boolean;
 }>();
 
 const emit = defineEmits<{

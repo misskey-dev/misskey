@@ -21,6 +21,7 @@ import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note & {
@@ -46,6 +47,7 @@ if (props.note.myReaction && !Object.keys(reactions.value).includes(props.note.m
 	reactions.value[props.note.myReaction] = props.note.reactions[props.note.myReaction];
 }
 
+
 function onMockToggleReaction(emoji: string, count: number) {
 	if (!mock) return;
 
@@ -54,7 +56,13 @@ function onMockToggleReaction(emoji: string, count: number) {
 
 	emit('mockUpdateMyReaction', emoji, (count - reactions.value[i][1]));
 }
+if ($i && reactions.value){
 
+	reactions.value = reactions.value.filter(([reactionType]) =>{
+		if (reactionType === props.note.myReaction) return true;
+		if (!($i.mutedReactions.flat()).includes(reactionType)) return true;
+	} );
+}
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
@@ -65,7 +73,6 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 			newReactions.push(reactions.value[i]);
 		}
 	}
-
 	const newReactionsNames = newReactions.map(([x]) => x);
 	newReactions = [
 		...newReactions,
@@ -76,11 +83,17 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 
 	newReactions = newReactions.slice(0, props.maxNumber);
 
-	if (props.note. myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
+	if (props.note.myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
 		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
 	}
-
-	reactions.value = newReactions;
+	if ($i){
+		reactions.value = newReactions.filter(([reactionType]) =>{
+			if (reactionType === props.note.myReaction) return true;
+			if (!($i.mutedReactions.flat()).includes(reactionType)) return true;
+		} );
+	} else {
+		reactions.value = newReactions;
+	}
 }, { immediate: true, deep: true });
 </script>
 

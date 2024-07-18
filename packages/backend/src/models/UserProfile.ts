@@ -236,6 +236,11 @@ export class MiUserProfile {
 	public mutedInstances: string[];
 
 	@Column('jsonb', {
+		default: [],
+	})
+	public mutedReactions:  (string[] | string)[];
+
+	@Column('jsonb', {
 		default: {},
 	})
 	public notificationRecieveConfig: {
