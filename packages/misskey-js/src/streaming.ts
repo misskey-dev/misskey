@@ -15,7 +15,7 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 		.join('&');
 }
 
-type AnyOf<T extends Record<any, any>> = T[keyof T];
+type AnyOf<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
 type StreamEvents = {
 	_connected_: void;
@@ -25,6 +25,7 @@ type StreamEvents = {
 /**
  * Misskey stream connection
  */
+// eslint-disable-next-line import/no-default-export
 export default class Stream extends EventEmitter<StreamEvents> {
 	private stream: _ReconnectingWebsocket.default;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
@@ -51,6 +52,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.send = this.send.bind(this);
 		this.close = this.close.bind(this);
 
+		// eslint-disable-next-line no-param-reassign
 		options = options ?? { };
 
 		const query = urlQuery({
