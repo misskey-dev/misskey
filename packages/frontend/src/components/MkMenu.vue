@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 		:style="{
 			width: (width && !asDrawer) ? `${width}px` : '',
-			maxHeight: maxHeight ? `${maxHeight}px` : '',
+			maxHeight: maxHeight ? `min(${maxHeight}px, calc(100dvh - 32px))` : 'calc(100dvh - 32px)',
 		}"
 		@keydown.stop="() => {}"
 		@contextmenu.self.prevent="() => {}"
