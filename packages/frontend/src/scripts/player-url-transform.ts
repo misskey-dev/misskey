@@ -10,16 +10,16 @@ export function transformPlayerUrl(url: string): string {
 
 	const urlParams = new URLSearchParams(urlObj.search);
 
-	// TwitchはCSPの制約あり
-	// https://dev.twitch.tv/docs/embed/video-and-clips/
 	if (urlObj.hostname === 'player.twitch.tv') {
+		// TwitchはCSPの制約あり
+		// https://dev.twitch.tv/docs/embed/video-and-clips/
 		urlParams.set('parent', hostname);
 		urlParams.set('allowfullscreen', '');
+		urlParams.set('autoplay', 'true');
+	} else {
+		urlParams.set('autoplay', '1');
+		urlParams.set('auto_play', '1');
 	}
-
-	// Autoplay
-	urlParams.set('autoplay', 'true');
-	urlParams.set('auto_play', 'true');
 	urlObj.search = urlParams.toString();
 
 	return urlObj.toString();
