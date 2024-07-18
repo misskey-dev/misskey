@@ -5,7 +5,9 @@
 
 import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
+import { onBeforeUnmount } from 'vue';
 import MkDonation from './MkDonation.vue';
+import { instance } from '@/instance.js';
 export const Default = {
 	render(args) {
 		return {
@@ -32,6 +34,20 @@ export const Default = {
 			template: '<MkDonation v-bind="props" v-on="events" />',
 		};
 	},
+	args: {
+		// @ts-expect-error name is used for mocking instance
+		name: 'Misskey Hub',
+	},
+	decorators: [
+		(_, { args }) => ({
+			setup() {
+				// @ts-expect-error name is used for mocking instance
+				instance.name = args.name;
+				onBeforeUnmount(() => instance.name = null);
+			},
+			template: '<story/>',
+		}),
+	],
 	parameters: {
 		layout: 'centered',
 	},
