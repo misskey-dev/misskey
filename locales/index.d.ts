@@ -10092,11 +10092,11 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
-         * Misskey
+         * アプリケーション
          */
         "app": string;
         /**
-         * ShiftキーでMisskey
+         * Shiftキーでアプリケーション
          */
         "appWithShift": string;
         /**
