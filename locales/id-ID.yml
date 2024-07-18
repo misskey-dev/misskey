@@ -180,6 +180,10 @@ addAccount: "Tambahkan akun"
 reloadAccountsList: "Muat ulang daftar akun"
 loginFailed: "Gagal untuk masuk"
 showOnRemote: "Lihat profil asli"
+continueOnRemote: "Lihat di peladen asal"
+chooseServerOnMisskeyHub: "Pilih peladen dari Misskey Hub"
+specifyServerHost: "Tentukan domain peladen"
+inputHostName: "Masukkan nama domain"
 general: "Umum"
 wallpaper: "Wallpaper"
 setWallpaper: "Atur wallpaper"
@@ -1240,6 +1244,7 @@ keepOriginalFilenameDescription: "Apabila pengaturan ini dimatikan, nama berkas 
 noDescription: "Tidak ada deskripsi"
 alwaysConfirmFollow: "Selalu konfirmasi ketika mengikuti"
 inquiry: "Hubungi kami"
+tryAgain: "Silahkan coba lagi."
 _delivery:
   status: "Status pengiriman"
   stop: "Ditangguhkan"
@@ -2395,6 +2400,7 @@ _drivecleaner:
   orderByCreatedAtAsc: "Tanggal (Naik)"
 _webhookSettings:
   createWebhook: "Buat Webhook"
+  modifyWebhook: "Sunting Webhook"
   name: "Nama"
   secret: "Secret"
   events: "Webhook Events"
@@ -2407,6 +2413,7 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+  deleteConfirm: "Apakah kamu yakin ingin menghapus Webhook?"
 _abuseReport:
   _notificationRecipient:
     _recipientType:
