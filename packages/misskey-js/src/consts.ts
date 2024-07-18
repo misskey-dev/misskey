@@ -1,12 +1,12 @@
+import type { operations } from './autogen/types.js';
 import type {
 	AbuseReportNotificationRecipient, Ad,
 	Announcement,
 	EmojiDetailed, InviteCode,
 	MetaDetailed,
 	Note,
-	Role, SystemWebhook, UserLite
-} from "./autogen/models.js";
-import { operations } from './autogen/types.js';
+	Role, SystemWebhook, UserLite,
+} from './autogen/models.js';
 
 export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'roleAssigned', 'achievementEarned'] as const;
 
