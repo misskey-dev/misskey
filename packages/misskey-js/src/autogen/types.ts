@@ -4608,6 +4608,7 @@ export type components = {
       /** Format: date-time */
       latestRequestReceivedAt: string | null;
       moderationNote?: string | null;
+      httpMessageSignaturesImplementationLevel: string;
     };
     GalleryPost: {
       /**
