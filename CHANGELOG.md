@@ -2,6 +2,7 @@
 
 ### Note
 - デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
+- Streaming APIにて入力が不正な場合にはそのメッセージを無視するようになりました。 #14251
 
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
@@ -76,6 +77,7 @@
 - Fix: ソーシャルタイムラインにローカルタイムラインに表示される自分へのリプライが表示されない問題を修正
 - Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
   (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
+- Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
