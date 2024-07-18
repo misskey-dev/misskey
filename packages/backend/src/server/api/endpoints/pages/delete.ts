@@ -4,9 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { PagesRepository } from '@/models/_.js';
+import type { PagesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -44,17 +46,35 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		private moderationLogService: ModerationLogService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
+
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
-			if (page.userId !== me.id) {
+
+			if (!await this.roleService.isModerator(me) && page.userId !== me.id) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
 			await this.pagesRepository.delete(page.id);
+
+			if (page.userId !== me.id) {
+				const user = await this.usersRepository.findOneByOrFail({ id: page.userId });
+				this.moderationLogService.log(me, 'deletePage', {
+					pageId: page.id,
+					pageUserId: page.userId,
+					pageUserUsername: user.username,
+					page,
+				});
+			}
 		});
 	}
 }

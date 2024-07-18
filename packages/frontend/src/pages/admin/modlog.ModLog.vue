@@ -36,6 +36,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					'deleteAvatarDecoration',
 					'deleteSystemWebhook',
 					'deleteAbuseReportNotificationRecipient',
+					'deletePage',
+					'deleteFlash',
+					'deleteGalleryPost',
 				].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
@@ -72,6 +75,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'createAbuseReportNotificationRecipient'">: {{ log.info.recipient.name }}</span>
 		<span v-else-if="log.type === 'updateAbuseReportNotificationRecipient'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'deleteAbuseReportNotificationRecipient'">: {{ log.info.recipient.name }}</span>
+		<span v-else-if="log.type === 'deletePage'">: @{{ log.info.pageUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
 	</template>
 	<template #icon>
 		<MkAvatar :user="log.user" :class="$style.avatar"/>

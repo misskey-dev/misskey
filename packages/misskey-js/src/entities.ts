@@ -141,6 +141,9 @@ export type ModerationLog = {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
+	type: 'unsetUserBanner';
+	info: ModerationLogPayloads['unsetUserBanner'];
+} | {
 	type: 'createSystemWebhook';
 	info: ModerationLogPayloads['createSystemWebhook'];
 } | {
@@ -158,6 +161,15 @@ export type ModerationLog = {
 } | {
 	type: 'deleteAbuseReportNotificationRecipient';
 	info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
+} | {
+	type: 'deletePage';
+	info: ModerationLogPayloads['deletePage'];
+} | {
+	type: 'deleteFlash';
+	info: ModerationLogPayloads['deleteFlash'];
+} | {
+	type: 'deleteGalleryPost';
+	info: ModerationLogPayloads['deleteGalleryPost'];
 });
 
 export type ServerStats = {
