@@ -51,6 +51,7 @@ export type Channels = {
 			registryUpdated: (payload: {
 				scope?: string[];
 				key: string;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				value: any | null;
 			}) => void;
 			driveFileCreated: (payload: DriveFile) => void;
@@ -208,8 +209,8 @@ export type Channels = {
 			ended: (payload: { winnerId: User['id'] | null; game: ReversiGameDetailed; }) => void;
 			canceled: (payload: { userId: User['id']; }) => void;
 			changeReadyStates: (payload: { user1: boolean; user2: boolean; }) => void;
-			updateSettings: (payload: { userId: User['id']; key: string; value: any; }) => void;
-			log: (payload: Record<string, any>) => void;
+			updateSettings: (payload: { userId: User['id']; key: string; value: unknown; }) => void;
+			log: (payload: Record<string, unknown>) => void;
 		};
 		receives: {
 			putStone: {
@@ -220,6 +221,7 @@ export type Channels = {
 			cancel: null | Record<string, never>;
 			updateSettings: {
 				key: string;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				value: any;
 			};
 			claimTimeIsUp: null | Record<string, never>;

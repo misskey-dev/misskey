@@ -35,6 +35,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		WebSocket?: any;
 	}) {
 		super();
@@ -93,7 +94,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			this.sharedConnectionPools.push(pool);
 		}
 
-		const connection = new SharedConnection(this, channel, pool, name);
+		const connection = new SharedConnection<Channels[C]>(this, channel, pool, name);
 		this.sharedConnections.push(connection);
 		return connection;
 	}
@@ -176,9 +177,9 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * ! ストリーム上のやり取りはすべてJSONで行われます !
 	 */
 	public send(typeOrPayload: string): void
-	public send(typeOrPayload: string, payload: any): void
-	public send(typeOrPayload: Record<string, any> | any[]): void
-	public send(typeOrPayload: string | Record<string, any> | any[], payload?: any): void {
+	public send(typeOrPayload: string, payload: unknown): void
+	public send(typeOrPayload: Record<string, unknown> | unknown[]): void
+	public send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void {
 		if (typeof typeOrPayload === 'string') {
 			this.stream.send(JSON.stringify({
 				type: typeOrPayload,
@@ -213,7 +214,7 @@ class Pool {
 	public id: string;
 	protected stream: Stream;
 	public users = 0;
-	private disposeTimerId: any;
+	private disposeTimerId: ReturnType<typeof setTimeout> | null = null;
 	private isConnected = false;
 
 	constructor(stream: Stream, channel: string, id: string) {
@@ -277,7 +278,7 @@ class Pool {
 	}
 }
 
-export abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export abstract class Connection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;
@@ -311,7 +312,7 @@ export abstract class Connection<Channel extends AnyOf<Channels> = any> extends 
 	public abstract dispose(): void;
 }
 
-class SharedConnection<Channel extends AnyOf<Channels> = any> extends Connection<Channel> {
+class SharedConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends Connection<Channel> {
 	private pool: Pool;
 
 	public get id(): string {
@@ -334,7 +335,7 @@ class SharedConnection<Channel extends AnyOf<Channels> = any> extends Connection
 	}
 }
 
-class NonSharedConnection<Channel extends AnyOf<Channels> = any> extends Connection<Channel> {
+class NonSharedConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends Connection<Channel> {
 	public id: string;
 	protected params: Channel['params'];
 
