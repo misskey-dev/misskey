@@ -43,7 +43,7 @@ html {
 	overflow: auto;
 	overflow-wrap: break-word;
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
-	font-size: 14px;
+	font-size: 0.875rem;
 	line-height: 1.35;
 	text-size-adjust: 100%;
 	tab-size: 2;
@@ -76,15 +76,15 @@ html {
 	}
 
 	&.f-1 {
-		font-size: 15px;
+		font-size: 0.9375rem;
 	}
 
 	&.f-2 {
-		font-size: 16px;
+		font-size: 1rem;
 	}
 
 	&.f-3 {
-		font-size: 17px;
+		font-size: 1.0625rem;
 	}
 
 	&.useSystemFont {
