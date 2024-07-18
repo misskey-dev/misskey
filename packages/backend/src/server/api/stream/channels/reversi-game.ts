@@ -30,7 +30,7 @@ class ReversiGameChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject) {
-		if (typeof params.gameId != 'string') return;
+		if (typeof params.gameId !== 'string') return;
 		this.gameId = params.gameId;
 
 		this.subscriber.on(`reversiGameStream:${this.gameId}`, this.send);

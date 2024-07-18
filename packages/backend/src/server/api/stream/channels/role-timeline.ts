@@ -30,7 +30,7 @@ class RoleTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject) {
-		if (typeof params.roleId != 'string') return;
+		if (typeof params.roleId !== 'string') return;
 		this.roleId = params.roleId;
 
 		this.subscriber.on(`roleTimelineStream:${this.roleId}`, this.onEvent);

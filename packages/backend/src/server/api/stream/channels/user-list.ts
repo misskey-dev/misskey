@@ -38,7 +38,7 @@ class UserListChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject) {
-		if (typeof params.listId != 'string') return;
+		if (typeof params.listId !== 'string') return;
 		this.listId = params.listId;
 		this.withFiles = !!(params.withFiles ?? false);
 		this.withRenotes = !!(params.withRenotes ?? true);

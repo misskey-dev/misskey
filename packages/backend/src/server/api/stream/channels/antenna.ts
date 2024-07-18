@@ -29,7 +29,7 @@ class AntennaChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject) {
-		if (typeof params.antennaId != 'string') return;
+		if (typeof params.antennaId !== 'string') return;
 		this.antennaId = params.antennaId;
 
 		// Subscribe stream
