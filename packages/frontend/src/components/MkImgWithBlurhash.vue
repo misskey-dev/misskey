@@ -155,7 +155,7 @@ function drawAvg() {
 
 	const color = (props.hash != null && extractAvgColorFromBlurhash(props.hash)) || '#888';
 
-	const ctx = canvas.value?.getContext('2d');
+	const ctx = canvas.value.getContext('2d');
 	if (!ctx) return;
 
 	// avgColorでお茶をにごす
@@ -165,6 +165,8 @@ function drawAvg() {
 }
 
 async function draw() {
+	if (import.meta.env.MODE === 'test' && props.hash == null) return;
+
 	drawAvg();
 
 	if (props.hash == null) return;
