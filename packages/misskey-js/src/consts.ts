@@ -137,7 +137,9 @@ export const moderationLogTypes = [
 
 export type ModerationLogPayloads = {
 	updateServerSettings: {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		before: any | null;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		after: any | null;
 	};
 	suspend: {
@@ -159,6 +161,7 @@ export type ModerationLogPayloads = {
 	};
 	addCustomEmoji: {
 		emojiId: string;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		emoji: any;
 	};
 	updateCustomEmoji: {
