@@ -95,7 +95,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		}
 
 		const connection = new SharedConnection<Channels[C]>(this, channel, pool, name);
-		this.sharedConnections.push(connection);
+		this.sharedConnections.push(connection as unknown as SharedConnection);
 		return connection;
 	}
 
@@ -109,7 +109,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 	private connectToChannel<C extends keyof Channels>(channel: C, params: Channels[C]['params']): NonSharedConnection<Channels[C]> {
 		const connection = new NonSharedConnection(this, channel, this.genId(), params);
-		this.nonSharedConnections.push(connection);
+		this.nonSharedConnections.push(connection as unknown as NonSharedConnection);
 		return connection;
 	}
 
@@ -331,7 +331,7 @@ class SharedConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extend
 	public dispose(): void {
 		this.pool.dec();
 		this.removeAllListeners();
-		this.stream.removeSharedConnection(this);
+		this.stream.removeSharedConnection(this as unknown as SharedConnection);
 	}
 }
 
@@ -362,6 +362,6 @@ class NonSharedConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> ext
 	public dispose(): void {
 		this.removeAllListeners();
 		this.stream.send('disconnect', { id: this.id });
-		this.stream.disconnectToChannel(this);
+		this.stream.disconnectToChannel(this as unknown as NonSharedConnection);
 	}
 }
