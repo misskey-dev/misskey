@@ -50,7 +50,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		<div v-if="tab === 'index'" class="group index">
 			<section v-if="showPinned">
 				<div style="display: flex; ">
-					<div v-for="a in profileMax" :key="a" :title="defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`]" class="sllfktkhgl" :class="{ active: activeIndex === a || isDefaultProfile === a }" @click="pinnedProfileSelect(a)">
+					<div v-for="a in profileMax" :key="a" :title="defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`]" class="sllfktkhgl" :class="{ active: activeIndex === a }" @click="pinnedProfileSelect(a)">
 						{{ defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`] }}
 					</div>
 				</div>

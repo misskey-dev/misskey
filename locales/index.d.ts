@@ -5305,6 +5305,10 @@ export interface Locale extends ILocale {
      */
     "addToEmojiPicker": string;
     /**
+     * デフォルトに設定されているプロファイルに追加
+     */
+    "addToDefaultEmojiProfile": string;
+    /**
      * リアクション数の非表示
      */
     "hideReactionCount": string;

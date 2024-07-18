@@ -124,9 +124,9 @@ export const timelineHeaderItemDef = reactive<Partial<Record<TimelineHeaderItem,
 		};
 		return acc;
 	}, {}),
-	...defaultStore.reactiveState.remoteLocalTimeline.value.reduce((acc, t) => {
+	...defaultStore.reactiveState.remoteLocalTimeline.value.reduce((acc, t : {host:string; name:string;}) => {
 		acc['remoteLocalTimeline:' + t.host.replace('https://', '')] = {
-			title: 'remoteLocaltimeline:' + t.name,
+			title: t.name,
 			icon: 'ti ti-star',
 			iconOnly: true,
 		};

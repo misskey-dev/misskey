@@ -53,19 +53,27 @@ const emit = defineEmits<{
 }>();
 
 const buttonEl = shallowRef<HTMLElement>();
-
+const isLocal = computed(() => !props.reaction.match(/@\w/));
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
+const isAvailable = computed(() => isLocal.value ? true : customEmojisMap.has(getReactionName(props.reaction)));
 
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
 });
+
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
+const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? getReactionName(props.reaction, true) : props.reaction);
+
+function getReactionName(reaction: string, formated = false) {
+	const r = reaction.replaceAll(':', '').replace(/@.*/, '');
+	return formated ? `:${r}:` : r;
+}
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	const oldReaction = props.note.myReactions?.includes(props.reaction) ? props.reaction : null;
+	const oldReaction = props.note.myReactions.includes(props.reaction) ? props.reaction : null;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
@@ -126,7 +134,13 @@ async function menu(ev) {
 				closed: () => dispose(),
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	}, ...(isAvailable.value && !defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault}`].includes(plainReaction.value) ? [{
+		text: i18n.ts.addToDefaultEmojiProfile,
+		icon: 'ti ti-plus',
+		action: () => {
+			defaultStore.set(`reactions${defaultStore.state.pickerProfileDefault}`, [...defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault - 1 : ''}`], plainReaction.value]);
+		},
+	}] : [])], ev.currentTarget ?? ev.target);
 }
 
 function anime() {

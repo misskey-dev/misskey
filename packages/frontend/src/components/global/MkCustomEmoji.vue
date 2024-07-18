@@ -65,20 +65,20 @@ const rawUrl = computed(() => {
 
 const url = computed(() => {
 	if (rawUrl.value == null) return undefined;
-  const useOriginalSize = props.useOriginalSize;
-  const enableDataSaverMode = defaultStore.state.enableUltimateDataSaverMode;
-  let datasaver_result ;
-  if (enableDataSaverMode) {
-    datasaver_result = useOriginalSize ? undefined : 'datasaver';
-  } else {
-    datasaver_result = useOriginalSize ? undefined : 'emoji';
-  }
+	const useOriginalSize = props.useOriginalSize;
+	const enableDataSaverMode = defaultStore.state.enableUltimateDataSaverMode;
+	let datasaver_result;
+	if (enableDataSaverMode) {
+		datasaver_result = useOriginalSize ? undefined : 'datasaver';
+	} else {
+		datasaver_result = useOriginalSize ? undefined : 'emoji';
+	}
 	const proxied =
 		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
 			? rawUrl.value
 			: getProxiedImageUrl(
 				rawUrl.value,
-            datasaver_result,
+				datasaver_result,
 				false,
 				true,
 			);
@@ -108,6 +108,12 @@ function onClick(ev: MouseEvent) {
 			action: () => {
 				react(`:${props.name}:`);
 				sound.playMisskeySfx('reaction');
+			},
+		}] : []), ...(!defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault}`].includes(`:${props.name}:`) ? [{
+			text: i18n.ts.addToDefaultEmojiPicker,
+			icon: 'ti ti-plus',
+			action: () => {
+				defaultStore.set(`reactions${defaultStore.state.pickerProfileDefault}`, [...defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault - 1 : ''}`], `:${props.name}:`]);
 			},
 		}] : []), {
 			text: i18n.ts.info,
