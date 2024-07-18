@@ -6,7 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { MenuItem } from '@/types/menu.js';

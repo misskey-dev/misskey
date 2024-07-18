@@ -43,7 +43,7 @@ import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	clipId: string,
