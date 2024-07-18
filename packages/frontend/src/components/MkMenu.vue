@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 		:style="{
 			width: (width && !asDrawer) ? `${width}px` : '',
-			maxHeight: maxHeight ? `${maxHeight}px` : normalizedMaxHeight,
+			maxHeight: maxHeight ? `min(${maxHeight}px, calc(100dvh - 32px))` : 'calc(100dvh - 32px)',
 		}"
 		@keydown.stop="() => {}"
 		@contextmenu.self.prevent="() => {}"
@@ -192,7 +192,7 @@ const props = defineProps<{
 	asDrawer?: boolean;
 	align?: 'center' | string;
 	width?: number;
-	maxHeight?: number | string;
+	maxHeight?: number;
 }>();
 
 const emit = defineEmits<{
@@ -224,12 +224,6 @@ const keymap = {
 } as const satisfies Keymap;
 
 const childShowingItem = ref<MenuItem | null>();
-
-const normalizedMaxHeight = computed(() => {
-	if (props.maxHeight == null) return undefined;
-	if (typeof props.maxHeight === 'number') return props.maxHeight + 'px';
-	return props.maxHeight;
-});
 
 let preferClick = isTouchUsing || props.asDrawer;
 
