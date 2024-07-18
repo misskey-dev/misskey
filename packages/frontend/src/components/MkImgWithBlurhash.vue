@@ -159,7 +159,7 @@ function drawAvg() {
 		color = extractAvgColorFromBlurhash(props.hash) ?? '#888';
 	}
 
-	const ctx = canvas.value.getContext('2d');
+	const ctx = canvas.value?.getContext('2d');
 	if (!ctx) return;
 
 	// avgColorでお茶をにごす
