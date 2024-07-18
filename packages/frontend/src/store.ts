@@ -456,7 +456,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	contextMenu: {
 		where: 'device',
-		default: 'always' as 'always' | 'withShift' | 'never',
+		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
 
 	sound_masterVolume: {

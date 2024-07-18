@@ -2691,7 +2691,7 @@ _mediaControls:
   loop: "ループ再生"
 
 _contextMenu:
-  title: "Misskey独自のコンテキストメニュー"
-  always: "常に表示する"
-  withShift: "Shiftキーを押しながらで表示"
-  never: "無効（常にブラウザのUIを使用）"
+  title: "コンテキストメニュー"
+  app: "Misskey"
+  appWithShift: "Shiftキーを押しながらでMisskey"
+  native: "ネイティブ"

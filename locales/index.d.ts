@@ -10088,21 +10088,21 @@ export interface Locale extends ILocale {
     };
     "_contextMenu": {
         /**
-         * Misskey独自のコンテキストメニュー
+         * コンテキストメニュー
          */
         "title": string;
         /**
-         * 常に表示する
+         * Misskey
          */
-        "always": string;
+        "app": string;
         /**
-         * Shiftキーを押しながらで表示
+         * Shiftキーを押しながらでMisskey
          */
-        "withShift": string;
+        "appWithShift": string;
         /**
-         * 無効（常にブラウザのUIを使用）
+         * ネイティブ
          */
-        "never": string;
+        "native": string;
     };
 }
 declare const locales: {

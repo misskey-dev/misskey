@@ -651,8 +651,8 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	if (
-		defaultStore.state.contextMenu === 'never' ||
-		(defaultStore.state.contextMenu === 'withShift' && !ev.shiftKey)
+		defaultStore.state.contextMenu === 'native' ||
+		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
 	) {
 		return Promise.resolve();
 	}

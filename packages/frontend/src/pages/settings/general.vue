@@ -178,9 +178,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSelect>
 			<MkSelect v-model="contextMenu">
 				<template #label>{{ i18n.ts._contextMenu.title }}</template>
-				<option value="always">{{ i18n.ts._contextMenu.always }}</option>
-				<option value="withShift">{{ i18n.ts._contextMenu.withShift }}</option>
-				<option value="never">{{ i18n.ts._contextMenu.never }}</option>
+				<option value="app">{{ i18n.ts._contextMenu.app }}</option>
+				<option value="appWithShift">{{ i18n.ts._contextMenu.appWithShift }}</option>
+				<option value="native">{{ i18n.ts._contextMenu.native }}</option>
 			</MkSelect>
 			<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
 				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
