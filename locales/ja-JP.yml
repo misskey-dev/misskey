@@ -2694,4 +2694,4 @@ _contextMenu:
   title: "コンテキストメニュー"
   app: "Misskey"
   appWithShift: "Shiftキーを押しながらでMisskey"
-  native: "ネイティブ"
+  native: "ブラウザのUI"

@@ -10100,7 +10100,7 @@ export interface Locale extends ILocale {
          */
         "appWithShift": string;
         /**
-         * ネイティブ
+         * ブラウザのUI
          */
         "native": string;
     };
