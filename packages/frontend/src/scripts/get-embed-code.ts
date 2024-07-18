@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { url } from '@/config.js';
 import { MOBILE_THRESHOLD } from '@/const.js';
 import * as os from '@/os.js';
-import copy from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import type { EmbedParams, EmbeddableEntity } from '@/scripts/embed-page.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@/scripts/embed-page.js';
 
@@ -73,7 +73,7 @@ export function copyEmbedCode(entity: EmbeddableEntity, idOrUsername: string, pa
 	// PCじゃない場合はコードカスタマイズ画面を出さずにそのままコピー
 	if (window.innerWidth < MOBILE_THRESHOLD) {
 		const _idOrUsername = entity === 'user-timeline' ? `@${idOrUsername}` : idOrUsername;
-		copy(getEmbedCode(`/embed/${entity}/${_idOrUsername}`, _params));
+		copyToClipboard(getEmbedCode(`/embed/${entity}/${_idOrUsername}`, _params));
 		os.success();
 	} else {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkEmbedCodeGenDialog.vue')), {
