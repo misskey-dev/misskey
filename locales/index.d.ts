@@ -10096,7 +10096,7 @@ export interface Locale extends ILocale {
          */
         "app": string;
         /**
-         * Shiftキーを押しながらでMisskey
+         * ShiftキーでMisskey
          */
         "appWithShift": string;
         /**
