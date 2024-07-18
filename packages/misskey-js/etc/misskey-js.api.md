@@ -551,7 +551,7 @@ type Channel = components['schemas']['Channel'];
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export abstract class ChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export abstract class ChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
     constructor(stream: Stream, channel: string, name?: string);
     // (undocumented)
     channel: string;
@@ -774,9 +774,9 @@ export type Channels = {
             updateSettings: (payload: {
                 userId: User['id'];
                 key: string;
-                value: any;
+                value: unknown;
             }) => void;
-            log: (payload: Record<string, any>) => void;
+            log: (payload: Record<string, unknown>) => void;
         };
         receives: {
             putStone: {
@@ -2992,9 +2992,9 @@ export class Stream extends EventEmitter<StreamEvents> {
     // (undocumented)
     send(typeOrPayload: string): void;
     // (undocumented)
-    send(typeOrPayload: string, payload: any): void;
+    send(typeOrPayload: string, payload: unknown): void;
     // (undocumented)
-    send(typeOrPayload: Record<string, any> | any[]): void;
+    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
@@ -3229,7 +3229,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:34:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:35:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
