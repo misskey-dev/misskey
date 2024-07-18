@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="clip.lastClippedAt">{{ i18n.ts.updatedAt }}: <MkTime :time="clip.lastClippedAt" mode="detail"/></div>
 			<div v-if="clip.notesCount != null">{{ i18n.ts.notesCount }}: {{ number(clip.notesCount) }} / {{ $i?.policies.noteEachClipsLimit }} ({{ i18n.tsx.remainingN({ n: remaining }) }})</div>
 		</div>
-		<template v-if="!props.omitAvatar">
+		<template v-if="!props.noUserInfo">
 			<div :class="$style.divider"></div>
 			<div>
 				<MkAvatar :user="clip.user" :class="$style.userAvatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
@@ -31,9 +31,9 @@ import number from '@/filters/number.js';
 
 const props = withDefaults(defineProps<{
 	clip: Misskey.entities.Clip;
-	omitAvatar?: boolean;
+	noUserInfo?: boolean;
 }>(), {
-	omitAvatar: false,
+	noUserInfo: false,
 });
 
 const remaining = computed(() => {
