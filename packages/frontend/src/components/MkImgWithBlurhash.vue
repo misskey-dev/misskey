@@ -153,7 +153,7 @@ function drawImage(bitmap: CanvasImageSource) {
 function drawAvg() {
 	if (!canvas.value) return;
 
-	const color = (props.hash != null && extractAvgColorFromBlurhash(props.hash)) ?? '#888';
+	const color = (props.hash != null && extractAvgColorFromBlurhash(props.hash)) || '#888';
 
 	const ctx = canvas.value?.getContext('2d');
 	if (!ctx) return;
