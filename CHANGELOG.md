@@ -9,6 +9,12 @@
   - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
 - Feat: 連合に使うHTTP SignaturesがEd25519鍵に対応するように #13464
   - Ed25519署名に対応するサーバーが増えると、deliverで要求されるサーバーリソースが削減されます
+	- ジョブキューのconfig設定のデフォルト値を変更しました。  
+	  default.ymlでジョブキューの並列度を設定している場合は、従前よりもconcurrencyの値をより下げるとパフォーマンスが改善する可能性があります。
+		* deliverJobConcurrency: 16 (←128)
+		* deliverJobPerSec: 1024 (←128)
+		* inboxJobConcurrency: 4 (←16)
+		* inboxJobPerSec: 64 (←32)
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
@@ -35,6 +41,8 @@
 - Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
 - Fix: 「アニメーション画像を再生しない」がオンのときでもサーバーのバナー画像・背景画像がアニメーションしてしまう問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
+- Fix: Twitchの埋め込みが開けない問題を修正
+- Fix: 子メニューの高さがウィンドウからはみ出ることがある問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -66,6 +74,9 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
 - Fix: エラーメッセージの誤字を修正 (#14213)
+- Fix: ソーシャルタイムラインにローカルタイムラインに表示される自分へのリプライが表示されない問題を修正
+- Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
+  (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
