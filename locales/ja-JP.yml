@@ -2693,5 +2693,5 @@ _mediaControls:
 _contextMenu:
   title: "コンテキストメニュー"
   app: "Misskey"
-  appWithShift: "Shiftキーを押しながらでMisskey"
+  appWithShift: "ShiftキーでMisskey"
   native: "ブラウザのUI"
