@@ -1188,7 +1188,6 @@ declare namespace entities {
         SignupPendingResponse,
         SigninRequest,
         SigninResponse,
-        ReversiUpdateKey,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -2831,9 +2830,6 @@ type ReversiShowGameResponse = operations['reversi___show-game']['responses']['2
 type ReversiSurrenderRequest = operations['reversi___surrender']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type ReversiUpdateKey = 'map' | 'bw' | 'isLlotheo' | 'canPutEverywhere' | 'loopedBoard' | 'timeLimitForEachTurn';
-
-// @public (undocumented)
 type ReversiVerifyRequest = operations['reversi___verify']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3231,7 +3227,8 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 // Warnings were encountered during analysis:
 //
 // src/entities.ts:35:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
