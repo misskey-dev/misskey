@@ -43,6 +43,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
 - Fix: Twitchの埋め込みが開けない問題を修正
 - Fix: 子メニューの高さがウィンドウからはみ出ることがある問題を修正
+- Fix: 個人宛てのダイアログ形式のお知らせが即時表示されない問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
