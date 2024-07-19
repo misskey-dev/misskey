@@ -20,8 +20,10 @@ import {
 	ServerStats,
 	ServerStatsLog,
 	ReversiGameDetailed,
-	ReversiUpdateKey,
 } from './entities.js';
+import {
+	ReversiUpdateKey,
+} from './consts.js';
 
 type ReversiUpdateSettings<K extends ReversiUpdateKey> = {
 	key: K;

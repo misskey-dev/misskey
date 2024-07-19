@@ -247,9 +247,6 @@ export type SigninResponse = {
 	i: string,
 };
 
-// See: packages/backend/src/core/ReversiService.ts@L410
-export type ReversiUpdateKey = 'map' | 'bw' | 'isLlotheo' | 'canPutEverywhere' | 'loopedBoard' | 'timeLimitForEachTurn';
-
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
 export type PartialRolePolicyOverride = Partial<{[k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k] }}>;
