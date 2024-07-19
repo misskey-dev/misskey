@@ -1343,4 +1343,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'reversi/show-game': 'application/json',
 	'reversi/surrender': 'application/json',
 	'reversi/verify': 'application/json',
+	'mahjong/create-room': 'application/json',
+	'mahjong/join-room': 'application/json',
+	'mahjong/show-room': 'application/json',
 };
