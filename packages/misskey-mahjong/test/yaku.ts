@@ -291,7 +291,7 @@ describe('Yaku', () => {
 				handTiles: ['m2', 'm3', 'm4', 'm4', 'p5', 'p6', 'p7', 'p5', 'p6', 'p7', 'p1', 'p1'],
 			    	huros: [{type: 'cii', tiles: ['m2','m3','m4']}],
 				tsumoTile: 'p1',
-			}).includes('ryampeko'), true);
+			}).includes('ryampeko'), false);
 		});
 	});
 

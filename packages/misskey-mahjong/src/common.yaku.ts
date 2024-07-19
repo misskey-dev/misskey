@@ -175,6 +175,26 @@ class SeatWind extends Yakuhai {
 	}
 }
 
+/**
+ * 同じ順子の組を数える
+ */
+function countSameShuntsuPairs(mentsus: [TileType, TileType, TileType][]) {
+	let result = 0;
+	const singleMentsus: [TileType, TileType, TileType][] = [];
+	loop: for (const mentsu of mentsus) {
+		for (let i = 0 ; i < singleMentsus.length ; i++) {
+			const aloneMentsu = singleMentsus[i];
+			if (mentsu[0] == aloneMentsu[0] && mentsu[1] == aloneMentsu[1] && mentsu[2] == aloneMentsu[2]) {
+				result++;
+				singleMentsus.splice(i, 1);
+				continue loop;
+			}
+		}
+		singleMentsus.push(mentsu);
+	}
+	return result;
+}
+
 export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 	name: 'tsumo',
 	fan: 1,
@@ -322,9 +342,20 @@ new SeatWind('seat-wind-n', 'n'),
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		// 同じ順子が2つあるか？
-		return fourMentsuOneJyantou.mentsus.some((mentsu) =>
-			fourMentsuOneJyantou.mentsus.filter((mentsu2) =>
-				mentsu2[0] === mentsu[0] && mentsu2[1] === mentsu[1] && mentsu2[2] === mentsu[2]).length >= 2);
+		return countSameShuntsuPairs(fourMentsuOneJyantou.mentsus) == 1;
+	},
+}, {
+	name: 'ryampeko',
+	fan: 3,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		if (fourMentsuOneJyantou == null) return false;
+
+		// 面前じゃないとダメ
+		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
+
+		// 2つの同じ順子が2組あるか？
+		return countSameShuntsuPairs(fourMentsuOneJyantou.mentsus) == 2;
 	},
 }, {
 	name: 'toitoi',
@@ -710,6 +741,10 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	}).filter(yakus => yakus.length > 0);
 
 	const isMenzen = state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type));
+
+	if (yakuPatterns.length == 0) {
+		return [];
+	}
 
 	let maxYakus = yakuPatterns[0];
 	let maxFan = 0;
