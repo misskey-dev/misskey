@@ -152,7 +152,7 @@ export const reversiUpdateKeys = [
 	'isLlotheo',
 	'canPutEverywhere',
 	'loopedBoard',
-	'timeLimitForEachTurn'
+	'timeLimitForEachTurn',
 ] as const;
 
 export type ReversiUpdateKey = typeof reversiUpdateKeys[number];
