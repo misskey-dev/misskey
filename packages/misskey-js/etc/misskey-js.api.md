@@ -771,10 +771,10 @@ export type Channels = {
                 user1: boolean;
                 user2: boolean;
             }) => void;
-            updateSettings: (payload: {
+            updateSettings: <K extends ReversiUpdateKey>(payload: {
                 userId: User['id'];
-                key: string;
-                value: unknown;
+                key: K;
+                value: ReversiGameDetailed[K];
             }) => void;
             log: (payload: Record<string, unknown>) => void;
         };
@@ -785,10 +785,7 @@ export type Channels = {
             };
             ready: boolean;
             cancel: null | Record<string, never>;
-            updateSettings: {
-                key: string;
-                value: any;
-            };
+            updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
             claimTimeIsUp: null | Record<string, never>;
         };
     };
@@ -1191,6 +1188,7 @@ declare namespace entities {
         SignupPendingResponse,
         SigninRequest,
         SigninResponse,
+        ReversiUpdateKey,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -2833,6 +2831,9 @@ type ReversiShowGameResponse = operations['reversi___show-game']['responses']['2
 type ReversiSurrenderRequest = operations['reversi___surrender']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ReversiUpdateKey = 'map' | 'bw' | 'isLlotheo' | 'canPutEverywhere' | 'loopedBoard' | 'timeLimitForEachTurn';
+
+// @public (undocumented)
 type ReversiVerifyRequest = operations['reversi___verify']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3230,6 +3231,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 // Warnings were encountered during analysis:
 //
 // src/entities.ts:35:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
