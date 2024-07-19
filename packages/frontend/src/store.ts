@@ -419,7 +419,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultWithReplies: {
 		where: 'account',
-		default: false,
+		default: true,
 	},
 	disableStreamingTimeline: {
 		where: 'device',
