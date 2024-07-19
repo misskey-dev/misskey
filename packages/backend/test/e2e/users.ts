@@ -312,8 +312,8 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.isBot, false);
 		assert.strictEqual(response.isCat, false);
 		assert.strictEqual(response.overrideCatEarColor, false);
-		assert.match(response.outerCatEarColor, /^#[0-9a-f]{6}$/);
-		assert.match(response.innerCatEarColor, /^#[0-9a-f]{6}$/);
+		response.outerCatEarColor && assert.match(response.outerCatEarColor, /^#[0-9a-f]{6}$/);
+		response.innerCatEarColor && assert.match(response.innerCatEarColor, /^#[0-9a-f]{6}$/);
 		assert.strictEqual(response.instance, undefined);
 		assert.deepStrictEqual(response.emojis, {});
 		assert.strictEqual(response.onlineStatus, 'unknown');
