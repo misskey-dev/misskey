@@ -70,8 +70,6 @@ export const YAKUMAN_NAMES = [
 export type YakuName = typeof NORMAL_YAKU_NAMES[number] | typeof YAKUMAN_NAMES[number];
 
 export type EnvForCalcYaku = {
-	house: House;
-
 	/**
 	 * 和了る人の手牌(副露牌は含まず、ツモ、ロン牌は含む)
 	 */
@@ -250,7 +248,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
 
-		return state.house === 'e' && (
+		return state.seatWind === 'e' && (
 			(countTiles(state.handTiles, 'e') >= 3) ||
 			(state.huros.filter(huro =>
 				huro.type === 'pon' ? huro.tile === 'e' :
@@ -266,7 +264,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
 
-		return state.house === 's' && (
+		return state.seatWind === 's' && (
 			(countTiles(state.handTiles, 's') >= 3) ||
 			(state.huros.filter(huro =>
 				huro.type === 'pon' ? huro.tile === 's' :
@@ -282,7 +280,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
 
-		return state.house === 'w' && (
+		return state.seatWind === 'w' && (
 			(countTiles(state.handTiles, 'w') >= 3) ||
 			(state.huros.filter(huro =>
 				huro.type === 'pon' ? huro.tile === 'w' :
@@ -298,7 +296,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		if (fourMentsuOneJyantou == null) return false;
 
-		return state.house === 'n' && (
+		return state.seatWind === 'n' && (
 			(countTiles(state.handTiles, 'n') >= 3) ||
 			(state.huros.filter(huro =>
 				huro.type === 'pon' ? huro.tile === 'n' :

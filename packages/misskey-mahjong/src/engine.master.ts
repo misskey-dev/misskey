@@ -617,7 +617,7 @@ export class MasterGameEngine {
 		if (tx.$state.turn !== house) throw new Error('Not your turn');
 
 		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-			house: house,
+			fieldWind: house,
 			handTiles: tx.handTileTypes[house],
 			huros: tx.$state.huros[house],
 			tsumoTile: tx.handTileTypes[house].at(-1)!,
@@ -670,7 +670,7 @@ export class MasterGameEngine {
 
 			for (const house of callers) {
 				const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-					house: house,
+					fieldWind: house,
 					handTiles: tx.handTileTypes[house],
 					huros: tx.$state.huros[house],
 					tsumoTile: null,
