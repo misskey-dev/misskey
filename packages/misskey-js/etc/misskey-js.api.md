@@ -776,6 +776,10 @@ export type Channels = {
                 key: string;
                 value: any;
             }) => void;
+            reacted: (payload: {
+                userId: User['id'];
+                reaction: string;
+            }) => void;
             log: (payload: Record<string, any>) => void;
         };
         receives: {
@@ -790,6 +794,7 @@ export type Channels = {
                 value: any;
             };
             claimTimeIsUp: null | Record<string, never>;
+            reaction: string;
         };
     };
 };

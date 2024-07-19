@@ -10012,6 +10012,10 @@ export interface Locale extends ILocale {
          */
         "showBoardLabels": string;
         /**
+         * 相手のリアクションを表示
+         */
+        "showReaction": string;
+        /**
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;

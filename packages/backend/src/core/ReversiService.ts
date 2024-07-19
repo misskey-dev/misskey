@@ -20,6 +20,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { isCustomEmojiRegexp, ReactionService } from '@/core/ReactionService.js';
 import { Serialized } from '@/types.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
@@ -44,6 +46,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		private globalEventService: GlobalEventService,
 		private reversiGameEntityService: ReversiGameEntityService,
 		private idService: IdService,
+		private customEmojiService: CustomEmojiService,
+		private reactionService: ReactionService,
 	) {
 	}
 
@@ -597,6 +601,34 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		} else {
 			return null;
 		}
+	}
+
+	@bindThis
+	public async sendReaction(gameId: MiReversiGame['id'], user: MiUser, reaction: string) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
+		if (!game.isStarted || game.isEnded) return;
+		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
+
+		let _reaction = '❤️';
+
+		const custom = reaction.match(isCustomEmojiRegexp);
+
+		if (custom) {
+			const name = custom[1];
+
+			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
+			if (emoji && !emoji.isSensitive) {
+				_reaction = `:${name}:`;
+			}
+		} else {
+			_reaction = this.reactionService.normalize(reaction);
+		}
+
+		this.globalEventService.publishReversiGameStream(game.id, 'reacted', {
+			userId: user.id,
+			reaction: _reaction,
+		});
 	}
 
 	@bindThis

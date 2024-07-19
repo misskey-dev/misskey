@@ -8,9 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root" class="_gaps">
 		<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
 			<span>({{ i18n.ts._reversi.black }})</span>
-			<MkAvatar style="width: 32px; height: 32px;" :user="blackUser" :showIndicator="true"/>
+			<div ref="blackUserEl">
+				<MkAvatar style="width: 32px; height: 32px;" :user="blackUser" :showIndicator="true"/>
+			</div>
 			<span> vs </span>
-			<MkAvatar style="width: 32px; height: 32px;" :user="whiteUser" :showIndicator="true"/>
+			<div ref="whiteUserEl">
+				<MkAvatar style="width: 32px; height: 32px;" :user="whiteUser" :showIndicator="true"/>
+			</div>
 			<span>({{ i18n.ts._reversi.white }})</span>
 		</div>
 
@@ -121,10 +125,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
+		<div v-if="iAmPlayer && !game.isEnded" class="_panel" style="text-align: start; padding: 16px;">
+			<div :class="$style.reactionLabel">{{ i18n.ts.reaction }}</div>
+			<div :class="$style.reactionPickerBar">
+				<button v-for="element in reactionEmojis" :key="element" class="_button" :class="$style.emojisItem" :disabled="!canReact" @click="onReactionEmojiClick(element, $event)">
+					<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+					<MkEmoji v-else :emoji="element" :normal="true"/>
+				</button>
+				<button ref="reactButton" class="_button" :class="[$style.emojisItem, $style.plus]" :disabled="!canReact" @click="onReactionPickerClick">
+					<i class="ti ti-plus"></i>
+				</button>
+			</div>
+		</div>
+
 		<MkFolder>
 			<template #label>{{ i18n.ts.options }}</template>
 			<div class="_gaps_s" style="text-align: left;">
 				<MkSwitch v-model="showBoardLabels">{{ i18n.ts._reversi.showBoardLabels }}</MkSwitch>
+				<MkSwitch v-model="showReaction">{{ i18n.ts._reversi.showReaction }}</MkSwitch>
 				<MkSwitch v-model="useAvatarAsStone">{{ i18n.ts._reversi.useAvatarAsStone }}</MkSwitch>
 			</div>
 		</MkFolder>
@@ -145,9 +163,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
+import XEmojiBalloon from './game.emoji-balloon.vue';
+import type { UnicodeEmojiDef } from '@/scripts/emojilist.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { deepClone } from '@/scripts/clone.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { signinRequired } from '@/account.js';
@@ -157,6 +178,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
 import * as sound from '@/scripts/sound.js';
 import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { confetti } from '@/scripts/confetti.js';
 
 const $i = signinRequired();
@@ -167,6 +190,7 @@ const props = defineProps<{
 }>();
 
 const showBoardLabels = ref<boolean>(false);
+const showReaction = ref<boolean>(true);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -184,6 +208,7 @@ const iAmPlayer = computed(() => {
 	return game.value.user1Id === $i.id || game.value.user2Id === $i.id;
 });
 
+// true: 黒, false: 白
 const myColor = computed(() => {
 	if (!iAmPlayer.value) return null;
 	if (game.value.user1Id === $i.id && game.value.black === 1) return true;
@@ -448,9 +473,109 @@ function share() {
 	});
 }
 
+const _reactionEmojis = ref(defaultStore.reactiveState.reactions.value);
+const reactionEmojis = computed(() => _reactionEmojis.value.slice(0, 10));
+
+const blackUserEl = ref<HTMLElement | null>(null);
+const whiteUserEl = ref<HTMLElement | null>(null);
+
+const canReact = ref(true);
+let canReactFallbackTimer: number | null = null;
+
+function getKey(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef): string {
+	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
+}
+
+// 既にでている絵文字をクリックした際の挙動
+function onReactionEmojiClick(emoji: string, ev?: MouseEvent) {
+	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+	}
+
+	const key = getKey(emoji);
+
+	sendReaction(key);
+
+	if (!_reactionEmojis.value.includes(key)) {
+		_reactionEmojis.value.unshift(key);
+	}
+}
+
+// #region リアクションピッカー
+const reactButton = ref<HTMLElement | null>(null);
+
+function onReactionPickerClick() {
+	reactionPicker.show(reactButton.value ?? null, reaction => {
+		const key = getKey(reaction);
+		sendReaction(key);
+
+		if (!_reactionEmojis.value.includes(key)) {
+			_reactionEmojis.value.unshift(key);
+		}
+	});
+}
+// #endregion
+
+function sendReaction(emojiKey: string) {
+	if (!canReact.value) return;
+	canReact.value = false;
+
+	// リアクション音は受信時のみ
+	props.connection!.send('reaction', emojiKey);
+
+	// リアクションを無効にする（受信を確認できて3秒後 or 明らかに遅い場合は解除）
+	if (canReactFallbackTimer != null) {
+		window.clearTimeout(canReactFallbackTimer);
+	}
+	canReactFallbackTimer = window.setTimeout(() => {
+		if (!canReact.value) {
+			canReact.value = true;
+		}
+	}, 10000);
+}
+
+function onReacted(payload: Parameters<Misskey.Channels['reversiGame']['events']['reacted']>['0']) {
+	const { userId, reaction } = payload;
+
+	if (showReaction.value || userId === $i.id) {
+		sound.playMisskeySfx('reaction');
+
+		const el = (userId === blackUser.value.id) ? blackUserEl.value : whiteUserEl.value;
+
+		if (el) {
+			const rect = el.getBoundingClientRect();
+			const x = rect.right;
+			const y = rect.bottom;
+			os.popup(XEmojiBalloon, {
+				reaction,
+				tail: 'left',
+				x,
+				y,
+			}, {}, 'end');
+		}
+	}
+
+	if (userId === $i.id) {
+		// リアクションが可能になるまでのタイマー
+		window.setTimeout(() => {
+			if (canReactFallbackTimer != null) {
+				window.clearTimeout(canReactFallbackTimer);
+			}
+			if (!canReact.value) {
+				canReact.value = true;
+			}
+		}, 3000);
+	}
+}
+
 onMounted(() => {
 	if (props.connection != null) {
 		props.connection.on('log', onStreamLog);
+		props.connection.on('reacted', onReacted);
 		props.connection.on('ended', onStreamEnded);
 	}
 });
@@ -458,6 +583,7 @@ onMounted(() => {
 onActivated(() => {
 	if (props.connection != null) {
 		props.connection.on('log', onStreamLog);
+		props.connection.on('reacted', onReacted);
 		props.connection.on('ended', onStreamEnded);
 	}
 });
@@ -465,6 +591,7 @@ onActivated(() => {
 onDeactivated(() => {
 	if (props.connection != null) {
 		props.connection.off('log', onStreamLog);
+		props.connection.off('reacted', onReacted);
 		props.connection.off('ended', onStreamEnded);
 	}
 });
@@ -472,6 +599,7 @@ onDeactivated(() => {
 onUnmounted(() => {
 	if (props.connection != null) {
 		props.connection.off('log', onStreamLog);
+		props.connection.off('reacted', onReacted);
 		props.connection.off('ended', onStreamEnded);
 	}
 });
@@ -619,5 +747,64 @@ $gap: 4px;
 	width: 100%;
 	height: 100%;
 	border-radius: 100%;
+}
+
+.reactionLabel {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.reactionPickerBar {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 12px;
+	background: var(--bg);
+	border-radius: calc(var(--radius) / 2);
+}
+
+.emojisItem {
+	font-size: 24px;
+	border-radius: 4px;
+	width: 40px;
+	height: 40px;
+
+	&.plus {
+		font-size: 16px;
+
+		&:active {
+			background: var(--accentedBg);
+		}
+	}
+
+	&:not(:disabled):focus-visible {
+		outline: solid 2px var(--focus);
+		z-index: 1;
+	}
+
+	&:not(:disabled):hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
+
+	&:not(:disabled):active {
+		background: var(--accent);
+		box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
+	}
+
+	&:disabled {
+		opacity: 0.7;
+	}
+
+	> .emoji {
+		height: 1.25em;
+		vertical-align: -.25em;
+		pointer-events: none;
+		width: 100%;
+		object-fit: contain;
+	}
 }
 </style>

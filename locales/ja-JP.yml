@@ -2666,6 +2666,7 @@ _reversi:
   allowIrregularRules: "変則許可 (完全フリー)"
   disallowIrregularRules: "変則なし"
   showBoardLabels: "盤面に行・列番号を表示"
+  showReaction: "相手のリアクションを表示"
   useAvatarAsStone: "石をアイコンにする"
 
 _offlineScreen:
