@@ -135,43 +135,43 @@ function countTiles(tiles: TileType[], target: TileType): number {
 	return tiles.filter(t => t === target).length;
 }
 
-class WindYaku implements YakuDefinition {
+class Yakuhai implements YakuDefinition {
 	readonly name: YakuName;
 
 	readonly fan = 1;
 
 	readonly isYakuman = false;
 
-	readonly house: House;
+	readonly tile: typeof CHAR_TILES[number];
 
-	constructor(name: YakuName, house: House) {
+	constructor(name: YakuName, house: typeof CHAR_TILES[number]) {
 		this.name = name;
-		this.house = house;
+		this.tile = house;
 	}
 
 	calc(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null): boolean {
 		if (fourMentsuOneJyantou == null) return false;
 
 		return (
-			(countTiles(state.handTiles, this.house) >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === this.house :
-				huro.type === 'ankan' ? huro.tile === this.house :
-				huro.type === 'minkan' ? huro.tile === this.house :
-				false).length >= 3)
+			(countTiles(state.handTiles, this.tile) >= 3) ||
+			(state.huros.some(huro =>
+				huro.type === 'pon' ? huro.tile === this.tile :
+				huro.type === 'ankan' ? huro.tile === this.tile :
+				huro.type === 'minkan' ? huro.tile === this.tile :
+				false))
 		);
 	}
 }
 
-class FieldWindYaku extends WindYaku {
+class FieldWind extends Yakuhai {
 	calc(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null): boolean {
-		return super.calc(state, fourMentsuOneJyantou) && state.fieldWind === this.house;
+		return super.calc(state, fourMentsuOneJyantou) && state.fieldWind === this.tile;
 	}
 }
 
-class SeatWindYaku extends WindYaku {
+class SeatWind extends Yakuhai {
 	calc(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null): boolean {
-		return super.calc(state, fourMentsuOneJyantou) && state.seatWind === this.house;
+		return super.calc(state, fourMentsuOneJyantou) && state.seatWind === this.tile;
 	}
 }
 
@@ -201,63 +201,18 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		return state.ippatsu ?? false;
 	},
-}, {
-	name: 'red',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return (
-			(countTiles(state.handTiles, 'chun') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'chun' :
-				huro.type === 'ankan' ? huro.tile === 'chun' :
-				huro.type === 'minkan' ? huro.tile === 'chun' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'white',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return (
-			(countTiles(state.handTiles, 'haku') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'haku' :
-				huro.type === 'ankan' ? huro.tile === 'haku' :
-				huro.type === 'minkan' ? huro.tile === 'haku' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'green',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return (
-			(countTiles(state.handTiles, 'hatsu') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'hatsu' :
-				huro.type === 'ankan' ? huro.tile === 'hatsu' :
-				huro.type === 'minkan' ? huro.tile === 'hatsu' :
-				false).length >= 3)
-		);
-	},
 },
-new FieldWindYaku('field-wind-e', 'e'),
-new FieldWindYaku('field-wind-s', 's'),
-new FieldWindYaku('field-wind-w', 'w'),
-new FieldWindYaku('field-wind-n', 'n'),
-new SeatWindYaku('seat-wind-e', 'e'),
-new SeatWindYaku('seat-wind-s', 's'),
-new SeatWindYaku('seat-wind-w', 'w'),
-new SeatWindYaku('seat-wind-n', 'n'),
+new Yakuhai('red', 'chun'),
+new Yakuhai('white', 'haku'),
+new Yakuhai('green', 'hatsu'),
+new FieldWind('field-wind-e', 'e'),
+new FieldWind('field-wind-s', 's'),
+new FieldWind('field-wind-w', 'w'),
+new FieldWind('field-wind-n', 'n'),
+new SeatWind('seat-wind-e', 'e'),
+new SeatWind('seat-wind-s', 's'),
+new SeatWind('seat-wind-w', 'w'),
+new SeatWind('seat-wind-n', 'n'),
 {
 	name: 'tanyao',
 	fan: 1,
