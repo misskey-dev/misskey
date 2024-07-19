@@ -773,6 +773,10 @@ export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
 export const YAKU_DEFINITIONS = NORMAL_YAKU_DEFINITIONS.concat(YAKUMAN_DEFINITIONS);
 
 export function calcYakus(state: EnvForCalcYaku): YakuName[] {
+	if (state.riichi && state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type)) ) {
+		throw new TypeError('Invalid riichi state with call huros');
+	}
+
 	const oneHeadFourMentsuPatterns: (FourMentsuOneJyantou | null)[] = analyzeFourMentsuOneJyantou(state.handTiles);
 	if (oneHeadFourMentsuPatterns.length === 0) oneHeadFourMentsuPatterns.push(null);
 
