@@ -15,27 +15,29 @@ jobs:
         uses: actions/checkout@v4.1.1
       - name: Check
         run: |
+          #!/bin/bash
+          set -e
           counter=0
 
           search() {
             local directory="$1"
             find "$directory" -type f \
               '(' \
-                -name "*.cjs" -and -not -name '*.config.cjs' -o \
+                -name "*.cjs" -and -not -name "*.config.cjs" -o \
                 -name "*.html" -o \
-                -name "*.js" -and -not -name '*.config.js' -o \
-                -name "*.mjs" -and -not -name '*.config.mjs' -o \
+                -name "*.js" -and -not -name "*.config.js" -o \
+                -name "*.mjs" -and -not -name "*.config.mjs" -o \
                 -name "*.scss" -o \
-                -name "*.ts" -and -not -name '*.config.ts' -o \
+                -name "*.ts" -and -not -name "*.config.ts" -o \
                 -name "*.vue" \
               ')' -and \
-              -not -name '*eslint*'
+              -not -name "*eslint*"
           }
 
           check() {
             local file="$1"
             if ! (
-              grep -q "SPDX-FileCopyrightText: syuilo and misskey-project" "$file" ||
+              grep -q "SPDX-FileCopyrightText: syuilo and misskey-project ,Type4ny-Project" "$file" ||
               grep -q "SPDX-License-Identifier: AGPL-3.0-only" "$file"
             ); then
               echo "Missing: $file"
@@ -61,7 +63,7 @@ jobs:
           )
 
           for directory in "${directories[@]}"; do
-            for file in $(search $directory); do
+            for file in $(search "$directory"); do
               check "$file"
             done
           done
