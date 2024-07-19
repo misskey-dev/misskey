@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu } from './common.js';
+import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu, includes } from './common.js';
 
 const RYUISO_TILES: TileType[] = ['s2', 's3', 's4', 's6', 's8', 'hatsu'];
 const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
@@ -80,7 +80,7 @@ export type EnvForCalcYaku = {
 	/**
 	 * 河
 	 */
-	hoTiles: TileType[];
+	hoTiles?: TileType[];
 
 	/**
 	 * 副露
@@ -99,28 +99,28 @@ export type EnvForCalcYaku = {
 		tile: TileType;
 	})[];
 
-	tsumoTile: TileType;
-	ronTile: TileType;
+	tsumoTile?: TileType;
+	ronTile?: TileType;
 
 	/**
 	 * 場風
 	 */
-	fieldWind: House;
+	fieldWind?: House;
 
 	/**
 	 * 自風
 	 */
-	seatWind: House;
+	seatWind?: House;
 
 	/**
 	 * リーチしたかどうか
 	 */
-	riichi: boolean;
+	riichi?: boolean;
 
 	/**
 	 * 一巡目以内かどうか
 	 */
-	ippatsu: boolean;
+	ippatsu?: boolean;
 };
 
 type YakuDefiniyion = {
@@ -145,7 +145,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		return state.tsumoTile != null;
 	},
@@ -154,14 +154,14 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		return state.riichi;
+		return state.riichi ?? false;
 	},
 }, {
 	name: 'ippatsu',
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		return state.ippatsu;
+		return state.ippatsu ?? false;
 	},
 }, {
 	name: 'red',
@@ -315,12 +315,12 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		return (
-			(!state.handTiles.some(t => YAOCHU_TILES.includes(t))) &&
+			(!state.handTiles.some(t => includes(YAOCHU_TILES, t))) &&
 			(state.huros.filter(huro =>
-				huro.type === 'pon' ? YAOCHU_TILES.includes(huro.tile) :
-				huro.type === 'ankan' ? YAOCHU_TILES.includes(huro.tile) :
-				huro.type === 'minkan' ? YAOCHU_TILES.includes(huro.tile) :
-				huro.type === 'cii' ? huro.tiles.some(t2 => YAOCHU_TILES.includes(t2)) :
+				huro.type === 'pon' ? includes(YAOCHU_TILES, huro.tile) :
+				huro.type === 'ankan' ? includes(YAOCHU_TILES, huro.tile) :
+				huro.type === 'minkan' ? includes(YAOCHU_TILES, huro.tile) :
+				huro.type === 'cii' ? huro.tiles.some(t2 => includes(YAOCHU_TILES, t2)) :
 				false).length === 0)
 		);
 	},
@@ -332,7 +332,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 		// 三元牌はダメ
 		if (state.handTiles.some(t => ['haku', 'hatsu', 'chun'].includes(t))) return false;
 
@@ -356,17 +356,17 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		const tiles = state.handTiles;
-		let manzuCount = tiles.filter(t => MANZU_TILES.includes(t)).length;
-		let pinzuCount = tiles.filter(t => PINZU_TILES.includes(t)).length;
-		let souzuCount = tiles.filter(t => SOUZU_TILES.includes(t)).length;
-		let charCount = tiles.filter(t => CHAR_TILES.includes(t)).length;
+		let manzuCount = tiles.filter(t => includes(MANZU_TILES, t)).length;
+		let pinzuCount = tiles.filter(t => includes(PINZU_TILES, t)).length;
+		let souzuCount = tiles.filter(t => includes(SOUZU_TILES, t)).length;
+		let charCount = tiles.filter(t => includes(CHAR_TILES, t)).length;
 
 		for (const huro of state.huros) {
 			const huroTiles = huro.type === 'cii' ? huro.tiles : huro.type === 'pon' ? [huro.tile, huro.tile, huro.tile] : [huro.tile, huro.tile, huro.tile, huro.tile];
-			manzuCount += huroTiles.filter(t => MANZU_TILES.includes(t)).length;
-			pinzuCount += huroTiles.filter(t => PINZU_TILES.includes(t)).length;
-			souzuCount += huroTiles.filter(t => SOUZU_TILES.includes(t)).length;
-			charCount += huroTiles.filter(t => CHAR_TILES.includes(t)).length;
+			manzuCount += huroTiles.filter(t => includes(MANZU_TILES, t)).length;
+			pinzuCount += huroTiles.filter(t => includes(PINZU_TILES, t)).length;
+			souzuCount += huroTiles.filter(t => includes(SOUZU_TILES, t)).length;
+			charCount += huroTiles.filter(t => includes(CHAR_TILES, t)).length;
 		}
 
 		if (manzuCount > 0 && pinzuCount > 0) return false;
@@ -385,17 +385,17 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		const tiles = state.handTiles;
-		let manzuCount = tiles.filter(t => MANZU_TILES.includes(t)).length;
-		let pinzuCount = tiles.filter(t => PINZU_TILES.includes(t)).length;
-		let souzuCount = tiles.filter(t => SOUZU_TILES.includes(t)).length;
-		let charCount = tiles.filter(t => CHAR_TILES.includes(t)).length;
+		let manzuCount = tiles.filter(t => includes(MANZU_TILES, t)).length;
+		let pinzuCount = tiles.filter(t => includes(PINZU_TILES, t)).length;
+		let souzuCount = tiles.filter(t => includes(SOUZU_TILES, t)).length;
+		let charCount = tiles.filter(t => includes(CHAR_TILES, t)).length;
 
 		for (const huro of state.huros) {
 			const huroTiles = huro.type === 'cii' ? huro.tiles : huro.type === 'pon' ? [huro.tile, huro.tile, huro.tile] : [huro.tile, huro.tile, huro.tile, huro.tile];
-			manzuCount += huroTiles.filter(t => MANZU_TILES.includes(t)).length;
-			pinzuCount += huroTiles.filter(t => PINZU_TILES.includes(t)).length;
-			souzuCount += huroTiles.filter(t => SOUZU_TILES.includes(t)).length;
-			charCount += huroTiles.filter(t => CHAR_TILES.includes(t)).length;
+			manzuCount += huroTiles.filter(t => includes(MANZU_TILES, t)).length;
+			pinzuCount += huroTiles.filter(t => includes(PINZU_TILES, t)).length;
+			souzuCount += huroTiles.filter(t => includes(SOUZU_TILES, t)).length;
+			charCount += huroTiles.filter(t => includes(CHAR_TILES, t)).length;
 		}
 
 		if (charCount > 0) return false;
@@ -413,7 +413,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		// 同じ順子が2つあるか？
 		return fourMentsuOneJyantou.mentsus.some((mentsu) =>
@@ -441,7 +441,8 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	fan: 2,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-
+		// TODO: 三暗刻の判定
+		return false;
 	},
 }, {
 	name: 'sanshoku-dojun',
@@ -660,15 +661,15 @@ export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		const tiles = state.handTiles;
-		let manzuCount = tiles.filter(t => MANZU_TILES.includes(t)).length;
-		let pinzuCount = tiles.filter(t => PINZU_TILES.includes(t)).length;
-		let souzuCount = tiles.filter(t => SOUZU_TILES.includes(t)).length;
+		let manzuCount = tiles.filter(t => includes(MANZU_TILES, t)).length;
+		let pinzuCount = tiles.filter(t => includes(PINZU_TILES, t)).length;
+		let souzuCount = tiles.filter(t => includes(SOUZU_TILES, t)).length;
 
 		for (const huro of state.huros) {
 			const huroTiles = huro.type === 'cii' ? huro.tiles : huro.type === 'pon' ? [huro.tile, huro.tile, huro.tile] : [huro.tile, huro.tile, huro.tile, huro.tile];
-			manzuCount += huroTiles.filter(t => MANZU_TILES.includes(t)).length;
-			pinzuCount += huroTiles.filter(t => PINZU_TILES.includes(t)).length;
-			souzuCount += huroTiles.filter(t => SOUZU_TILES.includes(t)).length;
+			manzuCount += huroTiles.filter(t => includes(MANZU_TILES, t)).length;
+			pinzuCount += huroTiles.filter(t => includes(PINZU_TILES, t)).length;
+			souzuCount += huroTiles.filter(t => includes(SOUZU_TILES, t)).length;
 		}
 
 		if (manzuCount > 0 || pinzuCount > 0 || souzuCount > 0) return false;
@@ -698,9 +699,12 @@ export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		const agariTile = state.tsumoTile ?? state.ronTile;
+		if (agariTile == null) {
+			return false;
+		}
 		const tempaiTiles = [...state.handTiles];
 		tempaiTiles.splice(state.handTiles.indexOf(agariTile), 1);
 
@@ -734,7 +738,7 @@ export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
 		if (fourMentsuOneJyantou == null) return false;
 
 		// 面前じゃないとダメ
-		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		if (isManzu(state.handTiles[0])) {
 			if ((countTiles(state.handTiles, 'm1') === 3) && (countTiles(state.handTiles, 'm9') === 3)) {
@@ -795,7 +799,7 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 		}).filter(yaku => yaku != null) as YakuDefiniyion[];
 	}).filter(yakus => yakus.length > 0);
 
-	const isMenzen = state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type));
+	const isMenzen = state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type));
 
 	let maxYakus = yakuPatterns[0];
 	let maxFan = 0;

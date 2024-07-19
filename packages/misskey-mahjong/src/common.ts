@@ -281,16 +281,20 @@ export const CHAR_TILES = ['e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const
 export const YAOCHU_TILES = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
 const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 
-export function isManzu<T extends TileType>(tile: T): tile is typeof MANZU_TILES[number] {
-	return MANZU_TILES.includes(tile);
+export function includes<A extends ReadonlyArray<unknown>>(array: A, searchElement: unknown): searchElement is A[number] {
+	return array.includes(searchElement);
 }
 
-export function isPinzu<T extends TileType>(tile: T): tile is typeof PINZU_TILES[number] {
-	return PINZU_TILES.includes(tile);
+export function isManzu(tile: TileType): tile is typeof MANZU_TILES[number] {
+	return includes(MANZU_TILES, tile);
 }
 
-export function isSouzu<T extends TileType>(tile: T): tile is typeof SOUZU_TILES[number] {
-	return SOUZU_TILES.includes(tile);
+export function isPinzu(tile: TileType): tile is typeof PINZU_TILES[number] {
+	return includes(PINZU_TILES, tile);
+}
+
+export function isSouzu(tile: TileType): tile is typeof SOUZU_TILES[number] {
+	return includes(SOUZU_TILES, tile);
 }
 
 export function isSameNumberTile(a: TileType, b: TileType): boolean {
@@ -334,10 +338,10 @@ export function calcOwnedDoraCount(handTiles: TileType[], huros: Huro[], doras: 
 		if (doras.includes(t)) count++;
 	}
 	for (const huro of huros) {
-		if (huro.type === 'pon' && doras.includes(huro.tile)) count += 3;
-		if (huro.type === 'cii') count += huro.tiles.filter(t => doras.includes(t)).length;
-		if (huro.type === 'minkan' && doras.includes(huro.tile)) count += 4;
-		if (huro.type === 'ankan' && doras.includes(huro.tile)) count += 4;
+		if (huro.type === 'pon' && includes(doras, huro.tiles[0])) count += 3;
+		if (huro.type === 'cii') count += huro.tiles.filter(t => includes(doras, t)).length;
+		if (huro.type === 'minkan' && includes(doras, huro.tiles[0])) count += 4;
+		if (huro.type === 'ankan' && includes(doras, huro.tiles[0])) count += 4;
 	}
 	return count;
 }
