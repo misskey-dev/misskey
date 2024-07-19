@@ -135,6 +135,46 @@ function countTiles(tiles: TileType[], target: TileType): number {
 	return tiles.filter(t => t === target).length;
 }
 
+class WindYaku implements YakuDefiniyion {
+	readonly name: YakuName;
+
+	readonly fan = 1;
+
+	readonly isYakuman = false;
+
+	readonly house: House;
+
+	constructor(name: YakuName, house: House) {
+		this.name = name;
+		this.house = house;
+	}
+
+	calc(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null): boolean {
+		if (fourMentsuOneJyantou == null) return false;
+
+		return (
+			(countTiles(state.handTiles, this.house) >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === this.house :
+				huro.type === 'ankan' ? huro.tile === this.house :
+				huro.type === 'minkan' ? huro.tile === this.house :
+				false).length >= 3)
+		);
+	}
+}
+
+class FieldWindYaku extends WindYaku {
+	calc(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null): boolean {
+		return super.calc(state, fourMentsuOneJyantou) && state.fieldWind === this.house;
+	}
+}
+
+class SeatWindYaku extends WindYaku {
+	calc(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null): boolean {
+		return super.calc(state, fourMentsuOneJyantou) && state.seatWind === this.house;
+	}
+}
+
 export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	name: 'tsumo',
 	fan: 1,
@@ -209,103 +249,16 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 				false).length >= 3)
 		);
 	},
-}, {
-	name: 'field-wind-e',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return state.fieldWind === 'e' && (
-			(countTiles(state.handTiles, 'e') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'e' :
-				huro.type === 'ankan' ? huro.tile === 'e' :
-				huro.type === 'minkan' ? huro.tile === 'e' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'field-wind-s',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return state.fieldWind === 's' && (
-			(countTiles(state.handTiles, 's') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 's' :
-				huro.type === 'ankan' ? huro.tile === 's' :
-				huro.type === 'minkan' ? huro.tile === 's' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-e',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return state.seatWind === 'e' && (
-			(countTiles(state.handTiles, 'e') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'e' :
-				huro.type === 'ankan' ? huro.tile === 'e' :
-				huro.type === 'minkan' ? huro.tile === 'e' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-s',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return state.seatWind === 's' && (
-			(countTiles(state.handTiles, 's') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 's' :
-				huro.type === 'ankan' ? huro.tile === 's' :
-				huro.type === 'minkan' ? huro.tile === 's' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-w',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return state.seatWind === 'w' && (
-			(countTiles(state.handTiles, 'w') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'w' :
-				huro.type === 'ankan' ? huro.tile === 'w' :
-				huro.type === 'minkan' ? huro.tile === 'w' :
-				false).length >= 3)
-		);
-	},
-}, {
-	name: 'seat-wind-n',
-	fan: 1,
-	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
-		return state.seatWind === 'n' && (
-			(countTiles(state.handTiles, 'n') >= 3) ||
-			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === 'n' :
-				huro.type === 'ankan' ? huro.tile === 'n' :
-				huro.type === 'minkan' ? huro.tile === 'n' :
-				false).length >= 3)
-		);
-	},
-}, {
+},
+new FieldWindYaku('field-wind-e', 'e'),
+new FieldWindYaku('field-wind-s', 's'),
+new FieldWindYaku('field-wind-w', 'w'),
+new FieldWindYaku('field-wind-n', 'n'),
+new SeatWindYaku('seat-wind-e', 'e'),
+new SeatWindYaku('seat-wind-s', 's'),
+new SeatWindYaku('seat-wind-w', 'w'),
+new SeatWindYaku('seat-wind-n', 'n'),
+{
 	name: 'tanyao',
 	fan: 1,
 	isYakuman: false,
