@@ -4,15 +4,15 @@
  */
 
 export class bannedEmailDomains1703209889304 {
-		constructor() {
-				this.name = 'bannedEmailDomains1703209889304';
-		}
+	constructor() {
+		this.name = 'bannedEmailDomains1703209889304';
+	}
 
-		async up(queryRunner) {
-				await queryRunner.query(`ALTER TABLE "meta" ADD "bannedEmailDomains" character varying(1024) array NOT NULL DEFAULT '{}'`);
-		}
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "meta" ADD "bannedEmailDomains" character varying(1024) array NOT NULL DEFAULT \'{}\'');
+	}
 
-		async down(queryRunner) {
-				await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "bannedEmailDomains"`);
-		}
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "meta" DROP COLUMN "bannedEmailDomains"');
+	}
 }

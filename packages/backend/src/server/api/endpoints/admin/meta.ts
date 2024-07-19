@@ -9,7 +9,7 @@ import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import {envOption} from "@/env.js";
+import { envOption } from "@/env.js";
 
 export const meta = {
 	tags: ['meta'],

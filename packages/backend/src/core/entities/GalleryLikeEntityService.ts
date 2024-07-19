@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository } from '@/models/_.js';
-import type { } from '@/models/Blocking.js';
 import type { MiGalleryLike } from '@/models/GalleryLike.js';
 import { bindThis } from '@/decorators.js';
 import { GalleryPostEntityService } from './GalleryPostEntityService.js';
@@ -42,4 +41,3 @@ export class GalleryLikeEntityService {
 		return Promise.all(likes.map(x => this.pack(x, me)));
 	}
 }
-

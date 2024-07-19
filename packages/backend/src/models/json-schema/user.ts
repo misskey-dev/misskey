@@ -189,7 +189,7 @@ export const packedUserLiteSchema = {
 		},
 	},
 }
-} as const
+} as const;
 
 export const packedUserDetailedNotMeOnlySchema = {
 	type: 'object',

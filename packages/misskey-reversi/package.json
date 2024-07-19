@@ -17,7 +17,7 @@
 	"scripts": {
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
-		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"eslint": "eslint ./**/*.{js,jsx,ts,tsx}",
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},

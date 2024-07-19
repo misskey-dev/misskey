@@ -21,6 +21,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
+// eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private customEmojiService: CustomEmojiService,

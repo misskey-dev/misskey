@@ -12,7 +12,6 @@ import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { UserEntityService } from './UserEntityService.js';
 

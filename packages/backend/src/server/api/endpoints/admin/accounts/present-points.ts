@@ -39,11 +39,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (user == null) {
 				throw new Error('user not found');
 			}
-			this.usersRepository.update( user.id, {
+			await this.usersRepository.update(user.id, {
 				getPoints: user.getPoints + ps.points,
 			});
-			this.notificationService.createNotification(user.id, 'loginbonus', {
-				loginbonus: ps.points,
+			this.notificationService.createNotification(user.id, 'loginBonus', {
+				loginBonus: ps.points,
 			});
 
 			return {};

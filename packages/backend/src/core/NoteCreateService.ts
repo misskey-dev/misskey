@@ -14,17 +14,30 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type {
+	ChannelFollowingsRepository,
+	ChannelsRepository,
+	FollowingsRepository,
+	InstancesRepository,
+	MiApp, MiChannel,
+	MiDriveFile,
+	MiFollowing,
+	MutingsRepository,
+	NotesRepository,
+	NoteThreadMutingsRepository,
+	UserListMembershipsRepository,
+	UserProfilesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import { MiPoll } from '@/models/Poll.js';
+import { IPoll, MiPoll } from '@/models/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
-import type { MiNoteCreateOption as Option, MiMinimumUser as MinimumUser } from '@/types.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -132,7 +145,6 @@ type Option = {
 	renote?: MiNote | null;
 	files?: MiDriveFile[] | null;
 	poll?: IPoll | null;
-	event?: IEvent | null;
 	localOnly?: boolean | null;
 	reactionAcceptance?: MiNote['reactionAcceptance'];
 	disableRightClick?: boolean | null;

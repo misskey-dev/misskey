@@ -13,5 +13,5 @@ export const userListsCache = new Cache<Misskey.entities.UserList[]>(1000 * 60 *
 export const antennasCache = new Cache<Misskey.entities.Antenna[]>(1000 * 60 * 30, () => misskeyApi('antennas/list'));
 export const favoritedChannelsCache = new Cache<Misskey.entities.Channel[]>(1000 * 60 * 30, () => misskeyApi('channels/my-favorites', { limit: 100 }));
 export const userFavoriteListsCache = new Cache(1000 * 60 * 30, () => misskeyApi('users/lists/list-favorite'));
-export const userChannelsCache = new Cache<Misskey.entities.UserChannel[]>(1000 * 60 * 30, () => misskeyApi('channels/owned'));
-export const userChannelFollowingsCache = new Cache<Misskey.entities.UserChannelFollowing[]>(1000 * 60 * 30, () => misskeyApi('channels/followed'));
+export const userChannelsCache = new Cache<Misskey.entities.Channel[]>(1000 * 60 * 30, () => misskeyApi('channels/owned'));
+export const userChannelFollowingsCache = new Cache<Misskey.entities.Channel[]>(1000 * 60 * 30, () => misskeyApi('channels/followed'));

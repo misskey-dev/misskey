@@ -238,7 +238,7 @@ export class MiUserProfile {
 	@Column('jsonb', {
 		default: [],
 	})
-	public mutedReactions:  (string[] | string)[];
+	public mutedReactions: (string[] | string)[];
 
 	@Column('jsonb', {
 		default: {},

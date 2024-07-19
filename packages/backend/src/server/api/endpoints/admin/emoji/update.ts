@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository , EmojisRepository } from '@/models/_.js';
+import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -38,7 +38,7 @@ export const meta = {
 			message: 'This emoji is already added.',
 			code: 'DUPLICATION_EMOJI_ADD',
 			id: 'mattyaski_emoji_duplication_error',
-		}
+		},
 	},
 } as const;
 
@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			let emojiId;
+			let emojiId, emoji;
 			if (ps.id) {
 				emojiId = ps.id;
 				const emoji = await this.customEmojiService.getEmojiById(ps.id);
@@ -97,24 +97,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			} else {
 				if (!ps.name) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
-				const emoji = await this.customEmojiService.getEmojiByName(ps.name);
+				emoji = await this.customEmojiService.getEmojiByName(ps.name);
 				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
 				emojiId = emoji.id;
 			}
 
-			if (!isRequest) {await this.customEmojiService.update(emojiId, {
-				driveFile,
-				name: ps.name,
-				category: ps.category,
-				aliases: ps.aliases,
-				license: ps.license,
-				isSensitive: ps.isSensitive,
-				localOnly: ps.localOnly,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
-				draft: false,
-			}, me);} else {
+			if (!isRequest) {
+				await this.customEmojiService.update(emojiId, {
+					driveFile,
+					name: ps.name,
+					category: ps.category,
+					aliases: ps.aliases,
+					license: ps.license,
+					isSensitive: ps.isSensitive,
+					localOnly: ps.localOnly,
+					roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				}, me);
+			} else {
+				if (!emoji) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
 				const file = await this.driveFileEntityService.getFromUrl(emoji.originalUrl);
 				if (file === null) throw new ApiError(meta.errors.noSuchFile);
+				if (!ps.name) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
+				if (!ps.id) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
+
 				await this.customEmojiService.request({
 					driveFile: file,
 					name: ps.name,

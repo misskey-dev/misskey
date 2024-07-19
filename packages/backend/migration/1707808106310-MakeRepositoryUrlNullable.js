@@ -4,13 +4,13 @@
  */
 
 export class MakeRepositoryUrlNullable1707808106310 {
-    name = 'MakeRepositoryUrlNullable1707808106310'
+	name = 'MakeRepositoryUrlNullable1707808106310';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" DROP NOT NULL`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" DROP NOT NULL');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" SET NOT NULL`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" SET NOT NULL');
+	}
 }

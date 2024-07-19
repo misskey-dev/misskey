@@ -4,7 +4,7 @@
  */
 
 export class SensitiveChannel1690782653311 {
-	name = 'SensitiveChannel1690782653311'
+	name = 'SensitiveChannel1690782653311';
 
 	async up(queryRunner) {
 		await queryRunner.query(`ALTER TABLE "channel"
@@ -12,6 +12,6 @@ export class SensitiveChannel1690782653311 {
 	}
 
 	async down(queryRunner) {
-		await queryRunner.query(`ALTER TABLE "channel" DROP COLUMN "isSensitive"`);
+		await queryRunner.query('ALTER TABLE "channel" DROP COLUMN "isSensitive"');
 	}
 }

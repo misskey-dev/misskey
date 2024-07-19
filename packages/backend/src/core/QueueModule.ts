@@ -15,7 +15,7 @@ import {
 	InboxJobData,
 	RelationshipJobData,
 	UserWebhookDeliverJobData,
-	SystemWebhookDeliverJobData,
+	SystemWebhookDeliverJobData, ScheduleNotePostJobData,
 } from '../queue/types.js';
 import type { Provider } from '@nestjs/common';
 

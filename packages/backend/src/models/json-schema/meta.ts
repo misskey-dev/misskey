@@ -128,6 +128,14 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		bannerDark: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		bannerLight: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		serverErrorImageUrl: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -141,6 +149,18 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: true,
 		},
 		iconUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		iconDark: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		iconLight: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		googleAnalyticsId: {
 			type: 'string',
 			optional: false, nullable: true,
 		},

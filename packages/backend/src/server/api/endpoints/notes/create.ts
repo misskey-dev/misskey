@@ -247,7 +247,7 @@ export const paramDef = {
 			poll: {
 				type: 'null',
 			},
-			schedule:{
+			schedule: {
 				type: 'null'
 			}
 		},
@@ -363,7 +363,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 			}
-			let visibility = ps.visibility;
+			const visibility = ps.visibility;
 			let reply: MiNote | null = null;
 			if (ps.replyId != null) {
 				// Fetch reply
@@ -414,7 +414,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// 投稿を作成
 			try {
-				const note : MiNoteCreateOption  = {
+				const note : MiNoteCreateOption = {
 					createdAt: new Date(),
 					files: files,
 					poll: ps.poll ? {

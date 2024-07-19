@@ -74,7 +74,6 @@ export class ApInboxService {
 		private notePiningService: NotePiningService,
 		private userBlockingService: UserBlockingService,
 		private noteCreateService: NoteCreateService,
-		private noteUpdateService: NoteUpdateService,
 		private noteDeleteService: NoteDeleteService,
 		private appLockService: AppLockService,
 		private apResolverService: ApResolverService,
@@ -82,7 +81,6 @@ export class ApInboxService {
 		private apLoggerService: ApLoggerService,
 		private apNoteService: ApNoteService,
 		private apPersonService: ApPersonService,
-		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -771,6 +769,7 @@ export class ApInboxService {
 		if (isActor(object)) {
 			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
+			// eslint-disable-next-line brace-style
 		} /*else if (getApType(object) === 'Question') {
 			await this.apQuestionService.updateQuestion(object, resolver).catch(err => console.error(err));
 			return 'ok: Question updated';
@@ -801,7 +800,7 @@ export class ApInboxService {
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
-			const target = await this.notesRepository.findOneBy({uri: uri});
+			const target = await this.notesRepository.findOneBy({ uri: uri });
 			if (!target) return `skip: target note not located: ${uri}`;
 			await this.apNoteService.updateNote(note, target, resolver, silent);
 			return 'ok';

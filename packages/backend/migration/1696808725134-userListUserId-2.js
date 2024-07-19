@@ -4,13 +4,13 @@
  */
 
 export class UserListUserId21696808725134 {
-    name = 'UserListUserId21696808725134'
+	name = 'UserListUserId21696808725134';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "user_list_membership" ALTER COLUMN "userListUserId" DROP DEFAULT`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "user_list_membership" ALTER COLUMN "userListUserId" DROP DEFAULT');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "user_list_membership" ALTER COLUMN "userListUserId" SET DEFAULT ''`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "user_list_membership" ALTER COLUMN "userListUserId" SET DEFAULT \'\'');
+	}
 }

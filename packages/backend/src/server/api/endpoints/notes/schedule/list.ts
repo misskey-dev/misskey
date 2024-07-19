@@ -16,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canScheduleNote',
+	kind: 'write:notes',
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -54,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const scheduleNotes = await query.limit(ps.limit).getMany();
 			const user = await this.userEntityService.pack(me, me);
-			const scheduleNotesPack = scheduleNotes.map((item) => {
+			return scheduleNotes.map((item) => {
 				return {
 					...item,
 					scheduledAt: new Date(item.scheduledAt).toISOString(),
@@ -68,8 +69,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					},
 				};
 			});
-
-			return scheduleNotesPack;
 		});
 	}
 }

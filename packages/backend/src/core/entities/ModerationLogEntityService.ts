@@ -56,4 +56,3 @@ export class ModerationLogEntityService {
 		return Promise.all(reports.map(report => this.pack(report, { packedUser: _userMap.get(report.userId) })));
 	}
 }
-

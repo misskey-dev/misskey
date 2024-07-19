@@ -22,9 +22,9 @@ export async function server() {
 	await serverService.launch();
 
 	if (process.env.NODE_ENV !== 'test') {
-		app.get(ChartManagementService).start();
-		app.get(QueueStatsService).start();
-		app.get(ServerStatsService).start();
+		void app.get(ChartManagementService).start();
+		void app.get(QueueStatsService).start();
+		void app.get(ServerStatsService).start();
 	}
 
 	return app;
@@ -35,8 +35,8 @@ export async function jobQueue() {
 		logger: new NestLogger(),
 	});
 
-	jobQueue.get(QueueProcessorService).start();
-	jobQueue.get(ChartManagementService).start();
+	void jobQueue.get(QueueProcessorService).start();
+	void jobQueue.get(ChartManagementService).start();
 
 	return jobQueue;
 }

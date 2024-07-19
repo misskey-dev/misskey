@@ -4,13 +4,13 @@
  */
 
 export class EnableFtt1698041201306 {
-    name = 'EnableFtt1698041201306'
+	name = 'EnableFtt1698041201306';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" ADD "enableFanoutTimeline" boolean NOT NULL DEFAULT true`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "meta" ADD "enableFanoutTimeline" boolean NOT NULL DEFAULT true');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "enableFanoutTimeline"`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "meta" DROP COLUMN "enableFanoutTimeline"');
+	}
 }

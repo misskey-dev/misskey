@@ -33,7 +33,6 @@ import type {
 	ObjectStorageQueue,
 	ScheduleNotePostQueue,
 	SystemQueue,
-	WebhookDeliverQueue,
 	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
 } from '@/core/QueueModule.js';

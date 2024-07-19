@@ -4,7 +4,7 @@
  */
 
 export class AbuseReportNotification1713656541000 {
-	name = 'AbuseReportNotification1713656541000'
+	name = 'AbuseReportNotification1713656541000';
 
 	async up(queryRunner) {
 		await queryRunner.query(`

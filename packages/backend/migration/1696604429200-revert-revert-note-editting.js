@@ -4,13 +4,13 @@
  */
 
 export class revertrevertnoteeditting1696604429200 {
-    name = 'revertrevertnoteeditting1696604429200'
+	name = 'revertrevertnoteeditting1696604429200';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "note" ADD "updatedAt" TIMESTAMP WITH TIME ZONE`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "note" ADD "updatedAt" TIMESTAMP WITH TIME ZONE');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "note" DROP COLUMN "updatedAt"`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "note" DROP COLUMN "updatedAt"');
+	}
 }

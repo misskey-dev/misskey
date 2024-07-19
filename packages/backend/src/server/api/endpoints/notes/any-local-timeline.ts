@@ -4,26 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets, In } from 'typeorm';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
-import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
-import { getApId, isActor, isPost } from '@/core/activitypub/type.js';
-import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository } from '@/models/_.js';
-import { MiNote, MiUser } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
 import { MiLocalUser } from '@/models/User.js';
-import { SchemaType } from '@/misc/json-schema.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
@@ -76,7 +62,7 @@ export const paramDef = {
 		host: { type: 'string' },
 		remoteToken: { type: 'string' },
 	},
-	required: [],
+	required: ['host'],
 } as const;
 
 @Injectable()
@@ -94,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
 
-			const timeline = await this.fanoutTimelineEndpointService.timeline({
+			return await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
 				limit: ps.limit,
@@ -113,8 +99,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					host: ps.host,
 				}, me),
 			});
-
-			return timeline;
 		},
 
 		);

@@ -388,7 +388,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canRequestCustomEmojis: calc('canRequestCustomEmojis', vs => vs.some(v => v === true)),
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
-			canRequestCustomEmojis: calc('canRequestCustomEmojis', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),

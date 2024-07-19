@@ -33,7 +33,6 @@ export class EmailService {
 		private loggerService: LoggerService,
 		private utilityService: UtilityService,
 		private httpRequestService: HttpRequestService,
-		private queueService: QueueService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
 	}
@@ -219,7 +218,7 @@ export class EmailService {
 			});
 			const disposableEmailDomains = (await dispose.text()).split('\n');
 			const domain = emailAddress.split('@')[1];
-			console.log(domain)
+			console.log(domain);
 			if (disposableEmailDomains.includes(domain)) {
 				validated = { valid: false, reason: 'disposable' };
 			}

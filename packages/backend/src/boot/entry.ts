@@ -82,7 +82,7 @@ if (cluster.isWorker || envOption.disableClustering) {
 
 readyRef.value = true;
 
-// ユニットテスト時にMisskeyが子プロセスで起動された時のため
+// ユニットテスト時にType4nyが子プロセスで起動された時のため
 // それ以外のときは process.send は使えないので弾く
 if (process.send) {
 	process.send('ok');

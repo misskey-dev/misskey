@@ -4,12 +4,12 @@
  */
 
 export class CleanUp1696581429196 {
-    name = 'CleanUp1696581429196'
+	name = 'CleanUp1696581429196';
 
-    async up(queryRunner) {
-        await queryRunner.query(`DROP TABLE IF EXISTS "muted_note"`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('DROP TABLE IF EXISTS "muted_note"');
+	}
 
-    async down(queryRunner) {
-    }
+	async down(queryRunner) {
+	}
 }

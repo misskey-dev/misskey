@@ -58,4 +58,3 @@ export class MutingEntityService {
 		return Promise.all(mutings.map(muting => this.pack(muting, me, { packedMutee: _userMap.get(muting.muteeId) })));
 	}
 }
-

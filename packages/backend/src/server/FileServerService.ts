@@ -408,7 +408,7 @@ export class FileServerService {
 					ext: 'png',
 					type: 'image/png',
 				};
-			} else if ('datasaver' in request.query){
+			} else if ('datasaver' in request.query) {
 				if (!isAnimationConvertibleImage && !('static' in request.query)) {
 					image = {
 						data: fs.createReadStream(file.path),
@@ -429,7 +429,7 @@ export class FileServerService {
 						type: 'image/webp',
 					};
 				}
-			}else if (file.mime === 'image/svg+xml') {
+			} else if (file.mime === 'image/svg+xml') {
 				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');

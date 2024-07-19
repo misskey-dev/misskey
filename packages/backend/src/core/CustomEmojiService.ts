@@ -314,6 +314,36 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
+	@bindThis
+	public async setLocalOnlyBulk(ids: MiEmoji['id'][], localOnly:boolean) {
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			localOnly: localOnly,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
+	@bindThis
+	public async setisSensitiveBulk(ids: MiEmoji['id'][], isSensitive:boolean) {
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			isSensitive: isSensitive,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
 
 	@bindThis
 	public async delete(id: MiEmoji['id'], moderator?: MiUser) {

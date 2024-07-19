@@ -208,6 +208,18 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canScheduleNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canEditNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canRequestCustomEmojis: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canSearchNotes: {
 			type: 'boolean',
 			optional: false, nullable: false,

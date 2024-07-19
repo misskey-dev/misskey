@@ -11,7 +11,7 @@ import { bindThis } from '@/decorators.js';
 import { isMention } from '../type.js';
 import { Resolver } from '../ApResolverService.js';
 import { ApPersonService } from './ApPersonService.js';
-import type { IObject, IApMention } from '../type.js';
+import type { IApMention, IObject } from '../type.js';
 
 @Injectable()
 export class ApMentionService {
@@ -25,11 +25,15 @@ export class ApMentionService {
 		const hrefs = unique(this.extractApMentionObjects(tags).map(x => x.href));
 
 		const limit = promiseLimit<MiUser | null>(2);
-		const mentionedUsers = (await Promise.all(
-			hrefs.map(x => limit(() => this.apPersonService.resolvePerson(x, resolver).catch(() => null))),
-		)).filter(x => x != null);
-
-		return mentionedUsers;
+		return (
+			await Promise.all(
+				hrefs.map((x) =>
+					limit(() =>
+						this.apPersonService.resolvePerson(x, resolver).catch(() => null),
+					),
+				),
+			)
+		).filter((x) => x != null);
 	}
 
 	@bindThis

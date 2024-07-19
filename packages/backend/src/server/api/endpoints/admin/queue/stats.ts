@@ -5,7 +5,17 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue, UserWebhookDeliverQueue } from '@/core/QueueModule.js';
+import type {
+	DbQueue,
+	DeliverQueue,
+	EndedPollNotificationQueue,
+	InboxQueue,
+	ObjectStorageQueue,
+	SystemQueue,
+	UserWebhookDeliverQueue,
+	ScheduleNotePostQueue,
+	SystemWebhookDeliverQueue,
+} from '@/core/QueueModule.js';
 
 export const meta = {
 	tags: ['admin'],

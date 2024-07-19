@@ -90,7 +90,6 @@ export class MetaEntityService {
 			bannerLight: instance.bannerLight,
 			iconDark: instance.iconDark,
 			iconLight: instance.iconLight,
-			googleAnalyticsId: instance.googleAnalyticsId,
 			enableHcaptcha: instance.enableHcaptcha,
 			hcaptchaSiteKey: instance.hcaptchaSiteKey,
 			enableMcaptcha: instance.enableMcaptcha,
@@ -174,4 +173,3 @@ export class MetaEntityService {
 		return packDetailed;
 	}
 }
-

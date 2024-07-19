@@ -159,21 +159,17 @@ export const paramDef = {
 			type: 'string', nullable: true,
 			description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
 		},
-		urlPreviewEnabled: { type: 'boolean' },
-		urlPreviewTimeout: { type: 'integer' },
-		urlPreviewMaximumContentLength: { type: 'integer' },
+		urlPreviewEnabled: { type: 'boolean', nullable: true },
+		urlPreviewTimeout: { type: 'integer', nullable: true },
+		urlPreviewMaximumContentLength: { type: 'integer', nullable: true },
 		urlPreviewRequireContentLength: { type: 'boolean' },
 		urlPreviewUserAgent: { type: 'string', nullable: true },
-		urlPreviewSummaryProxyUrl: { type: 'string', nullable: true },
+		urlPreviewSummaryProxyUrl: { type: 'string' },
 		EmojiBotToken: { type: 'string', nullable: true },
 		ApiBase: { type: 'string', nullable: true },
 		enableGDPRMode: { type: 'boolean' },
-		enableProxyCheckio: {
-			type: 'boolean', nullable: true,
-		},
-		proxyCheckioApiKey: {
-			type: 'string', nullable: true,
-		},
+		enableProxyCheckio: { type: 'boolean' },
+		proxyCheckioApiKey: { type: 'string' },
 		iconLight: { type: 'string', nullable: true },
 		iconDark: { type: 'string', nullable: true },
 		bannerLight: { type: 'string', nullable: true },
@@ -351,11 +347,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.googleAnalyticsId !== undefined) {
 				set.googleAnalyticsId = ps.googleAnalyticsId;
 			}
-			if (ps.enableProxyCheckio !== undefined) {
+			if (typeof ps.enableProxyCheckio === 'boolean') {
 				set.enableProxyCheckio = ps.enableProxyCheckio;
 			}
 
-			if (ps.proxyCheckioApiKey !== undefined) {
+			if (typeof ps.requestEmojiAllOk === 'string') {
 				set.proxyCheckioApiKey = ps.proxyCheckioApiKey;
 			}
 
@@ -367,9 +363,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.enableGDPRMode = ps.enableGDPRMode;
 			}
 
-			if (ps.requestEmojiAllOk !== undefined) {
+			if (typeof ps.requestEmojiAllOk === 'boolean') {
 				set.requestEmojiAllOk = ps.requestEmojiAllOk;
 			}
+
 			if (ps.notFoundImageUrl !== undefined) {
 				set.notFoundImageUrl = ps.notFoundImageUrl;
 			}
@@ -638,15 +635,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.bannedEmailDomains = ps.bannedEmailDomains;
 			}
 
-			if (ps.urlPreviewEnabled !== undefined) {
+			if (typeof ps.urlPreviewEnabled === 'boolean') {
 				set.urlPreviewEnabled = ps.urlPreviewEnabled;
 			}
 
-			if (ps.urlPreviewTimeout !== undefined) {
+			if (typeof ps.urlPreviewTimeout === 'number') {
 				set.urlPreviewTimeout = ps.urlPreviewTimeout;
 			}
 
-			if (ps.urlPreviewMaximumContentLength !== undefined) {
+			if (typeof ps.urlPreviewMaximumContentLength === 'number') {
 				set.urlPreviewMaximumContentLength = ps.urlPreviewMaximumContentLength;
 			}
 

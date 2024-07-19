@@ -46,7 +46,7 @@ import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, IObject } from '../type.js';
 
@@ -228,7 +228,7 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
-	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>>> {
+	private async resolveAvatarAndBanner(user: MiRemoteUser | null, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>>> {
 		if (user == null) throw new Error('failed to create user: user is null');
 
 		const [avatar, banner] = await Promise.all([icon, image].map(img => {

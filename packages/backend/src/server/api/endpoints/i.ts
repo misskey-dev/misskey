@@ -69,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.userIsDeleted);
 			}
 
-			function generateSecureRandomNumber(min, max) {
+			function generateSecureRandomNumber(min:number, max:number) {
 				const range = max - min + 1;
 				const randomBuffer = new Uint32Array(1);
 				crypto.getRandomValues(randomBuffer);
@@ -78,7 +78,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (!userProfile.loggedInDates.includes(today)) {
-
 				todayGetPoints = generateSecureRandomNumber(1, 5);
 
 				void this.userProfilesRepository.update({ userId: user.id }, {
@@ -97,8 +96,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				void this.usersRepository.update( user.id, {
 					getPoints: user_.getPoints + todayGetPoints,
 				});
-				this.notificationService.createNotification(user.id, 'loginbonus', {
-					loginbonus: todayGetPoints,
+				this.notificationService.createNotification(user.id, 'loginBonus', {
+					loginBonus: todayGetPoints,
 				});
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}

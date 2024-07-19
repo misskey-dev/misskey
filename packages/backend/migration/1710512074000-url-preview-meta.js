@@ -4,10 +4,10 @@
  */
 
 export class UrlPreviewMeta1710512074000 {
-    name = 'UrlPreviewMeta1710512074000'
+	name = 'UrlPreviewMeta1710512074000';
 
-    async up(queryRunner) {
-        await queryRunner.query(`
+	async up(queryRunner) {
+		await queryRunner.query(`
 					alter table meta
 						rename column "summalyProxy" to "urlPreviewSummaryProxyUrl";
 					alter table meta
@@ -21,10 +21,10 @@ export class UrlPreviewMeta1710512074000 {
 					alter table meta
 						add "urlPreviewUserAgent" varchar(1024) default null;
 				`);
-    }
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`
+	async down(queryRunner) {
+		await queryRunner.query(`
 					alter table meta
 						rename column "urlPreviewSummaryProxyUrl" to "summalyProxy";
 					alter table meta
@@ -38,5 +38,5 @@ export class UrlPreviewMeta1710512074000 {
 					alter table meta
 						drop column "urlPreviewUserAgent";
 				`);
-    }
+	}
 }

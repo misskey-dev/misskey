@@ -7,7 +7,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository, NotesRepository } from '@/models/_.js';
+import type { PollsRepository, EmojisRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -53,9 +53,6 @@ export class ApNoteService {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
 
 		private idService: IdService,
 		private apMfmService: ApMfmService,
@@ -160,7 +157,7 @@ export class ApNoteService {
 		const uri = getOneApId(note.attributedTo);
 
 		// ローカルで投稿者を検索し、もし凍結されていたらスキップ
-		const cachedActor = await this.apPersonService.fetchPerson(uri) as MiRemoteUser;
+		const cachedActor = await this.apPersonService.fetchPerson(uri) as MiRemoteUser | null;
 		if (cachedActor && cachedActor.isSuspended) {
 			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
 		}
@@ -362,7 +359,8 @@ export class ApNoteService {
 			throw new Error('actor has been suspended');
 		}
 
-		const limit = promiseLimit<MiDriveFile>(2);
+		const limit = promiseLimit<MiDriveFile | null>(2);
+
 		const files = (await Promise.all(toArray(note.attachment).map(attach => (
 			limit(() => this.apImageService.resolveImage(actor, {
 				...attach,
@@ -396,7 +394,7 @@ export class ApNoteService {
 		try {
 			return await this.noteUpdateService.update(actor, {
 				updatedAt: note.updated ? new Date(note.updated) : null,
-				files,
+				files: files.filter((x): x is MiDriveFile => x != null),
 				name: note.name,
 				cw,
 				text,

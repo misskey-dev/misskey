@@ -29,7 +29,7 @@ export class S3Service {
 
 	@bindThis
 	public getS3Client(meta: MiMeta): S3Client {
-		if (envOption.managed){
+		if (envOption.managed) {
 			const objectStorageConfig = this.config.objectStorage;
 			const u = objectStorageConfig?.objectStorageEndpoint
 				? `${objectStorageConfig.objectStorageUseSSL ? 'https' : 'http'}://${objectStorageConfig.objectStorageEndpoint}`

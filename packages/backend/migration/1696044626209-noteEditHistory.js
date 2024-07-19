@@ -4,13 +4,13 @@
  */
 
 export class NoteEditHistory1696044626209 {
-	name = 'NoteEditHistory1696044626209'
+	name = 'NoteEditHistory1696044626209';
 
 	async up(queryRunner) {
-		await queryRunner.query(`ALTER TABLE "note" ADD "noteEditHistory" varchar(3000) array DEFAULT '{}'`);
+		await queryRunner.query('ALTER TABLE "note" ADD "noteEditHistory" varchar(3000) array DEFAULT \'{}\'');
 	}
 
 	async down(queryRunner) {
-		await queryRunner.query(`ALTER TABLE "note" DROP "noteEditHistory"`);
+		await queryRunner.query('ALTER TABLE "note" DROP "noteEditHistory"');
 	}
 }

@@ -4,13 +4,13 @@
  */
 
 export class RemoveAntennaNotify1716450883149 {
-    name = 'RemoveAntennaNotify1716450883149'
+	name = 'RemoveAntennaNotify1716450883149';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "antenna" DROP COLUMN "notify"`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "antenna" DROP COLUMN "notify"');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "antenna" ADD "notify" boolean NOT NULL`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "antenna" ADD "notify" boolean NOT NULL');
+	}
 }

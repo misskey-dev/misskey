@@ -4,13 +4,13 @@
  */
 
 export class AddAllowRenoteToExternal1698840138000 {
-    name = 'AddAllowRenoteToExternal1698840138000'
+	name = 'AddAllowRenoteToExternal1698840138000';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "channel" ADD "allowRenoteToExternal" boolean NOT NULL DEFAULT true`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "channel" ADD "allowRenoteToExternal" boolean NOT NULL DEFAULT true');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "channel" DROP COLUMN "allowRenoteToExternal"`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "channel" DROP COLUMN "allowRenoteToExternal"');
+	}
 }

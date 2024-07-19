@@ -12,6 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 } as const;
 
 export const paramDef = {

@@ -13,7 +13,7 @@ import { subBoot } from '@/boot/sub-boot.js';
 const subBootPaths = ['/share', '/auth', '/miauth', '/signup-complete'];
 
 if (subBootPaths.some(i => location.pathname === i || location.pathname.startsWith(i + '/'))) {
-	subBoot();
+	void subBoot();
 } else {
-	mainBoot();
+	void mainBoot();
 }

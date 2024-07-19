@@ -92,7 +92,7 @@ export class ApImageService {
 	 */
 	@bindThis
 	public async resolveImage(actor: MiRemoteUser, value: string | IObject): Promise<MiDriveFile | null> {
-		// TODO: Misskeyに対象のImageが登録されていればそれを返す
+		// TODO: Type4nyに対象のImageが登録されていればそれを返す
 
 		// リモートサーバーからフェッチしてきて登録
 		return await this.createImage(actor, value);

@@ -92,7 +92,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Create mute
 			await this.userRenoteMutingService.mute(muter, mutee);
-
 		});
 	}
 }

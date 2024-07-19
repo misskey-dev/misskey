@@ -62,9 +62,8 @@ export class EmojiRequestsEntityService {
 
 	@bindThis
 	public packDetailedMany(
-		emojis: any[],
+		emojis: MiEmojiRequest['id'][] | MiEmojiRequest[],
 	) {
 		return Promise.all(emojis.map(x => this.packDetailed(x)));
 	}
 }
-

@@ -289,7 +289,7 @@ export async function openAccountMenu(opts: {
 	}));
 
 	if (opts.withExtraOperation) {
-		popupMenu([...[{
+		void popupMenu([...[{
 			type: 'link' as const,
 			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,

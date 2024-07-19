@@ -68,4 +68,3 @@ export class ClipEntityService {
 		return Promise.all(clips.map(clip => this.pack(clip, me, { packedUser: _userMap.get(clip.userId) })));
 	}
 }
-

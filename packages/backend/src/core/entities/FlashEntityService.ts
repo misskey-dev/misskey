@@ -65,4 +65,3 @@ export class FlashEntityService {
 		return Promise.all(flashes.map(flash => this.pack(flash, me, { packedUser: _userMap.get(flash.userId) })));
 	}
 }
-

@@ -4,13 +4,13 @@
  */
 
 export class NotRespondingSince1716345015347 {
-    name = 'NotRespondingSince1716345015347'
+	name = 'NotRespondingSince1716345015347';
 
-    async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "instance" ADD "notRespondingSince" TIMESTAMP WITH TIME ZONE`);
-    }
+	async up(queryRunner) {
+		await queryRunner.query('ALTER TABLE "instance" ADD "notRespondingSince" TIMESTAMP WITH TIME ZONE');
+	}
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "notRespondingSince"`);
-    }
+	async down(queryRunner) {
+		await queryRunner.query('ALTER TABLE "instance" DROP COLUMN "notRespondingSince"');
+	}
 }
