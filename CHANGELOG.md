@@ -30,6 +30,7 @@
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Enhance: AiScriptを0.19.0にアップデート
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
+- Enhance: センシティブなメディアを開く際に確認ダイアログを出せるように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
@@ -43,6 +44,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
 - Fix: Twitchの埋め込みが開けない問題を修正
 - Fix: 子メニューの高さがウィンドウからはみ出ることがある問題を修正
+- Fix: 個人宛てのダイアログ形式のお知らせが即時表示されない問題を修正
+- Fix: 一部の画像がセンシティブ指定されているときに画面に何も表示されないことがあるのを修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
