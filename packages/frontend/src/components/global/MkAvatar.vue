@@ -116,6 +116,7 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 }
 
 const outerCatEarColor = ref<string | undefined>();
+
 function updateOuterCatEarColor() {
 	if (props.user.overrideCatEarColor) {
 		outerCatEarColor.value = props.user.outerCatEarColor;
@@ -126,11 +127,18 @@ function updateOuterCatEarColor() {
 	}
 }
 
-watch(() => props.user.overrideCatEarColor, updateOuterCatEarColor, {immediate: true});
-watch(() => props.user.outerCatEarColor, updateOuterCatEarColor, {immediate: true});
-watch(() => props.user.avatarBlurhash, updateOuterCatEarColor, {immediate: true});
+watch(() => props.user.overrideCatEarColor, updateOuterCatEarColor, {
+	immediate: true,
+});
+watch(() => props.user.outerCatEarColor, updateOuterCatEarColor, {
+	immediate: true,
+});
+watch(() => props.user.avatarBlurhash, updateOuterCatEarColor, {
+	immediate: true,
+});
 
 const innerCatEarColor = ref<string | undefined>();
+
 function updateInnerCatEarColor() {
 	if (props.user.overrideCatEarColor) {
 		innerCatEarColor.value = props.user.innerCatEarColor;
@@ -138,8 +146,13 @@ function updateInnerCatEarColor() {
 		innerCatEarColor.value = "#df648f";
 	}
 }
-watch(() => props.user.overrideCatEarColor, updateInnerCatEarColor, {immediate: true});
-watch(() => props.user.innerCatEarColor, updateInnerCatEarColor, {immediate: true});
+
+watch(() => props.user.overrideCatEarColor, updateInnerCatEarColor, {
+	immediate: true,
+});
+watch(() => props.user.innerCatEarColor, updateInnerCatEarColor, {
+	immediate: true,
+});
 </script>
 
 <style lang="scss" module>
