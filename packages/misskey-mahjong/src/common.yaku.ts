@@ -121,7 +121,7 @@ export type EnvForCalcYaku = {
 	ippatsu?: boolean;
 };
 
-type YakuDefiniyion = {
+type YakuDefinition = {
 	name: YakuName;
 	upper?: YakuName;
 	fan?: number;
@@ -135,7 +135,7 @@ function countTiles(tiles: TileType[], target: TileType): number {
 	return tiles.filter(t => t === target).length;
 }
 
-class WindYaku implements YakuDefiniyion {
+class WindYaku implements YakuDefinition {
 	readonly name: YakuName;
 
 	readonly fan = 1;
@@ -175,7 +175,7 @@ class SeatWindYaku extends WindYaku {
 	}
 }
 
-export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
+export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 	name: 'tsumo',
 	fan: 1,
 	isYakuman: false,
@@ -539,7 +539,7 @@ new SeatWindYaku('seat-wind-n', 'n'),
 	},
 }];
 
-export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
+export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 	name: 'daisangen',
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
@@ -732,7 +732,7 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	if (oneHeadFourMentsuPatterns.length === 0) oneHeadFourMentsuPatterns.push(null);
 
 	const yakumanPatterns = oneHeadFourMentsuPatterns.map(fourMentsuOneJyantou => {
-		const matchedYakus: YakuDefiniyion[] = [];
+		const matchedYakus: YakuDefinition[] = [];
 		for (const yakuDef of YAKUMAN_DEFINITIONS) {
 			if (yakuDef.upper && matchedYakus.some(yaku => yaku.name === yakuDef.upper)) continue;
 			const matched = yakuDef.calc(state, fourMentsuOneJyantou);
@@ -751,7 +751,7 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 		return NORMAL_YAKU_DEFINITIONS.map(yakuDef => {
 			const result = yakuDef.calc(state, fourMentsuOneJyantou);
 			return result ? yakuDef : null;
-		}).filter(yaku => yaku != null) as YakuDefiniyion[];
+		}).filter(yaku => yaku != null) as YakuDefinition[];
 	}).filter(yakus => yakus.length > 0);
 
 	const isMenzen = state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type));
