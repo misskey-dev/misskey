@@ -1248,6 +1248,8 @@ noDescription: "没有描述"
 alwaysConfirmFollow: "总是确认关注"
 inquiry: "联系我们"
 tryAgain: "请再试一次"
+confirmWhenRevealingSensitiveMedia: "显示敏感内容时需要确认"
+sensitiveMediaRevealConfirm: "这是敏感内容。是否显示？"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
