@@ -491,6 +491,34 @@ new SeatWind('seat-wind-n', 'n'),
 		return false;
 	},
 }, {
+	name: 'chanta',
+	fan: 2,
+	isYakuman: false,
+	kuisagari: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		if (fourMentsuOneJyantou == null) return false;
+
+		const { head, mentsus } = fourMentsuOneJyantou;
+		const { huros } = state;
+
+		// 雀頭は幺九牌じゃないとダメ
+		if (!includes(YAOCHU_TILES, head)) return false;
+
+		// 順子は1つ以上じゃないとダメ
+		if (!mentsus.some(mentsu => isShuntu(mentsu))) return false;
+
+		// いずれかの雀頭か面子に字牌を含まないとダメ
+		if (!(includes(CHAR_TILES, head) ||
+			mentsus.some(mentsu => includes(CHAR_TILES, mentsu[0])) ||
+			huros.some(huro => huro.type != 'cii' && includes(CHAR_TILES, huro.tile)))) return false;
+
+		// 全ての面子に幺九牌が含まれる
+		return (mentsus.every(mentsu => mentsu.some(tile => includes(YAOCHU_TILES, tile))) &&
+			huros.every(huro => huro.type == 'cii' ?
+				huro.tiles.some(tile => includes(YAOCHU_TILES, tile)) :
+				includes(YAOCHU_TILES, huro.tile)));
+	},
+}, {
 	name: 'chitoitsu',
 	fan: 2,
 	isYakuman: false,
