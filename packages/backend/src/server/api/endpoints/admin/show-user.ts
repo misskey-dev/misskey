@@ -193,7 +193,7 @@ export const meta = {
 							type: 'string',
 							optional: false, nullable: false,
 						},
-					}
+					},
 				},
 			},
 			keyPairs: {
@@ -220,7 +220,7 @@ export const meta = {
 						type: 'string',
 						optional: false, nullable: true,
 					},
-				}
+				},
 			},
 		},
 	},
