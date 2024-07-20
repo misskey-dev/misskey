@@ -178,10 +178,49 @@ export const meta = {
 			publicKeys: {
 				type: 'array',
 				optional: false, nullable: true,
+				items: {
+					type: 'object',
+					properties: {
+						userId: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+						keyId: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+						keyPem: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					}
+				},
 			},
 			keyPairs: {
 				type: 'object',
 				optional: false, nullable: true,
+				properties: {
+					userId: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					publicKey: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					privateKey: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					ed25519PublicKey: {
+						type: 'string',
+						optional: false, nullable: true,
+					},
+					ed25519PrivateKey: {
+						type: 'string',
+						optional: false, nullable: true,
+					},
+				}
 			},
 		},
 	},
