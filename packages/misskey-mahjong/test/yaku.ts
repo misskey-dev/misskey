@@ -421,7 +421,7 @@ describe('Yaku', () => {
 			}).includes('sananko'), true);
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
-				handTiles: ['m1', 'm1', 'm1', 'p5', 'p5', 'p5', 's7', 's7', 's7', 'p2', 'p2'],
+				handTiles: ['m1', 'm1', 'm1', 'p5', 'p5', 'p5', 's7', 's8', 's9', 'p2', 'p2'],
 				huros: [{type: 'ankan', tile: 'm2'}],
 				tsumoTile: 'p2',
 			}).includes('sananko'), true);
@@ -432,6 +432,12 @@ describe('Yaku', () => {
 				handTiles: ['m1', 'm1', 'm1', 'p5', 'p5', 'p5', 's7', 's8', 's9', 'p2', 'p2'],
 				huros: [{type: 'minkan', tile: 'm2'}],
 				tsumoTile: 'p2',
+			}).includes('sananko'), false);
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm1', 'm1', 'm2', 'm2', 'm2', 'p5', 'p5', 'p5', 's7', 's8', 's9', 'p2', 'p2'],
+				huros: [],
+				ronTile: 'm2',
 			}).includes('sananko'), false);
 		});
 	});
@@ -599,6 +605,12 @@ describe('Yaku', () => {
 				huros: [{type: 'ankan', tile: 'm1'}],
 				tsumoTile: 'e',
 			}), ['suanko-tanki']);
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm1', 'm1', 'm2', 'm2', 'm2', 'm3', 'm3', 'm3', 'haku', 'haku', 'haku', 'e', 'e'],
+				huros: [],
+				ronTile: 'e',
+			}), ['suanko-tanki']);
 		});
 
 		it('invalid', () => {
@@ -615,7 +627,7 @@ describe('Yaku', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
-				handTiles: ['haku', 'haku', 'haku', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'p2', 'p2', 'p2', 's2', 's2'],
+				handTiles: ['haku', 'haku', 'haku', 'hatsu', 'hatsu', 'hatsu', 'chun', 'chun', 'chun', 'p2', 'p3', 'p4', 's2', 's2'],
 				huros: [],
 				tsumoTile: 's2',
 			}), ['daisangen']);
@@ -645,7 +657,7 @@ describe('Yaku', () => {
 				handTiles: ['haku', 'haku', 'haku', 'hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
 				huros: [],
 				tsumoTile: 's',
-			}), ['tsuiso']);
+			}), [ 'suanko-tanki', 'tsuiso']);
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
@@ -675,7 +687,7 @@ describe('Yaku', () => {
 		it('valid', () =>{
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
-				handTiles: ['m1', 'm1', 'm1', 'n', 'n', 'n', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
+				handTiles: ['m1', 'm2', 'm3', 'n', 'n', 'n', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
 				huros: [],
 				tsumoTile: 's',
 			}), ['shosushi']);
@@ -711,7 +723,7 @@ describe('Yaku', () => {
 				handTiles: ['m1', 'm1', 'n', 'n', 'n', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's', 's'],
 				huros: [],
 				tsumoTile: 's',
-			}), ['daisushi']);
+			}), ['suanko', 'daisushi']);
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
 				handTiles: ['m1', 'm1', 'n', 'n', 'n', 'w', 'w', 'w', 's', 's', 's'],
@@ -776,7 +788,7 @@ describe('Yaku', () => {
 			        handTiles: ['m1', 'm1', 'm1', 'm9', 'm9', 'm9', 's1', 's1', 's1', 's9', 's9', 's9', 'p1', 'p1'],
 				huros: [],
 				tsumoTile: 'p1',
-			}), ['chinroto']);
+			}), ['suanko-tanki', 'chinroto']);
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
 				handTiles: ['m9', 'm9', 'm9', 's1', 's1', 's1', 's9', 's9', 's9', 'p1', 'p1'],

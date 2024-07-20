@@ -46,3 +46,7 @@ export function isRyanmen(taatsu: [TileType, TileType]): boolean {
 	if (number1 == null || number2 == null) return false;
 	return number1 + 1 == number2;
 }
+
+export function isToitsu(taatsu: [TileType, TileType]): boolean {
+	return taatsu[0] == taatsu[1];
+}
