@@ -134,6 +134,11 @@ export class DeliverProcessorService {
 			});
 
 			if (res instanceof StatusError) {
+				if (res.statusCode === 401) {
+					// 401 Unauthorized: this may be caused by a time difference between the server and the target server.
+					// Let the job be retried.
+					throw new Error(`${res.statusCode} ${res.statusMessage}\n* 401 may be caused by a time difference between the server and the target server.`);
+				}
 				// 4xx
 				if (!res.isRetryable) {
 					// 相手が閉鎖していることを明示しているため、配送停止する
