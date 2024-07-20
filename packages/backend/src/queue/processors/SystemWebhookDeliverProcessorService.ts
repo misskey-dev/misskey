@@ -36,6 +36,14 @@ export class SystemWebhookDeliverProcessorService {
 	public async process(job: Bull.Job<SystemWebhookDeliverJobData>): Promise<string> {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
+			this.logger.debug(				JSON.stringify({
+				server: this.config.url,
+				hookId: job.data.webhookId,
+				eventId: job.data.eventId,
+				createdAt: job.data.createdAt,
+				type: job.data.type,
+				body: job.data.content,
+			}));
 
 			const res = await this.httpRequestService.send(job.data.to, {
 				method: 'POST',

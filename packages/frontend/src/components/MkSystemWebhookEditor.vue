@@ -38,6 +38,15 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					<MkSwitch v-model="events.abuseReportResolved" :disabled="disabledEvents.abuseReportResolved">
 						<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReportResolved }}</template>
 					</MkSwitch>
+					<MkSwitch v-model="events.customEmojiRequest" :disabled="disabledEvents.customEmojiRequest">
+						<template #label>{{ i18n.ts._webhookSettings._systemEvents.customEmojiRequest }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="events.customEmojiRequestResolved" :disabled="disabledEvents.customEmojiRequestResolved">
+						<template #label>{{ i18n.ts._webhookSettings._systemEvents.customEmojiRequestResolved }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="events.userRegistered" :disabled="disabledEvents.userRegistered">
+						<template #label>{{ i18n.ts._webhookSettings._systemEvents.userRegistered }}</template>
+					</MkSwitch>
 				</div>
 			</MkFolder>
 
@@ -77,6 +86,9 @@ import * as os from '@/os.js';
 type EventType = {
 	abuseReport: boolean;
 	abuseReportResolved: boolean;
+	customEmojiRequest: boolean;
+	customEmojiRequestResolved: boolean;
+	userRegistered: boolean;
 }
 
 const emit = defineEmits<{
@@ -96,12 +108,18 @@ const secret = ref<string>('');
 const events = ref<EventType>({
 	abuseReport: true,
 	abuseReportResolved: true,
+	customEmojiRequest: true,
+	customEmojiRequestResolved: true,
+	userRegistered: true,
 });
 const isActive = ref<boolean>(true);
 
 const disabledEvents = ref<EventType>({
 	abuseReport: false,
 	abuseReportResolved: false,
+	customEmojiRequest: false,
+	customEmojiRequestResolved: false,
+	userRegistered: false,
 });
 
 const disableSubmitButton = computed(() => {

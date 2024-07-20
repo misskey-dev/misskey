@@ -12,6 +12,12 @@ export const systemWebhookEventTypes = [
 	'abuseReport',
 	// 通報を処理したとき
 	'abuseReportResolved',
+	// 絵文字申請を受け取ったとき
+	'customEmojiRequest',
+	// 絵文字申請を処理したとき
+	'customEmojiRequestResolved',
+	// ユーザが登録したとき
+	'userRegistered',
 ] as const;
 export type SystemWebhookEventType = typeof systemWebhookEventTypes[number];
 

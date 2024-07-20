@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ item: note, index, items }">
 		<div :class="[$style.root, { [$style.noGap]: noGap },{ [$style.dateseparatedlist]: noGap}]">
-			<div :class="$style.notes,{ [$style.dateseparatedlistnogap]: noGap}" >
-				<p :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
+			<div :class="$style.notes, { [$style.dateseparatedlistnogap]: noGap}">
+				<p v-if="index !== 0" :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
 				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
 				<div v-if="index !== items.length - 1 && note?.createdAt && items[index + 1]?.createdAt && (new Date(note?.createdAt).getDate()) !== ( new Date(items[index + 1]?.createdAt).getDate())" :key="note.id" :class="$style.separator">
 					<p :class="$style.date">

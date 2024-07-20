@@ -7,12 +7,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { AbuseUserReportsRepository, MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
+import type { AbuseUserReportsRepository, MiAbuseUserReport, MiNote, MiUser, UsersRepository } from '@/models/_.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { IdService } from './IdService.js';
 
 @Injectable()
@@ -47,6 +48,8 @@ export class AbuseReportService {
 		reporterId: MiAbuseUserReport['reporterId'],
 		reporterHost: MiAbuseUserReport['reporterHost'],
 		comment: string,
+		notes?: Packed<'Note'>[] | [],
+		noteIds?: MiNote['id'][] | [],
 	}[]) {
 		const entities = params.map(param => {
 			return {
@@ -56,6 +59,8 @@ export class AbuseReportService {
 				reporterId: param.reporterId,
 				reporterHost: param.reporterHost,
 				comment: param.comment,
+				notes: param.notes ?? [],
+				noteIds: param.noteIds ?? [],
 			};
 		});
 

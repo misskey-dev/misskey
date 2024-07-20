@@ -8,7 +8,15 @@ import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
 import ProxyCheck from 'proxycheck-ts';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/_.js';
+import type {
+	RegistrationTicketsRepository,
+	UsedUsernamesRepository,
+	UserPendingsRepository,
+	UserProfilesRepository,
+	UsersRepository,
+	MiRegistrationTicket,
+	SystemWebhooksRepository,
+} from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
@@ -20,6 +28,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -44,6 +53,9 @@ export class SignupApiService {
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
+		@Inject(DI.systemWebhooksRepository)
+		private systemWebhooksRepository: SystemWebhooksRepository,
+
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
@@ -51,6 +63,7 @@ export class SignupApiService {
 		private signupService: SignupService,
 		private signinService: SigninService,
 		private emailService: EmailService,
+		private systemWebhookService: SystemWebhookService,
 	) {
 	}
 
@@ -108,25 +121,20 @@ export class SignupApiService {
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
-
-		const { DiscordWebhookUrl } = (await this.metaService.fetch());
-		if (DiscordWebhookUrl) {
-			const data_disc = { 'username': 'ユーザー登録お知らせ',
-																							'content':
-					'ユーザー名 :' + username + '\n' +
-					'メールアドレス : ' + emailAddress + '\n' +
-					'IPアドレス : ' + request.headers['x-real-ip'] ?? request.ip,
-			};
-
-			await fetch(DiscordWebhookUrl, {
-				'method': 'post',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(data_disc),
-			});
-		}
-
+		const activeSystemWebhooksWithUserRegistered = await this.systemWebhooksRepository
+			.createQueryBuilder('webhook')
+			.where('webhook.isActive = :isActive', { isActive: true })
+			.andWhere('webhook.on @> :eventName', { eventName: '{userRegistered}' })
+			.getMany();
+		activeSystemWebhooksWithUserRegistered.forEach(it => this.systemWebhookService.enqueueSystemWebhook(
+			it.id,
+			'userRegistered',
+			{
+				username,
+				email: emailAddress ?? null,
+				host,
+			},
+		));
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
 				reply.code(400);

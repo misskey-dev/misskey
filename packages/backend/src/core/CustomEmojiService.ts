@@ -12,13 +12,14 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiEmoji } from '@/models/Emoji.js';
-import type { EmojisRepository, EmojiRequestsRepository, MiRole, MiUser } from '@/models/_.js';
+import type { EmojisRepository, EmojiRequestsRepository, MiRole, MiUser, SystemWebhooksRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { MiEmojiRequest } from '@/models/EmojiRequest.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 
 const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
@@ -37,11 +38,15 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		@Inject(DI.emojiRequestsRepository)
 		private emojiRequestsRepository: EmojiRequestsRepository,
 
+		@Inject(DI.systemWebhooksRepository)
+		private systemWebhooksRepository: SystemWebhooksRepository,
+
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
+		private systemWebhookService: SystemWebhookService,
 	) {
 		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
 
@@ -58,7 +63,19 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			},
 		});
 	}
-
+	private async notifyWebhooks(emoji: MiEmojiRequest | MiEmoji, eventType: 'customEmojiRequest' | 'customEmojiRequestResolved', me?: MiUser | null) {
+		const activeSystemWebhooksWithCustomEmojiRequest = await this.systemWebhooksRepository
+			.createQueryBuilder('webhook')
+			.where('webhook.isActive = :isActive', { isActive: true })
+			.andWhere('webhook.on @> :eventName', { eventName: `{${eventType}}` })
+			.getMany();
+		console.log({ emoji, user: (me ? me : null) });
+		activeSystemWebhooksWithCustomEmojiRequest.forEach(it => this.systemWebhookService.enqueueSystemWebhook(
+			it.id,
+			eventType,
+			{ emoji, user: (me ? me : null) },
+		));
+	}
 	@bindThis
 	public async request(data: {
 		driveFile: MiDriveFile;
@@ -85,12 +102,12 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}).then(x => this.emojiRequestsRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (me) {
-			this.moderationLogService.log(me, 'addCustomEmoji', {
+			await this.moderationLogService.log(me, 'addCustomEmoji', {
 				emojiId: emoji.id,
 				emoji: emoji,
 			});
 		}
-
+		await this.notifyWebhooks(emoji, 'customEmojiRequest', me ? me : null);
 		return emoji;
 	}
 
@@ -105,7 +122,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		isSensitive: boolean;
 		localOnly: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
-	}, moderator?: MiUser): Promise<MiEmoji> {
+		requestToAdd?: boolean;
+	}, moderator?: MiUser, me?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insertOne({
 			id: this.idService.gen(),
 			updatedAt: new Date(),
@@ -121,6 +139,10 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
 		});
+
+		if (data.requestToAdd) {
+			await this.notifyWebhooks(emoji, 'customEmojiRequestResolved', me ? me : null);
+		}
 
 		if (data.host == null) {
 			this.localEmojisCache.refresh();

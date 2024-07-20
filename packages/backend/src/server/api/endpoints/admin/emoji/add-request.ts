@@ -78,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError();
 			}
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
-			const { ApiBase, EmojiBotToken, DiscordWebhookUrl, requestEmojiAllOk } = (await this.metaService.fetch());
+			const { ApiBase, EmojiBotToken, requestEmojiAllOk } = (await this.metaService.fetch());
 			let emoji;
 			if (requestEmojiAllOk) {
 				emoji = await this.customEmojiService.add({
@@ -91,7 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					isSensitive: ps.isSensitive ?? false,
 					localOnly: ps.localOnly ?? false,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
-				});
+				}, undefined, me);
 			} else {
 				emoji = await this.customEmojiService.request({
 					driveFile,
@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					license: ps.license ?? null,
 					isSensitive: ps.isSensitive ?? false,
 					localOnly: ps.localOnly ?? false,
-				});
+				}, me);
 			}
 
 			await this.moderationLogService.log(me, 'addCustomEmoji', {
@@ -129,23 +129,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 			}
 
-			if (DiscordWebhookUrl) {
-				const data_disc = { 'username': '絵文字追加通知ちゃん',
-																								'content':
-						'絵文字名 : :' + ps.name + ':\n' +
-						'カテゴリ : ' + ps.category + '\n' +
-						'ライセンス : ' + ps.license + '\n' +
-						'タグ : ' + ps.aliases + '\n' +
-						'追加したユーザー : ' + '@' + me.username + '\n',
-				};
-				await fetch(DiscordWebhookUrl, {
-					'method': 'post',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(data_disc),
-				});
-			}
 			return {
 				id: emoji.id,
 			};

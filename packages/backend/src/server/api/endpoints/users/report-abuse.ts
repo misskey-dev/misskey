@@ -94,9 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const notes = ps.noteIds ? await this.notesRepository.find({
 				where: { id: In(ps.noteIds), userId: targetUser.id },
 			}) : [];
-
-			const report = await this.abuseUserReportsRepository.insert({
-				id: this.idService.gen(),
+			await this.abuseReportService.report([{
 				targetUserId: targetUser.id,
 				targetUserHost: targetUser.host,
 				reporterId: me.id,
@@ -104,46 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				comment: ps.comment,
 				notes: (ps.noteIds && !((await this.metaService.fetch()).enableGDPRMode)) ? await this.noteEntityService.packMany(notes) : [],
 				noteIds: (ps.noteIds && (await this.metaService.fetch()).enableGDPRMode) ? ps.noteIds : [],
-			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
-
-			// Publish event to moderators
-			setImmediate(async () => {
-				const moderators = await this.roleService.getModerators();
-
-				for (const moderator of moderators) {
-					this.globalEventService.publishAdminStream(moderator.id, 'newAbuseUserReport', {
-						id: report.id,
-						targetUserId: report.targetUserId,
-						reporterId: report.reporterId,
-						comment: report.comment,
-						notes: report.notes,
-						noteIds: report.noteIds ?? [],
-					});
-				}
-				const meta = await this.metaService.fetch();
-				if (meta.DiscordWebhookUrl) {
-					const data_disc = { 'username': '絵文字追加通知ちゃん',
-																									'content':
-
-							'通報' + '\n' +
-																										'通報' + report.comment + '\n' +
-							'通報したユーザー : ' + '@' + me.username + '\n' +
-							'通報されたユーザー : ' + report.targetUserId + '\n',
-					};
-					await fetch(meta.DiscordWebhookUrl, {
-						'method': 'post',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify(data_disc),
-					});
-				}
-				if (meta.email) {
-					this.emailService.sendEmail(meta.email, 'New abuse report',
-						sanitizeHtml(ps.comment),
-						sanitizeHtml(ps.comment));
-				}
-			});
+			}]);
 		});
 	}
 }
