@@ -39,7 +39,8 @@ To the Committers: you should not assign someone on it before the Final Decision
 The Commiters may:
 * close an issue that is not reproducible on latest stable release,
 * merge an issue into another issue,
-* or split an issue into multiple issues
+* split an issue into multiple issues,
+* or re-open that has been closed for some reason which is not applicable anymore.
 
 @syuilo reserves the Final Desicion rights including whether the project will implement feature and how to implement, these rights are not always exercised.
 
