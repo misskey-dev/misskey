@@ -73,7 +73,8 @@ function getReactionName(reaction: string, formated = false) {
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	const oldReaction = props.note.myReactions.includes(props.reaction) ? props.reaction : null;
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	const oldReaction = props.note.myReactions?.includes(props.reaction) ? props.reaction : null;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
@@ -94,7 +95,7 @@ async function toggleReaction() {
 			noteId: props.note.id,
 			reaction: oldReaction,
 		}).then(() => {
-			if (oldReaction !== props.reaction ) {
+			if (oldReaction !== props.reaction && oldReaction !== '🚮' && props.reaction !== '🚮') {
 				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
 					reaction: props.reaction,
