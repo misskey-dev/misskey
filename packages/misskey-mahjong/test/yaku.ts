@@ -377,11 +377,18 @@ describe('Yaku', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
-				handTiles: ['m1', 'm1', 'm2', 'm2', 'm8', 'm8', 'p5', 'p5', 'p7', 's7', 's9', 's9', 'p2', 'p2'],
+				handTiles: ['m1', 'm1', 'm2', 'm2', 'm8', 'm8', 'p5', 'p5', 'p7', 'p7', 's9', 's9', 'p2', 'p2'],
 				huros: [],
 				tsumoTile: 'p2',
 			}).includes('chitoitsu'), true);
 		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 'p5', 'p6', 'p7', 'p1', 'p1'],
+				huros: []
+			}).includes('chitoitsu'), false)
+		})
 	});
 
     	describe('toitoi', () => {

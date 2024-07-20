@@ -546,6 +546,7 @@ new SeatWind('seat-wind-n', 'n'),
 	fan: 2,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		if (fourMentsuOneJyantou != null) return false;
 		if (state.huros.length > 0) return false;
 		const countMap = new Map<TileType, number>();
 		for (const tile of state.handTiles) {
