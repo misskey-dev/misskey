@@ -28,10 +28,10 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
-import type { FindOptionsWhere } from 'typeorm';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
+import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
+import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -127,6 +127,10 @@ export class ActivityPubServerService {
 			signature = parseRequestSignature(request.raw, {
 				requiredInputs: {
 					draft: ['(request-target)', 'digest', 'host', 'date'],
+				},
+				clockSkew: {
+					forward: 300_000,
+					delay: 300_000,
 				},
 			});
 		} catch (err) {
