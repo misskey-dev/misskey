@@ -29,18 +29,19 @@ When you want to add a feature or fix a bug, **first have the design and policy 
 At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
 PRs that do not have a clear set of do's and don'ts tend to be bloated and difficult to review.
 
-Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Commiter to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
+Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Commiter to assign you). 
+By expressing your intention to work on the Issue, you can prevent conflicts in the work.
 
-To the Commiters: you should not assign someone on it before the Final Desicion.
+To the Committers: you should not assign someone on it before the Final Decision.
 
 ### How issues are triaged
 
 The Commiters may:
-* close issue that is not reproducible on latest stable release,
-* merge issue into another issue,
-* or split issue into multiple ones
+* close an issue that is not reproducible on latest stable release,
+* merge an issue into another issue,
+* or split an issue into multiple issues
 
-@syuilo reserves Final Desicion rights including whether the project will implement feature and how to implement, but not always exercised.
+@syuilo reserves the Final Desicion rights including whether the project will implement feature and how to implement, these rights are not always exercised.
 
 ## Well-known branches
 - **`master`** branch is tracking the latest release and used for production purposes.
@@ -53,7 +54,7 @@ Thank you for your PR! Before creating a PR, please check the following:
 - If possible, prefix the title with a keyword that identifies the type of this PR, as shown below.
   - `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` etc
   - Also, make sure that the granularity of this PR is appropriate. Please do not include more than one type of change or interest in a single PR.
-- If there is an Issue which will be resolved by this PR, please tie issues in the text.
+- If there is an Issue which will be resolved by this PR, please include a reference to the Issue in the text.
 - Please add the summary of the changes to [`CHANGELOG.md`](/CHANGELOG.md). However, this is not necessary for changes that do not affect the users, such as refactoring.
 - Check if there are any documents that need to be created or updated due to this change.
 - If you have added a feature or fixed a bug, please add a test case if possible.
