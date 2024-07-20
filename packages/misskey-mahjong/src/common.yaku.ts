@@ -176,15 +176,21 @@ class SeatWind extends Yakuhai {
 }
 
 /**
- * 同じ順子の組を数える
+ * 2つの面子が同じか判定する
  */
-function countSameShuntsuPairs(mentsus: [TileType, TileType, TileType][]) {
+function mentsuEquals(mentsu1: [TileType, TileType, TileType], mentsu2: [TileType, TileType, TileType]): boolean {
+	return mentsu1[0] == mentsu2[0] && mentsu1[1] == mentsu2[1] && mentsu1[2] == mentsu2[2];
+}
+
+/**
+ * 2つの同じ面子の組を数える (一盃口なら1、二盃口なら2)
+ */
+function countIndenticalMentsuPairs(mentsus: [TileType, TileType, TileType][]) {
 	let result = 0;
 	const singleMentsus: [TileType, TileType, TileType][] = [];
 	loop: for (const mentsu of mentsus) {
 		for (let i = 0 ; i < singleMentsus.length ; i++) {
-			const aloneMentsu = singleMentsus[i];
-			if (mentsu[0] == aloneMentsu[0] && mentsu[1] == aloneMentsu[1] && mentsu[2] == aloneMentsu[2]) {
+			if (mentsuEquals(mentsu, singleMentsus[i])) {
 				result++;
 				singleMentsus.splice(i, 1);
 				continue loop;
@@ -342,7 +348,7 @@ new SeatWind('seat-wind-n', 'n'),
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		// 同じ順子が2つあるか？
-		return countSameShuntsuPairs(fourMentsuOneJyantou.mentsus) == 1;
+		return countIndenticalMentsuPairs(fourMentsuOneJyantou.mentsus) == 1;
 	},
 }, {
 	name: 'ryampeko',
@@ -355,7 +361,7 @@ new SeatWind('seat-wind-n', 'n'),
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		// 2つの同じ順子が2組あるか？
-		return countSameShuntsuPairs(fourMentsuOneJyantou.mentsus) == 2;
+		return countIndenticalMentsuPairs(fourMentsuOneJyantou.mentsus) == 2;
 	},
 }, {
 	name: 'toitoi',
