@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu, includes } from './common.js';
+import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu, includes, TERMINAL_TILES } from './common.js';
 
 const RYUISO_TILES: TileType[] = ['s2', 's3', 's4', 's6', 's8', 'hatsu'];
 const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
@@ -517,6 +517,29 @@ new SeatWind('seat-wind-n', 'n'),
 			huros.every(huro => huro.type == 'cii' ?
 				huro.tiles.some(tile => includes(YAOCHU_TILES, tile)) :
 				includes(YAOCHU_TILES, huro.tile)));
+	},
+}, {
+	name: 'junchan',
+	fan: 3,
+	isYakuman: false,
+	kuisagari: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		if (fourMentsuOneJyantou == null) return false;
+
+		const { head, mentsus } = fourMentsuOneJyantou;
+		const { huros } = state;
+
+		// 雀頭は老頭牌じゃないとダメ
+		if (!includes(TERMINAL_TILES, head)) return false;
+
+		// 順子は1つ以上じゃないとダメ
+		if (!mentsus.some(mentsu => isShuntu(mentsu))) return false;
+
+		// 全ての面子に老頭牌が含まれる
+		return (mentsus.every(mentsu => mentsu.some(tile => includes(TERMINAL_TILES, tile))) &&
+			huros.every(huro => huro.type == 'cii' ?
+				huro.tiles.some(tile => includes(TERMINAL_TILES, tile)) :
+				includes(TERMINAL_TILES, huro.tile)));
 	},
 }, {
 	name: 'chitoitsu',

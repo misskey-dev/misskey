@@ -279,6 +279,7 @@ export const PINZU_TILES = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'
 export const SOUZU_TILES = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9'] as const satisfies TileType[];
 export const CHAR_TILES = ['e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
 export const YAOCHU_TILES = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
+export const TERMINAL_TILES = ['m1', 'm9', 'p1', 'p9', 's1', 's9'] as const satisfies TileType[];
 const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 
 export function includes<A extends ReadonlyArray<unknown>>(array: A, searchElement: unknown): searchElement is A[number] {
