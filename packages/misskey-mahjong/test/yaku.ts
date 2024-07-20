@@ -86,7 +86,7 @@ describe('Yaku', () => {
 				seatWind: 'e',
 				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'n', 'n', 'n'],
 				huros: [],
-				tsumoTile: 's',
+				tsumoTile: 'n',
 			}).includes('field-wind-n'), true);
 		});
 		it('east', () => {
@@ -122,7 +122,7 @@ describe('Yaku', () => {
 				seatWind: 'n',
 				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3', 'n', 'n', 'n'],
 				huros: [],
-				ronTile: 's',
+				ronTile: 'n',
 			}).includes('seat-wind-n'), true);
 		});
 		it('east', () => {
@@ -449,7 +449,7 @@ describe('Yaku', () => {
 				seatWind: 'e',
 				handTiles: ['m9', 'm9', 'm9', 'p9', 'p9', 'p9', 'hatsu', 'hatsu', 'hatsu', 'n', 'n'],
 				huros: [{type: 'pon', tile: 'm1'}],
-				tsumoTile: 'p2',
+				tsumoTile: 'p9',
 			}).includes('toitoi'), true);
 		});
 	});
@@ -460,7 +460,7 @@ describe('Yaku', () => {
 				seatWind: 'e',
 				handTiles: ['m9', 'm9', 'm9', 'n', 'n'],
 				huros: [{type: 'ankan', tile: 'm1'}, {type: 'ankan', tile: 'm2'}, {type: 'minkan', tile: 'm3'}],
-				tsumoTile: 'p2',
+				tsumoTile: 'm9',
 			}).includes('sankantsu'), true);
 		});
 	});
@@ -716,7 +716,7 @@ describe('Yaku', () => {
 				seatWind: 'e',
 				handTiles: ['m1', 'm1', 'n', 'n', 'n', 'w', 'w', 'w', 's', 's', 's'],
 				huros: [{type: 'pon', tile: 'e'}],
-				tsumoTile: 'e',
+				tsumoTile: 's',
 			}), ['daisushi']);
 		});
 
@@ -758,13 +758,13 @@ describe('Yaku', () => {
 				seatWind: 'e',
 			        handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8','haku','haku','haku'],
 			        huros: [],
-				tsumoTile: 's',
+				tsumoTile: 's2',
 			}).includes('ryuiso'), false);
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
 				handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8'],
 				huros: [{type: 'pon', tile: 'haku'}],
-				tsumoTile: 's',
+				tsumoTile: 's2',
 			}).includes('ryuiso'), false);
 		});
 	})
@@ -790,7 +790,7 @@ describe('Yaku', () => {
 				seatWind: 'e',
 			        handTiles: ['s2', 's2', 's2', 's2', 's3', 's3', 's3', 's3', 's4', 's8', 's8','haku','haku','haku'],
 			        huros: [],
-				tsumoTile: 's',
+				tsumoTile: 's2',
 			}).includes('chinroto'), false);
 		});
 	})

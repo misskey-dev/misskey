@@ -447,6 +447,10 @@ export function isKotsu(tiles: [TileType, TileType, TileType]): boolean {
 	return tiles[0] === tiles[1];
 }
 
+export function mentsuEquals(tiles1: [TileType, TileType, TileType], tiles2: [TileType, TileType, TileType]): boolean {
+	return tiles1[0] == tiles2[0] && tiles1[1] == tiles2[1] && tiles1[2] == tiles2[2];
+}
+
 export const SHUNTU_PATTERNS: [TileType, TileType, TileType][] = [
 	['m1', 'm2', 'm3'],
 	['m2', 'm3', 'm4'],
