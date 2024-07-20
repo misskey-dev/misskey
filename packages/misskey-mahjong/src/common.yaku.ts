@@ -398,6 +398,14 @@ new SeatWind('seat-wind-n', 'n'),
 		return fourMentsuOneJyantou != null && waitPattern != null && countAnkos(state, fourMentsuOneJyantou, waitPattern) == 3;
 	},
 }, {
+	name: 'honroto',
+	fan: 2,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku) => {
+		return state.huros.every(huro => huro.type != 'cii' && includes(YAOCHU_TILES, huro.tile)) &&
+			state.handTiles.every(tile => includes(YAOCHU_TILES, tile));
+	}
+}, {
 	name: 'sanshoku-dojun',
 	fan: 2,
 	isYakuman: false,
@@ -711,6 +719,14 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 
 		return true;
 	},
+}, {
+	name: 'chinroto',
+	isYakuman: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		return fourMentsuOneJyantou != null &&
+			state.huros.every(huro => huro.type != 'cii' && includes(TERMINAL_TILES, huro.tile)) &&
+			state.handTiles.every(tile => includes(TERMINAL_TILES, tile));
+	}
 }, {
 	name: 'churen-9',
 	isYakuman: true,
