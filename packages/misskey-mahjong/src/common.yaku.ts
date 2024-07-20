@@ -406,6 +406,14 @@ new SeatWind('seat-wind-n', 'n'),
 			state.handTiles.every(tile => includes(YAOCHU_TILES, tile));
 	}
 }, {
+	name: 'sankantsu',
+	fan: 2,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		return fourMentsuOneJyantou != null &&
+			state.huros.filter(huro => huro.type == 'ankan' || huro.type == 'minkan').length == 3;
+	}
+}, {
 	name: 'sanshoku-dojun',
 	fan: 2,
 	isYakuman: false,
@@ -726,6 +734,13 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 		return fourMentsuOneJyantou != null &&
 			state.huros.every(huro => huro.type != 'cii' && includes(TERMINAL_TILES, huro.tile)) &&
 			state.handTiles.every(tile => includes(TERMINAL_TILES, tile));
+	}
+}, {
+	name: 'sukantsu',
+	isYakuman: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		return fourMentsuOneJyantou != null &&
+			state.huros.filter(huro => huro.type == 'ankan' || huro.type == 'minkan').length == 4;
 	}
 }, {
 	name: 'churen-9',
