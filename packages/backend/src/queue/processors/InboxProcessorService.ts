@@ -16,13 +16,10 @@ import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import { getApId } from '@/core/activitypub/type.js';
 import type { IActivity } from '@/core/activitypub/type.js';
-import type { MiRemoteUser } from '@/models/User.js';
-import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import * as Acct from '@/misc/acct.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
@@ -41,7 +38,6 @@ export class InboxProcessorService {
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private jsonLdService: JsonLdService,
-		private apPersonService: ApPersonService,
 		private apDbResolverService: ApDbResolverService,
 		private instanceChart: InstanceChart,
 		private apRequestChart: ApRequestChart,
@@ -188,7 +184,7 @@ export class InboxProcessorService {
 				this.logger.debug(`compacted: ${JSON.stringify(compactedInfo, null, 2)}`);
 				//#endregion
 			} else {
-				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
+				throw new Error(`skip: http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
 			}
 		}
 
