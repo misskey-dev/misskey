@@ -250,9 +250,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			}, {
 				...baseQueueOptions(this.config, QUEUE.DELIVER),
 				autorun: false,
-				concurrency: this.config.deliverJobConcurrency ?? 128,
+				concurrency: this.config.deliverJobConcurrency ?? 16,
 				limiter: {
-					max: this.config.deliverJobPerSec ?? 128,
+					max: this.config.deliverJobPerSec ?? 1024,
 					duration: 1000,
 				},
 				settings: {
@@ -290,9 +290,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			}, {
 				...baseQueueOptions(this.config, QUEUE.INBOX),
 				autorun: false,
-				concurrency: this.config.inboxJobConcurrency ?? 16,
+				concurrency: this.config.inboxJobConcurrency ?? 4,
 				limiter: {
-					max: this.config.inboxJobPerSec ?? 32,
+					max: this.config.inboxJobPerSec ?? 64,
 					duration: 1000,
 				},
 				settings: {

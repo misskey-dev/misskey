@@ -121,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 .root {
 	padding: 16px 0;
 
-	&:after {
+	&::after {
 		content: "";
 		display: block;
 		clear: both;
