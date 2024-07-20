@@ -656,20 +656,29 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (this.isRenote(data)) {
 				const type = this.isQuote(data) ? 'quote' : 'renote';
 
-				// Notify
 				if (data.renote.userHost === null) {
-					nm.push(data.renote.userId, type);
-				}
+					const isThreadMuted = await this.noteThreadMutingsRepository.exists({
+						where: {
+							userId: data.renote.userId,
+							threadId: data.renote.threadId ?? data.renote.id,
+						},
+					});
 
-				// Publish event
-				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-					this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
+					if (!isThreadMuted) {
+						// Notify
+						nm.push(data.renote.userId, type);
 
-					const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
-					for (const webhook of webhooks) {
-						this.queueService.userWebhookDeliver(webhook, 'renote', {
-							note: noteObj,
-						});
+						// Publish event
+						if (user.id !== data.renote.userId) {
+							this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
+
+							const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
+							for (const webhook of webhooks) {
+								this.queueService.userWebhookDeliver(webhook, 'renote', {
+									note: noteObj,
+								});
+							}
+						}
 					}
 				}
 			}
