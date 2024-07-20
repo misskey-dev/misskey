@@ -106,6 +106,38 @@ If your language is not listed in Crowdin, please open an issue.
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Development
+### Setup
+Before developing, you have to set up environment. Misskey requires Redis, PostgreSQL, and FFmpeg.
+
+You would want to install Meilisearch to experiment related features. Technically, meilisearch is not strict requirement, but some features and tests require it.
+
+There are a few ways to proceed.
+
+#### Use system-wide software
+You could install them in system-wide (such as from package manager).
+
+#### Use `docker compose`
+You could obtain middleware container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml up -d`.
+
+#### Use Devcontainer
+Devcontainer also has necessary setting. This method can be done by connecting from VSCode.
+
+Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
+To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
+**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
+
+It will run the following command automatically inside the container.
+``` bash
+git submodule update --init
+pnpm install --frozen-lockfile
+cp .devcontainer/devcontainer.yml .config/default.yml
+pnpm build
+pnpm migrate
+```
+
+After finishing the migration, you can proceed.
+
+### Start developing
 During development, it is useful to use the
 
 ```
@@ -135,26 +167,6 @@ MK_DEV_PREFER=backend pnpm dev
 - To change the port of Vite, specify with `VITE_PORT` environment variable.
 - HMR may not work in some environments such as Windows.
 
-### Dev Container
-Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
-To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
-**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
-
-It will run the following command automatically inside the container.
-``` bash
-git submodule update --init
-pnpm install --frozen-lockfile
-cp .devcontainer/devcontainer.yml .config/default.yml
-pnpm build
-pnpm migrate
-```
-
-After finishing the migration, run the `pnpm dev` command to start the development server.
-
-``` bash
-pnpm dev
-```
-
 ## Testing
 - Test codes are located in [`/packages/backend/test`](/packages/backend/test).
 
@@ -165,7 +177,7 @@ cp .github/misskey/test.yml .config/
 ```
 Prepare DB/Redis for testing.
 ```
-docker compose -f packages/backend/test/docker-compose.yml up
+docker compose -f packages/backend/test/compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`.
 

@@ -169,7 +169,7 @@ const props = defineProps<{
 const showBoardLabels = ref<boolean>(false);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
-// eslint-disable-next-line vue/no-setup-props-destructure
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const game = ref<Misskey.entities.ReversiGameDetailed & { logs: Reversi.Serializer.SerializedLog[] }>(deepClone(props.game));
 const logPos = ref<number>(game.value.logs.length);
 const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
