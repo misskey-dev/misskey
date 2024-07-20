@@ -184,7 +184,7 @@ export class InboxProcessorService {
 				this.logger.debug(`compacted: ${JSON.stringify(compactedInfo, null, 2)}`);
 				//#endregion
 			} else {
-				throw new Error(`skip: http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
+				throw new Error(`http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
 			}
 		}
 
