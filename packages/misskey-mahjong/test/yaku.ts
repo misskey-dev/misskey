@@ -13,6 +13,7 @@ describe('Yaku', () => {
 				seatWind: 'e',
 				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
 				huros: [],
+				ronTile: 'm3',
 				riichi: true,
 			}), ['riichi']);
 		});
@@ -205,6 +206,7 @@ describe('Yaku', () => {
 				handTiles: ['m1', 'm2', 'm3', 'p6', 'p7', 'p8', 's3', 's3', 's3', 's4', 's5', 's6', 'm3', 'm3'],
 				ippatsu: true,
 				huros: [],
+				tsumoTile: 'm1',
 			}).includes('tanyao'), false);
 		});
 	});
@@ -386,7 +388,8 @@ describe('Yaku', () => {
 		it('invalid', () => {
 			assert.deepStrictEqual(calcYakus({
 				handTiles: ['m2', 'm3', 'm4', 'm2', 'm3', 'm4', 'p5', 'p6', 'p7', 'p5', 'p6', 'p7', 'p1', 'p1'],
-				huros: []
+				huros: [],
+				tsumoTile: 'p1',
 			}).includes('chitoitsu'), false)
 		})
 	});

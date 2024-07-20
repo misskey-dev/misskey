@@ -97,9 +97,6 @@ export type EnvForCalcYaku = {
 		tile: TileType;
 	})[];
 
-	tsumoTile?: TileType;
-	ronTile?: TileType;
-
 	/**
 	 * 場風
 	 */
@@ -119,7 +116,11 @@ export type EnvForCalcYaku = {
 	 * 一巡目以内かどうか
 	 */
 	ippatsu?: boolean;
-};
+} & ({
+	tsumoTile: TileType;
+} | {
+	ronTile: TileType;
+});
 
 type YakuDefinition = {
 	name: YakuName;
@@ -211,7 +212,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
-		return state.tsumoTile != null;
+		return 'tsumoTile' in state;
 	},
 }, {
 	name: 'riichi',
@@ -697,7 +698,7 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
-		const agariTile = state.tsumoTile ?? state.ronTile;
+		const agariTile = 'tsumoTile' in state ? state.tsumoTile : state.ronTile;
 		if (agariTile == null) {
 			return false;
 		}
