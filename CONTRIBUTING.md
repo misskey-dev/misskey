@@ -29,13 +29,13 @@ When you want to add a feature or fix a bug, **first have the design and policy 
 At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
 PRs that do not have a clear set of do's and don'ts tend to be bloated and difficult to review.
 
-Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask another member to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
+Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Commiter to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
 
-To organization members: you should not assign someone on it before the Final Desicion.
+To the Commiters: you should not assign someone on it before the Final Desicion.
 
 ### How issues are triaged
 
-The Project Members may:
+The Commiters may:
 * close issue that is not reproducible on latest stable release,
 * merge issue into another issue,
 * or split issue into multiple ones
