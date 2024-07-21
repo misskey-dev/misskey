@@ -367,6 +367,7 @@ function watchForDraft() {
 	watch(files, () => saveDraft(), { deep: true });
 	watch(visibility, () => saveDraft());
 	watch(localOnly, () => saveDraft());
+	watch(quoteId, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -703,6 +704,7 @@ function saveDraft() {
 			files: files.value,
 			poll: poll.value,
 			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			quoteId: quoteId.value,
 		},
 	};
 
@@ -991,6 +993,7 @@ onMounted(() => {
 						users.forEach(u => pushVisibleUser(u));
 					});
 				}
+				quoteId.value = draft.data.quoteId;
 			}
 		}
 
