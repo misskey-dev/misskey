@@ -1248,6 +1248,8 @@ noDescription: "沒有說明文字"
 alwaysConfirmFollow: "點擊追隨時總是顯示確認訊息"
 inquiry: "聯絡我們"
 tryAgain: "請再試一次。"
+confirmWhenRevealingSensitiveMedia: "要顯示敏感媒體時需確認"
+sensitiveMediaRevealConfirm: "這是敏感媒體。確定要顯示嗎？"
 _delivery:
   status: "傳送狀態"
   stop: "停止發送"
