@@ -617,7 +617,7 @@ export class MasterGameEngine {
 		if (tx.$state.turn !== house) throw new Error('Not your turn');
 
 		const yakus = calcYakus({
-			fieldWind: house,
+			seatWind: house,
 			handTiles: tx.handTileTypes[house],
 			huros: tx.$state.huros[house].map(convertHuroForCalcYaku),
 			tsumoTile: tx.handTileTypes[house].at(-1)!,
@@ -672,7 +672,7 @@ export class MasterGameEngine {
 			for (const house of callers) {
 				const ronTile = tx.hoTileTypes[callee].at(-1)!;
 				const yakus = calcYakus({
-					fieldWind: house,
+					seatWind: house,
 					handTiles: tx.handTileTypes[house].concat([ronTile]),
 					huros: tx.$state.huros[house].map(convertHuroForCalcYaku),
 					tsumoTile: null,

@@ -242,7 +242,7 @@ export class PlayerGameEngine {
 		console.log('commit_tsumoHora', this.state.turn, house);
 
 		const yakus = calcYakus({
-			fieldWind: house,
+			seatWind: house,
 			handTiles: handTiles.map(id => $type(id)),
 			huros: this.state.huros[house].map(convertHuroForCalcYaku),
 			tsumoTile: $type(tsumoTile),
@@ -297,7 +297,7 @@ export class PlayerGameEngine {
 		const ronTile = $type(this.state.hoTiles[callee].at(-1)!);
 		for (const house of callers) {
 			const yakus = calcYakus({
-				fieldWind: house,
+				seatWind: house,
 				handTiles: handTiles[house].map(id => $type(id)).concat([ronTile]),
 				huros: this.state.huros[house].map(convertHuroForCalcYaku),
 				tsumoTile: null,
