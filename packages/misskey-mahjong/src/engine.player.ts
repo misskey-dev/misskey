@@ -294,13 +294,14 @@ export class PlayerGameEngine {
 			n: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
 		};
 
+		const ronTile = $type(this.state.hoTiles[callee].at(-1)!);
 		for (const house of callers) {
 			const yakus = calcYakus({
 				fieldWind: house,
-				handTiles: handTiles[house].map(id => $type(id)),
+				handTiles: handTiles[house].map(id => $type(id)).concat([ronTile]),
 				huros: this.state.huros[house].map(convertHuroForCalcYaku),
 				tsumoTile: null,
-				ronTile: $type(this.state.hoTiles[callee].at(-1)!),
+				ronTile: ronTile,
 				riichi: this.state.riichis[house],
 				ippatsu: this.state.ippatsus[house],
 			}).map(name => YAKU_DEFINITION_MAP.get(name)!);

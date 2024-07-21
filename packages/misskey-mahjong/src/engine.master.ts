@@ -616,12 +616,11 @@ export class MasterGameEngine {
 
 		if (tx.$state.turn !== house) throw new Error('Not your turn');
 
-		const tsumoTile = tx.handTileTypes[house].at(-1)!;
 		const yakus = calcYakus({
 			fieldWind: house,
-			handTiles: tx.handTileTypes[house].concat([tsumoTile]),
+			handTiles: tx.handTileTypes[house],
 			huros: tx.$state.huros[house].map(convertHuroForCalcYaku),
-			tsumoTile: tsumoTile,
+			tsumoTile: tx.handTileTypes[house].at(-1)!,
 			ronTile: null,
 			riichi: tx.$state.riichis[house],
 			ippatsu: tx.$state.ippatsus[house],
