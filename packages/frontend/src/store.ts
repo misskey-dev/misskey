@@ -116,7 +116,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	imageCompressionMode: {
 		where: 'account',
-		default: 'resizeCompress' as 'resizeCompress' | 'noResizeCompress' | 'resizeCompressLossy' | 'noResizeCompressLossy',
+		default: 'noResizeCompress' as 'resizeCompress' | 'noResizeCompress' | 'resizeCompressLossy' | 'noResizeCompressLossy',
 	},
 	imageResizeSize: {
 		where: 'account',
@@ -193,7 +193,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'vmimi-relay-social' | `list:${string}`,
+			src: 'social' as 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'vmimi-relay-social' | `list:${string}`,
 			userList: null as Misskey.entities.UserList | null,
 			filter: {
 				withReplies: true,
@@ -419,7 +419,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultWithReplies: {
 		where: 'account',
-		default: false,
+		default: true,
 	},
 	disableStreamingTimeline: {
 		where: 'device',
