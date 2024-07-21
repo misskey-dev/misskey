@@ -38,7 +38,7 @@ const emit = defineEmits<{
 }>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
-const form = shallowRef<InstanceType<typeof MkPostForm>>();
+const form = shallowRef<InstanceType<typeof MkEditForm>>();
 
 function onPosted() {
 	modal.value?.close({
