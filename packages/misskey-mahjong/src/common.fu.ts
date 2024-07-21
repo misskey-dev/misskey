@@ -44,7 +44,7 @@ export function isRyanmen(taatsu: [TileType, TileType]): boolean {
 	const number1 = TILE_NUMBER_MAP[taatsu[0]];
 	const number2 = TILE_NUMBER_MAP[taatsu[1]];
 	if (number1 == null || number2 == null) return false;
-	return number1 + 1 == number2;
+	return number1 != 1 && number2 != 9 && number1 + 1 == number2;
 }
 
 export function isToitsu(taatsu: [TileType, TileType]): boolean {

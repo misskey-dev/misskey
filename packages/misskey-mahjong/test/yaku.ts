@@ -222,10 +222,10 @@ describe('Yaku', () => {
 
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
-				handTiles: ['m2', 'm3', 'm4', 'p6', 'p6', 'p6', 'p5', 'p6', 'p7', 's9', 's9', 's7', 's8', 's9'],
+				handTiles: ['m2', 'm3', 'm4', 'p6', 'p7', 'p8', 'p5', 'p6', 'p7', 's9', 's9', 's5', 's6', 's7'],
 				huros: [],
-				tsumoTile: 's9',
-			}).includes('pinfu'), false);
+				ronTile: 's7',
+			}).includes('pinfu'), true);
 		});
 
 		it('invalid', () => {
@@ -247,8 +247,8 @@ describe('Yaku', () => {
 				seatWind: 'e',
 				handTiles: ['m2', 'm3', 'm4', 'p6', 'p7', 'p8', 'p5', 'p6', 'p7', 's9', 's9', 's5', 's6', 's7'],
 				huros: [],
-				ronTile: 's7',
-			}).includes('pinfu'), true);
+				ronTile: 's6',
+			}).includes('pinfu'), false);
 		});
 	});
 
