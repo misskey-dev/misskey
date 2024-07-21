@@ -35,8 +35,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		WebSocket?: any;
+		WebSocket?: WebSocket;
 	}) {
 		super();
 
