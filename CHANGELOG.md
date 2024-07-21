@@ -15,6 +15,7 @@
 		* deliverJobPerSec: 1024 (←128)
 		* inboxJobConcurrency: 4 (←16)
 		* inboxJobPerSec: 64 (←32)
+- Enhance: 管理画面でアーカイブにしたお知らせを表示・編集できるように
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
