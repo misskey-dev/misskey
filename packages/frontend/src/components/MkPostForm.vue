@@ -368,6 +368,7 @@ function watchForDraft() {
 	watch(visibility, () => saveDraft());
 	watch(localOnly, () => saveDraft());
 	watch(quoteId, () => saveDraft());
+	watch(reactionAcceptance, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -705,6 +706,7 @@ function saveDraft() {
 			poll: poll.value,
 			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
 			quoteId: quoteId.value,
+			reactionAcceptance: reactionAcceptance.value,
 		},
 	};
 
@@ -994,6 +996,7 @@ onMounted(() => {
 					});
 				}
 				quoteId.value = draft.data.quoteId;
+				reactionAcceptance.value = draft.data.reactionAcceptance;
 			}
 		}
 
@@ -1020,6 +1023,7 @@ onMounted(() => {
 				});
 			}
 			quoteId.value = init.renote ? init.renote.id : null;
+			reactionAcceptance.value = init.reactionAcceptance;
 		}
 
 		nextTick(() => watchForDraft());
