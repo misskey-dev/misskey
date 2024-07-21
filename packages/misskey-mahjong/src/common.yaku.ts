@@ -814,8 +814,17 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 		return false;
 	},
 }, {
+	name: 'kokushi-13',
+	isYakuman: true,
+	isDoubleYakuman: true,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		const agariTile = 'tsumoTile' in state ? state.tsumoTile : state.ronTile;
+		return KOKUSHI_TILES.every(t => state.handTiles.includes(t)) && countTiles(state.handTiles, agariTile) == 2;
+	}
+}, {
 	name: 'kokushi',
 	isYakuman: true,
+	upper: 'kokushi-13',
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		return KOKUSHI_TILES.every(t => state.handTiles.includes(t)) && KOKUSHI_TILES.some(t => countTiles(state.handTiles, t) == 2);
 	},

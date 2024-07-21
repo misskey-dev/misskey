@@ -544,7 +544,7 @@ describe('Yaku', () => {
 		it('invalid', () => {
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
-			        handTiles: ['m1', 'm1', 's1', 's9', 'p1', 'p9', 'haku', 'hatsu', 'chun', 'n', 'w', 's', 'e', 'm9'] ,
+			        handTiles: ['m1', 'm9', 's1', 's9', 'p1', 'p9', 'haku', 'hatsu', 'chun', 'n', 'w', 's', 'e', 'm9'] ,
 				huros: [],
 			        tsumoTile: 'm1',
 			}).includes('kokushi-13'), false);
