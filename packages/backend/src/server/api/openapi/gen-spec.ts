@@ -8,7 +8,7 @@ import endpoints, { IEndpoint } from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
 import { getSchemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
-export function genOpenapiSpec(config: Config, includeSelfRef = false) {
+export function genOpenapiSpec(config: Config, includeSelfRef = false, includeTokenProperty = true) {
 	const spec = {
 		openapi: '3.1.0',
 
@@ -30,13 +30,6 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 
 		components: {
 			schemas: getSchemas(includeSelfRef),
-
-			securitySchemes: {
-				bearerAuth: {
-					type: 'http',
-					scheme: 'bearer',
-				},
-			},
 		},
 	};
 
@@ -81,7 +74,19 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 					description: 'The file contents.',
 				},
 			};
-			schema.required = [...schema.required ?? [], 'file'];
+			schema.required = [...(schema.required ?? []), 'file'];
+		}
+
+		// api-doc向けにトークンプロパティを追記する
+		if (endpoint.meta.requireCredential && includeTokenProperty) {
+			schema.properties = {
+				...schema.properties,
+				i: {
+					type: 'string',
+					description: 'The access token.',
+				},
+			};
+			schema.required = [...(schema.required ?? []), 'i'];
 		}
 
 		if (schema.required && schema.required.length <= 0) {
@@ -101,11 +106,6 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 			},
 			...(endpoint.meta.tags ? {
 				tags: [endpoint.meta.tags[0]],
-			} : {}),
-			...(endpoint.meta.requireCredential ? {
-				security: [{
-					bearerAuth: [],
-				}],
 			} : {}),
 			...(hasBody ? {
 				requestBody: {
