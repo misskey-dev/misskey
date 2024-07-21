@@ -208,7 +208,7 @@ function countAnkos(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJy
 	const handKotsus = fourMentsuOneJyantou.mentsus.filter(mentsu => isKotsu(mentsu)).length;
 
 	// ロンによりできた刻子は暗刻ではない
-	if ('ronTile' in state && waitPattern.completes == 'mentsu' && isToitsu(waitPattern.taatsu)) {
+	if (state.ronTile != null && waitPattern.completes == 'mentsu' && isToitsu(waitPattern.taatsu)) {
 		return ankans + handKotsus - 1;
 	}
 
@@ -223,7 +223,7 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
-		return 'tsumoTile' in state;
+		return state.tsumoTile != null;
 	},
 }, {
 	name: 'riichi',

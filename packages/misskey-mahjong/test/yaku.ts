@@ -36,6 +36,15 @@ describe('Yaku', () => {
 				tsumoTile: 'p2',
 			}).includes('tsumo'), true);
 		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm1', 'm2', 'm2', 'm8', 'm8', 'p5', 'p5', 'p7', 'p7', 's9', 's9', 'p2', 'p2'],
+				huros: [],
+				ronTile: 'p2',
+			}).includes('tsumo'), false);
+		})
 	});
 
 	describe('white', () => {
