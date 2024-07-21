@@ -11,7 +11,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, NoteHistoryRepository, FollowingsRepository, PollsRepository, PollVotesRepository, MiNoteHistory } from '@/models/_.js';
+import type { UsersRepository, NotesRepository, NoteHistoriesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, MiNoteHistory } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -37,8 +37,8 @@ export class NoteHistoryEntityService implements OnModuleInit {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.noteHistoryRepository)
-		private noteHistoryRepository: NoteHistoryRepository,
+		@Inject(DI.noteHistoriesRepository)
+		private noteHistoriesRepository: NoteHistoriesRepository,
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
@@ -186,7 +186,7 @@ export class NoteHistoryEntityService implements OnModuleInit {
 			skipHide: false,
 			withReactionAndUserPairCache: false,
 		}, options);
-		const targetHistory = await this.noteHistoryRepository.findOneByOrFail({ id: src });
+		const targetHistory = await this.noteHistoriesRepository.findOneByOrFail({ id: src });
 		const targetNote = await this.notesRepository.findOneByOrFail({ id: targetHistory.targetId });
 		const meId = me ? me.id : null;
 		if (!(await this.isVisibleForMe(targetNote, meId))) {

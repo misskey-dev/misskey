@@ -8,7 +8,7 @@ import { In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteHistoryEntityService } from '@/core/entities/NoteHistoryEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
-import type { NoteHistoryRepository } from '@/models/_.js';
+import type { NoteHistoriesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -52,8 +52,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.noteHistoryRepository)
-		private noteHistoryRepository: NoteHistoryRepository,
+		@Inject(DI.noteHistoriesRepository)
+		private noteHistoriesRepository: NoteHistoriesRepository,
 
 		private idService: IdService,
 		private queryService: QueryService,
@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const q = this.queryService.makePaginationQuery(this.noteHistoryRepository.createQueryBuilder('noteHistory'), ps.sinceId, ps.untilId);
+			const q = this.queryService.makePaginationQuery(this.noteHistoriesRepository.createQueryBuilder('noteHistory'), ps.sinceId, ps.untilId);
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;

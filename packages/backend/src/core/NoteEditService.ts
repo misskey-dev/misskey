@@ -13,7 +13,7 @@ import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
 import { MiNoteHistory } from '@/models/NoteHistory.js';
-import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, NotesRepository, NoteHistoryRepository, UserProfilesRepository, UsersRepository, PollsRepository, DriveFilesRepository } from '@/models/_.js';
+import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, NotesRepository, NoteHistoriesRepository, UserProfilesRepository, UsersRepository, PollsRepository, DriveFilesRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
@@ -106,8 +106,8 @@ export class NoteEditService implements OnApplicationShutdown {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.noteHistoryRepository)
-		private noteHistoryRepository: NoteHistoryRepository,
+		@Inject(DI.noteHistoriesRepository)
+		private noteHistoriesRepository: NoteHistoriesRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -309,7 +309,7 @@ export class NoteEditService implements OnApplicationShutdown {
 
 			throw e;
 		}
-		this.noteHistoryRepository.insert(new MiNoteHistory({
+		this.noteHistoriesRepository.insert(new MiNoteHistory({
 			id: this.idService.gen(),
 			text: targetNote.text,
 			cw: targetNote.cw,

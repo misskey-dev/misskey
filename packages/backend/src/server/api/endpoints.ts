@@ -289,7 +289,7 @@ import * as ep___notes_favorites_create from './endpoints/notes/favorites/create
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
 import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
-import * as ep___notes_history from './endpoints/notes/history.js';
+import * as ep___notes_histories from './endpoints/notes/histories.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
@@ -672,7 +672,7 @@ const eps = [
 	['notes/favorites/delete', ep___notes_favorites_delete],
 	['notes/featured', ep___notes_featured],
 	['notes/global-timeline', ep___notes_globalTimeline],
-	['notes/history', ep___notes_history],
+	['notes/histories', ep___notes_histories],
 	['notes/hybrid-timeline', ep___notes_hybridTimeline],
 	['notes/local-timeline', ep___notes_localTimeline],
 	['notes/mentions', ep___notes_mentions],

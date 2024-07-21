@@ -118,8 +118,8 @@ const $avatarDecorationsRepository: Provider = {
 	inject: [DI.db],
 };
 
-const $noteHistoryRepository: Provider = {
-	provide: DI.noteHistoryRepository,
+const $noteHistoriesRepository: Provider = {
+	provide: DI.noteHistoriesRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiNoteHistory).extend(miRepository as MiRepository<MiNoteHistory>),
 	inject: [DI.db],
 };
@@ -511,7 +511,7 @@ const $reversiGamesRepository: Provider = {
 		$announcementReadsRepository,
 		$appsRepository,
 		$avatarDecorationsRepository,
-		$noteHistoryRepository,
+		$noteHistoriesRepository,
 		$noteFavoritesRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
@@ -583,7 +583,7 @@ const $reversiGamesRepository: Provider = {
 		$announcementReadsRepository,
 		$appsRepository,
 		$avatarDecorationsRepository,
-		$noteHistoryRepository,
+		$noteHistoriesRepository,
 		$noteFavoritesRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
