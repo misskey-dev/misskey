@@ -551,7 +551,7 @@ type Channel = components['schemas']['Channel'];
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export abstract class ChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+export abstract class ChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
     constructor(stream: Stream, channel: string, name?: string);
     // (undocumented)
     channel: string;
@@ -771,12 +771,12 @@ export type Channels = {
                 user1: boolean;
                 user2: boolean;
             }) => void;
-            updateSettings: <K extends ReversiUpdateKey>(payload: {
+            updateSettings: (payload: {
                 userId: User['id'];
-                key: K;
-                value: ReversiGameDetailed[K];
+                key: string;
+                value: any;
             }) => void;
-            log: (payload: Record<string, unknown>) => void;
+            log: (payload: Record<string, any>) => void;
         };
         receives: {
             putStone: {
@@ -785,7 +785,10 @@ export type Channels = {
             };
             ready: boolean;
             cancel: null | Record<string, never>;
-            updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
+            updateSettings: {
+                key: string;
+                value: any;
+            };
             claimTimeIsUp: null | Record<string, never>;
         };
     };
@@ -2989,9 +2992,9 @@ export class Stream extends EventEmitter<StreamEvents> {
     // (undocumented)
     send(typeOrPayload: string): void;
     // (undocumented)
-    send(typeOrPayload: string, payload: unknown): void;
+    send(typeOrPayload: string, payload: any): void;
     // (undocumented)
-    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
+    send(typeOrPayload: Record<string, any> | any[]): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
@@ -3226,9 +3229,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:35:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/entities.ts:34:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
