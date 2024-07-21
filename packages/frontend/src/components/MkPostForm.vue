@@ -998,9 +998,11 @@ onMounted(() => {
 		if (props.initialNote) {
 			const init = props.initialNote;
 			text.value = init.text ? init.text : '';
-			files.value = init.files ?? [];
-			cw.value = init.cw ?? null;
 			useCw.value = init.cw != null;
+			cw.value = init.cw ?? null;
+			visibility.value = init.visibility;
+			localOnly.value = init.localOnly ?? false;
+			files.value = init.files ?? [];
 			if (init.poll) {
 				poll.value = {
 					choices: init.poll.choices.map(x => x.text),
@@ -1009,8 +1011,6 @@ onMounted(() => {
 					expiredAfter: null,
 				};
 			}
-			visibility.value = init.visibility;
-			localOnly.value = init.localOnly ?? false;
 			quoteId.value = init.renote ? init.renote.id : null;
 		}
 
