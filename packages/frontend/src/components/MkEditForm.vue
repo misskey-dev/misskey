@@ -108,7 +108,6 @@ const props = withDefaults(defineProps<{
 	initialFiles?: Misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: Misskey.entities.UserDetailed[];
-	initialNote?: Misskey.entities.Note;
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
@@ -162,9 +161,9 @@ const draftKey = computed((): string => {
 	} else if (props.reply) {
 		key += `reply:${props.reply.id}`;
 	} else {
-		key += `note:${$i.id}`;
+		key += `note:${props.target.id}`;
 	}
-
+	key += ':edit';
 	return key;
 });
 
@@ -498,20 +497,9 @@ async function post(ev?: MouseEvent) {
 	let postData = {
 		noteId: props.target.id,
 		text: text.value === '' ? '' : text.value,
-		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : null,
+		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
 		poll: poll.value ?? null,
 		cw: useCw.value ? cw.value ?? '' : null,
-	} as {
-		noteId: string;
-		text: string;
-		cw: string | null;
-		fileIds?: string[];
-		poll?: ({
-			choices: string[];
-			multiple?: boolean;
-			expiresAt?: number | null;
-			expiredAfter?: number | null;
-		}) | null;
 	};
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
@@ -695,6 +683,21 @@ onMounted(() => {
 	if (hashtagsInputEl.value) new Autocomplete(hashtagsInputEl.value, hashtags);
 
 	nextTick(() => {
+		const init = props.target;
+		text.value = init.text ? init.text : '';
+		files.value = init.files ?? [];
+		cw.value = init.cw ?? null;
+		useCw.value = init.cw != null;
+		if (init.poll) {
+			poll.value = {
+				choices: init.poll.choices.map(x => x.text),
+				multiple: init.poll.multiple,
+				expiresAt: init.poll.expiresAt ? (new Date(init.poll.expiresAt)).getTime() : null,
+				expiredAfter: null,
+			};
+		}
+		quoteId.value = init.renote ? init.renote.id : null;
+
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified && !props.mock) {
 			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value];
@@ -707,24 +710,6 @@ onMounted(() => {
 					poll.value = draft.data.poll;
 				}
 			}
-		}
-
-		// 削除して編集
-		if (props.initialNote) {
-			const init = props.initialNote;
-			text.value = init.text ? init.text : '';
-			files.value = init.files ?? [];
-			cw.value = init.cw ?? null;
-			useCw.value = init.cw != null;
-			if (init.poll) {
-				poll.value = {
-					choices: init.poll.choices.map(x => x.text),
-					multiple: init.poll.multiple,
-					expiresAt: init.poll.expiresAt ? (new Date(init.poll.expiresAt)).getTime() : null,
-					expiredAfter: null,
-				};
-			}
-			quoteId.value = init.renote ? init.renote.id : null;
 		}
 
 		nextTick(() => watchForDraft());

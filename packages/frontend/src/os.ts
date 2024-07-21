@@ -13,6 +13,7 @@ import type { Form, GetFormResultType } from '@/scripts/form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
+import MkEditFormDialog from '@/components/MkEditFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
@@ -688,6 +689,27 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 		const { dispose } = popup(MkPostFormDialog, props, {
+			closed: () => {
+				resolve();
+				dispose();
+			},
+		});
+	});
+}
+
+export function edit(props: Record<string, any> = {}): Promise<void> {
+	pleaseLogin(undefined, (props.initialText || props.initialNote ? {
+		type: 'share',
+		params: {
+			text: props.initialText ?? props.initialNote.text,
+			visibility: props.initialVisibility ?? props.initialNote?.visibility,
+			localOnly: (props.initialLocalOnly || props.initialNote?.localOnly) ? '1' : '0',
+		},
+	} : undefined));
+
+	showMovedDialog();
+	return new Promise(resolve => {
+		const { dispose } = popup(MkEditFormDialog, props, {
 			closed: () => {
 				resolve();
 				dispose();
