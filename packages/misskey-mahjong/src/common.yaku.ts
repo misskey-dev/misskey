@@ -216,8 +216,6 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
@@ -254,8 +252,6 @@ new SeatWind('seat-wind-n', 'n'),
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
 		return (
 			(!state.handTiles.some(t => includes(YAOCHU_TILES, t))) &&
 			(state.huros.filter(huro =>
@@ -296,8 +292,6 @@ new SeatWind('seat-wind-n', 'n'),
 	isYakuman: false,
 	kuisagari: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
 		const tiles = state.handTiles;
 		let manzuCount = tiles.filter(t => includes(MANZU_TILES, t)).length;
 		let pinzuCount = tiles.filter(t => includes(PINZU_TILES, t)).length;
@@ -325,8 +319,6 @@ new SeatWind('seat-wind-n', 'n'),
 	isYakuman: false,
 	kuisagari: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
 		const tiles = state.handTiles;
 		let manzuCount = tiles.filter(t => includes(MANZU_TILES, t)).length;
 		let pinzuCount = tiles.filter(t => includes(PINZU_TILES, t)).length;

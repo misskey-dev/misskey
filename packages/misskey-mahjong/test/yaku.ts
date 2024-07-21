@@ -19,6 +19,25 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('tsumo', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
+				huros: [],
+				tsumoTile: 'm3',
+				riichi: false,
+			}), ['tsumo']);
+
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm1', 'm2', 'm2', 'm8', 'm8', 'p5', 'p5', 'p7', 'p7', 's9', 's9', 'p2', 'p2'],
+				huros: [],
+				tsumoTile: 'p2',
+			}).includes('tsumo'), true);
+		});
+	});
+
 	describe('white', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
@@ -197,6 +216,13 @@ describe('Yaku', () => {
 				handTiles: ['p6', 'p7', 'p8', 's3', 's3', 's3', 's4', 's5', 's6', 'm3', 'm3'],
 				huros: [{type: 'pon', tile: 'm2'}],
 				tsumoTile: 'm3',
+			}).includes('tanyao'), true);
+
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m2', 'm2', 'm3', 'm3', 'm8', 'm8', 'p5', 'p5', 'p7', 'p7', 's8', 's8', 'p2', 'p2'],
+				huros: [],
+				tsumoTile: 'p2',
 			}).includes('tanyao'), true);
 		});
 
@@ -479,6 +505,13 @@ describe('Yaku', () => {
 				huros: [],
 				tsumoTile: 'n',
 			}).includes('honitsu'), true);
+
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm1', 'm5', 'm5', 'm6', 'm6', 'm7', 'm7', 'm9', 'm9', 'w', 'w', 'n', 'n'],
+				huros: [],
+				tsumoTile: 'n',
+			}).includes('honitsu'), true);
 		});
 		it('invalid', () => {
 			assert.deepStrictEqual(calcYakus({
@@ -491,15 +524,23 @@ describe('Yaku', () => {
 	});
 
 	describe('chinitsu', () => {
-		it('invalid', () => {
+		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
 				handTiles: ['m1', 'm1', 'm1', 'm5', 'm6', 'm7', 'm9', 'm9', 'm9', 'm8', 'm8'],
 				huros: [],
 				tsumoTile: 'm8',
 			}).includes('chinitsu'), true);
+
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm1', 'm2', 'm2', 'm4', 'm4', 'm5', 'm5', 'm6', 'm6', 'm7', 'm7', 'm9', 'm9'],
+				huros: [],
+				tsumoTile: 'm9',
+			}).includes('chinitsu'), true);
 		});
 	});
+
 	describe('shosangen', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
