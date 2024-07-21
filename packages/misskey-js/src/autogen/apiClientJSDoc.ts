@@ -3100,7 +3100,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *No*
      */
-    request<E extends 'notes/history', P extends Endpoints[E]['req']>(
+    request<E extends 'notes/histories', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

@@ -2683,14 +2683,14 @@ export type paths = {
      */
     post: operations['notes___global-timeline'];
   };
-  '/notes/history': {
+  '/notes/histories': {
     /**
-     * notes/history
+     * notes/histories
      * @description No description provided.
      *
      * **Credential required**: *No*
      */
-    post: operations['notes___history'];
+    post: operations['notes___histories'];
   };
   '/notes/hybrid-timeline': {
     /**
@@ -21617,12 +21617,12 @@ export type operations = {
     };
   };
   /**
-   * notes/history
+   * notes/histories
    * @description No description provided.
    *
    * **Credential required**: *No*
    */
-  notes___history: {
+  notes___histories: {
     requestBody: {
       content: {
         'application/json': {

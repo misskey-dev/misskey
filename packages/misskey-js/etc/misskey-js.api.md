@@ -1608,8 +1608,8 @@ declare namespace entities {
         NotesFeaturedResponse,
         NotesGlobalTimelineRequest,
         NotesGlobalTimelineResponse,
-        NotesHistoryRequest,
-        NotesHistoryResponse,
+        NotesHistoriesRequest,
+        NotesHistoriesResponse,
         NotesHybridTimelineRequest,
         NotesHybridTimelineResponse,
         NotesLocalTimelineRequest,
@@ -2575,10 +2575,10 @@ type NotesGlobalTimelineRequest = operations['notes___global-timeline']['request
 type NotesGlobalTimelineResponse = operations['notes___global-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type NotesHistoryRequest = operations['notes___history']['requestBody']['content']['application/json'];
+type NotesHistoriesRequest = operations['notes___histories']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotesHistoryResponse = operations['notes___history']['responses']['200']['content']['application/json'];
+type NotesHistoriesResponse = operations['notes___histories']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['requestBody']['content']['application/json'];

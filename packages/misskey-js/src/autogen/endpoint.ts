@@ -415,8 +415,8 @@ import type {
 	NotesFeaturedResponse,
 	NotesGlobalTimelineRequest,
 	NotesGlobalTimelineResponse,
-	NotesHistoryRequest,
-	NotesHistoryResponse,
+	NotesHistoriesRequest,
+	NotesHistoriesResponse,
 	NotesHybridTimelineRequest,
 	NotesHybridTimelineResponse,
 	NotesLocalTimelineRequest,
@@ -854,7 +854,7 @@ export type Endpoints = {
 	'notes/favorites/delete': { req: NotesFavoritesDeleteRequest; res: EmptyResponse };
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };
 	'notes/global-timeline': { req: NotesGlobalTimelineRequest; res: NotesGlobalTimelineResponse };
-	'notes/history': { req: NotesHistoryRequest; res: NotesHistoryResponse };
+	'notes/histories': { req: NotesHistoriesRequest; res: NotesHistoriesResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
@@ -1238,7 +1238,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'notes/favorites/delete': 'application/json',
 	'notes/featured': 'application/json',
 	'notes/global-timeline': 'application/json',
-	'notes/history': 'application/json',
+	'notes/histories': 'application/json',
 	'notes/hybrid-timeline': 'application/json',
 	'notes/local-timeline': 'application/json',
 	'notes/mentions': 'application/json',
