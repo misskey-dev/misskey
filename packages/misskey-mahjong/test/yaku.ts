@@ -504,7 +504,7 @@ describe('Yaku', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
 			      	seatWind: 'e',
-				handTiles: ['haku', 'haku', 'haku', 'chun', 'chun', 'hatsu', 'hatsu', 'hatsu', 'm1', 'm1', 'm1', 'm2', 'm2', 'm2'] ,
+				handTiles: ['haku', 'haku', 'haku', 'chun', 'chun', 'hatsu', 'hatsu', 'hatsu', 'm1', 'm1', 'm1', 'm2', 'm3', 'm4'] ,
 				huros: [],
 				tsumoTile: 'm2',
 			}).includes('shosangen'), true);
