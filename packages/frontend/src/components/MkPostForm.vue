@@ -1011,6 +1011,11 @@ onMounted(() => {
 					expiredAfter: null,
 				};
 			}
+			if (init.visibleUserIds) {
+				misskeyApi('users/show', { userIds: init.visibleUserIds }).then(users => {
+					users.forEach(u => pushVisibleUser(u));
+				});
+			}
 			quoteId.value = init.renote ? init.renote.id : null;
 		}
 
