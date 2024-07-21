@@ -513,6 +513,10 @@ export interface Locale extends ILocale {
      */
     "reactions": string;
     /**
+     * 履歴
+     */
+    "histories": string;
+    /**
      * 絵文字ピッカー
      */
     "emojiPicker": string;
