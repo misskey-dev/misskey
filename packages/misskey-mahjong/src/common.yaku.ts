@@ -817,7 +817,7 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 	name: 'kokushi',
 	isYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		return KOKUSHI_TILES.every(t => state.handTiles.includes(t));
+		return KOKUSHI_TILES.every(t => state.handTiles.includes(t)) && KOKUSHI_TILES.some(t => countTiles(state.handTiles, t) == 2);
 	},
 }];
 
