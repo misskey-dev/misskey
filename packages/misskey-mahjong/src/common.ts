@@ -109,18 +109,18 @@ export type House = 'e' | 's' | 'w' | 'n';
  */
 export type Huro = {
 	type: 'pon';
-	tiles: [TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId];
 	from: House;
 } | {
 	type: 'cii';
-	tiles: [TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId];
 	from: House;
 } | {
 	type: 'ankan';
-	tiles: [TileId, TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId, TileId];
 } | {
 	type: 'minkan';
-	tiles: [TileId, TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId, TileId];
 	from: House | null; // null で加槓
 };
 

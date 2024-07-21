@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu, includes, TERMINAL_TILES, mentsuEquals } from './common.js';
+import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu, includes, TERMINAL_TILES, mentsuEquals, Huro, TILE_ID_MAP } from './common.js';
 import { calcWaitPatterns, isRyanmen, isToitsu, WaitPattern } from './common.fu.js';
 
 const RYUISO_TILES: TileType[] = ['s2', 's3', 's4', 's6', 's8', 'hatsu'];
@@ -70,6 +70,20 @@ export const YAKUMAN_NAMES = [
 
 export type YakuName = typeof NORMAL_YAKU_NAMES[number] | typeof YAKUMAN_NAMES[number];
 
+export type HuroForCalcYaku = {
+	type: 'pon';
+	tile: TileType;
+} | {
+	type: 'cii';
+	tiles: [TileType, TileType, TileType];
+} | {
+	type: 'ankan';
+	tile: TileType;
+} | {
+	type: 'minkan';
+	tile: TileType;
+};
+
 export type EnvForCalcYaku = {
 	/**
 	 * 和了る人の手牌(副露牌は含まず、ツモ、ロン牌は含む)
@@ -84,19 +98,7 @@ export type EnvForCalcYaku = {
 	/**
 	 * 副露
 	 */
-	huros: ({
-		type: 'pon';
-		tile: TileType;
-	} | {
-		type: 'cii';
-		tiles: [TileType, TileType, TileType];
-	} | {
-		type: 'ankan';
-		tile: TileType;
-	} | {
-		type: 'minkan';
-		tile: TileType;
-	})[];
+	huros: HuroForCalcYaku[];
 
 	/**
 	 * 場風
@@ -119,7 +121,9 @@ export type EnvForCalcYaku = {
 	ippatsu?: boolean;
 } & ({
 	tsumoTile: TileType;
+	ronTile?: null;
 } | {
+	tsumoTile?: null;
 	ronTile: TileType;
 });
 
@@ -744,7 +748,7 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 		// 面前じゃないとダメ
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
-		const agariTile = 'tsumoTile' in state ? state.tsumoTile : state.ronTile;
+		const agariTile = state.tsumoTile ?? state.ronTile;
 		if (agariTile == null) {
 			return false;
 		}
@@ -810,7 +814,7 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 	isYakuman: true,
 	isDoubleYakuman: true,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		const agariTile = 'tsumoTile' in state ? state.tsumoTile : state.ronTile;
+		const agariTile = state.tsumoTile ?? state.ronTile;
 		return KOKUSHI_TILES.every(t => state.handTiles.includes(t)) && countTiles(state.handTiles, agariTile) == 2;
 	}
 }, {
@@ -822,14 +826,37 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 	},
 }];
 
-export const YAKU_DEFINITIONS = NORMAL_YAKU_DEFINITIONS.concat(YAKUMAN_DEFINITIONS);
+export function convertHuroForCalcYaku(huro: Huro): HuroForCalcYaku {
+	switch (huro.type) {
+		case 'pon':
+		case 'ankan':
+		case 'minkan':
+			return {
+				type: huro.type,
+				tile: TILE_ID_MAP.get(huro.tiles[0])!.t,
+			}
+		case 'cii':
+			return {
+				type: 'cii',
+				tiles: huro.tiles.map(tile => TILE_ID_MAP.get(tile)!.t) as [TileType, TileType, TileType],
+			};
+	}
+}
+
+export const YAKU_DEFINITION_MAP = new Map<YakuName, {name: string, fan: number | null, isYakuman: boolean}>(
+	NORMAL_YAKU_DEFINITIONS.concat(YAKUMAN_DEFINITIONS).map(yaku => [yaku.name, {
+		name: yaku.name,
+		fan: yaku.fan ?? null,
+		isYakuman: yaku.isYakuman ?? false,
+	}])
+);
 
 export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	if (state.riichi && state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type)) ) {
 		throw new TypeError('Invalid riichi state with call huros');
 	}
 
-	const agariTile = 'tsumoTile' in state ? state.tsumoTile : state.ronTile;
+	const agariTile = state.tsumoTile ?? state.ronTile;
 	if (!state.handTiles.includes(agariTile)) {
 		throw new TypeError('Agari tile not included in hand tiles');
 	}
