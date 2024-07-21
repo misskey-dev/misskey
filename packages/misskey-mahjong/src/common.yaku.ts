@@ -834,6 +834,10 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 		throw new TypeError('Agari tile not included in hand tiles');
 	}
 
+	if (state.handTiles.length + state.huros.length * 3 != 14) {
+		throw new TypeError('Invalid tile count');
+	}
+
 	const oneHeadFourMentsuPatterns: (FourMentsuOneJyantou | null)[] = analyzeFourMentsuOneJyantou(state.handTiles);
 	if (oneHeadFourMentsuPatterns.length === 0) oneHeadFourMentsuPatterns.push(null);
 
