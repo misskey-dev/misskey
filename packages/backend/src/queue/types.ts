@@ -9,7 +9,24 @@ import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
-import type httpSignature from '@peertube/http-signature';
+import type { ParsedSignature, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
+
+/**
+ * @peertube/http-signature 時代の古いデータにも対応しておく
+ * TODO: 2026年ぐらいには消す
+ */
+export interface OldParsedSignature {
+	scheme: 'Signature';
+	params: {
+		keyId: string;
+		algorithm: string;
+		headers: string[];
+		signature: string;
+	};
+	signingString: string;
+	algorithm: string;
+	keyId: string;
+}
 
 export type DeliverJobData = {
 	/** Actor */
@@ -22,11 +39,13 @@ export type DeliverJobData = {
 	to: string;
 	/** whether it is sharedInbox */
 	isSharedInbox: boolean;
+	/** force to use main (rsa) key */
+	privateKey?: PrivateKeyWithPem;
 };
 
 export type InboxJobData = {
 	activity: IActivity;
-	signature: httpSignature.IParsedSignature;
+	signature: ParsedSignature | OldParsedSignature | null;
 };
 
 export type RelationshipJobData = {
@@ -106,7 +125,17 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
-export type WebhookDeliverJobData = {
+export type SystemWebhookDeliverJobData = {
+	type: string;
+	content: unknown;
+	webhookId: MiWebhook['id'];
+	to: string;
+	secret: string;
+	createdAt: number;
+	eventId: string;
+};
+
+export type UserWebhookDeliverJobData = {
 	type: string;
 	content: unknown;
 	webhookId: MiWebhook['id'];

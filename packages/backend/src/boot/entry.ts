@@ -25,7 +25,7 @@ Error.stackTraceLimit = Infinity;
 EventEmitter.defaultMaxListeners = 128;
 
 const logger = new Logger('core', 'cyan');
-const clusterLogger = logger.createSubLogger('cluster', 'orange', false);
+const clusterLogger = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
 
 //#region Events
