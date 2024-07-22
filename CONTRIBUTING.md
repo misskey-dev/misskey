@@ -165,7 +165,7 @@ cp .github/misskey/test.yml .config/
 ```
 Prepare DB/Redis for testing.
 ```
-docker compose -f packages/backend/test/docker-compose.yml up
+docker compose -f packages/backend/test/compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`.
 
@@ -185,7 +185,7 @@ TODO
 ## Environment Variable
 
 - `MISSKEY_CONFIG_YML`: Specify the file path of config.yml instead of default.yml (e.g. `2nd.yml`).
-- `MISSKEY_WEBFINGER_USE_HTTP`: If it's set true, WebFinger requests will be http instead of https, useful for testing federation between servers in localhost. NEVER USE IN PRODUCTION.
+- `MISSKEY_USE_HTTP`: If it's set true, federation requests (like nodeinfo and webfinger) will be http instead of https, useful for testing federation between servers in localhost. NEVER USE IN PRODUCTION. (was `MISSKEY_WEBFINGER_USE_HTTP`)
 
 ## Continuous integration
 Misskey uses GitHub Actions for executing automated tests.

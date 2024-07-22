@@ -3,10 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// dummy
 export const MAX_NOTE_TEXT_LENGTH = 3000;
 
 export const USER_ONLINE_THRESHOLD = 1000 * 60 * 10; // 10min
 export const USER_ACTIVE_THRESHOLD = 1000 * 60 * 60 * 24 * 3; // 3days
+
+export const REMOTE_USER_CACHE_TTL = 1000 * 60 * 60 * 3; // 3hours
+export const REMOTE_USER_MOVE_COOLDOWN = 1000 * 60 * 60 * 24 * 14; // 14days
+
+export const REMOTE_SERVER_CACHE_TTL = 1000 * 60 * 60 * 3; // 3hours
 
 //#region hard limits
 // If you change DB_* values, you must also change the DB schema.

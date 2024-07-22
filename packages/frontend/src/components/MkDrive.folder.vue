@@ -39,7 +39,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
@@ -257,10 +257,11 @@ function onContextmenu(ev: MouseEvent) {
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',
 		action: () => {
-			os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
 				initialFolder: props.folder,
 			}, {
-			}, 'closed');
+				closed: () => dispose(),
+			});
 		},
 	}, { type: 'divider' }, {
 		text: i18n.ts.rename,
@@ -295,7 +296,7 @@ function onContextmenu(ev: MouseEvent) {
 	cursor: pointer;
 
 	&.draghover {
-		&:after {
+		&::after {
 			content: "";
 			pointer-events: none;
 			position: absolute;

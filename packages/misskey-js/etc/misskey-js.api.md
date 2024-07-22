@@ -6,6 +6,11 @@
 
 import { EventEmitter } from 'eventemitter3';
 
+// Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type AbuseReportNotificationRecipient = components['schemas']['AbuseReportNotificationRecipient'];
+
 // @public (undocumented)
 export type Acct = {
     username: string;
@@ -21,13 +26,38 @@ declare namespace acct {
 }
 export { acct }
 
-// Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type Ad = components['schemas']['Ad'];
 
 // Warning: (ae-forgotten-export) The symbol "operations" needs to be exported by the entry point index.d.ts
 //
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientCreateRequest = operations['admin___abuse-report___notification-recipient___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientCreateResponse = operations['admin___abuse-report___notification-recipient___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientDeleteRequest = operations['admin___abuse-report___notification-recipient___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientListRequest = operations['admin___abuse-report___notification-recipient___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientListResponse = operations['admin___abuse-report___notification-recipient___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientShowRequest = operations['admin___abuse-report___notification-recipient___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientShowResponse = operations['admin___abuse-report___notification-recipient___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientUpdateRequest = operations['admin___abuse-report___notification-recipient___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientUpdateResponse = operations['admin___abuse-report___notification-recipient___update']['responses']['200']['content']['application/json'];
+
 // @public (undocumented)
 type AdminAbuseUserReportsRequest = operations['admin___abuse-user-reports']['requestBody']['content']['application/json'];
 
@@ -306,6 +336,33 @@ type AdminShowUsersResponse = operations['admin___show-users']['responses']['200
 
 // @public (undocumented)
 type AdminSuspendUserRequest = operations['admin___suspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookCreateRequest = operations['admin___system-webhook___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookCreateResponse = operations['admin___system-webhook___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookDeleteRequest = operations['admin___system-webhook___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookListRequest = operations['admin___system-webhook___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookListResponse = operations['admin___system-webhook___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookShowRequest = operations['admin___system-webhook___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookShowResponse = operations['admin___system-webhook___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookUpdateResponse = operations['admin___system-webhook___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminUnsetUserAvatarRequest = operations['admin___unset-user-avatar']['requestBody']['content']['application/json'];
@@ -1103,6 +1160,12 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SigninRequest;
         res: SigninResponse;
     };
+    'admin/roles/create': {
+        req: Overwrite<AdminRolesCreateRequest, {
+            policies: PartialRolePolicyOverride;
+        }>;
+        res: AdminRolesCreateResponse;
+    };
 }>;
 
 // @public (undocumented)
@@ -1128,11 +1191,21 @@ declare namespace entities {
         SignupPendingResponse,
         SigninRequest,
         SigninResponse,
+        PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
         AdminAbuseUserReportsRequest,
         AdminAbuseUserReportsResponse,
+        AdminAbuseReportNotificationRecipientListRequest,
+        AdminAbuseReportNotificationRecipientListResponse,
+        AdminAbuseReportNotificationRecipientShowRequest,
+        AdminAbuseReportNotificationRecipientShowResponse,
+        AdminAbuseReportNotificationRecipientCreateRequest,
+        AdminAbuseReportNotificationRecipientCreateResponse,
+        AdminAbuseReportNotificationRecipientUpdateRequest,
+        AdminAbuseReportNotificationRecipientUpdateResponse,
+        AdminAbuseReportNotificationRecipientDeleteRequest,
         AdminAccountsCreateRequest,
         AdminAccountsCreateResponse,
         AdminAccountsDeleteRequest,
@@ -1228,6 +1301,15 @@ declare namespace entities {
         AdminRolesUpdateDefaultPoliciesRequest,
         AdminRolesUsersRequest,
         AdminRolesUsersResponse,
+        AdminSystemWebhookCreateRequest,
+        AdminSystemWebhookCreateResponse,
+        AdminSystemWebhookDeleteRequest,
+        AdminSystemWebhookListRequest,
+        AdminSystemWebhookListResponse,
+        AdminSystemWebhookShowRequest,
+        AdminSystemWebhookShowResponse,
+        AdminSystemWebhookUpdateRequest,
+        AdminSystemWebhookUpdateResponse,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1733,7 +1815,9 @@ declare namespace entities {
         ReversiGameDetailed,
         MetaLite,
         MetaDetailedOnly,
-        MetaDetailed
+        MetaDetailed,
+        SystemWebhook,
+        AbuseReportNotificationRecipient
     }
 }
 export { entities }
@@ -1792,7 +1876,7 @@ type FetchExternalResourcesResponse = operations['fetch-external-resources']['re
 // @public (undocumented)
 type FetchLike = (input: string, init?: {
     method?: string;
-    body?: string;
+    body?: Blob | FormData | string;
     credentials?: RequestCredentials;
     cache?: RequestCache;
     headers: {
@@ -2380,8 +2464,23 @@ type ModerationLog = {
     type: 'unsetUserAvatar';
     info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
-    type: 'unsetUserBanner';
-    info: ModerationLogPayloads['unsetUserBanner'];
+    type: 'createSystemWebhook';
+    info: ModerationLogPayloads['createSystemWebhook'];
+} | {
+    type: 'updateSystemWebhook';
+    info: ModerationLogPayloads['updateSystemWebhook'];
+} | {
+    type: 'deleteSystemWebhook';
+    info: ModerationLogPayloads['deleteSystemWebhook'];
+} | {
+    type: 'createAbuseReportNotificationRecipient';
+    info: ModerationLogPayloads['createAbuseReportNotificationRecipient'];
+} | {
+    type: 'updateAbuseReportNotificationRecipient';
+    info: ModerationLogPayloads['updateAbuseReportNotificationRecipient'];
+} | {
+    type: 'deleteAbuseReportNotificationRecipient';
+    info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
 });
 
 // @public (undocumented)
@@ -2632,6 +2731,15 @@ type PagesUpdateRequest = operations['pages___update']['requestBody']['content']
 
 // @public (undocumented)
 function parse(acct: string): Acct;
+
+// Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type PartialRolePolicyOverride = Partial<{
+    [k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & {
+        value: RolePolicies[k];
+    };
+}>;
 
 // @public (undocumented)
 export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse"];
@@ -2922,6 +3030,9 @@ type SwUpdateRegistrationRequest = operations['sw___update-registration']['reque
 type SwUpdateRegistrationResponse = operations['sw___update-registration']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type SystemWebhook = components['schemas']['SystemWebhook'];
+
+// @public (undocumented)
 type TestRequest = operations['test']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3118,7 +3229,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:25:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:34:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

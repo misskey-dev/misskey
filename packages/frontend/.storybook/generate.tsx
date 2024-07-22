@@ -397,12 +397,13 @@ function toStories(component: string): Promise<string> {
 	const globs = await Promise.all([
 		glob('src/components/global/Mk*.vue'),
 		glob('src/components/global/RouterView.vue'),
-		glob('src/components/Mk{A,B}*.vue'),
+		glob('src/components/Mk[A-C]*.vue'),
 		glob('src/components/MkDigitalClock.vue'),
 		glob('src/components/MkGalleryPostPreview.vue'),
 		glob('src/components/MkSignupServerRules.vue'),
 		glob('src/components/MkUserSetupDialog.vue'),
 		glob('src/components/MkUserSetupDialog.*.vue'),
+		glob('src/components/MkInstanceCardMini.vue'),
 		glob('src/components/MkInviteCode.vue'),
 		glob('src/pages/user/home.vue'),
 	]);
