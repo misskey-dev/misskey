@@ -55,7 +55,7 @@ export function getOneApId(value: ApObject): string {
 export function getApId(value: string | IObject): string {
 	if (typeof value === 'string') return value;
 	if (typeof value.id === 'string') return value.id;
-	throw new Error('cannot determine id');
+	throw new Error('cannot detemine id');
 }
 
 /**
@@ -169,8 +169,10 @@ export interface IActor extends IObject {
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
-	publicKey?: IKey | IKey[];
-	additionalPublicKeys?: IKey[];
+	publicKey?: {
+		id: string;
+		publicKeyPem: string;
+	};
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
 	featured?: string | IOrderedCollection;
@@ -234,9 +236,8 @@ export const isEmoji = (object: IObject): object is IApEmoji =>
 
 export interface IKey extends IObject {
 	type: 'Key';
-	id: string;
 	owner: string;
-	publicKeyPem: string;
+	publicKeyPem: string | Buffer;
 }
 
 export interface IApDocument extends IObject {
