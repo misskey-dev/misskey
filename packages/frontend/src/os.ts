@@ -572,6 +572,19 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 	});
 }
 
+export async function selectRole(opts: { admin?: boolean; } = {}): Promise<Misskey.entities.Role> {
+	return new Promise(resolve => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), {
+			admin: opts.admin,
+		}, {
+			ok: role => {
+				resolve(role);
+			},
+			closed: () => dispose(),
+		});
+	});
+}
+
 export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {

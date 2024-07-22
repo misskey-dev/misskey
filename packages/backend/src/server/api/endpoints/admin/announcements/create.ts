@@ -62,6 +62,8 @@ export const paramDef = {
 		silence: { type: 'boolean', default: false },
 		needConfirmationToRead: { type: 'boolean', default: false },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		isRoleSpecified: { type: 'boolean', default: false },
+		roleIds: { type: 'array', items: { type: 'string', format: 'misskey:id' }, nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
 } as const;
@@ -83,6 +85,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				userId: ps.userId,
+				isRoleSpecified: ps.isRoleSpecified,
+				roleIds: ps.roleIds ?? [],
 			}, me);
 
 			return packed;

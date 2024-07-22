@@ -3969,17 +3969,6 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
-     * Show all pages this user created.
-     * 
-     * **Credential required**: *No*
-     */
-    request<E extends 'users/pages', P extends Endpoints[E]['req']>(
-      endpoint: E,
-      params: P,
-      credential?: string | null,
-    ): Promise<SwitchCaseResponseType<E, P>>;
-
-    /**
      * Show all flashs this user created.
      * 
      * **Credential required**: *No*

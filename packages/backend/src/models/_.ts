@@ -15,6 +15,7 @@ import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotifica
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
+import { MiAnnouncementRole } from '@/models/AnnouncementRole.js';
 import { MiAnnouncementRead } from '@/models/AnnouncementRead.js';
 import { MiAntenna } from '@/models/Antenna.js';
 import { MiApp } from '@/models/App.js';
@@ -130,6 +131,7 @@ export {
 	MiAccessToken,
 	MiAd,
 	MiAnnouncement,
+	MiAnnouncementRole,
 	MiAnnouncementRead,
 	MiAntenna,
 	MiApp,
@@ -201,6 +203,7 @@ export type AbuseReportNotificationRecipientRepository = Repository<MiAbuseRepor
 export type AccessTokensRepository = Repository<MiAccessToken> & MiRepository<MiAccessToken>;
 export type AdsRepository = Repository<MiAd> & MiRepository<MiAd>;
 export type AnnouncementsRepository = Repository<MiAnnouncement> & MiRepository<MiAnnouncement>;
+export type AnnouncementRolesRepository = Repository<MiAnnouncementRole> & MiRepository<MiAnnouncementRole>;
 export type AnnouncementReadsRepository = Repository<MiAnnouncementRead> & MiRepository<MiAnnouncementRead>;
 export type AntennasRepository = Repository<MiAntenna> & MiRepository<MiAntenna>;
 export type AppsRepository = Repository<MiApp> & MiRepository<MiApp>;

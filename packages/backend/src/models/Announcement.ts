@@ -56,6 +56,12 @@ export class MiAnnouncement {
 
 	@Index()
 	@Column('boolean', {
+		default: false,
+	})
+	public isRoleSpecified: boolean;
+
+	@Index()
+	@Column('boolean', {
 		default: true,
 	})
 	public isActive: boolean;
