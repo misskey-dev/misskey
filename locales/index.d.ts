@@ -217,7 +217,7 @@ export interface Locale extends ILocale {
      */
     "deleteAndTagging": string;
     /**
-     * このノートを削除してタグづけしますか？このノートへのリアクション、Renote、返信も全て削除されます。
+     * このノートを削除してタグづけしますか？このノートへのリアクション、リノート、返信も全て削除されます。
      */
     "deleteAndTaggingConfirm": string;
     /**
