@@ -112,5 +112,6 @@ onUnmounted(() => {
 	border: solid 0.5px var(--divider);
 	pointer-events: none;
 	transform-origin: center center;
+
 }
 </style>

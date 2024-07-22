@@ -47,7 +47,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
 				{{ i18n.ts.disableNoteDrafting }}
 			</MkSwitch>
-
 		</div>
 	</FormSection>
 	<MkFoldableSection :expanded="false" class="item">
@@ -113,68 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 		</div>
 	</MkFoldableSection>
-	<MkFoldableSection :expanded="false" class="item">
-		<template #header>{{ i18n.ts.notificationDisplay }}</template>
 
-		<div class="_gaps_m">
-			<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
-
-			<MkRadios v-model="notificationPosition">
-				<template #label>{{ i18n.ts.position }}</template>
-				<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
-				<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
-				<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
-				<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
-			</MkRadios>
-
-			<MkRadios v-model="notificationStackAxis">
-				<template #label>{{ i18n.ts.stackAxis }}</template>
-				<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
-				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
-			</MkRadios>
-
-			<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
-		</div>
-	</MkFoldableSection>
-	<MkFoldableSection :expanded="false" class="item">
-		<template #header>{{ i18n.ts.appearance }}</template>
-		<div class="_gaps_m">
-			<div class="_gaps_s">
-				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
-				<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
-				<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
-				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
-				<MkSwitch v-model="highlightSensitiveMedia">{{ i18n.ts.highlightSensitiveMedia }}</MkSwitch>
-				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
-				<MkSwitch v-model="showAvatarDecorations">{{ i18n.ts.showAvatarDecorations }}</MkSwitch>
-				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
-				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
-				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
-				<MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave }}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
-				<MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
-				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
-				<MkSwitch v-model="useNativeUIForVideoAudioPlayer">{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</MkSwitch>
-			</div>
-			<div>
-				<MkRadios v-model="emojiStyle">
-					<template #label>{{ i18n.ts.emojiStyle }}</template>
-					<option value="native">{{ i18n.ts.native }}</option>
-					<option value="fluentEmoji">Fluent Emoji</option>
-					<option value="twemoji">Twemoji</option>
-				</MkRadios>
-				<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
-			</div>
-
-			<MkRadios v-model="fontSize">
-				<template #label>{{ i18n.ts.fontSize }}</template>
-				<option :value="null"><span style="font-size: 14px;">Aa</span></option>
-				<option value="1"><span style="font-size: 15px;">Aa</span></option>
-				<option value="2"><span style="font-size: 16px;">Aa</span></option>
-				<option value="3"><span style="font-size: 17px;">Aa</span></option>
-			</MkRadios>
-		</div>
-	</MkFoldableSection>
 	<MkFoldableSection :expanded="false" class="item">
 		<template #header>{{ i18n.ts.behavior }}</template>
 
@@ -305,18 +243,11 @@ const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showC
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
 const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthOfReaction'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
-const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
-const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
-const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
 const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
 const animatedMfm = computed(defaultStore.makeGetterSetter('animatedMfm'));
 const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
 const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactionsCount'));
 const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
-const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
-const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
-const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
-const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
@@ -338,51 +269,17 @@ const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'))
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
-const showAvatarDecorations = computed(defaultStore.makeGetterSetter('showAvatarDecorations'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
-const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
-const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
+
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
-const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const enableonlyAndWithSave = computed(defaultStore.makeGetterSetter('onlyAndWithSave'));
-const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
-const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
-const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTimeline'));
-const showLocalTimeline = computed(defaultStore.makeGetterSetter('showLocalTimeline'));
-const showHomeTimeline = computed(defaultStore.makeGetterSetter('showHomeTimeline'));
-const showSocialTimeline = computed(defaultStore.makeGetterSetter('showSocialTimeline'));
 const topBarNameShown = computed(defaultStore.makeGetterSetter('topBarNameShown'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
-const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
 const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
-const remoteLocalTimelineDomain1 = ref(defaultStore.state['remoteLocalTimelineDomain1']);
-const remoteLocalTimelineToken1 = ref(defaultStore.state['remoteLocalTimelineToken1']);
-const remoteLocalTimelineDomain2 = ref(defaultStore.state['remoteLocalTimelineDomain2']);
-const remoteLocalTimelineToken2 = ref(defaultStore.state['remoteLocalTimelineToken2']);
-const remoteLocalTimelineDomain3 = ref(defaultStore.state['remoteLocalTimelineDomain3']);
-const remoteLocalTimelineToken3 = ref(defaultStore.state['remoteLocalTimelineToken3']);
-const remoteLocalTimelineDomain4 = ref(defaultStore.state['remoteLocalTimelineDomain4']);
-const remoteLocalTimelineToken4 = ref(defaultStore.state['remoteLocalTimelineToken4']);
-const remoteLocalTimelineDomain5 = ref(defaultStore.state['remoteLocalTimelineDomain5']);
-const remoteLocalTimelineToken5 = ref(defaultStore.state['remoteLocalTimelineToken5']);
-const remoteLocalTimelineName1 = ref(defaultStore.state['remoteLocalTimelineName1']);
-const remoteLocalTimelineName2 = ref(defaultStore.state['remoteLocalTimelineName2']);
-const remoteLocalTimelineName3 = ref(defaultStore.state['remoteLocalTimelineName3']);
-const remoteLocalTimelineName4 = ref(defaultStore.state['remoteLocalTimelineName4']);
-const remoteLocalTimelineName5 = ref(defaultStore.state['remoteLocalTimelineName5']);
-const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
 const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
-
-const remoteLocalTimelineEnable1 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable1'));
-const remoteLocalTimelineEnable2 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable2'));
-const remoteLocalTimelineEnable3 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable3'));
-const remoteLocalTimelineEnable4 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable4'));
-const remoteLocalTimelineEnable5 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable5'));
 const $i = signinRequired();
-const pinnedMax = $i.policies.listPinnedLimit;
-const maxLocalTimeline = $i.policies.localTimelineAnyLimit;
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
@@ -446,13 +343,8 @@ watch([
 	limitWidthOfReaction,
 	highlightSensitiveMedia,
 	keepScreenOn,
-	showMediaTimeline,
 	showVisibilityColor,
 	enableonlyAndWithSave,
-	showGlobalTimeline,
-	showSocialTimeline,
-	showLocalTimeline,
-	showHomeTimeline,
 	topBarNameShown,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
@@ -462,29 +354,6 @@ watch([
 ], async () => {
 	await reloadAsk();
 });
-
-async function remoteLocaltimelineSave() {
-	os.alert({
-		type: 'success',
-		text: i18n.ts.saved,
-	});
-	defaultStore.set('remoteLocalTimelineDomain1', remoteLocalTimelineDomain1.value);
-	defaultStore.set('remoteLocalTimelineToken1', remoteLocalTimelineToken1.value);
-	defaultStore.set('remoteLocalTimelineDomain2', remoteLocalTimelineDomain2.value);
-	defaultStore.set('remoteLocalTimelineToken2', remoteLocalTimelineToken2.value);
-	defaultStore.set('remoteLocalTimelineDomain3', remoteLocalTimelineDomain3.value);
-	defaultStore.set('remoteLocalTimelineToken3', remoteLocalTimelineToken3.value);
-	defaultStore.set('remoteLocalTimelineDomain4', remoteLocalTimelineDomain4.value);
-	defaultStore.set('remoteLocalTimelineToken4', remoteLocalTimelineToken4.value);
-	defaultStore.set('remoteLocalTimelineDomain5', remoteLocalTimelineDomain5.value);
-	defaultStore.set('remoteLocalTimelineToken5', remoteLocalTimelineToken5.value);
-	defaultStore.set('remoteLocalTimelineName1', remoteLocalTimelineName1.value);
-	defaultStore.set('remoteLocalTimelineName2', remoteLocalTimelineName2.value);
-	defaultStore.set('remoteLocalTimelineName3', remoteLocalTimelineName3.value);
-	defaultStore.set('remoteLocalTimelineName4', remoteLocalTimelineName4.value);
-	defaultStore.set('remoteLocalTimelineName5', remoteLocalTimelineName5.value);
-	await reloadAsk();
-}
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 

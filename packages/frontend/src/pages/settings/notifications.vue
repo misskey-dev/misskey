@@ -5,39 +5,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
-		<div class="_gaps_s">
-			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
-				<template #label>{{ i18n.ts._notification._types[type] }}</template>
-				<template #suffix>
-					{{
-						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
-						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
-						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
-						i18n.ts.all
-					}}
-				</template>
+	<MkFoldableSection>
+		<template #header>{{ i18n.ts.notificationSettings }}</template>
+		<div class="_gaps_m">
+			<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
 
-				<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
-			</MkFolder>
+			<MkRadios v-model="notificationPosition">
+				<template #label>{{ i18n.ts.position }}</template>
+				<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
+				<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
+				<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
+				<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
+			</MkRadios>
+
+			<MkRadios v-model="notificationStackAxis">
+				<template #label>{{ i18n.ts.stackAxis }}</template>
+				<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
+				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
+			</MkRadios>
 		</div>
-	</FormSection>
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
-		</div>
-	</FormSection>
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
-			<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
-		</div>
-	</FormSection>
+	</MkFoldableSection>
+	<MkFoldableSection>
+		<template #header>{{ i18n.ts.notificationRecieveConfig }}</template>
+		<FormSection first>
+			<div class="_gaps_s">
+				<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
+					<template #label>{{ i18n.ts._notification._types[type] }}</template>
+					<template #suffix>
+						{{
+							$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
+							$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
+							$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
+							$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+							$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+							$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+							i18n.ts.all
+						}}
+					</template>
+
+					<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
+				</MkFolder>
+			</div>
+		</FormSection>
+	</MkFoldableSection>
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 
@@ -51,6 +61,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</I18n>
 				</template>
 			</MkSwitch>
+		</div>
+	</FormSection>
+	<FormSection>
+		<template #label>{{ i18n.ts.otherSettings }}</template>
+		<div class="_gaps_m">
+			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
+			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
+			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
+			<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
 		</div>
 	</FormSection>
 </div>
@@ -70,6 +89,10 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const.js';
+import MkRadios from '@/components/MkRadios.vue';
+import MkButton from '@/components/MkButton.vue';
+import { defaultStore } from '@/store.js';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const $i = signinRequired();
 
@@ -79,6 +102,10 @@ const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await misskeyApi('users/lists/list');
+
+const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
+const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
+const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 
 async function readAllUnreadNotes() {
 	await misskeyApi('i/read-all-unread-notes');

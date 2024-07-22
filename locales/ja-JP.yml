@@ -1932,7 +1932,7 @@ _registry:
   createKey: "キーを作成"
 
 _aboutType4ny:
-  about: "Type4nyはType4ny-Projectによって2024年から開発されている、オープンソースのソフトウェアです。"
+  about: "Type4nyはType4ny-Projectによって2024年から開発されている、Misskeyをベースとしたオープンソースのソフトウェアです。"
   contributors: "コントリビューター"
   allContributors: "全てのコントリビューター"
   source: "ソースコード"

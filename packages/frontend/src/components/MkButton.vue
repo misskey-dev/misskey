@@ -19,8 +19,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			[$style.large]: large,
 			[$style.transparent]: transparent,
 			[$style.asLike]: asLike,
-			[$style.gamingDark]: gaming === 'dark',
-			[$style.gamingLight]: gaming === 'light',
+			[$style.gamingDark]: gamingType === 'dark',
+			[$style.gamingLight]: gamingType === 'light',
 		}
 	]"
 	:type="type"
@@ -50,8 +50,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 			[$style.large]: large,
 			[$style.transparent]: transparent,
 			[$style.asLike]: asLike,
-			[$style.gamingDark]: gaming === 'dark',
-			[$style.gamingLight]: gaming === 'light',
+			[$style.gamingDark]: gamingType === 'dark',
+			[$style.gamingLight]: gamingType === 'light',
 		}
 	]"
 	:to="to ?? '#'"
@@ -91,39 +91,9 @@ const props = defineProps<{
   value?: string;
 	disabled?: boolean;
 }>();
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-// gamingをrefで初期化する
-let gaming = ref(''); // 0-off , 1-dark , 2-light
-// gaming.valueに新しい値を代入する
 
-if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-	gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-	gaming.value = 'light';
-} else {
-	gaming.value = '';
-}
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-watch(darkMode, () => {
-	if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-		gaming.value = 'dark';
-	} else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate) {
-		gaming.value = 'light';
-	} else {
-		gaming.value = '';
-	}
-});
-
-watch(gamingMode, () => {
-	if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-		gaming.value = 'dark';
-	} else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-		gaming.value = 'light';
-	} else {
-		gaming.value = '';
-	}
-});
 const emit = defineEmits<{
   (ev: 'click', payload: MouseEvent): void;
 }>();
@@ -195,7 +165,8 @@ function onMousedown(evt: MouseEvent): void {
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);
-	border-radius: 5px;
+	border-radius: var(--radius);
+
 	overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;
@@ -205,7 +176,9 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&:not(:disabled):hover {
-		background: var(--buttonHoverBg);
+		&:not(.gradate) {
+			background: var(--buttonHoverBg);
+		}
 	}
 
 	&:not(:disabled):active {
@@ -337,14 +310,37 @@ function onMousedown(evt: MouseEvent): void {
 	&.gradate {
 		font-weight: bold;
 		color: var(--fgOnAccent) !important;
+		position: relative;
+		z-index: 0;
 		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 
-		&:not(:disabled):hover {
+		&::after {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: -1;
+			width: 100%;
+			height: 100%;
 			background: linear-gradient(90deg, var(--X8), var(--X8));
+			opacity: 0;
+			transition: opacity 0.1s ease;
+
+			content: '';
+		}
+
+		&:not(:disabled):hover {
+
+			&::after {
+				opacity: 1; // hoverで疑似要素を表示する
+			}
 		}
 
 		&:not(:disabled):active {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			&::after {
+				opacity: 1; // hoverで疑似要素を表示する
+			}
 		}
       &.gamingLight {
         background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
@@ -444,7 +440,7 @@ function onMousedown(evt: MouseEvent): void {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	overflow: clip;
 	pointer-events: none;
 }
@@ -464,6 +460,7 @@ function onMousedown(evt: MouseEvent): void {
 	position: relative;
 	z-index: 1;
 	pointer-events: none;
+	transform: rotateZ(0.03deg);
 }
 @-webkit-keyframes AnimationLight {
   0%{background-position:0% 50%}

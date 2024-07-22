@@ -182,7 +182,7 @@ import { isTouchUsing } from '@/scripts/touch.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { isFocusable } from '@/scripts/focus.js';
 import { getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
-import {defaultStore} from '@/store.js'
+import { defaultStore } from '@/store.js';
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
@@ -494,7 +494,7 @@ onBeforeUnmount(() => {
 		margin: auto;
 		width: calc(100% - 16px);
 		height: 100%;
-		border-radius: 6px;
+		border-radius: var(--radius);
 	}
 
 	&:focus-visible {

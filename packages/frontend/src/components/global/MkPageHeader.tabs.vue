@@ -245,7 +245,8 @@ onUnmounted(() => {
 
 .tabIcon + .tabTitle {
 	padding-left: 4px;
-	font-weight: 900;
+	font-weight: 500;
+	transform: rotateZ(0.03deg);
 }
 
 .tabTitle {

@@ -47,7 +47,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
-
 			<XNoteHeader :note="appearNote" :mini="true"/>
 
 			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
@@ -132,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i class="ti ti-paperclip"></i>
 					</button>
 
-					<button  :class="$style.footerButton" class="_button" @mousedown="toggleFavorite()">
+					<button :class="$style.footerButton" class="_button" @mousedown="toggleFavorite()">
 						<i v-if="!isFavorite" class="ti ti-star"></i>
 						<i v-if="isFavorite" class="ti ti-star-off"></i>
 					</button>
@@ -283,7 +282,6 @@ if ($i) {
 	statePromise.then((state) => {
 		isFavorite.value = state.isFavorited;
 	});
-
 }
 const renoteCollapsed = ref(
 	defaultStore.state.collapseRenotes && isRenote && (
@@ -330,6 +328,7 @@ function toggleFavorite(): void {
 	});
 	isFavorite.value = !isFavorite.value;
 }
+
 provide('react', (reaction: string) => {
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
@@ -824,7 +823,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
-	top: calc(22px + var(--stickyTop, 0px));
 	left: 0;
 }
 

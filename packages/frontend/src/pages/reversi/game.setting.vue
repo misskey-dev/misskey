@@ -281,7 +281,7 @@ onUnmounted(() => {
 	place-items: center;
 	background: transparent;
 	border: solid 2px var(--divider);
-	border-radius: 6px;
+	border-radius: var(--radius);
 	overflow: clip;
 	cursor: pointer;
 }

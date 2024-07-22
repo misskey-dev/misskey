@@ -1,0 +1,30 @@
+{
+	id: '4eea646f-7afa-4645-83e9-83af0333cd37',
+
+	name: 'TypeLightEmerald',
+	author: 'mattyatea',
+	desc: 'Default Dark theme',
+
+	base: 'light',
+
+	props: {
+		accent: '#2ECC71',
+		bg: '#f2f2f2',
+		buttonGradateA: '#2ECC71',
+		buttonGradateB: '#27AE60',
+		buttonHoverBg: '#27AE60',
+		divider: '#BDBDBD',
+		fg: '#37474F',
+		fgHighlighted: '#2C3E50',
+		fgOnAccent: '#FFFFFF',
+		fgOnWhite: '#37474F',
+		link: '@accent',
+		mentionMe: '#1ABC9C',
+		panel: '#F6FFFB',
+		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
+		popup: '#FFFFFF',
+		renote: '@accent',
+		acrylicPanel: ':alpha<0.3<@panel'
+
+	},
+}

@@ -138,7 +138,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
-import MkInfo from "@/components/MkInfo.vue";
+import MkInfo from '@/components/MkInfo.vue';
 
 const initStats = () => misskeyApi('stats', {});
 </script>
@@ -146,7 +146,7 @@ const initStats = () => misskeyApi('stats', {});
 <style lang="scss" module>
 .banner {
 	text-align: center;
-	border-radius: 10px;
+	border-radius: var(--radius);
 	overflow: clip;
 	background-color: var(--panel);
 	background-size: cover;

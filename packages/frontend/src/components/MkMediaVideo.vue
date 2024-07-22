@@ -514,7 +514,7 @@ onDeactivated(() => {
 .indicator {
 	/* Hardcode to black because either --bg or --fg makes it hard to read in dark/light mode */
 	background-color: black;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	color: var(--accentLighten);
 	display: inline-block;
 	font-weight: bold;
@@ -525,7 +525,7 @@ onDeactivated(() => {
 .hide {
 	display: block;
 	position: absolute;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	background-color: var(--fg);
 	color: var(--accentLighten);
 	font-size: 12px;

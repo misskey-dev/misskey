@@ -119,7 +119,7 @@ definePageMetadata(() => ({
 	height: 40px;
 	color: var(--error);
 	margin-left: auto;
-	border-radius: 6px;
+	border-radius: var(--radius);
 
 	&:hover {
 		background: var(--X5);

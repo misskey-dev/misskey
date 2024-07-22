@@ -99,7 +99,7 @@ defineProps<{
 	color: #fff;
 	background: rgba(0, 0, 0, 0.7);
 	font-size: 0.7em;
-	border-radius: 6px;
+	border-radius: var(--radius);
 }
 
 .description {

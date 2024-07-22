@@ -6,18 +6,9 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <div>
 	<div v-if="game.ready" :class="$style.game">
 		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-		<div :class="$style.count" class="" data-testid="count">
-			<img
-				:class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
-				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
-			/>
-			{{ number(cookies) }}
-		</div>
+		<div :class="$style.count" class=""><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(cookies) }}</div>
 		<button v-click-anime class="_button" @click="onClick">
-			<img
-				src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
-				:class="$style.img"
-			>
+			<img src="/client-assets/cookie.png" :class="$style.img">
 		</button>
 	</div>
 	<div v-else>

@@ -696,7 +696,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -722,7 +722,6 @@ function loadMonoTextures() {
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 
@@ -1559,7 +1558,7 @@ definePageMetadata(() => ({
 	color: #f00;
 	font-weight: bold;
 	background: #0008;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	pointer-events: none;
 }
 

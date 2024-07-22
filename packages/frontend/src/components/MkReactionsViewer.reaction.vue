@@ -114,6 +114,7 @@ async function toggleReaction() {
 			noteId: props.note.id,
 			reaction: props.reaction,
 		});
+
 		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
 			claimAchievement('reactWithoutRead');
 		}
@@ -194,13 +195,12 @@ if (!mock) {
 	margin: 2px;
 	padding: 0 6px;
 	font-size: 1.5em;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	align-items: center;
 	justify-content: center;
-
+	transition: background 0.2s ease;
 	&.canToggle {
 		background: var(--buttonBg);
-
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
 		}

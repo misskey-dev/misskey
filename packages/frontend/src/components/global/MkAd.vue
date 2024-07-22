@@ -181,7 +181,8 @@ function reduceFrequency(): void {
 	display: block;
 	object-fit: contain;
 	margin: auto;
-	border-radius: 5px;
+	border-radius: var(--radius);
+
 }
 
 .i {

@@ -3,58 +3,58 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-	<!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
-	<!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
-	<section v-if="!hasChildSection" style="border-radius: 6px;">
-		<header class="_acrylic" @click="shown = !shown" >
-			<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
-		</header>
-		<div v-if="shown" class="body">
-			<button
-				v-for="emoji in emojis"
-				:key="emoji"
-				:data-emoji="emoji"
-				class="_button item"
-				:disabled="disabledEmojis?.value.includes(emoji)"@pointerenter="computeButtonTitle"
-				@click="emit('chosen', emoji, $event)"
-			>
-				<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true":fallbackToImage="true"/>
-				<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-			</button>
-		</div>
-	</section>
-	<!-- フォルダの中にはカスタム絵文字やフォルダがある -->
-	<section v-else style="border-radius: 6px;">
-		<header class="_acrylic" @click="shown = !shown">
-			<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (フォルダー)
-		</header>
-		<div v-if="shown" style="padding-left: 9px; ">
-			<MkEmojiPickerSection
-				v-for="child in customEmojiTree"
-				:key="`custom:${child.value}`"
-				:initialShown="initialShown"
-				:emojis="computed(() => customEmojis.filter(e => e.category === child.category || e.category === child.category+'/'+child.category).map(e => `:${e.name}:`))"
-				:hasChildSection="child.children.length !== 0"
-				:customEmojiTree="child.children"
-				@chosen="nestedChosen"
-			>
-				{{ child.value || i18n.ts.other }}
-			</MkEmojiPickerSection>
-		</div>
-		<div v-if="shown" class="body">
-			<button
-				v-for="emoji in emojis"
-				:key="emoji"
-				:data-emoji="emoji"
-				class="_button item":disabled="disabledEmojis?.value.includes(emoji)"
-				@pointerenter="computeButtonTitle"
-				@click="emit('chosen', emoji, $event)"
-			>
-				<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-				<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-			</button>
-		</div>
-	</section>
+<!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
+<!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
+<section v-if="!hasChildSection" style="border-radius: var(--radius);">
+	<header class="_acrylic" @click="shown = !shown">
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
+	</header>
+	<div v-if="shown" class="body">
+		<button
+			v-for="emoji in emojis"
+			:key="emoji"
+			:data-emoji="emoji"
+			class="_button item"
+			:disabled="disabledEmojis?.value.includes(emoji)"@pointerenter="computeButtonTitle"
+			@click="emit('chosen', emoji, $event)"
+		>
+			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true":fallbackToImage="true"/>
+			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+		</button>
+	</div>
+</section>
+<!-- フォルダの中にはカスタム絵文字やフォルダがある -->
+<section v-else style="border-radius: var(--radius);">
+	<header class="_acrylic" @click="shown = !shown">
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (フォルダー)
+	</header>
+	<div v-if="shown" style="padding-left: 9px; ">
+		<MkEmojiPickerSection
+			v-for="child in customEmojiTree"
+			:key="`custom:${child.value}`"
+			:initialShown="initialShown"
+			:emojis="computed(() => customEmojis.filter(e => e.category === child.category || e.category === child.category+'/'+child.category).map(e => `:${e.name}:`))"
+			:hasChildSection="child.children.length !== 0"
+			:customEmojiTree="child.children"
+			@chosen="nestedChosen"
+		>
+			{{ child.value || i18n.ts.other }}
+		</MkEmojiPickerSection>
+	</div>
+	<div v-if="shown" class="body">
+		<button
+			v-for="emoji in emojis"
+			:key="emoji"
+			:data-emoji="emoji"
+			class="_button item":disabled="disabledEmojis?.value.includes(emoji)"
+			@pointerenter="computeButtonTitle"
+			@click="emit('chosen', emoji, $event)"
+		>
+			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+		</button>
+	</div>
+</section>
 </template>
 
 <script lang="ts" setup>

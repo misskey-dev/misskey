@@ -4,112 +4,137 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-  <div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
-    <div :class="$style.body">
-      <div :class="$style.top">
-        <div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl  })` }"></div>
-        <button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance"
-                @click="openInstanceMenu">
-          <img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
-        </button>
-      </div>
-      <div :class="$style.middle">
-        <MkA v-tooltip.noDelay.right="i18n.ts.timeline"
-             :class="[$style.item, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
-             :activeClass="$style.active" to="/" exact>
-          <i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{
-            i18n.ts.timeline
-          }}</span>
-        </MkA>
-        <template v-for="item in menu">
-          <div v-if="item === '-'" :class="$style.divider"></div>
-          <component
-              :is="navbarItemDef[item].to ? 'MkA' : 'button'"
-              v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
-              v-tooltip.noDelay.right="navbarItemDef[item].title"
-              class="_button"
-              :class="[$style.item, { [$style.active]: gamingType === '' && navbarItemDef[item].active, [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
-              :activeClass="$style.active"
-              :to="navbarItemDef[item].to"
-              v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
-          >
-            <i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
-              :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
-            <span v-if="navbarItemDef[item].indicated"
-                  :class="[$style.itemIndicator ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">
+<div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
+	<div :class="$style.body">
+		<div :class="$style.top">
+			<div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }"></div>
+			<button
+				v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance"
+				@click="openInstanceMenu"
+			>
+				<img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
+			</button>
+		</div>
+		<div :class="$style.middle">
+			<MkA
+				v-tooltip.noDelay.right="i18n.ts.timeline"
+				:class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				:activeClass="$style.active" to="/" exact
+			>
+				<i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{
+					i18n.ts.timeline
+				}}</span>
+			</MkA>
+			<template v-for="item in menu">
+				<div v-if="item === '-'" :class="$style.divider"></div>
+				<component
+					:is="navbarItemDef[item].to ? 'MkA' : 'button'"
+					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
+					v-tooltip.noDelay.right="navbarItemDef[item].title"
+					class="_button"
+					:class="[$style.item, { [$style.active]: gamingType === '' && navbarItemDef[item].active, [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+					:activeClass="$style.active"
+					:to="navbarItemDef[item].to"
+					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
+				>
+					<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
+						:class="$style.itemText"
+					>{{ navbarItemDef[item].title }}</span>
+					<span
+						v-if="navbarItemDef[item].indicated"
+						:class="[$style.itemIndicator ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]"
+					>
 						<span v-if="navbarItemDef[item].indicateValue && indicatorCounterToggle" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
-               v-else class="_indicatorCircle"></i></span>
-          </component>
-        </template>
-        <div :class="$style.divider"></div>
-        <MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel"
-             :class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
-             :activeClass="$style.active" to="/admin">
-          <i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
-            :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
-        </MkA>
-        <button class="_button"
-                :class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
-                @click="more">
-          <i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
-            i18n.ts.more
-          }}</span>
-          <span v-if="otherMenuItemIndicated"
-                :class="[$style.itemIndicator,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]"><i
-              class="_indicatorCircle"></i></span>
-        </button>
-        <MkA v-tooltip.noDelay.right="i18n.ts.settings"
-             :class="[$style.item, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
-             :activeClass="$style.active"
-             to="/settings">
-          <i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span
-            :class="$style.itemText">{{ i18n.ts.settings }}</span>
-        </MkA>
-      </div>
-      <div :class="$style.bottom">
-        <button v-tooltip.noDelay.right="i18n.ts.note" class="_button"
-                :class="[$style.post ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}]"
-                data-cy-open-post-form
-                @click="os.post">
-          <i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span
-            :class="$style.postText,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}">{{
-            i18n.ts.note
-          }}</span>
-        </button>
-        <button v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button"
-                :class="[$style.account]" @click="openAccountMenu">
-          <MkAvatar :user="$i" :class="$style.avatar"/>
-          <MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
-        </button>
-      </div>
-    </div>
-  </div>
+							v-else class="_indicatorCircle"
+						></i></span>
+				</component>
+			</template>
+			<div :class="$style.divider"></div>
+			<MkA
+				v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel"
+				:class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				:activeClass="$style.active" to="/admin"
+			>
+				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
+					:class="$style.itemText"
+				>{{ i18n.ts.controlPanel }}</span>
+			</MkA>
+			<button
+				class="_button"
+				:class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				@click="more"
+			>
+				<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
+					i18n.ts.more
+				}}</span>
+				<span
+					v-if="otherMenuItemIndicated"
+					:class="[$style.itemIndicator,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]"
+				><i
+					class="_indicatorCircle"
+				></i></span>
+			</button>
+			<MkA
+				v-tooltip.noDelay.right="i18n.ts.settings"
+				:class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
+				:activeClass="$style.active"
+				to="/settings"
+			>
+				<i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span
+					:class="$style.itemText"
+				>{{ i18n.ts.settings }}</span>
+			</MkA>
+		</div>
+		<div :class="$style.bottom">
+			<button
+				v-tooltip.noDelay.right="i18n.ts.note" class="_button"
+				:class="[$style.post ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}]"
+				data-cy-open-post-form
+				@click="os.post"
+			>
+				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span
+					:class="$style.postText,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}"
+				>{{
+					i18n.ts.note
+				}}</span>
+			</button>
+			<button
+				v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button"
+				:class="[$style.account]" @click="openAccountMenu"
+			>
+				<MkAvatar :user="$i" :class="$style.avatar"/>
+				<MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
+			</button>
+		</div>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
-import {computed, defineAsyncComponent, ref, watch} from 'vue';
-import {openInstanceMenu} from './common.js';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { openInstanceMenu } from './common.js';
 import * as os from '@/os';
-import {navbarItemDef} from '@/navbar.js';
-import {$i, openAccountMenu as openAccountMenu_} from '@/account';
-import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
-import {i18n} from '@/i18n';
-import {instance} from '@/instance';
+import { navbarItemDef } from '@/navbar.js';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
-function hexToRgb(hex) {
-  hex = hex.replace(/^#/, '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
 
-  return `${r},${g},${b}`;
+function hexToRgb(hex) {
+	hex = hex.replace(/^#/, '');
+	const r = parseInt(hex.substring(0, 2), 16);
+	const g = parseInt(hex.substring(2, 4), 16);
+	const b = parseInt(hex.substring(4, 6), 16);
+
+	return `${r},${g},${b}`;
 }
 
 document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
-document.documentElement.style.setProperty("--followerColor",hexToRgb(defaultStore.state.followerColor));
-document.documentElement.style.setProperty("--specifiedColor",hexToRgb(defaultStore.state.specifiedColor))
-document.documentElement.style.setProperty("--localOnlyColor",hexToRgb(defaultStore.state.localOnlyColor))
-document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed+'s');
+document.documentElement.style.setProperty('--followerColor', hexToRgb(defaultStore.state.followerColor));
+document.documentElement.style.setProperty('--specifiedColor', hexToRgb(defaultStore.state.specifiedColor));
+document.documentElement.style.setProperty('--localOnlyColor', hexToRgb(defaultStore.state.localOnlyColor));
+document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed + 's');
 
 const iconOnly = ref(false);
 let bannerUrl = computed(defaultStore.makeGetterSetter('bannerUrl'));
@@ -121,11 +146,11 @@ const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
 
 if (darkMode.value) {
-    bannerUrl.value = enablehanntenn.value ? bannerLight : bannerDark;
-    iconUrl.value = enablehanntenn.value ? iconLight : iconDark;
+	bannerUrl.value = enablehanntenn.value ? bannerLight : bannerDark;
+	iconUrl.value = enablehanntenn.value ? iconLight : iconDark;
 } else {
-    bannerUrl.value = enablehanntenn.value ?  bannerDark : bannerLight;
-    iconUrl.value = enablehanntenn.value ?  iconDark : iconLight;
+	bannerUrl.value = enablehanntenn.value ? bannerDark : bannerLight;
+	iconUrl.value = enablehanntenn.value ? iconDark : iconLight;
 }
 
 if (darkMode.value && gamingMode.value) {
@@ -136,37 +161,35 @@ if (darkMode.value && gamingMode.value) {
 	gamingType.value = '';
 }
 
-watch([darkMode,gamingMode], () => {
-
+watch([darkMode, gamingMode], () => {
 	if (darkMode.value) {
 		bannerUrl.value = enablehanntenn.value ? bannerLight : bannerDark;
 		iconUrl.value = enablehanntenn.value ? iconLight : iconDark;
 	} else {
-		bannerUrl.value = enablehanntenn.value ?  bannerDark : bannerLight;
-		iconUrl.value = enablehanntenn.value ?  iconDark : iconLight;
+		bannerUrl.value = enablehanntenn.value ? bannerDark : bannerLight;
+		iconUrl.value = enablehanntenn.value ? iconDark : iconLight;
 	}
 
-  if (darkMode.value && gamingMode.value) {
+	if (darkMode.value && gamingMode.value) {
 		gamingType.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value) {
+	} else if (!darkMode.value && gamingMode.value) {
 		gamingType.value = 'light';
-  } else {
+	} else {
 		gamingType.value = '';
-  }
-
-})
+	}
+});
 
 const menu = computed(() => defaultStore.state.menu);
 const otherMenuItemIndicated = computed(() => {
-    for (const def in navbarItemDef) {
-        if (menu.value.includes(def)) continue;
-        if (navbarItemDef[def].indicated) return true;
-    }
-    return false;
+	for (const def in navbarItemDef) {
+		if (menu.value.includes(def)) continue;
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
 });
 
 const calcViewState = () => {
-    iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
+	iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
 };
 
 calcViewState();
@@ -174,19 +197,19 @@ calcViewState();
 window.addEventListener('resize', calcViewState);
 
 watch(defaultStore.reactiveState.menuDisplay, () => {
-    calcViewState();
+	calcViewState();
 });
 
 function openAccountMenu(ev: MouseEvent) {
-    openAccountMenu_({
-        withExtraOperation: true,
-    }, ev);
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
 }
 
 function more(ev: MouseEvent) {
-    const { dispose } =os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-        src: ev.currentTarget ?? ev.target,
-    }, {closed: () => dispose(),
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+		src: ev.currentTarget ?? ev.target,
+	}, { closed: () => dispose(),
 	});
 }
 </script>
@@ -455,6 +478,8 @@ function more(ev: MouseEvent) {
     text-align: left;
     box-sizing: border-box;
     color: var(--navFg);
+		transition: all 0.2s ease;
+
 
     &.gamingDark {
       color: var(--navFg);
@@ -481,23 +506,28 @@ function more(ev: MouseEvent) {
 				outline-offset: -2px;
 			}
 		}
+		&::before {
+			content: "";
+			display: block;
+			width: calc(100% - 34px);
+			height: 100%;
+			margin: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			opacity: 0;
+			border-radius: 999px;
+			background: var(--accentedBg);
+			transition: opacity 0.1s ease;
 
+		}
 		&:hover, &.active, &:focus {
       color: var(--accent);
 
       &::before {
-        content: "";
-        display: block;
-        width: calc(100% - 34px);
-        height: 100%;
-        margin: auto;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 999px;
-        background: var(--accentedBg);
+				opacity: 1;
       }
     }
 
@@ -560,7 +590,6 @@ function more(ev: MouseEvent) {
 
     &.gamingLight:hover, &.gamingLight.active {
       color: white;
-
 
       &.gamingLight:before {
         content: "";
@@ -630,8 +659,10 @@ function more(ev: MouseEvent) {
   }
 
   .itemText {
-    position: relative;
-    font-size: 0.9em;
+		position: relative;
+		display: inline-block;
+		font-size: 0.9em;
+		transform: rotate(0.03deg);
   }
 }
 
@@ -785,7 +816,6 @@ function more(ev: MouseEvent) {
       }
     }
 
-
   }
 
   .postIcon {
@@ -839,6 +869,7 @@ function more(ev: MouseEvent) {
     padding: 18px 0;
     width: 100%;
     text-align: center;
+		transition: all 0.1s ease;
 
     &.gamingLight {
       color: var(--fg);
@@ -851,6 +882,24 @@ function more(ev: MouseEvent) {
 				outline: 2px solid var(--focus);
 				outline-offset: -2px;
 			}
+		}
+
+		&::before{
+			content: "";
+			display: block;
+			height: 100%;
+			aspect-ratio: 1;
+			margin: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			border-radius: 999px;
+			opacity: 0;
+			background: var(--accentedBg);
+			transition: opacity 0.2s ease;
+
 		}
 
 		&:hover, &.active, &:focus {
@@ -866,18 +915,7 @@ function more(ev: MouseEvent) {
       }
 
       &::before {
-        content: "";
-        display: block;
-        height: 100%;
-        aspect-ratio: 1;
-        margin: auto;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 999px;
-        background: var(--accentedBg);
+				opacity: 1;
       }
 
       > .icon,
@@ -986,7 +1024,6 @@ function more(ev: MouseEvent) {
       color: white;
     }
   }
-
 
 }
 

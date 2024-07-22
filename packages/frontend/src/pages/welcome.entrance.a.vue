@@ -6,12 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-if="meta" class="rsqzvsbo">
 	<MkFeaturedPhotos class="bg"/>
-	<XTimeline class="tl"/>
 	<div class="shape1"></div>
 	<div class="shape2"></div>
+	<XTimeline class="tl"/>
 	<div class="logo-wrapper">
 		<div class="powered-by">Powered by</div>
-		<img :src="type4nySVG" class="type4ny"/>
+		<img :src="type4nySVG" class="type4ny" alt="Type4ny Logo"/>
 	</div>
 	<div class="emojis">
 		<MkEmoji :normal="true" :noStyle="true" emoji="👍"/>
@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="contents">
 		<MkVisitorDashboard/>
 	</div>
+
 	<div v-if="instances && instances.length > 0" class="federation">
 		<MarqueeText :duration="40">
 			<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
@@ -73,7 +74,7 @@ misskeyApiGet('federation/instances', {
 		width: 80vw; // 100%からshapeの幅を引いている
 		height: 100vh;
 	}
-
+	display:flex;
 	> .tl {
 		position: fixed;
 		top: 0;
@@ -95,25 +96,28 @@ misskeyApiGet('federation/instances', {
 	> .shape1 {
 		position: fixed;
 		top: 0;
-		left: 0;
+		right: 0;
 		width: 100vw;
 		height: 100vh;
-    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
-    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
-    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
-    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
+		background: linear-gradient(270deg, var(--buttonGradateA), var(--buttonGradateB));
+		background-size: 2000% 2000%;
+		-webkit-animation: AnimationLight 11s ease infinite;
+		-moz-animation: AnimationLight 11s ease infinite;
+		animation: AnimationLight 11s ease infinite;
 		clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
 	}
 	> .shape2 {
 		position: fixed;
 		top: 0;
-		left: 0;
+		right: 0;
+
 		width: 100vw;
 		height: 100vh;
-    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
-    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
-    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
-    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
+    background: linear-gradient(270deg, var(--buttonGradateA), var(--buttonGradateB));
+		background-size: 2000% 2000%;
+    -webkit-animation: AnimationLight 11s ease infinite;
+    -moz-animation: AnimationLight 11s ease infinite;
+    animation: AnimationLight 11s ease  infinite;
 		clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
 		opacity: 0.5;
 	}
@@ -132,9 +136,9 @@ misskeyApiGet('federation/instances', {
 		}
 
 		> .type4ny {
-			width: 140px;
+			width: 170px;
 			@media (max-width: 450px) {
-				width: 130px;
+				width: 150px;
 			}
 		}
 	}
@@ -152,13 +156,15 @@ misskeyApiGet('federation/instances', {
 			display: none;
 		}
 	}
+	justify-content: center;
 
 	> .contents {
 		position: relative;
 		width: min(430px, calc(100% - 32px));
-		margin-left: 128px;
-		padding: 100px 0 100px 0;
-
+		padding: 128px 0 0 0;
+		top: 0;
+		bottom: 0;
+		margin-right: 32px;
 		@media (max-width: 1200px) {
 			margin: auto;
 		}
@@ -204,7 +210,8 @@ misskeyApiGet('federation/instances', {
   100% {
     background-position: 0% 50%
   }
-}  @keyframes AnimationLight {
+}
+@keyframes AnimationLight {
      0% {
        background-position: 0% 50%
      }
@@ -215,39 +222,6 @@ misskeyApiGet('federation/instances', {
        background-position: 0% 50%
      }
    }
-@-webkit-keyframes AnimationDark {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
-}
-@-moz-keyframes AnimationDark {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
-}
-@keyframes AnimationDark {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
-}
 </style>
 
 <style lang="scss" module>

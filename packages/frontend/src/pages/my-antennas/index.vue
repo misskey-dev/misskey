@@ -15,8 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<MkButton :link="true" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-
 			<div v-if="antennas.length > 0" class="_gaps">
 				<MkA v-for="antenna in antennas" :key="antenna.id" :class="$style.antenna" :to="`/my/antennas/${antenna.id}`">
 					<div class="name">{{ antenna.name }}</div>
@@ -34,6 +32,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache.js';
 import { infoImageUrl } from '@/instance.js';
+import { useRouter } from '@/router/supplier.js';
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 
@@ -42,6 +41,7 @@ function fetch() {
 }
 
 fetch();
+const router = useRouter();
 
 const headerActions = computed(() => [{
 	asFullButton: true,
@@ -50,6 +50,12 @@ const headerActions = computed(() => [{
 	handler: () => {
 		antennasCache.delete();
 		fetch();
+	},
+}, {
+	icon: 'ti ti-plus',
+	text: i18n.ts.create,
+	handler: () => {
+		router.push('/my/antennas/create');
 	},
 }]);
 
@@ -74,7 +80,7 @@ onActivated(() => {
 	display: block;
 	padding: 16px;
 	border: solid 1px var(--divider);
-	border-radius: 6px;
+	border-radius: var(--radius);
 
 	&:hover {
 		border: solid 1px var(--accent);

@@ -7,7 +7,7 @@
  */
 
 :root {
-	--radius: 12px;
+	--radius: 14px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
 
@@ -36,19 +36,22 @@
 	background-color: var(--accent);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap');
+
 html {
 	background-color: var(--bg);
 	color: var(--fg);
 	accent-color: var(--accent);
 	overflow: auto;
 	overflow-wrap: break-word;
-	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	font-family: "M PLUS Rounded 1c", 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	font-size: 14px;
+	-webkit-font-smoothing: subpixel-antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	line-height: 1.35;
 	text-size-adjust: 100%;
 	tab-size: 2;
 	-webkit-text-size-adjust: 100%;
-
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) transparent;
 		scrollbar-width: thin;

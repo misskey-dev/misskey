@@ -5,18 +5,15 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <template>
 <form :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="_gaps_m">
-		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${user.avatarUrl}')` : undefined, marginBottom: message ? '1.5em' : undefined }"></div>
+		<div v-show="withAvatar && !openOnRemote" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${user.avatarUrl}')` : undefined, marginBottom: message ? '1.5em' : undefined }"></div>
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
 		<div v-if="openOnRemote" class="_gaps_m">
 			<div class="_gaps_s">
-				<MkButton type="button" rounded primary style="margin: 0 auto;" @click="openRemote(openOnRemote)">
+				<MkButton type="button" rounded primary style="margin: 0 auto;" @click="specifyHostAndOpenRemote(openOnRemote)">
 					{{ i18n.ts.continueOnRemote }} <i class="ti ti-external-link"></i>
 				</MkButton>
-				<button type="button" class="_button" :class="$style.instanceManualSelectButton" @click="specifyHostAndOpenRemote(openOnRemote)">
-					{{ i18n.ts.specifyServerHost }}
-				</button>
 			</div>
 			<div :class="$style.orHr">
 				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
@@ -245,20 +242,12 @@ function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 				_path = options.path;
 			}
 
-			if (targetHost) {
-				window.open(`https://${targetHost}${_path}`, '_blank', 'noopener');
-			} else {
-				window.open(`https://misskey-hub.net/mi-web/?path=${encodeURIComponent(_path)}`, '_blank', 'noopener');
-			}
+			window.open(`https://${targetHost}${_path}`, '_blank', 'noopener');
 			break;
 		}
 		case 'share': {
 			const params = query(options.params);
-			if (targetHost) {
-				window.open(`https://${targetHost}/share?${params}`, '_blank', 'noopener');
-			} else {
-				window.open(`https://misskey-hub.net/share/?${params}`, '_blank', 'noopener');
-			}
+			window.open(`https://${targetHost}/share?${params}`, '_blank', 'noopener');
 			break;
 		}
 	}

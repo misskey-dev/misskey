@@ -29,8 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {ref , computed , watch } from 'vue';
-import {defaultStore} from "@/store.js";
+import { ref, computed, watch } from 'vue';
+import { defaultStore } from '@/store.js';
 
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
@@ -62,7 +62,7 @@ defineProps<{
 				width: 100%;
 				box-sizing: border-box;
 				padding: 9px 16px 9px 8px;
-				border-radius: 9px;
+				border-radius: var(--radius);
 				font-size: 0.9em;
 
 				&:hover {
@@ -242,4 +242,3 @@ defineProps<{
   }
 }
 </style>
-

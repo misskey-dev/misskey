@@ -27,7 +27,7 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 	if (theme) {
 		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
 	} else {
-		applyTheme(themes['l-light']);
+		applyTheme(themes['l-TypeLightEmerald']);
 	}
 	const observer = new MutationObserver((entries) => {
 		for (const entry of entries) {

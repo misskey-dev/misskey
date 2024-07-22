@@ -138,7 +138,7 @@ onMounted(() => {
 	background: var(--buttonBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-	border-radius: 6px;
+	border-radius: var(--radius);
 	transition: border-radius 0.3s;
 
 	&:hover {

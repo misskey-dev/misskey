@@ -186,7 +186,7 @@ function openAccountMenu(ev: MouseEvent) {
 }
 
 function more() {
-	const { dispose } =os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {closed: () => dispose(),
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, { closed: () => dispose(),
 	});
 }
 </script>
@@ -497,7 +497,9 @@ function more() {
 
 .itemText {
   position: relative;
+	display: inline-block;
   font-size: 0.9em;
+	transform: rotate(0.03deg);
 }
 
 @-webkit-keyframes AnimationLight {

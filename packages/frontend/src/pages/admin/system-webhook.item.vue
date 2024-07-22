@@ -62,7 +62,7 @@ function onDeleteClick() {
 	padding: 10px 14px;
 	background: var(--buttonBg);
 	border: none;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	font-size: 0.9em;
 
 	&:hover {

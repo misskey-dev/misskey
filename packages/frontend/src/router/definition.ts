@@ -97,6 +97,10 @@ const routes: RouteDef[] = [{
 		name: 'general',
 		component: page(() => import('@/pages/settings/general.vue')),
 	}, {
+		path: '/appearance',
+		name: 'appearance',
+		component: page(() => import('@/pages/settings/appearance.vue')),
+	}, {
 		path: '/theme/install',
 		name: 'theme',
 		component: page(() => import('@/pages/settings/theme.install.vue')),
@@ -241,7 +245,7 @@ const routes: RouteDef[] = [{
 		origin: 'origin',
 	},
 }, {
-	// Legacy Compatibility	
+	// Legacy Compatibility
 	path: '/authorize-follow',
 	redirect: '/lookup',
 	loginRequired: true,

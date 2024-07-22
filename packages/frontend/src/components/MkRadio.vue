@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-adaptive-border
-  :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked ,[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' } ]"
+	:class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked ,[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' } ]"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
 	role="checkbox"
@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref,computed,watch } from 'vue';
-import {defaultStore} from "@/store.js";
+import { ref, computed, watch } from 'vue';
+import { defaultStore } from '@/store.js';
 
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
@@ -59,7 +59,7 @@ function toggle(): void {
 	background-color: var(--panel);
 	background-clip: padding-box !important;
 	border: solid 1px var(--panel);
-	border-radius: 6px;
+	border-radius: var(--radius);
 	font-size: 90%;
 	transition: all 0.2s;
 	user-select: none;

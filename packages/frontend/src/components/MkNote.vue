@@ -836,7 +836,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
-	top: calc(22px + var(--stickyTop, 0px));
 	left: 0;
 }
 
@@ -947,6 +946,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	margin: 0;
 	padding: 8px;
 	opacity: 0.7;
+	transition: color 0.1s ease;
 
 	&:not(:last-child) {
 		margin-right: 28px;

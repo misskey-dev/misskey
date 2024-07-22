@@ -4,12 +4,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-clicker">
-	<template #icon>
-		<img
-			:class="[$style.icon,{[$style.dark]:darkMode}]" alt="kabocha kawadiri"
-			src="https://files.prismisskey.space/misskey/630c737c-e96f-4c10-94a4-73e138278576.webp"
-		/>
-	</template>
+	<template #icon><i class="ti ti-cookie"></i></template>
 	<template #header>Clicker</template>
 	<MkClickerGame/>
 </MkContainer>

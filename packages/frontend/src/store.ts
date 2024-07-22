@@ -98,13 +98,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
-	defaultHomeNoteLocalOnly: {
-		where: 'account',
-		default: false,
-	},	defaultFollowersNoteLocalOnly: {
-		where: 'account',
-		default: false,
-	},
 	draftSavingBehavior: {
 		where: 'account',
 		default: 'auto' as 'auto' | 'manual',
@@ -434,7 +427,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	gamingType: {
 		where: 'device',
-		default: 'dark',
+		default: 'none',
 	},
 	indicatorCounterToggle: {
 		where: 'device',
@@ -734,8 +727,8 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
-import lightTheme from '@/themes/l-light.json5';
-import darkTheme from '@/themes/d-green-lime.json5';
+import lightTheme from '@/themes/l-TypeLightEmerald.json5';
+import darkTheme from '@/themes/d-TypeDarkEmerald.json5';
 import { TimelineHeaderItem } from '@/timeline-header.js';
 
 export class ColdDeviceStorage {

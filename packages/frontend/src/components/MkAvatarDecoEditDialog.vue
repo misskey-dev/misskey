@@ -120,7 +120,7 @@ async function save() {
 
 .imgContainer {
   padding: 8px;
-  border-radius: 6px;
+  border-radius: var(--radius);
 }
 
 .img {

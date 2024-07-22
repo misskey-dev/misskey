@@ -23,8 +23,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch, shallowRef } from 'vue';
 import * as os from '@/os.js';
-import {defaultStore} from "@/store.js";
-
+import { defaultStore } from '@/store.js';
 
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
@@ -193,7 +192,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		padding: 7px 12px;
 		background: var(--panel);
 		border: solid 1px var(--panel);
-		border-radius: 6px;
+		border-radius: var(--radius);
 
 		> .container {
 			position: relative;

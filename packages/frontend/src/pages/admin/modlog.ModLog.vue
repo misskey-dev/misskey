@@ -188,7 +188,7 @@ const props = defineProps<{
 .diff {
 	background: #fff;
 	color: #000;
-	border-radius: 6px;
+	border-radius: var(--radius);
 	overflow: clip;
 }
 

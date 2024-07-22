@@ -7420,7 +7420,7 @@ export interface Locale extends ILocale {
     };
     "_aboutType4ny": {
         /**
-         * Type4nyはType4ny-Projectによって2024年から開発されている、オープンソースのソフトウェアです。
+         * Type4nyはType4ny-Projectによって2024年から開発されている、Misskeyをベースとしたオープンソースのソフトウェアです。
          */
         "about": string;
         /**

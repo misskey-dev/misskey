@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</mkstickycontainer>
+</MkStickyContainer>
 </template>
 
 <script setup lang="ts">
@@ -104,6 +104,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.general,
 		to: '/settings/general',
 		active: currentPage.value?.route.name === 'general',
+	}, {
+		icon: 'ti ti-eye-cog',
+		text: i18n.ts.appearance,
+		to: '/settings/appearance',
+		active: currentPage.value?.route.name === 'appearance',
 	}, {
 		icon: 'ti ti-palette',
 		text: i18n.ts.theme,
