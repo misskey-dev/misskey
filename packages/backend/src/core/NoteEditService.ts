@@ -451,7 +451,7 @@ export class NoteEditService implements OnApplicationShutdown {
 	private async renderNoteOrRenoteActivity(data: Option, note: MiNote, userId: string) {
 		const content = data.renote && !this.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
-			: this.apRendererService.renderNoteUpdate(await this.apRendererService.renderNote(note, false, true), note, { id: userId });
+			: this.apRendererService.renderNoteUpdate(await this.apRendererService.renderNote(note, false, true), { id: userId });
 
 		return this.apRendererService.addContext(content);
 	}
