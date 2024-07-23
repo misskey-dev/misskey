@@ -146,7 +146,7 @@ export async function playMisskeySfxFile(soundStore: SoundStore) {
  * サウンド設定形式で指定された音声を再生する
  * @param soundStore サウンド設定
  */
-export async function playMisskeySfxFileInternal(soundStore: SoundStore) {
+async function playMisskeySfxFileInternal(soundStore: SoundStore) {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
 	}
