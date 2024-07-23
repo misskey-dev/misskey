@@ -399,15 +399,15 @@ describe('ActivityPub', () => {
 				content: 'あ',
 			};
 
+			resolver.register(actor.id, actor);
+			resolver.register(post.id, post);
+
 			const note = {
 				...(await noteService.createNote(post.id, resolver, true))!,
 				updatedAt: new Date(),
 			};
 
-			resolver.register(actor.id, actor);
-			resolver.register(post.id, post);
-
-			rendererService.renderNoteUpdate(await rendererService.renderNote(note, false, true), note, actor);
+			rendererService.renderNoteUpdate(await rendererService.renderNote(note, false, true), actor);
 		});
 	});
 
