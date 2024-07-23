@@ -78,7 +78,7 @@ import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 
 const props = defineProps<{
