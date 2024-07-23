@@ -386,6 +386,25 @@ describe('ActivityPub', () => {
 		});
 	});
 
+	describe('Update', async () => {
+		const actor = createRandomActor();
+
+		const post = {
+			'@context': 'https://www.w3.org/ns/activitystreams',
+			id: `${host}/users/${secureRndstr(8)}`,
+			type: 'Note',
+			attributedTo: actor.id,
+			to: 'https://www.w3.org/ns/activitystreams#Public',
+			content: 'あ',
+		};
+
+		const note = await noteService.createNote(post.id, resolver, true);
+
+		test('Update note', async () => {
+			rendererService.renderNoteUpdate(await rendererService.renderNote(note!, false, true), note!, actor);
+		});
+	});
+
 	describe('JSON-LD', () =>{
 		test('Compaction', async () => {
 			const jsonLd = jsonLdService.use();
