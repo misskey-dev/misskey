@@ -403,6 +403,10 @@ describe('ActivityPub', () => {
 				...(await noteService.createNote(post.id, resolver, true))!,
 				updatedAt: new Date(),
 			};
+
+			resolver.register(actor.id, actor);
+			resolver.register(post.id, post);
+
 			rendererService.renderNoteUpdate(await rendererService.renderNote(note, false, true), note, actor);
 		});
 	});
