@@ -399,8 +399,11 @@ describe('ActivityPub', () => {
 				content: 'あ',
 			};
 
-			const note = await noteService.createNote(post.id, resolver, true);
-			rendererService.renderNoteUpdate(await rendererService.renderNote(note!, false, true), note!, actor);
+			const note = {
+				...(await noteService.createNote(post.id, resolver, true))!,
+				updatedAt: new Date(),
+			};
+			rendererService.renderNoteUpdate(await rendererService.renderNote(note, false, true), note, actor);
 		});
 	});
 
