@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
+		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkRadios v-model="searchOrigin" @update:modelValue="search()">
@@ -49,9 +49,6 @@ async function search() {
 	if (query == null || query === '') return;
 
 	if (query.startsWith('https://') && !query.includes(' ')) {
-		//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
-		await new Promise(x => setTimeout(x, 2));
-
 		const confirm = await os.confirm({
 			type: 'info',
 			text: i18n.ts.lookupConfirm,
@@ -77,9 +74,6 @@ async function search() {
 
 	if (query.length > 1 && !query.includes(' ')) {
 		if (query.startsWith('@')) {
-			//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
-			await new Promise(x => setTimeout(x, 2));
-
 			const confirm = await os.confirm({
 				type: 'info',
 				text: i18n.ts.lookupConfirm,
@@ -91,9 +85,6 @@ async function search() {
 		}
 
 		if (query.startsWith('#')) {
-			//Enterの入力によって検索が開始された場合、Confirmの方にもEnterが入力されてしまうため、遅延させる
-			await new Promise(x => setTimeout(x, 2));
-
 			const confirm = await os.confirm({
 				type: 'info',
 				text: i18n.ts.openTagPageConfirm,
