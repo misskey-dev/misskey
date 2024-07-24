@@ -2,6 +2,7 @@
 
 ### Note
 - デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
+- Streaming APIにて入力が不正な場合にはそのメッセージを無視するようになりました。 #14251
 
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
@@ -21,6 +22,7 @@
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
 - Enhance: AiScriptを0.19.0にアップデート
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
+- Enhance: センシティブなメディアを開く際に確認ダイアログを出せるように
 - Enhance: 検索(ノート/ユーザー)で `#` から始まる文字列を入力すると、そのハッシュタグのノート/ユーザー一覧ページが表示できるように
 - Enhance: 検索(ノート/ユーザー)において、入力に空白が含まれている場合は照会を行わないように
 - Enhance: 検索(ノート/ユーザー)において、照会を行うかどうか、ハッシュタグのノート/ユーザー一覧ページを表示するかどうかの確認ダイアログを出すように
@@ -34,6 +36,12 @@
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
 - Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
+- Fix: 「アニメーション画像を再生しない」がオンのときでもサーバーのバナー画像・背景画像がアニメーションしてしまう問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
+- Fix: Twitchの埋め込みが開けない問題を修正
+- Fix: 子メニューの高さがウィンドウからはみ出ることがある問題を修正
+- Fix: 個人宛てのダイアログ形式のお知らせが即時表示されない問題を修正
+- Fix: 一部の画像がセンシティブ指定されているときに画面に何も表示されないことがあるのを修正
 - Fix: 照会に `#` から始まる文字列を入力してそのハッシュタグのページを表示する際、入力が `#` のみの場合に「指定されたURLに該当するページはありませんでした。」が表示されてしまう問題を修正
 - Fix: 照会に `@` から始まる文字列を入力してユーザーを照会する際、入力が `@` のみの場合に「問題が発生しました」が表示されてしまう問題を修正
 
@@ -67,6 +75,10 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
 - Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
 - Fix: エラーメッセージの誤字を修正 (#14213)
+- Fix: ソーシャルタイムラインにローカルタイムラインに表示される自分へのリプライが表示されない問題を修正
+- Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
+  (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
+- Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
 - Fix: `users/search`において `@` から始まる文字列が与えられた際の処理が正しくなかった問題を修正
   - 名前や自己紹介に `@` から始まる文言が含まれるユーザーも検索できるようになります
 
