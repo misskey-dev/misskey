@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!--
 v2024.7.0: ページが描画されないバグを回避するためにKeepAliveとpageCacheControllerを一時的に除去
-バグが解消されたら再度追加すること
+バグが解消されたら再度追加すること #14170
 -->
 
 <template>
