@@ -55,9 +55,6 @@ export class FanoutTimelineEndpointService {
 
 	@bindThis
 	private async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
-		let noteIds: string[];
-		let shouldFallbackToDb = false;
-
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
@@ -67,18 +64,17 @@ export class FanoutTimelineEndpointService {
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
 		// 取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
-		shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
+		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
 
 		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
 		const thresholdId = redisResult.map(ids => ids[0]).sort()[0];
 
 		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
-		const redisResultIds = shouldFallbackToDb ? [] : Array.from(new Set(redisResult.flat(1)));
+		const redisResultIds = Array.from(new Set(redisResult.flat(1))).sort(idCompare);
 
-		redisResultIds.sort(idCompare);
-		noteIds = redisResultIds.filter(id => id >= thresholdId).slice(0, ps.limit);
-
-		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
+		let noteIds = redisResultIds.filter(id => id >= thresholdId).slice(0, ps.limit);
+		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
+		shouldFallbackToDb = shouldFallbackToDb || noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true);
