@@ -20,13 +20,29 @@ Before creating an issue, please check the following:
 > **Warning**
 > Do not close issues that are about to be resolved. It should remain open until a commit that actually resolves it is merged.
 
-## Before implementation
+
+### Recommended discussing before implementation
+We welcome your purposal.
+
 When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
 
 At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
 PRs that do not have a clear set of do's and don'ts tend to be bloated and difficult to review.
 
-Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask another member to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
+Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Commiter to assign you). 
+By expressing your intention to work on the Issue, you can prevent conflicts in the work.
+
+To the Committers: you should not assign someone on it before the Final Decision.
+
+### How issues are triaged
+
+The Commiters may:
+* close an issue that is not reproducible on latest stable release,
+* merge an issue into another issue,
+* split an issue into multiple issues,
+* or re-open that has been closed for some reason which is not applicable anymore.
+
+@syuilo reserves the Final Desicion rights including whether the project will implement feature and how to implement, these rights are not always exercised.
 
 ## Well-known branches
 - **`master`** branch is tracking the latest release and used for production purposes.
@@ -197,7 +213,7 @@ TODO
 ## Environment Variable
 
 - `MISSKEY_CONFIG_YML`: Specify the file path of config.yml instead of default.yml (e.g. `2nd.yml`).
-- `MISSKEY_USE_HTTP`: If it's set true, federation requests (like nodeinfo and webfinger) will be http instead of https, useful for testing federation between servers in localhost. NEVER USE IN PRODUCTION. (was `MISSKEY_WEBFINGER_USE_HTTP`)
+- `MISSKEY_WEBFINGER_USE_HTTP`: If it's set true, WebFinger requests will be http instead of https, useful for testing federation between servers in localhost. NEVER USE IN PRODUCTION.
 
 ## Continuous integration
 Misskey uses GitHub Actions for executing automated tests.
