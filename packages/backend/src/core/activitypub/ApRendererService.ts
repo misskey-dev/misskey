@@ -454,6 +454,16 @@ export class ApRendererService {
 		const id = this.userEntityService.genLocalUserUri(user.id);
 		const isSystem = user.username.includes('.');
 
+		/**
+		 * 【profile について】
+		 *
+		 * i/updateで虚無を連合するのを防止するための処理に伴い、
+		 * 使用できるプロパティを狭めて連合に使用するプロパティを増やした際に
+		 * その変更を忘れないようにするためにasを使っている。
+		 *
+		 * See https://github.com/misskey-dev/misskey/pull/14301
+		 */
+
 		const [avatar, banner, profile] = await Promise.all([
 			user.avatarId ? this.driveFilesRepository.findOneBy({ id: user.avatarId }) : undefined,
 			user.bannerId ? this.driveFilesRepository.findOneBy({ id: user.bannerId }) : undefined,
