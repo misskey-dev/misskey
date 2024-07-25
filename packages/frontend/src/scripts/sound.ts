@@ -129,7 +129,7 @@ export function playMisskeySfx(operationType: OperationType) {
 }
 
 export async function playMisskeySfxFile(soundStore: SoundStore) {
-	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+	if (soundStore.type === null || !canPlay || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
 	}
 
