@@ -127,6 +127,10 @@ export function playMisskeySfx(operationType: OperationType) {
 	playMisskeySfxFile(sound);
 }
 
+/**
+ * サウンド設定形式で指定された音声を再生する
+ * @param soundStore サウンド設定
+ */
 export function playMisskeySfxFile(soundStore: SoundStore) {
 	// 連続して再生しない
 	if (!canPlay) return;
@@ -144,10 +148,6 @@ export function playMisskeySfxFile(soundStore: SoundStore) {
 	});
 }
 
-/**
- * サウンド設定形式で指定された音声を再生する
- * @param soundStore サウンド設定
- */
 async function playMisskeySfxFileInternal(soundStore: SoundStore) {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
