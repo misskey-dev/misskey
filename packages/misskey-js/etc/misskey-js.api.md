@@ -551,7 +551,7 @@ type Channel = components['schemas']['Channel'];
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export abstract class ChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
+export abstract class ChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
     constructor(stream: Stream, channel: string, name?: string);
     // (undocumented)
     channel: string;
@@ -771,12 +771,12 @@ export type Channels = {
                 user1: boolean;
                 user2: boolean;
             }) => void;
-            updateSettings: (payload: {
+            updateSettings: <K extends ReversiUpdateKey>(payload: {
                 userId: User['id'];
-                key: string;
-                value: any;
+                key: K;
+                value: ReversiGameDetailed[K];
             }) => void;
-            log: (payload: Record<string, any>) => void;
+            log: (payload: Record<string, unknown>) => void;
         };
         receives: {
             putStone: {
@@ -785,10 +785,7 @@ export type Channels = {
             };
             ready: boolean;
             cancel: null | Record<string, never>;
-            updateSettings: {
-                key: string;
-                value: any;
-            };
+            updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
             claimTimeIsUp: null | Record<string, never>;
         };
     };
@@ -2782,7 +2779,7 @@ type PagesUnlikeRequest = operations['pages___unlike']['requestBody']['content']
 type PagesUpdateRequest = operations['pages___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function parse(acct: string): Acct;
+function parse(_acct: string): Acct;
 
 // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
 //
@@ -3019,7 +3016,7 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
     constructor(origin: string, user: {
         token: string;
     } | null, options?: {
-        WebSocket?: any;
+        WebSocket?: WebSocket;
     });
     // (undocumented)
     close(): void;
@@ -3036,9 +3033,9 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
     // (undocumented)
     send(typeOrPayload: string): void;
     // (undocumented)
-    send(typeOrPayload: string, payload: any): void;
+    send(typeOrPayload: string, payload: unknown): void;
     // (undocumented)
-    send(typeOrPayload: Record<string, any> | any[]): void;
+    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
@@ -3281,7 +3278,9 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:34:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:35:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
