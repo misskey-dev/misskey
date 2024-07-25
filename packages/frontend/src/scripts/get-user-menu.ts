@@ -7,7 +7,7 @@ import { toUnicode } from 'punycode';
 import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { host, url } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -100,9 +100,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 	}
 
 	function reportAbuse() {
-		os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 			user: user,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}
 
 	async function getConfirmed(text: string): Promise<boolean> {
@@ -184,7 +186,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
-	}, {
+	}, ...($i ? [{
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
@@ -257,7 +259,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 				},
 			}));
 		},
-	}] as any;
+	}] : [])] as any;
 
 	if ($i && meId !== user.id) {
 		if (iAmModerator) {
