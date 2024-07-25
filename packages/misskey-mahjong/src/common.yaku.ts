@@ -137,7 +137,7 @@ function countTiles(tiles: TileType[], target: TileType): number {
 	return tiles.filter(t => t === target).length;
 }
 
-export const NORAML_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
+export const NORMAL_YAKU_DEFINITIONS: YakuDefiniyion[] = [{
 	name: 'tsumo',
 	fan: 1,
 	isYakuman: false,
@@ -766,6 +766,8 @@ export const YAKUMAN_DEFINITIONS: YakuDefiniyion[] = [{
 	},
 }];
 
+export const YAKU_DEFINITIONS = NORMAL_YAKU_DEFINITIONS.concat(YAKUMAN_DEFINITIONS);
+
 export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	const oneHeadFourMentsuPatterns: (FourMentsuOneJyantou | null)[] = analyzeFourMentsuOneJyantou(state.handTiles);
 	if (oneHeadFourMentsuPatterns.length === 0) oneHeadFourMentsuPatterns.push(null);
@@ -787,7 +789,7 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	}
 
 	const yakuPatterns = oneHeadFourMentsuPatterns.map(fourMentsuOneJyantou => {
-		return NORAML_YAKU_DEFINITIONS.map(yakuDef => {
+		return NORMAL_YAKU_DEFINITIONS.map(yakuDef => {
 			const result = yakuDef.calc(state, fourMentsuOneJyantou);
 			return result ? yakuDef : null;
 		}).filter(yaku => yaku != null) as YakuDefiniyion[];
