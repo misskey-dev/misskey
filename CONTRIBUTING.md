@@ -53,14 +53,14 @@ The Committers may:
 ## Creating a PR
 Thank you for your PR! Before creating a PR, please check the following:
 - If possible, prefix the title with a keyword that identifies the type of this PR, as shown below.
-  - `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` etc
-  - Also, make sure that the granularity of this PR is appropriate. Please do not include more than one type of change or interest in a single PR.
+	- `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` etc
+	- Also, make sure that the granularity of this PR is appropriate. Please do not include more than one type of change or interest in a single PR.
 - If there is an Issue which will be resolved by this PR, please include a reference to the Issue in the text.
 - Please add the summary of the changes to [`CHANGELOG.md`](/CHANGELOG.md). However, this is not necessary for changes that do not affect the users, such as refactoring.
 - Check if there are any documents that need to be created or updated due to this change.
 - If you have added a feature or fixed a bug, please add a test case if possible.
 - Please make sure that tests and Lint are passed in advance.
-  - You can run it with `pnpm test` and `pnpm lint`. [See more info](#testing)
+	- You can run it with `pnpm test` and `pnpm lint`. [See more info](#testing)
 - If this PR includes UI changes, please attach a screenshot in the text.
 
 Thanks for your cooperation 🤗
@@ -70,8 +70,8 @@ Be willing to comment on the good points and not just the things you want fixed 
 
 ### Review perspective
 - Scope
-  - Are the goals of the PR clear?
-  - Is the granularity of the PR appropriate?
+	- Are the goals of the PR clear?
+	- Is the granularity of the PR appropriate?
 - Security
 	- Does merging this PR create a vulnerability?
 - Performance
