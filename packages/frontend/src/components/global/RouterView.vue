@@ -53,7 +53,7 @@ function resolveNested(current: Resolved, d = 0): Resolved | null {
 const current = resolveNested(router.current)!;
 const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
 const currentPageProps = ref(current.props);
-const key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
+const key = ref(router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)));
 
 function onChange({ resolved, key: newKey }) {
 	const current = resolveNested(resolved);
