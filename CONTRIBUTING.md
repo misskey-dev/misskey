@@ -103,7 +103,7 @@ An actual domain will be assigned so you can test the federation.
 	- The target branch must be `master`
 	- The tag name must be the version
 
-> **Note**
+> [!NOTE]
 > Why this instruction is necessary:
 > - To perform final QA checks
 > - To distribute responsibility
@@ -242,7 +242,7 @@ niraxは、Misskeyで使用しているオリジナルのフロントエンド�
 }
 ```
 
-> **Warning**
+> [!WARNING]
 > 現状、ルートは定義された順に評価されます。
 > たとえば、`/foo/:id`ルート定義の次に`/foo/bar`ルート定義がされていた場合、後者がマッチすることはありません。
 
