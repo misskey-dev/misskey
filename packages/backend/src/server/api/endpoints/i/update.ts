@@ -11,6 +11,7 @@ import { JSDOM } from 'jsdom';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
+import { keys } from '@/misc/prelude/object.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
@@ -34,6 +35,8 @@ import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfig } from '@/models/json-schema/user.js';
+import { miLocalUserKeysUsedForApPersonRender } from '@/models/User.js';
+import { miUserProfileKeysUsedForApPersonRender } from '@/models/UserProfile.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
@@ -501,8 +504,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
-			// フォロワーにUpdateを配信
-			this.accountUpdateService.publishToFollowers(user.id);
+			// 連合する必要があるプロパティが変更されている場合はフォロワーにUpdateを配信
+			if (
+				miLocalUserKeysUsedForApPersonRender.some(k => keys(updates).includes(k)) ||
+				miUserProfileKeysUsedForApPersonRender.some(k => keys(profileUpdates).includes(k))
+			) {
+				this.accountUpdateService.publishToFollowers(user.id);
+			}
 
 			const urls = updatedProfile.fields.filter(x => x.value.startsWith('https://'));
 			for (const url of urls) {
