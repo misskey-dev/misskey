@@ -11,7 +11,7 @@ import { JSDOM } from 'jsdom';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
-import { keys } from '@/misc/prelude/object.js';
+import { getObjKeys } from '@/misc/prelude/object.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
@@ -506,8 +506,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// 連合する必要があるプロパティが変更されている場合はフォロワーにUpdateを配信
 			if (
-				miLocalUserKeysUsedForApPersonRender.some(k => keys(updates).includes(k)) ||
-				miUserProfileKeysUsedForApPersonRender.some(k => keys(profileUpdates).includes(k))
+				miLocalUserKeysUsedForApPersonRender.some(k => getObjKeys(updates).includes(k)) ||
+				miUserProfileKeysUsedForApPersonRender.some(k => getObjKeys(profileUpdates).includes(k))
 			) {
 				this.accountUpdateService.publishToFollowers(user.id);
 			}

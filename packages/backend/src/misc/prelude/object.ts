@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export function keys<T extends { [x: string]: unknown }>(obj: T): (keyof T)[] {
+export function getObjKeys<T extends { [x: string]: unknown }>(obj: T): (keyof T)[] {
 	return Object.keys(obj);
 }
