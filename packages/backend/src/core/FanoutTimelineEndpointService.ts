@@ -75,7 +75,7 @@ export class FanoutTimelineEndpointService {
 		let noteIds = redisResultIds.filter(id => id >= thresholdId).slice(0, ps.limit);
 
 		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
-		shouldFallbackToDb = noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
+		shouldFallbackToDb ||= noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true);
