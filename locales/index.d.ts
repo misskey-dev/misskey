@@ -3471,7 +3471,7 @@ export interface Locale extends ILocale {
      */
     "gallery": string;
     /**
-     * ギャラリー（ノート）
+     * メディア
      */
     "galleryFromPosts": string;
     /**
