@@ -2071,7 +2071,7 @@ _permissions:
   "read:admin:invite-codes": "View invite codes"
   "write:admin:announcements": "Manage announcements"
   "read:admin:announcements": "View announcements"
-  "write:admin:avatar-decorations": "Manage avatar decorations"
+  "write:admin:avatar-decorations": "Can manage avatar decorations"
   "read:admin:avatar-decorations": "View avatar decorations"
   "write:admin:federation": "Manage federation data"
   "write:admin:account": "Manage user account"
