@@ -5009,6 +5009,14 @@ export interface Locale extends ILocale {
      */
     "tryAgain": string;
     /**
+     * センシティブなメディアを表示するとき確認する
+     */
+    "confirmWhenRevealingSensitiveMedia": string;
+    /**
+     * センシティブなメディアです。表示しますか？
+     */
+    "sensitiveMediaRevealConfirm": string;
+    /**
      * {x}から
      */
     "fromX": ParameterizedString<"x">;
