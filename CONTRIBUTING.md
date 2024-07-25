@@ -22,27 +22,27 @@ Before creating an issue, please check the following:
 
 
 ### Recommended discussing before implementation
-We welcome your purposal.
+We welcome your proposal.
 
 When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
 
 At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
 PRs that do not have a clear set of do's and don'ts tend to be bloated and difficult to review.
 
-Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Commiter to assign you). 
+Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Committer to assign you).
 By expressing your intention to work on the Issue, you can prevent conflicts in the work.
 
 To the Committers: you should not assign someone on it before the Final Decision.
 
 ### How issues are triaged
 
-The Commiters may:
+The Committers may:
 * close an issue that is not reproducible on latest stable release,
 * merge an issue into another issue,
 * split an issue into multiple issues,
 * or re-open that has been closed for some reason which is not applicable anymore.
 
-@syuilo reserves the Final Desicion rights including whether the project will implement feature and how to implement, these rights are not always exercised.
+@syuilo reserves the Final Decision rights including whether the project will implement feature and how to implement, these rights are not always exercised.
 
 ## Well-known branches
 - **`master`** branch is tracking the latest release and used for production purposes.
@@ -307,7 +307,7 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof MkAvatar>;
+} satisfies StoryObj<typeof MyComponent>;
 ```
 
 If you want to opt-out from the automatic generation, create a `MyComponent.stories.impl.ts` file and add the following line to the file.
