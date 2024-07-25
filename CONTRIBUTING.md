@@ -1,7 +1,7 @@
 # Contribution guide
 We're glad you're interested in contributing Misskey! In this document you will find the information you need to contribute to the project.
 
-> **Note**
+> [!NOTE]
 > This project uses Japanese as its major language, **but you do not need to translate and write the Issues/PRs in Japanese.**
 > Also, you might receive comments on your Issue/PR in Japanese, but you do not need to reply to them in Japanese as well.\
 > The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
@@ -17,7 +17,7 @@ Before creating an issue, please check the following:
 	- Issues should only be used to feature requests, suggestions, and bug tracking.
 	- Please ask questions or troubleshooting in [GitHub Discussions](https://github.com/misskey-dev/misskey/discussions) or [Discord](https://discord.gg/Wp8gVStHW3).
 
-> **Warning**
+> [!WARNING]
 > Do not close issues that are about to be resolved. It should remain open until a commit that actually resolves it is merged.
 
 ### Recommended discussing before implementation
