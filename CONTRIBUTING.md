@@ -545,7 +545,7 @@ https://github.com/misskey-dev/misskey/pull/10082
 
 テキストhogeおよびfugaについて、片方を必須としつつ両方の指定もありうる場合:
 
-```
+```ts
 export const paramDef = {
 	type: 'object',
 	properties: {
