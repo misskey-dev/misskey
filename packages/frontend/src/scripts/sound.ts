@@ -124,14 +124,16 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
 	playMisskeySfxFile(sound);
 }
 
-export async function playMisskeySfxFile(soundStore: SoundStore) {
-	if (soundStore.type === null || !canPlay || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
-		return;
-	}
+export function playMisskeySfxFile(soundStore: SoundStore) {
+	// 連続して再生しない
+	if (!canPlay) return;
+	// ユーザーアクティベーションが必要な場合はそれがない場合は再生しない
+	if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) return;
+	// サウンドがない場合は再生しない
+	if (soundStore.type === null || soundStore.type === '_driveFile_' && !soundStore.fileUrl) return;
 
 	canPlay = false;
 	playMisskeySfxFileInternal(soundStore).finally(() => {
