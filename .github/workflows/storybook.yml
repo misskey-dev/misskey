@@ -34,12 +34,9 @@ jobs:
         echo "base=$(git rev-list --parents -n1 HEAD | cut -d" " -f2)" >> $GITHUB_OUTPUT
         git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
     - name: Install pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8
-        run_install: false
+      uses: pnpm/action-setup@v4
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.0.3
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -87,12 +84,13 @@ jobs:
         if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
           echo "skip=true" >> $GITHUB_OUTPUT
         fi
-        BRANCH="${{ github.event.pull_request.head.user.login }}:${{ github.event.pull_request.head.ref }}"
-        if [ "$BRANCH" = "misskey-dev:${{ github.event.pull_request.head.ref }}" ]; then
-          BRANCH="${{ github.event.pull_request.head.ref }}"
+        BRANCH="${{ github.event.pull_request.head.user.login }}:$HEAD_REF"
+        if [ "$BRANCH" = "misskey-dev:$HEAD_REF" ]; then
+          BRANCH="$HEAD_REF"
         fi
-        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name $BRANCH $(echo "$CHROMATIC_PARAMETER")
+        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name "$BRANCH" $(echo "$CHROMATIC_PARAMETER")
       env:
+        HEAD_REF: ${{ github.event.pull_request.head.ref }}
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic detects changes
       uses: actions/github-script@v7.0.1

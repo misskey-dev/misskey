@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')">
+<MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')" @esc="cancel()">
 	<div :class="$style.root">
 		<div v-if="icon" :class="$style.icon">
 			<i :class="icon"></i>
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, shallowRef, computed } from 'vue';
+import { ref, shallowRef, computed } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -156,25 +156,13 @@ function onBgClick() {
 	if (props.cancelableByBgClick) cancel();
 }
 */
-function onKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Escape') cancel();
-}
-
 function onInputKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Enter') {
+	if (evt.key === 'Enter' && okButtonDisabledReason.value === null) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		ok();
 	}
 }
-
-onMounted(() => {
-	document.addEventListener('keydown', onKeydown);
-});
-
-onBeforeUnmount(() => {
-	document.removeEventListener('keydown', onKeydown);
-});
 </script>
 
 <style lang="scss" module>

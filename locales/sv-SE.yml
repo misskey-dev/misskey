@@ -488,6 +488,10 @@ dataSaver: "Databesparing"
 icon: "Profilbild"
 replies: "Svara"
 renotes: "Omnotera"
+_delivery:
+  stop: "Suspenderad"
+  _type:
+    none: "Publiceras"
 _achievements:
   _types:
     _open3windows:
@@ -576,4 +580,3 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendera"
   resetPassword: "Återställ Lösenord"
-

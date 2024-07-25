@@ -4,12 +4,12 @@
  */
 
 import {
-	packedUserLiteSchema,
-	packedUserDetailedNotMeOnlySchema,
 	packedMeDetailedOnlySchema,
-	packedUserDetailedNotMeSchema,
 	packedMeDetailedSchema,
+	packedUserDetailedNotMeOnlySchema,
+	packedUserDetailedNotMeSchema,
 	packedUserDetailedSchema,
+	packedUserLiteSchema,
 	packedUserSchema,
 } from '@/models/json-schema/user.js';
 import { packedNoteSchema } from '@/models/json-schema/note.js';
@@ -25,7 +25,7 @@ import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
 import { packedInviteCodeSchema } from '@/models/json-schema/invite-code.js';
-import { packedPageSchema, packedPageBlockSchema } from '@/models/json-schema/page.js';
+import { packedPageBlockSchema, packedPageSchema } from '@/models/json-schema/page.js';
 import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js';
 import { packedChannelSchema } from '@/models/json-schema/channel.js';
 import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
@@ -38,24 +38,27 @@ import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
 import {
-	packedRoleLiteSchema,
-	packedRoleSchema,
-	packedRolePoliciesSchema,
+	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
 	packedRoleCondFormulaLogicsSchema,
-	packedRoleCondFormulaValueNot,
-	packedRoleCondFormulaValueIsLocalOrRemoteSchema,
 	packedRoleCondFormulaValueAssignedRoleSchema,
 	packedRoleCondFormulaValueCreatedSchema,
-	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	packedRoleCondFormulaValueNot,
 	packedRoleCondFormulaValueSchema,
+	packedRoleCondFormulaValueUserSettingBooleanSchema,
+	packedRoleLiteSchema,
+	packedRolePoliciesSchema,
+	packedRoleSchema,
 } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
-import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
+import { packedReversiGameDetailedSchema, packedReversiGameLiteSchema } from '@/models/json-schema/reversi-game.js';
 import {
-	packedMetaLiteSchema,
 	packedMetaDetailedOnlySchema,
 	packedMetaDetailedSchema,
+	packedMetaLiteSchema,
 } from '@/models/json-schema/meta.js';
+import { packedSystemWebhookSchema } from '@/models/json-schema/system-webhook.js';
+import { packedAbuseReportNotificationRecipientSchema } from '@/models/json-schema/abuse-report-notification-recipient.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -97,6 +100,7 @@ export const refs = {
 	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
 	RoleCondFormulaValueNot: packedRoleCondFormulaValueNot,
 	RoleCondFormulaValueIsLocalOrRemote: packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	RoleCondFormulaValueUserSettingBooleanSchema: packedRoleCondFormulaValueUserSettingBooleanSchema,
 	RoleCondFormulaValueAssignedRole: packedRoleCondFormulaValueAssignedRoleSchema,
 	RoleCondFormulaValueCreated: packedRoleCondFormulaValueCreatedSchema,
 	RoleCondFormulaFollowersOrFollowingOrNotes: packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
@@ -109,6 +113,8 @@ export const refs = {
 	MetaLite: packedMetaLiteSchema,
 	MetaDetailedOnly: packedMetaDetailedOnlySchema,
 	MetaDetailed: packedMetaDetailedSchema,
+	SystemWebhook: packedSystemWebhookSchema,
+	AbuseReportNotificationRecipient: packedAbuseReportNotificationRecipientSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
@@ -226,7 +232,7 @@ export type SchemaTypeDef<p extends Schema> =
 			p['items']['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
 			never
 		) :
-		p['items'] extends NonNullable<Schema> ? SchemaTypeDef<p['items']>[] :
+		p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
 		any[]
 	) :
 	p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :

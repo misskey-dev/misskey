@@ -33,18 +33,21 @@ jobs:
       pr_number: ${{ steps.get_pr.outputs.pr_number }}
     steps:
       - uses: actions/checkout@v4
-      # headがrelease/かつopenのPRを1つ取得
+      # headが$GITHUB_REF_NAME, baseが$STABLE_BRANCHかつopenのPRを1つ取得
       - name: Get PRs
         run: |
-          echo "pr_number=$(gh pr list --limit 1 --search "head:release/ is:open" --json number  --jq '.[] | .number')" >> $GITHUB_OUTPUT
+          echo "pr_number=$(gh pr list --limit 1 --search "head:$GITHUB_REF_NAME base:$STABLE_BRANCH is:open" --json number  --jq '.[] | .number')" >> $GITHUB_OUTPUT
         id: get_pr
+        env:
+          STABLE_BRANCH: ${{ vars.STABLE_BRANCH }}
 
   merge:
-    uses: misskey-dev/release-manager-actions/.github/workflows/merge.yml@v1
+    uses: misskey-dev/release-manager-actions/.github/workflows/merge.yml@v2
     needs: get-pr
     if: ${{ needs.get-pr.outputs.pr_number != '' && inputs.merge == true }}
     with:
       pr_number: ${{ needs.get-pr.outputs.pr_number }}
+      user: 'github-actions[bot]'
       package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
       # Text to prepend to the changelog
       # The first line must be `## Unreleased`
@@ -61,29 +64,31 @@ jobs:
         -
 
       use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
     secrets:
       RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-      RULESET_EDIT_APP_ID: ${{ secrets.RULESET_EDIT_APP_ID }}
-      RULESET_EDIT_APP_PRIVATE_KEY: ${{ secrets.RULESET_EDIT_APP_PRIVATE_KEY }}
 
   create-prerelease:
-    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v1
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v2
     needs: get-pr
     if: ${{ needs.get-pr.outputs.pr_number != '' && inputs.merge != true  }}
     with:
       pr_number: ${{ needs.get-pr.outputs.pr_number }}
+      user: 'github-actions[bot]'
       package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
       use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
     secrets:
       RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
   create-target:
-    uses: misskey-dev/release-manager-actions/.github/workflows/create-target.yml@v1
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-target.yml@v2
     needs: get-pr
     if: ${{ needs.get-pr.outputs.pr_number == '' }}
     with:
+      user: 'github-actions[bot]'
       # The script for version increment.
       # process.env.CURRENT_VERSION: The current version.
       #
@@ -115,8 +120,8 @@ jobs:
       #  }
       package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
       use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
+      stable_branch: ${{ vars.STABLE_BRANCH }}
     secrets:
       RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-      RULESET_EDIT_APP_ID: ${{ secrets.RULESET_EDIT_APP_ID }}
-      RULESET_EDIT_APP_PRIVATE_KEY: ${{ secrets.RULESET_EDIT_APP_PRIVATE_KEY }}

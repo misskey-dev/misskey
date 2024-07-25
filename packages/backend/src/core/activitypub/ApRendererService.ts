@@ -26,10 +26,10 @@ import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
-import { LdSignatureService } from './LdSignatureService.js';
+import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
+import { CONTEXT } from './misc/contexts.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -56,7 +56,7 @@ export class ApRendererService {
 		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
-		private ldSignatureService: LdSignatureService,
+		private jsonLdService: JsonLdService,
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
@@ -166,6 +166,7 @@ export class ApRendererService {
 			mediaType: file.webpublicType ?? file.type,
 			url: this.driveFileEntityService.getPublicUrl(file),
 			name: file.comment,
+			sensitive: file.isSensitive,
 		};
 	}
 
@@ -315,7 +316,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(isNotNull);
+			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
 		};
 
 		let inReplyTo;
@@ -617,48 +618,16 @@ export class ApRendererService {
 			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
-		return Object.assign({
-			'@context': [
-				'https://www.w3.org/ns/activitystreams',
-				'https://w3id.org/security/v1',
-				{
-					Key: 'sec:Key',
-					// as non-standards
-					manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
-					sensitive: 'as:sensitive',
-					Hashtag: 'as:Hashtag',
-					quoteUrl: 'as:quoteUrl',
-					// Mastodon
-					toot: 'http://joinmastodon.org/ns#',
-					Emoji: 'toot:Emoji',
-					featured: 'toot:featured',
-					discoverable: 'toot:discoverable',
-					// schema
-					schema: 'http://schema.org#',
-					PropertyValue: 'schema:PropertyValue',
-					value: 'schema:value',
-					// Misskey
-					misskey: 'https://misskey-hub.net/ns#',
-					'_misskey_content': 'misskey:_misskey_content',
-					'_misskey_quote': 'misskey:_misskey_quote',
-					'_misskey_reaction': 'misskey:_misskey_reaction',
-					'_misskey_votes': 'misskey:_misskey_votes',
-					'_misskey_summary': 'misskey:_misskey_summary',
-					'isCat': 'misskey:isCat',
-					// vcard
-					vcard: 'http://www.w3.org/2006/vcard/ns#',
-				},
-			],
-		}, x as T & { id: string });
+		return Object.assign({ '@context': CONTEXT }, x as T & { id: string });
 	}
 
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const ldSignature = this.ldSignatureService.use();
-		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
+		const jsonLd = this.jsonLdService.use();
+		jsonLd.debug = false;
+		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 
 		return activity;
 	}
@@ -716,7 +685,7 @@ export class ApRendererService {
 		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
-		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
+		const emojis = names.map(name => allEmojis.get(name)).filter(x => x != null);
 
 		return emojis;
 	}

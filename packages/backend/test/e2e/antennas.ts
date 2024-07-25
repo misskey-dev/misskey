@@ -38,12 +38,12 @@ describe('アンテナ', () => {
 		excludeKeywords: [['']],
 		keywords: [['keyword']],
 		name: 'test',
-		notify: false,
 		src: 'all' as const,
 		userListId: null,
 		users: [''],
 		withFile: false,
 		withReplies: false,
+		excludeBots: false,
 	};
 
 	let root: User;
@@ -150,20 +150,20 @@ describe('アンテナ', () => {
 			isActive: true,
 			keywords: [['keyword']],
 			name: 'test',
-			notify: false,
 			src: 'all',
 			userListId: null,
 			users: [''],
 			withFile: false,
 			withReplies: false,
+			excludeBots: false,
 			localOnly: false,
+			notify: false,
 		};
 		assert.deepStrictEqual(response, expected);
 	});
 
 	test('が上限いっぱいまで作成できること', async () => {
-		// antennaLimit + 1まで作れるのがキモ
-		const response = await Promise.all([...Array(DEFAULT_POLICIES.antennaLimit + 1)].map(() => successfulApiCall({
+		const response = await Promise.all([...Array(DEFAULT_POLICIES.antennaLimit)].map(() => successfulApiCall({
 			endpoint: 'antennas/create',
 			parameters: { ...defaultParam },
 			user: alice,
@@ -217,8 +217,6 @@ describe('アンテナ', () => {
 		{ parameters: () => ({ withReplies: true }) },
 		{ parameters: () => ({ withFile: false }) },
 		{ parameters: () => ({ withFile: true }) },
-		{ parameters: () => ({ notify: false }) },
-		{ parameters: () => ({ notify: true }) },
 	];
 	test.each(antennaParamPattern)('を作成できること($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({

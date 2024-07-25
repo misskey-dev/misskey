@@ -7,29 +7,27 @@ on:
       - develop
     paths:
       - packages/backend/**
+      - .github/workflows/validate-api-json.yml
   pull_request:
     paths:
       - packages/backend/**
-
+      - .github/workflows/validate-api-json.yml
 jobs:
   validate-api-json:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [20.10.0]
+        node-version: [20.12.2]
 
     steps:
     - uses: actions/checkout@v4.1.1
       with:
         submodules: true
     - name: Install pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8
-        run_install: false
+      uses: pnpm/action-setup@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.0.3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

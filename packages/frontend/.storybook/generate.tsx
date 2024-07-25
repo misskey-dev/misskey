@@ -82,23 +82,16 @@ function h<T extends estree.Node>(
 	return Object.assign(props || {}, { type }) as T;
 }
 
-declare global {
-	namespace JSX {
-		type Element = estree.Node;
-		type ElementClass = never;
-		type ElementAttributesProperty = never;
-		type ElementChildrenAttribute = never;
-		type IntrinsicAttributes = never;
-		type IntrinsicClassAttributes<T> = never;
-		type IntrinsicElements = {
-			[T in keyof typeof generator as ToKebab<SplitCamel<Uncapitalize<T>>>]: {
-				[K in keyof Omit<
-					Parameters<(typeof generator)[T]>[0],
-					'type'
-				>]?: Parameters<(typeof generator)[T]>[0][K];
-			};
+declare namespace h.JSX {
+	type Element = estree.Node;
+	type IntrinsicElements = {
+		[T in keyof typeof generator as ToKebab<SplitCamel<Uncapitalize<T>>>]: {
+			[K in keyof Omit<
+				Parameters<(typeof generator)[T]>[0],
+				'type'
+			>]?: Parameters<(typeof generator)[T]>[0][K];
 		};
-	}
+	};
 }
 
 function toStories(component: string): Promise<string> {
@@ -388,6 +381,7 @@ function toStories(component: string): Promise<string> {
 		'/* eslint-disable @typescript-eslint/explicit-function-return-type */\n' +
 			'/* eslint-disable import/no-default-export */\n' +
 			'/* eslint-disable import/no-duplicates */\n' +
+			'/* eslint-disable import/order */\n' +
 			generate(program, { generator }) +
 			(hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
 		{
@@ -403,12 +397,13 @@ function toStories(component: string): Promise<string> {
 	const globs = await Promise.all([
 		glob('src/components/global/Mk*.vue'),
 		glob('src/components/global/RouterView.vue'),
-		glob('src/components/Mk{A,B}*.vue'),
+		glob('src/components/Mk[A-C]*.vue'),
 		glob('src/components/MkDigitalClock.vue'),
 		glob('src/components/MkGalleryPostPreview.vue'),
 		glob('src/components/MkSignupServerRules.vue'),
 		glob('src/components/MkUserSetupDialog.vue'),
 		glob('src/components/MkUserSetupDialog.*.vue'),
+		glob('src/components/MkInstanceCardMini.vue'),
 		glob('src/components/MkInviteCode.vue'),
 		glob('src/pages/user/home.vue'),
 	]);
