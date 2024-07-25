@@ -458,8 +458,9 @@ export class ApRendererService {
 		 * 【profile について】
 		 *
 		 * i/updateで虚無を連合するのを防止するための処理に伴い、
-		 * 使用できるプロパティを狭めて連合に使用するプロパティを増やした際に
-		 * その変更を忘れないようにするためにasを使っている。
+		 * 使用できるプロパティを狭めることで、連合に使用するプロパティを増やした際に
+		 * miUserProfileKeysUsedForApPersonRenderを変更するのを
+		 * 忘れないようにするためにasを使っている。
 		 *
 		 * See https://github.com/misskey-dev/misskey/pull/14301
 		 */
