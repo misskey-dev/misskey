@@ -35,11 +35,13 @@ html
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
-		if googleAnalyticsId
-			script(async src='https://www.googletagmanager.com/gtag/js?id='+ googleAnalyticsId)
+		if googleAnalyticsId !== '' || googleAnalyticsId !== null
+			script(async src='https://www.googletagmanager.com/gtag/js?id=' + googleAnalyticsId)
 			script.
 				window.dataLayer = window.dataLayer || [];
-				function gtag(){dataLayer.push(arguments);}
+				function gtag() {
+					dataLayer.push(arguments);
+				}
 				gtag('js', new Date());
 				gtag('config', '#{googleAnalyticsId}');
 

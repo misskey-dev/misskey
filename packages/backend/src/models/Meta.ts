@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
@@ -16,17 +16,20 @@ export class MiMeta {
 	public id: string;
 
 	@Column('varchar', {
-		length: 1024, nullable: true,
+		length: 1024,
+		nullable: true,
 	})
 	public name: string | null;
 
 	@Column('varchar', {
-		length: 64, nullable: true,
+		length: 64,
+		nullable: true,
 	})
 	public shortName: string | null;
 
 	@Column('varchar', {
-		length: 1024, nullable: true,
+		length: 1024,
+		nullable: true,
 	})
 	public description: string | null;
 
@@ -34,7 +37,8 @@ export class MiMeta {
 	 * メンテナの名前
 	 */
 	@Column('varchar', {
-		length: 1024, nullable: true,
+		length: 1024,
+		nullable: true,
 	})
 	public maintainerName: string | null;
 
@@ -42,7 +46,8 @@ export class MiMeta {
 	 * メンテナの連絡先
 	 */
 	@Column('varchar', {
-		length: 1024, nullable: true,
+		length: 1024,
+		nullable: true,
 	})
 	public maintainerEmail: string | null;
 
@@ -52,37 +57,51 @@ export class MiMeta {
 	public disableRegistration: boolean;
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public langs: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public pinnedUsers: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public hiddenTags: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public sensitiveWords: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public prohibitedWords: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{}',
+		length: 1024,
+		array: true,
+		default: '{}',
 	})
 	public silencedHosts: string[];
 
@@ -173,7 +192,7 @@ export class MiMeta {
 	})
 	public proxyAccountId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne((type) => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -292,7 +311,12 @@ export class MiMeta {
 		enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
 		default: 'medium',
 	})
-	public sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
+	public sensitiveMediaDetectionSensitivity:
+		| 'medium'
+		| 'low'
+		| 'high'
+		| 'veryLow'
+		| 'veryHigh';
 
 	@Column('boolean', {
 		default: false,
@@ -347,6 +371,12 @@ export class MiMeta {
 		default: false,
 	})
 	public enableServiceWorker: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public pointName: string | null;
 
 	@Column('varchar', {
 		length: 1024,
@@ -576,7 +606,7 @@ export class MiMeta {
 	public enableIdenticonGeneration: boolean;
 
 	@Column('jsonb', {
-		default: { },
+		default: {},
 	})
 	public policies: Record<string, any>;
 
@@ -601,7 +631,10 @@ export class MiMeta {
 	public bannedEmailDomains: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
+		length: 1024,
+		array: true,
+		default:
+			'{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
 	})
 	public preservedUsernames: string[];
 

@@ -6,7 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
+		<template #header>
+			<XHeader :tabs="headerTabs"/>
+		</template>
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
@@ -16,32 +18,68 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkInput v-model="iconDark" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (Dark)</template>
+						<template #label>
+							{{ i18n.ts._serverSettings.iconUrl }} (Dark)
+						</template>
 					</MkInput>
 					<MkInput v-model="iconLight" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (Light)</template>
+						<template #label>
+							{{ i18n.ts._serverSettings.iconUrl }} (Light)
+						</template>
 					</MkInput>
 
 					<MkInput v-model="app192IconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
+						<template #label>
+							{{ i18n.ts._serverSettings.iconUrl }} (App/192px)
+						</template>
 						<template #caption>
-							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
+							<div>
+								{{
+									i18n.tsx._serverSettings.appIconDescription({
+										host: instance.name ?? host,
+									})
+								}}
+							</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
-							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
-							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '192x192px' }) }}</strong></div>
+							<div>
+								{{ i18n.ts._serverSettings.appIconStyleRecommendation }}
+							</div>
+							<div>
+								<strong>{{
+									i18n.tsx._serverSettings.appIconResolutionMustBe({
+										resolution: "192x192px",
+									})
+								}}</strong>
+							</div>
 						</template>
 					</MkInput>
 
 					<MkInput v-model="app512IconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
+						<template #label>
+							{{ i18n.ts._serverSettings.iconUrl }} (App/512px)
+						</template>
 						<template #caption>
-							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
+							<div>
+								{{
+									i18n.tsx._serverSettings.appIconDescription({
+										host: instance.name ?? host,
+									})
+								}}
+							</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
-							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
-							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '512x512px' }) }}</strong></div>
+							<div>
+								{{ i18n.ts._serverSettings.appIconStyleRecommendation }}
+							</div>
+							<div>
+								<strong>{{
+									i18n.tsx._serverSettings.appIconResolutionMustBe({
+										resolution: "512x512px",
+									})
+								}}</strong>
+							</div>
 						</template>
 					</MkInput>
 
@@ -78,22 +116,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.somethingHappened }}</template>
 					</MkInput>
 					<MkInput v-model="googleAnalyticsId" type="url">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>googleAnal </template>
+						<template #label>GoogleAnalyticsId</template>
 					</MkInput>
-
+					<MkInput v-model="pointName">
+						<template #label>{{ i18n.ts.pointName }}</template>
+					</MkInput>
 					<MkColorInput v-model="themeColor">
 						<template #label>{{ i18n.ts.themeColor }}</template>
 					</MkColorInput>
 
 					<MkTextarea v-model="defaultLightTheme">
-						<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
-						<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
+						<template #label>
+							{{ i18n.ts.instanceDefaultLightTheme }}
+						</template>
+						<template #caption>
+							{{ i18n.ts.instanceDefaultThemeDescription }}
+						</template>
 					</MkTextarea>
 
 					<MkTextarea v-model="defaultDarkTheme">
 						<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
-						<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
+						<template #caption>
+							{{ i18n.ts.instanceDefaultThemeDescription }}
+						</template>
 					</MkTextarea>
 
 					<MkInput v-model="repositoryUrl" type="url">
@@ -107,7 +152,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 
 					<MkTextarea v-model="manifestJsonOverride">
-						<template #label>{{ i18n.ts._serverSettings.manifestJsonOverride }}</template>
+						<template #label>
+							{{ i18n.ts._serverSettings.manifestJsonOverride }}
+						</template>
 					</MkTextarea>
 				</div>
 			</FormSuspense>
@@ -115,7 +162,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #footer>
 			<div :class="$style.footer">
 				<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton primary rounded @click="save">
+						<i class="ti ti-check"></i> {{ i18n.ts.save }}
+					</MkButton>
 				</MkSpacer>
 			</div>
 		</template>
@@ -124,7 +173,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -132,7 +181,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { instance, fetchInstance } from '@/instance.js';
+import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -159,6 +208,7 @@ const iconLight = ref<string | null>(null);
 const bannerDark = ref<string | null>(null);
 const bannerLight = ref<string | null>(null);
 const manifestJsonOverride = ref<string>('{}');
+const pointName = ref<string | null>(null);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -175,7 +225,12 @@ async function init() {
 	notFoundImageUrl.value = meta.notFoundImageUrl;
 	repositoryUrl.value = meta.repositoryUrl;
 	feedbackUrl.value = meta.feedbackUrl;
-	manifestJsonOverride.value = meta.manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON.parse(meta.manifestJsonOverride), null, '\t');
+	pointName.value = meta.pointName;
+	googleAnalyticsId.value = meta.googleAnalyticsId;
+	manifestJsonOverride.value =
+		meta.manifestJsonOverride === ''
+			? '{}'
+			: JSON.stringify(JSON.parse(meta.manifestJsonOverride), null, '\t');
 	iconDark.value = meta.iconDark;
 	iconLight.value = meta.iconLight;
 	bannerDark.value = meta.bannerDark;
@@ -190,19 +245,28 @@ function save() {
 		bannerUrl: bannerUrl.value,
 		backgroundImageUrl: backgroundImageUrl.value,
 		themeColor: themeColor.value === '' ? null : themeColor.value,
-		defaultLightTheme: defaultLightTheme.value === '' ? null : defaultLightTheme.value,
-		defaultDarkTheme: defaultDarkTheme.value === '' ? null : defaultDarkTheme.value,
+		defaultLightTheme:
+			defaultLightTheme.value === '' ? null : defaultLightTheme.value,
+		defaultDarkTheme:
+			defaultDarkTheme.value === '' ? null : defaultDarkTheme.value,
 		infoImageUrl: infoImageUrl.value === '' ? null : infoImageUrl.value,
-		notFoundImageUrl: notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
-		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
-		googleAnalyticsId: googleAnalyticsId.value === '' ? null : googleAnalyticsId.value,
+		notFoundImageUrl:
+			notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
+		serverErrorImageUrl:
+			serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
+		googleAnalyticsId:
+			googleAnalyticsId.value === '' ? null : googleAnalyticsId.value,
 		repositoryUrl: repositoryUrl.value === '' ? null : repositoryUrl.value,
 		feedbackUrl: feedbackUrl.value === '' ? null : feedbackUrl.value,
-		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
+		manifestJsonOverride:
+			manifestJsonOverride.value === ''
+				? '{}'
+				: JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
 		iconDark: iconDark.value === '' ? null : iconDark.value,
 		iconLight: iconLight.value === '' ? null : iconLight.value,
 		bannerDark: bannerDark.value === '' ? null : bannerDark.value,
 		bannerLight: bannerLight.value === '' ? null : bannerLight.value,
+		pointName: pointName.value === '' ? null : pointName.value,
 	}).then(() => {
 		fetchInstance(true);
 	});

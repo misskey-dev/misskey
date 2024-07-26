@@ -23,31 +23,45 @@ export const paramDef = {
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
 		pinnedUsers: {
-			type: 'array', nullable: true, items: {
+			type: 'array',
+			nullable: true,
+			items: {
 				type: 'string',
 			},
 		},
 		hiddenTags: {
-			type: 'array', nullable: true, items: {
+			type: 'array',
+			nullable: true,
+			items: {
 				type: 'string',
 			},
 		},
 		blockedHosts: {
-			type: 'array', nullable: true, items: {
+			type: 'array',
+			nullable: true,
+			items: {
 				type: 'string',
 			},
 		},
 		sensitiveWords: {
-			type: 'array', nullable: true, items: {
+			type: 'array',
+			nullable: true,
+			items: {
 				type: 'string',
 			},
 		},
 		prohibitedWords: {
-			type: 'array', nullable: true, items: {
+			type: 'array',
+			nullable: true,
+			items: {
 				type: 'string',
 			},
 		},
-		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
+		themeColor: {
+			type: 'string',
+			nullable: true,
+			pattern: '^#[0-9a-fA-F]{6}$',
+		},
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
 		serverErrorImageUrl: { type: 'string', nullable: true },
@@ -80,15 +94,22 @@ export const paramDef = {
 		enableTurnstile: { type: 'boolean' },
 		turnstileSiteKey: { type: 'string', nullable: true },
 		turnstileSecretKey: { type: 'string', nullable: true },
-		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
-		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
+		sensitiveMediaDetection: {
+			type: 'string',
+			enum: ['none', 'all', 'local', 'remote'],
+		},
+		sensitiveMediaDetectionSensitivity: {
+			type: 'string',
+			enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
+		},
 		setSensitiveFlagAutomatically: { type: 'boolean' },
 		enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
 		langs: {
-			type: 'array', items: {
+			type: 'array',
+			items: {
 				type: 'string',
 			},
 		},
@@ -156,7 +177,8 @@ export const paramDef = {
 			},
 		},
 		summalyProxy: {
-			type: 'string', nullable: true,
+			type: 'string',
+			nullable: true,
 			description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
 		},
 		urlPreviewEnabled: { type: 'boolean', nullable: true },
@@ -174,12 +196,13 @@ export const paramDef = {
 		iconDark: { type: 'string', nullable: true },
 		bannerLight: { type: 'string', nullable: true },
 		bannerDark: { type: 'string', nullable: true },
+		pointName: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
@@ -193,6 +216,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (ps.useObjectStorage !== undefined) {
 					set.useObjectStorage = ps.useObjectStorage;
+				}
+
+				if (ps.pointName !== undefined) {
+					set.pointName = ps.pointName;
 				}
 
 				if (ps.objectStorageBaseUrl !== undefined) {
@@ -260,15 +287,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				if (ps.enableFanoutTimelineDbFallback !== undefined) {
-					set.enableFanoutTimelineDbFallback = ps.enableFanoutTimelineDbFallback;
+					set.enableFanoutTimelineDbFallback =
+						ps.enableFanoutTimelineDbFallback;
 				}
 
 				if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
-					set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
+					set.perLocalUserUserTimelineCacheMax =
+						ps.perLocalUserUserTimelineCacheMax;
 				}
 
 				if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {
-					set.perRemoteUserUserTimelineCacheMax = ps.perRemoteUserUserTimelineCacheMax;
+					set.perRemoteUserUserTimelineCacheMax =
+						ps.perRemoteUserUserTimelineCacheMax;
 				}
 
 				if (ps.perUserHomeTimelineCacheMax !== undefined) {
@@ -289,7 +319,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (Array.isArray(ps.blockedHosts)) {
-				set.blockedHosts = ps.blockedHosts.filter(Boolean).map(x => x.toLowerCase());
+				set.blockedHosts = ps.blockedHosts
+					.filter(Boolean)
+					.map((x) => x.toLowerCase());
 			}
 
 			if (Array.isArray(ps.sensitiveWords)) {
@@ -460,7 +492,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
-				set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
+				set.sensitiveMediaDetectionSensitivity =
+					ps.sensitiveMediaDetectionSensitivity;
 			}
 
 			if (ps.setSensitiveFlagAutomatically !== undefined) {
@@ -468,7 +501,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
-				set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
+				set.enableSensitiveMediaDetectionForVideos =
+					ps.enableSensitiveMediaDetectionForVideos;
 			}
 
 			if (ps.proxyAccountId !== undefined) {
@@ -532,7 +566,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.repositoryUrl !== undefined) {
-				set.repositoryUrl = URL.canParse(ps.repositoryUrl!) ? ps.repositoryUrl : null;
+				set.repositoryUrl = URL.canParse(ps.repositoryUrl!)
+					? ps.repositoryUrl
+					: null;
 			}
 
 			if (ps.feedbackUrl !== undefined) {
@@ -608,7 +644,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.enableChartsForFederatedInstances !== undefined) {
-				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
+				set.enableChartsForFederatedInstances =
+					ps.enableChartsForFederatedInstances;
 			}
 
 			if (ps.enableIdenticonGeneration !== undefined) {
@@ -656,8 +693,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.urlPreviewUserAgent = value === '' ? null : ps.urlPreviewUserAgent;
 			}
 
-			if (ps.summalyProxy !== undefined || ps.urlPreviewSummaryProxyUrl !== undefined) {
-				const value = ((ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy) ?? '').trim();
+			if (
+				ps.summalyProxy !== undefined ||
+				ps.urlPreviewSummaryProxyUrl !== undefined
+			) {
+				const value = (
+					ps.urlPreviewSummaryProxyUrl ??
+					ps.summalyProxy ??
+					''
+				).trim();
 				set.urlPreviewSummaryProxyUrl = value === '' ? null : value;
 			}
 			if (ps.bannerDark !== undefined) {

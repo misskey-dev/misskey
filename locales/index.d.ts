@@ -453,7 +453,7 @@ export interface Locale extends ILocale {
      */
     "followers": string;
     /**
-     * プリズム
+     * ポイント
      */
     "points": string;
     /**
@@ -8748,6 +8748,10 @@ export interface Locale extends ILocale {
          */
         "birthdayFollowings": string;
     };
+    /**
+     * {getPoint}{pointName}ゲットしました！
+     */
+    "nPointGets": ParameterizedString<"getPoint" | "pointName">;
     "_cw": {
         /**
          * 隠す

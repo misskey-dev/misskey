@@ -109,7 +109,7 @@ note: "ノート"
 notes: "ノート"
 following: "フォロー"
 followers: "フォロワー"
-points: "プリズム"
+points: "ポイント"
 followsYou: "フォローされています"
 createList: "リスト作成"
 manageLists: "リストの管理"
@@ -2297,6 +2297,8 @@ _widgets:
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
 
+nPointGets: "{getPoint}{pointName}ゲットしました！"
+pointName: "ログインボーナスのポイントの名前"
 _cw:
   hide: "隠す"
   show: "もっと見る"

@@ -23,14 +23,12 @@ export class MetaEntityService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
-
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
 		private instanceActorService: InstanceActorService,
-	) { }
+	) {}
 
 	@bindThis
 	public async pack(meta?: MiMeta): Promise<Packed<'MetaLite'>> {
@@ -40,14 +38,18 @@ export class MetaEntityService {
 			instance = await this.metaService.fetch();
 		}
 
-		const ads = await this.adsRepository.createQueryBuilder('ads')
+		const ads = await this.adsRepository
+			.createQueryBuilder('ads')
 			.where('ads.expiresAt > :now', { now: new Date() })
 			.andWhere('ads.startsAt <= :now', { now: new Date() })
-			.andWhere(new Brackets(qb => {
-				// 曜日のビットフラグを確認する
-				qb.where('ads.dayOfWeek & :dayOfWeek > 0', { dayOfWeek: 1 << new Date().getDay() })
-					.orWhere('ads.dayOfWeek = 0');
-			}))
+			.andWhere(
+				new Brackets((qb) => {
+					// 曜日のビットフラグを確認する
+					qb.where('ads.dayOfWeek & :dayOfWeek > 0', {
+						dayOfWeek: 1 << new Date().getDay(),
+					}).orWhere('ads.dayOfWeek = 0');
+				}),
+			)
 			.getMany();
 
 		// クライアントの手間を減らすためあらかじめJSONに変換しておく
@@ -55,15 +57,17 @@ export class MetaEntityService {
 		let defaultDarkTheme = null;
 		if (instance.defaultLightTheme) {
 			try {
-				defaultLightTheme = JSON.stringify(JSON5.parse(instance.defaultLightTheme));
-			} catch (e) {
-			}
+				defaultLightTheme = JSON.stringify(
+					JSON5.parse(instance.defaultLightTheme),
+				);
+			} catch (e) {}
 		}
 		if (instance.defaultDarkTheme) {
 			try {
-				defaultDarkTheme = JSON.stringify(JSON5.parse(instance.defaultDarkTheme));
-			} catch (e) {
-			}
+				defaultDarkTheme = JSON.stringify(
+					JSON5.parse(instance.defaultDarkTheme),
+				);
+			} catch (e) {}
 		}
 
 		const packed: Packed<'MetaLite'> = {
@@ -113,7 +117,7 @@ export class MetaEntityService {
 			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 			defaultLightTheme,
 			defaultDarkTheme,
-			ads: ads.map(ad => ({
+			ads: ads.map((ad) => ({
 				id: ad.id,
 				url: ad.url,
 				place: ad.place,
@@ -124,6 +128,7 @@ export class MetaEntityService {
 			notesPerOneAd: instance.notesPerOneAd,
 			enableEmail: instance.enableEmail,
 			enableServiceWorker: instance.enableServiceWorker,
+			pointName: instance.pointName,
 
 			translatorAvailable: instance.deeplAuthKey != null,
 
@@ -148,13 +153,17 @@ export class MetaEntityService {
 
 		const packed = await this.pack(instance);
 
-		const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
+		const proxyAccount = instance.proxyAccountId
+			? await this.userEntityService
+				.pack(instance.proxyAccountId)
+				.catch(() => null)
+			: null;
 
 		const packDetailed: Packed<'MetaDetailed'> = {
 			...packed,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
-			requireSetup: !await this.instanceActorService.realLocalUsersPresent(),
+			requireSetup: !(await this.instanceActorService.realLocalUsersPresent()),
 			proxyAccountName: proxyAccount ? proxyAccount.username : null,
 			features: {
 				localTimeline: instance.policies.ltlAvailable,
