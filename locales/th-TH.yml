@@ -204,7 +204,7 @@ latestRequestReceivedAt: "คำขอล่าสุดที่ได้รั
 latestStatus: "สถานะล่าสุด"
 storageUsage: "พื้นที่จัดเก็บข้อมูลที่ใช้ไป"
 charts: "แผนภูมิ"
-perHour: "ทุกชั่วโมง"
+perHour: "ต่อชั่วโมง"
 perDay: "ต่อวัน"
 stopActivityDelivery: "หยุดส่งกิจกรรม"
 blockThisInstance: "บล็อกเซิร์ฟเวอร์นี้"
