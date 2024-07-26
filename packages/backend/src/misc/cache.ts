@@ -191,7 +191,7 @@ export class MemoryKVCache<T> {
 
 	constructor (
 		private readonly lifetime: number,
-		private readonly capacity: number
+		private readonly capacity: number,
 	) {}
 
 	@bindThis
