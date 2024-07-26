@@ -1745,7 +1745,7 @@ _emailUnavailable:
   smtp: "Peladen alamat surel ini tidak merespon"
   banned: "Kamu tidak dapat mendaftar dengan alamat surel ini"
 _ffVisibility:
-  public: "Terbitkan"
+  public: "Publik"
   followers: "Tampil untuk pengikut saja"
   private: "Tersembunyi"
 _signup:
