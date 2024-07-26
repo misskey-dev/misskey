@@ -40,7 +40,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
+		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12, Infinity);
 
 		this.localEmojisCache = new RedisSingleCache<Map<string, MiEmoji>>(this.redisClient, 'localEmojis', {
 			lifetime: 1000 * 60 * 30, // 30m

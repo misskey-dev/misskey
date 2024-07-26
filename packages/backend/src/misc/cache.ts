@@ -25,7 +25,7 @@ export class RedisKVCache<T> {
 		this.redisClient = redisClient;
 		this.name = name;
 		this.lifetime = opts.lifetime;
-		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime);
+		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime, Infinity);
 		this.fetcher = opts.fetcher;
 		this.toRedisConverter = opts.toRedisConverter;
 		this.fromRedisConverter = opts.fromRedisConverter;
@@ -185,24 +185,13 @@ export class RedisSingleCache<T> {
 }
 
 // TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
-
 export class MemoryKVCache<T> {
-	/**
-	 * データを持つマップ
-	 * @deprecated これを直接操作するべきではない
-	 */
-	public cache: Map<string, { date: number; value: T; }>;
-	private lifetime: number;
-	private gcIntervalHandle: NodeJS.Timeout;
+	private readonly cache = new Map<string, CacheEntry<T>>;
 
-	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
-		this.cache = new Map();
-		this.lifetime = lifetime;
-
-		this.gcIntervalHandle = setInterval(() => {
-			this.gc();
-		}, 1000 * 60 * 3);
-	}
+	constructor (
+		private readonly lifetime: number,
+		private readonly capacity: number
+	) {}
 
 	@bindThis
 	/**
@@ -210,25 +199,42 @@ export class MemoryKVCache<T> {
 	 * @deprecated これを直接呼び出すべきではない。InternalEventなどで変更を全てのプロセス/マシンに通知するべき
 	 */
 	public set(key: string, value: T): void {
+		this.delete(key);
+
+		// If the map is full, then we need to evict something
+		if (this.cache.size >= this.capacity) {
+			this.evictOldestKey();
+		}
+
 		this.cache.set(key, {
-			date: Date.now(),
+			timeout: setTimeout(() => this.delete(key), this.lifetime),
+			lastUsed: Date.now(),
 			value,
 		});
 	}
 
 	@bindThis
 	public get(key: string): T | undefined {
-		const cached = this.cache.get(key);
-		if (cached == null) return undefined;
-		if ((Date.now() - cached.date) > this.lifetime) {
-			this.cache.delete(key);
-			return undefined;
+		const entry = this.cache.get(key);
+
+		// Update last-used time and reset eviction
+		if (entry) {
+			clearTimeout(entry.timeout);
+			entry.timeout = setTimeout(() => this.delete(key), this.lifetime);
+			entry.lastUsed = Date.now();
 		}
-		return cached.value;
+
+		return entry?.value;
 	}
 
 	@bindThis
 	public delete(key: string): void {
+		// Clear eviction timer
+		const timeout = this.cache.get(key)?.timeout;
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+
 		this.cache.delete(key);
 	}
 
@@ -286,18 +292,39 @@ export class MemoryKVCache<T> {
 
 	@bindThis
 	public gc(): void {
-		const now = Date.now();
-		for (const [key, { date }] of this.cache.entries()) {
-			if ((now - date) > this.lifetime) {
-				this.cache.delete(key);
-			}
-		}
+		// no-op, remove later
 	}
 
 	@bindThis
 	public dispose(): void {
-		clearInterval(this.gcIntervalHandle);
+		// no-op, remove later
 	}
+
+	private evictOldestKey(): void {
+		let oldestKey;
+
+		let oldestAge = Number.MAX_VALUE;
+		for (const [key, value] of this.cache.entries()) {
+			if (value.lastUsed < oldestAge) {
+				oldestAge = value.lastUsed;
+				oldestKey = key;
+			}
+		}
+
+		if (oldestKey) {
+			this.delete(oldestKey);
+		}
+	}
+
+	public entries() {
+		return this.cache.entries();
+	}
+}
+
+interface CacheEntry<T> {
+	timeout: NodeJS.Timeout;
+	lastUsed: number;
+	value: T;
 }
 
 export class MemorySingleCache<T> {

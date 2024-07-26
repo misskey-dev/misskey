@@ -54,8 +54,8 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity, Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity, Infinity);
 	}
 
 	@bindThis
