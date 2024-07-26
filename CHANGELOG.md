@@ -1,7 +1,8 @@
-## Unreleased
+## 2024.7.0
 
 ### Note
 - デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
+- Streaming APIにて入力が不正な場合にはそのメッセージを無視するようになりました。 #14251
 
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
@@ -21,6 +22,9 @@
   (Based on https://github.com/taiyme/misskey/pull/226)
 - Enhance: サーバー情報ページ・お問い合わせページを改善  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/238)
+- Enhance: AiScriptを0.19.0にアップデート
+- Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
+- Enhance: センシティブなメディアを開く際に確認ダイアログを出せるように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
@@ -29,6 +33,16 @@
 - Fix: テーマプレビューが見れない問題を修正
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
+- Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
+- Fix: 「アニメーション画像を再生しない」がオンのときでもサーバーのバナー画像・背景画像がアニメーションしてしまう問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/574)
+- Fix: Twitchの埋め込みが開けない問題を修正
+- Fix: 子メニューの高さがウィンドウからはみ出ることがある問題を修正
+- Fix: 個人宛てのダイアログ形式のお知らせが即時表示されない問題を修正
+- Fix: 一部の画像がセンシティブ指定されているときに画面に何も表示されないことがあるのを修正
+- Fix: リアクションしたユーザー一覧のユーザー名がはみ出る問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/672)
+- Fix: `/share`ページにおいて絵文字ピッカーを開くことができない問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -38,7 +52,8 @@
 - Enhance: エンドポイント`gallery/posts/update`の必須項目を`postId`のみに
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
-- Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
+- Fix: チャート生成時にinstance.suspensionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
 - Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
@@ -53,8 +68,18 @@
   2. フォロー中かつ非アクティブなユーザ
   3. フォローしていないアクティブなユーザ
   4. フォローしていない非アクティブなユーザ
+
+  また、自分自身のアカウントもサジェストされるようになりました。
 - Fix: 一般ユーザーから見たユーザーのバッジの一覧に公開されていないものが含まれることがある問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/652)
+- Fix: ユーザーのリアクション一覧でミュート/ブロックが機能していなかった問題を修正
+- Fix: FTT有効時にリモートユーザーのノートがHTLにキャッシュされる問題を修正
+- Fix: 一部の通知がローカル上のリモートユーザーに対して行われていた問題を修正
+- Fix: エラーメッセージの誤字を修正 (#14213)
+- Fix: ソーシャルタイムラインにローカルタイムラインに表示される自分へのリプライが表示されない問題を修正
+- Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
+  (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
+- Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）

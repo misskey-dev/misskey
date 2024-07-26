@@ -5,6 +5,7 @@
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { common } from './common.js';
+import type * as Misskey from 'misskey-js';
 import { ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
@@ -113,7 +114,7 @@ export async function mainBoot() {
 			});
 		}
 
-		stream.on('announcementCreated', (ev) => {
+		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
@@ -122,7 +123,9 @@ export async function mainBoot() {
 					closed: () => dispose(),
 				});
 			}
-		});
+		}
+
+		stream.on('announcementCreated', onAnnouncementCreated);
 
 		if ($i.isDeleted) {
 			alert({
@@ -314,6 +317,9 @@ export async function mainBoot() {
 		main.on('readAllAnnouncements', () => {
 			updateAccount({ hasUnreadAnnouncement: false });
 		});
+
+		// 個人宛てお知らせが発行されたとき
+		main.on('announcementCreated', onAnnouncementCreated);
 
 		// トークンが再生成されたとき
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
