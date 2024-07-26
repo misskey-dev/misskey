@@ -18,6 +18,7 @@ export class RedisKVCache<T> {
 	constructor(redisClient: RedisKVCache<T>['redisClient'], name: RedisKVCache<T>['name'], opts: {
 		lifetime: RedisKVCache<T>['lifetime'];
 		memoryCacheLifetime: number;
+		memoryCacheCapacity: number;
 		fetcher: RedisKVCache<T>['fetcher'];
 		toRedisConverter: RedisKVCache<T>['toRedisConverter'];
 		fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
@@ -25,7 +26,7 @@ export class RedisKVCache<T> {
 		this.redisClient = redisClient;
 		this.name = name;
 		this.lifetime = opts.lifetime;
-		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime, Infinity);
+		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime, opts.memoryCacheCapacity);
 		this.fetcher = opts.fetcher;
 		this.toRedisConverter = opts.toRedisConverter;
 		this.fromRedisConverter = opts.fromRedisConverter;
