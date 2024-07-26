@@ -37,7 +37,7 @@ export class AuthenticateService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 	) {
-		this.appCache = new MemoryKVCache<MiApp>(Infinity, Infinity);
+		this.appCache = new MemoryKVCache<MiApp>(1000 * 60 * 60 * 24 * 7, 1_000); // 1w
 	}
 
 	@bindThis

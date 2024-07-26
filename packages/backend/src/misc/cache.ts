@@ -185,7 +185,6 @@ export class RedisSingleCache<T> {
 	}
 }
 
-// TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
 export class MemoryKVCache<T> {
 	private readonly cache = new Map<string, CacheEntry<T>>;
 
