@@ -1,6 +1,6 @@
 <div align="center">
 <a href="https://type4ny-hub.net">
-	<img src="./assets/title_float.svg" alt="type4ny logo" style="border-radius:50%" width="300"/>
+	<img src="./packages/frontend/assets/Type4ny-Logo.svg" alt="type4ny logo" style="border-radius:50%" width="300"/>
 </a>
 
 **🌎 **Type4ny** is an open source, federated social media platform that's free forever! 🚀**
@@ -18,10 +18,9 @@
 ---
 </div>
 
-# 当フォークについて
+# About Type4ny
 
-当フォークは PrisMisskey.space で使用しているフォークになります。
-このコードを一部でも使用する場合はAbout内にクレジット表示をお願いします。
+Type4ny-Project が開発している Misskey フォークです。
 
 # Special Thanks
 
