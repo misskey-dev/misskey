@@ -33,7 +33,7 @@ import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue'
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';

@@ -16,7 +16,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <script lang="ts" setup>
 import { } from 'vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 

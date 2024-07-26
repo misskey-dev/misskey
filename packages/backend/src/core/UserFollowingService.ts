@@ -279,8 +279,10 @@ export class UserFollowingService implements OnModuleInit {
 			});
 
 			// 通知を作成
-			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
-			}, followee.id);
+			if (follower.host === null) {
+				this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
+				}, followee.id);
+			}
 		}
 
 		if (alreadyFollowed) return;

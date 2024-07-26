@@ -45,6 +45,7 @@
 		"cropperjs": "2.0.0-beta.5",
 		"date-fns": "2.30.0",
 		"escape-regexp": "0.0.1",
+		"eslint-plugin-unused-imports": "^4.0.0",
 		"estree-walker": "3.0.3",
 		"eventemitter3": "5.0.1",
 		"idb-keyval": "6.2.1",

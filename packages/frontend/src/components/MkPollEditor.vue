@@ -36,7 +36,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				</MkInput>
 			</section>
 			<section v-else-if="expiration === 'after'">
-				<MkInput v-model="after" small type="number" class="input">
+				<MkInput v-model="after" small type="number" min="1" class="input">
 					<template #label>{{ i18n.ts._poll.duration }}</template>
 				</MkInput>
 				<MkSelect v-model="unit" small>

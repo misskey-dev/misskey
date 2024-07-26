@@ -196,6 +196,7 @@ import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
 import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
@@ -205,6 +206,7 @@ import MkNotifyButton from '@/components/MkNotifyButton.vue';
 import MkRemoteInfoUpdate from '@/components/MkRemoteInfoUpdate.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkLazy from '@/components/global/MkLazy.vue';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -267,8 +269,14 @@ const Notes = {
 
 const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
-	return {
-		backgroundImage: `url(${props.user.bannerUrl})`,
+	if (defaultStore.state.disableShowingAnimatedImages) {
+		return {
+			backgroundImage: `url(${ getStaticImageUrl(props.user.bannerUrl) })`,
+		};
+	} else {
+		return {
+			backgroundImage: `url(${ props.user.bannerUrl })`,
+		};
 	};
 });
 

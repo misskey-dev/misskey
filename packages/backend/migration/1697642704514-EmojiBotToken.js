@@ -1,3 +1,4 @@
+
 export class EmojiBotToken1697642704514 {
 	name = 'EmojiBotToken1697642704514';
 

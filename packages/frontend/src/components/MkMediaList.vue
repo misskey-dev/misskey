@@ -138,15 +138,13 @@ onMounted(() => {
 		pswpModule: PhotoSwipe,
 	});
 
-	lightbox.on('itemData', (ev) => {
-		const { itemData } = ev;
-
+	lightbox.addFilter('itemData', (itemData) => {
 		// element is children
 		const { element } = itemData;
 
 		const id = element?.dataset.id;
 		const file = props.mediaList.find(media => media.id === id);
-		if (!file) return;
+		if (!file) return itemData;
 
 		itemData.src = file.url;
 		itemData.w = Number(file.properties.width);
@@ -158,6 +156,8 @@ onMounted(() => {
 		itemData.alt = file.comment ?? file.name;
 		itemData.comment = file.comment ?? file.name;
 		itemData.thumbCropped = true;
+
+		return itemData;
 	});
 
 	lightbox.on('uiRegister', () => {

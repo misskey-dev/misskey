@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class MainChannel extends Channel {
@@ -25,7 +26,7 @@ class MainChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
 		// Subscribe main stream channel
 		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
 			switch (data.type) {

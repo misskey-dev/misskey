@@ -1331,6 +1331,8 @@ draftSavingBehavior: "下書きの保存に関する動作"
 saveAsDraft: "下書きとして保存"
 draftOverwriteConfirm: "下書きを適用すると現在入力されている内容はリセットされます。よろしいですか？"
 tryAgain: "もう一度お試しください。"
+confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示するとき確認する"
+sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 
 _delivery:
   status: "配信状態"

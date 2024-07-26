@@ -8,7 +8,11 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	:exclude="pageCacheController"
 >
 	<Suspense :timeout="0">
-		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+		<component
+			:is="currentPageComponent"
+			:key="key"
+			v-bind="Object.fromEntries(currentPageProps)"
+		/>
 
 		<template #fallback>
 			<MkLoading/>
@@ -18,8 +22,16 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 </template>
 
 <script lang="ts" setup>
-import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
-import { IRouter, Resolved, RouteDef } from '@/nirax.js';
+import {
+	computed,
+	inject,
+	nextTick,
+	onBeforeUnmount,
+	provide,
+	ref,
+	shallowRef,
+} from 'vue';
+import { IRouter, Resolved } from '@/nirax.js';
 import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
@@ -50,16 +62,21 @@ function resolveNested(current: Resolved, d = 0): Resolved | null {
 }
 
 const current = resolveNested(router.current)!;
-const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
+const currentPageComponent = shallowRef(
+	'component' in current.route ? current.route.component : MkLoadingPage,
+);
 const currentPageProps = ref(current.props);
-const key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
+const key = ref(
+	router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)),
+);
 
 function onChange({ resolved, key: newKey }) {
 	const current = resolveNested(resolved);
 	if (current == null || 'redirect' in current.route) return;
 	currentPageComponent.value = current.route.component;
 	currentPageProps.value = current.props;
-	key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
+	key.value =
+		current.route.path + JSON.stringify(Object.fromEntries(current.props));
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化
@@ -79,7 +96,9 @@ router.addListener('change', onChange);
  * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
  * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
  */
-const pageCacheController = computed(() => clearCacheRequested.value ? /.*/ : undefined);
+const pageCacheController = computed(() =>
+	clearCacheRequested.value ? /.*/ : undefined,
+);
 const clearCacheRequested = ref(false);
 
 globalEvents.on('requestClearPageCache', () => {

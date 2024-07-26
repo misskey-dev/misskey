@@ -15,7 +15,11 @@ const envOption = {
 };
 
 for (const key of Object.keys(envOption) as (keyof typeof envOption)[]) {
-	if (process.env['MK_' + key.replace(/[A-Z]/g, letter => `_${letter}`).toUpperCase()]) envOption[key] = true;
+	if (
+		process.env[
+			'MK_' + key.replace(/[A-Z]/g, (letter) => `_${letter}`).toUpperCase()
+		]
+	) envOption[key] = true;
 }
 
 if (process.env.NODE_ENV === 'test') envOption.disableClustering = true;

@@ -1,7 +1,7 @@
- {
+{
 	"name": "type4ny",
 	"version": "0.1.0-beta",
-	"codename": "apollo",
+	"codename": "emerald",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/type4ny-project/type4ny.git"
@@ -23,7 +23,7 @@
 		"build-storybook": "pnpm --filter frontend build-storybook",
 		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
-		"start-managed": "cross-env MANAGED=true pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
+		"start-managed": " pnpm check:connect && cd packages/backend && cross-env MANAGED=true node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
 		"migrate": "cd packages/backend && pnpm migrate",
@@ -50,16 +50,18 @@
 	},
 	"dependencies": {
 		"cssnano": "6.1.2",
+		"esbuild": "0.22.0",
+		"eslint-nibble": "^8.1.0",
+		"eslint-plugin-unused-imports": "^4.0.0",
 		"execa": "8.0.1",
 		"fast-glob": "3.3.2",
+		"glob": "10.3.12",
 		"ignore-walk": "6.0.4",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.38",
 		"tar": "6.2.1",
 		"terser": "5.31.1",
-		"typescript": "5.5.3",
-		"esbuild": "0.22.0",
-		"glob": "10.3.12"
+		"typescript": "5.5.3"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.0.2",

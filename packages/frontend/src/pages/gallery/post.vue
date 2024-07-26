@@ -77,7 +77,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();

@@ -9,21 +9,27 @@ import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
-import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
+import { isGlobalTimelineAvailable, isLocalTimelineAvailable } from '@/scripts/get-timeline-available.js';
 import { instance } from '@/instance.js';
+/**
+ * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
+ */
+import lightTheme from '@/themes/l-TypeLightEmerald.json5';
+import darkTheme from '@/themes/d-TypeDarkEmerald.json5';
+import { TimelineHeaderItem } from '@/timeline-header.js';
 
 interface PostFormAction {
-	title: string,
+	title: string;
 	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
 }
 
 interface UserAction {
-	title: string,
+	title: string;
 	handler: (user: Misskey.entities.UserDetailed) => void;
 }
 
 interface NoteAction {
-	title: string,
+	title: string;
 	handler: (note: Misskey.entities.Note) => void;
 }
 
@@ -40,20 +46,22 @@ interface PageViewInterruptor {
 }
 
 /** サウンド設定 */
-export type SoundStore = {
-	type: Exclude<SoundType, '_driveFile_'>;
-	volume: number;
-} | {
-	type: '_driveFile_';
+export type SoundStore =
+	| {
+			type: Exclude<SoundType, '_driveFile_'>;
+			volume: number;
+	  }
+	| {
+			type: '_driveFile_';
 
-	/** ドライブのファイルID */
-	fileId: string;
+			/** ドライブのファイルID */
+			fileId: string;
 
-	/** ファイルURL（こちらが優先される） */
-	fileUrl: string;
+			/** ファイルURL（こちらが優先される） */
+			fileUrl: string;
 
-	volume: number;
-}
+			volume: number;
+	  };
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -64,641 +72,656 @@ export const { bannerDark, bannerLight, iconDark, iconLight } = instance;
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
-export const defaultStore = markRaw(new Storage('base', {
-	accountSetupWizard: {
-		where: 'account',
-		default: 0,
-	},
-	timelineTutorials: {
-		where: 'account',
-		default: {
-			home: false,
-			local: false,
-			social: false,
-			global: false,
+export const defaultStore = markRaw(
+	new Storage('base', {
+		accountSetupWizard: {
+			where: 'account',
+			default: 0,
 		},
-	},
-	keepCw: {
-		where: 'account',
-		default: true,
-	},
-	showFullAcct: {
-		where: 'account',
-		default: false,
-	},
-	collapseRenotes: {
-		where: 'account',
-		default: true,
-	},
-	defaultNoteVisibility: {
-		where: 'account',
-		default: 'public' as (typeof Misskey.noteVisibilities)[number],
-	},
-	defaultNoteLocalOnly: {
-		where: 'account',
-		default: false,
-	},
-	draftSavingBehavior: {
-		where: 'account',
-		default: 'auto' as 'auto' | 'manual',
-	},
-	rememberNoteVisibility: {
-		where: 'account',
-		default: false,
-	},
-	rememberReactionAcceptance: {
-		where: 'account',
-		default: false,
-	},
-	uploadFolder: {
-		where: 'account',
-		default: null as string | null,
-	},
-	pastedFileName: {
-		where: 'account',
-		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
-	},
-	disableNoteDrafting: {
-		where: 'account',
-		default: false,
-	},
-	keepOriginalUploading: {
-		where: 'account',
-		default: false,
-	},
-	memo: {
-		where: 'account',
-		default: null,
-	},
-	reactions: {
-		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	},
-	pinnedEmojis: {
-		where: 'account',
-		default: [],
-	},
-	reactions1: {
-		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	},
-	pinnedEmojis1: {
-		where: 'account',
-		default: [],
-	},
-	reactions2: {
-		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	},
-	pinnedEmojis2: {
-		where: 'account',
-		default: [],
-	},
-	reactions3: {
-		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	},
-	pinnedEmojis3: {
-		where: 'account',
-		default: [],
-	},
-	reactions4: {
-		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	},
-	pinnedEmojis4: {
-		where: 'account',
-		default: [],
-	},
-	reactions5: {
-		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	},
-	pinnedEmojis5: {
-		where: 'account',
-		default: [],
-	},
-	pickerProfileName: {
-		where: 'account',
-		default: 'default',
-	},
-	pickerProfileName1: {
-		where: 'account',
-		default: '1',
-	},
-	pickerProfileName2: {
-		where: 'account',
-		default: '2',
-	},
-	pickerProfileName3: {
-		where: 'account',
-		default: '3',
-	},
-	pickerProfileName4: {
-		where: 'account',
-		default: '4',
-	},
-	pickerProfileName5: {
-		where: 'account',
-		default: '5',
-	},
-	pickerProfileDefault: {
-		where: 'account',
-		default: 1,
-	},
-	reactionAcceptance: {
-		where: 'account',
-		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
-	},
-	mutedAds: {
-		where: 'account',
-		default: [] as string[],
-	},
-
-	menu: {
-		where: 'deviceAccount',
-		default: [
-			'notifications',
-			'clips',
-			'drive',
-			'followRequests',
-			'-',
-			'explore',
-			'announcements',
-			'search',
-			'-',
-			'ui',
-			'cacheclear',
-		],
-	},
-	timelineHeader: {
-		where: 'deviceAccount',
-		default: [
-			'home',
-			...(isLocalTimelineAvailable ? [
-				'local',
-				'social',
-			] : []),
-			...(isGlobalTimelineAvailable ? [
-				'global',
-			] : []),
-			'lists',
-			'antennas',
-			'channels',
-		] as TimelineHeaderItem[],
-	},
-	visibility: {
-		where: 'deviceAccount',
-		default: 'public' as (typeof Misskey.noteVisibilities)[number],
-	},
-	localOnly: {
-		where: 'deviceAccount',
-		default: false,
-	},
-	showPreview: {
-		where: 'device',
-		default: false,
-	},
-	statusbars: {
-		where: 'deviceAccount',
-		default: [] as {
-			name: string;
-			id: string;
-			type: string;
-			size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
-			black: boolean;
-			props: Record<string, any>;
-		}[],
-	},
-	widgets: {
-		where: 'account',
-		default: [] as {
-			name: string;
-			id: string;
-			place: string | null;
-			data: Record<string, any>;
-		}[],
-	},
-	tl: {
-		where: 'deviceAccount',
-		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
-			userList: null as Misskey.entities.UserList | null,
-			filter: {
-				withReplies: true,
-				withRenotes: true,
-				withSensitive: true,
-				onlyFiles: false,
-				withCw: false,
+		timelineTutorials: {
+			where: 'account',
+			default: {
+				home: false,
+				local: false,
+				social: false,
+				global: false,
 			},
 		},
-	},
-	pinnedUserLists: {
-		where: 'deviceAccount',
-		default: [] as Misskey.entities.UserList[],
-	},
-	pinnedChannels: {
-		where: 'deviceAccount',
-		default: [] as Misskey.entities.Channel[],
-	},
-	overridedDeviceKind: {
-		where: 'device',
-		default: null as null | 'smartphone' | 'tablet' | 'desktop',
-	},
-	serverDisconnectedBehavior: {
-		where: 'device',
-		default: 'quiet' as 'quiet' | 'reload' | 'dialog',
-	},
-	nsfw: {
-		where: 'device',
-		default: 'respect' as 'respect' | 'force' | 'ignore',
-	},
-	highlightSensitiveMedia: {
-		where: 'device',
-		default: false,
-	},
-	animation: {
-		where: 'device',
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
-	},
-	animatedMfm: {
-		where: 'device',
-		default: false,
-	},
-	advancedMfm: {
-		where: 'device',
-		default: true,
-	},
-	showReactionsCount: {
-		where: 'device',
-		default: false,
-	},
-	alwaysShowPlayer: {
-		where: 'device',
-		default: true,
-	},
-	alwaysExpandTweet: {
-		where: 'device',
-		default: false,
-	},
-	enableQuickAddMfmFunction: {
-		where: 'device',
-		default: false,
-	},
-	loadRawImages: {
-		where: 'device',
-		default: false,
-	},
-	imageNewTab: {
-		where: 'device',
-		default: false,
-	},
-	enableDataSaverMode: {
-		where: 'device',
-		default: false,
-	},
-	enableCellularWithDataSaver: {
-		where: 'device',
-		default: false,
-	},
-	disableShowingAnimatedImages: {
-		where: 'device',
-		default: window.matchMedia('(prefers-reduced-motion)').matches,
-	},
-	emojiStyle: {
-		where: 'device',
-		default: 'twemoji', // twemoji / fluentEmoji / native
-	},
-	disableDrawer: {
-		where: 'device',
-		default: false,
-	},
-	useBlurEffectForModal: {
-		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
-	},
-	useBlurEffect: {
-		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
-	},
-	showFixedPostForm: {
-		where: 'device',
-		default: false,
-	},
-	showFixedPostFormInChannel: {
-		where: 'device',
-		default: false,
-	},
-	enableInfiniteScroll: {
-		where: 'device',
-		default: true,
-	},
-	useReactionPickerForContextMenu: {
-		where: 'device',
-		default: false,
-	},
-	topBarNameShown: {
-		where: 'device',
-		default: false,
-	},
-	showHomeTimeline: {
-		where: 'device',
-		default: true,
-	},
-	showLocalTimeline: {
-		where: 'device',
-		default: true,
-	},
-	showSocialTimeline: {
-		where: 'device',
-		default: true,
-	},
-	showGapBetweenNotesInTimeline: {
-		where: 'device',
-		default: false,
-	},
-	darkMode: {
-		where: 'device',
-		default: false,
-	},
-	gamingMode: {
-		where: 'device',
-		default: false,
-	},
-	gamingType: {
-		where: 'device',
-		default: 'none',
-	},
-	indicatorCounterToggle: {
-		where: 'device',
-		default: 'true',
-	},
-	bannerUrl: {
-		where: 'device',
-		default: bannerDark,
-	},
-	iconUrl: {
-		where: 'device',
-		default: iconDark,
-	},
-	instanceTicker: {
-		where: 'device',
-		default: 'remote' as 'none' | 'remote' | 'always',
-	},
-	emojiPickerScale: {
-		where: 'device',
-		default: 1,
-	},
-	emojiPickerWidth: {
-		where: 'device',
-		default: 1,
-	},
-	emojiPickerHeight: {
-		where: 'device',
-		default: 2,
-	},
-	emojiPickerUseDrawerForMobile: {
-		where: 'device',
-		default: true,
-	},
-	recentlyUsedEmojis: {
-		where: 'device',
-		default: [] as string[],
-	},
-	enablehanntenn: {
-		where: 'device',
-		default: false,
-	},
-	recentlyUsedUsers: {
-		where: 'device',
-		default: [] as string[],
-	},
-	defaultSideView: {
-		where: 'device',
-		default: false,
-	},
-	menuDisplay: {
-		where: 'device',
-		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top',
-	},
-	reportError: {
-		where: 'device',
-		default: false,
-	},
-	squareAvatars: {
-		where: 'device',
-		default: false,
-	},
-	showAvatarDecorations: {
-		where: 'device',
-		default: true,
-	},
-	postFormWithHashtags: {
-		where: 'device',
-		default: false,
-	},
-	postFormHashtags: {
-		where: 'device',
-		default: '',
-	},
-	themeInitial: {
-		where: 'device',
-		default: true,
-	},
-	numberOfPageCache: {
-		where: 'device',
-		default: 3,
-	},
-	specifiedColor: {
-		where: 'device',
-		default: '#FFFF64',
-	},
-	followerColor: {
-		where: 'device',
-		default: '#FF00FF',
-	},
-	homeColor: {
-		where: 'device',
-		default: '#00FFFF',
-	},
-	localOnlyColor: {
-		where: 'device',
-		default: '#2b2c41',
-	},
-	numberOfGamingSpeed: {
-		where: 'device',
-		default: 44,
-	},
-	remoteLocalTimeline: {
-		where: 'device',
-		default: [],
-	},
-	onlyAndWithSave: {
-		where: 'device',
-		default: false,
-	},
-	onlyFiles: {
-		where: 'device',
-		default: false,
-	},
-	withReplies: {
-		where: 'device',
-		default: true,
-	},
-	withRenotes: {
-		where: 'device',
-		default: true,
-	},
-	showNoteActionsOnlyHover: {
-		where: 'device',
-		default: false,
-	},
-	showClipButtonInNoteFooter: {
-		where: 'device',
-		default: false,
-	},
-	showMediaTimeline: {
-		where: 'device',
-		default: true,
-	},
-	showGlobalTimeline: {
-		where: 'device',
-		default: true,
-	},
-	showVisibilityColor: {
-		where: 'device',
-		default: false,
-	},
-	reactionsDisplaySize: {
-		where: 'device',
-		default: 'medium' as 'small' | 'medium' | 'large',
-	},
-	limitWidthOfReaction: {
-		where: 'device',
-		default: true,
-	},
-	forceShowAds: {
-		where: 'device',
-		default: false,
-	},
-	aiChanMode: {
-		where: 'device',
-		default: false,
-	},
-	devMode: {
-		where: 'device',
-		default: false,
-	},
-	mediaListWithOneImageAppearance: {
-		where: 'device',
-		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
-	},
-	notificationPosition: {
-		where: 'device',
-		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
-	},
-	notificationStackAxis: {
-		where: 'device',
-		default: 'horizontal' as 'vertical' | 'horizontal',
-	},
-	enableCondensedLineForAcct: {
-		where: 'device',
-		default: false,
-	},
-	additionalUnicodeEmojiIndexes: {
-		where: 'device',
-		default: {} as Record<string, Record<string, string[]>>,
-	},
-	keepScreenOn: {
-		where: 'device',
-		default: false,
-	},
-	defaultWithReplies: {
-		where: 'account',
-		default: false,
-	},
-	hideMutedNotes: {
-		where: 'device',
-		default: false,
-	},
-	disableStreamingTimeline: {
-		where: 'device',
-		default: false,
-	},
-	useGroupedNotifications: {
-		where: 'device',
-		default: true,
-	},
-	dataSaver: {
-		where: 'device',
-		default: {
-			media: false,
-			avatar: false,
-			urlPreview: false,
-			code: false,
-		} as Record<string, boolean>,
-	},
-	enableSeasonalScreenEffect: {
-		where: 'device',
-		default: false,
-	},
-	dropAndFusion: {
-		where: 'device',
-		default: {
-			bgmVolume: 0.25,
-			sfxVolume: 1,
+		keepCw: {
+			where: 'account',
+			default: true,
 		},
-	},
-	hemisphere: {
-		where: 'device',
-		default: hemisphere as 'N' | 'S',
-	},
-	enableHorizontalSwipe: {
-		where: 'device',
-		default: true,
-	},
-	useNativeUIForVideoAudioPlayer: {
+		showFullAcct: {
+			where: 'account',
+			default: false,
+		},
+		collapseRenotes: {
+			where: 'account',
+			default: true,
+		},
+		defaultNoteVisibility: {
+			where: 'account',
+			default: 'public' as (typeof Misskey.noteVisibilities)[number],
+		},
+		defaultNoteLocalOnly: {
+			where: 'account',
+			default: false,
+		},
+		draftSavingBehavior: {
+			where: 'account',
+			default: 'auto' as 'auto' | 'manual',
+		},
+		rememberNoteVisibility: {
+			where: 'account',
+			default: false,
+		},
+		rememberReactionAcceptance: {
+			where: 'account',
+			default: false,
+		},
+		uploadFolder: {
+			where: 'account',
+			default: null as string | null,
+		},
+		pastedFileName: {
+			where: 'account',
+			default: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
+		},
+		disableNoteDrafting: {
+			where: 'account',
+			default: false,
+		},
+		keepOriginalUploading: {
+			where: 'account',
+			default: false,
+		},
+		memo: {
+			where: 'account',
+			default: null,
+		},
+		reactions: {
+			where: 'account',
+			default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		},
+		pinnedEmojis: {
+			where: 'account',
+			default: [],
+		},
+		reactions1: {
+			where: 'account',
+			default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		},
+		pinnedEmojis1: {
+			where: 'account',
+			default: [],
+		},
+		reactions2: {
+			where: 'account',
+			default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		},
+		pinnedEmojis2: {
+			where: 'account',
+			default: [],
+		},
+		reactions3: {
+			where: 'account',
+			default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		},
+		pinnedEmojis3: {
+			where: 'account',
+			default: [],
+		},
+		reactions4: {
+			where: 'account',
+			default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		},
+		pinnedEmojis4: {
+			where: 'account',
+			default: [],
+		},
+		reactions5: {
+			where: 'account',
+			default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		},
+		pinnedEmojis5: {
+			where: 'account',
+			default: [],
+		},
+		pickerProfileName: {
+			where: 'account',
+			default: 'default',
+		},
+		pickerProfileName1: {
+			where: 'account',
+			default: '1',
+		},
+		pickerProfileName2: {
+			where: 'account',
+			default: '2',
+		},
+		pickerProfileName3: {
+			where: 'account',
+			default: '3',
+		},
+		pickerProfileName4: {
+			where: 'account',
+			default: '4',
+		},
+		pickerProfileName5: {
+			where: 'account',
+			default: '5',
+		},
+		pickerProfileDefault: {
+			where: 'account',
+			default: 1,
+		},
+		reactionAcceptance: {
+			where: 'account',
+			default: 'nonSensitiveOnly' as
+				| 'likeOnly'
+				| 'likeOnlyForRemote'
+				| 'nonSensitiveOnly'
+				| 'nonSensitiveOnlyForLocalLikeOnlyForRemote'
+				| null,
+		},
+		mutedAds: {
+			where: 'account',
+			default: [] as string[],
+		},
+
+		menu: {
+			where: 'deviceAccount',
+			default: [
+				'notifications',
+				'clips',
+				'drive',
+				'followRequests',
+				'-',
+				'explore',
+				'announcements',
+				'search',
+				'-',
+				'ui',
+				'cacheclear',
+			],
+		},
+		timelineHeader: {
+			where: 'deviceAccount',
+			default: [
+				'home',
+				...(isLocalTimelineAvailable ? ['local', 'social'] : []),
+				...(isGlobalTimelineAvailable ? ['global'] : []),
+				'lists',
+				'antennas',
+				'channels',
+			] as TimelineHeaderItem[],
+		},
+		visibility: {
+			where: 'deviceAccount',
+			default: 'public' as (typeof Misskey.noteVisibilities)[number],
+		},
+		localOnly: {
+			where: 'deviceAccount',
+			default: false,
+		},
+		showPreview: {
+			where: 'device',
+			default: false,
+		},
+		statusbars: {
+			where: 'deviceAccount',
+			default: [] as {
+				name: string;
+				id: string;
+				type: string;
+				size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
+				black: boolean;
+				props: Record<string, any>;
+			}[],
+		},
+		widgets: {
+			where: 'account',
+			default: [] as {
+				name: string;
+				id: string;
+				place: string | null;
+				data: Record<string, any>;
+			}[],
+		},
+		tl: {
+			where: 'deviceAccount',
+			default: {
+				src: 'home' as
+					| 'home'
+					| 'local'
+					| 'social'
+					| 'global'
+					| `list:${string}`,
+				userList: null as Misskey.entities.UserList | null,
+				filter: {
+					withReplies: true,
+					withRenotes: true,
+					withSensitive: true,
+					onlyFiles: false,
+					withCw: false,
+				},
+			},
+		},
+		pinnedUserLists: {
+			where: 'deviceAccount',
+			default: [] as Misskey.entities.UserList[],
+		},
+		pinnedChannels: {
+			where: 'deviceAccount',
+			default: [] as Misskey.entities.Channel[],
+		},
+		overridedDeviceKind: {
+			where: 'device',
+			default: null as null | 'smartphone' | 'tablet' | 'desktop',
+		},
+		serverDisconnectedBehavior: {
+			where: 'device',
+			default: 'quiet' as 'quiet' | 'reload' | 'dialog',
+		},
+		nsfw: {
+			where: 'device',
+			default: 'respect' as 'respect' | 'force' | 'ignore',
+		},
+		highlightSensitiveMedia: {
+			where: 'device',
+			default: false,
+		},
+		animation: {
+			where: 'device',
+			default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		},
+		animatedMfm: {
+			where: 'device',
+			default: false,
+		},
+		advancedMfm: {
+			where: 'device',
+			default: true,
+		},
+		showReactionsCount: {
+			where: 'device',
+			default: false,
+		},
+		alwaysShowPlayer: {
+			where: 'device',
+			default: true,
+		},
+		alwaysExpandTweet: {
+			where: 'device',
+			default: false,
+		},
+		enableQuickAddMfmFunction: {
+			where: 'device',
+			default: false,
+		},
+		loadRawImages: {
+			where: 'device',
+			default: false,
+		},
+		imageNewTab: {
+			where: 'device',
+			default: false,
+		},
+		enableDataSaverMode: {
+			where: 'device',
+			default: false,
+		},
+		enableCellularWithDataSaver: {
+			where: 'device',
+			default: false,
+		},
+		disableShowingAnimatedImages: {
+			where: 'device',
+			default: window.matchMedia('(prefers-reduced-motion)').matches,
+		},
+		emojiStyle: {
+			where: 'device',
+			default: 'twemoji', // twemoji / fluentEmoji / native
+		},
+		disableDrawer: {
+			where: 'device',
+			default: false,
+		},
+		useBlurEffectForModal: {
+			where: 'device',
+			default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		},
+		useBlurEffect: {
+			where: 'device',
+			default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		},
+		showFixedPostForm: {
+			where: 'device',
+			default: false,
+		},
+		showFixedPostFormInChannel: {
+			where: 'device',
+			default: false,
+		},
+		enableInfiniteScroll: {
+			where: 'device',
+			default: true,
+		},
+		useReactionPickerForContextMenu: {
+			where: 'device',
+			default: false,
+		},
+		topBarNameShown: {
+			where: 'device',
+			default: false,
+		},
+		showHomeTimeline: {
+			where: 'device',
+			default: true,
+		},
+		showLocalTimeline: {
+			where: 'device',
+			default: true,
+		},
+		showSocialTimeline: {
+			where: 'device',
+			default: true,
+		},
+		showGapBetweenNotesInTimeline: {
+			where: 'device',
+			default: false,
+		},
+		darkMode: {
+			where: 'device',
+			default: false,
+		},
+		gamingMode: {
+			where: 'device',
+			default: false,
+		},
+		gamingType: {
+			where: 'device',
+			default: 'none',
+		},
+		indicatorCounterToggle: {
+			where: 'device',
+			default: 'true',
+		},
+		bannerUrl: {
+			where: 'device',
+			default: bannerDark,
+		},
+		iconUrl: {
+			where: 'device',
+			default: iconDark,
+		},
+		instanceTicker: {
+			where: 'device',
+			default: 'remote' as 'none' | 'remote' | 'always',
+		},
+		emojiPickerScale: {
+			where: 'device',
+			default: 1,
+		},
+		emojiPickerWidth: {
+			where: 'device',
+			default: 1,
+		},
+		emojiPickerHeight: {
+			where: 'device',
+			default: 2,
+		},
+		emojiPickerUseDrawerForMobile: {
+			where: 'device',
+			default: true,
+		},
+		recentlyUsedEmojis: {
+			where: 'device',
+			default: [] as string[],
+		},
+		enablehanntenn: {
+			where: 'device',
+			default: false,
+		},
+		recentlyUsedUsers: {
+			where: 'device',
+			default: [] as string[],
+		},
+		defaultSideView: {
+			where: 'device',
+			default: false,
+		},
+		menuDisplay: {
+			where: 'device',
+			default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top',
+		},
+		reportError: {
+			where: 'device',
+			default: false,
+		},
+		squareAvatars: {
+			where: 'device',
+			default: false,
+		},
+		showAvatarDecorations: {
+			where: 'device',
+			default: true,
+		},
+		postFormWithHashtags: {
+			where: 'device',
+			default: false,
+		},
+		postFormHashtags: {
+			where: 'device',
+			default: '',
+		},
+		themeInitial: {
+			where: 'device',
+			default: true,
+		},
+		numberOfPageCache: {
+			where: 'device',
+			default: 5,
+		},
+		specifiedColor: {
+			where: 'device',
+			default: '#FFFF64',
+		},
+		followerColor: {
+			where: 'device',
+			default: '#FF00FF',
+		},
+		homeColor: {
+			where: 'device',
+			default: '#00FFFF',
+		},
+		localOnlyColor: {
+			where: 'device',
+			default: '#2b2c41',
+		},
+		numberOfGamingSpeed: {
+			where: 'device',
+			default: 44,
+		},
+		remoteLocalTimeline: {
+			where: 'device',
+			default: [],
+		},
+		onlyAndWithSave: {
+			where: 'device',
+			default: false,
+		},
+		onlyFiles: {
+			where: 'device',
+			default: false,
+		},
+		withReplies: {
+			where: 'device',
+			default: true,
+		},
+		withRenotes: {
+			where: 'device',
+			default: true,
+		},
+		showNoteActionsOnlyHover: {
+			where: 'device',
+			default: false,
+		},
+		showClipButtonInNoteFooter: {
+			where: 'device',
+			default: false,
+		},
+		showMediaTimeline: {
+			where: 'device',
+			default: true,
+		},
+		showGlobalTimeline: {
+			where: 'device',
+			default: true,
+		},
+		showVisibilityColor: {
+			where: 'device',
+			default: false,
+		},
+		reactionsDisplaySize: {
+			where: 'device',
+			default: 'medium' as 'small' | 'medium' | 'large',
+		},
+		limitWidthOfReaction: {
+			where: 'device',
+			default: true,
+		},
+		forceShowAds: {
+			where: 'device',
+			default: false,
+		},
+		aiChanMode: {
+			where: 'device',
+			default: false,
+		},
+		devMode: {
+			where: 'device',
+			default: false,
+		},
+		mediaListWithOneImageAppearance: {
+			where: 'device',
+			default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+		},
+		notificationPosition: {
+			where: 'device',
+			default: 'rightBottom' as
+				| 'leftTop'
+				| 'leftBottom'
+				| 'rightTop'
+				| 'rightBottom',
+		},
+		notificationStackAxis: {
+			where: 'device',
+			default: 'horizontal' as 'vertical' | 'horizontal',
+		},
+		enableCondensedLineForAcct: {
+			where: 'device',
+			default: false,
+		},
+		additionalUnicodeEmojiIndexes: {
+			where: 'device',
+			default: {} as Record<string, Record<string, string[]>>,
+		},
+		keepScreenOn: {
+			where: 'device',
+			default: false,
+		},
+		defaultWithReplies: {
+			where: 'account',
+			default: false,
+		},
+		hideMutedNotes: {
+			where: 'device',
+			default: false,
+		},
+		disableStreamingTimeline: {
+			where: 'device',
+			default: false,
+		},
+		useGroupedNotifications: {
+			where: 'device',
+			default: true,
+		},
+		dataSaver: {
+			where: 'device',
+			default: {
+				media: false,
+				avatar: false,
+				urlPreview: false,
+				code: false,
+			} as Record<string, boolean>,
+		},
+		enableSeasonalScreenEffect: {
+			where: 'device',
+			default: false,
+		},
+		dropAndFusion: {
+			where: 'device',
+			default: {
+				bgmVolume: 0.25,
+				sfxVolume: 1,
+			},
+		},
+		hemisphere: {
+			where: 'device',
+			default: hemisphere as 'N' | 'S',
+		},
+		enableHorizontalSwipe: {
+			where: 'device',
+			default: true,
+		},
+		useNativeUIForVideoAudioPlayer: {
+			where: 'device',
+			default: false,
+		},
+		keepOriginalFilename: {
+			where: 'device',
+			default: true,
+		},
+		alwaysConfirmFollow: {
+			where: 'device',
+			default: true,
+		},
+	confirmWhenRevealingSensitiveMedia: {
 		where: 'device',
 		default: false,
-	},
-	keepOriginalFilename: {
-		where: 'device',
-		default: true,
-	},
-	alwaysConfirmFollow: {
-		where: 'device',
-		default: true,
 	},
 
-	sound_masterVolume: {
-		where: 'device',
-		default: 0.3,
-	},
-	sound_notUseSound: {
-		where: 'device',
-		default: false,
-	},
-	sound_useSoundOnlyWhenActive: {
-		where: 'device',
-		default: false,
-	},
-	sound_note: {
-		where: 'device',
-		default: { type: 'syuilo/n-aec', volume: 1 } as SoundStore,
-	},
-	sound_noteMy: {
-		where: 'device',
-		default: { type: 'syuilo/n-cea-4va', volume: 1 } as SoundStore,
-	},
-	sound_notification: {
-		where: 'device',
-		default: { type: 'syuilo/n-ea', volume: 1 } as SoundStore,
-	},
-	sound_reaction: {
-		where: 'device',
-		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
-	},
-}));
+		sound_masterVolume: {
+			where: 'device',
+			default: 0.3,
+		},
+		sound_notUseSound: {
+			where: 'device',
+			default: false,
+		},
+		sound_useSoundOnlyWhenActive: {
+			where: 'device',
+			default: false,
+		},
+		sound_note: {
+			where: 'device',
+			default: { type: 'syuilo/n-aec', volume: 1 } as SoundStore,
+		},
+		sound_noteMy: {
+			where: 'device',
+			default: { type: 'syuilo/n-cea-4va', volume: 1 } as SoundStore,
+		},
+		sound_notification: {
+			where: 'device',
+			default: { type: 'syuilo/n-ea', volume: 1 } as SoundStore,
+		},
+		sound_reaction: {
+			where: 'device',
+			default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
+		},
+	}),
+);
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -724,13 +747,6 @@ interface Watcher {
 	callback: (value: unknown) => void;
 }
 
-/**
- * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
- */
-import lightTheme from '@/themes/l-TypeLightEmerald.json5';
-import darkTheme from '@/themes/d-TypeDarkEmerald.json5';
-import { TimelineHeaderItem } from '@/timeline-header.js';
-
 export class ColdDeviceStorage {
 	public static default = {
 		lightTheme,
@@ -741,7 +757,9 @@ export class ColdDeviceStorage {
 
 	public static watchers: Watcher[] = [];
 
-	public static get<T extends keyof typeof ColdDeviceStorage.default>(key: T): typeof ColdDeviceStorage.default[T] {
+	public static get<T extends keyof typeof ColdDeviceStorage.default>(
+		key: T,
+	): (typeof ColdDeviceStorage.default)[T] {
 		// TODO: indexedDBにする
 		//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
 		//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
@@ -754,16 +772,22 @@ export class ColdDeviceStorage {
 	}
 
 	public static getAll(): Partial<typeof this.default> {
-		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce((acc, key) => {
-			const value = localStorage.getItem(PREFIX + key);
-			if (value != null) {
-				acc[key] = JSON.parse(value);
-			}
-			return acc;
-		}, {} as any);
+		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce(
+			(acc, key) => {
+				const value = localStorage.getItem(PREFIX + key);
+				if (value != null) {
+					acc[key] = JSON.parse(value);
+				}
+				return acc;
+			},
+			{} as any,
+		);
 	}
 
-	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
+	public static set<T extends keyof typeof ColdDeviceStorage.default>(
+		key: T,
+		value: (typeof ColdDeviceStorage.default)[T],
+	): void {
 		// 呼び出し側のバグ等で undefined が来ることがある
 		// undefined を文字列として miLocalStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -788,7 +812,7 @@ export class ColdDeviceStorage {
 		const v = ColdDeviceStorage.get(key);
 		const r = ref(v);
 		// TODO: このままではwatcherがリークするので開放する方法を考える
-		this.watch(key, v => {
+		this.watch(key, (v) => {
 			r.value = v;
 		});
 		return r;
@@ -798,7 +822,9 @@ export class ColdDeviceStorage {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	public static makeGetterSetter<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
+	public static makeGetterSetter<
+		K extends keyof typeof ColdDeviceStorage.default,
+	>(key: K) {
 		// TODO: VueのcustomRef使うと良い感じになるかも
 		const valueRef = ColdDeviceStorage.ref(key);
 		return {

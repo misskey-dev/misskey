@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			scrolling="no"
 			:allow="player.allow == null ? 'encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
 			:class="$style.playerIframe"
-			:src="player.url"
+			:src="transformPlayerUrl(player.url)"
 			:style="{ border: 0, backgroundColor: 'transparent' }"
 			allowtransparency="true"
 		></iframe>
@@ -96,6 +96,7 @@ import * as os from '@/os.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
+import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
 import { defaultStore } from '@/store.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
