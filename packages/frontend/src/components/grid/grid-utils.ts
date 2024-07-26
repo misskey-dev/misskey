@@ -8,7 +8,7 @@ import { DataSource, SizeStyle } from '@/components/grid/grid.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import { GridRow } from '@/components/grid/row.js';
 import { GridContext } from '@/components/grid/grid-event.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { GridColumn, GridColumnSetting } from '@/components/grid/column.js';
 
 export function isCellElement(elem: HTMLElement): boolean {

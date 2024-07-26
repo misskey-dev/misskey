@@ -53,7 +53,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 				</div>
 
-				<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderChanged"/>
+				<MkFolder :spacerMax="8" :spacerMin="8">
+					<template #icon><i class="ti ti-arrows-sort"></i></template>
+					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
+					<MkSortOrderEditor :sortOrders="sortOrders" @update="onSortOrderChanged"/>
+				</MkFolder>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 					<MkButton primary @click="onSearchRequest">
@@ -93,11 +97,11 @@ import { emptyStrToUndefined, GridSortOrder, RequestLogItem } from '@/pages/admi
 import { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
-import XSortOrderFolder from '@/pages/admin/custom-emojis-manager.sort-order-folder.vue';
 import * as os from '@/os.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
+import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 
 type GridItem = {
 	checked: boolean;

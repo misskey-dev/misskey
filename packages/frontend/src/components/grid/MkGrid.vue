@@ -82,14 +82,14 @@ const props = defineProps<{
 }>();
 
 // non-reactive
-
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const rowSetting: Required<GridRowSetting> = {
 	...defaultGridRowSetting,
 	...props.settings.row,
 };
 
 // non-reactive
-
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const columnSettings = props.settings.cols;
 
 // non-reactive

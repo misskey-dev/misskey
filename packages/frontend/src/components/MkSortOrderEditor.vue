@@ -4,26 +4,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkFolder :spacerMax="8" :spacerMin="8">
-	<template #icon><i class="ti ti-arrows-sort"></i></template>
-	<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
-	<div :class="$style.sortOrderArea">
-		<div :class="$style.sortOrderAreaTags">
-			<MkTagItem
-				v-for="order in sortOrders"
-				:key="order.key"
-				:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
-				:exButtonIconClass="'ti ti-x'"
-				:content="order.key"
-				@click="onToggleSortOrderButtonClicked(order)"
-				@exButtonClick="onRemoveSortOrderButtonClicked(order.key)"
-			/>
-		</div>
-		<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
-			<span class="ti ti-plus"/>
-		</MkButton>
+<div :class="$style.sortOrderArea">
+	<div :class="$style.sortOrderAreaTags">
+		<MkTagItem
+			v-for="order in sortOrders"
+			:key="order.key"
+			:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
+			:exButtonIconClass="'ti ti-x'"
+			:content="order.key"
+			@click="onToggleSortOrderButtonClicked(order)"
+			@exButtonClick="onRemoveSortOrderButtonClicked(order.key)"
+		/>
 	</div>
-</MkFolder>
+	<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
+		<span class="ti ti-plus"/>
+	</MkButton>
+</div>
 </template>
 
 <script setup lang="ts">

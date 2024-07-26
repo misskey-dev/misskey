@@ -117,7 +117,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 					</div>
 
-					<XSortOrderFolder :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
+					<MkFolder :spacerMax="8" :spacerMin="8">
+						<template #icon><i class="ti ti-arrows-sort"></i></template>
+						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
+						<MkSortOrderEditor :sortOrders="sortOrders" @update="onSortOrderUpdate"/>
+					</MkFolder>
 
 					<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 						<MkButton primary @click="onSearchRequest">
@@ -172,13 +176,13 @@ import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
-import XSortOrderFolder from '@/pages/admin/custom-emojis-manager.sort-order-folder.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
+import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 
 type GridItem = {
 	checked: boolean;
