@@ -5012,6 +5012,14 @@ export interface Locale extends ILocale {
      * もう一度お試しください。
      */
     "tryAgain": string;
+    /**
+     * センシティブなメディアを表示するとき確認する
+     */
+    "confirmWhenRevealingSensitiveMedia": string;
+    /**
+     * センシティブなメディアです。表示しますか？
+     */
+    "sensitiveMediaRevealConfirm": string;
     "_delivery": {
         /**
          * 配信状態

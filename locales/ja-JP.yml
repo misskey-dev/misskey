@@ -1249,6 +1249,8 @@ noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
 tryAgain: "もう一度お試しください。"
+confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示するとき確認する"
+sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 
 _delivery:
   status: "配信状態"
