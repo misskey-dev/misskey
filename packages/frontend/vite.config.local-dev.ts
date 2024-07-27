@@ -52,6 +52,7 @@ const devConfig = {
 			'/bios': httpUrl,
 			'/cli': httpUrl,
 			'/inbox': httpUrl,
+			'/emoji/': httpUrl,
 			'/notes': {
 				target: httpUrl,
 				headers: {
