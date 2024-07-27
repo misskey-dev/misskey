@@ -81,16 +81,9 @@ class ValidatorPreset {
 	regex(pattern: RegExp): GridCellValidator {
 		return {
 			name: 'regex',
-			validate: ({ value, column }): ValidatorResult => {
-				if (column.setting.type !== 'text') {
-					return {
-						valid: false,
-						message: i18n.ts._gridComponent._error.columnTypeNotSupport,
-					};
-				}
-
+			validate: ({ value }): ValidatorResult => {
 				return {
-					valid: pattern.test(value?.toString() ?? ''),
+					valid: (typeof value !== 'string') || pattern.test(value.toString() ?? ''),
 					message: i18n.tsx._gridComponent._error.patternNotMatch({ pattern: pattern.source }),
 				};
 			},

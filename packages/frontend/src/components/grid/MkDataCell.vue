@@ -135,7 +135,7 @@ watch(() => [cell.value.value], () => {
 
 watch(() => cell.value.selected, () => {
 	if (cell.value.selected) {
-		rootEl.value?.focus();
+		requestFocus();
 	}
 });
 
@@ -151,8 +151,7 @@ function onCellDoubleClick(ev: MouseEvent) {
 function onOutsideMouseDown(ev: MouseEvent) {
 	const isOutside = ev.target instanceof Node && !rootEl.value?.contains(ev.target);
 	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement))) {
-		endEditing(true, editingValue.value);
-		editingValue.value = undefined;
+		endEditing(true, false);
 	}
 }
 
@@ -170,15 +169,13 @@ function onCellKeyDown(ev: KeyboardEvent) {
 	} else {
 		switch (ev.code) {
 			case 'Escape': {
-				endEditing(false, editingValue.value);
-				editingValue.value = undefined;
+				endEditing(false, true);
 				break;
 			}
 			case 'NumpadEnter':
 			case 'Enter': {
 				if (!ev.isComposing) {
-					endEditing(true, editingValue.value);
-					editingValue.value = undefined;
+					endEditing(true, true);
 				}
 			}
 		}
@@ -203,7 +200,7 @@ function unregisterOutsideMouseDown() {
 }
 
 async function beginEditing(target: HTMLElement) {
-	if (editing.value || !cell.value.column.setting.editable) {
+	if (editing.value || !cell.value.selected || !cell.value.column.setting.editable) {
 		return;
 	}
 
@@ -221,7 +218,7 @@ async function beginEditing(target: HTMLElement) {
 			emitValueChange(newValue);
 		}
 
-		rootEl.value?.focus();
+		requestFocus();
 	} else {
 		switch (cellType.value) {
 			case 'number':
@@ -249,10 +246,13 @@ async function beginEditing(target: HTMLElement) {
 	}
 }
 
-function endEditing(applyValue: boolean, newValue: CellValue) {
+function endEditing(applyValue: boolean, requireFocus: boolean) {
 	if (!editing.value) {
 		return;
 	}
+
+	const newValue = editingValue.value;
+	editingValue.value = undefined;
 
 	emit('operation:endEdit', cell.value);
 	unregisterOutsideMouseDown();
@@ -263,7 +263,15 @@ function endEditing(applyValue: boolean, newValue: CellValue) {
 
 	editing.value = false;
 
-	rootEl.value?.focus();
+	if (requireFocus) {
+		requestFocus();
+	}
+}
+
+function requestFocus() {
+	nextTick(() => {
+		rootEl.value?.focus();
+	});
 }
 
 function emitValueChange(newValue: CellValue) {
