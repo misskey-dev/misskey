@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkModalWindow
+	ref="dialogEl"
 	:width="450"
 	:height="590"
 	:canClose="true"
@@ -12,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:okButtonDisabled="false"
 	@click="onCancelClicked"
 	@close="onCancelClicked"
-	@closed="onCancelClicked"
+	@closed="emit('closed')"
 >
 	<template #header>
 		{{ mode === 'create' ? i18n.ts._webhookSettings.createWebhook : i18n.ts._webhookSettings.modifyWebhook }}
@@ -59,8 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs } from 'vue';
-import FormSection from '@/components/form/section.vue';
+import { computed, onMounted, ref, shallowRef, toRefs } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import {
@@ -82,8 +82,11 @@ type EventType = {
 
 const emit = defineEmits<{
 	(ev: 'submitted', result: MkSystemWebhookResult): void;
+	(ev: 'canceled'): void;
 	(ev: 'closed'): void;
 }>();
+
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const props = defineProps<MkSystemWebhookEditorProps>();
 
@@ -133,12 +136,14 @@ async function onSubmitClicked() {
 			switch (mode.value) {
 				case 'create': {
 					const result = await misskeyApi('admin/system-webhook/create', params);
+					dialogEl.value?.close();
 					emit('submitted', result);
 					break;
 				}
 				case 'edit': {
 					// eslint-disable-next-line
 					const result = await misskeyApi('admin/system-webhook/update', { id: id.value!, ...params });
+					dialogEl.value?.close();
 					emit('submitted', result);
 					break;
 				}
@@ -147,13 +152,15 @@ async function onSubmitClicked() {
 		} catch (ex: any) {
 			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
-			emit('closed');
+			dialogEl.value?.close();
+			emit('canceled');
 		}
 	});
 }
 
 function onCancelClicked() {
-	emit('closed');
+	dialogEl.value?.close();
+	emit('canceled');
 }
 
 async function loadingScope<T>(fn: () => Promise<T>): Promise<T> {
@@ -183,11 +190,12 @@ onMounted(async () => {
 					for (const ev of Object.keys(events.value)) {
 						events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
 					}
-					// eslint-disable-next-line
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (ex: any) {
 					const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 					await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
-					emit('closed');
+					dialogEl.value?.close();
+					emit('canceled');
 				}
 				break;
 			}

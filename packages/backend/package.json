@@ -31,7 +31,7 @@
 		"test:e2e": "pnpm build && pnpm build:test && pnpm jest:e2e",
 		"test-and-coverage": "pnpm jest-and-coverage",
 		"test-and-coverage:e2e": "pnpm build && pnpm build:test && pnpm jest-and-coverage:e2e",
-		"generate-api-json": "pnpm build && node ./scripts/generate_api_json.js"
+		"generate-api-json": "node ./scripts/generate_api_json.js"
 	},
 	"optionalDependencies": {
 		"@swc/core-android-arm64": "1.3.11",
