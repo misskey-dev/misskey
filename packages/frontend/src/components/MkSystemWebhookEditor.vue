@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:okButtonDisabled="false"
 	@click="onCancelClicked"
 	@close="onCancelClicked"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		{{ mode === 'create' ? i18n.ts._webhookSettings.createWebhook : i18n.ts._webhookSettings.modifyWebhook }}
