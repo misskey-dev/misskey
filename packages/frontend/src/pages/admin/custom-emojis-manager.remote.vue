@@ -56,7 +56,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder :spacerMax="8" :spacerMin="8">
 					<template #icon><i class="ti ti-arrows-sort"></i></template>
 					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
-					<MkSortOrderEditor :sortOrders="sortOrders" @update="onSortOrderChanged"/>
+					<MkSortOrderEditor
+						:baseOrderKeyNames="gridSortOrderKeys"
+						:currentOrders="sortOrders"
+						@update="onSortOrderUpdate"
+					/>
 				</MkFolder>
 
 				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
@@ -79,7 +83,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
 
 		<div v-if="gridItems.length > 0" class="_gaps" :class="$style.buttons">
-			<MkButton primary @click="onImportClicked">{{ i18n.ts._customEmojisManager._remote.importEmojisButton }}</MkButton>
+			<MkButton primary @click="onImportClicked">
+				{{
+					i18n.ts._customEmojisManager._remote.importEmojisButton
+				}}
+			</MkButton>
 		</div>
 	</div>
 </div>
@@ -93,7 +101,12 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { emptyStrToUndefined, GridSortOrder, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import {
+	emptyStrToUndefined,
+	GridSortOrderKey,
+	gridSortOrderKeys,
+	RequestLogItem,
+} from '@/pages/admin/custom-emojis-manager.impl.js';
 import { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
@@ -102,6 +115,7 @@ import { GridSetting } from '@/components/grid/grid.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
+import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 type GridItem = {
 	checked: boolean;
@@ -163,14 +177,14 @@ const queryHost = ref<string | null>(null);
 const queryUri = ref<string | null>(null);
 const queryPublicUrl = ref<string | null>(null);
 const previousQuery = ref<string | undefined>(undefined);
-const sortOrders = ref<GridSortOrder[]>([]);
+const sortOrders = ref<SortOrder<GridSortOrderKey>[]>([]);
 const requestLogs = ref<RequestLogItem[]>([]);
 
 const gridItems = ref<GridItem[]>([]);
 
 const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
 
-function onSortOrderChanged(_sortOrders: GridSortOrder[]) {
+function onSortOrderUpdate(_sortOrders: SortOrder<GridSortOrderKey>[]) {
 	sortOrders.value = _sortOrders;
 }
 
@@ -272,7 +286,7 @@ async function refreshCustomEmojis() {
 			limit: 100,
 			query: query,
 			page: currentPage.value,
-			sort: sortOrders.value.map(({ key, direction }) => ({ key: key as any, direction })),
+			sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}`),
 		}),
 		() => {
 		},

@@ -7,13 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.sortOrderArea">
 	<div :class="$style.sortOrderAreaTags">
 		<MkTagItem
-			v-for="order in sortOrders"
+			v-for="order in currentOrders"
 			:key="order.key"
-			:iconClass="order.direction === 'ASC' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
+			:iconClass="order.direction === '+' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
 			:exButtonIconClass="'ti ti-x'"
 			:content="order.key"
 			@click="onToggleSortOrderButtonClicked(order)"
-			@exButtonClick="onRemoveSortOrderButtonClicked(order.key)"
+			@exButtonClick="onRemoveSortOrderButtonClicked(order)"
 		/>
 	</div>
 	<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
@@ -22,58 +22,57 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends string">
 import { toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
-import MkFolder from '@/components/MkFolder.vue';
 import MkTagItem from '@/components/MkTagItem.vue';
 import MkButton from '@/components/MkButton.vue';
-import { GridSortOrder, GridSortOrderKey, gridSortOrderKeys } from '@/pages/admin/custom-emojis-manager.impl.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
+import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 const emit = defineEmits<{
-	(ev: 'update', sortOrders: GridSortOrder[]): void;
+	(ev: 'update', sortOrders: SortOrder<T>[]): void;
 }>();
 
 const props = defineProps<{
-	sortOrders: GridSortOrder[];
+	baseOrderKeyNames: T[];
+	currentOrders: SortOrder<T>[];
 }>();
 
-const { sortOrders } = toRefs(props);
+const { currentOrders } = toRefs(props);
 
-function onToggleSortOrderButtonClicked(order: GridSortOrder) {
+function onToggleSortOrderButtonClicked(order: SortOrder<T>) {
 	switch (order.direction) {
-		case 'ASC':
-			order.direction = 'DESC';
+		case '+':
+			order.direction = '-';
 			break;
-		case 'DESC':
-			order.direction = 'ASC';
+		case '-':
+			order.direction = '+';
 			break;
 	}
 
-	emitOrder(sortOrders.value);
+	emitOrder(currentOrders.value);
 }
 
 function onAddSortOrderButtonClicked(ev: MouseEvent) {
-	const menuItems: MenuItem[] = gridSortOrderKeys
-		.filter(key => !sortOrders.value.map(it => it.key).includes(key))
+	const menuItems: MenuItem[] = props.baseOrderKeyNames
+		.filter(baseKey => !currentOrders.value.map(it => it.key).includes(baseKey))
 		.map(it => {
 			return {
 				text: it,
 				action: () => {
-					emitOrder([...sortOrders.value, { key: it, direction: 'ASC' }]);
+					emitOrder([...currentOrders.value, { key: it, direction: '+' }]);
 				},
 			};
 		});
 	os.contextMenu(menuItems, ev);
 }
 
-function onRemoveSortOrderButtonClicked(key: GridSortOrderKey) {
-	emitOrder(sortOrders.value.filter(it => it.key !== key));
+function onRemoveSortOrderButtonClicked(order: SortOrder<T>) {
+	emitOrder(currentOrders.value.filter(it => it.key !== order.key));
 }
 
-function emitOrder(sortOrders: GridSortOrder[]) {
+function emitOrder(sortOrders: SortOrder<T>[]) {
 	emit('update', sortOrders);
 }
 

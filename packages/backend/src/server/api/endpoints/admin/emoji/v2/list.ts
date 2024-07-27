@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import { CustomEmojiService, FetchEmojisParams } from '@/core/CustomEmojiService.js';
+import { CustomEmojiService, fetchEmojisHostTypes, fetchEmojisSortKeys } from '@/core/CustomEmojiService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -52,7 +52,11 @@ export const paramDef = {
 				license: { type: 'string' },
 				isSensitive: { type: 'boolean' },
 				localOnly: { type: 'boolean' },
-				hostType: { type: 'string', enum: ['local', 'remote', 'all'], default: 'all' },
+				hostType: {
+					type: 'string',
+					enum: fetchEmojisHostTypes,
+					default: 'all',
+				},
 				roleIds: {
 					type: 'array',
 					items: { type: 'string', format: 'misskey:id' },
@@ -63,37 +67,12 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		page: { type: 'integer' },
-		sort: {
+		sortKeys: {
 			type: 'array',
+			default: ['-id'],
 			items: {
-				type: 'object',
-				properties: {
-					key: {
-						type: 'string',
-						enum: [
-							'id',
-							'updatedAt',
-							'name',
-							'host',
-							'uri',
-							'publicUrl',
-							'type',
-							'aliases',
-							'category',
-							'license',
-							'isSensitive',
-							'localOnly',
-							'roleIdsThatCanBeUsedThisEmojiAsReaction',
-						],
-						default: 'id',
-					},
-					direction: {
-						type: 'string',
-						enum: ['ASC', 'DESC'],
-						default: 'DESC',
-					},
-				},
-				required: ['key', 'direction'],
+				type: 'string',
+				enum: fetchEmojisSortKeys,
 			},
 		},
 	},
@@ -107,37 +86,34 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private emojiEntityService: EmojiEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const params: FetchEmojisParams = {};
-
-			if (ps.query) {
-				params.query = {
-					updatedAtFrom: ps.query.updatedAtFrom,
-					updatedAtTo: ps.query.updatedAtTo,
-					name: ps.query.name,
-					host: ps.query.host,
-					uri: ps.query.uri,
-					publicUrl: ps.query.publicUrl,
-					type: ps.query.type,
-					aliases: ps.query.aliases,
-					category: ps.query.category,
-					license: ps.query.license,
-					isSensitive: ps.query.isSensitive,
-					localOnly: ps.query.localOnly,
-					hostType: ps.query.hostType,
-					roleIds: ps.query.roleIds,
-				};
-			}
-
-			params.sinceId = ps.sinceId;
-			params.untilId = ps.untilId;
-			params.limit = ps.limit;
-			params.page = ps.page;
-			params.sort = ps.sort?.map(it => ({
-				key: it.key,
-				direction: it.direction,
-			}));
-
-			const result = await this.customEmojiService.fetchEmojis(params);
+			const q = ps.query;
+			const result = await this.customEmojiService.fetchEmojis(
+				{
+					query: {
+						updatedAtFrom: q?.updatedAtFrom,
+						updatedAtTo: q?.updatedAtTo,
+						name: q?.name,
+						host: q?.host,
+						uri: q?.uri,
+						publicUrl: q?.publicUrl,
+						type: q?.type,
+						aliases: q?.aliases,
+						category: q?.category,
+						license: q?.license,
+						isSensitive: q?.isSensitive,
+						localOnly: q?.localOnly,
+						hostType: q?.hostType,
+						roleIds: q?.roleIds,
+					},
+					sinceId: ps.sinceId,
+					untilId: ps.untilId,
+				},
+				{
+					limit: ps.limit,
+					page: ps.page,
+					sortKeys: ps.sortKeys,
+				},
+			);
 
 			return {
 				emojis: await this.emojiEntityService.packDetailedAdminMany(result.emojis),

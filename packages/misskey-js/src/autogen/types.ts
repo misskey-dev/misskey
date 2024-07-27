@@ -7681,18 +7681,12 @@ export type operations = {
           /** @default 10 */
           limit?: number;
           page?: number;
-          sort?: ({
-              /**
-               * @default id
-               * @enum {string}
-               */
-              key: 'id' | 'updatedAt' | 'name' | 'host' | 'uri' | 'publicUrl' | 'type' | 'aliases' | 'category' | 'license' | 'isSensitive' | 'localOnly' | 'roleIdsThatCanBeUsedThisEmojiAsReaction';
-              /**
-               * @default DESC
-               * @enum {string}
-               */
-              direction: 'ASC' | 'DESC';
-            })[];
+          /**
+           * @default [
+           *   "-id"
+           * ]
+           */
+          sortKeys?: ('+id' | '-id' | '+updatedAt' | '-updatedAt' | '+name' | '-name' | '+host' | '-host' | '+uri' | '-uri' | '+publicUrl' | '-publicUrl' | '+type' | '-type' | '+aliases' | '-aliases' | '+category' | '-category' | '+license' | '-license' | '+isSensitive' | '-isSensitive' | '+localOnly' | '-localOnly' | '+roleIdsThatCanBeUsedThisEmojiAsReaction' | '-roleIdsThatCanBeUsedThisEmojiAsReaction')[];
         };
       };
     };

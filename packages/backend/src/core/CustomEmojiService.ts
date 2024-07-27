@@ -27,47 +27,34 @@ export const fetchEmojisHostTypes = [
 ] as const;
 export type FetchEmojisHostTypes = typeof fetchEmojisHostTypes[number];
 export const fetchEmojisSortKeys = [
-	'id',
-	'updatedAt',
-	'name',
-	'host',
-	'uri',
-	'publicUrl',
-	'type',
-	'aliases',
-	'category',
-	'license',
-	'isSensitive',
-	'localOnly',
-	'roleIdsThatCanBeUsedThisEmojiAsReaction',
+	'+id',
+	'-id',
+	'+updatedAt',
+	'-updatedAt',
+	'+name',
+	'-name',
+	'+host',
+	'-host',
+	'+uri',
+	'-uri',
+	'+publicUrl',
+	'-publicUrl',
+	'+type',
+	'-type',
+	'+aliases',
+	'-aliases',
+	'+category',
+	'-category',
+	'+license',
+	'-license',
+	'+isSensitive',
+	'-isSensitive',
+	'+localOnly',
+	'-localOnly',
+	'+roleIdsThatCanBeUsedThisEmojiAsReaction',
+	'-roleIdsThatCanBeUsedThisEmojiAsReaction',
 ] as const;
 export type FetchEmojisSortKeys = typeof fetchEmojisSortKeys[number];
-export type FetchEmojisParams = {
-	query?: {
-		updatedAtFrom?: string;
-		updatedAtTo?: string;
-		name?: string;
-		host?: string;
-		uri?: string;
-		publicUrl?: string;
-		type?: string;
-		aliases?: string;
-		category?: string;
-		license?: string;
-		isSensitive?: boolean;
-		localOnly?: boolean;
-		hostType?: FetchEmojisHostTypes;
-		roleIds?: string[];
-	},
-	sinceId?: string;
-	untilId?: string;
-	limit?: number;
-	page?: number;
-	sort?: {
-		key: FetchEmojisSortKeys;
-		direction: 'ASC' | 'DESC';
-	}[]
-}
 
 @Injectable()
 export class CustomEmojiService implements OnApplicationShutdown {
@@ -449,7 +436,33 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async fetchEmojis(params?: FetchEmojisParams) {
+	public async fetchEmojis(
+		params?: {
+			query?: {
+				updatedAtFrom?: string;
+				updatedAtTo?: string;
+				name?: string;
+				host?: string;
+				uri?: string;
+				publicUrl?: string;
+				type?: string;
+				aliases?: string;
+				category?: string;
+				license?: string;
+				isSensitive?: boolean;
+				localOnly?: boolean;
+				hostType?: FetchEmojisHostTypes;
+				roleIds?: string[];
+			},
+			sinceId?: string;
+			untilId?: string;
+		},
+		opts?: {
+			limit?: number;
+			page?: number;
+			sortKeys?: FetchEmojisSortKeys[]
+		},
+	) {
 		function multipleWordsToQuery<T extends ObjectLiteral>(
 			query: string,
 			builder: SelectQueryBuilder<T>,
@@ -565,17 +578,19 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			builder.andWhere('emoji.id < :untilId', { untilId: params.untilId });
 		}
 
-		if (params?.sort && params.sort.length > 0) {
-			for (const sort of params.sort) {
-				builder.addOrderBy(`emoji.${sort.key}`, sort.direction);
+		if (opts?.sortKeys && opts.sortKeys.length > 0) {
+			for (const sortKey of opts.sortKeys) {
+				const direction = sortKey.startsWith('-') ? 'DESC' : 'ASC';
+				const key = sortKey.replace(/^[+-]/, '');
+				builder.addOrderBy(`emoji.${key}`, direction);
 			}
 		} else {
 			builder.addOrderBy('emoji.id', 'DESC');
 		}
 
-		const limit = params?.limit ?? 10;
-		if (params?.page) {
-			builder.skip((params.page - 1) * limit);
+		const limit = opts?.limit ?? 10;
+		if (opts?.page) {
+			builder.skip((opts.page - 1) * limit);
 		}
 
 		builder.take(limit);

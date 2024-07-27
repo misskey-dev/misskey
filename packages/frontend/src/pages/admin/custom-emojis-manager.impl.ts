@@ -25,11 +25,6 @@ export const gridSortOrderKeys = [
 ];
 export type GridSortOrderKey = typeof gridSortOrderKeys[number];
 
-export type GridSortOrder = {
-	key: GridSortOrderKey;
-	direction: 'ASC' | 'DESC';
-}
-
 export function emptyStrToUndefined(value: string | null) {
 	return value ? value : undefined;
 }
