@@ -161,7 +161,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (defaultTag == null) {
 					qb.andWhere('note.userHost IS NULL');
 				} else {
-					qb.andWhere(`':t' = any(note.tags)`, { t: normalizeForSearch(defaultTag) });
+					qb.andWhere(`:t <@ note.tags`, { t: normalizeForSearch(defaultTag) });
 				}
 			}))
 			.innerJoinAndSelect('note.user', 'user')
