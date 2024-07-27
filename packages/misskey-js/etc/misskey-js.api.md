@@ -2119,7 +2119,7 @@ type IAuthorizedAppsResponse = operations['i___authorized-apps']['responses']['2
 type IChangePasswordRequest = operations['i___change-password']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export interface IChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
     // (undocumented)
     channel: string;
     // (undocumented)
@@ -2318,11 +2318,11 @@ export interface IStream extends EventEmitter<StreamEvents> {
     // (undocumented)
     send(typeOrPayload: string): void;
     // (undocumented)
-    send(typeOrPayload: string, payload: any): void;
+    send(typeOrPayload: string, payload: unknown): void;
     // (undocumented)
-    send(typeOrPayload: Record<string, any> | any[]): void;
+    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
     // (undocumented)
-    send(typeOrPayload: string | Record<string, any> | any[], payload?: any): void;
+    send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
