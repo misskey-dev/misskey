@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer :marginMin="14" :marginMax="22">
+						<MkSpacer :marginMin="spacerMin" :marginMax="spacerMax">
 							<slot></slot>
 						</MkSpacer>
 					</div>
@@ -56,9 +56,13 @@ import { defaultStore } from '@/store.js';
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
 	maxHeight?: number | null;
+	spacerMin?: number;
+	spacerMax?: number;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
+	spacerMin: 14,
+	spacerMax: 22,
 });
 
 const getBgColor = (el: HTMLElement) => {

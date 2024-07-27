@@ -122,6 +122,11 @@ const menuDef = computed(() => [{
 		to: '/admin/emojis',
 		active: currentPage.value?.route.name === 'emojis',
 	}, {
+		icon: 'ti ti-icons',
+		text: i18n.ts.customEmojis + '(beta)',
+		to: '/admin/emojis2',
+		active: currentPage.value?.route.name === 'emojis2',
+	}, {
 		icon: 'ti ti-sparkles',
 		text: i18n.ts.avatarDecorations,
 		to: '/admin/avatar-decorations',
