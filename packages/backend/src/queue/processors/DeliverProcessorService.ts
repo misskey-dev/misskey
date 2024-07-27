@@ -109,6 +109,12 @@ export class DeliverProcessorService {
 							suspensionState: 'autoSuspendedForNotResponding',
 						});
 					}
+				} else {
+					// isNotRespondingがtrueでnotRespondingSinceがnullの場合はnotRespondingSinceをセット
+					// notRespondingSinceは新たな機能なので、それ以前のデータにはnotRespondingSinceがない場合がある
+					this.federatedInstanceService.update(i.id, {
+						notRespondingSince: new Date(),
+					});
 				}
 
 				this.apRequestChart.deliverFail();
