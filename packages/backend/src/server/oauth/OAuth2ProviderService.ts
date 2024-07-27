@@ -197,7 +197,7 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
  * 2. oauth/decision will call load() to retrieve the parameters and then remove()
  */
 class OAuth2Store {
-	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // expires after 5min
+	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5, 10_000); // expires after 5min
 
 	load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): void {
 		const { transaction_id } = req.body;
@@ -257,7 +257,7 @@ export class OAuth2ProviderService {
 			grantedToken?: string,
 			revoked?: boolean,
 			used?: boolean,
-		}>(1000 * 60 * 5); // expires after 5m
+		}>(1000 * 60 * 5, 10_000); // expires after 5m
 
 		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
 		// "Authorization servers MUST support PKCE [RFC7636]."
