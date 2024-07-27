@@ -7,7 +7,8 @@
 -
 
 ### Server
--
+- Fix: Prevent memory leak from memory caches (#14310)
+- Fix: More reliable memory cache eviction (#14311)
 
 
 ## 2024.7.0
