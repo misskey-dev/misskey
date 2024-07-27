@@ -7,7 +7,7 @@
 		"node": "^20.10.0 || ^22.0.0"
 	},
 	"scripts": {
-		"start": "node ./built/boot/entry.js",
+		"start": "node -r ./tracing.cjs ./built/boot/entry.js",
 		"start:test": "cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
 		"revert": "pnpm typeorm migration:revert -d ormconfig.js",
@@ -85,6 +85,11 @@
 		"@nestjs/common": "10.3.10",
 		"@nestjs/core": "10.3.10",
 		"@nestjs/testing": "10.3.10",
+		"@opentelemetry/auto-instrumentations-node": "^0.48.0",
+		"@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
+		"@opentelemetry/resources": "^1.25.1",
+		"@opentelemetry/sdk-node": "^0.52.1",
+		"@opentelemetry/semantic-conventions": "^1.25.1",
 		"@peertube/http-signature": "1.7.0",
 		"@sentry/node": "8.13.0",
 		"@sentry/profiling-node": "8.13.0",
