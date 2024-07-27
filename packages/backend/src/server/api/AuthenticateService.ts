@@ -22,7 +22,7 @@ export class AuthenticationError extends Error {
 }
 
 @Injectable()
-export class AuthenticateService implements OnApplicationShutdown {
+export class AuthenticateService {
 	private appCache: MemoryKVCache<MiApp>;
 
 	constructor(
@@ -89,15 +89,5 @@ export class AuthenticateService implements OnApplicationShutdown {
 				return [user, accessToken];
 			}
 		}
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.appCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

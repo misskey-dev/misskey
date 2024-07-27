@@ -23,7 +23,7 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
 @Injectable()
-export class CustomEmojiService implements OnApplicationShutdown {
+export class CustomEmojiService {
 	private cache: MemoryKVCache<MiEmoji | null>;
 	public localEmojisCache: RedisSingleCache<Map<string, MiEmoji>>;
 
@@ -397,15 +397,5 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	@bindThis
 	public getEmojiByName(name: string): Promise<MiEmoji | null> {
 		return this.emojisRepository.findOneBy({ name, host: IsNull() });
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.cache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

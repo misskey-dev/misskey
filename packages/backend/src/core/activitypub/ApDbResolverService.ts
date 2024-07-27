@@ -34,7 +34,7 @@ export type UriParseResult = {
 };
 
 @Injectable()
-export class ApDbResolverService implements OnApplicationShutdown {
+export class ApDbResolverService {
 	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
 	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey | null>;
 
@@ -167,16 +167,5 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			user,
 			key,
 		};
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.publicKeyCache.dispose();
-		this.publicKeyByUserIdCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

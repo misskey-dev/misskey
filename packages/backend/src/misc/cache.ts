@@ -89,18 +89,6 @@ export class RedisKVCache<T> {
 
 		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
 	}
-
-	/**
-	 * @deprecated No longer needed or used.
-	 */
-	@bindThis
-	public gc() {}
-
-	/**
-	 * @deprecated No longer needed or used.
-	 */
-	@bindThis
-	public dispose() {}
 }
 
 export class RedisSingleCache<T> {
@@ -291,18 +279,6 @@ export class MemoryKVCache<T> {
 		}
 		return value;
 	}
-
-	/**
-	 * @deprecated No longer needed or used.
-	 */
-	@bindThis
-	public gc(): void {}
-
-	/**
-	 * @deprecated No longer needed or used.
-	 */
-	@bindThis
-	public dispose(): void {}
 
 	private evictOldestKey(): void {
 		let oldestKey;

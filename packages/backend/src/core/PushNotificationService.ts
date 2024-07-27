@@ -47,7 +47,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 }
 
 @Injectable()
-export class PushNotificationService implements OnApplicationShutdown {
+export class PushNotificationService {
 	private subscriptionsCache: RedisKVCache<MiSwSubscription[]>;
 
 	constructor(
@@ -127,15 +127,5 @@ export class PushNotificationService implements OnApplicationShutdown {
 	@bindThis
 	public refreshCache(userId: string): void {
 		this.subscriptionsCache.refresh(userId);
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.subscriptionsCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

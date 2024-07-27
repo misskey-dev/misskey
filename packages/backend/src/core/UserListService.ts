@@ -151,7 +151,6 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
-		this.membersCache.dispose();
 	}
 
 	@bindThis

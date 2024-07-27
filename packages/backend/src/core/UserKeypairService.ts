@@ -13,7 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class UserKeypairService implements OnApplicationShutdown {
+export class UserKeypairService {
 	private cache: RedisKVCache<MiUserKeypair>;
 
 	constructor(
@@ -36,15 +36,5 @@ export class UserKeypairService implements OnApplicationShutdown {
 	@bindThis
 	public async getUserKeypair(userId: MiUser['id']): Promise<MiUserKeypair> {
 		return await this.cache.fetch(userId);
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.cache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

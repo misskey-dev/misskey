@@ -14,7 +14,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class FederatedInstanceService implements OnApplicationShutdown {
+export class FederatedInstanceService {
 	public federatedInstanceCache: RedisKVCache<MiInstance | null>;
 
 	constructor(
@@ -83,15 +83,5 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 			});
 
 		this.federatedInstanceCache.set(result.host, result);
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.federatedInstanceCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }
