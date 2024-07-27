@@ -33,7 +33,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(config.caches.avatarDecorationsMemoryLifetime);
+		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(config.caches.avatarDecorations);
 
 		this.redisForSub.on('message', this.onMessage);
 	}

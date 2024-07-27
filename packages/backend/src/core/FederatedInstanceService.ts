@@ -32,9 +32,7 @@ export class FederatedInstanceService {
 		private idService: IdService,
 	) {
 		this.federatedInstanceCache = new RedisKVCache<MiInstance | null>(this.redisClient, 'federatedInstance', {
-			lifetime: config.caches.instanceRedisLifetime,
-			memoryCacheLifetime: config.caches.instanceMemoryLifetime,
-			memoryCacheCapacity: config.caches.instanceMemoryCapacity,
+			config: config.caches.instance,
 			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => {

@@ -86,78 +86,29 @@ type Source = {
 	deliverJobMaxAttempts?: number;
 	inboxJobMaxAttempts?: number;
 	caches?: {
-		userByIdMemoryLifetime?: number;
-		userByIdMemoryCapacity?: number;
-
-		localUserByIdMemoryLifetime?: number;
-		localUserByIdMemoryCapacity?: number;
-
-		userByTokenMemoryLifetime?: number;
-		userByTokenMemoryCapacity?: number;
-
-		userByUriMemoryLifetime?: number;
-		userByUriMemoryCapacity?: number;
-
-		userProfileRedisLifetime?: number;
-		userProfileMemoryLifetime?: number;
-		userProfileMemoryCapacity?: number;
-
-		userKeyPairRedisLifetime?: number;
-		userKeyPairMemoryLifetime?: number;
-		userKeyPairMemoryCapacity?: number;
-
-		rolesMemoryLifetime?: number;
-
-		userRolesMemoryLifetime?: number;
-		userRolesMemoryCapacity?: number;
-
-		userMutesRedisLifetime?: number;
-		userMutesMemoryLifetime?: number;
-		userMutesMemoryCapacity?: number;
-
-		userBlocksRedisLifetime?: number;
-		userBlocksMemoryLifetime?: number;
-		userBlocksMemoryCapacity?: number;
-
-		userFollowingsRedisLifetime?: number;
-		userFollowingsMemoryLifetime?: number;
-		userFollowingsMemoryCapacity?: number;
-
-		userChannelsRedisLifetime?: number;
-		userChannelsMemoryLifetime?: number;
-		userChannelsMemoryCapacity?: number;
-
-		publicKeysMemoryLifetime?: number;
-		publicKeysMemoryCapacity?: number;
-
-		emojisMemoryLifetime?: number;
-		emojisMemoryCapacity?: number;
-
-		localEmojisRedisLifetime?: number;
-		localEmojisMemoryLifetime?: number;
-
-		instanceRedisLifetime?: number;
-		instanceMemoryLifetime?: number;
-		instanceMemoryCapacity?: number;
-
-		swSubscriptionRedisLifetime?: number;
-		swSubscriptionMemoryLifetime?: number;
-		swSubscriptionMemoryCapacity?: number;
-
-		listMembershipRedisLifetime?: number;
-		listMembershipMemoryLifetime?: number;
-		listMembershipMemoryCapacity?: number;
-
-		clientAppMemoryLifetime?: number;
-		clientAppMemoryCapacity?: number;
-
-		avatarDecorationsMemoryLifetime?: number;
-
-		relaysMemoryLifetime?: number;
-
-		suspendedHostsMemoryLifetime?: number;
-
-		nodeInfoMemoryLifetime?: number;
+		localUserById?: MemoryKVConfigPartial;
+		userById?: MemoryKVConfigPartial;
+		userByToken?: MemoryKVConfigPartial;
+		userByUri?: MemoryKVConfigPartial;
+		userProfile?: RedisKVConfigPartial;
+		userKeyPair?: RedisKVConfigPartial;
+		userRoles?: MemoryKVConfigPartial;
+		userMutes?: RedisKVConfigPartial;
+		userBlocks?: RedisKVConfigPartial;
+		userFollowings?: RedisKVConfigPartial;
+		userChannels?: RedisKVConfigPartial;
+		roles?: MemorySingleConfigPartial;
+		publicKeys?: MemoryKVConfigPartial;
+		emojis?: MemoryKVConfigPartial;
+		localEmojis?: RedisSingleConfigPartial;
+		instance?: RedisKVConfigPartial;
+		swSubscription?: RedisKVConfigPartial;
+		listMembership?: RedisKVConfigPartial;
+		clientApp?: MemoryKVConfigPartial;
+		avatarDecorations?: MemorySingleConfigPartial;
+		relays?: MemorySingleConfigPartial;
+		suspendedHosts?: MemorySingleConfigPartial;
+		nodeInfo?: MemorySingleConfigPartial;
 	};
 
 	mediaProxy?: string;
@@ -171,6 +122,27 @@ type Source = {
 	deactivateAntennaThreshold?: number;
 	pidFile: string;
 };
+interface MemorySingleConfigPartial {
+	memory?: {
+		lifetime?: number;
+	}
+}
+interface RedisSingleConfigPartial extends MemorySingleConfigPartial {
+	redis?: {
+		lifetime?: number;
+	}
+}
+interface MemoryKVConfigPartial extends MemorySingleConfigPartial {
+	memory?: {
+		lifetime?: number;
+		capacity?: number;
+	}
+}
+interface RedisKVConfigPartial extends MemoryKVConfigPartial {
+	redis?: {
+		lifetime?: number;
+	}
+}
 
 export type Config = {
 	url: string;
@@ -221,78 +193,29 @@ export type Config = {
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
 	caches: {
-		userByIdMemoryLifetime: number;
-		userByIdMemoryCapacity: number;
-
-		localUserByIdMemoryLifetime: number;
-		localUserByIdMemoryCapacity: number;
-
-		userByTokenMemoryLifetime: number;
-		userByTokenMemoryCapacity: number;
-
-		userByUriMemoryLifetime: number;
-		userByUriMemoryCapacity: number;
-
-		userProfileRedisLifetime: number;
-		userProfileMemoryLifetime: number;
-		userProfileMemoryCapacity: number;
-
-		userKeyPairRedisLifetime: number;
-		userKeyPairMemoryLifetime: number;
-		userKeyPairMemoryCapacity: number;
-
-		rolesMemoryLifetime: number;
-
-		userRolesMemoryLifetime: number;
-		userRolesMemoryCapacity: number;
-
-		userMutesRedisLifetime: number;
-		userMutesMemoryLifetime: number;
-		userMutesMemoryCapacity: number;
-
-		userBlocksRedisLifetime: number;
-		userBlocksMemoryLifetime: number;
-		userBlocksMemoryCapacity: number;
-
-		userFollowingsRedisLifetime: number;
-		userFollowingsMemoryLifetime: number;
-		userFollowingsMemoryCapacity: number;
-
-		userChannelsRedisLifetime: number;
-		userChannelsMemoryLifetime: number;
-		userChannelsMemoryCapacity: number;
-
-		publicKeysMemoryLifetime: number;
-		publicKeysMemoryCapacity: number;
-
-		emojisMemoryLifetime: number;
-		emojisMemoryCapacity: number;
-
-		localEmojisRedisLifetime: number;
-		localEmojisMemoryLifetime: number;
-
-		instanceRedisLifetime: number;
-		instanceMemoryLifetime: number;
-		instanceMemoryCapacity: number;
-
-		swSubscriptionRedisLifetime: number;
-		swSubscriptionMemoryLifetime: number;
-		swSubscriptionMemoryCapacity: number;
-
-		listMembershipRedisLifetime: number;
-		listMembershipMemoryLifetime: number;
-		listMembershipMemoryCapacity: number;
-
-		clientAppMemoryLifetime: number;
-		clientAppMemoryCapacity: number;
-
-		avatarDecorationsMemoryLifetime: number;
-
-		relaysMemoryLifetime: number;
-
-		suspendedHostsMemoryLifetime: number;
-
-		nodeInfoMemoryLifetime: number;
+		localUserById: MemoryKVConfig;
+		userById: MemoryKVConfig;
+		userByToken: MemoryKVConfig;
+		userByUri: MemoryKVConfig;
+		userProfile: RedisKVConfig;
+		userKeyPair: RedisKVConfig;
+		userRoles: MemoryKVConfig;
+		userMutes: RedisKVConfig;
+		userBlocks: RedisKVConfig;
+		userFollowings: RedisKVConfig;
+		userChannels: RedisKVConfig;
+		roles: MemorySingleConfig;
+		publicKeys: MemoryKVConfig;
+		emojis: MemoryKVConfig;
+		localEmojis: RedisSingleConfig;
+		instance: RedisKVConfig;
+		swSubscription: RedisKVConfig;
+		listMembership: RedisKVConfig;
+		clientApp: MemoryKVConfig;
+		avatarDecorations: MemorySingleConfig;
+		relays: MemorySingleConfig;
+		suspendedHosts: MemorySingleConfig;
+		nodeInfo: MemorySingleConfig;
 	};
 	proxyRemoteFiles: boolean | undefined;
 	signToActivityPubGet: boolean | undefined;
@@ -324,6 +247,28 @@ export type Config = {
 	deactivateAntennaThreshold: number;
 	pidFile: string;
 };
+
+export interface MemorySingleConfig {
+	memory: {
+		lifetime: number;
+	}
+}
+export interface RedisSingleConfig extends MemorySingleConfig {
+	redis: {
+		lifetime: number;
+	}
+}
+export interface MemoryKVConfig extends MemorySingleConfig {
+	memory: {
+		lifetime: number;
+		capacity: number;
+	}
+}
+export interface RedisKVConfig extends MemoryKVConfig {
+	redis: {
+		lifetime: number;
+	}
+}
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -411,78 +356,168 @@ export function loadConfig(): Config {
 		deliverJobMaxAttempts: config.deliverJobMaxAttempts,
 		inboxJobMaxAttempts: config.inboxJobMaxAttempts,
 		caches: {
-			userByIdMemoryLifetime: config.caches?.userByIdMemoryLifetime ?? 43200000,
-			userByIdMemoryCapacity: config.caches?.userByIdMemoryCapacity ?? 15000,
-
-			localUserByIdMemoryLifetime: config.caches?.localUserByIdMemoryLifetime ?? 43200000,
-			localUserByIdMemoryCapacity: config.caches?.localUserByIdMemoryCapacity ?? 10000,
-
-			userByTokenMemoryLifetime: config.caches?.userByTokenMemoryLifetime ?? 43200000,
-			userByTokenMemoryCapacity: config.caches?.userByTokenMemoryCapacity ?? 10000,
-
-			userByUriMemoryLifetime: config.caches?.userByUriMemoryLifetime ?? 43200000,
-			userByUriMemoryCapacity: config.caches?.userByUriMemoryCapacity ?? 10000,
-
-			userProfileRedisLifetime: config.caches?.userProfileRedisLifetime ?? 1800000,
-			userProfileMemoryLifetime: config.caches?.userProfileMemoryLifetime ?? 60000,
-			userProfileMemoryCapacity: config.caches?.userProfileMemoryCapacity ?? 10000,
-
-			userKeyPairRedisLifetime: config.caches?.userKeyPairRedisLifetime ?? 86400000,
-			userKeyPairMemoryLifetime: config.caches?.userKeyPairMemoryLifetime ?? 43200000,
-			userKeyPairMemoryCapacity: config.caches?.userKeyPairMemoryCapacity ?? 10000,
-
-			rolesMemoryLifetime: config.caches?.rolesMemoryLifetime ?? 3600000,
-
-			userRolesMemoryLifetime: config.caches?.userRolesMemoryLifetime ?? 3600000,
-			userRolesMemoryCapacity: config.caches?.userRolesMemoryCapacity ?? 10000,
-
-			userMutesRedisLifetime: config.caches?.userMutesRedisLifetime ?? 1800000,
-			userMutesMemoryLifetime: config.caches?.userMutesMemoryLifetime ?? 60000,
-			userMutesMemoryCapacity: config.caches?.userMutesMemoryCapacity ?? 10000,
-
-			userBlocksRedisLifetime: config.caches?.userBlocksRedisLifetime ?? 1800000,
-			userBlocksMemoryLifetime: config.caches?.userBlocksMemoryLifetime ?? 60000,
-			userBlocksMemoryCapacity: config.caches?.userBlocksMemoryCapacity ?? 10000,
-
-			userFollowingsRedisLifetime: config.caches?.userFollowingsRedisLifetime ?? 1800000,
-			userFollowingsMemoryLifetime: config.caches?.userFollowingsMemoryLifetime ?? 60000,
-			userFollowingsMemoryCapacity: config.caches?.userFollowingsMemoryCapacity ?? 10000,
-
-			userChannelsRedisLifetime: config.caches?.userChannelsRedisLifetime ?? 1800000,
-			userChannelsMemoryLifetime: config.caches?.userChannelsMemoryLifetime ?? 60000,
-			userChannelsMemoryCapacity: config.caches?.userChannelsMemoryCapacity ?? 1000,
-
-			publicKeysMemoryLifetime: config.caches?.publicKeysMemoryLifetime ?? 43200000,
-			publicKeysMemoryCapacity: config.caches?.publicKeysMemoryCapacity ?? 15000,
-
-			emojisMemoryLifetime: config.caches?.emojisMemoryLifetime ?? 43200000,
-			emojisMemoryCapacity: config.caches?.emojisMemoryCapacity ?? 5000,
-
-			localEmojisRedisLifetime: config.caches?.localEmojisRedisLifetime ?? 1800000,
-			localEmojisMemoryLifetime: config.caches?.localEmojisMemoryLifetime ?? 180000,
-
-			instanceRedisLifetime: config.caches?.instanceRedisLifetime ?? 1800000,
-			instanceMemoryLifetime: config.caches?.instanceMemoryLifetime ?? 180000,
-			instanceMemoryCapacity: config.caches?.instanceMemoryCapacity ?? 5000,
-
-			swSubscriptionRedisLifetime: config.caches?.swSubscriptionRedisLifetime ?? 3600000,
-			swSubscriptionMemoryLifetime: config.caches?.swSubscriptionMemoryLifetime ?? 180000,
-			swSubscriptionMemoryCapacity: config.caches?.swSubscriptionMemoryCapacity ?? 1000,
-
-			listMembershipRedisLifetime: config.caches?.listMembershipRedisLifetime ?? 1800000,
-			listMembershipMemoryLifetime: config.caches?.listMembershipMemoryLifetime ?? 60000,
-			listMembershipMemoryCapacity: config.caches?.listMembershipMemoryCapacity ?? 1000,
-
-			clientAppMemoryLifetime: config.caches?.clientAppMemoryLifetime ?? 604800000,
-			clientAppMemoryCapacity: config.caches?.clientAppMemoryCapacity ?? 1000,
-
-			avatarDecorationsMemoryLifetime: config.caches?.avatarDecorationsMemoryLifetime ?? 1800000,
-
-			relaysMemoryLifetime: config.caches?.relaysMemoryLifetime ?? 600000,
-
-			suspendedHostsMemoryLifetime: config.caches?.suspendedHostsMemoryLifetime ?? 3600000,
-
-			nodeInfoMemoryLifetime: config.caches?.nodeInfoMemoryLifetime ?? 600000,
+			localUserById: {
+				memory: {
+					lifetime: config.caches?.localUserById?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.localUserById?.memory?.capacity ?? 10000,
+				},
+			},
+			userById: {
+				memory: {
+					lifetime: config.caches?.userById?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.userById?.memory?.capacity ?? 15000,
+				},
+			},
+			userByToken: {
+				memory: {
+					lifetime: config.caches?.userByToken?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.userByToken?.memory?.capacity ?? 10000,
+				},
+			},
+			userByUri: {
+				memory: {
+					lifetime: config.caches?.userByUri?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.userByUri?.memory?.capacity ?? 10000,
+				},
+			},
+			userProfile: {
+				redis: {
+					lifetime: config.caches?.userProfile?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.userProfile?.memory?.lifetime ?? 60000,
+					capacity: config.caches?.userProfile?.memory?.capacity ?? 10000,
+				},
+			},
+			userKeyPair: {
+				redis: {
+					lifetime: config.caches?.userKeyPair?.redis?.lifetime ?? 86400000,
+				},
+				memory: {
+					lifetime: config.caches?.userKeyPair?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.userKeyPair?.memory?.capacity ?? 10000,
+				},
+			},
+			userRoles: {
+				memory: {
+					lifetime: config.caches?.userRoles?.memory?.lifetime ?? 3600000,
+					capacity: config.caches?.userRoles?.memory?.capacity ?? 10000,
+				},
+			},
+			userMutes: {
+				redis: {
+					lifetime: config.caches?.userMutes?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.userMutes?.memory?.lifetime ?? 60000,
+					capacity: config.caches?.userMutes?.memory?.capacity ?? 10000,
+				},
+			},
+			userBlocks: {
+				redis: {
+					lifetime: config.caches?.userBlocks?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.userBlocks?.memory?.lifetime ?? 60000,
+					capacity: config.caches?.userBlocks?.memory?.capacity ?? 10000,
+				},
+			},
+			userFollowings: {
+				redis: {
+					lifetime: config.caches?.userFollowings?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.userFollowings?.memory?.lifetime ?? 60000,
+					capacity: config.caches?.userFollowings?.memory?.capacity ?? 10000,
+				},
+			},
+			userChannels: {
+				redis: {
+					lifetime: config.caches?.userChannels?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.userChannels?.memory?.lifetime ?? 60000,
+					capacity: config.caches?.userChannels?.memory?.capacity ?? 10000,
+				},
+			},
+			roles: {
+				memory: {
+					lifetime: config.caches?.roles?.memory?.lifetime ?? 3600000,
+				},
+			},
+			publicKeys: {
+				memory: {
+					lifetime: config.caches?.publicKeys?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.publicKeys?.memory?.capacity ?? 15000,
+				},
+			},
+			emojis: {
+				memory: {
+					lifetime: config.caches?.emojis?.memory?.lifetime ?? 43200000,
+					capacity: config.caches?.emojis?.memory?.capacity ?? 5000,
+				},
+			},
+			localEmojis: {
+				redis: {
+					lifetime: config.caches?.localEmojis?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.localEmojis?.memory?.lifetime ?? 180000,
+				},
+			},
+			instance: {
+				redis: {
+					lifetime: config.caches?.instance?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.instance?.memory?.lifetime ?? 180000,
+					capacity: config.caches?.instance?.memory?.capacity ?? 5000,
+				},
+			},
+			swSubscription: {
+				redis: {
+					lifetime: config.caches?.swSubscription?.redis?.lifetime ?? 3600000,
+				},
+				memory: {
+					lifetime: config.caches?.swSubscription?.memory?.lifetime ?? 180000,
+					capacity: config.caches?.swSubscription?.memory?.capacity ?? 1000,
+				},
+			},
+			listMembership: {
+				redis: {
+					lifetime: config.caches?.listMembership?.redis?.lifetime ?? 1800000,
+				},
+				memory: {
+					lifetime: config.caches?.listMembership?.memory?.lifetime ?? 60000,
+					capacity: config.caches?.listMembership?.memory?.capacity ?? 1000,
+				},
+			},
+			clientApp: {
+				memory: {
+					lifetime: config.caches?.clientApp?.memory?.lifetime ?? 604800000,
+					capacity: config.caches?.clientApp?.memory?.capacity ?? 1000,
+				},
+			},
+			avatarDecorations: {
+				memory: {
+					lifetime: config.caches?.avatarDecorations?.memory?.lifetime ?? 1800000,
+				},
+			},
+			relays: {
+				memory: {
+					lifetime: config.caches?.relays?.memory?.lifetime ?? 600000,
+				},
+			},
+			suspendedHosts: {
+				memory: {
+					lifetime: config.caches?.suspendedHosts?.memory?.lifetime ?? 3600000,
+				},
+			},
+			nodeInfo: {
+				memory: {
+					lifetime: config.caches?.nodeInfo?.memory?.lifetime ?? 600000,
+				},
+			},
 		},
 		proxyRemoteFiles: config.proxyRemoteFiles,
 		signToActivityPubGet: config.signToActivityPubGet ?? true,

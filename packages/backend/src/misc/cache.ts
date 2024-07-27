@@ -5,6 +5,7 @@
 
 import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
+import type { MemoryKVConfig, MemorySingleConfig, RedisKVConfig, RedisSingleConfig } from '@/config.js';
 
 export class RedisKVCache<T> {
 	private redisClient: Redis.Redis;
@@ -16,26 +17,24 @@ export class RedisKVCache<T> {
 	private fromRedisConverter: (value: string) => T | undefined;
 
 	constructor(redisClient: RedisKVCache<T>['redisClient'], name: RedisKVCache<T>['name'], opts: {
-		lifetime: RedisKVCache<T>['lifetime'];
-		memoryCacheLifetime: number;
-		memoryCacheCapacity: number;
+		config: RedisKVConfig;
 		fetcher: RedisKVCache<T>['fetcher'];
 		toRedisConverter: RedisKVCache<T>['toRedisConverter'];
 		fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
 	}) {
-		if (opts.lifetime <= 0) {
-			throw new Error(`Redis cache lifetime of ${opts.lifetime} is invalid - it must be greater than zero`);
+		if (opts.config.redis.lifetime <= 0) {
+			throw new Error(`Redis cache lifetime of ${opts.config.redis.lifetime} is invalid - it must be greater than zero`);
 		}
-		if (opts.memoryCacheLifetime <= 0) {
-			throw new Error(`Memory cache lifetime of ${opts.memoryCacheLifetime} is invalid - it must be greater than zero`);
+		if (opts.config.memory.lifetime <= 0) {
+			throw new Error(`Memory cache lifetime of ${opts.config.memory.lifetime} is invalid - it must be greater than zero`);
 		}
-		if (opts.memoryCacheCapacity <= 0) {
-			throw new Error(`Memory cache capacity of ${opts.memoryCacheCapacity} is invalid - it must be greater than zero`);
+		if (opts.config.memory.capacity <= 0) {
+			throw new Error(`Memory cache capacity of ${opts.config.memory.capacity} is invalid - it must be greater than zero`);
 		}
 		this.redisClient = redisClient;
 		this.name = name;
-		this.lifetime = opts.lifetime;
-		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime, opts.memoryCacheCapacity);
+		this.lifetime = opts.config.redis.lifetime;
+		this.memoryCache = new MemoryKVCache(opts.config);
 		this.fetcher = opts.fetcher;
 		this.toRedisConverter = opts.toRedisConverter;
 		this.fromRedisConverter = opts.fromRedisConverter;
@@ -110,22 +109,21 @@ export class RedisSingleCache<T> {
 	private fromRedisConverter: (value: string) => T | undefined;
 
 	constructor(redisClient: RedisSingleCache<T>['redisClient'], name: RedisSingleCache<T>['name'], opts: {
-		lifetime: RedisSingleCache<T>['lifetime'];
-		memoryCacheLifetime: number;
+		config: RedisSingleConfig;
 		fetcher: RedisSingleCache<T>['fetcher'];
 		toRedisConverter: RedisSingleCache<T>['toRedisConverter'];
 		fromRedisConverter: RedisSingleCache<T>['fromRedisConverter'];
 	}) {
-		if (opts.lifetime <= 0) {
-			throw new Error(`Redis cache lifetime of ${opts.lifetime} is invalid - it must be greater than zero`);
+		if (opts.config.redis.lifetime <= 0) {
+			throw new Error(`Redis cache lifetime of ${opts.config.redis.lifetime} is invalid - it must be greater than zero`);
 		}
-		if (opts.memoryCacheLifetime <= 0) {
-			throw new Error(`Memory cache lifetime of ${opts.memoryCacheLifetime} is invalid - it must be greater than zero`);
+		if (opts.config.memory.lifetime <= 0) {
+			throw new Error(`Memory cache lifetime of ${opts.config.memory.lifetime} is invalid - it must be greater than zero`);
 		}
 		this.redisClient = redisClient;
 		this.name = name;
-		this.lifetime = opts.lifetime;
-		this.memoryCache = new MemorySingleCache(opts.memoryCacheLifetime);
+		this.lifetime = opts.config.redis.lifetime;
+		this.memoryCache = new MemorySingleCache(opts.config);
 		this.fetcher = opts.fetcher;
 		this.toRedisConverter = opts.toRedisConverter;
 		this.fromRedisConverter = opts.fromRedisConverter;
@@ -192,17 +190,19 @@ export class RedisSingleCache<T> {
 
 export class MemoryKVCache<T> {
 	private readonly cache = new Map<string, CacheEntry<T>>;
+	private readonly lifetime: number;
+	private readonly capacity: number;
 
-	constructor (
-		private readonly lifetime: number,
-		private readonly capacity: number,
-	) {
-		if (lifetime <= 0) {
-			throw new Error(`Memory cache lifetime of ${lifetime} is invalid - it must be greater than zero`);
+	constructor(config: MemoryKVConfig) {
+		if (config.memory.lifetime <= 0) {
+			throw new Error(`Memory cache lifetime of ${config.memory.lifetime} is invalid - it must be greater than zero`);
 		}
-		if (capacity <= 0) {
-			throw new Error(`Memory cache capacity of ${capacity} is invalid - it must be greater than zero`);
+		if (config.memory.capacity <= 0) {
+			throw new Error(`Memory cache capacity of ${config.memory.capacity} is invalid - it must be greater than zero`);
 		}
+
+		this.lifetime = config.memory.lifetime;
+		this.capacity = config.memory.capacity;
 	}
 
 	@bindThis
@@ -332,13 +332,13 @@ interface CacheEntry<T> {
 export class MemorySingleCache<T> {
 	private cachedAt: number | null = null;
 	private value: T | undefined;
-	private lifetime: number;
+	private readonly lifetime: number;
 
-	constructor(lifetime: MemorySingleCache<never>['lifetime']) {
-		if (lifetime <= 0) {
-			throw new Error(`Cache lifetime of ${lifetime} is invalid - it must be greater than zero`);
+	constructor(config: MemorySingleConfig) {
+		if (config.memory.lifetime <= 0) {
+			throw new Error(`Cache lifetime of ${config.memory.lifetime} is invalid - it must be greater than zero`);
 		}
-		this.lifetime = lifetime;
+		this.lifetime = config.memory.lifetime;
 	}
 
 	@bindThis

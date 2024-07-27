@@ -28,9 +28,7 @@ export class UserKeypairService {
 		private userKeypairsRepository: UserKeypairsRepository,
 	) {
 		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
-			lifetime: config.caches.userKeyPairRedisLifetime,
-			memoryCacheLifetime: config.caches.userKeyPairMemoryLifetime,
-			memoryCacheCapacity: config.caches.userKeyPairMemoryCapacity,
+			config: config.caches.userKeyPair,
 			fetcher: (key) => this.userKeypairsRepository.findOneByOrFail({ userId: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),

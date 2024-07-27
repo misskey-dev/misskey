@@ -133,8 +133,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new MemorySingleCache<MiRole[]>(config.caches.rolesMemoryLifetime);
-		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(config.caches.userRolesMemoryLifetime, config.caches.userRolesMemoryCapacity);
+		this.rolesCache = new MemorySingleCache<MiRole[]>(config.caches.roles);
+		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(config.caches.userRoles);
 
 		this.redisForSub.on('message', this.onMessage);
 	}

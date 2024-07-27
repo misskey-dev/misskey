@@ -41,7 +41,7 @@ export class AuthenticateService {
 
 		private cacheService: CacheService,
 	) {
-		this.appCache = new MemoryKVCache<MiApp>(config.caches.clientAppMemoryLifetime, config.caches.clientAppMemoryCapacity);
+		this.appCache = new MemoryKVCache<MiApp>(config.caches.clientApp);
 	}
 
 	@bindThis

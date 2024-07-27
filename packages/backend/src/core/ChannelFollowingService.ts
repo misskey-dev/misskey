@@ -32,9 +32,7 @@ export class ChannelFollowingService implements OnModuleInit {
 		private globalEventService: GlobalEventService,
 	) {
 		this.userFollowingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userFollowingChannels', {
-			lifetime: config.caches.userChannelsRedisLifetime,
-			memoryCacheLifetime: config.caches.userChannelsMemoryLifetime,
-			memoryCacheCapacity: config.caches.userChannelsMemoryCapacity,
+			config: config.caches.userChannels,
 			fetcher: (key) => this.channelFollowingsRepository.find({
 				where: { followerId: key },
 				select: ['followeeId'],

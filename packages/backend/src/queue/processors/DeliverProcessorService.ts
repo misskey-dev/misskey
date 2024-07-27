@@ -49,7 +49,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(config.caches.suspendedHostsMemoryLifetime);
+		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(config.caches.suspendedHosts);
 	}
 
 	@bindThis

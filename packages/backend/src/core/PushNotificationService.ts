@@ -63,9 +63,7 @@ export class PushNotificationService {
 		private metaService: MetaService,
 	) {
 		this.subscriptionsCache = new RedisKVCache<MiSwSubscription[]>(this.redisClient, 'userSwSubscriptions', {
-			lifetime: config.caches.swSubscriptionRedisLifetime,
-			memoryCacheLifetime: config.caches.swSubscriptionMemoryLifetime,
-			memoryCacheCapacity: config.caches.swSubscriptionMemoryCapacity,
+			config: config.caches.swSubscription,
 			fetcher: (key) => this.swSubscriptionsRepository.findBy({ userId: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),

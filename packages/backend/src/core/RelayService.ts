@@ -39,7 +39,7 @@ export class RelayService {
 		private createSystemUserService: CreateSystemUserService,
 		private apRendererService: ApRendererService,
 	) {
-		this.relaysCache = new MemorySingleCache<MiRelay[]>(config.caches.relaysMemoryLifetime);
+		this.relaysCache = new MemorySingleCache<MiRelay[]>(config.caches.relays);
 	}
 
 	@bindThis

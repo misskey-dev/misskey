@@ -24,7 +24,11 @@ export class InstanceActorService {
 
 		private createSystemUserService: CreateSystemUserService,
 	) {
-		this.cache = new MemorySingleCache<MiLocalUser>(Infinity);
+		this.cache = new MemorySingleCache<MiLocalUser>({
+			memory: {
+				lifetime: Infinity,
+			},
+		});
 	}
 
 	@bindThis

@@ -60,60 +60,48 @@ export class CacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new MemoryKVCache<MiUser>(config.caches.userByIdMemoryLifetime, config.caches.userByIdMemoryCapacity);
-		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null>(config.caches.userByTokenMemoryLifetime, config.caches.userByTokenMemoryCapacity);
-		this.localUserByIdCache = new MemoryKVCache<MiLocalUser>(config.caches.localUserByIdMemoryLifetime, config.caches.localUserByIdMemoryCapacity); // 12h (used by auth)
-		this.uriPersonCache = new MemoryKVCache<MiUser | null>(config.caches.userByUriMemoryLifetime, config.caches.userByUriMemoryCapacity);
+		this.userByIdCache = new MemoryKVCache<MiUser>(config.caches.userById);
+		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null>(config.caches.userByToken);
+		this.localUserByIdCache = new MemoryKVCache<MiLocalUser>(config.caches.localUserById); // 12h (used by auth)
+		this.uriPersonCache = new MemoryKVCache<MiUser | null>(config.caches.userByUri);
 
 		this.userProfileCache = new RedisKVCache<MiUserProfile>(this.redisClient, 'userProfile', {
-			lifetime: config.caches.userProfileRedisLifetime,
-			memoryCacheLifetime: config.caches.userProfileMemoryLifetime,
-			memoryCacheCapacity: config.caches.userProfileMemoryCapacity,
+			config: config.caches.userProfile,
 			fetcher: (key) => this.userProfilesRepository.findOneByOrFail({ userId: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value), // TODO: date型の考慮
 		});
 
 		this.userMutingsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userMutings', {
-			lifetime: config.caches.userMutesRedisLifetime,
-			memoryCacheLifetime: config.caches.userMutesMemoryLifetime,
-			memoryCacheCapacity: config.caches.userMutesMemoryCapacity,
+			config: config.caches.userMutes,
 			fetcher: (key) => this.mutingsRepository.find({ where: { muterId: key }, select: ['muteeId'] }).then(xs => new Set(xs.map(x => x.muteeId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
 		this.userBlockingCache = new RedisKVCache<Set<string>>(this.redisClient, 'userBlocking', {
-			lifetime: config.caches.userBlocksRedisLifetime,
-			memoryCacheLifetime: config.caches.userBlocksMemoryLifetime,
-			memoryCacheCapacity: config.caches.userBlocksMemoryCapacity,
+			config: config.caches.userBlocks,
 			fetcher: (key) => this.blockingsRepository.find({ where: { blockerId: key }, select: ['blockeeId'] }).then(xs => new Set(xs.map(x => x.blockeeId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
 		this.userBlockedCache = new RedisKVCache<Set<string>>(this.redisClient, 'userBlocked', {
-			lifetime: config.caches.userBlocksRedisLifetime,
-			memoryCacheLifetime: config.caches.userBlocksMemoryLifetime,
-			memoryCacheCapacity: config.caches.userBlocksMemoryCapacity,
+			config: config.caches.userBlocks,
 			fetcher: (key) => this.blockingsRepository.find({ where: { blockeeId: key }, select: ['blockerId'] }).then(xs => new Set(xs.map(x => x.blockerId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
 		this.renoteMutingsCache = new RedisKVCache<Set<string>>(this.redisClient, 'renoteMutings', {
-			lifetime: config.caches.userMutesRedisLifetime,
-			memoryCacheLifetime: config.caches.userMutesMemoryLifetime,
-			memoryCacheCapacity: config.caches.userMutesMemoryCapacity,
+			config: config.caches.userMutes,
 			fetcher: (key) => this.renoteMutingsRepository.find({ where: { muterId: key }, select: ['muteeId'] }).then(xs => new Set(xs.map(x => x.muteeId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
 		this.userFollowingsCache = new RedisKVCache<Record<string, Pick<MiFollowing, 'withReplies'> | undefined>>(this.redisClient, 'userFollowings', {
-			lifetime: config.caches.userFollowingsRedisLifetime,
-			memoryCacheLifetime: config.caches.userFollowingsMemoryLifetime,
-			memoryCacheCapacity: config.caches.userFollowingsMemoryCapacity,
+			config: config.caches.userFollowings,
 			fetcher: (key) => this.followingsRepository.find({ where: { followerId: key }, select: ['followeeId', 'withReplies'] }).then(xs => {
 				const obj: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
 				for (const x of xs) {

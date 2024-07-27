@@ -40,11 +40,10 @@ export class CustomEmojiService {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemoryKVCache<MiEmoji | null>(config.caches.emojisMemoryLifetime, config.caches.emojisMemoryCapacity);
+		this.cache = new MemoryKVCache<MiEmoji | null>(config.caches.emojis);
 
 		this.localEmojisCache = new RedisSingleCache<Map<string, MiEmoji>>(this.redisClient, 'localEmojis', {
-			lifetime: config.caches.localEmojisRedisLifetime,
-			memoryCacheLifetime: config.caches.localEmojisMemoryLifetime,
+			config: config.caches.localEmojis,
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
