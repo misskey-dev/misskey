@@ -22,6 +22,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { InstanceActorService } from '@/core/InstanceActorService.js';
+import { SignupService } from '@/core/SignupService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -43,16 +45,13 @@ export class ServerService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
+		private instanceActorService: InstanceActorService,
 		private metaService: MetaService,
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
@@ -67,6 +66,7 @@ export class ServerService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 		private oauth2ProviderService: OAuth2ProviderService,
+		private signupService: SignupService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray');
 	}
@@ -108,11 +108,20 @@ export class ServerService implements OnApplicationShutdown {
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
-		fastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
-		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
-		fastify.register(this.healthServerService.createServer, { prefix: '/healthz' });
+		fastify.register(this.oauth2ProviderService.createServer, {
+			prefix: '/oauth',
+		});
+		fastify.register(this.oauth2ProviderService.createTokenServer, {
+			prefix: '/oauth/token',
+		});
+		fastify.register(this.healthServerService.createServer, {
+			prefix: '/healthz',
+		});
 
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{
+			Params: { path: string };
+			Querystring: { static?: any; badge?: any };
+		}>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			reply.header('Cache-Control', 'public, max-age=86400');
@@ -135,11 +144,14 @@ export class ServerService implements OnApplicationShutdown {
 
 			const emoji = await this.emojisRepository.findOneBy({
 				// `@.` is the spec of ReactionService.decodeReaction
-				host: (host === undefined || host === '.') ? IsNull() : host,
+				host: host === undefined || host === '.' ? IsNull() : host,
 				name: name,
 			});
 
-			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+			reply.header(
+				'Content-Security-Policy',
+				'default-src \'none\'; style-src \'unsafe-inline\'',
+			);
 
 			if (emoji == null) {
 				if ('fallback' in request.query) {
@@ -164,77 +176,108 @@ export class ServerService implements OnApplicationShutdown {
 				if ('static' in request.query) url.searchParams.set('static', '1');
 			}
 
-			return await reply.redirect(
-				301,
-				url.toString(),
-			);
+			return await reply.redirect(301, url.toString());
 		});
 
-		fastify.get<{ Params: { acct: string } }>('/avatar/@:acct', async (request, reply) => {
-			const { username, host } = Acct.parse(request.params.acct);
-			const user = await this.usersRepository.findOne({
-				where: {
-					usernameLower: username.toLowerCase(),
-					host: (host == null) || (host === this.config.host) ? IsNull() : host,
-					isSuspended: false,
-				},
-			});
-
-			reply.header('Cache-Control', 'public, max-age=86400');
-
-			if (user) {
-				reply.redirect(user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user));
-			} else {
-				reply.redirect('/static-assets/user-unknown.png');
-			}
-		});
-
-		fastify.get<{ Params: { x: string } }>('/identicon/:x', async (request, reply) => {
-			reply.header('Content-Type', 'image/png');
-			reply.header('Cache-Control', 'public, max-age=86400');
-
-			if ((await this.metaService.fetch()).enableIdenticonGeneration) {
-				return await genIdenticon(request.params.x);
-			} else {
-				return reply.redirect('/static-assets/avatar.png');
-			}
-		});
-
-		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
-			const profile = await this.userProfilesRepository.findOneBy({
-				emailVerifyCode: request.params.code,
-			});
-
-			if (profile != null) {
-				await this.userProfilesRepository.update({ userId: profile.userId }, {
-					emailVerified: true,
-					emailVerifyCode: null,
+		fastify.get<{ Params: { acct: string } }>(
+			'/avatar/@:acct',
+			async (request, reply) => {
+				const { username, host } = Acct.parse(request.params.acct);
+				const user = await this.usersRepository.findOne({
+					where: {
+						usernameLower: username.toLowerCase(),
+						host: host == null || host === this.config.host ? IsNull() : host,
+						isSuspended: false,
+					},
 				});
 
-				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-					schema: 'MeDetailed',
-					includeSecrets: true,
-				}));
+				reply.header('Cache-Control', 'public, max-age=86400');
 
-				reply.code(200).send('Verification succeeded! メールアドレスの認証に成功しました。');
-				return;
-			} else {
-				reply.code(404).send('Verification failed. Please try again. メールアドレスの認証に失敗しました。もう一度お試しください');
-				return;
-			}
-		});
+				if (user) {
+					reply.redirect(
+						user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
+					);
+				} else {
+					reply.redirect('/static-assets/user-unknown.png');
+				}
+			},
+		);
+
+		fastify.get<{ Params: { x: string } }>(
+			'/identicon/:x',
+			async (request, reply) => {
+				reply.header('Content-Type', 'image/png');
+				reply.header('Cache-Control', 'public, max-age=86400');
+
+				if ((await this.metaService.fetch()).enableIdenticonGeneration) {
+					return await genIdenticon(request.params.x);
+				} else {
+					return reply.redirect('/static-assets/avatar.png');
+				}
+			},
+		);
+
+		fastify.get<{ Params: { code: string } }>(
+			'/verify-email/:code',
+			async (request, reply) => {
+				const profile = await this.userProfilesRepository.findOneBy({
+					emailVerifyCode: request.params.code,
+				});
+
+				if (profile != null) {
+					await this.userProfilesRepository.update(
+						{ userId: profile.userId },
+						{
+							emailVerified: true,
+							emailVerifyCode: null,
+						},
+					);
+
+					this.globalEventService.publishMainStream(
+						profile.userId,
+						'meUpdated',
+						await this.userEntityService.pack(
+							profile.userId,
+							{ id: profile.userId },
+							{
+								schema: 'MeDetailed',
+								includeSecrets: true,
+							},
+						),
+					);
+
+					reply
+						.code(200)
+						.send(
+							'Verification succeeded! メールアドレスの認証に成功しました。',
+						);
+					return;
+				} else {
+					reply
+						.code(404)
+						.send(
+							'Verification failed. Please try again. メールアドレスの認証に失敗しました。もう一度お試しください',
+						);
+					return;
+				}
+			},
+		);
 
 		fastify.register(this.clientServerService.createServer);
 
 		this.streamingApiServerService.attach(fastify.server);
 
-		fastify.server.on('error', err => {
+		fastify.server.on('error', (err) => {
 			switch ((err as any).code) {
 				case 'EACCES':
-					this.logger.error(`You do not have permission to listen on port ${this.config.port}.`);
+					this.logger.error(
+						`You do not have permission to listen on port ${this.config.port}.`,
+					);
 					break;
 				case 'EADDRINUSE':
-					this.logger.error(`Port ${this.config.port} is already in use by another process.`);
+					this.logger.error(
+						`Port ${this.config.port} is already in use by another process.`,
+					);
 					break;
 				default:
 					this.logger.error(err);
@@ -260,6 +303,27 @@ export class ServerService implements OnApplicationShutdown {
 			});
 		} else {
 			fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+		}
+
+		if (
+			this.config.adminUserName &&
+			this.config.adminPassword &&
+			this.config.rootUserName &&
+			this.config.rootPassword &&
+			!(await this.instanceActorService.realLocalUsersPresent())
+		) {
+			await this.signupService.signup({
+				username: this.config.rootUserName,
+				password: this.config.rootPassword,
+				ignorePreservedUsernames: true,
+			});
+
+			await this.signupService.signup({
+				username: this.config.adminUserName,
+				password: this.config.adminPassword,
+				ignorePreservedUsernames: true,
+				isRoot: true,
+			});
 		}
 
 		await fastify.ready();

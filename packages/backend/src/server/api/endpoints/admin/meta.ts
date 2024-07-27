@@ -636,9 +636,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 		private metaService: MetaService,
 	) {
-		super(meta, paramDef, async () => {
+		super(meta, paramDef, async (_, me) => {
 			const instance = await this.metaService.fetch(true);
-			if (!envOption.managed) {
+			if (!envOption.managed || this.config.rootUserName === me.username) {
 				return {
 					maintainerName: instance.maintainerName,
 					maintainerEmail: instance.maintainerEmail,

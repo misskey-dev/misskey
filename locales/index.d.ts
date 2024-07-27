@@ -8752,6 +8752,10 @@ export interface Locale extends ILocale {
      * {getPoint}{pointName}ゲットしました！
      */
     "nPointGets": ParameterizedString<"getPoint" | "pointName">;
+    /**
+     * ログインボーナスのポイントの名前
+     */
+    "pointName": string;
     "_cw": {
         /**
          * 隠す

@@ -57,9 +57,16 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
-	sentryForBackend?: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; };
+	sentryForBackend?: {
+		options: Partial<Sentry.NodeOptions>;
+		enableNodeProfiling: boolean;
+	};
 	sentryForFrontend?: { options: Partial<Sentry.NodeOptions> };
 
+	adminUserName?: string;
+	adminPassword?: string;
+	rootUserName?: string;
+	rootPassword?: string;
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
 	objectStorage?: {
@@ -131,21 +138,29 @@ export type Config = {
 		extra?: { [x: string]: string };
 	};
 	dbReplications: boolean | undefined;
-	dbSlaves: {
-		host: string;
-		port: number;
-		db: string;
-		user: string;
-		pass: string;
-	}[] | undefined;
-	meilisearch: {
-		host: string;
-		port: string;
-		apiKey: string;
-		ssl?: boolean;
-		index: string;
-		scope?: 'local' | 'global' | string[];
-	} | undefined;
+	dbSlaves:
+		| {
+				host: string;
+				port: number;
+				db: string;
+				user: string;
+				pass: string;
+		  }[]
+		| undefined;
+	meilisearch:
+		| {
+				host: string;
+				port: string;
+				apiKey: string;
+				ssl?: boolean;
+				index: string;
+				scope?: 'local' | 'global' | string[];
+		  }
+		| undefined;
+	adminUserName: string | undefined;
+	adminPassword: string | undefined;
+	rootUserName: string | undefined;
+	rootPassword: string | undefined;
 	proxy: string | undefined;
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
@@ -186,7 +201,9 @@ export type Config = {
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
-	sentryForBackend: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; } | undefined;
+	sentryForBackend:
+		| { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean }
+		| undefined;
 	sentryForFrontend: { options: Partial<Sentry.NodeOptions> } | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
@@ -228,10 +245,19 @@ const path = process.env.MISSKEY_CONFIG_YML
 		: resolve(dir, 'default.yml');
 
 export function loadConfig(): Config {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
-	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
-	const clientManifest = clientManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
+	const meta = JSON.parse(
+		fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'),
+	);
+	const clientManifestExists = fs.existsSync(
+		_dirname + '/../../../built/_vite_/manifest.json',
+	);
+	const clientManifest = clientManifestExists
+		? JSON.parse(
+			fs.readFileSync(
+				`${_dirname}/../../../built/_vite_/manifest.json`,
+				'utf-8',
+			),
+		)
 		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
@@ -246,15 +272,18 @@ export function loadConfig(): Config {
 	const dbUser = config.db.user ?? process.env.DATABASE_USER ?? '';
 	const dbPass = config.db.pass ?? process.env.DATABASE_PASSWORD ?? '';
 
-	const externalMediaProxy = config.mediaProxy ?
-		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
+	const externalMediaProxy = config.mediaProxy
+		? config.mediaProxy.endsWith('/')
+			? config.mediaProxy.substring(0, config.mediaProxy.length - 1)
+			: config.mediaProxy
 		: null;
 	const internalMediaProxy = `${scheme}://${host}/proxy`;
 	const redis = convertRedisOptions(config.redis, host);
 
 	return {
 		version,
-		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
+		publishTarballInsteadOfProvideRepositoryUrl:
+			!!config.publishTarballInsteadOfProvideRepositoryUrl,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,
@@ -271,11 +300,21 @@ export function loadConfig(): Config {
 		db: { ...config.db, db: dbDb, user: dbUser, pass: dbPass },
 		dbReplications: config.dbReplications,
 		dbSlaves: config.dbSlaves,
+		adminUserName: config.adminUserName,
+		adminPassword: config.adminPassword,
+		rootUserName: config.rootUserName,
+		rootPassword: config.rootPassword,
 		meilisearch: config.meilisearch,
 		redis,
-		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
-		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,
-		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
+		redisForPubsub: config.redisForPubsub
+			? convertRedisOptions(config.redisForPubsub, host)
+			: redis,
+		redisForJobQueue: config.redisForJobQueue
+			? convertRedisOptions(config.redisForJobQueue, host)
+			: redis,
+		redisForTimelines: config.redisForTimelines
+			? convertRedisOptions(config.redisForTimelines, host)
+			: redis,
 		sentryForBackend: config.sentryForBackend,
 		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
@@ -298,16 +337,23 @@ export function loadConfig(): Config {
 		proxyRemoteFiles: config.proxyRemoteFiles,
 		signToActivityPubGet: config.signToActivityPubGet ?? true,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
-		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
-		videoThumbnailGenerator: config.videoThumbnailGenerator ?
-			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
+		externalMediaProxyEnabled:
+			externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
+		videoThumbnailGenerator: config.videoThumbnailGenerator
+			? config.videoThumbnailGenerator.endsWith('/')
+				? config.videoThumbnailGenerator.substring(
+					0,
+					config.videoThumbnailGenerator.length - 1,
+				)
+				: config.videoThumbnailGenerator
 			: null,
 		userAgent: `Type4ny/${version} (${config.url})`,
 		clientEntry: clientManifest['src/_boot_.ts'],
 		clientManifestExists: clientManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
-		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
+		deactivateAntennaThreshold:
+			config.deactivateAntennaThreshold ?? 1000 * 60 * 60 * 24 * 7,
 		maxLocalUsers: config.maxLocalUsers ?? -1,
 		objectStorage: config.objectStorage ?? {},
 		pidFile: config.pidFile,
@@ -322,7 +368,10 @@ function tryCreateUrl(url: string) {
 	}
 }
 
-function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {
+function convertRedisOptions(
+	options: RedisOptionsSource,
+	host: string,
+): RedisOptions & RedisOptionsSource {
 	return {
 		...options,
 		password: options.pass,

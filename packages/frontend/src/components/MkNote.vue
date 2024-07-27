@@ -254,8 +254,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkA
 							:to="`/notes/${appearNote.id}/reactions`"
 							:class="[$style.reactionOmitted]"
-							>{{ i18n.ts.more }}</MkA
-						>
+							>{{ i18n.ts.more }}
+						</MkA>
 					</template>
 				</MkReactionsViewer>
 				<footer :class="$style.footer">
@@ -302,7 +302,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						></i>
 						<i
 							v-else-if="
-								appearNote.myReactions?.length >= 3 ||
+								appearNote.myReactions?.length >= 4 ||
 								(appearNote.myReaction && appearNote.user.host)
 							"
 							class="ti ti-minus"

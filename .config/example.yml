@@ -93,6 +93,7 @@ port: 3000
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
+maxLocalUsers: 5
 
 db:
   host: db

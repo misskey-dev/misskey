@@ -6,13 +6,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
+import type { EmojisRepository, NoteReactionsRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiNoteReaction } from '@/models/NoteReaction.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
@@ -35,17 +34,17 @@ const FALLBACK = '\u2764';
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
-	'like': '👍',
-	'love': '\u2764', // ハート、異体字セレクタを入れない
-	'laugh': '😆',
-	'hmm': '🤔',
-	'surprise': '😮',
-	'congrats': '🎉',
-	'angry': '💢',
-	'confused': '😥',
-	'rip': '😇',
-	'pudding': '🍮',
-	'star': '⭐',
+	like: '👍',
+	love: '\u2764', // ハート、異体字セレクタを入れない
+	laugh: '😆',
+	hmm: '🤔',
+	surprise: '😮',
+	congrats: '🎉',
+	angry: '💢',
+	confused: '😥',
+	rip: '😇',
+	pudding: '🍮',
+	star: '⭐',
 };
 
 type DecodedReaction = {
@@ -73,19 +72,14 @@ export class ReactionService {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
 		private utilityService: UtilityService,
 		private metaService: MetaService,
 		private customEmojiService: CustomEmojiService,
@@ -100,32 +94,54 @@ export class ReactionService {
 		private apDeliverManagerService: ApDeliverManagerService,
 		private notificationService: NotificationService,
 		private perUserReactionsChart: PerUserReactionsChart,
-	) {
-	}
+	) {}
 
 	@bindThis
-	public async create(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot'] }, note: MiNote, _reaction?: string | null) {
+	public async create(
+		user: {
+			id: MiUser['id'];
+			host: MiUser['host'];
+			isBot: MiUser['isBot'];
+		},
+		note: MiNote,
+		_reaction?: string | null,
+	) {
 		// Check blocking
 		if (note.userId !== user.id) {
-			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
+			const blocked = await this.userBlockingService.checkBlocked(
+				note.userId,
+				user.id,
+			);
 			if (blocked) {
 				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
 			}
 		}
 
 		// check visibility
-		if (!await this.noteEntityService.isVisibleForMe(note, user.id)) {
-			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
+		if (!(await this.noteEntityService.isVisibleForMe(note, user.id))) {
+			throw new IdentifiableError(
+				'68e9d2d1-48bf-42c2-b90a-b20e09fd3d48',
+				'Note not accessible for you.',
+			);
 		}
 
 		// Check if note is Renote
 		if (isRenote(note) && !isQuote(note)) {
-			throw new IdentifiableError('12c35529-3c79-4327-b1cc-e2cf63a71925', 'You cannot react to Renote.');
+			throw new IdentifiableError(
+				'12c35529-3c79-4327-b1cc-e2cf63a71925',
+				'You cannot react to Renote.',
+			);
 		}
 
 		let reaction = _reaction ?? FALLBACK;
 
-		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
+		if (
+			note.reactionAcceptance === 'likeOnly' ||
+			((note.reactionAcceptance === 'likeOnlyForRemote' ||
+				note.reactionAcceptance ===
+					'nonSensitiveOnlyForLocalLikeOnlyForRemote') &&
+				user.host != null)
+		) {
 			reaction = '\u2764';
 		} else if (_reaction != null) {
 			const custom = reaction.match(isCustomEmojiRegexp);
@@ -133,19 +149,30 @@ export class ReactionService {
 				const reacterHost = this.utilityService.toPunyNullable(user.host);
 
 				const name = custom[1];
-				const emoji = reacterHost == null
-					? (await this.customEmojiService.localEmojisCache.fetch()).get(name)
-					: await this.emojisRepository.findOneBy({
-						host: reacterHost,
-						name,
-					});
+				const emoji =
+					reacterHost == null
+						? (await this.customEmojiService.localEmojisCache.fetch()).get(name)
+						: await this.emojisRepository.findOneBy({
+							host: reacterHost,
+							name,
+						});
 
 				if (emoji) {
-					if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) {
+					if (
+						emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 ||
+						(await this.roleService.getUserRoles(user.id)).some((r) =>
+							emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id),
+						)
+					) {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 
 						// センシティブ
-						if ((note.reactionAcceptance === 'nonSensitiveOnly' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && emoji.isSensitive) {
+						if (
+							(note.reactionAcceptance === 'nonSensitiveOnly' ||
+								note.reactionAcceptance ===
+									'nonSensitiveOnlyForLocalLikeOnlyForRemote') &&
+							emoji.isSensitive
+						) {
 							reaction = FALLBACK;
 						}
 					} else {
@@ -166,65 +193,44 @@ export class ReactionService {
 			userId: user.id,
 			reaction,
 		};
-		if (user.host == null) {
-			const exists = await this.noteReactionsRepository.findOneBy({
-				noteId: note.id,
-				userId: user.id,
-				reaction: record.reaction,
-			});
+		const exists = await this.noteReactionsRepository.findOneBy({
+			noteId: note.id,
+			userId: user.id,
+			reaction: record.reaction,
+		});
 
-			const count = await this.noteReactionsRepository.countBy({
-				noteId: note.id,
-				userId: user.id,
-			});
+		const count = await this.noteReactionsRepository.countBy({
+			noteId: note.id,
+			userId: user.id,
+		});
 
-			if (count > 3) {
-				throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-			}
-
-			if (exists == null) {
-				if (user.host == null) {
-					await this.noteReactionsRepository.insert(record);
-				} else {
-					throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-				}
-			} else {
-			// 同じリアクションがすでにされていたらエラー
-				throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-			}
-		} else {
-			try {
-				await this.noteReactionsRepository.insert(record);
-			} catch (e) {
-				if (isDuplicateKeyValueError(e)) {
-					const exists = await this.noteReactionsRepository.findOneByOrFail({
-						noteId: note.id,
-						userId: user.id,
-					});
-
-					if (exists.reaction !== reaction) {
-					// 別のリアクションがすでにされていたら置き換える
-						await this.delete(user, note);
-						await this.noteReactionsRepository.insert(record);
-					} else {
-					// 同じリアクションがすでにされていたらエラー
-						throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
-					}
-				} else {
-					throw e;
-				}
-			}
+		if (count > 3) {
+			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
 		}
+
+		if (exists == null) {
+			await this.noteReactionsRepository.insert(record);
+		} else {
+			// 同じリアクションがすでにされていたらエラー
+			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
+		}
+
 		// Create reaction
 
 		// Increment reactions count
 		const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
+		await this.notesRepository
+			.createQueryBuilder()
+			.update()
 			.set({
 				reactions: () => sql,
-				...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
-					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
-				} : {}),
+				...(note.reactionAndUserPairCache.length <
+				PER_NOTE_REACTION_USER_PAIR_CACHE_MAX
+					? {
+						reactionAndUserPairCache: () =>
+							`array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
+					}
+					: {}),
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
@@ -233,71 +239,111 @@ export class ReactionService {
 		if (
 			Math.random() < 0.3 &&
 			note.userId !== user.id &&
-			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
+			Date.now() - this.idService.parse(note.id).date.getTime() <
+				1000 * 60 * 60 * 24 * 3
 		) {
 			if (note.channelId != null) {
 				if (note.replyId == null) {
-					this.featuredService.updateInChannelNotesRanking(note.channelId, note.id, 1);
+					this.featuredService.updateInChannelNotesRanking(
+						note.channelId,
+						note.id,
+						1,
+					);
 				}
 			} else {
-				if (note.visibility === 'public' && note.userHost == null && note.replyId == null) {
+				if (
+					note.visibility === 'public' &&
+					note.userHost == null &&
+					note.replyId == null
+				) {
 					this.featuredService.updateGlobalNotesRanking(note.id, 1);
-					this.featuredService.updatePerUserNotesRanking(note.userId, note.id, 1);
+					this.featuredService.updatePerUserNotesRanking(
+						note.userId,
+						note.id,
+						1,
+					);
 				}
 			}
 		}
 
 		const meta = await this.metaService.fetch();
 
-		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+		if (meta.enableChartsForRemoteUser || user.host == null) {
 			this.perUserReactionsChart.update(user, note);
 		}
 
 		// カスタム絵文字リアクションだったら絵文字情報も送る
 		const decodedReaction = this.decodeReaction(reaction);
 
-		const customEmoji = decodedReaction.name == null ? null : decodedReaction.host == null
-			? (await this.customEmojiService.localEmojisCache.fetch()).get(decodedReaction.name)
-			: await this.emojisRepository.findOne(
-				{
-					where: {
-						name: decodedReaction.name,
-						host: decodedReaction.host,
-					},
-				});
+		const customEmoji =
+			decodedReaction.name == null
+				? null
+				: decodedReaction.host == null
+					? (await this.customEmojiService.localEmojisCache.fetch()).get(
+						decodedReaction.name,
+					)
+					: await this.emojisRepository.findOne({
+						where: {
+							name: decodedReaction.name,
+							host: decodedReaction.host,
+						},
+					});
 
 		this.globalEventService.publishNoteStream(note.id, 'reacted', {
 			reaction: decodedReaction.reaction,
-			emoji: customEmoji != null ? {
-				name: customEmoji.host ? `${customEmoji.name}@${customEmoji.host}` : `${customEmoji.name}@.`,
-				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				url: customEmoji.publicUrl || customEmoji.originalUrl,
-			} : null,
+			emoji:
+				customEmoji != null
+					? {
+						name: customEmoji.host
+							? `${customEmoji.name}@${customEmoji.host}`
+							: `${customEmoji.name}@.`,
+						// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+						url: customEmoji.publicUrl || customEmoji.originalUrl,
+					}
+					: null,
 			userId: user.id,
 		});
 
 		// リアクションされたユーザーがローカルユーザーなら通知を作成
 		if (note.userHost === null) {
-			this.notificationService.createNotification(note.userId, 'reaction', {
-				noteId: note.id,
-				reaction: reaction,
-			}, user.id);
+			this.notificationService.createNotification(
+				note.userId,
+				'reaction',
+				{
+					noteId: note.id,
+					reaction: reaction,
+				},
+				user.id,
+			);
 		}
 
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = this.apRendererService.addContext(await this.apRendererService.renderLike(record, note));
-			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
+			const content = this.apRendererService.addContext(
+				await this.apRendererService.renderLike(record, note),
+			);
+			const dm = this.apDeliverManagerService.createDeliverManager(
+				user,
+				content,
+			);
 			if (note.userHost !== null) {
-				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
+				const reactee = await this.usersRepository.findOneBy({
+					id: note.userId,
+				});
 				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 
 			if (['public', 'home', 'followers'].includes(note.visibility)) {
 				dm.addFollowersRecipe();
 			} else if (note.visibility === 'specified') {
-				const visibleUsers = await Promise.all(note.visibleUserIds.map(id => this.usersRepository.findOneBy({ id })));
-				for (const u of visibleUsers.filter(u => u && this.userEntityService.isRemoteUser(u))) {
+				const visibleUsers = await Promise.all(
+					note.visibleUserIds.map((id) =>
+						this.usersRepository.findOneBy({ id }),
+					),
+				);
+				for (const u of visibleUsers.filter(
+					(u) => u && this.userEntityService.isRemoteUser(u),
+				)) {
 					dm.addDirectRecipe(u as MiRemoteUser);
 				}
 			}
@@ -308,7 +354,15 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, reaction?: string) {
+	public async delete(
+		user: {
+			id: MiUser['id'];
+			host: MiUser['host'];
+			isBot: MiUser['isBot'];
+		},
+		note: MiNote,
+		reaction?: string,
+	) {
 		// if already unreacted
 		let exist;
 		if (reaction == null) {
@@ -324,21 +378,30 @@ export class ReactionService {
 			});
 		}
 		if (exist == null) {
-			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
+			throw new IdentifiableError(
+				'60527ec9-b4cb-4a88-a6bd-32d3ad26817d',
+				'not reacted',
+			);
 		}
 		// Delete reaction
 		const result = await this.noteReactionsRepository.delete(exist.id);
 
 		if (result.affected !== 1) {
-			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
+			throw new IdentifiableError(
+				'60527ec9-b4cb-4a88-a6bd-32d3ad26817d',
+				'not reacted',
+			);
 		}
 
 		// Decrement reactions count
 		const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
+		await this.notesRepository
+			.createQueryBuilder()
+			.update()
 			.set({
 				reactions: () => sql,
-				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
+				reactionAndUserPairCache: () =>
+					`array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
@@ -350,10 +413,20 @@ export class ReactionService {
 
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(await this.apRendererService.renderLike(exist, note), user));
-			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
+			const content = this.apRendererService.addContext(
+				this.apRendererService.renderUndo(
+					await this.apRendererService.renderLike(exist, note),
+					user,
+				),
+			);
+			const dm = this.apDeliverManagerService.createDeliverManager(
+				user,
+				content,
+			);
 			if (note.userHost !== null) {
-				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
+				const reactee = await this.usersRepository.findOneBy({
+					id: note.userId,
+				});
 				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 			dm.addFollowersRecipe();
@@ -367,7 +440,9 @@ export class ReactionService {
 	 * データベース上には存在する「0個のリアクションがついている」という情報を削除する。
 	 */
 	@bindThis
-	public convertLegacyReactions(reactions: MiNote['reactions']): MiNote['reactions'] {
+	public convertLegacyReactions(
+		reactions: MiNote['reactions'],
+	): MiNote['reactions'] {
 		return Object.entries(reactions)
 			.filter(([, count]) => {
 				// `ReactionService.prototype.delete`ではリアクション削除時に、
@@ -423,7 +498,7 @@ export class ReactionService {
 			const host = custom[2] ?? null;
 
 			return {
-				reaction: `:${name}@${host ?? '.'}:`,	// ローカル分は@以降を省略するのではなく.にする
+				reaction: `:${name}@${host ?? '.'}:`, // ローカル分は@以降を省略するのではなく.にする
 				name,
 				host,
 			};

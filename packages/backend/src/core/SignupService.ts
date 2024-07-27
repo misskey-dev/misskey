@@ -22,31 +22,26 @@ import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
-import { envOption } from "@/env.js";
+import { envOption } from '@/env.js';
 
 @Injectable()
 export class SignupService {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
 		@Inject(DI.usedUsernamesRepository)
 		private usedUsernamesRepository: UsedUsernamesRepository,
-
 		@Inject(DI.config)
 		private config: Config,
-
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
 		private instanceActorService: InstanceActorService,
 		private usersChart: UsersChart,
-	) {
-	}
+	) {}
 
 	@bindThis
 	public async signup(opts: {
@@ -55,6 +50,7 @@ export class SignupService {
 		passwordHash?: MiUserProfile['password'] | null;
 		host?: string | null;
 		ignorePreservedUsernames?: boolean;
+		isRoot?: boolean;
 	}) {
 		const { username, password, passwordHash, host } = opts;
 		let hash = passwordHash;
@@ -63,7 +59,12 @@ export class SignupService {
 		if (!this.userEntityService.validateLocalUsername(username)) {
 			throw new Error('INVALID_USERNAME');
 		}
-		if (envOption.managed && this.config.maxLocalUsers !== -1 && await this.usersRepository.count({ where: { host: IsNull() } }) >= this.config.maxLocalUsers) {
+		if (
+			envOption.managed &&
+			this.config.maxLocalUsers !== -1 &&
+			(await this.usersRepository.count({ where: { host: IsNull() } })) >=
+				this.config.maxLocalUsers
+		) {
 			throw new Error('MAX_LOCAL_USERS');
 		}
 		if (password != null && passwordHash == null) {
@@ -81,46 +82,61 @@ export class SignupService {
 		const secret = generateUserToken();
 
 		// Check username duplication
-		if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
+		if (
+			await this.usersRepository.exists({
+				where: { usernameLower: username.toLowerCase(), host: IsNull() },
+			})
+		) {
 			throw new Error('DUPLICATED_USERNAME');
 		}
 
 		// Check deleted username duplication
-		if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
+		if (
+			await this.usedUsernamesRepository.exists({
+				where: { username: username.toLowerCase() },
+			})
+		) {
 			throw new Error('USED_USERNAME');
 		}
 
-		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
+		const isTheFirstUser =
+			!(await this.instanceActorService.realLocalUsersPresent());
 
 		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
 			const instance = await this.metaService.fetch(true);
-			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
+			const isPreserved = instance.preservedUsernames
+				.map((x) => x.toLowerCase())
+				.includes(username.toLowerCase());
 			if (isPreserved) {
 				throw new Error('USED_USERNAME');
 			}
 		}
 
 		const keyPair = await new Promise<string[]>((res, rej) =>
-			generateKeyPair('rsa', {
-				modulusLength: 2048,
-				publicKeyEncoding: {
-					type: 'spki',
-					format: 'pem',
+			generateKeyPair(
+				'rsa',
+				{
+					modulusLength: 2048,
+					publicKeyEncoding: {
+						type: 'spki',
+						format: 'pem',
+					},
+					privateKeyEncoding: {
+						type: 'pkcs8',
+						format: 'pem',
+						cipher: undefined,
+						passphrase: undefined,
+					},
 				},
-				privateKeyEncoding: {
-					type: 'pkcs8',
-					format: 'pem',
-					cipher: undefined,
-					passphrase: undefined,
-				},
-			}, (err, publicKey, privateKey) =>
-				err ? rej(err) : res([publicKey, privateKey]),
-			));
+				(err, publicKey, privateKey) =>
+					err ? rej(err) : res([publicKey, privateKey]),
+			),
+		);
 
 		let account!: MiUser;
 
 		// Start transaction
-		await this.db.transaction(async transactionalEntityManager => {
+		await this.db.transaction(async (transactionalEntityManager) => {
 			const exist = await transactionalEntityManager.findOneBy(MiUser, {
 				usernameLower: username.toLowerCase(),
 				host: IsNull(),
@@ -128,31 +144,39 @@ export class SignupService {
 
 			if (exist) throw new Error(' the username is already used');
 
-			account = await transactionalEntityManager.save(new MiUser({
-				id: this.idService.gen(),
-				username: username,
-				usernameLower: username.toLowerCase(),
-				host: this.utilityService.toPunyNullable(host),
-				token: secret,
-				isRoot: isTheFirstUser,
-			}));
+			account = await transactionalEntityManager.save(
+				new MiUser({
+					id: this.idService.gen(),
+					username: username,
+					usernameLower: username.toLowerCase(),
+					host: this.utilityService.toPunyNullable(host),
+					token: secret,
+					isRoot: isTheFirstUser || opts.isRoot,
+				}),
+			);
 
-			await transactionalEntityManager.save(new MiUserKeypair({
-				publicKey: keyPair[0],
-				privateKey: keyPair[1],
-				userId: account.id,
-			}));
+			await transactionalEntityManager.save(
+				new MiUserKeypair({
+					publicKey: keyPair[0],
+					privateKey: keyPair[1],
+					userId: account.id,
+				}),
+			);
 
-			await transactionalEntityManager.save(new MiUserProfile({
-				userId: account.id,
-				autoAcceptFollowed: true,
-				password: hash,
-			}));
+			await transactionalEntityManager.save(
+				new MiUserProfile({
+					userId: account.id,
+					autoAcceptFollowed: true,
+					password: hash,
+				}),
+			);
 
-			await transactionalEntityManager.save(new MiUsedUsername({
-				createdAt: new Date(),
-				username: username.toLowerCase(),
-			}));
+			await transactionalEntityManager.save(
+				new MiUsedUsername({
+					createdAt: new Date(),
+					username: username.toLowerCase(),
+				}),
+			);
 		});
 
 		this.usersChart.update(account, true);
@@ -160,4 +184,3 @@ export class SignupService {
 		return { account, secret };
 	}
 }
-

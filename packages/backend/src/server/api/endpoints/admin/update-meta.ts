@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { MiMeta } from '@/models/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { envOption } from '@/env.js';
+import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -204,12 +206,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const set = {} as Partial<MiMeta>;
-			if (!envOption.managed) {
+			if (!envOption.managed || this.config.rootUserName === me.username) {
 				if (typeof ps.disableRegistration === 'boolean') {
 					set.disableRegistration = ps.disableRegistration;
 				}
