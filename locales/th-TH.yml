@@ -480,7 +480,7 @@ attachAsFileQuestion: "ข้อความในคลิปบอร์ดย
 noMessagesYet: "ยังไม่มีข้อความ"
 newMessageExists: "คุณมีข้อความใหม่"
 onlyOneFileCanBeAttached: "สามารถแนบไฟล์ได้เพียงไฟล์เดียวต่อ 1 ข้อความ"
-signinRequired: "กรุณาลงทะเบียนหรือลงชื่อเข้าใช้ก่อนดำเนินการต่อ"
+signinRequired: "กรุณาลงทะเบียนหรือเข้าสู่ระบบก่อนดำเนินการต่อ"
 signinOrContinueOnRemote: "เพื่อดำเนินการต่อได้ คุณต้องไปที่เซิร์ฟเวอร์ที่คุณใช้งานอยู่ หรือลงทะเบียน/เข้าสู่ระบบเซิร์ฟเวอร์นี้"
 invitations: "คำเชิญ"
 invitationCode: "รหัสเชิญ"
