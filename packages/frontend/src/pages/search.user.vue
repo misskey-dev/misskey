@@ -69,6 +69,7 @@ async function search() {
 	userPagination.value = {
 		endpoint: 'users/search',
 		limit: 10,
+		offsetMode: true,
 		params: {
 			query: query,
 			origin: searchOrigin.value,
