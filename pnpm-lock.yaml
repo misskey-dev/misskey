@@ -125,9 +125,6 @@ importers:
       '@fastify/view':
         specifier: 9.1.0
         version: 9.1.0
-      '@misskey-dev/node-http-message-signatures':
-        specifier: 0.0.10
-        version: 0.0.10
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.2.0
         version: 1.2.0
@@ -146,6 +143,9 @@ importers:
       '@nestjs/testing':
         specifier: 10.3.10
         version: 10.3.10(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10))
+      '@peertube/http-signature':
+        specifier: 1.7.0
+        version: 1.7.0
       '@sentry/node':
         specifier: 8.13.0
         version: 8.13.0
@@ -3228,11 +3228,6 @@ packages:
   '@kurkle/color@0.3.2':
     resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
 
-  '@lapo/asn1js@2.0.4':
-    resolution: {integrity: sha512-KJD3wQAZxozcraJdWp3utDU6DEZgAVBGp9INCdptUpZaXCEYkpwNb7h7wyYh5y6DxtpvIud8k0suhWJ/z2rKvw==}
-    engines: {node: '>=12.20.0'}
-    hasBin: true
-
   '@levischuck/tiny-cbor@0.2.2':
     resolution: {integrity: sha512-f5CnPw997Y2GQ8FAvtuVVC19FX8mwNNC+1XJcIi16n/LTJifKO6QBgGLgN3YEmqtGMk17SKSuoWES3imJVxAVw==}
 
@@ -3285,10 +3280,6 @@ packages:
       eslint: '>= 8'
       eslint-plugin-import: '>= 2'
       globals: '>= 15'
-
-  '@misskey-dev/node-http-message-signatures@0.0.10':
-    resolution: {integrity: sha512-HiAuc//tOU077KFUJhHYLAPWku9enTpOFIqQiK6l2i2mIizRvv7HhV7Y+yuav5quDOAz+WZGK/i5C9OR5fkKIg==}
-    engines: {node: '>=18.4.0'}
 
   '@misskey-dev/sharp-read-bmp@1.2.0':
     resolution: {integrity: sha512-er4pRakXzHYfEgOFAFfQagqDouG+wLm+kwNq1I30oSdIHDa0wM3KjFpfIGQ25Fks4GcmOl1s7Zh6xoQu5dNjTw==}
@@ -3679,6 +3670,10 @@ packages:
 
   '@peculiar/asn1-x509@2.3.8':
     resolution: {integrity: sha512-voKxGfDU1c6r9mKiN5ZUsZWh3Dy1BABvTM3cimf0tztNwyMJPhiXY94eRTgsMQe6ViLfT6EoXxkWVzcm3mFAFw==}
+
+  '@peertube/http-signature@1.7.0':
+    resolution: {integrity: sha512-aGQIwo6/sWtyyqhVK4e1MtxYz4N1X8CNt6SOtCc+Wnczs5S5ONaLHDDR8LYaGn0MgOwvGgXyuZ5sJIfd7iyoUw==}
+    engines: {node: '>=0.10'}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -10529,9 +10524,6 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rfc4648@1.5.3:
-    resolution: {integrity: sha512-MjOWxM065+WswwnmNONOT+bD1nXzY9Km6u3kzvnx8F8/HXGZdz3T6e6vZJ8Q/RIMUSp/nxqjH3GwvJDy8ijeQQ==}
-
   rfdc@1.3.0:
     resolution: {integrity: sha512-V2hovdzFbOi77/WajaSMXk2OLm+xNIeQdMMuB7icj7bk6zi2F8GGAxigcnDFpJHbNyNcgyJDiP+8nOrY5cZGrA==}
 
@@ -11082,10 +11074,6 @@ packages:
   strtok3@7.0.0:
     resolution: {integrity: sha512-pQ+V+nYQdC5H3Q7qBZAz/MO6lwGhoC2gOAjuouGf/VO0m7vQRh8QNMl2Uf6SwAtzZ9bOw3UIeBukEGNJl5dtXQ==}
     engines: {node: '>=14.16'}
-
-  structured-headers@1.0.1:
-    resolution: {integrity: sha512-QYBxdBtA4Tl5rFPuqmbmdrS9kbtren74RTJTcs0VSQNVV5iRhJD4QlYTLD0+81SBwUQctjEQzjTRI3WG4DzICA==}
-    engines: {node: '>= 14', npm: '>=6'}
 
   stylehacks@6.1.1:
     resolution: {integrity: sha512-gSTTEQ670cJNoaeIp9KX6lZmm8LJ3jPB5yJmX8Zq/wQxOsAFXV3qjWzHas3YYk1qesuVIyYWWUpZ0vSE/dTSGg==}
@@ -14654,8 +14642,6 @@ snapshots:
 
   '@kurkle/color@0.3.2': {}
 
-  '@lapo/asn1js@2.0.4': {}
-
   '@levischuck/tiny-cbor@0.2.2': {}
 
   '@lukeed/csprng@1.0.1': {}
@@ -14735,12 +14721,6 @@ snapshots:
       eslint: 9.6.0
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3))(eslint@9.6.0)
       globals: 15.7.0
-
-  '@misskey-dev/node-http-message-signatures@0.0.10':
-    dependencies:
-      '@lapo/asn1js': 2.0.4
-      rfc4648: 1.5.3
-      structured-headers: 1.0.1
 
   '@misskey-dev/sharp-read-bmp@1.2.0':
     dependencies:
@@ -15201,6 +15181,12 @@ snapshots:
       ipaddr.js: 2.2.0
       pvtsutils: 1.3.5
       tslib: 2.6.2
+
+  '@peertube/http-signature@1.7.0':
+    dependencies:
+      assert-plus: 1.0.0
+      jsprim: 1.4.2
+      sshpk: 1.17.0
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -23893,8 +23879,6 @@ snapshots:
 
   reusify@1.0.4: {}
 
-  rfc4648@1.5.3: {}
-
   rfdc@1.3.0: {}
 
   rimraf@2.6.3:
@@ -24489,8 +24473,6 @@ snapshots:
     dependencies:
       '@tokenizer/token': 0.3.0
       peek-readable: 5.0.0
-
-  structured-headers@1.0.1: {}
 
   stylehacks@6.1.1(postcss@8.4.38):
     dependencies:
