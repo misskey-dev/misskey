@@ -29,10 +29,10 @@ export interface IStream extends EventEmitter<StreamEvents> {
 	removeSharedConnection(connection: SharedConnection): void;
 	removeSharedConnectionPool(pool: Pool): void;
 	disconnectToChannel(connection: NonSharedConnection): void;
-	send(typeOrPayload: string): void;
-	send(typeOrPayload: string, payload: any): void;
-	send(typeOrPayload: Record<string, any> | any[]): void;
-	send(typeOrPayload: string | Record<string, any> | any[], payload?: any): void;
+	send(typeOrPayload: string): void
+	send(typeOrPayload: string, payload: unknown): void
+	send(typeOrPayload: Record<string, unknown> | unknown[]): void
+	send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void {
 	ping(): void;
 	heartbeat(): void;
 	close(): void;
@@ -293,7 +293,7 @@ class Pool {
 	}
 }
 
-export interface IChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
 	id: string;
 	name?: string;
 	inCount: number;
