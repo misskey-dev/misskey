@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
-import { verifyDigestHeader, parseRequestSignature } from '@misskey-dev/node-http-message-signatures';
+import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
@@ -30,17 +31,12 @@ import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
-import { LoggerService } from '@/core/LoggerService.js';
-import Logger from '@/logger.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
 
 @Injectable()
 export class ActivityPubServerService {
-	private logger: Logger;
-	private inboxLogger: Logger;
-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -75,11 +71,8 @@ export class ActivityPubServerService {
 		private queueService: QueueService,
 		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
-		private loggerService: LoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
-		this.logger = this.loggerService.getLogger('server-ap', 'gray');
-		this.inboxLogger = this.logger.createSubLogger('inbox', 'gray');
 	}
 
 	@bindThis
@@ -107,44 +100,70 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private async inbox(request: FastifyRequest, reply: FastifyReply) {
-		if (request.body == null) {
-			this.inboxLogger.warn('request body is empty');
-			reply.code(400);
-			return;
-		}
+	private inbox(request: FastifyRequest, reply: FastifyReply) {
+		let signature;
 
-		let signature: ReturnType<typeof parseRequestSignature>;
-
-		const verifyDigest = await verifyDigestHeader(request.raw, request.rawBody || '', true);
-		if (verifyDigest !== true) {
-			this.inboxLogger.warn('digest verification failed');
+		try {
+			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
+		} catch (e) {
 			reply.code(401);
 			return;
 		}
 
-		try {
-			signature = parseRequestSignature(request.raw, {
-				requiredInputs: {
-					draft: ['(request-target)', 'digest', 'host', 'date'],
-				},
-			});
-		} catch (err) {
-			this.inboxLogger.warn('signature header parsing failed', { err });
+		if (signature.params.headers.indexOf('host') === -1
+			|| request.headers.host !== this.config.host) {
+			// Host not specified or not match.
+			reply.code(401);
+			return;
+		}
 
-			if (typeof request.body === 'object' && 'signature' in request.body) {
-				// LD SignatureがあればOK
-				this.queueService.inbox(request.body as IActivity, null);
-				reply.code(202);
+		if (signature.params.headers.indexOf('digest') === -1) {
+			// Digest not found.
+			reply.code(401);
+		} else {
+			const digest = request.headers.digest;
+
+			if (typeof digest !== 'string') {
+				// Huh?
+				reply.code(401);
 				return;
 			}
 
-			this.inboxLogger.warn('signature header parsing failed and LD signature not found');
-			reply.code(401);
-			return;
+			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
+			const match = digest.match(re);
+
+			if (match == null) {
+				// Invalid digest
+				reply.code(401);
+				return;
+			}
+
+			const algo = match[1].toUpperCase();
+			const digestValue = match[2];
+
+			if (algo !== 'SHA-256') {
+				// Unsupported digest algorithm
+				reply.code(401);
+				return;
+			}
+
+			if (request.rawBody == null) {
+				// Bad request
+				reply.code(400);
+				return;
+			}
+
+			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
+
+			if (hash !== digestValue) {
+				// Invalid digest
+				reply.code(401);
+				return;
+			}
 		}
 
 		this.queueService.inbox(request.body as IActivity, signature);
+
 		reply.code(202);
 	}
 
@@ -621,7 +640,7 @@ export class ActivityPubServerService {
 			if (this.userEntityService.isLocalUser(user)) {
 				reply.header('Cache-Control', 'public, max-age=180');
 				this.setResponseType(request, reply);
-				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair.publicKey)));
+				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair)));
 			} else {
 				reply.code(400);
 				return;
