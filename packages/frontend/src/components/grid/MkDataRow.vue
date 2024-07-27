@@ -63,6 +63,7 @@ defineProps<{
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	width: fit-content;
 
 	&.ranged {
 		background-color: var(--accentedBg);

@@ -359,6 +359,8 @@ $cellHeight: 28px;
 .contentArea, .inputArea {
 	display: flex;
 	align-items: center;
+	width: 100%;
+	max-width: 100%;
 }
 
 .content {
