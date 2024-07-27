@@ -23,6 +23,15 @@ export class RedisKVCache<T> {
 		toRedisConverter: RedisKVCache<T>['toRedisConverter'];
 		fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
 	}) {
+		if (opts.lifetime <= 0) {
+			throw new Error(`Redis cache lifetime of ${opts.lifetime} is invalid - it must be greater than zero`);
+		}
+		if (opts.memoryCacheLifetime <= 0) {
+			throw new Error(`Memory cache lifetime of ${opts.memoryCacheLifetime} is invalid - it must be greater than zero`);
+		}
+		if (opts.memoryCacheCapacity <= 0) {
+			throw new Error(`Memory cache capacity of ${opts.memoryCacheCapacity} is invalid - it must be greater than zero`);
+		}
 		this.redisClient = redisClient;
 		this.name = name;
 		this.lifetime = opts.lifetime;
@@ -107,6 +116,12 @@ export class RedisSingleCache<T> {
 		toRedisConverter: RedisSingleCache<T>['toRedisConverter'];
 		fromRedisConverter: RedisSingleCache<T>['fromRedisConverter'];
 	}) {
+		if (opts.lifetime <= 0) {
+			throw new Error(`Redis cache lifetime of ${opts.lifetime} is invalid - it must be greater than zero`);
+		}
+		if (opts.memoryCacheLifetime <= 0) {
+			throw new Error(`Memory cache lifetime of ${opts.memoryCacheLifetime} is invalid - it must be greater than zero`);
+		}
 		this.redisClient = redisClient;
 		this.name = name;
 		this.lifetime = opts.lifetime;
@@ -181,7 +196,14 @@ export class MemoryKVCache<T> {
 	constructor (
 		private readonly lifetime: number,
 		private readonly capacity: number,
-	) {}
+	) {
+		if (lifetime <= 0) {
+			throw new Error(`Memory cache lifetime of ${lifetime} is invalid - it must be greater than zero`);
+		}
+		if (capacity <= 0) {
+			throw new Error(`Memory cache capacity of ${capacity} is invalid - it must be greater than zero`);
+		}
+	}
 
 	@bindThis
 	/**
@@ -313,6 +335,9 @@ export class MemorySingleCache<T> {
 	private lifetime: number;
 
 	constructor(lifetime: MemorySingleCache<never>['lifetime']) {
+		if (lifetime <= 0) {
+			throw new Error(`Cache lifetime of ${lifetime} is invalid - it must be greater than zero`);
+		}
 		this.lifetime = lifetime;
 	}
 
