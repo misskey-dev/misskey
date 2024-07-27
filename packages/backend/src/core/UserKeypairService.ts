@@ -11,12 +11,16 @@ import { RedisKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import type { Config } from "@/config.js";
 
 @Injectable()
 export class UserKeypairService {
 	private cache: RedisKVCache<MiUserKeypair>;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
@@ -24,9 +28,9 @@ export class UserKeypairService {
 		private userKeypairsRepository: UserKeypairsRepository,
 	) {
 		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
-			lifetime: 1000 * 60 * 60 * 24, // 24h
-			memoryCacheLifetime: 1000 * 60 * 60 * 12, // 12h
-			memoryCacheCapacity: 10_000, // Only local users have a keypair
+			lifetime: config.caches.userKeyPairRedisLifetime,
+			memoryCacheLifetime: config.caches.userKeyPairMemoryLifetime,
+			memoryCacheCapacity: config.caches.userKeyPairMemoryCapacity,
 			fetcher: (key) => this.userKeypairsRepository.findOneByOrFail({ userId: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),

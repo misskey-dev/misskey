@@ -13,6 +13,7 @@ import type { MiApp } from '@/models/App.js';
 import { CacheService } from '@/core/CacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 import { bindThis } from '@/decorators.js';
+import type { Config } from '@/config.js';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {
@@ -26,6 +27,9 @@ export class AuthenticateService {
 	private appCache: MemoryKVCache<MiApp>;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -37,7 +41,7 @@ export class AuthenticateService {
 
 		private cacheService: CacheService,
 	) {
-		this.appCache = new MemoryKVCache<MiApp>(1000 * 60 * 60 * 24 * 7, 1_000); // 1w
+		this.appCache = new MemoryKVCache<MiApp>(config.caches.clientAppMemoryLifetime, config.caches.clientAppMemoryCapacity);
 	}
 
 	@bindThis

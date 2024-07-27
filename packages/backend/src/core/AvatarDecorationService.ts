@@ -13,12 +13,16 @@ import { bindThis } from '@/decorators.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class AvatarDecorationService implements OnApplicationShutdown {
 	public cache: MemorySingleCache<MiAvatarDecoration[]>;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
+
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
@@ -29,7 +33,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(1000 * 60 * 30);
+		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(config.caches.avatarDecorationsMemoryLifetime);
 
 		this.redisForSub.on('message', this.onMessage);
 	}

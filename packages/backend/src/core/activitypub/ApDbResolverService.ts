@@ -54,8 +54,8 @@ export class ApDbResolverService {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(1000 * 60 * 60 * 12, 15_000); // 12h (used by AP)
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(1000 * 60 * 60 * 12, 15_000); // 12h (used by AP)
+		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(config.caches.publicKeysMemoryLifetime, config.caches.publicKeysMemoryCapacity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(config.caches.publicKeysMemoryLifetime, config.caches.publicKeysMemoryCapacity);
 	}
 
 	@bindThis

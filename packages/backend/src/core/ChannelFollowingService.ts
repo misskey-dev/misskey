@@ -13,12 +13,15 @@ import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { RedisKVCache } from '@/misc/cache.js';
+import type { Config } from "@/config.js";
 
 @Injectable()
 export class ChannelFollowingService implements OnModuleInit {
 	public userFollowingChannelsCache: RedisKVCache<Set<string>>;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 		@Inject(DI.redisForSub)
@@ -29,9 +32,9 @@ export class ChannelFollowingService implements OnModuleInit {
 		private globalEventService: GlobalEventService,
 	) {
 		this.userFollowingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userFollowingChannels', {
-			lifetime: 1000 * 60 * 30, // 30m
-			memoryCacheLifetime: 1000 * 60, // 1m
-			memoryCacheCapacity: 1_000,
+			lifetime: config.caches.userChannelsRedisLifetime,
+			memoryCacheLifetime: config.caches.userChannelsMemoryLifetime,
+			memoryCacheCapacity: config.caches.userChannelsMemoryCapacity,
 			fetcher: (key) => this.channelFollowingsRepository.find({
 				where: { followerId: key },
 				select: ['followeeId'],

@@ -30,6 +30,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import type { Config } from "@/config.js";
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -101,6 +102,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
+		@Inject(DI.config)
+		config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
@@ -129,8 +133,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new MemorySingleCache<MiRole[]>(1000 * 60 * 60);
-		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(1000 * 60 * 60, 10_000);
+		this.rolesCache = new MemorySingleCache<MiRole[]>(config.caches.rolesMemoryLifetime);
+		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(config.caches.userRolesMemoryLifetime, config.caches.userRolesMemoryCapacity);
 
 		this.redisForSub.on('message', this.onMessage);
 	}

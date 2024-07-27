@@ -20,6 +20,7 @@ import { bindThis } from '@/decorators.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { RoleService } from '@/core/RoleService.js';
+import type { Config } from "@/config.js";
 
 @Injectable()
 export class UserListService implements OnApplicationShutdown, OnModuleInit {
@@ -30,6 +31,9 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
+
+		@Inject(DI.config)
+		config: Config,
 
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -47,9 +51,9 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		private queueService: QueueService,
 	) {
 		this.membersCache = new RedisKVCache<Set<string>>(this.redisClient, 'userListMembers', {
-			lifetime: 1000 * 60 * 30, // 30m
-			memoryCacheLifetime: 1000 * 60, // 1m
-			memoryCacheCapacity: 1_000,
+			lifetime: config.caches.listMembershipRedisLifetime,
+			memoryCacheLifetime: config.caches.listMembershipMemoryLifetime,
+			memoryCacheCapacity: config.caches.listMembershipMemoryCapacity,
 			fetcher: (key) => this.userListMembershipsRepository.find({ where: { userListId: key }, select: ['userId'] }).then(xs => new Set(xs.map(x => x.userId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),

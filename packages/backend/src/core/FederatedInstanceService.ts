@@ -12,12 +12,16 @@ import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import type { Config } from "@/config.js";
 
 @Injectable()
 export class FederatedInstanceService {
 	public federatedInstanceCache: RedisKVCache<MiInstance | null>;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
@@ -28,9 +32,9 @@ export class FederatedInstanceService {
 		private idService: IdService,
 	) {
 		this.federatedInstanceCache = new RedisKVCache<MiInstance | null>(this.redisClient, 'federatedInstance', {
-			lifetime: 1000 * 60 * 30, // 30m
-			memoryCacheLifetime: 1000 * 60 * 3, // 3m
-			memoryCacheCapacity: 5_000,
+			lifetime: config.caches.instanceRedisLifetime,
+			memoryCacheLifetime: config.caches.instanceMemoryLifetime,
+			memoryCacheCapacity: config.caches.instanceMemoryCapacity,
 			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => {

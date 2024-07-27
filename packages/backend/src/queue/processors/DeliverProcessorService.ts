@@ -23,6 +23,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DeliverJobData } from '../types.js';
+import type { Config } from "@/config.js";
 
 @Injectable()
 export class DeliverProcessorService {
@@ -31,6 +32,9 @@ export class DeliverProcessorService {
 	private latest: string | null;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
+
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
@@ -45,7 +49,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(1000 * 60 * 60);
+		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(config.caches.suspendedHostsMemoryLifetime);
 	}
 
 	@bindThis

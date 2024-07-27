@@ -175,6 +175,130 @@ id: 'aidx'
 # deliverJobMaxAttempts: 12
 # inboxJobMaxAttempts: 8
 
+caches:
+  # Lifetime of cached ID->user lookups in memory. Default: 43200000 (12 hours)
+  userByIdMemoryLifetime: 43200000
+  # Maximum number of ID->user lookups cached in memory. Default: 15000
+  userByIdMemoryCapacity: 15000
+
+  # Lifetime of cached ID->local user lookups in memory. Default: 43200000 (12 hours)
+  localUserByIdMemoryLifetime: 43200000
+  # Maximum number of ID->local user lookups cached in memory. Default: 10000
+  localUserByIdMemoryCapacity: 10000
+
+  # Lifetime of cached token->user lookups in memory. Default: 43200000 (12 hours)
+  userByTokenMemoryLifetime: 43200000
+  # Maximum number of token->user lookups cached in memory. Default: 10000
+  userByTokenMemoryCapacity: 10000
+
+  # Lifetime of cached URI->user lookups in memory. Default: 43200000 (12 hours)
+  userByUriMemoryLifetime: 43200000
+  # Maximum number of URI->user lookups cached in memory. Default: 10000
+  userByUriMemoryCapacity: 10000
+
+  # Lifetime of cached user profiles in redis. Default: 1800000 (30 minutes)
+  userProfileRedisLifetime: 1800000
+  # Lifetime of cached user profiles in memory. Default: 60000 (1 minute)
+  userProfileMemoryLifetime: 60000
+  # Maximum number of user profiles cached in memory. Default: 10000
+  userProfileMemoryCapacity: 10000
+
+  # Lifetime of cached user keypairs in redis. Default: 86400000 (1 day)
+  userKeyPairRedisLifetime: 86400000
+  # Lifetime of cached user keypairs in memory. Default: 43200000 (12 hours)
+  userKeyPairMemoryLifetime: 43200000
+  # Maximum number of user keypairs cached in memory. Default: 10000
+  userKeyPairMemoryCapacity: 10000
+
+  # Lifetime of cached roles in memory. Default: 3600000 (1 hour)
+  rolesMemoryLifetime: 3600000
+
+  # Lifetime of cached user roles in memory. Default: 3600000 (1 hour)
+  userRolesMemoryLifetime: 3600000
+  # Maximum number of user roles cached in memory. Default: 10000
+  userRolesMemoryCapacity: 10000
+
+  # Lifetime of cached user mutes in redis. Default: 1800000 (30 minutes)
+  userMutesRedisLifetime: 1800000
+  # Lifetime of cached user mutes in memory. Default: 60000 (1 minute)
+  userMutesMemoryLifetime: 60000
+  # Maximum number of user mutes cached in memory. Default: 1000
+  userMutesMemoryCapacity: 1000
+
+  # Lifetime of cached user blocks in redis. Default: 1800000 (30 minutes)
+  userBlocksRedisLifetime: 1800000
+  # Lifetime of cached user blocks in memory. Default: 60000 (1 minute)
+  userBlocksMemoryLifetime: 60000
+  # Maximum number of user blocks cached in memory. Default: 1000
+  userBlocksMemoryCapacity: 1000
+
+  # Lifetime of cached user followings in redis. Default: 1800000 (30 minutes)
+  userFollowingsRedisLifetime: 1800000
+  # Lifetime of cached user followings in memory. Default: 60000 (1 minute)
+  userFollowingsMemoryLifetime: 60000
+  # Maximum number of user followings cached in memory. Default: 1000
+  userFollowingsMemoryCapacity: 1000
+
+  # Lifetime of cached user channel followings in redis. Default: 1800000 (30 minutes)
+  userChannelsRedisLifetime: 1800000
+  # Lifetime of cached user channel followings in memory. Default: 60000 (1 minute)
+  userChannelsMemoryLifetime: 60000
+  # Maximum number of user channel followings cached in memory. Default: 1000
+  userChannelsMemoryCapacity: 1000
+
+  # Lifetime of cached public keys in memory. Default: 43200000 (12 hours)
+  publicKeysMemoryLifetime: 43200000
+  # Maximum number of public keys cached in memory. Default: 15000
+  publicKeysMemoryCapacity: 15000
+
+  # Lifetime of cached emojis in memory. Default: 43200000 (12 hours)
+  emojisMemoryLifetime: 43200000
+  # Maximum number of emojis cached in memory. Default: 5000
+  emojisMemoryCapacity: 5000
+
+  # Lifetime of cached local emojis in redis. Default: 1800000 (30 minutes)
+  localEmojisRedisLifetime: 1800000
+  # Lifetime of cached local emojis in memory. Default: 180000 (3 minutes)
+  localEmojisMemoryLifetime: 180000
+
+  # Lifetime of cached federated instances in redis. Default: 1800000 (30 minutes)
+  instanceRedisLifetime: 1800000
+  # Lifetime of cached federated instances in memory. Default: 180000 (3 minute)
+  instanceMemoryLifetime: 180000
+  # Maximum number of federated instances cached in memory. Default: 5000
+  instanceMemoryCapacity: 5000
+
+  # Lifetime of cached service worker subscriptions in redis. Default: 3600000 (1 hour)
+  swSubscriptionRedisLifetime: 3600000
+  # Lifetime of cached service worker subscriptions in memory. Default: 180000 (3 minute)
+  swSubscriptionMemoryLifetime: 180000
+  # Maximum number of service worker subscriptions cached in memory. Default: 1000
+  swSubscriptionMemoryCapacity: 1000
+
+  # Lifetime of cached list memberships in redis. Default: 1800000 (30 minutes)
+  listMembershipRedisLifetime: 1800000
+  # Lifetime of cached list memberships in memory. Default: 60000 (1 minute)
+  listMembershipMemoryLifetime: 60000
+  # Maximum number of list memberships cached in memory. Default: 1000
+  listMembershipMemoryCapacity: 1000
+
+  # Lifetime of client apps in memory. Default: 604800000 (1 week)
+  clientAppMemoryLifetime: 604800000
+  # Maximum number of client apps cached in memory. Default: 1000
+  clientAppMemoryCapacity: 1000
+
+  # Lifetime of cached avatar decorations in memory. Default: 1800000 (30 minutes)
+  avatarDecorationsMemoryLifetime: 1800000
+
+  # Lifetime of cached relays in memory. Default: 600000 (10 minutes)
+  relaysMemoryLifetime: 600000
+
+  # Lifetime of cached suspended hosts in memory. Default: 3600000 (1 hour)
+  suspendedHostsMemoryLifetime: 3600000
+
+  # Lifetime of cached node info in memory. Default: 600000 (10 minutes)
+  nodeInfoMemoryLifetime: 600000
+
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
 

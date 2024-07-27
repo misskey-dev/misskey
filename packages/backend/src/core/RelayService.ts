@@ -16,6 +16,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
+import type { Config } from "@/config.js";
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -24,6 +25,9 @@ export class RelayService {
 	private relaysCache: MemorySingleCache<MiRelay[]>;
 
 	constructor(
+		@Inject(DI.config)
+			config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -35,7 +39,7 @@ export class RelayService {
 		private createSystemUserService: CreateSystemUserService,
 		private apRendererService: ApRendererService,
 	) {
-		this.relaysCache = new MemorySingleCache<MiRelay[]>(1000 * 60 * 10);
+		this.relaysCache = new MemorySingleCache<MiRelay[]>(config.caches.relaysMemoryLifetime);
 	}
 
 	@bindThis
