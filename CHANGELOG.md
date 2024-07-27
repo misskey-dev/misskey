@@ -44,6 +44,7 @@
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
+- Feat: expose configuration for Redis and Memory Cache parameters
 - Enhance: エンドポイント`clips/update`の必須項目を`clipId`のみに
 - Enhance: エンドポイント`admin/roles/update`の必須項目を`roleId`のみに
 - Enhance: エンドポイント`pages/update`の必須項目を`pageId`のみに
@@ -78,6 +79,8 @@
 - Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
   (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
 - Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
+- Fix: Prevent memory leak from memory caches (#14310)
+- Fix: More reliable memory cache eviction (#14311)
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
