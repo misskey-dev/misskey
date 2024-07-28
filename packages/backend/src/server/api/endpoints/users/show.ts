@@ -29,7 +29,18 @@ export const meta = {
 		oneOf: [
 			{
 				type: 'object',
+				ref: 'UserLite',
+			},
+			{
+				type: 'object',
 				ref: 'UserDetailed',
+			},
+			{
+				type: 'array',
+				items: {
+					type: 'object',
+					ref: 'UserLite',
+				},
 			},
 			{
 				type: 'array',
@@ -71,6 +82,7 @@ export const paramDef = {
 			nullable: true,
 			description: 'The local host is represented with `null`.',
 		},
+		detailed: { type: 'boolean', default: true },
 	},
 	anyOf: [
 		{ required: ['userId'] },
@@ -148,7 +160,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await this.userEntityService.pack(user, me, {
-					schema: 'UserDetailed',
+					schema: ps.detailed ? 'UserDetailed' : 'UserLite',
 				});
 			}
 		});

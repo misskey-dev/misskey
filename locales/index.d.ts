@@ -8330,7 +8330,7 @@ export interface Locale extends ILocale {
          */
         "clicker": string;
         /**
-         * 今日誕生日のユーザー
+         * もうすぐ誕生日のユーザー
          */
         "birthdayFollowings": string;
     };

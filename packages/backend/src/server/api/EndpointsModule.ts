@@ -347,6 +347,7 @@ import * as ep___users_clips from './endpoints/users/clips.js';
 import * as ep___users_followers from './endpoints/users/followers.js';
 import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
+import * as ep___users_getFollowingBirthdayUsers from './endpoints/users/get-following-birthday-users.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
 import * as ep___users_featuredNotes from './endpoints/users/featured-notes.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
@@ -730,6 +731,7 @@ const $users_clips: Provider = { provide: 'ep:users/clips', useClass: ep___users
 const $users_followers: Provider = { provide: 'ep:users/followers', useClass: ep___users_followers.default };
 const $users_following: Provider = { provide: 'ep:users/following', useClass: ep___users_following.default };
 const $users_gallery_posts: Provider = { provide: 'ep:users/gallery/posts', useClass: ep___users_gallery_posts.default };
+const $users_getFollowingBirthdayUsers: Provider = { provide: 'ep:users/get-following-birthday-users', useClass: ep___users_getFollowingBirthdayUsers.default };
 const $users_getFrequentlyRepliedUsers: Provider = { provide: 'ep:users/get-frequently-replied-users', useClass: ep___users_getFrequentlyRepliedUsers.default };
 const $users_featuredNotes: Provider = { provide: 'ep:users/featured-notes', useClass: ep___users_featuredNotes.default };
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
@@ -1117,6 +1119,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_followers,
 		$users_following,
 		$users_gallery_posts,
+		$users_getFollowingBirthdayUsers,
 		$users_getFrequentlyRepliedUsers,
 		$users_featuredNotes,
 		$users_lists_create,
@@ -1496,6 +1499,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_followers,
 		$users_following,
 		$users_gallery_posts,
+		$users_getFollowingBirthdayUsers,
 		$users_getFrequentlyRepliedUsers,
 		$users_featuredNotes,
 		$users_lists_create,
