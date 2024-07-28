@@ -4116,7 +4116,8 @@ export type components = {
         userId: string | null;
       }) | null;
       localOnly?: boolean;
-      reactionAcceptance: string | null;
+      /** @enum {string|null} */
+      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
       reactionEmojis: {
         [key: string]: string;
       };
@@ -4813,6 +4814,7 @@ export type components = {
       canHideAds: boolean;
       driveCapacityMb: number;
       alwaysMarkNsfw: boolean;
+      canUpdateBioMedia: boolean;
       pinLimit: number;
       antennaLimit: number;
       wordMuteLimit: number;
