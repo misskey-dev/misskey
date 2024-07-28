@@ -23,7 +23,7 @@
 - Enhance: AiScriptを0.19.0にアップデート
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 - Enhance: センシティブなメディアを開く際に確認ダイアログを出せるように
-- Enhance: ドライブのファイルをドラッグしなくても移動できるように  
+- Enhance: ドライブのファイル・フォルダをドラッグしなくても移動できるように  
   (Cherry-picked from https://github.com/nafu-at/misskey/commit/b89c2af6945c6a9f9f10e83f54d2bcf0f240b0b4)
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
