@@ -4098,7 +4098,8 @@ export type components = {
         userId: string | null;
       }) | null;
       localOnly?: boolean;
-      reactionAcceptance: string | null;
+      /** @enum {string|null} */
+      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
       reactionEmojis: {
         [key: string]: string;
       };

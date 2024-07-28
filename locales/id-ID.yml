@@ -180,6 +180,10 @@ addAccount: "Tambahkan akun"
 reloadAccountsList: "Muat ulang daftar akun"
 loginFailed: "Gagal untuk masuk"
 showOnRemote: "Lihat profil asli"
+continueOnRemote: "Lihat di peladen asal"
+chooseServerOnMisskeyHub: "Pilih peladen dari Misskey Hub"
+specifyServerHost: "Tentukan domain peladen"
+inputHostName: "Masukkan nama domain"
 general: "Umum"
 wallpaper: "Wallpaper"
 setWallpaper: "Atur wallpaper"
@@ -316,6 +320,7 @@ selectFile: "Pilih berkas"
 selectFiles: "Pilih berkas"
 selectFolder: "Pilih folder"
 selectFolders: "Pilih folder"
+fileNotSelected: "Tidak ada file yang dipilih"
 renameFile: "Ubah nama berkas"
 folderName: "Nama folder"
 createFolder: "Buat folder"
@@ -1239,6 +1244,7 @@ keepOriginalFilenameDescription: "Apabila pengaturan ini dimatikan, nama berkas 
 noDescription: "Tidak ada deskripsi"
 alwaysConfirmFollow: "Selalu konfirmasi ketika mengikuti"
 inquiry: "Hubungi kami"
+tryAgain: "Silahkan coba lagi."
 _delivery:
   status: "Status pengiriman"
   stop: "Ditangguhkan"
@@ -1739,7 +1745,7 @@ _emailUnavailable:
   smtp: "Peladen alamat surel ini tidak merespon"
   banned: "Kamu tidak dapat mendaftar dengan alamat surel ini"
 _ffVisibility:
-  public: "Terbitkan"
+  public: "Publik"
   followers: "Tampil untuk pengikut saja"
   private: "Tersembunyi"
 _signup:
@@ -1932,8 +1938,6 @@ _sfx:
   note: "Catatan"
   noteMy: "Catatan (Saya)"
   notification: "Notifikasi"
-  antenna: "Penerimaan Antenna"
-  channel: "Notifikasi Kanal"
   reaction: "Ketika memilih reaksi"
 _soundSettings:
   driveFile: "Menggunakan berkas audio dalam Drive"
@@ -2396,6 +2400,7 @@ _drivecleaner:
   orderByCreatedAtAsc: "Tanggal (Naik)"
 _webhookSettings:
   createWebhook: "Buat Webhook"
+  modifyWebhook: "Sunting Webhook"
   name: "Nama"
   secret: "Secret"
   events: "Webhook Events"
@@ -2408,6 +2413,11 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+  deleteConfirm: "Apakah kamu yakin ingin menghapus Webhook?"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Surel"
 _moderationLogTypes:
   createRole: "Peran telah dibuat"
   deleteRole: "Peran telah dihapus"

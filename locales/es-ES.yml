@@ -302,7 +302,7 @@ location: "Lugar"
 theme: "Tema"
 themeForLightMode: "Tema para usar en Modo Linterna"
 themeForDarkMode: "Tema para usar en Modo Oscuro"
-light: "Linterna"
+light: "Claro"
 dark: "Oscuro"
 lightThemes: "Tema claro"
 darkThemes: "Tema oscuro"
@@ -1920,8 +1920,6 @@ _sfx:
   note: "Notas"
   noteMy: "Nota (a mí mismo)"
   notification: "Notificaciones"
-  antenna: "Antena receptora"
-  channel: "Notificaciones del canal"
   reaction: "Al seleccionar una reacción"
 _soundSettings:
   driveFile: "Usar un archivo de audio en Drive"
@@ -2394,6 +2392,10 @@ _webhookSettings:
     renote: "Cuando reciba un \"re-note\""
     reaction: "Cuando se recibe una reacción"
     mention: "Cuando hay una mención"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Correo"
 _moderationLogTypes:
   createRole: "Rol creado"
   deleteRole: "Rol eliminado"
