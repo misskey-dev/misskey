@@ -150,7 +150,7 @@ export function playMisskeySfx(operationType: OperationType) {
  * @param soundStore サウンド設定
  * @returns 再生が成功したかどうか
  */
-export async function playMisskeySfxFile(soundStore: SoundStore) {
+export async function playMisskeySfxFile(soundStore: SoundStore): Promise<boolean> {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return false;
 	}
