@@ -22,9 +22,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef, toRefs } from 'vue';
 
 import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
+
+const props = withDefaults(defineProps<{
+	headerZIndex?: number;
+	footerZIndex?: number;
+}>(), {
+	headerZIndex: 1000,
+	footerZIndex: 1000,
+});
+
+// non-reactive
+const { headerZIndex, footerZIndex } = props;
 
 const rootEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();
@@ -83,14 +94,14 @@ onMounted(() => {
 	if (headerEl.value != null) {
 		headerEl.value.style.position = 'sticky';
 		headerEl.value.style.top = 'var(--stickyTop, 0)';
-		headerEl.value.style.zIndex = '1000';
+		headerEl.value.style.zIndex = `${headerZIndex}`;
 		observer.observe(headerEl.value);
 	}
 
 	if (footerEl.value != null) {
 		footerEl.value.style.position = 'sticky';
 		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
-		footerEl.value.style.zIndex = '1000';
+		footerEl.value.style.zIndex = `${footerZIndex}`;
 		observer.observe(footerEl.value);
 	}
 });

@@ -474,6 +474,17 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
+     */
+    request<E extends 'admin/emoji/v2/list', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:federation*
      */
     request<E extends 'admin/federation/delete-all-files', P extends Endpoints[E]['req']>(

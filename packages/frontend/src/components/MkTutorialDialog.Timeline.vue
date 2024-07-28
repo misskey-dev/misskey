@@ -22,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<a href="https://misskey-hub.net/docs/for-users/features/timeline/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 		</template>
 	</I18n>
-
 </div>
 </template>
 
