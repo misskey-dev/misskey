@@ -4090,7 +4090,7 @@ export type components = {
       }) | null;
       localOnly?: boolean;
       /** @enum {string|null} */
-      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
+      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
       reactionEmojis: {
         [key: string]: string;
       };
