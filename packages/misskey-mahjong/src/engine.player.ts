@@ -65,6 +65,12 @@ export type PlayerState = {
 		w: boolean;
 		n: boolean;
 	};
+	rinshanFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	}
 	points: {
 		e: number;
 		s: number;
@@ -249,6 +255,7 @@ export class PlayerGameEngine {
 			ronTile: null,
 			riichi: this.state.riichis[house],
 			ippatsu: this.state.ippatsus[house],
+			rinshan: this.state.rinshanFlags[house],
 		}).map(name => YAKU_DEFINITION_MAP.get(name)!);
 		const doraCount =
 			Common.calcOwnedDoraCount(handTiles.map(id => $type(id)), this.state.huros[house], this.doras) +

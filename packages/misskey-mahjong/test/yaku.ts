@@ -211,6 +211,33 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('rinshan', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'n',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3'],
+				huros: [{
+					type: 'ankan',
+					tile: 'n'
+				}],
+				tsumoTile: 'm3',
+				rinshan: true,
+			}).includes('rinshan'), true);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'n',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'm3', 'm3'],
+				huros: [{
+					type: 'ankan',
+					tile: 'n'
+				}],
+				tsumoTile: 'm3',
+			}).includes('rinshan'), false);
+		});
+	});
+
 	describe('tanyao', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({

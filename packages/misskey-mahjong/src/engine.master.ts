@@ -134,12 +134,20 @@ class StateManager {
 			pattern.filter(t => hand.includes(t)).length >= 2);
 	}
 
-	public tsumo(): TileId {
-		const tile = this.$state.tiles.pop();
+	private withTsumoTile(tile: TileId | undefined, isRinshan: boolean): TileId {
 		if (tile == null) throw new Error('No tiles left');
 		if (this.$state.turn == null) throw new Error('Not your turn');
 		this.$state.handTiles[this.$state.turn].push(tile);
+		this.$state.rinshanFlags[this.$state.turn] = isRinshan;
 		return tile;
+	}
+
+	public tsumo(): TileId {
+		return this.withTsumoTile(this.$state.tiles.pop(), false);
+	}
+
+	public rinshanTsumo(): TileId {
+		return this.withTsumoTile(this.$state.tiles.push(), true);
 	}
 }
 
@@ -190,6 +198,12 @@ export type MasterState = {
 		w: boolean;
 		n: boolean;
 	};
+	rinshanFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	}
 	points: {
 		e: number;
 		s: number;
@@ -357,6 +371,12 @@ export class MasterGameEngine {
 				n: false,
 			},
 			ippatsus: {
+				e: false,
+				s: false,
+				w: false,
+				n: false,
+			},
+			rinshanFlags: {
 				e: false,
 				s: false,
 				w: false,
@@ -561,7 +581,7 @@ export class MasterGameEngine {
 
 		tx.$state.activatedDorasCount++;
 
-		const rinsyan = tx.tsumo();
+		const rinsyan = tx.rinshanTsumo();
 
 		tx.$commit();
 
@@ -597,7 +617,7 @@ export class MasterGameEngine {
 
 		tx.$state.activatedDorasCount++;
 
-		const rinsyan = tx.tsumo();
+		const rinsyan = tx.rinshanTsumo();
 
 		tx.$commit();
 
@@ -624,6 +644,7 @@ export class MasterGameEngine {
 			ronTile: null,
 			riichi: tx.$state.riichis[house],
 			ippatsu: tx.$state.ippatsus[house],
+			rinshan: tx.$state.rinshanFlags[house],
 		}).map(name => YAKU_DEFINITION_MAP.get(name)!);
 		const doraCount =
 			Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.$state.huros[house], tx.doras) +
@@ -725,7 +746,7 @@ export class MasterGameEngine {
 
 			tx.$state.activatedDorasCount++;
 
-			const rinsyan = tx.tsumo();
+			const rinsyan = tx.rinshanTsumo();
 
 			tx.$state.turn = kan.caller;
 
@@ -905,6 +926,12 @@ export class MasterGameEngine {
 				s: this.$state.ippatsus.s,
 				w: this.$state.ippatsus.w,
 				n: this.$state.ippatsus.n,
+			},
+			rinshanFlags: {
+				e: this.$state.rinshanFlags.e,
+				s: this.$state.rinshanFlags.s,
+				w: this.$state.rinshanFlags.w,
+				n: this.$state.rinshanFlags.n,
 			},
 			points: {
 				e: this.$state.points.e,
