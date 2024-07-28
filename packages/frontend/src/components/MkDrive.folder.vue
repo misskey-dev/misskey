@@ -227,6 +227,17 @@ function rename() {
 	});
 }
 
+function move() {
+	os.selectDriveFolder(false).then(folder => {
+		if (folder[0] && folder[0].id === props.folder.id) return;
+
+		misskeyApi('drive/folders/update', {
+			folderId: props.folder.id,
+			parentId: folder[0] ? folder[0].id : null,
+		});
+	});
+}
+
 function deleteFolder() {
 	misskeyApi('drive/folders/delete', {
 		folderId: props.folder.id,
@@ -272,6 +283,10 @@ function onContextmenu(ev: MouseEvent) {
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: rename,
+	}, {
+		text: i18n.ts.move,
+		icon: 'ti ti ti-folder-symlink',
+		action: move,
 	}, { type: 'divider' }, {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
