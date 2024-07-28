@@ -158,7 +158,6 @@ export function playMisskeySfxFile(soundStore: SoundStore) {
 	});
 }
 
-
 async function playMisskeySfxFileInternal(soundStore: SoundStore) {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return false;
