@@ -53,6 +53,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
+	(ev: 'unchose', v: Misskey.entities.DriveFolder): void;
 	(ev: 'move', v: Misskey.entities.DriveFolder): void;
 	(ev: 'upload', file: File, folder: Misskey.entities.DriveFolder);
 	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
@@ -68,7 +69,11 @@ const isDragging = ref(false);
 const title = computed(() => props.folder.name);
 
 function checkboxClicked() {
-	emit('chosen', props.folder);
+	if (props.isSelected) {
+		emit('unchose', props.folder);
+	} else {
+		emit('chosen', props.folder);
+	}
 }
 
 function onClick() {
@@ -314,10 +319,12 @@ function onContextmenu(ev: MouseEvent) {
 	position: absolute;
 	bottom: 8px;
 	right: 8px;
-	width: 16px;
-	height: 16px;
+	width: 18px;
+	height: 18px;
 	background: #fff;
-	border: solid 1px #000;
+	border: solid 2px var(--divider);
+	border-radius: 4px;
+	box-sizing: border-box;
 
 	&.checked {
 		background: var(--accent);
