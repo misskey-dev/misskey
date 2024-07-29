@@ -7,17 +7,41 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' ,[$style.reacted]: note.myReactions?.includes(reaction) , [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	:class="[
+		$style.root,
+		{
+			[$style.gamingDark]: gamingType === 'dark',
+			[$style.gamingLight]: gamingType === 'light',
+			[$style.reacted]: note.myReactions?.includes(reaction),
+			[$style.canToggle]: canToggle,
+			[$style.small]: defaultStore.state.reactionsDisplaySize === 'small',
+			[$style.large]: defaultStore.state.reactionsDisplaySize === 'large',
+		},
+	]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
-	<span :class="[$style.count,{ [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">{{ count }}</span>
+	<MkReactionIcon
+		:class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''"
+		:reaction="reaction"
+		:emojiUrl="
+			note.reactionEmojis[reaction.substring(1, reaction.length - 1)]
+		"
+	/>
+	<span
+		:class="[
+			$style.count,
+			{
+				[$style.gamingDark]: gamingType === 'dark',
+				[$style.gamingLight]: gamingType === 'light',
+			},
+		]"
+	>{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
@@ -43,7 +67,7 @@ const props = defineProps<{
 	isInitial: boolean;
 	note: Misskey.entities.Note & {
 		myReactions: string[];
-	}
+	};
 }>();
 
 const mock = inject<boolean>('mock', false);
@@ -54,16 +78,33 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 const isLocal = computed(() => !props.reaction.match(/@\w/));
-const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
-const isAvailable = computed(() => isLocal.value ? true : customEmojisMap.has(getReactionName(props.reaction)));
+const emojiName = computed(() =>
+	props.reaction.replace(/:/g, '').replace(/@\./, ''),
+);
+const emoji = computed(
+	() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction),
+);
+const isAvailable = computed(() =>
+	isLocal.value ? true : customEmojisMap.has(getReactionName(props.reaction)),
+);
 
 const canToggle = computed(() => {
-	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
+	return (
+		!props.reaction.match(/@\w/) &&
+		$i &&
+		emoji.value &&
+		checkReactionPermissions($i, props.note, emoji.value)
+	);
 });
 
-const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
-const plainReaction = computed(() => customEmojisMap.has(emojiName.value) ? getReactionName(props.reaction, true) : props.reaction);
+const canGetInfo = computed(
+	() => !props.reaction.match(/@\w/) && props.reaction.includes(':'),
+);
+const plainReaction = computed(() =>
+	customEmojisMap.has(emojiName.value)
+		? getReactionName(props.reaction, true)
+		: props.reaction,
+);
 
 function getReactionName(reaction: string, formated = false) {
 	const r = reaction.replaceAll(':', '').replace(/@.*/, '');
@@ -74,20 +115,28 @@ async function toggleReaction() {
 	if (!canToggle.value) return;
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	const oldReaction = props.note.myReactions?.includes(props.reaction) ? props.reaction : null;
+	const oldReaction = props.note.myReactions?.includes(props.reaction)
+		? props.reaction
+		: null;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
-			text: oldReaction !== props.reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
+			text:
+				oldReaction !== props.reaction
+					? i18n.ts.changeReactionConfirm
+					: i18n.ts.cancelReactionConfirm,
 		});
 		if (confirm.canceled) return;
-		props.note.myReactions.splice(props.note.myReactions.indexOf(oldReaction), 1);
+		props.note.myReactions.splice(
+			props.note.myReactions.indexOf(oldReaction),
+			1,
+		);
 		if (oldReaction !== props.reaction) {
 			sound.playMisskeySfx('reaction');
 		}
 
 		if (mock) {
-			emit('reactionToggled', props.reaction, (props.count - 1));
+			emit('reactionToggled', props.reaction, props.count - 1);
 			return;
 		}
 
@@ -95,7 +144,11 @@ async function toggleReaction() {
 			noteId: props.note.id,
 			reaction: oldReaction,
 		}).then(() => {
-			if (oldReaction !== props.reaction && oldReaction !== '🚮' && props.reaction !== '🚮') {
+			if (
+				oldReaction !== props.reaction &&
+				oldReaction !== '🚮' &&
+				props.reaction !== '🚮'
+			) {
 				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
 					reaction: props.reaction,
@@ -106,7 +159,7 @@ async function toggleReaction() {
 		sound.playMisskeySfx('reaction');
 
 		if (mock) {
-			emit('reactionToggled', props.reaction, (props.count + 1));
+			emit('reactionToggled', props.reaction, props.count + 1);
 			return;
 		}
 
@@ -115,7 +168,11 @@ async function toggleReaction() {
 			reaction: props.reaction,
 		});
 
-		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
+		if (
+			props.note.text &&
+			props.note.text.length > 100 &&
+			Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3
+		) {
 			claimAchievement('reactWithoutRead');
 		}
 	}
@@ -124,67 +181,111 @@ async function toggleReaction() {
 async function menu(ev) {
 	if (!canGetInfo.value) return;
 
-	os.popupMenu([{
-		text: i18n.ts.info,
-		icon: 'ti ti-info-circle',
-		action: async () => {
-			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
-				emoji: await misskeyApiGet('emoji', {
-					name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
-				}),
-			}, {
-				closed: () => dispose(),
-			});
-		},
-	}, ...(isAvailable.value && !defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault}`].includes(plainReaction.value) ? [{
-		text: i18n.ts.addToDefaultEmojiProfile,
-		icon: 'ti ti-plus',
-		action: () => {
-			defaultStore.set(`reactions${defaultStore.state.pickerProfileDefault}`, [...defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault - 1 : ''}`], plainReaction.value]);
-		},
-	}] : [])], ev.currentTarget ?? ev.target);
+	os.popupMenu(
+		[
+			{
+				text: i18n.ts.info,
+				icon: 'ti ti-info-circle',
+				action: async () => {
+					const { dispose } = os.popup(
+						MkCustomEmojiDetailedDialog,
+						{
+							emoji: await misskeyApiGet('emoji', {
+								name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
+							}),
+						},
+						{
+							closed: () => dispose(),
+						},
+					);
+				},
+			},
+			...(isAvailable.value &&
+			!defaultStore.state[
+				`reactions${defaultStore.state.pickerProfileDefault}`
+			].includes(plainReaction.value)
+				? [
+					{
+						text: i18n.ts.addToDefaultEmojiProfile,
+						icon: 'ti ti-plus',
+						action: () => {
+							defaultStore.set(
+								`reactions${defaultStore.state.pickerProfileDefault}`,
+								[
+									...defaultStore.state[
+										`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault : ''}`
+									],
+									plainReaction.value,
+								],
+							);
+						},
+					},
+				]
+				: []),
+		],
+		ev.currentTarget ?? ev.target,
+	);
 }
 
 function anime() {
-	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
+	if (
+		document.hidden ||
+		!defaultStore.state.animation ||
+		buttonEl.value == null
+	) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
-	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	const { dispose } = os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {
-		end: () => dispose(),
-	});
+	const y = rect.top + buttonEl.value.offsetHeight / 2;
+	const { dispose } = os.popup(
+		MkReactionEffect,
+		{ reaction: props.reaction, x, y },
+		{
+			end: () => dispose(),
+		},
+	);
 }
 
-watch(() => props.count, (newCount, oldCount) => {
-	if (oldCount < newCount) anime();
-});
+watch(
+	() => props.count,
+	(newCount, oldCount) => {
+		if (oldCount < newCount) anime();
+	},
+);
 
 onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
 if (!mock) {
-	useTooltip(buttonEl, async (showing) => {
-		const reactions = await misskeyApiGet('notes/reactions', {
-			noteId: props.note.id,
-			type: props.reaction,
-			limit: 10,
-			_cacheKey_: props.count,
-		});
+	useTooltip(
+		buttonEl,
+		async (showing) => {
+			const reactions = await misskeyApiGet('notes/reactions', {
+				noteId: props.note.id,
+				type: props.reaction,
+				limit: 10,
+				_cacheKey_: props.count,
+			});
 
-		const users = reactions.map(x => x.user);
+			const users = reactions.map((x) => x.user);
 
-		const { dispose } = os.popup(XDetails, {
-			showing,
-			reaction: props.reaction,
-			users,
-			count: props.count,
-			targetElement: buttonEl.value,
-		}, {
-			closed: () => dispose(),
-		});
-	}, 100);
+			const { dispose } = os.popup(
+				XDetails,
+				{
+					showing,
+					reaction: props.reaction,
+					users,
+					count: props.count,
+					targetElement: buttonEl.value,
+				},
+				{
+					closed: () => dispose(),
+				},
+			);
+		},
+		100,
+	);
 }
 </script>
 
@@ -199,8 +300,10 @@ if (!mock) {
 	align-items: center;
 	justify-content: center;
 	transition: background 0.2s ease;
+
 	&.canToggle {
 		background: var(--buttonBg);
+
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
 		}
@@ -232,37 +335,70 @@ if (!mock) {
 		}
 	}
 
-	&.reacted, &.reacted:hover {
+	&.reacted,
+	&.reacted:hover {
 		background: var(--accentedBg);
 		color: var(--accent);
 		box-shadow: 0 0 0 1px var(--accent) inset;
 
-    &.gamingDark{
-      color: black;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
-      -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      box-shadow: 0 0 0px 1px white inset;
-    }
+		&.gamingDark {
+			color: black;
+			background: linear-gradient(
+				270deg,
+				#e7a2a2,
+				#e3cfa2,
+				#ebefa1,
+				#b3e7a6,
+				#a6ebe7,
+				#aec5e3,
+				#cabded,
+				#e0b9e3,
+				#f4bddd
+			);
+			background-size: 1800% 1800%;
+			-webkit-animation: AnimationDark var(--gamingspeed)
+				cubic-bezier(0, 0.2, 0.9, 1) infinite;
+			-moz-animation: AnimationDark var(--gamingspeed)
+				cubic-bezier(0, 0.2, 0.9, 1) infinite;
+			animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.9, 1)
+				infinite;
+			box-shadow: 0 0 0px 1px white inset;
+		}
 
-    &.gamingLight{
-      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);     background-size: 1800% 1800% !important;
-      -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      box-shadow: 0 0 0px 1px white inset;
-      color: white !important;
-    }
+		&.gamingLight {
+			background: linear-gradient(
+				270deg,
+				#c06161,
+				#c0a567,
+				#b6ba69,
+				#81bc72,
+				#63c3be,
+				#8bacd6,
+				#9f8bd6,
+				#d18bd6,
+				#d883b4
+			);
+			background-size: 1800% 1800% !important;
+			-webkit-animation: AnimationLight var(--gamingspeed)
+				cubic-bezier(0, 0.2, 0.9, 1) infinite !important;
+			-moz-animation: AnimationLight var(--gamingspeed)
+				cubic-bezier(0, 0.2, 0.9, 1) infinite !important;
+			animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.9, 1)
+				infinite !important;
+			box-shadow: 0 0 0px 1px white inset;
+			color: white !important;
+		}
 
 		> .count {
 			color: var(--accent);
-      &.gamingLight{
-        color: white;
-      }
-      &.gamingDark{
-        color: black;
-      }
+
+			&.gamingLight {
+				color: white;
+			}
+
+			&.gamingDark {
+				color: black;
+			}
 		}
 
 		> .icon {
@@ -281,69 +417,76 @@ if (!mock) {
 	line-height: 42px;
 	margin: 0 0 0 4px;
 }
+
 @-webkit-keyframes AnimationLight {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
+
 @-moz-keyframes AnimationLight {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
-}  @keyframes AnimationLight {
-     0% {
-       background-position: 0% 50%
-     }
-     50% {
-       background-position: 100% 50%
-     }
-     100% {
-       background-position: 0% 50%
-     }
-   }
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes AnimationLight {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
 @-webkit-keyframes AnimationDark {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
+
 @-moz-keyframes AnimationDark {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
+
 @keyframes AnimationDark {
-  0% {
-    background-position: 0% 50%
-  }
-  50% {
-    background-position: 100% 50%
-  }
-  100% {
-    background-position: 0% 50%
-  }
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 </style>

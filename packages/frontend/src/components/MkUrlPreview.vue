@@ -13,10 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			scrolling="no"
-			:allow="player.allow == null ? 'encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
+			:allow="player.allow == null ? 'encrypted-media;fullscreen' : player.allow.filter(x => ['clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
 			:class="$style.playerIframe"
 			:src="transformPlayerUrl(player.url)"
-			:style="{ border: 0, backgroundColor: 'transparent' }"
+			:style="{ border: 0, backgroundColor: 'transparent' ,borderRadius: '16px'}"
 			allowtransparency="true"
 		></iframe>
 		<span v-else>invalid url</span>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			scrolling="no"
 			data-transparent="true"
 
-			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0,borderRadius: '14px'}"
+			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 ,borderRadius: '16px'}"
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 			frameborder="0"
 			allowtransparency="true"
@@ -223,10 +223,7 @@ onUnmounted(() => {
 	position: relative;
 	width: 100%;
 }
-.twitter{
-	width: 70%;
 
-}
 .app{
 	background: red;
 }

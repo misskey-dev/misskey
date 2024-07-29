@@ -15,10 +15,10 @@ export function transformPlayerUrl(url: string): string {
 		// https://dev.twitch.tv/docs/embed/video-and-clips/
 		urlParams.set('parent', hostname);
 		urlParams.set('allowfullscreen', '');
-		urlParams.set('autoplay', 'true');
+		urlParams.set('autoplay', 'false');
 	} else {
-		urlParams.set('autoplay', '1');
-		urlParams.set('auto_play', '1');
+		urlParams.set('autoplay', '0');
+		urlParams.set('auto_play', '0');
 	}
 	urlObj.search = urlParams.toString();
 

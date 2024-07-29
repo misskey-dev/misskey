@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe && gamingType === '' , [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }, {[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' } ]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
 	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
@@ -14,7 +14,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
-import {computed, ref, watch} from 'vue';
+import { computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config.js';
 import { $i } from '@/account.js';
@@ -45,7 +45,7 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );
-const bgCss = (gamingType.value === '') ? bg.toRgbString() : "";
+const bgCss = (gamingType.value === '') ? bg.toRgbString() : '';
 //const bgCss = `background:${bg.toRgbString()}; ${result}` ;
 </script>
 
@@ -75,7 +75,6 @@ const bgCss = (gamingType.value === '') ? bg.toRgbString() : "";
 
 	&.isMe {
 		color: var(--mentionMe);
-
 	}
 }
 
