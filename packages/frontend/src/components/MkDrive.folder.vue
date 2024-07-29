@@ -27,7 +27,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<p v-if="defaultStore.state.uploadFolder == folder.id" :class="$style.upload">
 		{{ i18n.ts.uploadFolder }}
 	</p>
-	<button v-if="selectMode" class="_button" :class="[$style.checkbox, { [$style.checked]: isSelected }]" @click.prevent.stop="checkboxClicked"></button>
+	<button v-if="selectMode" class="_button" :class="$style.checkboxWrapper" @click.prevent.stop="checkboxClicked">
+		<div :class="[$style.checkbox, { [$style.checked]: isSelected }]"></div>
+	</button>
 </div>
 </template>
 
@@ -330,19 +332,43 @@ function onContextmenu(ev: MouseEvent) {
 	}
 }
 
-.checkbox {
+.checkboxWrapper {
 	position: absolute;
-	bottom: 8px;
-	right: 8px;
-	width: 18px;
-	height: 18px;
-	background: #fff;
-	border: solid 2px var(--divider);
-	border-radius: 4px;
+	border-radius: 50%;
+	bottom: 2px;
+	right: 2px;
+	padding: 8px;
 	box-sizing: border-box;
 
-	&.checked {
-		background: var(--accent);
+	> .checkbox {
+		position: relative;
+		width: 18px;
+		height: 18px;
+		background: #fff;
+		border: solid 2px var(--divider);
+		border-radius: 4px;
+		box-sizing: border-box;
+
+		&.checked {
+			border-color: var(--accent);
+			background: var(--accent);
+
+			&::after {
+				content: "\ea5e";
+				font-family: 'tabler-icons';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				color: #fff;
+				font-size: 12px;
+				line-height: 22px;
+			}
+		}
+	}
+
+	&:hover {
+		background: var(--accentedBg);
 	}
 }
 
