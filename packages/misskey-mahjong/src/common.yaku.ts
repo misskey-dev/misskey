@@ -127,6 +127,11 @@ export type EnvForCalcYaku = {
 	 * 嶺上牌のツモか
 	 */
 	rinshan?: boolean;
+
+	/**
+	 * 海底牌か
+	 */
+	haitei?: boolean;
 } | {
 	tsumoTile?: null;
 	ronTile: TileType;
@@ -250,6 +255,13 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		return (state.tsumoTile != null && state.rinshan) ?? false;
+	}
+}, {
+	name: 'haitei',
+	fan: 1,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
+		return (state.tsumoTile != null && state.haitei) ?? false;
 	}
 },
 new Yakuhai('red', 'chun'),

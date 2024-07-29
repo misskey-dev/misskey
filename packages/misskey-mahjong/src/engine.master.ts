@@ -645,6 +645,7 @@ export class MasterGameEngine {
 			riichi: tx.$state.riichis[house],
 			ippatsu: tx.$state.ippatsus[house],
 			rinshan: tx.$state.rinshanFlags[house],
+			haitei: tx.$state.tiles.length == 0,
 		}).map(name => YAKU_DEFINITION_MAP.get(name)!);
 		const doraCount =
 			Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.$state.huros[house], tx.doras) +

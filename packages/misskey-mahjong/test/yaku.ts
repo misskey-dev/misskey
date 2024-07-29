@@ -238,6 +238,28 @@ describe('Yaku', () => {
 		});
 	});
 
+	describe('haitei', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
+				huros: [],
+				tsumoTile: 'm3',
+				haitei: true,
+			}).includes('haitei'), true);
+		});
+
+		it('invalid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
+				huros: [],
+				tsumoTile: 'm3',
+				haitei: false,
+			}).includes('haitei'), false);
+		});
+	});
+
 	describe('tanyao', () => {
 		it('valid', () => {
 			assert.deepStrictEqual(calcYakus({
