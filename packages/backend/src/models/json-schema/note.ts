@@ -204,6 +204,7 @@ export const packedNoteSchema = {
 		reactionAcceptance: {
 			type: 'string',
 			optional: false, nullable: true,
+			enum: ['likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'],
 		},
 		reactionEmojis: {
 			type: 'object',
