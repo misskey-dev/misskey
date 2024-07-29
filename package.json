@@ -50,9 +50,7 @@
 	},
 	"dependencies": {
 		"cssnano": "6.1.2",
-		"esbuild": "0.22.0",
 		"eslint-nibble": "^8.1.0",
-		"eslint-plugin-unused-imports": "^4.0.0",
 		"execa": "8.0.1",
 		"fast-glob": "3.3.2",
 		"ignore-walk": "6.0.5",
