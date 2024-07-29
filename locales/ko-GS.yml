@@ -805,6 +805,10 @@ _deck:
     mentions: "받언 멘션"
 _webhookSettings:
   name: "이럼"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "전자우펜"
 _moderationLogTypes:
   suspend: "얼우기"
   deleteNote: "노트 뭉캐기"

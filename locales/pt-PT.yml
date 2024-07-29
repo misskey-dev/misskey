@@ -1500,6 +1500,10 @@ _webhookSettings:
     follow: "Quando seguindo um usuário"
     followed: "Quando sendo seguido"
     renote: "Quando repostado"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-mail"
 _moderationLogTypes:
   suspend: "Suspender"
   resetPassword: "Redefinir senha"

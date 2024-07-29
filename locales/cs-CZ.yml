@@ -1645,8 +1645,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Moje poznámka"
   notification: "Oznámení"
-  antenna: "Antény"
-  channel: "Oznámení kanálu"
 _ago:
   future: "Budoucí"
   justNow: "Teď"
@@ -2022,6 +2020,10 @@ _webhookSettings:
     renote: "Při renotaci poznámky"
     reaction: "Při obdržení reakce"
     mention: "Při zmínce"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "Zmrazit"
   resetPassword: "Resetovat heslo"

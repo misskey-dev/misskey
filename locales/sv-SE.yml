@@ -512,7 +512,6 @@ _theme:
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
-  antenna: "Antenner"
 _2fa:
   renewTOTPCancel: "Nej tack"
 _antennaSources:
@@ -577,6 +576,10 @@ _deck:
 _webhookSettings:
   name: "Namn"
   active: "Aktiverad"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-post"
 _moderationLogTypes:
   suspend: "Suspendera"
   resetPassword: "Återställ Lösenord"

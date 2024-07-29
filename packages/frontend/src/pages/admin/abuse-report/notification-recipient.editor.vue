@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkModalWindow
-	ref="dialog"
+	ref="dialogEl"
 	:width="400"
 	:height="490"
 	:withOkButton="false"
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, toRefs } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRefs } from 'vue';
 import { entities } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -88,6 +88,7 @@ type NotificationRecipientMethod = 'email' | 'webhook';
 
 const emit = defineEmits<{
 	(ev: 'submitted'): void;
+	(ev: 'canceled'): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -97,6 +98,8 @@ const props = defineProps<{
 }>();
 
 const { mode, id } = toRefs(props);
+
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const loading = ref<number>(0);
 
@@ -166,18 +169,21 @@ async function onSubmitClicked() {
 				}
 			}
 
+			dialogEl.value?.close();
 			emit('submitted');
-			// eslint-disable-next-line
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (ex: any) {
 			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
-			emit('closed');
+			dialogEl.value?.close();
+			emit('canceled');
 		}
 	});
 }
 
 function onCancelClicked() {
-	emit('closed');
+	dialogEl.value?.close();
+	emit('canceled');
 }
 
 async function onEditSystemWebhookClicked() {
@@ -262,7 +268,8 @@ onMounted(async () => {
 			} catch (ex: any) {
 				const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 				await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
-				emit('closed');
+				dialogEl.value?.close();
+				emit('canceled');
 			}
 		} else {
 			userId.value = moderators.value[0]?.id ?? null;
@@ -296,11 +303,13 @@ onMounted(async () => {
 	gap: 8px;
 
 	button {
-		width: 2.5em;
-		height: 2.5em;
-		min-width: 2.5em;
-		min-height: 2.5em;
+		min-width: 0;
+		min-height: 0;
+		width: 34px;
+		height: 34px;
+		flex-shrink: 0;
 		box-sizing: border-box;
+		margin: 1px 0;
 		padding: 6px;
 	}
 }
