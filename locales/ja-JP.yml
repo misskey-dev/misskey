@@ -2491,6 +2491,7 @@ _webhookSettings:
   _systemEvents:
     abuseReport: "ユーザーから通報があったとき"
     abuseReportResolved: "ユーザーからの通報を処理したとき"
+    userCreated: "ユーザーが作成されたとき"
   deleteConfirm: "Webhookを削除しますか？"
 
 _abuseReport:
