@@ -170,6 +170,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
 			</div>
 		</template>
+		<template v-if="log.type === 'createGlobalAnnouncement'">
+			<div>{{ i18n.ts.title }}: {{ log.info.announcement.title }}</div>
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.display }}: {{ i18n.ts[log.info.announcement.display] }}</div>
+				<div><Mfm :text="log.info.announcement.text"/></div>
+			</div>
+		</template>
+		<template v-if="log.type === 'createUserAnnouncement'">
+			<div>{{ i18n.ts.title }}: {{ log.info.announcement.title }}</div>
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.display }}: {{ i18n.ts[log.info.announcement.display] }}</div>
+				<div>{{ i18n.ts.user }}: <MkA :to="`/admin/user/${log.info.userId}`" class="_link">@{{ log.info.userUsername }}{{ log.info.userHost ? log.info.userHost : '' }}</MkA></div>
+				<div><Mfm :text="log.info.announcement.text"/></div>
+			</div>
+		</template>
+		<template v-if="log.type === 'deleteGlobalAnnouncement'">
+			<div>{{ i18n.ts.title }}: {{ log.info.announcement.title }}</div>
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.display }}: {{ i18n.ts[log.info.announcement.display] }}</div>
+				<div><Mfm :text="log.info.announcement.text"/></div>
+			</div>
+		</template>
+		<template v-if="log.type === 'deleteUserAnnouncement'">
+			<div>{{ i18n.ts.title }}: {{ log.info.announcement.title }}</div>
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.display }}: {{ i18n.ts[log.info.announcement.display] }}</div>
+				<div>{{ i18n.ts.user }}: <MkA :to="`/admin/user/${log.info.userId}`" class="_link">@{{ log.info.userUsername }}{{ log.info.userHost ? log.info.userHost : '' }}</MkA></div>
+				<div><Mfm :text="log.info.announcement.text"/></div>
+			</div>
+		</template>
 
 		<details>
 			<summary>raw</summary>
