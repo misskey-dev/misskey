@@ -2424,6 +2424,7 @@ _webhookSettings:
   _systemEvents:
     abuseReport: "当收到举报时"
     abuseReportResolved: "当举报被处理时"
+    userCreated: "当用户被创建时"
   deleteConfirm: "要删除 webhook 吗？"
 _abuseReport:
   _notificationRecipient:
