@@ -1,25 +1,29 @@
 import { FourMentsuOneJyantou, mentsuEquals, TILE_NUMBER_MAP, TileType } from "./common.js";
 
+export type Shape = 'fourMentsuOneJyantou' | 'chitoitsu' | 'kokushi';
+
 /**
- * 4面子1雀頭の待ちに関わる部分
+ * 4面子1雀頭と待ちに関わる部分
  */
-export type WaitPattern = {
+export type FourMentsuOneJyantouWithWait = FourMentsuOneJyantou & {
 	agariTile: TileType;
 } & ({
-	completes: 'head';
+	waitedFor: 'head';
 } | {
-	completes: 'mentsu';
-	taatsu: [TileType, TileType];
+	waitedFor: 'mentsu';
+	waitedTaatsu: [TileType, TileType];
 });
 
-export function calcWaitPatterns(fourMentsuOneJyantou: FourMentsuOneJyantou | null, agariTile: TileType): (WaitPattern | null)[] {
+export function calcWaitPatterns(fourMentsuOneJyantou: FourMentsuOneJyantou | null, agariTile: TileType): FourMentsuOneJyantouWithWait[] | [null] {
 	if (fourMentsuOneJyantou == null) return [null];
 
-	const result: WaitPattern[] = [];
+	const result: FourMentsuOneJyantouWithWait[] = [];
 
 	if (fourMentsuOneJyantou.head == agariTile) {
 		result.push({
-			completes: 'head',
+			head: fourMentsuOneJyantou.head,
+			mentsus: fourMentsuOneJyantou.mentsus,
+			waitedFor: 'head',
 			agariTile,
 		});
 	}
@@ -30,9 +34,11 @@ export function calcWaitPatterns(fourMentsuOneJyantou: FourMentsuOneJyantou | nu
 		const agariTileIndex = mentsu.indexOf(agariTile);
 		if (agariTileIndex < 0) continue;
 		result.push({
-			completes: 'mentsu',
+			head: fourMentsuOneJyantou.head,
+			mentsus: fourMentsuOneJyantou.mentsus,
+			waitedFor: 'mentsu',
 			agariTile,
-			taatsu: mentsu.toSpliced(agariTileIndex, 1) as [TileType, TileType],
+			waitedTaatsu: mentsu.toSpliced(agariTileIndex, 1) as [TileType, TileType],
 		})
 		checkedMentsus.push(mentsu);
 	}

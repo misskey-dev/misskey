@@ -4,7 +4,7 @@
  */
 
 import { CALL_HURO_TYPES, CHAR_TILES, FourMentsuOneJyantou, House, MANZU_TILES, PINZU_TILES, SOUZU_TILES, TileType, YAOCHU_TILES, TILE_TYPES, analyzeFourMentsuOneJyantou, isShuntu, isManzu, isPinzu, isSameNumberTile, isSouzu, isKotsu, includes, TERMINAL_TILES, mentsuEquals, Huro, TILE_ID_MAP } from './common.js';
-import { calcWaitPatterns, isRyanmen, isToitsu, WaitPattern } from './common.fu.js';
+import { calcWaitPatterns, isRyanmen, isToitsu, FourMentsuOneJyantouWithWait } from './common.fu.js';
 
 const RYUISO_TILES: TileType[] = ['s2', 's3', 's4', 's6', 's8', 'hatsu'];
 const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
@@ -144,7 +144,7 @@ type YakuDefinition = {
 	isYakuman?: boolean;
 	isDoubleYakuman?: boolean;
 	kuisagari?: boolean;
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null, waitPattern: WaitPattern | null) => boolean;
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantouWithWait | null) => boolean;
 };
 
 function countTiles(tiles: TileType[], target: TileType): number {
@@ -213,12 +213,12 @@ function countIndenticalMentsuPairs(mentsus: [TileType, TileType, TileType][]) {
 /**
  * 暗刻の数を数える (三暗刻なら3、四暗刻なら4)
  */
-function countAnkos(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou, waitPattern: WaitPattern) {
+function countAnkos(state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantouWithWait) {
 	let ankans = state.huros.filter(huro => huro.type == 'ankan').length;
 	const handKotsus = fourMentsuOneJyantou.mentsus.filter(mentsu => isKotsu(mentsu)).length;
 
 	// ロンによりできた刻子は暗刻ではない
-	if (state.ronTile != null && waitPattern.completes == 'mentsu' && isToitsu(waitPattern.taatsu)) {
+	if (state.ronTile != null && fourMentsuOneJyantou.waitedFor == 'mentsu' && isToitsu(fourMentsuOneJyantou.waitedTaatsu)) {
 		return ankans + handKotsus - 1;
 	}
 
@@ -294,7 +294,7 @@ new SeatWind('seat-wind-n', 'n'),
 	name: 'pinfu',
 	fan: 1,
 	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null, waitPattern: WaitPattern | null) => {
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantouWithWait | null) => {
 		if (fourMentsuOneJyantou == null) return false;
 
 		// 面前じゃないとダメ
@@ -303,7 +303,7 @@ new SeatWind('seat-wind-n', 'n'),
 		if (state.handTiles.some(t => ['haku', 'hatsu', 'chun'].includes(t))) return false;
 
 		// 両面待ちかどうか
-		if (!(waitPattern != null && waitPattern.completes == 'mentsu' && isRyanmen(waitPattern.taatsu))) return false;
+		if (!(fourMentsuOneJyantou != null && fourMentsuOneJyantou.waitedFor == 'mentsu' && isRyanmen(fourMentsuOneJyantou.waitedTaatsu))) return false;
 
 		// 風牌判定(役牌でなければOK)
 		if (fourMentsuOneJyantou.head === state.seatWind) return false;
@@ -414,8 +414,8 @@ new SeatWind('seat-wind-n', 'n'),
 	name: 'sananko',
 	fan: 2,
 	isYakuman: false,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null, waitPattern: WaitPattern | null) => {
-		return fourMentsuOneJyantou != null && waitPattern != null && countAnkos(state, fourMentsuOneJyantou, waitPattern) == 3;
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantouWithWait | null) => {
+		return fourMentsuOneJyantou != null && countAnkos(state, fourMentsuOneJyantou) == 3;
 	},
 }, {
 	name: 'honroto',
@@ -634,15 +634,15 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 	name: 'suanko-tanki',
 	isYakuman: true,
 	isDoubleYakuman: true,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null, waitPattern: WaitPattern | null) => {
-		return fourMentsuOneJyantou != null && waitPattern != null && waitPattern.completes == 'head' && countAnkos(state, fourMentsuOneJyantou, waitPattern) == 4;
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantouWithWait | null) => {
+		return fourMentsuOneJyantou != null && fourMentsuOneJyantou.waitedFor == 'head' && countAnkos(state, fourMentsuOneJyantou) == 4;
 	}
 }, {
 	name: 'suanko',
 	isYakuman: true,
 	upper: 'suanko-tanki',
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null, waitPattern: WaitPattern | null) => {
-		return fourMentsuOneJyantou != null && waitPattern != null && countAnkos(state, fourMentsuOneJyantou, waitPattern) == 4;
+	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantouWithWait | null) => {
+		return fourMentsuOneJyantou != null && countAnkos(state, fourMentsuOneJyantou) == 4;
 	}
 }, {
 	name: 'daisangen',
@@ -893,11 +893,11 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	if (oneHeadFourMentsuPatterns.length === 0) oneHeadFourMentsuPatterns.push(null);
 
 	const yakumanPatterns = oneHeadFourMentsuPatterns.map(fourMentsuOneJyantou =>
-		calcWaitPatterns(fourMentsuOneJyantou, agariTile).map(waitPattern => {
+		calcWaitPatterns(fourMentsuOneJyantou, agariTile).map(fourMentsuOneJyantouWithWait => {
 			const matchedYakus: YakuDefinition[] = [];
 			for (const yakuDef of YAKUMAN_DEFINITIONS) {
 				if (yakuDef.upper && matchedYakus.some(yaku => yaku.name === yakuDef.upper)) continue;
-				const matched = yakuDef.calc(state, fourMentsuOneJyantou, waitPattern);
+				const matched = yakuDef.calc(state, fourMentsuOneJyantouWithWait);
 				if (matched) {
 					matchedYakus.push(yakuDef);
 				}
@@ -910,9 +910,9 @@ export function calcYakus(state: EnvForCalcYaku): YakuName[] {
 	}
 
 	const yakuPatterns = oneHeadFourMentsuPatterns.map(fourMentsuOneJyantou =>
-		calcWaitPatterns(fourMentsuOneJyantou, agariTile).map(waitPattern => {
+		calcWaitPatterns(fourMentsuOneJyantou, agariTile).map(fourMentsuOneJyantouWithWait => {
 			return NORMAL_YAKU_DEFINITIONS.map(yakuDef => {
-				const result = yakuDef.calc(state, fourMentsuOneJyantou, waitPattern);
+				const result = yakuDef.calc(state, fourMentsuOneJyantouWithWait);
 				return result ? yakuDef : null;
 			}).filter(yaku => yaku != null) as YakuDefinition[];
 		})).flat().filter(yakus => yakus.length > 0);
