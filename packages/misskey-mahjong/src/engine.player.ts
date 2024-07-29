@@ -312,6 +312,7 @@ export class PlayerGameEngine {
 				ronTile: ronTile,
 				riichi: this.state.riichis[house],
 				ippatsu: this.state.ippatsus[house],
+				hotei: this.state.tilesCount == 0,
 			}).map(name => YAKU_DEFINITION_MAP.get(name)!);
 			const doraCount =
 				Common.calcOwnedDoraCount(handTiles[house].map(id => $type(id)), this.state.huros[house], this.doras) +
