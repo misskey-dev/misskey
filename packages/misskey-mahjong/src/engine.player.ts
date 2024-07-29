@@ -53,7 +53,19 @@ export type PlayerState = {
 		w: Huro[];
 		n: Huro[];
 	};
+	firstTurnFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
 	riichis: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
+	doubleRiichis: {
 		e: boolean;
 		s: boolean;
 		w: boolean;
@@ -254,6 +266,7 @@ export class PlayerGameEngine {
 			tsumoTile: $type(tsumoTile),
 			ronTile: null,
 			riichi: this.state.riichis[house],
+			doubleRiichi: this.state.doubleRiichis[house],
 			ippatsu: this.state.ippatsus[house],
 			rinshan: this.state.rinshanFlags[house],
 			haitei: this.state.tilesCount == 0,
@@ -311,6 +324,7 @@ export class PlayerGameEngine {
 				tsumoTile: null,
 				ronTile: ronTile,
 				riichi: this.state.riichis[house],
+				doubleRiichi: this.state.doubleRiichis[house],
 				ippatsu: this.state.ippatsus[house],
 				hotei: this.state.tilesCount == 0,
 			}).map(name => YAKU_DEFINITION_MAP.get(name)!);

@@ -116,7 +116,12 @@ export type EnvForCalcYaku = {
 	riichi?: boolean;
 
 	/**
-	 * 一巡目以内かどうか
+	 * 誰の副露もない一巡目でリーチしたかどうか
+	 */
+	doubleRiichi?: boolean;
+
+	/**
+	 * リーチしてから誰の副露もない一巡目以内かどうか
 	 */
 	ippatsu?: boolean;
 } & ({
@@ -245,8 +250,15 @@ export const NORMAL_YAKU_DEFINITIONS: YakuDefinition[] = [{
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		return state.riichi ?? false;
+		return !state.doubleRiichi && (state.riichi ?? false);
 	},
+}, {
+	name: 'double-riichi',
+	fan: 2,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku) => {
+		return state.doubleRiichi ?? false;
+	}
 }, {
 	name: 'ippatsu',
 	fan: 1,

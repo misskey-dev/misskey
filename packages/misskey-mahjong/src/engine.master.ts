@@ -149,6 +149,18 @@ class StateManager {
 	public rinshanTsumo(): TileId {
 		return this.withTsumoTile(this.$state.tiles.push(), true);
 	}
+
+	public clearFirstTurnAndIppatsus(): void {
+		this.$state.firstTurnFlags.e = false;
+		this.$state.firstTurnFlags.s = false;
+		this.$state.firstTurnFlags.w = false;
+		this.$state.firstTurnFlags.n = false;
+
+		this.$state.ippatsus.e = false;
+		this.$state.ippatsus.s = false;
+		this.$state.ippatsus.w = false;
+		this.$state.ippatsus.n = false;
+	}
 }
 
 export type MasterState = {
@@ -186,7 +198,19 @@ export type MasterState = {
 		w: Huro[];
 		n: Huro[];
 	};
+	firstTurnFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
 	riichis: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
+	doubleRiichis: {
 		e: boolean;
 		s: boolean;
 		w: boolean;
@@ -364,7 +388,19 @@ export class MasterGameEngine {
 				w: [],
 				n: [],
 			},
+			firstTurnFlags: {
+				e: true,
+				s: true,
+				w: true,
+				n: true,
+			},
 			riichis: {
+				e: false,
+				s: false,
+				w: false,
+				n: false,
+			},
+			doubleRiichis: {
 				e: false,
 				s: false,
 				w: false,
@@ -453,7 +489,12 @@ export class MasterGameEngine {
 		if (riichi) {
 			tx.$state.riichis[house] = true;
 			tx.$state.ippatsus[house] = true;
+			if (tx.$state.firstTurnFlags[house]) {
+				tx.$state.doubleRiichis[house] = true;
+			}
 		}
+
+		tx.$state.firstTurnFlags[house] = false;
 
 		const canRonHouses: House[] = [];
 		switch (house) {
@@ -574,10 +615,7 @@ export class MasterGameEngine {
 		const tiles = [tid, ...pon.tiles] as const;
 		tx.$state.huros[house].push({ type: 'minkan', tiles: tiles, from: pon.from });
 
-		tx.$state.ippatsus.e = false;
-		tx.$state.ippatsus.s = false;
-		tx.$state.ippatsus.w = false;
-		tx.$state.ippatsus.n = false;
+		tx.clearFirstTurnAndIppatsus();
 
 		tx.$state.activatedDorasCount++;
 
@@ -610,10 +648,7 @@ export class MasterGameEngine {
 		const tiles = [t1, t2, t3, t4] as const;
 		tx.$state.huros[house].push({ type: 'ankan', tiles: tiles });
 
-		tx.$state.ippatsus.e = false;
-		tx.$state.ippatsus.s = false;
-		tx.$state.ippatsus.w = false;
-		tx.$state.ippatsus.n = false;
+		tx.clearFirstTurnAndIppatsus();
 
 		tx.$state.activatedDorasCount++;
 
@@ -643,6 +678,7 @@ export class MasterGameEngine {
 			tsumoTile: tx.handTileTypes[house].at(-1)!,
 			ronTile: null,
 			riichi: tx.$state.riichis[house],
+			doubleRiichi: tx.$state.doubleRiichis[house],
 			ippatsu: tx.$state.ippatsus[house],
 			rinshan: tx.$state.rinshanFlags[house],
 			haitei: tx.$state.tiles.length == 0,
@@ -700,6 +736,7 @@ export class MasterGameEngine {
 					tsumoTile: null,
 					ronTile,
 					riichi: tx.$state.riichis[house],
+					doubleRiichi: tx.$state.doubleRiichis[house],
 					ippatsu: tx.$state.ippatsus[house],
 					hotei: tx.$state.tiles.length == 0,
 				}).map(name => YAKU_DEFINITION_MAP.get(name)!);
@@ -741,10 +778,7 @@ export class MasterGameEngine {
 			const tiles = [tile, t1, t2, t3] as const;
 			tx.$state.huros[kan.caller].push({ type: 'minkan', tiles: tiles, from: kan.callee });
 
-			tx.$state.ippatsus.e = false;
-			tx.$state.ippatsus.s = false;
-			tx.$state.ippatsus.w = false;
-			tx.$state.ippatsus.n = false;
+			tx.clearFirstTurnAndIppatsus();
 
 			tx.$state.activatedDorasCount++;
 
@@ -775,10 +809,7 @@ export class MasterGameEngine {
 			const tiles = [tile, t1, t2] as const;
 			tx.$state.huros[pon.caller].push({ type: 'pon', tiles: tiles, from: pon.callee });
 
-			tx.$state.ippatsus.e = false;
-			tx.$state.ippatsus.s = false;
-			tx.$state.ippatsus.w = false;
-			tx.$state.ippatsus.n = false;
+			tx.clearFirstTurnAndIppatsus();
 
 			tx.$state.turn = pon.caller;
 
@@ -842,10 +873,7 @@ export class MasterGameEngine {
 
 			tx.$state.huros[cii.caller].push({ type: 'cii', tiles: tiles, from: cii.callee });
 
-			tx.$state.ippatsus.e = false;
-			tx.$state.ippatsus.s = false;
-			tx.$state.ippatsus.w = false;
-			tx.$state.ippatsus.n = false;
+			tx.clearFirstTurnAndIppatsus();
 
 			tx.$state.turn = cii.caller;
 
@@ -917,11 +945,23 @@ export class MasterGameEngine {
 				w: this.$state.huros.w,
 				n: this.$state.huros.n,
 			},
+			firstTurnFlags: {
+				e: this.$state.firstTurnFlags.e,
+				s: this.$state.firstTurnFlags.s,
+				w: this.$state.firstTurnFlags.w,
+				n: this.$state.firstTurnFlags.n,
+			},
 			riichis: {
 				e: this.$state.riichis.e,
 				s: this.$state.riichis.s,
 				w: this.$state.riichis.w,
 				n: this.$state.riichis.n,
+			},
+			doubleRiichis: {
+				e: this.$state.doubleRiichis.e,
+				s: this.$state.doubleRiichis.s,
+				w: this.$state.doubleRiichis.w,
+				n: this.$state.doubleRiichis.n,
 			},
 			ippatsus: {
 				e: this.$state.ippatsus.e,
