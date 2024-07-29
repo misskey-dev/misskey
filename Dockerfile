@@ -79,28 +79,28 @@ RUN apt-get update \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists
 
-USER misskey
-WORKDIR /misskey
+USER type4ny
+WORKDIR /type4ny
 
 # add package.json to add pnpm
-COPY --chown=misskey:misskey ./package.json ./package.json
+COPY --chown=type4ny:type4ny ./package.json ./package.json
 RUN corepack install
 
-COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
-COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
-COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
-COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
-COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-bubble-game/node_modules ./packages/misskey-bubble-game/node_modules
-COPY --chown=misskey:misskey --from=native-builder /misskey/built ./built
-COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built ./packages/misskey-js/built
-COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built ./packages/misskey-reversi/built
-COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
-COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
-COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
-COPY --chown=misskey:misskey . ./
+COPY --chown=misskey:type4ny --from=target-builder /type4ny/node_modules ./node_modules
+COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/backend/node_modules ./packages/backend/node_modules
+COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
+COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
+COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/misskey-bubble-game/node_modules ./packages/misskey-bubble-game/node_modules
+COPY --chown=type4ny:type4ny --from=native-builder /type4ny/built ./built
+COPY --chown=type4ny:type4ny --from=native-builder /type4ny/packages/misskey-js/built ./packages/misskey-js/built
+COPY --chown=type4ny:type4ny --from=native-builder /type4ny/packages/misskey-reversi/built ./packages/misskey-reversi/built
+COPY --chown=type4ny:type4ny --from=native-builder /type4ny/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
+COPY --chown=type4ny:type4ny --from=native-builder /type4ny/packages/backend/built ./packages/backend/built
+COPY --chown=type4ny:type4ny --from=native-builder /type4ny/fluent-emojis ./fluent-emojis
+COPY --chown=type4ny:type4ny . ./
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production
-HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
+HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/type4ny/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart"]
