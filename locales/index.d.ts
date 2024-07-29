@@ -5348,6 +5348,10 @@ export interface Locale extends ILocale {
      * センシティブなメディアです。表示しますか？
      */
     "sensitiveMediaRevealConfirm": string;
+    /**
+     * デフォルトのプロファイルに追加する
+     */
+    "addToDefaultEmojiPicker": string;
     "_delivery": {
         /**
          * 配信状態
