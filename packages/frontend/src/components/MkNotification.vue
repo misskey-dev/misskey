@@ -321,7 +321,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{
 						i18n.tsx.nPointGets({
 							getPoint: notification.loginBonus,
-							pointName: instance.pointName ?? "Point",
+							pointName: instance?.pointName ?? "Point",
 						})
 					}}
 				</div>

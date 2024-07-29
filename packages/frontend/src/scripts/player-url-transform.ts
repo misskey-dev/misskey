@@ -16,6 +16,9 @@ export function transformPlayerUrl(url: string): string {
 		urlParams.set('parent', hostname);
 		urlParams.set('allowfullscreen', '');
 		urlParams.set('autoplay', 'false');
+	} else if (urlObj.hostname === 'w.soundcloud.com') {
+		urlParams.set('autoplay', 'false');
+		urlParams.set('auto_play', 'false');
 	} else {
 		urlParams.set('autoplay', '0');
 		urlParams.set('auto_play', '0');

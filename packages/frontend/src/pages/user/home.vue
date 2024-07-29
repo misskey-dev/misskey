@@ -145,7 +145,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkA>
 						<MkA v-if="!user.host">
 							<b> {{ number(user.getPoints) }}</b>
-							<span>{{ i18n.ts.points }}</span>
+							<span>{{ instance.pointName ? instance.pointName : i18n.ts.points }}</span>
 						</MkA>
 					</div>
 				</div>
@@ -207,6 +207,7 @@ import MkRemoteInfoUpdate from '@/components/MkRemoteInfoUpdate.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkLazy from '@/components/global/MkLazy.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { instance } from "@/instance.js";
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
