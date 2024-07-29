@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			scrolling="no"
 			data-transparent="true"
 
-			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 ,borderRadius: '16px'}"
+			:style="{ position: 'relative', height: `${tweetHeight}px`, border: 0 ,borderRadius: '16px'}"
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 			frameborder="0"
 			allowtransparency="true"
