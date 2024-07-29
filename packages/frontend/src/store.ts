@@ -519,6 +519,10 @@ export const defaultStore = markRaw(
 			where: 'device',
 			default: true,
 		},
+		virtualScrollOn:{
+			where: 'device',
+			default: false,
+		},
 		numberOfPageCache: {
 			where: 'device',
 			default: 5,

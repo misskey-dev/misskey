@@ -1323,6 +1323,7 @@ postFormBottomSettingsDescription: "投稿フォームの下部に表示され�
 clearPost: "投稿フォームをリセット"
 addToEmojiPicker: "絵文字ピッカーに追加"
 addToDefaultEmojiProfile: "デフォルトに設定されているプロファイルに追加"
+virtualScrollOn: "TLでの仮想スクロールをオンにする"
 hideReactionCount: "リアクション数の非表示"
 hideReactionUsers: "誰がリアクションをしたのかを非表示にする"
 hideReactionUsersDescription: "リアクションをホバーした際のユーザー一覧と、ノート詳細ページのリアクションタブにあるリアクションをしたユーザー一覧を非表示にします"

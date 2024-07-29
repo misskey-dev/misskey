@@ -5309,6 +5309,10 @@ export interface Locale extends ILocale {
      */
     "addToDefaultEmojiProfile": string;
     /**
+     * TLでの仮想スクロールをオンにする
+     */
+    "virtualScrollOn": string;
+    /**
      * リアクション数の非表示
      */
     "hideReactionCount": string;

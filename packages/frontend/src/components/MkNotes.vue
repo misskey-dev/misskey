@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
+<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad" :virtualScrollOn="virtualScrollOn">
 	<template #empty>
 		<div class="_fullinfo">
 			<img :src="infoImageUrl" class="_ghost"/>
@@ -12,53 +12,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</template>
 
-	<template #default="{ items: notes }">
-		<div :class="[$style.root, { [$style.noGap]: noGap }]">
-			<MkDateSeparatedList
-				ref="notes"
-				v-slot="{ item: note }"
-				:items="notes"
-				:direction="pagination.reversed ? 'up' : 'down'"
-				:reversed="pagination.reversed"
-				:noGap="noGap"
-				:ad="true"
-				:class="$style.notes"
-			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
-			</MkDateSeparatedList>
-		</div>
-		<!--
+		<template #default="{ items: notes }" v-if="!virtualScrollOn">
+			<div :class="[$style.root, { [$style.noGap]: noGap }]">
+				<MkDateSeparatedList
+					ref="notes"
+					v-slot="{ item: note }"
+					:items="notes"
+					:direction="pagination.reversed ? 'up' : 'down'"
+					:reversed="pagination.reversed"
+					:noGap="noGap"
+					:ad="true"
+					:class="$style.notes"
+				>
+					<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
+				</MkDateSeparatedList>
+			</div>
+	</template>
+	<template #default="{ item: note, index, items }"  v-else>
 		<div :class="[$style.root, { [$style.noGap]: noGap },{ [$style.dateseparatedlist]: noGap}]">
-			<div :class="$style.notes, { [$style.dateseparatedlistnogap]: noGap}">
-				<p v-if="index !== 0" :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
-				<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
-				<div v-if="index !== items.length - 1 && note?.createdAt && items[index + 1]?.createdAt && (new Date(note?.createdAt).getDate()) !== ( new Date(items[index + 1]?.createdAt).getDate())" :key="note.id" :class="$style.separator">
-					<p :class="$style.date">
+			<div :class="$style.notes,{ [$style.dateseparatedlistnogap]: noGap}" >
+				<p :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
+				<div :class="$style.notes, { [$style.dateseparatedlistnogap]: noGap}">
+					<p v-if="index !== 0" :style="{margin: 0, borderBottom: 'solid 1px var(--divider)'}"></p>
+					<MkNote v-if="props.withCw && !note.cw || !props.withCw" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
+					<div v-if="index !== items.length - 1 && note?.createdAt && items[index + 1]?.createdAt && (new Date(note?.createdAt).getDate()) !== ( new Date(items[index + 1]?.createdAt).getDate())" :key="note.id" :class="$style.separator">
+						<p :class="$style.date">
 						<span :class="$style.date1">
 							<i class="ti ti-chevron-up"></i>
 							{{ getDateText(note.createdAt) }}
 						</span>
-						<span :class="$style.date2">
+							<span :class="$style.date2">
 							{{ getDateText(items[index + 1].createdAt) }}
 							<i class="ti ti-chevron-down"></i>
 						</span>
-					</p>
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>-->
+			</div>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { shallowRef,ref } from 'vue';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import MkDateSeparatedList from "@/components/MkDateSeparatedList.vue";
+import {defaultStore} from "@/store.js";
 const dateTextCache = new Map<string, string>();
-
+const virtualScrollOn = ref(false);
+virtualScrollOn.value = defaultStore.state.virtualScrollOn;
 const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
