@@ -72,8 +72,8 @@ RUN apt-get update \
 	ffmpeg tini curl libjemalloc-dev libjemalloc2 \
 	&& ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
 	&& corepack enable \
-	&& groupadd -g "${GID}" misskey \
-	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
+	&& groupadd -g "${GID}" type4ny \
+	&& useradd -l -u "${UID}" -g "${GID}" -m -d /type4ny type4ny \
 	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
 	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \; \
 	&& apt-get clean \
@@ -86,7 +86,7 @@ WORKDIR /type4ny
 COPY --chown=type4ny:type4ny ./package.json ./package.json
 RUN corepack install
 
-COPY --chown=misskey:type4ny --from=target-builder /type4ny/node_modules ./node_modules
+COPY --chown=type4ny:type4ny --from=target-builder /type4ny/node_modules ./node_modules
 COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/backend/node_modules ./packages/backend/node_modules
 COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
 COPY --chown=type4ny:type4ny --from=target-builder /type4ny/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
