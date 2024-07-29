@@ -94,6 +94,12 @@ export class MiChannel {
 	})
 	public isSensitive: boolean;
 
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isLocalOnly: boolean;
+
 	@Column('boolean', {
 		default: true,
 	})

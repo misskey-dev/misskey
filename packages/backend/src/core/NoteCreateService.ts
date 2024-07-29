@@ -260,9 +260,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.createdAt == null) data.createdAt = new Date();
 		if (data.visibility == null) data.visibility = 'public';
 		if (data.localOnly == null) data.localOnly = false;
-		if (data.channel != null) data.visibility = 'public';
-		if (data.channel != null) data.visibleUsers = [];
-		if (data.channel != null) data.localOnly = true;
+		if (data.channel != null) {
+			data.visibility = 'public';
+			data.visibleUsers = [];
+			if (data.channel.isLocalOnly) {
+				data.localOnly = true;
+			}
+		}
 
 		const meta = await this.metaService.fetch();
 
@@ -726,6 +730,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {
 				(async () => {
+
 					const noteActivity = await this.renderNoteOrRenoteActivity(data, note);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
 
@@ -864,6 +869,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
 		if (data.localOnly) return null;
+		if (data.channel) {
+			note.text = note.text + '\n\nFrom https://'+ this.config.host + '/channels/' + data?.channel?.id;
+		}
 
 		const content = this.isRenote(data) && !this.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)

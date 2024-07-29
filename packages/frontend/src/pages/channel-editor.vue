@@ -28,6 +28,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
 			</MkSwitch>
 
+			<MkSwitch v-model="isLocalOnly">
+				<template #label>{{ i18n.ts._channel.isLocalOnly }}</template>
+			</MkSwitch>
+
 			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
@@ -100,6 +104,7 @@ const bannerId = ref<string | null>(null);
 const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
+const isLocalOnly = ref(false);
 const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
 
 watch(() => bannerId.value, async () => {
@@ -129,7 +134,9 @@ async function fetchChannel() {
 	}));
 	color.value = channel.value.color;
 	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
+	isLocalOnly.value = channel.value.isLocalOnly;
 }
+
 
 fetchChannel();
 
@@ -159,6 +166,7 @@ function save() {
 		color: color.value,
 		isSensitive: isSensitive.value,
 		allowRenoteToExternal: allowRenoteToExternal.value,
+		isLocalOnly: isLocalOnly.value,
 	};
 
 	if (props.channelId) {

@@ -582,7 +582,7 @@ export function getRenoteMenu(props: {
 				}
 
 				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+				const localOnly = defaultStore.state.rememberNoteVisibility;
 
 				let visibility = appearNote.visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);

@@ -20,7 +20,6 @@ hanntenn: "アイコンとバナーを反転させる"
 hanntennInfo: "ダークだったらライトのアイコンに、ライトだったらダークのアイコンに。"
 ruby: "ルビ"
 disableNoteDrafting: "ノートの下書きの復元を無効化"
-kakuregaFeature: "隠れ家"
 pinnedChannel: "ピン留めされたチャンネル"
 gotIt: "わかった"
 cancel: "キャンセル"
@@ -1976,6 +1975,7 @@ _channel:
   nameAndDescription: "名前と説明"
   nameOnly: "名前のみ"
   allowRenoteToExternal: "チャンネル外へのリノートと引用リノートを許可する"
+  isLocalOnly: "チャンネルでの投稿をローカルのみに制限する"
 
 _menuDisplay:
   sideFull: "横"

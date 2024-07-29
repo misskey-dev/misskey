@@ -97,10 +97,6 @@ export interface Locale extends ILocale {
      */
     "disableNoteDrafting": string;
     /**
-     * 隠れ家
-     */
-    "kakuregaFeature": string;
-    /**
      * ピン留めされたチャンネル
      */
     "pinnedChannel": string;
@@ -7571,6 +7567,10 @@ export interface Locale extends ILocale {
          * チャンネル外へのリノートと引用リノートを許可する
          */
         "allowRenoteToExternal": string;
+        /**
+         * チャンネルでの投稿をローカルのみに制限する
+         */
+        "isLocalOnly": string;
     };
     "_menuDisplay": {
         /**

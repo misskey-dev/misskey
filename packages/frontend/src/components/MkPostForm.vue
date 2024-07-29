@@ -33,8 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 			</template>
 			<button v-click-anime v-tooltip="i18n.ts.drafts" class="_button" :class="$style.headerRightItem" @click="chooseDraft"><i class="ti ti-note"></i></button>
-			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
-				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly || channel != null && channel.isLocalOnly }]" :disabled="channel != null && channel.isLocalOnly || visibility === 'specified'" @click="toggleLocalOnly">
+				<span v-if="!(channel && channel?.isLocalOnly) && !localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
 			<button v-tooltip="i18n.ts.otherSettings" class="_button" :class="[$style.headerRightItem]" @click="openOtherSettingsMenu"><i class="ti ti-dots"></i></button>
@@ -207,7 +207,7 @@ watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
+const localOnly = ref(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility);
 
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
@@ -368,13 +368,13 @@ const bottomItemDef = {
 watch(visibility, () => {
 	switch (visibility.value) {
 		case 'public':
-			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility;
 			break;
 		case 'home':
-			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultHomeNoteLocalOnly;
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility;
 			break;
 		case 'followers':
-			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultFollowersNoteLocalOnly;
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility;
 			break;
 	}
 
@@ -424,9 +424,11 @@ function initialize() {
 
 	if (props.channel) {
 		visibility.value = 'public';
-		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 	}
 
+	if (props.channel != null && props.channel.isLocalOnly) {
+		localOnly.value = true;
+	}
 	// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 	if (reply.value && ['home', 'followers', 'specified'].includes(reply.value.visibility)) {
 		if (reply.value.visibility === 'home' && visibility.value === 'followers') {
@@ -580,8 +582,10 @@ function upload(file: File, name?: string): void {
 function setVisibility() {
 	if (props.channel) {
 		visibility.value = 'public';
-		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-		return;
+	}
+
+	if (props.channel != null && props.channel.isLocalOnly) {
+		localOnly.value = true;
 	}
 
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
@@ -603,13 +607,13 @@ function setVisibility() {
 async function toggleLocalOnly() {
 	if (props.channel) {
 		visibility.value = 'public';
-		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-		return;
 	}
 
-	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
+	if (props.channel != null && props.channel.isLocalOnly) {
+		localOnly.value = true;
+	}
 
-	if (!localOnly.value && neverShowInfo !== 'true') {
+	if (!localOnly.value) {
 		const confirm = await os.actions({
 			type: 'question',
 			title: i18n.ts.disableFederationConfirm,
@@ -621,11 +625,6 @@ async function toggleLocalOnly() {
 					primary: true,
 				},
 				{
-					value: 'neverShow' as const,
-					text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
-					danger: true,
-				},
-				{
 					value: 'no' as const,
 					text: i18n.ts.cancel,
 				},
@@ -634,15 +633,9 @@ async function toggleLocalOnly() {
 		if (confirm.canceled) return;
 		if (confirm.result === 'no') return;
 
-		if (confirm.result === 'neverShow') {
-			miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
-		}
 	}
 
 	localOnly.value = !localOnly.value;
-	if (defaultStore.state.rememberNoteVisibility) {
-		defaultStore.set('localOnly', localOnly.value);
-	}
 }
 
 async function toggleReactionAcceptance() {
