@@ -109,11 +109,11 @@ function onClick(ev: MouseEvent) {
 				react(`:${props.name}:`);
 				sound.playMisskeySfx('reaction');
 			},
-		}] : []), ...(!defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault}`].includes(`:${props.name}:`) ? [{
+		}] : []), ...(!defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault-1 : ''}`].includes(`:${props.name}:`) ? [{
 			text: i18n.ts.addToDefaultEmojiPicker,
 			icon: 'ti ti-plus',
 			action: () => {
-				defaultStore.set(`reactions${defaultStore.state.pickerProfileDefault}`, [...defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault - 1 : ''}`], `:${props.name}:`]);
+				defaultStore.set(`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault-1 : ''}`, [...defaultStore.state[`reactions${defaultStore.state.pickerProfileDefault > 1 ? defaultStore.state.pickerProfileDefault-1 : ''}`], `:${props.name}:`]);
 			},
 		}] : []), {
 			text: i18n.ts.info,

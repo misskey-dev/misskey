@@ -1333,6 +1333,7 @@ draftOverwriteConfirm: "下書きを適用すると現在入力されている�
 tryAgain: "もう一度お試しください。"
 confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示するとき確認する"
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
+addToDefaultEmojiPicker: "デフォルトのプロファイルに追加する"
 
 _delivery:
   status: "配信状態"
