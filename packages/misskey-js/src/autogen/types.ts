@@ -4599,6 +4599,7 @@ export type components = {
       maintainerName: string | null;
       maintainerEmail: string | null;
       isSilenced: boolean;
+      isMediaSilenced: boolean;
       /** Format: url */
       iconUrl: string | null;
       /** Format: url */
@@ -5044,6 +5045,7 @@ export type operations = {
             enableServiceWorker: boolean;
             translatorAvailable: boolean;
             silencedHosts?: string[];
+            mediaSilencedHosts: string[];
             pinnedUsers: string[];
             hiddenTags: string[];
             blockedHosts: string[];
@@ -9371,6 +9373,7 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          mediaSilencedHosts?: string[] | null;
           /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
           summalyProxy?: string | null;
           urlPreviewEnabled?: boolean;
