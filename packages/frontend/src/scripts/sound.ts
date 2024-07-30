@@ -124,23 +124,7 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	playMisskeySfxFile(sound);
-}
-
-/**
- * サウンド設定形式で指定された音声を再生する
- * @param soundStore サウンド設定
- */
-export function playMisskeySfxFile(soundStore: SoundStore) {
-	// 連続して再生しない
-	if (!canPlay) return;
-	// ユーザーアクティベーションが必要な場合はそれがない場合は再生しない
-	if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) return;
-	// サウンドがない場合は再生しない
-	if (soundStore.type === null || soundStore.type === '_driveFile_' && !soundStore.fileUrl) return;
-
-	canPlay = false;
-	playMisskeySfxFileInternal(soundStore).then((succeed) => {
+	playMisskeySfxFile(sound).then((succeed) => {
 		if (!succeed && sound.type === '_driveFile_') {
 			// ドライブファイルが存在しない場合はデフォルトのサウンドを再生する
 			const soundName = defaultStore.def[`sound_${operationType}`].default.type as Exclude<SoundType, '_driveFile_'>;
@@ -150,7 +134,23 @@ export function playMisskeySfxFile(soundStore: SoundStore) {
 				volume: sound.volume,
 			});
 		}
-	}).finally(() => {
+	});
+}
+
+/**
+ * サウンド設定形式で指定された音声を再生する
+ * @param soundStore サウンド設定
+ */
+export async function playMisskeySfxFile(soundStore: SoundStore): Promise<boolean> {
+	// 連続して再生しない
+	if (!canPlay) return false;
+	// ユーザーアクティベーションが必要な場合はそれがない場合は再生しない
+	if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) return false;
+	// サウンドがない場合は再生しない
+	if (soundStore.type === null || soundStore.type === '_driveFile_' && !soundStore.fileUrl) return false;
+
+	canPlay = false;
+	return await playMisskeySfxFileInternal(soundStore).finally(() => {
 		// ごく短時間に音が重複しないように
 		setTimeout(() => {
 			canPlay = true;
