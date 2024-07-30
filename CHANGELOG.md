@@ -28,6 +28,7 @@
 - Enhance: ドライブのファイル・フォルダをドラッグしなくても移動できるように  
   (Cherry-picked from https://github.com/nafu-at/misskey/commit/b89c2af6945c6a9f9f10e83f54d2bcf0f240b0b4, https://github.com/nafu-at/misskey/commit/8a7d710c6acb83f50c83f050bd1423c764d60a99)
 - Enhance: デッキのアンテナ・リスト選択画面からそれぞれを新規作成できるように
+- Enhance: ブラウザのコンテキストメニューを使用できるように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正

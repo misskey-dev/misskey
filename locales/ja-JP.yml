@@ -2697,3 +2697,9 @@ _mediaControls:
   pip: "ピクチャインピクチャ"
   playbackRate: "再生速度"
   loop: "ループ再生"
+
+_contextMenu:
+  title: "コンテキストメニュー"
+  app: "アプリケーション"
+  appWithShift: "Shiftキーでアプリケーション"
+  native: "ブラウザのUI"

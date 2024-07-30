@@ -10118,6 +10118,24 @@ export interface Locale extends ILocale {
          */
         "loop": string;
     };
+    "_contextMenu": {
+        /**
+         * コンテキストメニュー
+         */
+        "title": string;
+        /**
+         * アプリケーション
+         */
+        "app": string;
+        /**
+         * Shiftキーでアプリケーション
+         */
+        "appWithShift": string;
+        /**
+         * ブラウザのUI
+         */
+        "native": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
