@@ -4505,6 +4505,14 @@ export interface Locale extends ILocale {
      */
     "specifyUser": string;
     /**
+     * 照会しますか？
+     */
+    "lookupConfirm": string;
+    /**
+     * ハッシュタグのページを開きますか？
+     */
+    "openTagPageConfirm": string;
+    /**
      * ホスト指定
      */
     "specifyHost": string;

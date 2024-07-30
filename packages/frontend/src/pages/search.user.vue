@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
+		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkRadios v-model="searchOrigin" @update:modelValue="search()">
@@ -39,8 +39,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useRouter } from '@/router/supplier.js';
 
 const props = withDefaults(defineProps<{
-	query?: string,
-	origin?: Endpoints['users/search']['req']['origin'],
+  query?: string,
+  origin?: Endpoints['users/search']['req']['origin'],
 }>(), {
 	query: '',
 	origin: 'combined',
@@ -59,24 +59,54 @@ async function search() {
 	if (query == null || query === '') return;
 
 	//#region AP lookup
-	if (query.startsWith('https://')) {
-		const promise = misskeyApi('ap/show', {
-			uri: query,
+	if (query.startsWith('https://') && !query.includes(' ')) {
+		const confirm = await os.confirm({
+			type: 'info',
+			text: i18n.ts.lookupConfirm,
 		});
+		if (!confirm.canceled) {
+			const promise = misskeyApi('ap/show', {
+				uri: query,
+			});
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
 
-		const res = await promise;
+			const res = await promise;
 
-		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
+			if (res.type === 'User') {
+				router.push(`/@${res.object.username}@${res.object.host}`);
+			} else if (res.type === 'Note') {
+				router.push(`/notes/${res.object.id}`);
+			}
+
+			return;
 		}
-
-		return;
 	}
 	//#endregion
+
+	if (query.length > 1 && !query.includes(' ')) {
+		if (query.startsWith('@')) {
+			const confirm = await os.confirm({
+				type: 'info',
+				text: i18n.ts.lookupConfirm,
+			});
+			if (!confirm.canceled) {
+				router.push(`/${query}`);
+				return;
+			}
+		}
+
+		if (query.startsWith('#')) {
+			const confirm = await os.confirm({
+				type: 'info',
+				text: i18n.ts.openTagPageConfirm,
+			});
+			if (!confirm.canceled) {
+				router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+				return;
+			}
+		}
+	}
 
 	userPagination.value = {
 		endpoint: 'users/search',

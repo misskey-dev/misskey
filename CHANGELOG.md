@@ -32,6 +32,10 @@
 - Enhance: AiScriptを0.19.0にアップデート
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 - Enhance: センシティブなメディアを開く際に確認ダイアログを出せるように
+- Enhance: 検索(ノート/ユーザー)で `#` から始まる文字列を入力すると、そのハッシュタグのノート/ユーザー一覧ページが表示できるように
+- Enhance: 検索(ノート/ユーザー)において、入力に空白が含まれている場合は照会を行わないように
+- Enhance: 検索(ノート/ユーザー)において、照会を行うかどうか、ハッシュタグのノート/ユーザー一覧ページを表示するかどうかの確認ダイアログを出すように
+- Enhance: 検索(ノート/ユーザー)で `@` から始まる文字列(`@user@host`など)を入力すると、そのユーザーを照会できるように
 - Enhance: ドライブのファイル・フォルダをドラッグしなくても移動できるように  
   (Cherry-picked from https://github.com/nafu-at/misskey/commit/b89c2af6945c6a9f9f10e83f54d2bcf0f240b0b4, https://github.com/nafu-at/misskey/commit/8a7d710c6acb83f50c83f050bd1423c764d60a99)
 - Enhance: デッキのアンテナ・リスト選択画面からそれぞれを新規作成できるように
@@ -59,6 +63,8 @@
 - Fix: ダイレクト投稿の"削除して編集"において、宛先が保持されていなかった問題を修正
 - Fix: 投稿フォームへのURL貼り付けによる引用が下書きに保存されていなかった問題を修正
 - Fix: "削除して編集"や下書きにおいて、リアクションの受け入れ設定が保持/保存されていなかった問題を修正
+- Fix: 照会に `#` から始まる文字列を入力してそのハッシュタグのページを表示する際、入力が `#` のみの場合に「指定されたURLに該当するページはありませんでした。」が表示されてしまう問題を修正
+- Fix: 照会に `@` から始まる文字列を入力してユーザーを照会する際、入力が `@` のみの場合に「問題が発生しました」が表示されてしまう問題を修正
 - Fix: 投稿フォームにノートのURLを貼り付けて"引用として添付"した場合、投稿文を空にすることによるRenote化が出来なかった問題を修正
 
 ### Server
@@ -98,6 +104,8 @@
 - Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
   (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
 - Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
+- Fix: `users/search`において `@` から始まる文字列が与えられた際の処理が正しくなかった問題を修正
+  - 名前や自己紹介に `@` から始まる文言が含まれるユーザーも検索できるようになります
 - Fix: 一部のMisskey以外のソフトウェアからファイルを受け取れない問題
   (Cherry-picked from https://github.com/Secineralyr/misskey.dream/pull/73/commits/652eaff1e8aa00b890d71d2e1e52c263c1e67c76)
   - NOTE: `drive_file`の`url`, `uri`, `src`の上限が512から1024に変更されます
