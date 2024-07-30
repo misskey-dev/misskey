@@ -1384,7 +1384,7 @@ _serverSettings:
   fanoutTimelineDescription: "Greatly increases performance of timeline retrieval and reduces load on the database when enabled. In exchange, memory usage of Redis will increase. Consider disabling this in case of low server memory or server instability."
   fanoutTimelineDbFallback: "Fallback to database"
   fanoutTimelineDbFallbackDescription: "When enabled, the timeline will fall back to the database for additional queries if the timeline is not cached. Disabling it further reduces the server load by eliminating the fallback process, but limits the range of timelines that can be retrieved."
-  inquiryUrl: "Query URL"
+  inquiryUrl: "Inquiry URL"
   inquiryUrlDescription: "Specify a URL for the inquiry form to the server maintainer or a web page for the contact information."
 _accountMigration:
   moveFrom: "Migrate another account to this one"
