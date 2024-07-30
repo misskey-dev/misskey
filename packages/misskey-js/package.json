@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.7.0-nade.1.5.5.rc.7",
+	"version": "2024.7.0-nade.1.5.5.rc.8",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",

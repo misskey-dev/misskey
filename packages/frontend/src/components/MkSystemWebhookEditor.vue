@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ mode === 'create' ? i18n.ts._webhookSettings.createWebhook : i18n.ts._webhookSettings.modifyWebhook }}
 	</template>
 
-	<div>
-		<MkSpacer :marginMin="20" :marginMax="28">
+	<div style="display: flex; flex-direction: column; min-height: 100%;">
+		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
 			<MkLoading v-if="loading !== 0"/>
 			<div v-else :class="$style.root" class="_gaps_m">
 				<MkInput v-model="title">
@@ -226,6 +226,7 @@ onMounted(async () => {
 
 .footer {
 	position: sticky;
+	z-index: 10000;
 	bottom: 0;
 	left: 0;
 	padding: 12px;
