@@ -359,6 +359,10 @@ export class ApRendererService {
 
 		const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
 
+		if (note.text && note.channelId) {
+			note.text = note.text + '\n\nFrom https://' + this.config.host + '/channels/' + note?.channelId;
+		}
+
 		let to: string[] = [];
 		let cc: string[] = [];
 
