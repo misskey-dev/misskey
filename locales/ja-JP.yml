@@ -2492,7 +2492,7 @@ _webhookSettings:
   modifyWebhook: "Webhookを編集"
   name: "名前"
   secret: "シークレット"
-  events: "Webhookを実行するタイミング"
+  trigger: "トリガー"
   active: "有効"
   _events:
     follow: "フォローしたとき"
