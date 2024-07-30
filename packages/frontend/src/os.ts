@@ -448,15 +448,20 @@ export function authenticateDialog(): Promise<{
 	});
 }
 
+type SelectItem<C> = {
+	value: C;
+	text: string;
+};
+
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function select<C = any>(props: {
 	title?: string;
 	text?: string;
 	default: string;
-	items: {
-		value: C;
-		text: string;
-	}[];
+	items: (SelectItem<C> | {
+		sectionTitle: string;
+		items: SelectItem<C>[];
+	} | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
@@ -466,10 +471,10 @@ export function select<C = any>(props: {
 	title?: string;
 	text?: string;
 	default?: string | null;
-	items: {
-		value: C;
-		text: string;
-	}[];
+	items: (SelectItem<C> | {
+		sectionTitle: string;
+		items: SelectItem<C>[];
+	} | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
@@ -479,10 +484,10 @@ export function select<C = any>(props: {
 	title?: string;
 	text?: string;
 	default?: string | null;
-	items: {
-		value: C;
-		text: string;
-	}[];
+	items: (SelectItem<C> | {
+		sectionTitle: string;
+		items: SelectItem<C>[];
+	} | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
@@ -493,7 +498,7 @@ export function select<C = any>(props: {
 			title: props.title,
 			text: props.text,
 			select: {
-				items: props.items,
+				items: props.items.filter(x => x !== undefined),
 				default: props.default ?? null,
 			},
 		}, {

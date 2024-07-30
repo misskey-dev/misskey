@@ -154,6 +154,7 @@ editList: "リストを編集"
 selectChannel: "チャンネルを選択"
 selectAntenna: "アンテナを選択"
 editAntenna: "アンテナを編集"
+createAntenna: "アンテナを作成"
 selectWidget: "ウィジェットを選択"
 editWidgets: "ウィジェットを編集"
 editWidgetsExit: "編集を終了"
@@ -1106,6 +1107,8 @@ preservedUsernames: "予約ユーザー名"
 preservedUsernamesDescription: "予約するユーザー名を改行で列挙します。ここで指定されたユーザー名はアカウント作成時に使えなくなりますが、管理者によるアカウント作成時はこの制限を受けません。また、既に存在するアカウントも影響を受けません。"
 createNoteFromTheFile: "このファイルからノートを作成"
 archive: "アーカイブ"
+archived: "アーカイブ済み"
+unarchive: "アーカイブ解除"
 channelArchiveConfirmTitle: "{name}をアーカイブしますか？"
 channelArchiveConfirmDescription: "アーカイブすると、チャンネル一覧や検索結果に表示されなくなり、新たな書き込みもできなくなります。"
 thisChannelArchived: "このチャンネルはアーカイブされています。"
@@ -1250,6 +1253,8 @@ inquiry: "お問い合わせ"
 tryAgain: "もう一度お試しください。"
 confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示するとき確認する"
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
+createdLists: "作成したリスト"
+createdAntennas: "作成したアンテナ"
 
 _delivery:
   status: "配信状態"
@@ -2491,6 +2496,7 @@ _webhookSettings:
   _systemEvents:
     abuseReport: "ユーザーから通報があったとき"
     abuseReportResolved: "ユーザーからの通報を処理したとき"
+    userCreated: "ユーザーが作成されたとき"
   deleteConfirm: "Webhookを削除しますか？"
 
 _abuseReport:
