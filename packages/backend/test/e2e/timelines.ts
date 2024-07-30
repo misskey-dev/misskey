@@ -9,8 +9,8 @@
 import * as assert from 'assert';
 import { setTimeout } from 'node:timers/promises';
 import { Redis } from 'ioredis';
-import { loadConfig } from '@/config.js';
 import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl } from '../utils.js';
+import { loadConfig } from '@/config.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -491,6 +491,44 @@ describe('Timelines', () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
+		});
+
+		test.concurrent('FTT: ローカルユーザーの HTL にはプッシュされる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			await api('following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const aliceNote = await post(alice, { text: 'I\'m Alice.' });
+			const bobNote = await post(bob, { text: 'I\'m Bob.' });
+			const carolNote = await post(carol, { text: 'I\'m Carol.' });
+
+			await waitForPushToTl();
+
+			// NOTE: notes/timeline だと DB へのフォールバックが効くので Redis を直接見て確かめる
+			assert.strictEqual(await redisForTimelines.exists(`list:homeTimeline:${bob.id}`), 1);
+
+			const bobHTL = await redisForTimelines.lrange(`list:homeTimeline:${bob.id}`, 0, -1);
+			assert.strictEqual(bobHTL.includes(aliceNote.id), true);
+			assert.strictEqual(bobHTL.includes(bobNote.id), true);
+			assert.strictEqual(bobHTL.includes(carolNote.id), false);
+		});
+
+		test.concurrent('FTT: リモートユーザーの HTL にはプッシュされない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
+
+			await api('following/create', {
+				userId: alice.id,
+			}, bob);
+
+			await post(alice, { text: 'I\'m Alice.' });
+			await post(bob, { text: 'I\'m Bob.' });
+
+			await waitForPushToTl();
+
+			// NOTE: notes/timeline だと DB へのフォールバックが効くので Redis を直接見て確かめる
+			assert.strictEqual(await redisForTimelines.exists(`list:homeTimeline:${bob.id}`), 0);
 		});
 	});
 

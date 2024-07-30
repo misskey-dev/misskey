@@ -57,88 +57,66 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 			ps.query = ps.query.trim();
-			const isUsername = ps.query.startsWith('@');
+			const isUsername = ps.query.startsWith('@') && !ps.query.includes(' ') && ps.query.indexOf('@', 1) === -1;
 
 			let users: MiUser[] = [];
 
-			if (isUsername) {
-				const usernameQuery = this.usersRepository.createQueryBuilder('user')
-					.where('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' })
-					.andWhere(new Brackets(qb => {
-						qb
-							.where('user.updatedAt IS NULL')
-							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
-					}))
-					.andWhere('user.isSuspended = FALSE');
+			const nameQuery = this.usersRepository.createQueryBuilder('user')
+				.where(new Brackets(qb => {
+					qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
-				if (ps.origin === 'local') {
-					usernameQuery.andWhere('user.host IS NULL');
-				} else if (ps.origin === 'remote') {
-					usernameQuery.andWhere('user.host IS NOT NULL');
-				}
-
-				users = await usernameQuery
-					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-					.limit(ps.limit)
-					.offset(ps.offset)
-					.getMany();
-			} else {
-				const nameQuery = this.usersRepository.createQueryBuilder('user')
-					.where(new Brackets(qb => {
-						qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
-
-						// Also search username if it qualifies as username
-						if (this.userEntityService.validateLocalUsername(ps.query)) {
-							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(ps.query.toLowerCase()) + '%' });
-						}
-					}))
-					.andWhere(new Brackets(qb => {
-						qb
-							.where('user.updatedAt IS NULL')
-							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
-					}))
-					.andWhere('user.isSuspended = FALSE');
-
-				if (ps.origin === 'local') {
-					nameQuery.andWhere('user.host IS NULL');
-				} else if (ps.origin === 'remote') {
-					nameQuery.andWhere('user.host IS NOT NULL');
-				}
-
-				users = await nameQuery
-					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-					.limit(ps.limit)
-					.offset(ps.offset)
-					.getMany();
-
-				if (users.length < ps.limit) {
-					const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
-						.select('prof.userId')
-						.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
-
-					if (ps.origin === 'local') {
-						profQuery.andWhere('prof.userHost IS NULL');
-					} else if (ps.origin === 'remote') {
-						profQuery.andWhere('prof.userHost IS NOT NULL');
+					if (isUsername) {
+						qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' });
+					} else if (this.userEntityService.validateLocalUsername(ps.query)) { // Also search username if it qualifies as username
+						qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(ps.query.toLowerCase()) + '%' });
 					}
+				}))
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('user.updatedAt IS NULL')
+						.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+				}))
+				.andWhere('user.isSuspended = FALSE');
 
-					const query = this.usersRepository.createQueryBuilder('user')
-						.where(`user.id IN (${ profQuery.getQuery() })`)
-						.andWhere(new Brackets(qb => {
-							qb
-								.where('user.updatedAt IS NULL')
-								.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
-						}))
-						.andWhere('user.isSuspended = FALSE')
-						.setParameters(profQuery.getParameters());
+			if (ps.origin === 'local') {
+				nameQuery.andWhere('user.host IS NULL');
+			} else if (ps.origin === 'remote') {
+				nameQuery.andWhere('user.host IS NOT NULL');
+			}
 
-					users = users.concat(await query
-						.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-						.limit(ps.limit)
-						.offset(ps.offset)
-						.getMany(),
-					);
+			users = await nameQuery
+				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
+				.limit(ps.limit)
+				.offset(ps.offset)
+				.getMany();
+
+			if (users.length < ps.limit) {
+				const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
+					.select('prof.userId')
+					.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
+
+				if (ps.origin === 'local') {
+					profQuery.andWhere('prof.userHost IS NULL');
+				} else if (ps.origin === 'remote') {
+					profQuery.andWhere('prof.userHost IS NOT NULL');
 				}
+
+				const query = this.usersRepository.createQueryBuilder('user')
+					.where(`user.id IN (${ profQuery.getQuery() })`)
+					.andWhere(new Brackets(qb => {
+						qb
+							.where('user.updatedAt IS NULL')
+							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+					}))
+					.andWhere('user.isSuspended = FALSE')
+					.setParameters(profQuery.getParameters());
+
+				users = users.concat(await query
+					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
+					.limit(ps.limit)
+					.offset(ps.offset)
+					.getMany(),
+				);
 			}
 
 			return await this.userEntityService.packMany(users, me, { schema: ps.detail ? 'UserDetailed' : 'UserLite' });

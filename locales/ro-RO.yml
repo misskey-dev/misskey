@@ -728,6 +728,10 @@ _deck:
     mentions: "Mențiuni"
 _webhookSettings:
   name: "Nume"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "Suspendă"
   resetPassword: "Resetează parola"
