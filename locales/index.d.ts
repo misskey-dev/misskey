@@ -633,6 +633,10 @@ export interface Locale extends ILocale {
      */
     "editAntenna": string;
     /**
+     * アンテナを作成
+     */
+    "createAntenna": string;
+    /**
      * ウィジェットを選択
      */
     "selectWidget": string;
@@ -5024,6 +5028,14 @@ export interface Locale extends ILocale {
      * センシティブなメディアです。表示しますか？
      */
     "sensitiveMediaRevealConfirm": string;
+    /**
+     * 作成したリスト
+     */
+    "createdLists": string;
+    /**
+     * 作成したアンテナ
+     */
+    "createdAntennas": string;
     "_delivery": {
         /**
          * 配信状態

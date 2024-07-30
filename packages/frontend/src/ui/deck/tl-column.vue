@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
@@ -113,6 +113,7 @@ async function setType() {
 		}
 		return;
 	}
+	if (src == null) return;
 	updateColumn(props.column.id, {
 		tl: src,
 	});
