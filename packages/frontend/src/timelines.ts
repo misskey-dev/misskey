@@ -54,3 +54,7 @@ export function availableBasicTimelines(): BasicTimelineType[] {
 export function hasWithReplies(timeline: BasicTimelineType | undefined | null): boolean {
 	return timeline === 'local' || timeline === 'social';
 }
+
+export function hasLocalOnly(timeline: BasicTimelineType | undefined | null): boolean {
+	return timeline === 'home' || timeline === 'social';
+}

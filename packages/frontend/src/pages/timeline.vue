@@ -53,7 +53,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, hasLocalOnly } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -266,7 +266,7 @@ const headerActions = computed(() => {
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
-				}, src.value === 'home' || src.value === 'social' ? {
+				}, isBasicTimeline(src.value) && hasLocalOnly(src.value) ? {
 					type: 'switch',
 					text: i18n.ts.localOnly,
 					ref: onlyLocal,

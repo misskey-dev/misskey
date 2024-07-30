@@ -39,7 +39,7 @@ import type { MenuItem } from '@/types/menu.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass, hasLocalOnly } from '@/timelines.js';
 import { instance } from '@/instance.js';
 import { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
@@ -143,7 +143,7 @@ const menu = computed<MenuItem[]>(() => [{
 	text: i18n.ts.fileAttachedOnly,
 	ref: onlyFiles,
 	disabled: hasWithReplies(props.column.tl) ? withReplies : false,
-}, props.column.tl === 'home' || props.column.tl === 'social' ? {
+}, hasLocalOnly(props.column.tl) ? {
 	type: 'switch',
 	text: i18n.ts.localOnly,
 	ref: onlyLocal,
