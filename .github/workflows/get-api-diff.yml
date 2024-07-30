@@ -9,7 +9,6 @@ on:
     paths:
       - packages/backend/**
       - .github/workflows/get-api-diff.yml
-      - .github/workflows/get-api-diff.yml
 jobs:
   get-from-misskey:
     runs-on: ubuntu-latest
