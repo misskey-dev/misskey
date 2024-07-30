@@ -168,7 +168,7 @@ export function note(id = 'somenoteid'): entities.Note {
 		myReaction: null,
 		reactionCount: 0,
 		renoteCount: 0,
-		repliesCount: 0
+		repliesCount: 0,
 	};
 }
 
@@ -239,7 +239,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host: enti
 		movedTo: null,
 		alsoKnownAs: null,
 		notify: 'none',
-		memo: null
+		memo: null,
 	};
 }
 
