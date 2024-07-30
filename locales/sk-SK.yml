@@ -1124,8 +1124,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Vlastná poznámka"
   notification: "Oznámenia"
-  antenna: "Antény"
-  channel: "Upozornenia kanála"
 _ago:
   future: "Budúcnosť"
   justNow: "Teraz"
@@ -1447,6 +1445,10 @@ _deck:
 _webhookSettings:
   name: "Názov"
   active: "Zapnuté"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "Zmraziť"
   resetPassword: "Resetovať heslo"
