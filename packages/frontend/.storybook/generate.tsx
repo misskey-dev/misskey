@@ -408,6 +408,7 @@ function toStories(component: string): Promise<string> {
 		glob('src/components/MkTagItem.vue'),
 		glob('src/components/MkRoleSelectDialog.vue'),
 		glob('src/components/grid/MkGrid.vue'),
+		glob('src/pages/search.vue'),
 		glob('src/pages/user/home.vue'),
 		glob('src/pages/admin/custom-emojis-manager2.vue'),
 	]);
