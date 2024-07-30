@@ -89,6 +89,22 @@ class TileSetBuilder {
 	}
 }
 
+function tsumogiriAndIgnore(engine: MasterGameEngine, riichi = false): void {
+	const house = engine.turn;
+	if (house == null) {
+		throw new Error('No one\'s turn');
+	}
+	engine.commit_dahai(house, engine.handTiles[house].at(-1)!, riichi);
+	if (engine.askings.pon != null || engine.askings.cii != null || engine.askings.kan != null || engine.askings.ron != null) {
+		engine.commit_resolveCallingInterruption({
+			pon: false,
+			cii: false,
+			kan: false,
+			ron: [],
+		});
+	}
+}
+
 describe('Master game engine', () => {
 	it('tenho', () => {
 		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
@@ -104,7 +120,7 @@ describe('Master game engine', () => {
 				.setTile(0, 'm3')
 				.build(),
 		));
-		engine.commit_dahai('e', engine.$state.handTiles.e.at(-1)!);
+		tsumogiriAndIgnore(engine);
 		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['chiho']);
 	});
 
@@ -117,5 +133,19 @@ describe('Master game engine', () => {
 		));
 		engine.commit_ankan('e', engine.$state.handTiles.e.at(-1)!);
 		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tsumo', 'rinshan']);
+	});
+
+	it('double-riichi ippatsu tsumo', () => {
+		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
+			new TileSetBuilder()
+			.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 's'])
+			.setTile(3, 'm3')
+			.build(),
+		));
+		tsumogiriAndIgnore(engine, true);
+		tsumogiriAndIgnore(engine);
+		tsumogiriAndIgnore(engine);
+		tsumogiriAndIgnore(engine);
+		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tsumo', 'double-riichi', 'ippatsu']);
 	});
 });
