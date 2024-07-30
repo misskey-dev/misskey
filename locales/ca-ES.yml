@@ -1893,8 +1893,6 @@ _sfx:
   note: "Notes"
   noteMy: "Nota (per mi)"
   notification: "Notificacions"
-  antenna: "Antenes"
-  channel: "Notificacions dels canals"
   reaction: "Quan se selecciona una reacció "
 _soundSettings:
   driveFile: "Fer servir un fitxer d'àudio del disc"
@@ -2225,6 +2223,10 @@ _deck:
 _webhookSettings:
   name: "Nom"
   active: "Activat"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Correu electrònic"
 _moderationLogTypes:
   suspend: "Suspèn"
   resetPassword: "Restableix la contrasenya"

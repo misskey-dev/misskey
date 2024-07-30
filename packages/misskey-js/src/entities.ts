@@ -7,7 +7,7 @@ import {
 	Role,
 	RolePolicies,
 	User,
-	UserDetailedNotMe
+	UserDetailedNotMe,
 } from './autogen/models.js';
 
 export * from './autogen/entities.js';
@@ -19,6 +19,7 @@ export type DateString = string;
 export type PageEvent = {
 	pageId: Page['id'];
 	event: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	var: any;
 	userId: User['id'];
 	user: User;
