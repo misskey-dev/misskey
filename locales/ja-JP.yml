@@ -2002,6 +2002,7 @@ _soundSettings:
   driveFileTypeWarnDescription: "音声ファイルを選択してください"
   driveFileDurationWarn: "音声が長すぎます"
   driveFileDurationWarnDescription: "長い音声を使用するとMisskeyの使用に支障をきたす可能性があります。それでも続行しますか？"
+  driveFileError: "音声が読み込めませんでした。設定を変更してください"
 
 _ago:
   future: "未来"
