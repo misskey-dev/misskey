@@ -2426,7 +2426,6 @@ _webhookSettings:
   modifyWebhook: "Modify Webhook"
   name: "Name"
   secret: "Secret"
-  events: "Webhook Events"
   active: "Enabled"
   _events:
     follow: "When following a user"
