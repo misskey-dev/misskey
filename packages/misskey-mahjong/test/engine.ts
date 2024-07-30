@@ -25,6 +25,8 @@ class TileSetBuilder {
 		n: null,
 	};
 
+	private tiles = new Map<number, TileId>;
+
 	public setHandTiles(house: Common.House, tileTypes: TileType[]): this {
 		if (this.handTiles[house] != null) {
 			throw new TypeError(`Hand tiles of house '${house}' is already set`);
@@ -43,6 +45,20 @@ class TileSetBuilder {
 		return this;
 	}
 
+	public setTile(n: number, tileType: TileType): this {
+		if (this.tiles.has(n)) {
+			throw new TypeError(`${n}th tile is already set`);
+		}
+
+		const index = this.restTiles.find(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tileType);
+		if (index == null) {
+			throw new TypeError(`Tile '${tileType}' is not left`);
+		}
+		this.tiles.set(n, this.restTiles.splice(index, 1)[0]);
+
+		return this;
+	}
+
 	public build(): Pick<MasterState, 'tiles' | 'kingTiles' | 'handTiles'> {
 		const handTiles: MasterState['handTiles'] = {
 			e: this.handTiles.e ?? this.restTiles.splice(0, 14),
@@ -53,8 +69,13 @@ class TileSetBuilder {
 
 		const kingTiles: MasterState['kingTiles'] = this.restTiles.splice(0, 14);
 
+		const tiles = [...this.restTiles];
+		for (const [n, tile] of [...this.tiles.entries()].sort(([n1], [n2]) => n1 - n2)) {
+			tiles.splice(n, 0, tile);
+		}
+
 		return {
-			tiles: this.restTiles,
+			tiles,
 			kingTiles,
 			handTiles,
 		};
@@ -67,5 +88,22 @@ describe('Master game engine', () => {
 			new TileSetBuilder().setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3']).build(),
 		));
 		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tenho']);
+	});
+
+	it('chiho', () => {
+		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
+			new TileSetBuilder()
+				.setHandTiles('s', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3'])
+				.setTile(0, 'm3')
+				.build(),
+		));
+		engine.commit_dahai('e', engine.$state.handTiles.e.at(-1)!);
+		engine.commit_resolveCallingInterruption({
+			pon: false,
+			cii: false,
+			kan: false,
+			ron: []
+		});
+		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['chiho']);
 	});
 });
