@@ -342,7 +342,7 @@ export class MasterGameEngine {
 		return this.stateManager.turn;
 	}
 
-	public static createInitialState(): MasterState {
+	public static createInitialState(preset: Partial<MasterState>): MasterState {
 		const ikasama: TileId[] = [125, 129, 9, 56, 57, 61, 77, 81, 85, 133, 134, 135, 121, 122];
 
 		const tiles = shuffle([...Common.TILE_ID_MAP.keys()]);
@@ -432,6 +432,7 @@ export class MasterGameEngine {
 				cii: null,
 				kan: null,
 			},
+			...preset,
 		};
 	}
 
@@ -666,7 +667,7 @@ export class MasterGameEngine {
 	 * ツモ和了
 	 * @param house
 	 */
-	public commit_tsumoHora(house: House) {
+	public commit_tsumoHora(house: House, doLog = true) {
 		const tx = this.startTransaction();
 
 		if (tx.$state.turn !== house) throw new Error('Not your turn');
@@ -694,13 +695,14 @@ export class MasterGameEngine {
 		tx.$state.points.s += pointDeltas.s;
 		tx.$state.points.w += pointDeltas.w;
 		tx.$state.points.n += pointDeltas.n;
-		console.log('yakus', house, yakus);
+		if (doLog) console.log('yakus', house, yakus);
 
 		tx.$commit();
 
 		return {
 			handTiles: tx.$state.handTiles[house],
 			tsumoTile: tx.$state.handTiles[house].at(-1)!,
+			yakus,
 		};
 	}
 
