@@ -257,6 +257,10 @@ export interface Locale extends ILocale {
      */
     "searchUser": string;
     /**
+     * ユーザーのノートを検索
+     */
+    "searchThisUsersNotes": string;
+    /**
      * 返信
      */
     "reply": string;
@@ -796,6 +800,10 @@ export interface Locale extends ILocale {
      * ホスト
      */
     "host": string;
+    /**
+     * 自分を選択
+     */
+    "selectSelf": string;
     /**
      * ユーザーを選択
      */
@@ -4492,6 +4500,10 @@ export interface Locale extends ILocale {
      * ユーザー指定
      */
     "specifyUser": string;
+    /**
+     * ホスト指定
+     */
+    "specifyHost": string;
     /**
      * プレビューできません
      */

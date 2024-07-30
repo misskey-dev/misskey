@@ -4939,6 +4939,11 @@ export type components = {
       serverRules: string[];
       themeColor: string | null;
       policies: components['schemas']['RolePolicies'];
+      /**
+       * @default local
+       * @enum {string}
+       */
+      noteSearchableScope: 'local' | 'global';
     };
     MetaDetailedOnly: {
       features?: {
