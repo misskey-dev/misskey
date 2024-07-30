@@ -71,9 +71,9 @@ const pagination = {
 		sort: sort.value,
 		host: host.value !== '' ? host.value : null,
 		...(
-			state.value === 'federating' ? { federating: true } :
-			state.value === 'subscribing' ? { subscribing: true } :
-			state.value === 'publishing' ? { publishing: true } :
+			state.value === 'federating' ? { federating: true, suspended: false, blocked: false } :
+			state.value === 'subscribing' ? { subscribing: true, suspended: false, blocked: false } :
+			state.value === 'publishing' ? { publishing: true, suspended: false, blocked: false } :
 			state.value === 'suspended' ? { suspended: true } :
 			state.value === 'blocked' ? { blocked: true } :
 			state.value === 'silenced' ? { silenced: true } :
