@@ -259,7 +259,7 @@ const canPost = computed((): boolean => {
 			1 <= files.value.length ||
 			poll.value != null ||
 			props.renote != null ||
-			(props.reply != null && quoteId.value != null)
+			quoteId.value != null
 		) &&
 		(textLength.value <= maxTextLength.value) &&
 		(!poll.value || poll.value.choices.length >= 2);
