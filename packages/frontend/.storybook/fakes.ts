@@ -162,7 +162,7 @@ export function note(id = 'somenoteid'): entities.Note {
 		userId: 'someuserid',
 		user: userLite(),
 		visibility: 'public',
-		reactionAcceptance: 'public',
+		reactionAcceptance: 'nonSensitiveOnly',
 		reactionEmojis: {},
 		reactions: {},
 		myReaction: null,
