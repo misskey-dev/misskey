@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="_buttons">
 		<MkButton inline @click="listen"><i class="ti ti-player-play"></i> {{ i18n.ts.listen }}</MkButton>
-		<MkButton inline primary :disabled="hasChanged === false || driveFileError === true" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton inline primary :disabled="!hasChanged || driveFileError" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
