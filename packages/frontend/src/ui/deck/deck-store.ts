@@ -6,6 +6,7 @@
 import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
+import type { BasicTimelineType } from '@/timelines.js';
 import { Storage } from '@/pizzax.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -45,7 +46,7 @@ export type Column = {
 	channelId?: string;
 	roleId?: string;
 	excludeTypes?: typeof notificationTypes[number][];
-	tl?: 'home' | 'local' | 'social' | 'global';
+	tl?: BasicTimelineType;
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
