@@ -8,9 +8,10 @@
 
 ### Server
 -->
-## nade next release
+## nade 1.5.6
 ### Client
 - Fix: マージミスによる存在しない変数が呼ばれる問題を修正
+- 2024.7.0マージに伴うコーディングスタイルの調整
 
 ## nade 1.5.5
 ### Server
