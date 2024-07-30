@@ -64,14 +64,17 @@ async function setAntenna() {
 	if (canceled || antenna == null) return;
 
 	if (antenna === '_CREATE_') {
-		os.popup(defineAsyncComponent(() => import('@/components/MkAntennaEditorDialog.vue')), {}, {
-			created(newAntenna: MisskeyEntities.Antenna) {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAntennaEditorDialog.vue')), {}, {
+			created: (newAntenna: MisskeyEntities.Antenna) => {
 				antennasCache.delete();
 				updateColumn(props.column.id, {
 					antennaId: newAntenna.id,
 				});
 			},
-		}, 'closed');
+			closed: () => {
+				dispose();
+			},
+		});
 		return;
 	}
 
