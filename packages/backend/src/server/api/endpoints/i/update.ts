@@ -498,7 +498,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
-			if (Object.keys(_profileUpdates).length > 0 || profile.verifiedLinks.length > 0) {
+			if (
+				Object.keys(_profileUpdates).length > 0 ||
+				profile.fields.filter(x => x.value.startsWith('https://')).length > 0 ||
+				profile.verifiedLinks.length > 0
+			) {
 				await this.userProfilesRepository.update(user.id, {
 					..._profileUpdates,
 					verifiedLinks: [],
