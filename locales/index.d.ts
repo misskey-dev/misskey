@@ -257,6 +257,10 @@ export interface Locale extends ILocale {
      */
     "searchUser": string;
     /**
+     * ユーザーのノートを検索
+     */
+    "searchThisUsersNotes": string;
+    /**
      * 返信
      */
     "reply": string;
@@ -633,6 +637,10 @@ export interface Locale extends ILocale {
      */
     "editAntenna": string;
     /**
+     * アンテナを作成
+     */
+    "createAntenna": string;
+    /**
      * ウィジェットを選択
      */
     "selectWidget": string;
@@ -737,6 +745,22 @@ export interface Locale extends ILocale {
      */
     "showOnRemote": string;
     /**
+     * リモートで続行
+     */
+    "continueOnRemote": string;
+    /**
+     * Misskey Hubからサーバーを選択
+     */
+    "chooseServerOnMisskeyHub": string;
+    /**
+     * サーバーのドメインを直接指定
+     */
+    "specifyServerHost": string;
+    /**
+     * ドメインを入力してください
+     */
+    "inputHostName": string;
+    /**
      * 全般
      */
     "general": string;
@@ -776,6 +800,10 @@ export interface Locale extends ILocale {
      * ホスト
      */
     "host": string;
+    /**
+     * 自分を選択
+     */
+    "selectSelf": string;
     /**
      * ユーザーを選択
      */
@@ -1921,9 +1949,13 @@ export interface Locale extends ILocale {
      */
     "onlyOneFileCanBeAttached": string;
     /**
-     * 続行する前に、サインアップまたはサインインが必要です
+     * 続行する前に、登録またはログインが必要です
      */
     "signinRequired": string;
+    /**
+     * 続行するには、お使いのサーバーに移動するか、このサーバーに登録・ログインする必要があります
+     */
+    "signinOrContinueOnRemote": string;
     /**
      * 招待
      */
@@ -4421,6 +4453,14 @@ export interface Locale extends ILocale {
      */
     "archive": string;
     /**
+     * アーカイブ済み
+     */
+    "archived": string;
+    /**
+     * アーカイブ解除
+     */
+    "unarchive": string;
+    /**
      * {name}をアーカイブしますか？
      */
     "channelArchiveConfirmTitle": ParameterizedString<"name">;
@@ -4460,6 +4500,10 @@ export interface Locale extends ILocale {
      * ユーザー指定
      */
     "specifyUser": string;
+    /**
+     * ホスト指定
+     */
+    "specifyHost": string;
     /**
      * プレビューできません
      */
@@ -4984,6 +5028,26 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     "inquiry": string;
+    /**
+     * もう一度お試しください。
+     */
+    "tryAgain": string;
+    /**
+     * センシティブなメディアを表示するとき確認する
+     */
+    "confirmWhenRevealingSensitiveMedia": string;
+    /**
+     * センシティブなメディアです。表示しますか？
+     */
+    "sensitiveMediaRevealConfirm": string;
+    /**
+     * 作成したリスト
+     */
+    "createdLists": string;
+    /**
+     * 作成したアンテナ
+     */
+    "createdAntennas": string;
     "_delivery": {
         /**
          * 配信状態
@@ -6595,6 +6659,10 @@ export interface Locale extends ILocale {
              */
             "alwaysMarkNsfw": string;
             /**
+             * アイコンとバナーの更新を許可
+             */
+            "canUpdateBioMedia": string;
+            /**
              * ノートのピン留めの最大数
              */
             "pinMax": string;
@@ -7515,14 +7583,6 @@ export interface Locale extends ILocale {
          * 通知
          */
         "notification": string;
-        /**
-         * アンテナ受信
-         */
-        "antenna": string;
-        /**
-         * チャンネル通知
-         */
-        "channel": string;
         /**
          * リアクション選択時
          */
@@ -9364,6 +9424,10 @@ export interface Locale extends ILocale {
              * ユーザーからの通報を処理したとき
              */
             "abuseReportResolved": string;
+            /**
+             * ユーザーが作成されたとき
+             */
+            "userCreated": string;
         };
         /**
          * Webhookを削除しますか？
@@ -10065,6 +10129,24 @@ export interface Locale extends ILocale {
          * ループ再生
          */
         "loop": string;
+    };
+    "_contextMenu": {
+        /**
+         * コンテキストメニュー
+         */
+        "title": string;
+        /**
+         * アプリケーション
+         */
+        "app": string;
+        /**
+         * Shiftキーでアプリケーション
+         */
+        "appWithShift": string;
+        /**
+         * ブラウザのUI
+         */
+        "native": string;
     };
 }
 declare const locales: {

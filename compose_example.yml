@@ -17,6 +17,8 @@ services:
     networks:
       - internal_network
       - external_network
+    # env_file:
+    #   - .config/docker.env
     volumes:
       - ./files:/misskey/files
       - ./.config:/misskey/.config:ro

@@ -172,7 +172,7 @@ export function note(id = 'somenoteid'): entities.Note {
 	};
 }
 
-export function userLite(id = 'someuserid', username = 'miskist', host = 'misskey-hub.net', name = 'Misskey User'): entities.UserLite {
+export function userLite(id = 'someuserid', username = 'miskist', host: entities.UserDetailed['host'] = 'misskey-hub.net', name: entities.UserDetailed['name'] = 'Misskey User'): entities.UserLite {
 	return {
 		id,
 		username,
@@ -186,7 +186,7 @@ export function userLite(id = 'someuserid', username = 'miskist', host = 'misske
 	};
 }
 
-export function userDetailed(id = 'someuserid', username = 'miskist', host = 'misskey-hub.net', name = 'Misskey User'): entities.UserDetailed {
+export function userDetailed(id = 'someuserid', username = 'miskist', host: entities.UserDetailed['host'] = 'misskey-hub.net', name: entities.UserDetailed['name'] = 'Misskey User'): entities.UserDetailed {
 	return {
 		...userLite(id, username, host, name),
 		bannerBlurhash: 'eQA^IW^-MH8w9tE8I=S^o{$*R4RikXtSxutRozjEnNR.RQadoyozog',
