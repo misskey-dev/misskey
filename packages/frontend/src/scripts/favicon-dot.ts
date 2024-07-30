@@ -20,7 +20,7 @@ class FaviconDot {
 	 * Must be called before calling any other functions
 	 */
 	public async setup() {
-		const element: HTMLLinkElement = await this.getOrMakeFaviconElement();
+		const element: HTMLLinkElement = await this.getOrMakeFaviconEl();
 
 		this.faviconEl = element;
 		this.ctx = this.canvas.getContext('2d');
@@ -46,9 +46,9 @@ class FaviconDot {
 		this.faviconImage.src = this.faviconEl.href;
 	}
 
-	private async getOrMakeFaviconElement(): Promise<HTMLLinkElement> {
+	private async getOrMakeFaviconEl(): Promise<HTMLLinkElement> {
 		return new Promise((resolve, reject) => {
-			const favicon = document.querySelector<HTMLLinkElement>('link[rel=icon]') ?? this.createFaviconElem();
+			const favicon = document.querySelector<HTMLLinkElement>('link[rel=icon]') ?? this.createFaviconEl();
 			favicon.addEventListener('load', () => {
 				resolve(favicon);
 			});
@@ -60,7 +60,7 @@ class FaviconDot {
 		});
 	}
 
-	private createFaviconElem() {
+	private createFaviconEl() {
 		const newLink = document.createElement('link');
 		newLink.setAttribute('rel', 'icon');
 		newLink.setAttribute('href', '/favicon.ico');
