@@ -36,7 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
-				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+				<template v-for="item in select.items">
+					<optgroup v-if="'sectionTitle' in item" :label="item.sectionTitle">
+						<option v-for="subItem in item.items" :value="subItem.value">{{ subItem.text }}</option>
+					</optgroup>
+					<option v-else :value="item.value">{{ item.text }}</option>
+				</template>
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
@@ -67,11 +72,16 @@ type Input = {
 	maxLength?: number;
 };
 
+type SelectItem = {
+	value: any;
+	text: string;
+};
+
 type Select = {
-	items: {
-		value: any;
-		text: string;
-	}[];
+	items: (SelectItem | {
+		sectionTitle: string;
+		items: SelectItem[];
+	})[];
 	default: string | null;
 };
 
