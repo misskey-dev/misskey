@@ -6091,6 +6091,11 @@ export type operations = {
           untilId?: string;
           /** Format: misskey:id */
           userId?: string | null;
+          /**
+           * @default active
+           * @enum {string}
+           */
+          status?: 'all' | 'active' | 'archived';
         };
       };
     };
