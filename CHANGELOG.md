@@ -109,6 +109,8 @@
   - NOTE: `drive_file`の`url`, `uri`, `src`の上限が512から1024に変更されます
 	  Migrationではカラム定義の変更のみが行われます。
 		サーバー管理者は各サーバーの必要に応じ`drive_file` `("uri")`に対するインデックスを張りなおすことでより安定しDBの探索が行われる可能性があります。詳細 は [GitHub](https://github.com/misskey-dev/misskey/pull/14323#issuecomment-2257562228)で確認可能です
+- Fix: 自分のフォロワー限定投稿に対するリプライがホームタイムラインで見えないことが有る問題を修正
+- Fix: フォローしていないユーザによるフォロワー限定投稿に対するリプライがソーシャルタイムラインで表示されることがある問題を修正
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
