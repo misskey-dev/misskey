@@ -9,6 +9,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HashtagChannel extends Channel {
@@ -28,10 +29,10 @@ class HashtagChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
+		if (!Array.isArray(params.q)) return;
+		if (!params.q.every(x => Array.isArray(x) && x.every(y => typeof y === 'string'))) return;
 		this.q = params.q;
-
-		if (this.q == null) return;
 
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);

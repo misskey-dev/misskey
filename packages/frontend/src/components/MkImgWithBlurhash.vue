@@ -151,21 +151,25 @@ function drawImage(bitmap: CanvasImageSource) {
 }
 
 function drawAvg() {
-	if (!canvas.value || !props.hash) return;
+	if (!canvas.value) return;
+
+	const color = (props.hash != null && extractAvgColorFromBlurhash(props.hash)) || '#888';
 
 	const ctx = canvas.value.getContext('2d');
 	if (!ctx) return;
 
 	// avgColorでお茶をにごす
 	ctx.beginPath();
-	ctx.fillStyle = extractAvgColorFromBlurhash(props.hash) ?? '#888';
+	ctx.fillStyle = color;
 	ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value);
 }
 
 async function draw() {
-	if (props.hash == null) return;
+	if (import.meta.env.MODE === 'test' && props.hash == null) return;
 
 	drawAvg();
+
+	if (props.hash == null) return;
 
 	if (props.onlyAvgColor) return;
 

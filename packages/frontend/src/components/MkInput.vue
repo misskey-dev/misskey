@@ -79,7 +79,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'change', _ev: KeyboardEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
-	(ev: 'enter'): void;
+	(ev: 'enter', _ev: KeyboardEvent): void;
 	(ev: 'update:modelValue', value: string | number): void;
 }>();
 
@@ -111,7 +111,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
-		emit('enter');
+		emit('enter', ev);
 	}
 };
 
