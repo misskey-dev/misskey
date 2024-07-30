@@ -148,4 +148,19 @@ describe('Master game engine', () => {
 		tsumogiriAndIgnore(engine);
 		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tsumo', 'double-riichi', 'ippatsu']);
 	});
+
+	it('double-riichi haitei tsumo', () => {
+		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
+			new TileSetBuilder()
+				.setHandTiles('s', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3'])
+				.setTile(-1, 'm3')
+				.build(),
+		));
+		tsumogiriAndIgnore(engine);
+		tsumogiriAndIgnore(engine, true);
+		while (engine.$state.tiles.length > 0) {
+			tsumogiriAndIgnore(engine);
+		}
+		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['tsumo', 'double-riichi', 'haitei']);
+	});
 });
