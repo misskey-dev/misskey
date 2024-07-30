@@ -9,13 +9,19 @@
 - Feat: ユーザーのアイコン/バナーの変更可否をロールで設定可能に
   - 変更不可となっていても、設定済みのものを解除してデフォルト画像に戻すことは出来ます
 - Feat: ユーザ作成時にSystemWebhookを送信可能に #14281
+- Enhance: 管理画面でアーカイブにしたお知らせを表示・編集できるように
 - Feat: カスタム絵文字管理画面をリニューアル #10996
 	* β版として公開のため、旧画面も引き続き利用可能です
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
+- 翻訳の更新
+- 依存関係の更新
 
 ### Client
+- Feat: ユーザーページから「このユーザーのノートを検索」できるように (#14128)
+- Feat: 検索ページはクエリを受け付けるようになりました (#14128)
+- Enhance: 検索ページのUI改善 (#14128)
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
 - Enhance: 非ログイン時に他サーバーに遷移するアクションを追加
 - Enhance: 非ログイン時のハイライトTLのデザインを改善
@@ -26,6 +32,15 @@
 - Enhance: AiScriptを0.19.0にアップデート
 - Enhance: Allow negative delay for MFM animation elements (`tada`, `jelly`, `twitch`, `shake`, `spin`, `jump`, `bounce`, `rainbow`)
 - Enhance: センシティブなメディアを開く際に確認ダイアログを出せるように
+- Enhance: 検索(ノート/ユーザー)で `#` から始まる文字列を入力すると、そのハッシュタグのノート/ユーザー一覧ページが表示できるように
+- Enhance: 検索(ノート/ユーザー)において、入力に空白が含まれている場合は照会を行わないように
+- Enhance: 検索(ノート/ユーザー)において、照会を行うかどうか、ハッシュタグのノート/ユーザー一覧ページを表示するかどうかの確認ダイアログを出すように
+- Enhance: 検索(ノート/ユーザー)で `@` から始まる文字列(`@user@host`など)を入力すると、そのユーザーを照会できるように
+- Enhance: ドライブのファイル・フォルダをドラッグしなくても移動できるように  
+  (Cherry-picked from https://github.com/nafu-at/misskey/commit/b89c2af6945c6a9f9f10e83f54d2bcf0f240b0b4, https://github.com/nafu-at/misskey/commit/8a7d710c6acb83f50c83f050bd1423c764d60a99)
+- Enhance: デッキのアンテナ・リスト選択画面からそれぞれを新規作成できるように
+- Enhance: ブラウザのコンテキストメニューを使用できるように
+- Enhance: 連合の「連合中」,「購読中」,「配信中」に対してブロックしているサーバー、配信停止しているサーバーを含めないように
 - Fix: `/about#federation` ページなどで各インスタンスのチャートが表示されなくなっていた問題を修正
 - Fix: ユーザーページの追加情報のラベルを投稿者のサーバーの絵文字で表示する (#13968)
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
@@ -48,6 +63,9 @@
 - Fix: ダイレクト投稿の"削除して編集"において、宛先が保持されていなかった問題を修正
 - Fix: 投稿フォームへのURL貼り付けによる引用が下書きに保存されていなかった問題を修正
 - Fix: "削除して編集"や下書きにおいて、リアクションの受け入れ設定が保持/保存されていなかった問題を修正
+- Fix: 照会に `#` から始まる文字列を入力してそのハッシュタグのページを表示する際、入力が `#` のみの場合に「指定されたURLに該当するページはありませんでした。」が表示されてしまう問題を修正
+- Fix: 照会に `@` から始まる文字列を入力してユーザーを照会する際、入力が `@` のみの場合に「問題が発生しました」が表示されてしまう問題を修正
+- Fix: 投稿フォームにノートのURLを貼り付けて"引用として添付"した場合、投稿文を空にすることによるRenote化が出来なかった問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -58,6 +76,7 @@
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
 - Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
+- Enhance: エンドポイント`api/meta`にプロパティ`noteSearchableScope`が増え、`string`値`local`または`global`を返却します
 - Fix: チャート生成時にinstance.suspensionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
@@ -85,6 +104,13 @@
 - Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
   (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
 - Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
+- Fix: `users/search`において `@` から始まる文字列が与えられた際の処理が正しくなかった問題を修正
+  - 名前や自己紹介に `@` から始まる文言が含まれるユーザーも検索できるようになります
+- Fix: 一部のMisskey以外のソフトウェアからファイルを受け取れない問題
+  (Cherry-picked from https://github.com/Secineralyr/misskey.dream/pull/73/commits/652eaff1e8aa00b890d71d2e1e52c263c1e67c76)
+  - NOTE: `drive_file`の`url`, `uri`, `src`の上限が512から1024に変更されます
+	  Migrationではカラム定義の変更のみが行われます。
+		サーバー管理者は各サーバーの必要に応じ`drive_file` `("uri")`に対するインデックスを張りなおすことでより安定しDBの探索が行われる可能性があります。詳細 は [GitHub](https://github.com/misskey-dev/misskey/pull/14323#issuecomment-2257562228)で確認可能です
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）

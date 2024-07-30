@@ -155,7 +155,7 @@ export function federationInstance(): entities.FederationInstance {
 	};
 }
 
-export function userDetailed(id = 'someuserid', username = 'miskist', host = 'misskey-hub.net', name = 'Misskey User'): entities.UserDetailed {
+export function userDetailed(id = 'someuserid', username = 'miskist', host:entities.UserDetailed['host'] = 'misskey-hub.net', name:entities.UserDetailed['name'] = 'Misskey User'): entities.UserDetailed {
 	return {
 		id,
 		username,
