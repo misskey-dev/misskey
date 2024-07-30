@@ -31,7 +31,7 @@ border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
 
-type MfmProps = {
+export type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;

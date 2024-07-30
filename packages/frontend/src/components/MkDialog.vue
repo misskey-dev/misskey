@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
-		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
-		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
+		<header v-if="title" :class="$style.title"><span v-if="titleMfm === null">{{ title ?? '' }}</span><Mfm v-else v-bind="titleMfm"/></header>
+		<div v-if="text" :class="$style.text"><span v-if="textMfm === null">{{ text ?? '' }}</span><Mfm v-else v-bind="textMfm"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
-			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
+			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason != null" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
@@ -55,12 +55,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModal>
 </template>
 
+<script lang="ts">
+import * as Misskey from 'misskey-js';
+
+export type DialogTextFormattingProps = string | {
+	text: string;
+	disableMfm?: false;
+	plain?: boolean;
+	author?: Misskey.entities.UserLite;
+	emojiUrls?: Record<string, string>;
+} | {
+	text: string;
+	disableMfm: true;
+};
+</script>
+
 <script lang="ts" setup>
 import { ref, shallowRef, computed } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import type { MfmProps } from '@/components/global/MkMisskeyFlavoredMarkdown.js';
 import { i18n } from '@/i18n.js';
 
 type Input = {
@@ -89,8 +105,8 @@ type Result = string | number | true | null;
 
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	input?: Input;
 	select?: Select;
 	icon?: string;
@@ -116,6 +132,30 @@ const emit = defineEmits<{
 	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;
 	(ev: 'closed'): void;
 }>();
+
+const titleMfm = computed<MfmProps | null>(() => {
+	if (props.title == null) return { text: '' };
+	if (typeof props.title === 'string') return { text: props.title };
+	if (props.title.disableMfm === true) return null;
+	return {
+		text: props.title.text,
+		plain: props.title.plain,
+		author: props.title.author,
+		emojiUrls: props.title.emojiUrls,
+	};
+});
+
+const textMfm = computed<MfmProps | null>(() => {
+	if (props.text == null) return { text: '' };
+	if (typeof props.text === 'string') return { text: props.text };
+	if (props.text.disableMfm === true) return null;
+	return {
+		text: props.text.text,
+		plain: props.text.plain,
+		author: props.text.author,
+		emojiUrls: props.text.emojiUrls,
+	};
+});
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
