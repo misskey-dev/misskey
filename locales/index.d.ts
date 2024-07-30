@@ -9396,6 +9396,10 @@ export interface Locale extends ILocale {
              * ユーザーからの通報を処理したとき
              */
             "abuseReportResolved": string;
+            /**
+             * ユーザーが作成されたとき
+             */
+            "userCreated": string;
         };
         /**
          * Webhookを削除しますか？
