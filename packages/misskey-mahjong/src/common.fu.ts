@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { FourMentsuOneJyantou, mentsuEquals, TILE_NUMBER_MAP, TileType } from "./common.js";
 
 export type Shape = 'fourMentsuOneJyantou' | 'chitoitsu' | 'kokushi';
