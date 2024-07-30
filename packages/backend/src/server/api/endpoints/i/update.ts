@@ -477,15 +477,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.hashtagService.updateUsertags(user, tags);
 			//#endregion
 
-			if (Object.keys(updates).length > 0) {
-				await this.usersRepository.update(user.id, updates);
+			//#region 変更されていないプロパティを削除
+			const _updates = getObjKeys(updates).reduce<Partial<MiUser>>((acc, key) => {
+				if (updates[key] != null && updates[key] !== user[key]) {
+					(acc[key] as MiUser[typeof key]) = updates[key];
+				}
+				return acc;
+			}, {});
+
+			const _profileUpdates = getObjKeys(profileUpdates).reduce<Partial<MiUserProfile>>((acc, key) => {
+				if (profileUpdates[key] != null && profileUpdates[key] !== profile[key]) {
+					(acc[key] as MiUserProfile[typeof key]) = profileUpdates[key];
+				}
+				return acc;
+			}, {});
+			//#endregion
+
+			if (Object.keys(_updates).length > 0) {
+				await this.usersRepository.update(user.id, _updates);
 				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
-			await this.userProfilesRepository.update(user.id, {
-				...profileUpdates,
-				verifiedLinks: [],
-			});
+			if (Object.keys(_profileUpdates).length > 0 || profile.verifiedLinks.length > 0) {
+				await this.userProfilesRepository.update(user.id, {
+					..._profileUpdates,
+					verifiedLinks: [],
+				});
+			}
 
 			const iObj = await this.userEntityService.pack(user.id, user, {
 				schema: 'MeDetailed',
@@ -506,8 +524,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// 連合する必要があるプロパティが変更されている場合はフォロワーにUpdateを配信
 			if (
-				miLocalUserKeysUsedForApPersonRender.some(k => getObjKeys(updates).includes(k)) ||
-				miUserProfileKeysUsedForApPersonRender.some(k => getObjKeys(profileUpdates).includes(k))
+				miLocalUserKeysUsedForApPersonRender.some(k => getObjKeys(_updates).includes(k)) ||
+				miUserProfileKeysUsedForApPersonRender.some(k => getObjKeys(_profileUpdates).includes(k))
 			) {
 				this.accountUpdateService.publishToFollowers(user.id);
 			}
