@@ -33,8 +33,8 @@ class TileSetBuilder {
 		}
 
 		const tiles = tileTypes.map(tile => {
-			const index = this.restTiles.find(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tile);
-			if (index == null) {
+			const index = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tile);
+			if (index == -1) {
 				throw new TypeError(`Tile '${tile}' is not left`);
 			}
 			return this.restTiles.splice(index, 1)[0];
@@ -45,13 +45,20 @@ class TileSetBuilder {
 		return this;
 	}
 
+	/**
+	 * 山のn番目（0始まり)の牌を指定する。nが負の場合、海底を-1として海底側から数える
+	 */
 	public setTile(n: number, tileType: TileType): this {
+		if (n < 0) {
+			n += 69;
+		}
+
 		if (this.tiles.has(n)) {
 			throw new TypeError(`${n}th tile is already set`);
 		}
 
-		const index = this.restTiles.find(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tileType);
-		if (index == null) {
+		const index = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tileType);
+		if (index == -1) {
 			throw new TypeError(`Tile '${tileType}' is not left`);
 		}
 		this.tiles.set(n, this.restTiles.splice(index, 1)[0]);
@@ -98,12 +105,17 @@ describe('Master game engine', () => {
 				.build(),
 		));
 		engine.commit_dahai('e', engine.$state.handTiles.e.at(-1)!);
-		engine.commit_resolveCallingInterruption({
-			pon: false,
-			cii: false,
-			kan: false,
-			ron: []
-		});
 		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['chiho']);
+	});
+
+	it('rinshan', () => {
+		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
+			new TileSetBuilder()
+			.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'n'])
+			.setTile(-1, 'm3')
+			.build(),
+		));
+		engine.commit_ankan('e', engine.$state.handTiles.e.at(-1)!);
+		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tsumo', 'rinshan']);
 	});
 });
