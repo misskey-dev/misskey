@@ -1249,6 +1249,8 @@ noDescription: "説明文はありません"
 alwaysConfirmFollow: "フォローの際常に確認する"
 inquiry: "お問い合わせ"
 tryAgain: "もう一度お試しください。"
+confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示するとき確認する"
+sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
 
@@ -2492,6 +2494,7 @@ _webhookSettings:
   _systemEvents:
     abuseReport: "ユーザーから通報があったとき"
     abuseReportResolved: "ユーザーからの通報を処理したとき"
+    userCreated: "ユーザーが作成されたとき"
   deleteConfirm: "Webhookを削除しますか？"
 
 _abuseReport:

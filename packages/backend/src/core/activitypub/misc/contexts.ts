@@ -134,7 +134,6 @@ const security_v1 = {
 		'privateKey': { '@id': 'sec:privateKey', '@type': '@id' },
 		'privateKeyPem': 'sec:privateKeyPem',
 		'publicKey': { '@id': 'sec:publicKey', '@type': '@id' },
-		'additionalPublicKeys': { '@id': 'sec:publicKey', '@type': '@id' },
 		'publicKeyBase58': 'sec:publicKeyBase58',
 		'publicKeyPem': 'sec:publicKeyPem',
 		'publicKeyWif': 'sec:publicKeyWif',
