@@ -1055,4 +1055,28 @@ describe('Yaku', () => {
 			}).includes('churen-9'), false);
 		});
 	});
+
+	describe('tenho', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
+				huros: [],
+				tsumoTile: 'm3',
+				firstTurn: true,
+			}), ['tenho']);
+		});
+	});
+
+	describe('chiho', () => {
+		it('valid', () => {
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 's',
+				handTiles: ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3'],
+				huros: [],
+				tsumoTile: 'm3',
+				firstTurn: true,
+			}), ['chiho']);
+		});
+	});
 });

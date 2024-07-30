@@ -111,6 +111,11 @@ export type EnvForCalcYaku = {
 	seatWind?: House;
 
 	/**
+	 * 局が始まってから誰の副露もない一巡目かどうか
+	 */
+	firstTurn?: boolean;
+
+	/**
 	 * リーチしたかどうか
 	 */
 	riichi?: boolean;
@@ -872,6 +877,18 @@ export const YAKUMAN_DEFINITIONS: YakuDefinition[] = [{
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
 		return KOKUSHI_TILES.every(t => state.handTiles.includes(t)) && KOKUSHI_TILES.some(t => countTiles(state.handTiles, t) == 2);
 	},
+}, {
+	name: 'tenho',
+	isYakuman: true,
+	calc: (state: EnvForCalcYaku) => {
+		return (state.firstTurn ?? false) && state.tsumoTile != null && state.seatWind == 'e';
+	}
+}, {
+	name: 'chiho',
+	isYakuman: true,
+	calc: (state: EnvForCalcYaku) => {
+		return (state.firstTurn ?? false) && state.tsumoTile != null && state.seatWind != 'e';
+	}
 }];
 
 export function convertHuroForCalcYaku(huro: Huro): HuroForCalcYaku {
