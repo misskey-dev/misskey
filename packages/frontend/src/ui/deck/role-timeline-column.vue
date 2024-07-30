@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -53,7 +53,7 @@ async function setRole() {
 		})),
 		default: props.column.roleId,
 	});
-	if (canceled) return;
+	if (canceled || role == null) return;
 	updateColumn(props.column.id, {
 		roleId: role.id,
 	});

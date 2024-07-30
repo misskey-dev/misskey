@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -91,7 +91,7 @@ const host = ref('');
 const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
-const dialogEl = ref();
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function search() {
 	if (username.value === '' && host.value === '') {
@@ -122,7 +122,7 @@ async function ok() {
 	});
 	emit('ok', user);
 
-	dialogEl.value.close();
+	dialogEl.value?.close();
 
 	// 最近使ったユーザー更新
 	let recents = defaultStore.state.recentlyUsedUsers;
@@ -133,7 +133,7 @@ async function ok() {
 
 function cancel() {
 	emit('cancel');
-	dialogEl.value.close();
+	dialogEl.value?.close();
 }
 
 onMounted(() => {

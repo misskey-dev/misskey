@@ -13,6 +13,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import type {
 	DbJobData,
 	DeliverJobData,
@@ -32,7 +33,7 @@ import type {
 	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
 } from './QueueModule.js';
-import { genRFC3230DigestHeader, type PrivateKeyWithPem, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
 
 @Injectable()
@@ -89,21 +90,21 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, privateKey?: PrivateKeyWithPem) {
+	public deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
 		if (content == null) return null;
 		if (to == null) return null;
 
 		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const data: DeliverJobData = {
 			user: {
 				id: user.id,
 			},
 			content: contentBody,
-			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
+			digest,
 			to,
 			isSharedInbox,
-			privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
 		};
 
 		return this.deliverQueue.add(to, data, {
@@ -121,13 +122,13 @@ export class QueueService {
 	 * @param user `{ id: string; }` この関数ではThinUserに変換しないので前もって変換してください
 	 * @param content IActivity | null
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (whether it is sharedInbox)
-	 * @param forceMainKey boolean | undefined, force to use main (rsa) key
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, privateKey?: PrivateKeyWithPem) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -143,9 +144,9 @@ export class QueueService {
 			data: {
 				user,
 				content: contentBody,
+				digest,
 				to: d[0],
 				isSharedInbox: d[1],
-				privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
 			} as DeliverJobData,
 			opts,
 		})));
@@ -154,7 +155,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public inbox(activity: IActivity, signature: ParsedSignature | null) {
+	public inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
 		const data = {
 			activity: activity,
 			signature,
