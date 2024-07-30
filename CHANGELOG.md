@@ -83,6 +83,9 @@
 - Fix: リノートのミュートが適用されるまでに時間がかかることがある問題を修正  
   (Cherry-picked from https://github.com/Type4ny-Project/Type4ny/commit/e9601029b52e0ad43d9131b555b614e56c84ebc1)
 - Fix: Steaming APIが不正なデータを受けた場合の動作が不安定である問題 #14251
+- Fix: 一部のMisskey以外のソフトウェアからファイルを受け取れない問題
+  (Cherry-picked from https://github.com/Secineralyr/misskey.dream/pull/73/commits/652eaff1e8aa00b890d71d2e1e52c263c1e67c76)
+  - NOTE: `drive_file`の`url`, `uri`, `src`の上限が512から1024に変更されます
 
 ### Misskey.js
 - Feat: `/drive/files/create` のリクエストに対応（`multipart/form-data`に対応）
