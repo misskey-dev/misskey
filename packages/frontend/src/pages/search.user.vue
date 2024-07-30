@@ -25,7 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, toRef } from 'vue';
+import type { Endpoints } from 'misskey-js';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -36,18 +38,27 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useRouter } from '@/router/supplier.js';
 
+const props = withDefaults(defineProps<{
+	query?: string,
+	origin?: Endpoints['users/search']['req']['origin'],
+}>(), {
+	query: '',
+	origin: 'combined',
+});
+
 const router = useRouter();
 
 const key = ref('');
-const searchQuery = ref('');
-const searchOrigin = ref('combined');
-const userPagination = ref();
+const searchQuery = ref(toRef(props, 'query').value);
+const searchOrigin = ref(toRef(props, 'origin').value);
+const userPagination = ref<Paging>();
 
 async function search() {
 	const query = searchQuery.value.toString().trim();
 
 	if (query == null || query === '') return;
 
+	//#region AP lookup
 	if (query.startsWith('https://')) {
 		const promise = misskeyApi('ap/show', {
 			uri: query,
@@ -65,6 +76,7 @@ async function search() {
 
 		return;
 	}
+	//#endregion
 
 	userPagination.value = {
 		endpoint: 'users/search',

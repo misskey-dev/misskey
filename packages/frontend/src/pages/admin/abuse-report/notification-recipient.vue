@@ -108,25 +108,26 @@ async function onDeleteButtonClicked(id: string) {
 }
 
 async function showEditor(mode: 'create' | 'edit', id?: string) {
-	const { dispose, needLoad } = await new Promise<{ dispose: () => void, needLoad: boolean }>(async resolve => {
-		const { dispose: _dispose } = os.popup(
+	const { needLoad } = await new Promise<{ needLoad: boolean }>(async resolve => {
+		const { dispose } = os.popup(
 			defineAsyncComponent(() => import('./notification-recipient.editor.vue')),
 			{
 				mode,
 				id,
 			},
 			{
-				submitted: async () => {
-					resolve({ dispose: _dispose, needLoad: true });
+				submitted: () => {
+					resolve({ needLoad: true });
+				},
+				canceled: () => {
+					resolve({ needLoad: false });
 				},
 				closed: () => {
-					resolve({ dispose: _dispose, needLoad: false });
+					dispose();
 				},
 			},
 		);
 	});
-
-	dispose();
 
 	if (needLoad) {
 		await fetchRecipients();
