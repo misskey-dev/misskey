@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/_.js';
+import type { MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -17,6 +17,9 @@ export class AbuseDiscordHookService {
 		private config: Config,
 
 		private httpRequestService: HttpRequestService,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 	) {
 	}
 
@@ -40,6 +43,18 @@ export class AbuseDiscordHookService {
 					body: JSON.stringify({ content }),
 				});
 			});
+		}
+	}
+
+	@bindThis
+	async sendAll(abuseReports: MiAbuseUserReport[]) {
+		const webhookUrl = this.config.nirila?.abuseDiscordHook;
+		if (webhookUrl) {
+			for (const abuseReport of abuseReports) {
+				const reporter = abuseReport.reporter ?? await this.usersRepository.findOneOrFail({ where: { id: abuseReport.reporterId } });
+				const targetUser = abuseReport.targetUser ?? await this.usersRepository.findOneOrFail({ where: { id: abuseReport.targetUserId } });
+				this.send(reporter, targetUser, abuseReport.comment);
+			}
 		}
 	}
 }
