@@ -102,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			});
 
-			const page = await this.pagesRepository.insert(new MiPage({
+			const page = await this.pagesRepository.insertOne(new MiPage({
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
@@ -117,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				alignCenter: ps.alignCenter,
 				hideTitleWhenPinned: ps.hideTitleWhenPinned,
 				font: ps.font,
-			})).then(x => this.pagesRepository.findOneByOrFail(x.identifiers[0]));
+			}));
 
 			return await this.pageEntityService.pack(page);
 		});

@@ -16,7 +16,7 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js
 import type { Packed } from '@/misc/json-schema.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { WebhookService } from '@/core/WebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
@@ -82,7 +82,7 @@ export class UserFollowingService implements OnModuleInit {
 		private metaService: MetaService,
 		private notificationService: NotificationService,
 		private federatedInstanceService: FederatedInstanceService,
-		private webhookService: WebhookService,
+		private webhookService: UserWebhookService,
 		private apRendererService: ApRendererService,
 		private accountMoveService: AccountMoveService,
 		private fanoutTimelineService: FanoutTimelineService,
@@ -279,8 +279,10 @@ export class UserFollowingService implements OnModuleInit {
 			});
 
 			// 通知を作成
-			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
-			}, followee.id);
+			if (follower.host === null) {
+				this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
+				}, followee.id);
+			}
 		}
 
 		if (alreadyFollowed) return;
@@ -331,7 +333,7 @@ export class UserFollowingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'follow', {
+					this.queueService.userWebhookDeliver(webhook, 'follow', {
 						user: packed,
 					});
 				}
@@ -345,7 +347,7 @@ export class UserFollowingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'followed', {
+					this.queueService.userWebhookDeliver(webhook, 'followed', {
 						user: packed,
 					});
 				}
@@ -398,7 +400,7 @@ export class UserFollowingService implements OnModuleInit {
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'unfollow', {
+					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
 						user: packed,
 					});
 				}
@@ -517,7 +519,7 @@ export class UserFollowingService implements OnModuleInit {
 			followerId: follower.id,
 		});
 
-		const followRequest = await this.followRequestsRepository.insert({
+		const followRequest = await this.followRequestsRepository.insertOne({
 			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
@@ -531,7 +533,7 @@ export class UserFollowingService implements OnModuleInit {
 			followeeHost: followee.host,
 			followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : undefined,
 			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : undefined,
-		}).then(x => this.followRequestsRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		// Publish receiveRequest event
 		if (this.userEntityService.isLocalUser(followee)) {
@@ -740,7 +742,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 		for (const webhook of webhooks) {
-			this.queueService.webhookDeliver(webhook, 'unfollow', {
+			this.queueService.userWebhookDeliver(webhook, 'unfollow', {
 				user: packedFollowee,
 			});
 		}

@@ -50,11 +50,11 @@ function toggle() {
 .label {
 	margin-left: 4px;
 
-	&:before {
+	&::before {
 		content: '(';
 	}
 
-	&:after {
+	&::after {
 		content: ')';
 	}
 }
