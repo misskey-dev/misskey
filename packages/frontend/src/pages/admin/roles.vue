@@ -134,6 +134,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUpdateBioMedia, 'canUpdateBioMedia'])">
+							<template #label>{{ i18n.ts._role._options.canUpdateBioMedia }}</template>
+							<template #suffix>{{ policies.canUpdateBioMedia ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUpdateBioMedia">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.pinMax, 'pinLimit'])">
 							<template #label>{{ i18n.ts._role._options.pinMax }}</template>
 							<template #suffix>{{ policies.pinLimit }}</template>

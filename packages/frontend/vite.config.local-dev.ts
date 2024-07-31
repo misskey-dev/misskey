@@ -62,6 +62,7 @@ const devConfig: UserConfig = {
 			'/bios': httpUrl,
 			'/cli': httpUrl,
 			'/inbox': httpUrl,
+			'/emoji/': httpUrl,
 			'/notes': {
 				target: httpUrl,
 				bypass: varyHandler,

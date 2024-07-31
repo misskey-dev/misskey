@@ -237,8 +237,18 @@ const routes: RouteDef[] = [{
 		origin: 'origin',
 	},
 }, {
+	// Legacy Compatibility	
 	path: '/authorize-follow',
-	component: page(() => import('@/pages/follow.vue')),
+	redirect: '/lookup',
+	loginRequired: true,
+}, {
+	// Mastodon Compatibility
+	path: '/authorize_interaction',
+	redirect: '/lookup',
+	loginRequired: true,
+}, {
+	path: '/lookup',
+	component: page(() => import('@/pages/lookup.vue')),
 	loginRequired: true,
 }, {
 	path: '/share',
