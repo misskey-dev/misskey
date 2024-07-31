@@ -59,6 +59,9 @@ export class FanoutTimelineEndpointService {
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
+		// テストの際は空のtimelineが他の判定のテストの悪影響になるので空タイムラインによるdb fallbackを無効化する
+		if (process.env.NODE_ENV === 'test') ps.preventEmptyTimelineDbFallback = true;
+
 		const ascending = ps.sinceId && !ps.untilId;
 		const idCompare: (a: string, b: string) => number = ascending ? (a, b) => a < b ? -1 : 1 : (a, b) => a > b ? -1 : 1;
 
