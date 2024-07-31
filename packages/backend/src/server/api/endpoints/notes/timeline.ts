@@ -119,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						if (!Object.hasOwn(followings, note.reply.userId) && note.reply.userId !== me.id) return false;
 					}
 
-					if (ps.onlyLocal && note.user && note.user.host !== null ) {
+					if (ps.onlyLocal && note.user?.host != null ) {
 						return false;
 					}
 
