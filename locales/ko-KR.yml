@@ -2411,7 +2411,6 @@ _webhookSettings:
   modifyWebhook: "Webhook 수정"
   name: "이름"
   secret: "시크릿"
-  events: "Webhook을 실행할 타이밍"
   active: "활성화"
   _events:
     follow: "누군가를 팔로우했을 때"

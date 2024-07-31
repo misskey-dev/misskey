@@ -2391,7 +2391,6 @@ _webhookSettings:
   createWebhook: "Webhookをつくる"
   name: "名前"
   secret: "シークレット"
-  events: "Webhookを投げるタイミング"
   active: "有効"
   _events:
     follow: "フォローしたとき～！"

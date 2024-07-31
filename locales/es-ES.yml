@@ -2382,7 +2382,6 @@ _webhookSettings:
   createWebhook: "Crear Webhook"
   name: "Nombre"
   secret: "Secreto"
-  events: "Eventos de webhook"
   active: "Activado"
   _events:
     follow: "Cuando se sigue a alguien"

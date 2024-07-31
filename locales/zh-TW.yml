@@ -2426,7 +2426,7 @@ _webhookSettings:
   modifyWebhook: "編輯 Webhook"
   name: "名字"
   secret: "密鑰"
-  events: "何時運行 Webhook"
+  trigger: "觸發器"
   active: "已啟用"
   _events:
     follow: "當你追隨時"
