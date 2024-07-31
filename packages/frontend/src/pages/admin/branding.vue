@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="iconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }}</template>
+						<template #caption>{{ i18n.tsx._serverSettings.iconUrlDescription({ host }) }}</template>
 					</MkInput>
 
 					<MkInput v-model="app192IconUrl" type="url">

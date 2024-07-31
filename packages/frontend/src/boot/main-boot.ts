@@ -22,6 +22,7 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
+import { setFaviconDot } from '@/scripts/favicon-dot.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -267,6 +268,10 @@ export async function mainBoot() {
 			}
 		}
 
+		if ($i.hasUnreadNotification) {
+			setFaviconDot(true);
+		}
+
 		const main = markRaw(stream.useChannel('main', null, 'System'));
 
 		// 自分の情報が更新されたとき
@@ -275,6 +280,8 @@ export async function mainBoot() {
 		});
 
 		main.on('readAllNotifications', () => {
+			setFaviconDot(false);
+
 			updateAccount({
 				hasUnreadNotification: false,
 				unreadNotificationsCount: 0,
@@ -283,6 +290,9 @@ export async function mainBoot() {
 
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
+
+			setFaviconDot(true);
+
 			updateAccount({
 				hasUnreadNotification: true,
 				unreadNotificationsCount,
