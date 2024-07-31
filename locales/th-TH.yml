@@ -2426,6 +2426,7 @@ _webhookSettings:
   modifyWebhook: "แก้ไข Webhook"
   name: "ชื่อ"
   secret: "ความลับ"
+  trigger: "ทริกเกอร์"
   active: "เปิดใช้งาน"
   _events:
     follow: "เมื่อกำลังติดตามผู้ใช้"
