@@ -8,11 +8,12 @@ on:
     branches: [ develop ]
     paths:
       - packages/misskey-js/**
+      - .github/workflows/test-misskey-js.yml
   pull_request:
     branches: [ develop ]
     paths:
       - packages/misskey-js/**
-
+      - .github/workflows/test-misskey-js.yml
 jobs:
   test:
 
@@ -20,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.12.2]
+        node-version: [20.16.0]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -30,7 +31,7 @@ jobs:
       - run: corepack enable
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'

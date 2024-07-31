@@ -9,7 +9,6 @@ on:
     paths:
       - packages/backend/**
       - .github/workflows/get-api-diff.yml
-
 jobs:
   get-from-misskey:
     runs-on: ubuntu-latest
@@ -18,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.12.2]
+        node-version: [20.16.0]
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json
@@ -34,7 +33,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.0.3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
