@@ -6,14 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.head">
-		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && 'note' in notification" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
 		<div v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'" :class="[$style.icon, $style.icon_reactionGroupHeart]"><i class="ti ti-heart" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
 		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
-		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
-		<img v-else-if="notification.icon" :class="[$style.icon, $style.icon_app]" :src="notification.icon" alt=""/>
+		<MkAvatar v-else-if="'user' in notification" :class="$style.icon" :user="notification.user" link preview/>
+		<img v-else-if="'icon' in notification" :class="[$style.icon, $style.icon_app]" :src="notification.icon" alt=""/>
 		<div
 			:class="[$style.subIcon, {
 				[$style.t_follow]: notification.type === 'follow',
@@ -164,13 +164,13 @@ const props = withDefaults(defineProps<{
 const followRequestDone = ref(false);
 
 const acceptFollowRequest = () => {
-	if (props.notification.user == null) return;
+	if (!('user' in props.notification)) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/accept', { userId: props.notification.user.id });
 };
 
 const rejectFollowRequest = () => {
-	if (props.notification.user == null) return;
+	if (!('user' in props.notification)) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
 };
@@ -343,7 +343,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	margin-right: 4px;
 	position: relative;
 
-	&:before {
+	&::before {
 		position: absolute;
 		transform: rotate(180deg);
 	}

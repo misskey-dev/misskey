@@ -28,8 +28,8 @@ import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserR
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { AbuseDiscordHookService } from '@/core/AbuseDiscordHookService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -58,9 +58,6 @@ export class ApInboxService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: AbuseUserReportsRepository,
-
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
@@ -69,6 +66,7 @@ export class ApInboxService {
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private metaService: MetaService,
+		private abuseReportService: AbuseReportService,
 		private userFollowingService: UserFollowingService,
 		private apAudienceService: ApAudienceService,
 		private reactionService: ReactionService,
@@ -541,7 +539,7 @@ export class ApInboxService {
 		const userIds = uris
 			.filter(uri => uri.startsWith(this.config.url + '/users/'))
 			.map(uri => uri.split('/').at(-1))
-			.filter(isNotNull);
+			.filter(x => x != null);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});
@@ -549,16 +547,13 @@ export class ApInboxService {
 
 		const comment = `${activity.content}\n${JSON.stringify(uris, null, 2)}`;
 
-		await this.abuseUserReportsRepository.insert({
-			id: this.idService.gen(),
+		await this.abuseReportService.report([{
 			targetUserId: users[0].id,
 			targetUserHost: users[0].host,
 			reporterId: actor.id,
 			reporterHost: actor.host,
 			comment,
-		});
-
-		this.abuseDiscordHookService.send(actor, users[0], comment);
+		}]);
 
 		return 'ok';
 	}

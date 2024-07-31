@@ -7,12 +7,13 @@ import { toUnicode } from 'punycode';
 import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { host, url } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
 import { $i, iAmModerator } from '@/account.js';
+import { notesSearchAvailable, canSearchNonLocalNotes } from '@/scripts/check-permissions.js';
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
@@ -92,9 +93,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 	}
 
 	function reportAbuse() {
-		os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 			user: user,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}
 
 	async function getConfirmed(text: string): Promise<boolean> {
@@ -150,7 +153,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
-	}, ...(iAmModerator ? [{
+	}, ...( notesSearchAvailable && (user.host == null || canSearchNonLocalNotes) ? [{
+		icon: 'ti ti-search',
+		text: i18n.ts.searchThisUsersNotes,
+		action: () => {
+			router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
+		},
+	}] : [])
+	, ...(iAmModerator ? [{
 		icon: 'ti ti-user-exclamation',
 		text: i18n.ts.moderation,
 		action: () => {
@@ -176,7 +186,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
-	}, {
+	}, ...($i ? [{
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
@@ -249,7 +259,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 				},
 			}));
 		},
-	}] as any;
+	}] : [])] as any;
 
 	if ($i && meId !== user.id) {
 		if (iAmModerator) {

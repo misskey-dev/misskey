@@ -40,7 +40,7 @@ export const paramDef = {
 		webhookId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', maxLength: 1024, default: '' },
+		secret: { type: 'string', nullable: true, maxLength: 1024 },
 		on: { type: 'array', items: {
 			oneOf: [
 				{ type: 'string', enum: webhookEventTypes },
@@ -49,7 +49,7 @@ export const paramDef = {
 		} },
 		active: { type: 'boolean' },
 	},
-	required: ['webhookId', 'name', 'url', 'on', 'active'],
+	required: ['webhookId'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す
@@ -73,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchWebhook);
 			}
 
-			if (ps.on.some(x => !(webhookEventTypes as readonly string[]).includes(x))) {
+			if (ps.on != null && ps.on.some(x => !(webhookEventTypes as readonly string[]).includes(x))) {
 				if (!await this.roleService.isAdministrator(me)) {
 					throw new ApiError(meta.errors.adminWebhookDenied);
 				}
@@ -82,7 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.webhooksRepository.update(webhook.id, {
 				name: ps.name,
 				url: ps.url,
-				secret: ps.secret,
+				secret: ps.secret === null ? '' : ps.secret,
 				on: ps.on as WebhookEventType[],
 				active: ps.active,
 			});
