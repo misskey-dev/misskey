@@ -103,7 +103,7 @@ export class QueueService {
 			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
-			privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
+			privateKey,
 		};
 
 		return this.deliverQueue.add(to, data, {
