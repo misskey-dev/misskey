@@ -498,6 +498,7 @@ export class MasterGameEngine {
 		}
 
 		tx.$state.firstTurnFlags[house] = false;
+		tx.$state.rinshanFlags[house] = false;
 
 		const canRonHouses: House[] = [];
 		switch (house) {
