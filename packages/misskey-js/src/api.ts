@@ -14,6 +14,7 @@ export type APIError = {
 	code: string;
 	message: string;
 	kind: 'client' | 'server';
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	info: Record<string, any>;
 };
 
@@ -29,6 +30,7 @@ export type FetchLike = (input: string, init?: {
 	headers: { [key in string]: string }
 }) => Promise<{
 	status: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	json(): Promise<any>;
 }>;
 
@@ -49,6 +51,7 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private assertIsRecord<T>(obj: T): obj is T & Record<string, any> {
 		return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
 	}
