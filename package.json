@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2024.5.0",
+	"version": "2024.7.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@9.0.6",
+	"packageManager": "pnpm@9.6.0",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -21,7 +21,7 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
-		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
+		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
@@ -51,24 +51,26 @@
 		"cssnano": "6.1.2",
 		"execa": "8.0.1",
 		"fast-glob": "3.3.2",
-		"ignore-walk": "6.0.4",
+		"ignore-walk": "6.0.5",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.38",
+		"postcss": "8.4.40",
 		"tar": "6.2.1",
-		"terser": "5.30.3",
-		"typescript": "5.4.5",
-		"esbuild": "0.20.2",
-		"glob": "10.3.12"
+		"terser": "5.31.3",
+		"typescript": "5.5.4",
+		"esbuild": "0.23.0",
+		"glob": "11.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "20.12.7",
-		"@typescript-eslint/eslint-plugin": "7.7.1",
-		"@typescript-eslint/parser": "7.7.1",
+		"@misskey-dev/eslint-plugin": "2.0.2",
+		"@types/node": "20.14.12",
+		"@typescript-eslint/eslint-plugin": "7.17.0",
+		"@typescript-eslint/parser": "7.17.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.7.3",
-		"eslint": "8.57.0",
+		"cypress": "13.13.1",
+		"eslint": "9.8.0",
+		"globals": "15.8.0",
 		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.3"
+		"start-server-and-test": "2.0.4"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"
