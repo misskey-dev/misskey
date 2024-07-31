@@ -3,7 +3,11 @@
 VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
+
+--- 2024.7.0-vrtl.1 released at this time ---
+
 --- 2024.5.0-vrtl.2 released at this time ---
+
 - chore(backend): VRTL参加サーバーの取得に失敗したときのリトライの間隔を短く
 - feat: VRTL/VSTLに連合なし投稿を含めるかを選択可能に
   - もともとのVRTL/VSTLでは連合なし投稿が常に含まれていましたが、正しくVRTL/VSTLのノートを表現するために含めないようにできるようになりました

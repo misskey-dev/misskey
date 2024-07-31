@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=20.12.2-bullseye
+ARG NODE_VERSION=20.16.0-bullseye
 
 # build assets & compile TypeScript
 
@@ -81,6 +81,10 @@ RUN apt-get update \
 
 USER misskey
 WORKDIR /misskey
+
+# add package.json to add pnpm
+COPY --chown=misskey:misskey ./package.json ./package.json
+RUN corepack install
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules

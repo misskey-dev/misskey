@@ -125,7 +125,7 @@ import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	pageName: string;
@@ -286,6 +286,7 @@ definePageMetadata(() => ({
 		background-color: var(--accentedBg);
 		color: var(--accent);
 		text-decoration: none;
+		outline: none;
 	}
 }
 
