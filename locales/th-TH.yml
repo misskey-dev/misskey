@@ -2155,7 +2155,7 @@ _widgets:
   serverMetric: "ตัวชี้วัดเซิร์ฟเวอร์"
   aiscript: " คอนโซล AiScript"
   aiscriptApp: "แอป AiScript"
-  aichan: "ไอ"
+  aichan: "藍 (ไอ)"
   userList: "รายชื่อผู้ใช้"
   _userList:
     chooseList: "เลือกรายชื่อ"
