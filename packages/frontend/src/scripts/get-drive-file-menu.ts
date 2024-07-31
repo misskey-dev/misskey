@@ -6,7 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { MenuItem } from '@/types/menu.js';
@@ -27,7 +27,7 @@ function rename(file: Misskey.entities.DriveFile) {
 }
 
 function describe(file: Misskey.entities.DriveFile) {
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment ?? '',
 		file: file,
 	}, {
@@ -37,7 +37,17 @@ function describe(file: Misskey.entities.DriveFile) {
 				comment: caption.length === 0 ? null : caption,
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
+}
+
+function move(file: Misskey.entities.DriveFile) {
+	os.selectDriveFolder(false).then(folder => {
+		misskeyApi('drive/files/update', {
+			fileId: file.id,
+			folderId: folder[0] ? folder[0].id : null,
+		});
+	});
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {
@@ -87,6 +97,10 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(file),
+	}, {
+		text: i18n.ts.move,
+		icon: 'ti ti-folder-symlink',
+		action: () => move(file),
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
 		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',

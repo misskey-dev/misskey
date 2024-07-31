@@ -2,7 +2,8 @@
 
 set -xe
 
-sudo chown -R node /workspace
+sudo chown node node_modules
+git config --global --add safe.directory /workspace
 git submodule update --init
 corepack install
 corepack enable

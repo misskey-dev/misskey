@@ -113,6 +113,10 @@ a {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 
+	&:focus-visible {
+		outline-offset: 2px;
+	}
+
 	&:hover {
 		text-decoration: underline;
 	}
@@ -143,12 +147,21 @@ rt {
 	white-space: initial;
 }
 
+:focus-visible {
+	outline: var(--focus) solid 2px;
+	outline-offset: -2px;
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
 .ti {
 	width: 1.28em;
 	vertical-align: -12%;
 	line-height: 1em;
 
-	&:before {
+	&::before {
 		font-size: 128%;
 	}
 }
@@ -230,10 +243,6 @@ rt {
 	line-height: inherit;
 	max-width: 100%;
 
-	&:focus-visible {
-		outline: none;
-	}
-
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;
@@ -270,12 +279,16 @@ rt {
 
 ._help {
 	color: var(--accent);
-	cursor: help
+	cursor: help;
 }
 
 ._textButton {
 	@extend ._button;
 	color: var(--accent);
+
+	&:focus-visible {
+		outline-offset: 2px;
+	}
 
 	&:not(:disabled):hover {
 		text-decoration: underline;
