@@ -7,7 +7,7 @@ import CRC32 from 'crc-32';
 import { TileType, House, Huro, TileId } from './common.js';
 import * as Common from './common.js';
 import { PlayerState } from './engine.player.js';
-import { calcYakus, convertHuroForCalcYaku, YAKU_DEFINITION_MAP } from './common.yaku.js';
+import { calcYakus, convertHuroForCalcYaku, YAKU_DEFINITION_MAP, YakuData, YakuName } from './common.yaku.js';
 
 //#region syntax suger
 function $(tid: TileId): Common.TileInstance {
@@ -147,7 +147,7 @@ class StateManager {
 	}
 
 	public rinshanTsumo(): TileId {
-		return this.withTsumoTile(this.$state.tiles.push(), true);
+		return this.withTsumoTile(this.$state.tiles.shift(), true);
 	}
 
 	public clearFirstTurnAndIppatsus(): void {
@@ -711,7 +711,7 @@ export class MasterGameEngine {
 		cii: false | 'x__' | '_x_' | '__x';
 		kan: boolean;
 		ron: House[];
-	}) {
+	}, doLog = true) {
 		const tx = this.startTransaction();
 
 		if (tx.$state.askings.pon == null && tx.$state.askings.cii == null && tx.$state.askings.kan == null && tx.$state.askings.ron == null) throw new Error();
@@ -730,7 +730,7 @@ export class MasterGameEngine {
 			const callers = answers.ron;
 			const callee = ron.callee;
 
-			for (const house of callers) {
+			const yakus: { [K in House]?: YakuData[] } = Object.fromEntries(callers.map(house => {
 				const ronTile = tx.hoTileTypes[callee].at(-1)!;
 				const yakus = calcYakus({
 					seatWind: house,
@@ -752,9 +752,12 @@ export class MasterGameEngine {
 				const point = Common.fanToPoint(fans, house === 'e');
 				tx.$state.points[callee] -= point;
 				tx.$state.points[house] += point;
-				console.log('fans point', fans, point);
-				console.log('yakus', house, yakus);
-			}
+				if (doLog) {
+					console.log('fans point', fans, point);
+					console.log('yakus', house, yakus);
+				}
+				return [house, yakus] as const;
+			}));
 
 			tx.$commit();
 
@@ -763,6 +766,7 @@ export class MasterGameEngine {
 				callers: ron.callers,
 				callee: ron.callee,
 				turn: null,
+				yakus,
 			};
 		} else if (kan != null && answers.kan) {
 			// 大明槓

@@ -152,6 +152,12 @@ export type EnvForCalcYaku = {
 	hotei?: boolean;
 });
 
+export type YakuData = {
+	name: string;
+	fan: number | null;
+	isYakuman: boolean;
+};
+
 type YakuDefinition = {
 	name: YakuName;
 	upper?: YakuName;
@@ -908,7 +914,7 @@ export function convertHuroForCalcYaku(huro: Huro): HuroForCalcYaku {
 	}
 }
 
-export const YAKU_DEFINITION_MAP = new Map<YakuName, {name: string, fan: number | null, isYakuman: boolean}>(
+export const YAKU_DEFINITION_MAP = new Map<YakuName, YakuData>(
 	NORMAL_YAKU_DEFINITIONS.concat(YAKUMAN_DEFINITIONS).map(yaku => [yaku.name, {
 		name: yaku.name,
 		fan: yaku.fan ?? null,

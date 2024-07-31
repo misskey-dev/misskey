@@ -10,6 +10,8 @@ import { MasterGameEngine, MasterState } from '../src/engine.master.js';
 
 const TILES = [71, 132, 108, 51, 39, 19, 3, 86, 104, 18, 50, 7, 45, 82, 43, 34, 111, 78, 53, 105, 126, 91, 112, 75, 119, 55, 95, 93, 65, 9, 66, 52, 79, 32, 99, 109, 56, 5, 101, 92, 1, 37, 62, 23, 27, 117, 77, 14, 31, 96, 120, 130, 29, 135, 100, 17, 102, 124, 59, 89, 49, 115, 107, 97, 90, 48, 25, 110, 68, 15, 74, 129, 69, 61, 73, 81, 11, 41, 44, 84, 13, 40, 33, 58, 30, 8, 38, 10, 87, 125, 57, 121, 21, 2, 54, 46, 22, 4, 133, 16, 76, 70, 60, 103, 114, 122, 24, 88, 36, 123, 47, 12, 128, 118, 116, 63, 26, 94, 67, 131, 64, 35, 113, 134, 6, 127, 80, 72, 42, 98, 85, 20, 106, 136, 83, 28];
 
+const INITIAL_TILES_LENGTH = 69;
+
 class TileSetBuilder {
 	private restTiles = [...TILES];
 
@@ -46,22 +48,28 @@ class TileSetBuilder {
 	}
 
 	/**
-	 * 山のn番目（0始まり)の牌を指定する。nが負の場合、海底を-1として海底側から数える
+	 * 山のn番目（0始まり）の牌を指定する。nが負の場合、海底を-1として海底側から数える
 	 */
 	public setTile(n: number, tileType: TileType): this {
 		if (n < 0) {
-			n += 69;
+			n += INITIAL_TILES_LENGTH;
 		}
 
-		if (this.tiles.has(n)) {
+		if (n < 0 || n >= INITIAL_TILES_LENGTH) {
+			throw new RangeError(`Cannot set ${n}th tile`);
+		}
+
+		const indexInTiles = INITIAL_TILES_LENGTH - n - 1;
+
+		if (this.tiles.has(indexInTiles)) {
 			throw new TypeError(`${n}th tile is already set`);
 		}
 
-		const index = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tileType);
-		if (index == -1) {
+		const indexInRestTiles = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tileType);
+		if (indexInRestTiles == -1) {
 			throw new TypeError(`Tile '${tileType}' is not left`);
 		}
-		this.tiles.set(n, this.restTiles.splice(index, 1)[0]);
+		this.tiles.set(indexInTiles, this.restTiles.splice(indexInRestTiles, 1)[0]);
 
 		return this;
 	}
@@ -77,8 +85,8 @@ class TileSetBuilder {
 		const kingTiles: MasterState['kingTiles'] = this.restTiles.splice(0, 14);
 
 		const tiles = [...this.restTiles];
-		for (const [n, tile] of [...this.tiles.entries()].sort(([n1], [n2]) => n1 - n2)) {
-			tiles.splice(n, 0, tile);
+		for (const [index, tile] of [...this.tiles.entries()].sort(([index1], [index2]) => index1 - index2)) {
+			tiles.splice(index, 0, tile);
 		}
 
 		return {
@@ -89,12 +97,16 @@ class TileSetBuilder {
 	}
 }
 
-function tsumogiriAndIgnore(engine: MasterGameEngine, riichi = false): void {
+function tsumogiri(engine: MasterGameEngine, riichi = false): void {
 	const house = engine.turn;
 	if (house == null) {
 		throw new Error('No one\'s turn');
 	}
 	engine.commit_dahai(house, engine.handTiles[house].at(-1)!, riichi);
+}
+
+function tsumogiriAndIgnore(engine: MasterGameEngine, riichi = false): void {
+	tsumogiri(engine, riichi);
 	if (engine.askings.pon != null || engine.askings.cii != null || engine.askings.kan != null || engine.askings.ron != null) {
 		engine.commit_resolveCallingInterruption({
 			pon: false,
@@ -162,5 +174,26 @@ describe('Master game engine', () => {
 			tsumogiriAndIgnore(engine);
 		}
 		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['tsumo', 'double-riichi', 'haitei']);
+	});
+
+	it('double-riichi hotei', () => {
+		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
+			new TileSetBuilder()
+				.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 's'])
+				.setHandTiles('s', ['m3', 'm6', 'p2', 'p5', 'p8', 's4',  'e', 's', 'w', 'haku', 'hatsu', 'chun', 'chun'])
+				.setTile(-1, 'm3')
+				.build(),
+		));
+		tsumogiriAndIgnore(engine, true);
+		while (engine.$state.tiles.length > 0) {
+			tsumogiriAndIgnore(engine);
+		}
+		tsumogiri(engine);
+		assert.deepStrictEqual(engine.commit_resolveCallingInterruption({
+			pon: false,
+			cii: false,
+			kan: false,
+			ron: ['e'],
+		}, false).yakus!.e!.map(yaku => yaku.name), ['double-riichi', 'hotei']);
 	});
 });
