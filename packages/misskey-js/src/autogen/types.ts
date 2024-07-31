@@ -4089,7 +4089,8 @@ export type components = {
         userId: string | null;
       }) | null;
       localOnly?: boolean;
-      reactionAcceptance: string | null;
+      /** @enum {string|null} */
+      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
       reactionEmojis: {
         [key: string]: string;
       };
@@ -4598,6 +4599,7 @@ export type components = {
       maintainerName: string | null;
       maintainerEmail: string | null;
       isSilenced: boolean;
+      isMediaSilenced: boolean;
       /** Format: url */
       iconUrl: string | null;
       /** Format: url */
@@ -4939,6 +4941,11 @@ export type components = {
       serverRules: string[];
       themeColor: string | null;
       policies: components['schemas']['RolePolicies'];
+      /**
+       * @default local
+       * @enum {string}
+       */
+      noteSearchableScope: 'local' | 'global';
     };
     MetaDetailedOnly: {
       features?: {
@@ -4970,7 +4977,7 @@ export type components = {
       latestSentAt: string | null;
       latestStatus: number | null;
       name: string;
-      on: ('abuseReport' | 'abuseReportResolved')[];
+      on: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
       url: string;
       secret: string;
     };
@@ -5039,6 +5046,7 @@ export type operations = {
             enableServiceWorker: boolean;
             translatorAvailable: boolean;
             silencedHosts?: string[];
+            mediaSilencedHosts: string[];
             pinnedUsers: string[];
             hiddenTags: string[];
             blockedHosts: string[];
@@ -6091,6 +6099,11 @@ export type operations = {
           untilId?: string;
           /** Format: misskey:id */
           userId?: string | null;
+          /**
+           * @default active
+           * @enum {string}
+           */
+          status?: 'all' | 'active' | 'archived';
         };
       };
     };
@@ -9373,6 +9386,7 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          mediaSilencedHosts?: string[] | null;
           /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
           summalyProxy?: string | null;
           urlPreviewEnabled?: boolean;
@@ -10054,7 +10068,7 @@ export type operations = {
         'application/json': {
           isActive: boolean;
           name: string;
-          on: ('abuseReport' | 'abuseReportResolved')[];
+          on: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
           url: string;
           secret: string;
         };
@@ -10164,7 +10178,7 @@ export type operations = {
       content: {
         'application/json': {
           isActive?: boolean;
-          on?: ('abuseReport' | 'abuseReportResolved')[];
+          on?: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
         };
       };
     };
@@ -10277,7 +10291,7 @@ export type operations = {
           id: string;
           isActive: boolean;
           name: string;
-          on: ('abuseReport' | 'abuseReportResolved')[];
+          on: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
           url: string;
           secret: string;
         };

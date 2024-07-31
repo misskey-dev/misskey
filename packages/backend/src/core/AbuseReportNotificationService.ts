@@ -44,7 +44,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 	/**
 	 * 管理者用Redisイベントを用いて{@link abuseReports}の内容を管理者各位に通知する.
-	 * 通知先ユーザは{@link RoleService.getModeratorIds}の取得結果に依る.
+	 * 通知先ユーザは{@link getModeratorIds}の取得結果に依る.
 	 *
 	 * @see RoleService.getModeratorIds
 	 * @see GlobalEventService.publishAdminStream
