@@ -122,7 +122,7 @@ describe('Master game engine', () => {
 		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
 			new TileSetBuilder().setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'm3']).build(),
 		));
-		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tenho']);
+		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.yakuNames, ['tenho']);
 	});
 
 	it('chiho', () => {
@@ -133,7 +133,7 @@ describe('Master game engine', () => {
 				.build(),
 		));
 		tsumogiriAndIgnore(engine);
-		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['chiho']);
+		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.yakuNames, ['chiho']);
 	});
 
 	it('rinshan', () => {
@@ -144,7 +144,7 @@ describe('Master game engine', () => {
 			.build(),
 		));
 		engine.commit_ankan('e', engine.$state.handTiles.e.at(-1)!);
-		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tsumo', 'rinshan']);
+		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.yakuNames, ['tsumo', 'rinshan']);
 	});
 
 	it('double-riichi ippatsu tsumo', () => {
@@ -158,7 +158,7 @@ describe('Master game engine', () => {
 		tsumogiriAndIgnore(engine);
 		tsumogiriAndIgnore(engine);
 		tsumogiriAndIgnore(engine);
-		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.map(yaku => yaku.name), ['tsumo', 'double-riichi', 'ippatsu']);
+		assert.deepStrictEqual(engine.commit_tsumoHora('e', false).yakus.yakuNames, ['tsumo', 'double-riichi', 'ippatsu']);
 	});
 
 	it('double-riichi haitei tsumo', () => {
@@ -173,7 +173,7 @@ describe('Master game engine', () => {
 		while (engine.$state.tiles.length > 0) {
 			tsumogiriAndIgnore(engine);
 		}
-		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.map(yaku => yaku.name), ['tsumo', 'double-riichi', 'haitei']);
+		assert.deepStrictEqual(engine.commit_tsumoHora('s', false).yakus.yakuNames, ['tsumo', 'double-riichi', 'haitei']);
 	});
 
 	it('double-riichi hotei', () => {
@@ -194,6 +194,6 @@ describe('Master game engine', () => {
 			cii: false,
 			kan: false,
 			ron: ['e'],
-		}, false).yakus!.e!.map(yaku => yaku.name), ['double-riichi', 'hotei']);
+		}, false).yakus?.e?.yakuNames, ['double-riichi', 'hotei']);
 	});
 });

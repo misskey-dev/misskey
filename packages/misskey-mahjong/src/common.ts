@@ -124,6 +124,14 @@ export type Huro = {
 	from: House | null; // null で加槓
 };
 
+export type PointFactor = {
+	isYakuman: false;
+	fan: number;
+} | {
+	isYakuman: true;
+	value: number;
+}
+
 export const CALL_HURO_TYPES = ['pon', 'cii', 'minkan'] as const;
 
 export const NEXT_TILE_FOR_DORA_MAP: Record<TileType, TileType> = {
@@ -333,6 +341,14 @@ export function fanToPoint(fan: number, isParent: boolean): number {
 	return point;
 }
 
+export function calcPoint(factor: PointFactor, isParent: boolean): number {
+	if (factor.isYakuman) {
+		return 32000 * factor.value * (isParent ? 1.5 : 1);
+	} else {
+		return fanToPoint(factor.fan, isParent);
+	}
+}
+
 export function calcOwnedDoraCount(handTiles: TileType[], huros: Huro[], doras: TileType[]): number {
 	let count = 0;
 	for (const t of handTiles) {
@@ -360,7 +376,7 @@ export function calcRedDoraCount(handTiles: TileId[], huros: Huro[]): number {
 	return count;
 }
 
-export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<House, number> {
+export function calcTsumoHoraPointDeltas(house: House, fansOrFactor: number | PointFactor): Record<House, number> {
 	const isParent = house === 'e';
 
 	const deltas: Record<House, number> = {
@@ -370,7 +386,7 @@ export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<Hou
 		n: 0,
 	};
 
-	const point = fanToPoint(fans, isParent);
+	const point = typeof fansOrFactor == 'number' ? fanToPoint(fansOrFactor, isParent) : calcPoint(fansOrFactor, isParent);
 	deltas[house] = point;
 	if (isParent) {
 		const childPoint = Math.ceil(point / 3);
