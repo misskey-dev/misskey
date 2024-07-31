@@ -9,6 +9,8 @@ import * as Common from './common.js';
 import { PlayerState } from './engine.player.js';
 import { calcYakusWithDetail, convertHuroForCalcYaku, YakuData, YakuSet } from './common.yaku.js';
 
+export const INITIAL_POINT = 25000;
+
 //#region syntax suger
 function $(tid: TileId): Common.TileInstance {
 	return Common.findTileByIdOrFail(tid);
@@ -419,10 +421,10 @@ export class MasterGameEngine {
 				n: false,
 			},
 			points: {
-				e: 25000,
-				s: 25000,
-				w: 25000,
-				n: 25000,
+				e: INITIAL_POINT,
+				s: INITIAL_POINT,
+				w: INITIAL_POINT,
+				n: INITIAL_POINT,
 			},
 			turn: 'e',
 			nextTurnAfterAsking: null,
