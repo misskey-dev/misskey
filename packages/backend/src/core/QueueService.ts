@@ -145,7 +145,7 @@ export class QueueService {
 				content: contentBody,
 				to: d[0],
 				isSharedInbox: d[1],
-				privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
+				privateKey,
 			} as DeliverJobData,
 			opts,
 		})));
