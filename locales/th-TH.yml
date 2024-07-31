@@ -1479,15 +1479,15 @@ _achievements:
       title: "มือใหม่ III"
       description: "เข้าสู่ระบบเป็นเวลารวม 15 วัน"
     _login30:
-      title: "มิสคิสท์ I"
+      title: "มิสคิสต์ I"
       description: "เข้าสู่ระบบเป็นเวลารวม 30 วัน"
     _login60:
-      title: "มิสคิสท์ II"
+      title: "มิสคิสต์ II"
       description: "เข้าสู่ระบบเป็นเวลารวม 60 วัน"
     _login100:
-      title: "มิสคิสท์ III"
+      title: "มิสคิสต์ III"
       description: "เข้าสู่ระบบเป็นเวลารวม 100 วัน"
-      flavor: "มิสคิสต์หัวรุนแรง"
+      flavor: "Violent Misskist (ทำไมเหมือนชื่อหนังสักเรื่องจังเลยนะ)"
     _login200:
       title: "ลูกค้าประจำ I"
       description: "เข้าสู่ระบบเป็นเวลารวม 200 วัน"
