@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
 				</MkInput>
 				<MkFolder :defaultOpen="true">
-					<template #label>{{ i18n.ts._webhookSettings.events }}</template>
+					<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
 					<div class="_gaps_s">
 						<MkSwitch v-model="events.abuseReport" :disabled="disabledEvents.abuseReport">
