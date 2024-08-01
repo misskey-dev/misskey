@@ -7,7 +7,8 @@
 -
 
 ### Server
--
+- Fix: 公開範囲がダイレクトのノートをユーザーアクティビティのチャート生成に使用しないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/679)
 
 
 ## 2024.7.0
