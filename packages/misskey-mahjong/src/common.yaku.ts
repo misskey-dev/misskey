@@ -310,7 +310,7 @@ export const NORMAL_YAKU_DEFINITIONS: NormalYakuDefinition[] = [{
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		// 面前じゃないとダメ
+		// 門前じゃないとダメ
 		if (state.huros.some(huro => includes(CALL_HURO_TYPES, huro.type))) return false;
 
 		return state.tsumoTile != null;
