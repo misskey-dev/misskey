@@ -807,9 +807,7 @@ export const YAKUMAN_DEFINITIONS: YakumanDefinition[] = [{
 }, {
 	name: 'tsuiso',
 	isYakuman: true,
-	calc: (state: EnvForCalcYaku, fourMentsuOneJyantou: FourMentsuOneJyantou | null) => {
-		if (fourMentsuOneJyantou == null) return false;
-
+	calc: (state: EnvForCalcYaku) => {
 		const tiles = state.handTiles;
 		let manzuCount = tiles.filter(t => includes(MANZU_TILES, t)).length;
 		let pinzuCount = tiles.filter(t => includes(PINZU_TILES, t)).length;

@@ -792,10 +792,18 @@ describe('Yaku', () => {
 				huros: [],
 				tsumoTile: 's',
 			}), [ 'suanko-tanki', 'tsuiso']);
+
 			assert.deepStrictEqual(calcYakus({
 				seatWind: 'e',
 				handTiles: ['hatsu', 'hatsu', 'hatsu', 'e', 'e', 'e', 'w', 'w', 'w', 's', 's'],
 				huros: [{type: 'pon', tile: 'haku'}],
+				tsumoTile: 's',
+			}), ['tsuiso']);
+
+			assert.deepStrictEqual(calcYakus({
+				seatWind: 'e',
+				handTiles: ['e', 'e', 's', 's', 'w', 'w', 'n', 'n', 'haku', 'haku', 'hatsu', 'hatsu', 'chun', 'chun'],
+				huros: [],
 				tsumoTile: 's',
 			}), ['tsuiso']);
 		});
