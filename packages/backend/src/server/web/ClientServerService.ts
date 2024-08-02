@@ -25,7 +25,16 @@ import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/core/MetaService.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, ScheduledNoteDeleteQueue, SystemQueue, WebhookDeliverQueue } from '@/core/QueueModule.js';
+import type {
+	DbQueue,
+	DeliverQueue,
+	EndedPollNotificationQueue,
+	InboxQueue,
+	ObjectStorageQueue,
+	SystemQueue,
+	UserWebhookDeliverQueue,
+	SystemWebhookDeliverQueue,
+} from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
@@ -112,7 +121,8 @@ export class ClientServerService {
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
-		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
+		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
+		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -241,7 +251,8 @@ export class ClientServerService {
 				this.inboxQueue,
 				this.dbQueue,
 				this.objectStorageQueue,
-				this.webhookDeliverQueue,
+				this.userWebhookDeliverQueue,
+				this.systemWebhookDeliverQueue,
 			].map(q => new BullMQAdapter(q)),
 			serverAdapter,
 		});

@@ -42,6 +42,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { host } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
@@ -62,7 +64,7 @@ const userDetailed = ref<{ id: string } & Partial<Misskey.entities.UserDetailed>
 const wait = ref(props.user.isLocked === undefined);
 const connection = useStream().useChannel('main');
 
-if (userDetailed.value.isLocked === undefined) {
+if (props.user.isFollowing == null && $i) {
 	misskeyApi('users/show', {
 		userId: props.user.id,
 	})
@@ -79,6 +81,8 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 }
 
 async function onClick() {
+	pleaseLogin(undefined, { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` });
+
 	wait.value = true;
 
 	try {
@@ -120,7 +124,9 @@ async function onClick() {
 					...userDetailed.value,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});
-				userDetailed.value.hasPendingFollowRequestFromYou = true;
+				hasPendingFollowRequestFromYou.value = true;
+
+				if ($i == null) return;
 
 				if ($i) {
 					claimAchievement('following1');
@@ -197,6 +203,14 @@ onBeforeUnmount(() => {
 			border: 2px solid var(--focus);
 			border-radius: 32px;
 		}
+	}
+
+	&:hover {
+		//background: mix($primary, #fff, 20);
+	}
+
+	&:active {
+		//background: mix($primary, #fff, 40);
 	}
 
 	&.active {

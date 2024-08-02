@@ -26,7 +26,7 @@ const tlComponent = ref<InstanceType<typeof MkNotes>>();
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		tlComponent.value.pagingComponent?.reload().then(() => {
+		tlComponent.value?.pagingComponent?.reload().then(() => {
 			res();
 		});
 	});
