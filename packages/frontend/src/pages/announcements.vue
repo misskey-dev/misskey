@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkPagination ref="paginationEl" :key="tab" v-slot="{items}" :pagination="tab === 'current' ? paginationCurrent : paginationPast" class="_gaps">
 					<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
 						<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
+						<div v-if="announcement.forYourRoles" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYourRoles }}</div>
 						<div :class="$style.header">
 							<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
 							<span style="margin-right: 0.5em;">

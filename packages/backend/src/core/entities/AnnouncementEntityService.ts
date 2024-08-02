@@ -53,6 +53,7 @@ export class AnnouncementEntityService {
 			icon: announcement.icon,
 			display: announcement.display,
 			forYou: announcement.userId === me?.id,
+			forYourRoles: announcement.isRoleSpecified === true,
 			needConfirmationToRead: announcement.needConfirmationToRead,
 			silence: announcement.silence,
 			isRead: announcement.isRead !== null ? announcement.isRead : undefined,

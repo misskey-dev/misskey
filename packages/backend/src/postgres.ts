@@ -82,6 +82,7 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { MiAnnouncementRole } from './models/AnnouncementRole.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -130,6 +131,7 @@ class MyCustomLogger implements Logger {
 
 export const entities = [
 	MiAnnouncement,
+	MiAnnouncementRole,
 	MiAnnouncementRead,
 	MiMeta,
 	MiInstance,
