@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>
 		{{ mode === 'create' ? i18n.ts._abuseReport._notificationRecipient.createRecipient : i18n.ts._abuseReport._notificationRecipient.modifyRecipient }}
 	</template>
-	<div v-if="loading === 0">
-		<MkSpacer :marginMin="20" :marginMax="28">
+	<div v-if="loading === 0" style="display: flex; flex-direction: column; min-height: 100%;">
+		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
 			<div :class="$style.root" class="_gaps_m">
 				<MkInput v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{{ webhook.name }}
 							</option>
 						</MkSelect>
-						<MkButton rounded @click="onEditSystemWebhookClicked">
+						<MkButton rounded :class="$style.systemWebhookEditButton" @click="onEditSystemWebhookClicked">
 							<span v-if="systemWebhookId === null" class="ti ti-plus" style="line-height: normal"/>
 							<span v-else class="ti ti-settings" style="line-height: normal"/>
 						</MkButton>
@@ -60,8 +60,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 
 		<div :class="$style.footer" class="_buttonsCenter">
-			<MkButton primary :disabled="disableSubmitButton" @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
-			<MkButton @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
+			<MkButton rounded @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 		</div>
 	</div>
 	<div v-else>
@@ -289,10 +289,15 @@ onMounted(async () => {
 }
 
 .footer {
-	display: flex;
-	justify-content: center;
-	align-items: flex-end;
-	margin-top: 20px;
+	position: sticky;
+	z-index: 10000;
+	bottom: 0;
+	left: 0;
+	padding: 12px;
+	border-top: solid 0.5px var(--divider);
+	background: var(--acrylicBg);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
 }
 
 .systemWebhook {
@@ -301,16 +306,16 @@ onMounted(async () => {
 	justify-content: stretch;
 	align-items: flex-end;
 	gap: 8px;
+}
 
-	button {
-		min-width: 0;
-		min-height: 0;
-		width: 34px;
-		height: 34px;
-		flex-shrink: 0;
-		box-sizing: border-box;
-		margin: 1px 0;
-		padding: 6px;
-	}
+.systemWebhookEditButton {
+	min-width: 0;
+	min-height: 0;
+	width: 34px;
+	height: 34px;
+	flex-shrink: 0;
+	box-sizing: border-box;
+	margin: 1px 0;
+	padding: 6px;
 }
 </style>

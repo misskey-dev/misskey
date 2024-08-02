@@ -9,7 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.sound }}</template>
 		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getSoundTypeName(x) }}</option>
 	</MkSelect>
-	<div v-if="type === '_driveFile_'" :class="$style.fileSelectorRoot">
+	<div v-if="type === '_driveFile_' && driveFileError === true" :class="$style.fileSelectorRoot">
+		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
+		<div :class="$style.fileErrorRoot">
+			<MkCondensedLine>{{ i18n.ts._soundSettings.driveFileError }}</MkCondensedLine>
+		</div>
+	</div>
+	<div v-else-if="type === '_driveFile_'" :class="$style.fileSelectorRoot">
 		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
 		<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ friendlyFileName }}</div>
 	</div>
@@ -19,13 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="_buttons">
 		<MkButton inline @click="listen"><i class="ti ti-player-play"></i> {{ i18n.ts.listen }}</MkButton>
-		<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton inline primary :disabled="!hasChanged || driveFileError" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { SoundType } from '@/scripts/sound.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -51,13 +57,18 @@ const type = ref<SoundType>(props.type);
 const fileId = ref(props.fileId);
 const fileUrl = ref(props.fileUrl);
 const fileName = ref<string>('');
+const driveFileError = ref(false);
+const hasChanged = ref(false);
 const volume = ref(props.volume);
 
 if (type.value === '_driveFile_' && fileId.value) {
-	const apiRes = await misskeyApi('drive/files/show', {
+	await misskeyApi('drive/files/show', {
 		fileId: fileId.value,
+	}).then((res) => {
+		fileName.value = res.name;
+	}).catch((res) => {
+		driveFileError.value = true;
 	});
-	fileName.value = apiRes.name;
 }
 
 function getSoundTypeName(f: SoundType): string {
@@ -107,8 +118,20 @@ function selectSound(ev) {
 		fileUrl.value = file.url;
 		fileName.value = file.name;
 		fileId.value = file.id;
+		driveFileError.value = false;
+		hasChanged.value = true;
 	});
 }
+
+watch([type, volume], ([typeTo, volumeTo], [typeFrom, volumeFrom]) => {
+	if (typeFrom !== typeTo && typeTo !== '_driveFile_') {
+		fileUrl.value = undefined;
+		fileName.value = '';
+		fileId.value = undefined;
+		driveFileError.value = false;
+	}
+	hasChanged.value = true;
+});
 
 function listen() {
 	if (type.value === '_driveFile_' && (!fileUrl.value || !fileId.value)) {
@@ -131,6 +154,10 @@ function listen() {
 }
 
 function save() {
+	if (hasChanged.value === false || driveFileError.value === true) {
+		return;
+	}
+
 	if (type.value === '_driveFile_' && !fileUrl.value) {
 		os.alert({
 			type: 'warning',
@@ -161,6 +188,13 @@ function save() {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+}
+
+.fileErrorRoot {
+	flex-grow: 1;
+	min-width: 0;
+	font-weight: 700;
+	color: var(--error);
 }
 
 .fileSelectorButton {
