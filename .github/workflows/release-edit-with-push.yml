@@ -3,10 +3,10 @@ name: "Release Manager: sync changelog with PR"
 on:
   push:
     branches:
-      - release/**
+      - develop
     paths:
       - 'CHANGELOG.md'
-
+      # - .github/workflows/release-edit-with-push.yml
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -20,24 +20,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # headがrelease/かつopenのPRを1つ取得
+      # headが$GITHUB_REF_NAME, baseが$STABLE_BRANCHかつopenのPRを1つ取得
       - name: Get PR
         run: |
-          echo "pr_number=$(gh pr list --limit 1 --head "$GITHUB_REF_NAME" --json number --jq '.[] | .number')" >> $GITHUB_OUTPUT
+          echo "pr_number=$(gh pr list --limit 1 --search "head:$GITHUB_REF_NAME base:$STABLE_BRANCH is:open" --json number  --jq '.[] | .number')" >> $GITHUB_OUTPUT
         id: get_pr
+        env:
+          STABLE_BRANCH: ${{ vars.STABLE_BRANCH }}
       - name: Get target version
-        uses: misskey-dev/release-manager-actions/.github/actions/get-target-version@v1
+        if: steps.get_pr.outputs.pr_number != ''
+        uses: misskey-dev/release-manager-actions/.github/actions/get-target-version@v2
         id: v
       # CHANGELOG.mdの内容を取得
       - name: Get changelog
-        uses: misskey-dev/release-manager-actions/.github/actions/get-changelog@v1
+        if: steps.get_pr.outputs.pr_number != ''
+        uses: misskey-dev/release-manager-actions/.github/actions/get-changelog@v2
         with:
           version: ${{ steps.v.outputs.target_version }}
         id: changelog
       # PRのnotesを更新
       - name: Update PR
+        if: steps.get_pr.outputs.pr_number != ''
         run: |
           gh pr edit "$PR_NUMBER" --body "$CHANGELOG"
         env:
-          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
           PR_NUMBER: ${{ steps.get_pr.outputs.pr_number }}
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}

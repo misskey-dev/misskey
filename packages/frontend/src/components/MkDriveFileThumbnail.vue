@@ -26,7 +26,7 @@ import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = defineProps<{
 	file: Misskey.entities.DriveFile;
-	fit: string;
+	fit: 'cover' | 'contain';
 }>();
 
 const is = computed(() => {

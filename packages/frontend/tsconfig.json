@@ -37,13 +37,13 @@
 		],
 		"lib": [
 			"esnext",
-			"dom"
+			"dom",
+			"dom.iterable"
 		],
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
 	"include": [
-		".eslintrc.js",
 		"./**/*.ts",
 		"./**/*.vue"
 	],
