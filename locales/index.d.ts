@@ -5239,6 +5239,21 @@ export interface Locale extends ILocale {
              */
             "description": string;
         };
+        "_profileSettings": {
+            /**
+             * プロフィール設定
+             */
+            "title": string;
+            /**
+             * まずは基本的なプロフィールを設定して、ユーザーにあなたのことを知ってもらえるようにしましょう。
+             */
+            "description": string;
+            /**
+             * ここで設定した項目は後でいつでも変更できます。
+             * チュートリアル終了後には、更に多彩なプロフィール設定をご利用いただけます！
+             */
+            "youCanChangeThemLater": string;
+        };
         "_note": {
             /**
              * ノートって何？
@@ -5487,7 +5502,7 @@ export interface Locale extends ILocale {
              */
             "welcomeToX": ParameterizedString<"name">;
             /**
-             * 「{name}に登録したは良いものの、どう使えばいいか分からない…💦」といったことを防ぐために、まずはMisskeyの基本的な使い方を学びましょう。
+             * プロフィールを設定したり、{name}の基本的な使い方を学んだりして、すぐに使い始められるようにしましょう。
              */
             "description": ParameterizedString<"name">;
             /**
@@ -5519,7 +5534,7 @@ export interface Locale extends ILocale {
              */
             "profile": string;
             /**
-             * 他のユーザーが親しみやすいように、プロフィールをつくりましょう。
+             * プロフィールをかんぺきにして、自分をアピールしましょう。
              */
             "profileDescription": string;
             /**

@@ -34,11 +34,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="page === 1" key="tutorialPage_1" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<XNote phase="aboutNote"/>
+						<XProfileSettings/>
 					</MkSpacer>
 				</div>
 			</div>
 			<div v-else-if="page === 2" key="tutorialPage_2" :class="$style.pageContainer">
+				<div :class="$style.pageRoot">
+					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<XNote phase="aboutNote"/>
+					</MkSpacer>
+				</div>
+			</div>
+			<div v-else-if="page === 3" key="tutorialPage_3" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<div class="_gaps">
@@ -48,28 +55,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 				</div>
 			</div>
-			<div v-else-if="page === 3" key="tutorialPage_3" :class="$style.pageContainer">
+			<div v-else-if="page === 4" key="tutorialPage_4" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<XTimeline/>
 					</MkSpacer>
 				</div>
 			</div>
-			<div v-else-if="page === 4" key="tutorialPage_4" :class="$style.pageContainer">
+			<div v-else-if="page === 5" key="tutorialPage_5" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<XFollowUsers/>
 					</MkSpacer>
 				</div>
 			</div>
-			<div v-else-if="page === 5" key="tutorialPage_5" :class="$style.pageContainer">
+			<div v-else-if="page === 6" key="tutorialPage_6" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<XPostNote/>
 					</MkSpacer>
 				</div>
 			</div>
-			<div v-else-if="page === 6" key="tutorialPage_6" :class="$style.pageContainer">
+			<div v-else-if="page === 7" key="tutorialPage_7" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<div class="_gaps">
@@ -79,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 				</div>
 			</div>
-			<div v-else-if="page === 7" key="tutorialPage_7" :class="$style.pageContainer">
+			<div v-else-if="page === 8" key="tutorialPage_8" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
 					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
 						<div class="_gaps">
@@ -88,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 				</div>
 			</div>
-			<slot v-else-if="page === 8" key="tutorialPage_8" name="finish" :close="() => emit('close')" :prev="prev">
+			<slot v-else-if="page === 9" key="tutorialPage_9" name="finish" :close="() => emit('close')" :prev="prev">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :marginMin="20" :marginMax="28">
@@ -124,13 +131,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 
 // チュートリアルの枚数を増やしたら必ず変更すること！！
-export const MAX_PAGE = 8;
+export const MAX_PAGE = 9;
 
 </script>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import XProfileSettings from '@/components/MkTutorial.ProfileSettings.vue';
 import XNote from '@/components/MkTutorial.Note.vue';
 import XTimeline from '@/components/MkTutorial.Timeline.vue';
 import XFollowUsers from '@/components/MkTutorial.FollowUsers.vue';
@@ -171,9 +179,9 @@ const isReactionTutorialPushed = ref<boolean>(isTest);
 const isSensitiveTutorialSucceeded = ref<boolean>(isTest);
 
 const canContinue = computed(() => {
-	if (page.value === 2) {
+	if (page.value === 3) {
 		return isReactionTutorialPushed.value;
-	} else if (page.value === 6) {
+	} else if (page.value === 7) {
 		return isSensitiveTutorialSucceeded.value;
 	} else {
 		return true;
@@ -181,9 +189,11 @@ const canContinue = computed(() => {
 });
 
 function next() {
-	if (page.value === 3 && !props.withSetup) {
+	if (page.value === 0 && !props.withSetup) {
 		page.value += 2;
-	} else if (page.value === 6 && !props.withSetup) {
+	} else if (page.value === 4 && !props.withSetup) {
+		page.value += 2;
+	} else if (page.value === 7 && !props.withSetup) {
 		page.value += 2;
 	} else {
 		page.value++;
@@ -193,9 +203,11 @@ function next() {
 }
 
 function prev() {
-	if (page.value === 5 && !props.withSetup) {
+	if (page.value === 2 && !props.withSetup) {
 		page.value -= 2;
-	} else if (page.value === 8 && !props.withSetup) {
+	} else if (page.value === 6 && !props.withSetup) {
+		page.value -= 2;
+	} else if (page.value === 9 && !props.withSetup) {
 		page.value -= 2;
 	} else {
 		page.value--;

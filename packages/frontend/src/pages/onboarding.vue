@@ -9,13 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.onboardingContainer]">
 		<div :class="[$style.tutorialTitle, { [$style.showing]: (page !== 0) }]">
 			<div :class="$style.text">
-				<span v-if="page === 1"><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</span>
-				<span v-else-if="page === 2"><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</span>
-				<span v-else-if="page === 3"><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</span>
-				<span v-else-if="page === 4"><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</span>
-				<span v-else-if="page === 5"><i class="ti ti-pencil-plus"></i> {{ i18n.ts._initialTutorial._postNote.title }}</span>
-				<span v-else-if="page === 6"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</span>
-				<span v-else-if="page === 7"><i class="ti ti-lock"></i> {{ i18n.ts.privacy }}</span>
+				<span v-if="page === 1"><i class="ti ti-user-edit"></i> {{ i18n.ts._initialTutorial._profileSettings.title }}</span>
+				<span v-else-if="page === 2"><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</span>
+				<span v-else-if="page === 3"><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</span>
+				<span v-else-if="page === 4"><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</span>
+				<span v-else-if="page === 5"><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</span>
+				<span v-else-if="page === 6"><i class="ti ti-pencil-plus"></i> {{ i18n.ts._initialTutorial._postNote.title }}</span>
+				<span v-else-if="page === 7"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</span>
+				<span v-else-if="page === 8"><i class="ti ti-lock"></i> {{ i18n.ts.privacy }}</span>
 				<span v-else-if="page === MAX_PAGE"><!-- なんもなし --></span>
 				<span v-else>{{ i18n.ts._initialTutorial.title }}</span>
 			</div>
@@ -219,7 +220,8 @@ onMounted(() => {
 					setTimeout(() => {
 						animationPhase.value = 4;
 						confetti({
-							spread: 70,
+							spread: 75,
+							particleCount: 100,
 							origin: { y: 0.5 },
 						});
 					}, 1000);
@@ -232,7 +234,7 @@ onMounted(() => {
 // #endregion
 
 definePageMetadata(() => ({
-	title: 'Onboarding',
+	title: i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }),
 	description: 'Welcome to Misskey!',
 }));
 </script>

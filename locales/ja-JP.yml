@@ -1314,6 +1314,10 @@ _initialTutorial:
   _landing:
     title: "チュートリアルへようこそ"
     description: "ここでは、Misskeyの基本的な使い方や機能を確認できます。"
+  _profileSettings:
+    title: "プロフィール設定"
+    description: "まずは基本的なプロフィールを設定して、ユーザーにあなたのことを知ってもらえるようにしましょう。"
+    youCanChangeThemLater: "ここで設定した項目は後でいつでも変更できます。\nチュートリアル終了後には、更に多彩なプロフィール設定をご利用いただけます！"
   _note:
     title: "ノートって何？"
     description: "Misskeyでの投稿は「ノート」と呼びます。ノートはタイムラインに時系列で並んでいて、リアルタイムで更新されていきます。"
@@ -1383,7 +1387,7 @@ _initialTutorial:
   _onboardingLanding:
     accountCreated: "アカウントの作成が完了しました！"
     welcomeToX: "ようこそ、{name}へ！"
-    description: "「{name}に登録したは良いものの、どう使えばいいか分からない…💦」といったことを防ぐために、まずはMisskeyの基本的な使い方を学びましょう。"
+    description: "プロフィールを設定したり、{name}の基本的な使い方を学んだりして、すぐに使い始められるようにしましょう。"
     takesAbout: "このチュートリアルの所要時間は{min}分程度です。\nチュートリアルを完了すると実績が解除されます。"
     adminForcesToTakeTutorial: "このサーバーの管理者は新規ユーザーにチュートリアルを完了することを義務付けています。\nチュートリアルを完了するまでMisskeyを使い始めることはできません。"
   _onboardingDone:
@@ -1391,7 +1395,7 @@ _initialTutorial:
     backToOriginalPath: "元のページに戻る"
     backToOriginalPathDescription: "あなたがアクセスしようとしていたページに戻ります。"
     profile: "プロフィール設定"
-    profileDescription: "他のユーザーが親しみやすいように、プロフィールをつくりましょう。"
+    profileDescription: "プロフィールをかんぺきにして、自分をアピールしましょう。"
     exploreDescription: "人気のノートやユーザーを見つけて交流をはじめましょう。"
     goToTimeline: "ホーム画面に進む"
     goToTimelineDescription: "設定等を行わず、通常のホーム画面（タイムライン）に進みます。"
