@@ -187,22 +187,12 @@ export class RedisSingleCache<T> {
 // TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
 
 export class MemoryKVCache<T> {
-	/**
-	 * データを持つマップ
-	 * @deprecated これを直接操作するべきではない
-	 */
-	public cache: Map<string, { date: number; value: T; }>;
-	private lifetime: number;
-	private gcIntervalHandle: NodeJS.Timeout;
+	private readonly cache = new Map<string, { date: number; value: T; }>();
+	private readonly gcIntervalHandle = setInterval(() => this.gc(), 1000 * 60 * 3);
 
-	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
-		this.cache = new Map();
-		this.lifetime = lifetime;
-
-		this.gcIntervalHandle = setInterval(() => {
-			this.gc();
-		}, 1000 * 60 * 3);
-	}
+	constructor(
+		private readonly lifetime: number,
+	) {}
 
 	@bindThis
 	/**
@@ -297,6 +287,10 @@ export class MemoryKVCache<T> {
 	@bindThis
 	public dispose(): void {
 		clearInterval(this.gcIntervalHandle);
+	}
+
+	public get entries() {
+		return this.cache.entries();
 	}
 }
 
