@@ -55,7 +55,13 @@ export class RedisKVCache<T> {
 
 		const cached = await this.redisClient.get(`kvcache:${this.name}:${key}`);
 		if (cached == null) return undefined;
-		return this.fromRedisConverter(cached);
+
+		const value = this.fromRedisConverter(cached);
+		if (value !== undefined) {
+			this.memoryCache.set(key, value);
+		}
+
+		return value;
 	}
 
 	@bindThis
@@ -149,7 +155,13 @@ export class RedisSingleCache<T> {
 
 		const cached = await this.redisClient.get(`singlecache:${this.name}`);
 		if (cached == null) return undefined;
-		return this.fromRedisConverter(cached);
+
+		const value = this.fromRedisConverter(cached);
+		if (value !== undefined) {
+			this.memoryCache.set(value);
+		}
+
+		return value;
 	}
 
 	@bindThis
