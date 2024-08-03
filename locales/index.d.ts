@@ -5068,13 +5068,13 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
-    /*
-    * チュートリアルをスキップできないようにする
-    */
+    /**
+     * チュートリアルをスキップできないようにする
+     */
     "prohibitSkippingInitialTutorial": string;
     /**
-    * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。
-    */
+     * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。
+     */
     "prohibitSkippingInitialTutorialDescription": string;
     "_delivery": {
         /**
