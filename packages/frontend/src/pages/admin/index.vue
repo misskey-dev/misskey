@@ -215,6 +215,11 @@ const menuDef = computed(() => [{
 		to: '/admin/external-services',
 		active: currentPage.value?.route.name === 'external-services',
 	}, {
+		icon: 'ti ti-webhook',
+		text: 'Webhook',
+		to: '/admin/system-webhook',
+		active: currentPage.value?.route.name === 'system-webhook',
+	}, {
 		icon: 'ti ti-adjustments',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',

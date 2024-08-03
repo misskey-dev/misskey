@@ -1800,8 +1800,6 @@ _sfx:
   note: "Notizen"
   noteMy: "Meine Notizen"
   notification: "Benachrichtigungen"
-  antenna: "Antennen"
-  channel: "Kanalbenachrichtigung"
 _ago:
   future: "Zukunft"
   justNow: "Gerade eben"
@@ -2193,7 +2191,6 @@ _webhookSettings:
   createWebhook: "Webhook erstellen"
   name: "Name"
   secret: "Secret"
-  events: "Webhook-Ereignisse"
   active: "Aktiviert"
   _events:
     follow: "Wenn du jemandem folgst"
@@ -2203,6 +2200,10 @@ _webhookSettings:
     renote: "Wenn du ein Renote erhältst"
     reaction: "Wenn du eine Reaktion erhältst"
     mention: "Wenn du erwähnt wirst"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   createRole: "Rolle erstellt"
   deleteRole: "Rolle gelöscht"

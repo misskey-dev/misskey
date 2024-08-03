@@ -1318,8 +1318,6 @@ _sfx:
   note: "Нотатки"
   noteMy: "Мої нотатки"
   notification: "Сповіщення"
-  antenna: "Прийом антени"
-  channel: "Повідомлення каналу"
 _ago:
   future: "Майбутнє"
   justNow: "Щойно"
@@ -1622,6 +1620,10 @@ _deck:
 _webhookSettings:
   name: "Ім'я"
   active: "Увімкнено"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-mail"
 _moderationLogTypes:
   suspend: "Призупинити"
   resetPassword: "Скинути пароль"
