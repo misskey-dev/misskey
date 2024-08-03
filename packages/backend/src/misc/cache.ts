@@ -7,23 +7,23 @@ import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
 
 export class RedisKVCache<T> {
-	private redisClient: Redis.Redis;
-	private name: string;
-	private lifetime: number;
-	private memoryCache: MemoryKVCache<T>;
-	private fetcher: (key: string) => Promise<T>;
-	private toRedisConverter: (value: T) => string;
-	private fromRedisConverter: (value: string) => T | undefined;
+	private readonly lifetime: number;
+	private readonly memoryCache: MemoryKVCache<T>;
+	private readonly fetcher: (key: string) => Promise<T>;
+	private readonly toRedisConverter: (value: T) => string;
+	private readonly fromRedisConverter: (value: string) => T | undefined;
 
-	constructor(redisClient: RedisKVCache<T>['redisClient'], name: RedisKVCache<T>['name'], opts: {
-		lifetime: RedisKVCache<T>['lifetime'];
-		memoryCacheLifetime: number;
-		fetcher: RedisKVCache<T>['fetcher'];
-		toRedisConverter: RedisKVCache<T>['toRedisConverter'];
-		fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
-	}) {
-		this.redisClient = redisClient;
-		this.name = name;
+	constructor(
+		private redisClient: Redis.Redis,
+		private name: string,
+		opts: {
+			lifetime: RedisKVCache<T>['lifetime'];
+			memoryCacheLifetime: number;
+			fetcher: RedisKVCache<T>['fetcher'];
+			toRedisConverter: RedisKVCache<T>['toRedisConverter'];
+			fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
+		},
+	) {
 		this.lifetime = opts.lifetime;
 		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime);
 		this.fetcher = opts.fetcher;
@@ -101,23 +101,23 @@ export class RedisKVCache<T> {
 }
 
 export class RedisSingleCache<T> {
-	private redisClient: Redis.Redis;
-	private name: string;
-	private lifetime: number;
-	private memoryCache: MemorySingleCache<T>;
-	private fetcher: () => Promise<T>;
-	private toRedisConverter: (value: T) => string;
-	private fromRedisConverter: (value: string) => T | undefined;
+	private readonly lifetime: number;
+	private readonly memoryCache: MemorySingleCache<T>;
+	private readonly fetcher: () => Promise<T>;
+	private readonly toRedisConverter: (value: T) => string;
+	private readonly fromRedisConverter: (value: string) => T | undefined;
 
-	constructor(redisClient: RedisSingleCache<T>['redisClient'], name: RedisSingleCache<T>['name'], opts: {
-		lifetime: RedisSingleCache<T>['lifetime'];
-		memoryCacheLifetime: number;
-		fetcher: RedisSingleCache<T>['fetcher'];
-		toRedisConverter: RedisSingleCache<T>['toRedisConverter'];
-		fromRedisConverter: RedisSingleCache<T>['fromRedisConverter'];
-	}) {
-		this.redisClient = redisClient;
-		this.name = name;
+	constructor(
+		private redisClient: Redis.Redis,
+		private name: string,
+		opts: {
+			lifetime: number;
+			memoryCacheLifetime: number;
+			fetcher: RedisSingleCache<T>['fetcher'];
+			toRedisConverter: RedisSingleCache<T>['toRedisConverter'];
+			fromRedisConverter: RedisSingleCache<T>['fromRedisConverter'];
+		},
+	) {
 		this.lifetime = opts.lifetime;
 		this.memoryCache = new MemorySingleCache(opts.memoryCacheLifetime);
 		this.fetcher = opts.fetcher;
@@ -297,11 +297,10 @@ export class MemoryKVCache<T> {
 export class MemorySingleCache<T> {
 	private cachedAt: number | null = null;
 	private value: T | undefined;
-	private lifetime: number;
 
-	constructor(lifetime: MemorySingleCache<never>['lifetime']) {
-		this.lifetime = lifetime;
-	}
+	constructor(
+		private lifetime: number,
+	) {}
 
 	@bindThis
 	public set(value: T): void {
