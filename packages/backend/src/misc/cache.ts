@@ -77,14 +77,14 @@ export class RedisKVCache<T> {
 
 		// Cache MISS
 		const value = await this.fetcher(key);
-		this.set(key, value);
+		await this.set(key, value);
 		return value;
 	}
 
 	@bindThis
 	public async refresh(key: string) {
 		const value = await this.fetcher(key);
-		this.set(key, value);
+		await this.set(key, value);
 
 		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
 	}
@@ -171,14 +171,14 @@ export class RedisSingleCache<T> {
 
 		// Cache MISS
 		const value = await this.fetcher();
-		this.set(value);
+		await this.set(value);
 		return value;
 	}
 
 	@bindThis
 	public async refresh() {
 		const value = await this.fetcher();
-		this.set(value);
+		await this.set(value);
 
 		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
 	}
