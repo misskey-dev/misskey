@@ -1,6 +1,8 @@
 import dns from 'dns';
 import { readFile } from 'node:fs/promises';
+import type { IncomingMessage } from 'node:http';
 import { defineConfig } from 'vite';
+import type { UserConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import locales from '../../locales/index.js';
 import { getConfig } from './vite.config.js';
@@ -14,7 +16,15 @@ const { port } = yaml.load(await readFile('../../.config/default.yml', 'utf-8'))
 const httpUrl = `http://localhost:${port}/`;
 const websocketUrl = `ws://localhost:${port}/`;
 
-const devConfig = {
+// activitypubリクエストはProxyを通し、それ以外はViteの開発サーバーを返す
+function varyHandler(req: IncomingMessage) {
+	if (req.headers.accept?.includes('application/activity+json')) {
+		return null;
+	}
+	return '/index.html';
+}
+
+const devConfig: UserConfig = {
 	// 基本の設定は vite.config.js から引き継ぐ
 	...defaultConfig,
 	root: 'src',
@@ -52,17 +62,14 @@ const devConfig = {
 			'/bios': httpUrl,
 			'/cli': httpUrl,
 			'/inbox': httpUrl,
+			'/emoji/': httpUrl,
 			'/notes': {
 				target: httpUrl,
-				headers: {
-					'Accept': 'application/activity+json',
-				},
+				bypass: varyHandler,
 			},
 			'/users': {
 				target: httpUrl,
-				headers: {
-					'Accept': 'application/activity+json',
-				},
+				bypass: varyHandler,
 			},
 			'/.well-known': {
 				target: httpUrl,
