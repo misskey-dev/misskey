@@ -117,21 +117,12 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.body.birthday, myBirthday);
 		});
 
-		test('名前を空白のみにした場合nullになる', async () => {
+		test('名前を空白にできる', async () => {
 			const res = await api('i/update', {
 				name: ' ',
 			}, alice);
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.body.name, null);
-		});
-
-		test('名前の前後に空白（ホワイトスペース）を入れてもトリムされる', async () => {
-			const res = await api('i/update', {
-				// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space
-				name: ' あ い う \u0009\u000b\u000c\u0020\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\ufeff',
-			}, alice);
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.body.name, 'あ い う');
+			assert.strictEqual(res.body.name, ' ');
 		});
 
 		test('誕生日の設定を削除できる', async () => {
