@@ -11,6 +11,7 @@ import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transfor
 import { ObjectUtils } from 'typeorm/util/ObjectUtils.js';
 import { OrmUtils } from 'typeorm/util/OrmUtils.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
@@ -68,6 +69,7 @@ import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
 import { MiWebhook } from '@/models/Webhook.js';
+import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiChannel } from '@/models/Channel.js';
 import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
 import { MiRole } from '@/models/Role.js';
@@ -80,34 +82,14 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
-	createTableColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
-	createTableColumnNamesWithPrimaryKey(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>): string[];
+	createTableColumnNames(this: Repository<T> & MiRepository<T>): string[];
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
 	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
 }
 
 export const miRepository = {
-	createTableColumnNames(queryBuilder) {
-		// @ts-expect-error -- protected
-		const insertedColumns = queryBuilder.getInsertedColumns();
-		if (insertedColumns.length) {
-			return insertedColumns.map(column => column.databaseName);
-		}
-		if (!queryBuilder.expressionMap.mainAlias?.hasMetadata && !queryBuilder.expressionMap.insertColumns.length) {
-			// @ts-expect-error -- protected
-			const valueSets = queryBuilder.getValueSets();
-			if (valueSets.length === 1) {
-				return Object.keys(valueSets[0]);
-			}
-		}
-		return queryBuilder.expressionMap.insertColumns;
-	},
-	createTableColumnNamesWithPrimaryKey(queryBuilder) {
-		const columnNames = this.createTableColumnNames(queryBuilder);
-		if (!columnNames.includes('id')) {
-			columnNames.unshift('id');
-		}
-		return columnNames;
+	createTableColumnNames() {
+		return this.metadata.columns.filter(column => column.isSelect && !column.isVirtual).map(column => column.databaseName);
 	},
 	async insertOne(entity, findOptions?) {
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
@@ -115,7 +97,7 @@ export const miRepository = {
 		const mainAlias = queryBuilder.expressionMap.mainAlias!;
 		const name = mainAlias.name;
 		mainAlias.name = 't';
-		const columnNames = this.createTableColumnNamesWithPrimaryKey(queryBuilder);
+		const columnNames = this.createTableColumnNames();
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -136,7 +118,7 @@ export const miRepository = {
 			selectOrAddSelect = (selection, selectionAliasName) => builder.addSelect(selection, selectionAliasName);
 			return builder.select(selection, selectionAliasName);
 		};
-		for (const columnName of this.createTableColumnNamesWithPrimaryKey(queryBuilder)) {
+		for (const columnName of this.createTableColumnNames()) {
 			selectOrAddSelect(`${builder.alias}.${columnName}`, `${builder.alias}_${columnName}`);
 		}
 	},
@@ -144,6 +126,7 @@ export const miRepository = {
 
 export {
 	MiAbuseUserReport,
+	MiAbuseReportNotificationRecipient,
 	MiAccessToken,
 	MiAd,
 	MiAnnouncement,
@@ -201,6 +184,7 @@ export {
 	MiUserPublickey,
 	MiUserSecurityKey,
 	MiWebhook,
+	MiSystemWebhook,
 	MiChannel,
 	MiRetentionAggregation,
 	MiRole,
@@ -213,6 +197,7 @@ export {
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
+export type AbuseReportNotificationRecipientRepository = Repository<MiAbuseReportNotificationRecipient> & MiRepository<MiAbuseReportNotificationRecipient>;
 export type AccessTokensRepository = Repository<MiAccessToken> & MiRepository<MiAccessToken>;
 export type AdsRepository = Repository<MiAd> & MiRepository<MiAd>;
 export type AnnouncementsRepository = Repository<MiAnnouncement> & MiRepository<MiAnnouncement>;
@@ -270,6 +255,7 @@ export type UserProfilesRepository = Repository<MiUserProfile> & MiRepository<Mi
 export type UserPublickeysRepository = Repository<MiUserPublickey> & MiRepository<MiUserPublickey>;
 export type UserSecurityKeysRepository = Repository<MiUserSecurityKey> & MiRepository<MiUserSecurityKey>;
 export type WebhooksRepository = Repository<MiWebhook> & MiRepository<MiWebhook>;
+export type SystemWebhooksRepository = Repository<MiSystemWebhook> & MiRepository<MiWebhook>;
 export type ChannelsRepository = Repository<MiChannel> & MiRepository<MiChannel>;
 export type RetentionAggregationsRepository = Repository<MiRetentionAggregation> & MiRepository<MiRetentionAggregation>;
 export type RolesRepository = Repository<MiRole> & MiRepository<MiRole>;

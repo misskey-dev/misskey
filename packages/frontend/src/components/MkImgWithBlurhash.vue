@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:enterToClass="defaultStore.state.animation && props.transition?.enterToClass || undefined"
 		:leaveFromClass="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
-		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-show="!hide" key="img" ref="img" :height="imgHeight" :width="imgWidth" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async"/>
+		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined" tabindex="-1"/>
+		<img v-show="!hide" key="img" ref="img" :height="imgHeight ?? undefined" :width="imgWidth ?? undefined" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async" tabindex="-1"/>
 	</TransitionGroup>
 </div>
 </template>
@@ -151,21 +151,25 @@ function drawImage(bitmap: CanvasImageSource) {
 }
 
 function drawAvg() {
-	if (!canvas.value || !props.hash) return;
+	if (!canvas.value) return;
+
+	const color = (props.hash != null && extractAvgColorFromBlurhash(props.hash)) || '#888';
 
 	const ctx = canvas.value.getContext('2d');
 	if (!ctx) return;
 
 	// avgColorでお茶をにごす
 	ctx.beginPath();
-	ctx.fillStyle = extractAvgColorFromBlurhash(props.hash) ?? '#888';
+	ctx.fillStyle = color;
 	ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value);
 }
 
 async function draw() {
-	if (props.hash == null) return;
+	if (import.meta.env.MODE === 'test' && props.hash == null) return;
 
 	drawAvg();
+
+	if (props.hash == null) return;
 
 	if (props.onlyAvgColor) return;
 

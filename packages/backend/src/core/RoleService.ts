@@ -47,6 +47,7 @@ export type RolePolicies = {
 	canHideAds: boolean;
 	driveCapacityMb: number;
 	alwaysMarkNsfw: boolean;
+	canUpdateBioMedia: boolean;
 	pinLimit: number;
 	antennaLimit: number;
 	wordMuteLimit: number;
@@ -75,6 +76,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canHideAds: false,
 	driveCapacityMb: 100,
 	alwaysMarkNsfw: false,
+	canUpdateBioMedia: true,
 	pinLimit: 5,
 	antennaLimit: 5,
 	wordMuteLimit: 200,
@@ -376,6 +378,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
+			canUpdateBioMedia: calc('canUpdateBioMedia', vs => vs.some(v => v === true)),
 			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
 			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
 			wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
@@ -410,14 +413,32 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async getModeratorIds(includeAdmins = true): Promise<MiUser['id'][]> {
+	public async getModeratorIds(includeAdmins = true, excludeExpire = false): Promise<MiUser['id'][]> {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const moderatorRoles = includeAdmins ? roles.filter(r => r.isModerator || r.isAdministrator) : roles.filter(r => r.isModerator);
-		const assigns = moderatorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
-			roleId: In(moderatorRoles.map(r => r.id)),
-		}) : [];
+		const moderatorRoles = includeAdmins
+			? roles.filter(r => r.isModerator || r.isAdministrator)
+			: roles.filter(r => r.isModerator);
+
 		// TODO: isRootなアカウントも含める
-		return assigns.map(a => a.userId);
+		const assigns = moderatorRoles.length > 0
+			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
+			: [];
+
+		const now = Date.now();
+		const result = [
+			// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
+			...new Set(
+				assigns
+					.filter(it =>
+						(excludeExpire)
+							? (it.expiresAt == null || it.expiresAt.getTime() > now)
+							: true,
+					)
+					.map(a => a.userId),
+			),
+		];
+
+		return result.sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
@@ -484,14 +505,15 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
 
-		if (role.isPublic) {
+		const user = await this.usersRepository.findOneByOrFail({ id: userId });
+
+		if (role.isPublic && user.host === null) {
 			this.notificationService.createNotification(userId, 'roleAssigned', {
 				roleId: roleId,
 			});
 		}
 
 		if (moderator) {
-			const user = await this.usersRepository.findOneByOrFail({ id: userId });
 			this.moderationLogService.log(moderator, 'assignRole', {
 				roleId: roleId,
 				roleName: role.name,
