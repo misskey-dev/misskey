@@ -8,7 +8,7 @@
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 import locales from '../../locales/index.js';
-import meta from '../../package.json' assert { type: "json" };
+import meta from '../../package.json' with { type: "json" };
 const watch = process.argv[2]?.includes('watch');
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))

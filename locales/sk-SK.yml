@@ -922,6 +922,10 @@ renotes: "Preposlať"
 sourceCode: "Zdrojový kód"
 flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
+_delivery:
+  stop: "Zmrazené"
+  _type:
+    none: "Zverejňovanie"
 _role:
   priority: "Priorita"
   _priority:
@@ -1120,8 +1124,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Vlastná poznámka"
   notification: "Oznámenia"
-  antenna: "Antény"
-  channel: "Upozornenia kanála"
 _ago:
   future: "Budúcnosť"
   justNow: "Teraz"
@@ -1443,9 +1445,12 @@ _deck:
 _webhookSettings:
   name: "Názov"
   active: "Zapnuté"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "Zmraziť"
   resetPassword: "Resetovať heslo"
 _reversi:
   total: "Celkom"
-

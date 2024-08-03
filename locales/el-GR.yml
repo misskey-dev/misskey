@@ -301,8 +301,6 @@ _theme:
 _sfx:
   note: "Σημειώματα"
   notification: "Ειδοποιήσεις"
-  antenna: "Αντένες"
-  channel: "Ειδοποιήσεις καναλιών"
 _ago:
   future: "Μελλοντικό"
   justNow: "Μόλις τώρα"
@@ -398,4 +396,3 @@ _moderationLogTypes:
   suspend: "Αποβολή"
 _reversi:
   total: "Σύνολο"
-

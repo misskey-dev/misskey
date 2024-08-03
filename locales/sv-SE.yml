@@ -488,6 +488,10 @@ dataSaver: "Databesparing"
 icon: "Profilbild"
 replies: "Svara"
 renotes: "Omnotera"
+_delivery:
+  stop: "Suspenderad"
+  _type:
+    none: "Publiceras"
 _achievements:
   _types:
     _open3windows:
@@ -508,7 +512,6 @@ _theme:
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
-  antenna: "Antenner"
 _2fa:
   renewTOTPCancel: "Nej tack"
 _antennaSources:
@@ -573,7 +576,10 @@ _deck:
 _webhookSettings:
   name: "Namn"
   active: "Aktiverad"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-post"
 _moderationLogTypes:
   suspend: "Suspendera"
   resetPassword: "Återställ Lösenord"
-

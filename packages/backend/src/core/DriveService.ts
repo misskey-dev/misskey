@@ -43,6 +43,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -127,6 +128,7 @@ export class DriveService {
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
+		private utilityService: UtilityService,
 	) {
 		const logger = new Logger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
@@ -220,7 +222,7 @@ export class DriveService {
 			file.size = size;
 			file.storedInternal = false;
 
-			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+			return await this.driveFilesRepository.insertOne(file);
 		} else { // use internal storage
 			const accessKey = randomUUID();
 			const thumbnailAccessKey = 'thumbnail-' + randomUUID();
@@ -254,7 +256,7 @@ export class DriveService {
 			file.md5 = hash;
 			file.size = size;
 
-			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+			return await this.driveFilesRepository.insertOne(file);
 		}
 	}
 
@@ -497,14 +499,20 @@ export class DriveService {
 
 		if (user && !force) {
 		// Check if there is a file with the same hash
-			const much = await this.driveFilesRepository.findOneBy({
+			const matched = await this.driveFilesRepository.findOneBy({
 				md5: info.md5,
 				userId: user.id,
 			});
 
-			if (much) {
-				this.registerLogger.info(`file with same hash is found: ${much.id}`);
-				return much;
+			if (matched) {
+				this.registerLogger.info(`file with same hash is found: ${matched.id}`);
+				if (sensitive && !matched.isSensitive) {
+					// The file is federated as sensitive for this time, but was federated as non-sensitive before.
+					// Therefore, update the file to sensitive.
+					await this.driveFilesRepository.update({ id: matched.id }, { isSensitive: true });
+					matched.isSensitive = true;
+				}
+				return matched;
 			}
 		}
 
@@ -581,6 +589,7 @@ export class DriveService {
 			sensitive ?? false
 			: false;
 
+		if (user && this.utilityService.isMediaSilencedHost(instance.mediaSilencedHosts, user.host)) file.isSensitive = true;
 		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
 		if (info.sensitive && instance.setSensitiveFlagAutomatically) file.isSensitive = true;
 		if (userRoleNSFW) file.isSensitive = true;
@@ -609,7 +618,7 @@ export class DriveService {
 				file.type = info.type.mime;
 				file.storedInternal = false;
 
-				file = await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+				file = await this.driveFilesRepository.insertOne(file);
 			} catch (err) {
 			// duplicate key error (when already registered)
 				if (isDuplicateKeyValueError(err)) {

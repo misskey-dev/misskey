@@ -58,6 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -79,9 +80,9 @@ const pagination = {
 		sort: sort.value,
 		host: host.value !== '' ? host.value : null,
 		...(
-			state.value === 'federating' ? { federating: true } :
-			state.value === 'subscribing' ? { subscribing: true } :
-			state.value === 'publishing' ? { publishing: true } :
+			state.value === 'federating' ? { federating: true, suspended: false, blocked: false } :
+			state.value === 'subscribing' ? { subscribing: true, suspended: false, blocked: false } :
+			state.value === 'publishing' ? { publishing: true, suspended: false, blocked: false } :
 			state.value === 'suspended' ? { suspended: true } :
 			state.value === 'blocked' ? { blocked: true } :
 			state.value === 'silenced' ? { silenced: true } :
@@ -90,8 +91,17 @@ const pagination = {
 	})),
 };
 
-function getStatus(instance) {
-	if (instance.isSuspended) return 'Suspended';
+function getStatus(instance: Misskey.entities.FederationInstance) {
+	switch (instance.suspensionState) {
+		case 'manuallySuspended':
+			return 'Manually Suspended';
+		case 'goneSuspended':
+			return 'Automatically Suspended (Gone)';
+		case 'autoSuspendedForNotResponding':
+			return 'Automatically Suspended (Not Responding)';
+		case 'none':
+			break;
+	}
 	if (instance.isBlocked) return 'Blocked';
 	if (instance.isSilenced) return 'Silenced';
 	if (instance.isNotResponding) return 'Error';

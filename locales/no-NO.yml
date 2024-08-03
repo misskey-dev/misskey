@@ -464,6 +464,8 @@ icon: "Avatar"
 replies: "Svar"
 renotes: "Renote"
 surrender: "Avbryt"
+_delivery:
+  stop: "Suspendert"
 _initialAccountSetting:
   theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
@@ -719,6 +721,9 @@ _deck:
     direct: "Direkte"
 _webhookSettings:
   name: "Navn"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-post"
 _moderationLogTypes:
   suspend: "Suspender"
-

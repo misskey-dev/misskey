@@ -6,6 +6,7 @@
 #───┘ URL └─────────────────────────────────────────────────────
 
 # Final accessible URL seen by a user.
+# You can set url from an environment variable instead.
 url: https://example.tld/
 
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
@@ -38,9 +39,11 @@ db:
   port: 5432
 
   # Database name
+  # You can set db from an environment variable instead.
   db: misskey
 
   # Auth
+  # You can set user and pass from environment variables instead.
   user: example-misskey-user
   pass: example-misskey-pass
 
@@ -106,7 +109,7 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-# You can set scope to local (default value) or global 
+# You can set scope to local (default value) or global
 # (include notes from remote).
 
 #meilisearch:
@@ -135,6 +138,21 @@ redis:
 # ID SETTINGS AFTER THAT!
 
 id: 'aidx'
+
+#   ┌────────────────┐
+#───┘ Error tracking └──────────────────────────────────────────
+
+# Sentry is available for error tracking.
+# See the Sentry documentation for more details on options.
+
+#sentryForBackend:
+#  enableNodeProfiling: true
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+
+#sentryForFrontend:
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
@@ -185,7 +203,7 @@ proxyRemoteFiles: true
 signToActivityPubGet: true
 
 # For security reasons, uploading attachments from the intranet is prohibited,
-# but exceptions can be made from the following settings. Default value is "undefined". 
+# but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'

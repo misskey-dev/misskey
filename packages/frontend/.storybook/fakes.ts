@@ -22,6 +22,55 @@ export function abuseUserReport() {
 	};
 }
 
+export function channel(id = 'somechannelid', name = 'Some Channel', bannerUrl: string | null = 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true'): entities.Channel {
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		lastNotedAt: '2016-12-28T22:49:51.000Z',
+		name,
+		description: null,
+		userId: null,
+		bannerUrl,
+		pinnedNoteIds: [],
+		color: '#000',
+		isArchived: false,
+		usersCount: 1,
+		notesCount: 1,
+		isSensitive: false,
+		allowRenoteToExternal: false,
+	};
+}
+
+export function clip(id = 'someclipid', name = 'Some Clip'): entities.Clip {
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		lastClippedAt: null,
+		userId: 'someuserid',
+		user: userLite(),
+		notesCount: undefined,
+		name,
+		description: 'Some clip description',
+		isPublic: false,
+		favoritedCount: 0,
+	};
+}
+
+export function emojiDetailed(id = 'someemojiid', name = 'some_emoji'): entities.EmojiDetailed {
+	return {
+		id,
+		aliases: ['alias1', 'alias2'],
+		name,
+		category: 'emojiCategory',
+		host: null,
+		url: '/client-assets/about-icon.png',
+		license: null,
+		isSensitive: false,
+		localOnly: false,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: ['roleId1', 'roleId2'],
+	};
+}
+
 export function galleryPost(isSensitive = false) {
 	return {
 		id: 'somepostid',
@@ -65,7 +114,65 @@ export function file(isSensitive = false) {
 	};
 }
 
-export function userDetailed(id = 'someuserid', username = 'miskist', host = 'misskey-hub.net', name = 'Misskey User'): entities.UserDetailed {
+export function folder(id = 'somefolderid', name = 'Some Folder', parentId: string | null = null): entities.DriveFolder {
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		name,
+		parentId,
+	};
+}
+
+export function federationInstance(): entities.FederationInstance {
+	return {
+		id: 'someinstanceid',
+		firstRetrievedAt: '2021-01-01T00:00:00.000Z',
+		host: 'misskey-hub.net',
+		usersCount: 10,
+		notesCount: 20,
+		followingCount: 5,
+		followersCount: 15,
+		isNotResponding: false,
+		isSuspended: false,
+		suspensionState: 'none',
+		isBlocked: false,
+		softwareName: 'misskey',
+		softwareVersion: '2024.5.0',
+		openRegistrations: false,
+		name: 'Misskey Hub',
+		description: '',
+		maintainerName: '',
+		maintainerEmail: '',
+		isSilenced: false,
+		iconUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
+		faviconUrl: '',
+		themeColor: '',
+		infoUpdatedAt: '',
+		latestRequestReceivedAt: '',
+	};
+}
+
+export function note(id = 'somenoteid'): entities.Note {
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		deletedAt: null,
+		text: 'some note',
+		cw: null,
+		userId: 'someuserid',
+		user: userLite(),
+		visibility: 'public',
+		reactionAcceptance: 'nonSensitiveOnly',
+		reactionEmojis: {},
+		reactions: {},
+		myReaction: null,
+		reactionCount: 0,
+		renoteCount: 0,
+		repliesCount: 0,
+	};
+}
+
+export function userLite(id = 'someuserid', username = 'miskist', host: entities.UserDetailed['host'] = 'misskey-hub.net', name: entities.UserDetailed['name'] = 'Misskey User'): entities.UserLite {
 	return {
 		id,
 		username,
@@ -76,6 +183,12 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',
 		avatarDecorations: [],
 		emojis: {},
+	};
+}
+
+export function userDetailed(id = 'someuserid', username = 'miskist', host: entities.UserDetailed['host'] = 'misskey-hub.net', name: entities.UserDetailed['name'] = 'Misskey User'): entities.UserDetailed {
+	return {
+		...userLite(id, username, host, name),
 		bannerBlurhash: 'eQA^IW^-MH8w9tE8I=S^o{$*R4RikXtSxutRozjEnNR.RQadoyozog',
 		bannerUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true',
 		birthday: '2014-06-20',
@@ -126,7 +239,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		movedTo: null,
 		alsoKnownAs: null,
 		notify: 'none',
-		memo: null
+		memo: null,
 	};
 }
 

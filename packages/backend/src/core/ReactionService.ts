@@ -29,6 +29,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 
 const FALLBACK = '\u2764';
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
@@ -104,6 +105,8 @@ export class ReactionService {
 
 	@bindThis
 	public async create(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot'] }, note: MiNote, _reaction?: string | null) {
+		const meta = await this.metaService.fetch();
+
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
@@ -117,11 +120,16 @@ export class ReactionService {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
 		}
 
+		// Check if note is Renote
+		if (isRenote(note) && !isQuote(note)) {
+			throw new IdentifiableError('12c35529-3c79-4327-b1cc-e2cf63a71925', 'You cannot react to Renote.');
+		}
+
 		let reaction = _reaction ?? FALLBACK;
 
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
 			reaction = '\u2764';
-		} else if (_reaction) {
+		} else if (_reaction != null) {
 			const custom = reaction.match(isCustomEmojiRegexp);
 			if (custom) {
 				const reacterHost = this.utilityService.toPunyNullable(user.host);
@@ -140,6 +148,11 @@ export class ReactionService {
 
 						// センシティブ
 						if ((note.reactionAcceptance === 'nonSensitiveOnly' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && emoji.isSensitive) {
+							reaction = FALLBACK;
+						}
+
+						// for media silenced host, custom emoji reactions are not allowed
+						if (reacterHost != null && this.utilityService.isMediaSilencedHost(meta.mediaSilencedHosts, reacterHost)) {
 							reaction = FALLBACK;
 						}
 					} else {
@@ -213,8 +226,6 @@ export class ReactionService {
 				}
 			}
 		}
-
-		const meta = await this.metaService.fetch();
 
 		if (meta.enableChartsForRemoteUser || (user.host == null)) {
 			this.perUserReactionsChart.update(user, note);

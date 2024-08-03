@@ -108,6 +108,7 @@ export const paramDef = {
 		feedbackUrl: { type: 'string', nullable: true },
 		impressumUrl: { type: 'string', nullable: true },
 		privacyPolicyUrl: { type: 'string', nullable: true },
+		inquiryUrl: { type: 'string', nullable: true },
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
@@ -144,6 +145,13 @@ export const paramDef = {
 		perUserListTimelineCacheMax: { type: 'integer' },
 		notesPerOneAd: { type: 'integer' },
 		silencedHosts: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'string',
+			},
+		},
+		mediaSilencedHosts: {
 			type: 'array',
 			nullable: true,
 			items: {
@@ -198,6 +206,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.silencedHosts)) {
 				let lastValue = '';
 				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
+				});
+			}
+			if (Array.isArray(ps.mediaSilencedHosts)) {
+				let lastValue = '';
+				set.mediaSilencedHosts = ps.mediaSilencedHosts.sort().filter((h) => {
 					const lv = lastValue;
 					lastValue = h;
 					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
@@ -425,6 +441,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.privacyPolicyUrl !== undefined) {
 				set.privacyPolicyUrl = ps.privacyPolicyUrl;
+			}
+
+			if (ps.inquiryUrl !== undefined) {
+				set.inquiryUrl = ps.inquiryUrl;
 			}
 
 			if (ps.useObjectStorage !== undefined) {
