@@ -235,7 +235,6 @@ onMounted(() => {
 
 definePageMetadata(() => ({
 	title: i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }),
-	description: 'Welcome to Misskey!',
 }));
 </script>
 
