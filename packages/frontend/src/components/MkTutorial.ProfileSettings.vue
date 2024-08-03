@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInfo>{{ i18n.ts._initialAccountSetting.theseSettingsCanEditLater }}</MkInfo>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._profileSettings.description }}</div>
 
 	<FormSlot>
 		<template #label>{{ i18n.ts.avatar }}</template>
@@ -17,15 +17,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSlot>
 
-	<MkInput v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
+	<MkInput v-model="name" :max="30" manualSave>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="description" :max="500" tall manualSave data-cy-user-setup-user-description>
+	<MkTextarea v-model="description" :max="500" tall manualSave>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 	</MkTextarea>
 
-	<MkInfo>{{ i18n.ts._initialAccountSetting.youCanEditMoreSettingsInSettingsPageLater }}</MkInfo>
+	<MkInfo>{{ i18n.ts._initialTutorial._profileSettings.youCanChangeThemLater }}</MkInfo>
 </div>
 </template>
 
@@ -37,7 +37,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { chooseFileFromPc } from '@/scripts/select-file.js';
+import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { signinRequired } from '@/account.js';
 
@@ -62,10 +62,8 @@ watch(description, () => {
 	});
 });
 
-function setAvatar(ev) {
-	chooseFileFromPc(false).then(async (files) => {
-		const file = files[0];
-
+function setAvatar(ev: MouseEvent) {
+	selectFile(ev.currentTarget ?? ev.target).then(async (file) => {
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -99,5 +97,6 @@ function setAvatar(ev) {
 .avatar {
 	width: 100px;
 	height: 100px;
+	background: var(--bg);
 }
 </style>

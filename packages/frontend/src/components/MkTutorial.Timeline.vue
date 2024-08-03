@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._timeline.description1 }}</div>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._timeline.description1 }}</div>
 	<div class="_gaps_s">
 		<div v-for="tl in basicTimelineTypes">
 			<i :class="basicTimelineIconClass(tl)"></i> <b>{{ i18n.ts._timelines[tl] }}</b> … {{ i18n.ts._initialTutorial._timeline[tl] }}
