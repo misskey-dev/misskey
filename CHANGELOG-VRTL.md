@@ -3,6 +3,7 @@
 VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
+- fic(frontend): VRTL VSTLでリプライのトグルが表示されない問題 (anatawa12#92) - 2024/08/04
 
 -- 2024.7.0-kinel.1 --
 
