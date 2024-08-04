@@ -62,7 +62,7 @@ export function availableBasicTimelines(): BasicTimelineType[] {
 }
 
 export function hasWithReplies(timeline: BasicTimelineType | undefined | null): boolean {
-	return timeline === 'local' || timeline === 'social';
+	return timeline === 'local' || timeline === 'social' || timeline === 'vmimi-relay' || timeline === 'vmimi-relay-social';
 }
 
 export function hasWithLocalOnly(timeline: BasicTimelineType | undefined | null): boolean {
