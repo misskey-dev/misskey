@@ -1,6 +1,4 @@
-## Unreleased
-
-### General
+## 2024.7.0-kinel.1
 
 ### Client
 - Enhance: 新規アカウントの初期設定を変更しました。(既存のアカウントには影響しません。)

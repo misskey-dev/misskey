@@ -3,6 +3,9 @@
 VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
+
+-- 2024.7.0-kinel.1 --
+
 - chore(backend): VRTL参加サーバーの取得に失敗したときのリトライの間隔を短く
 - feat: VRTL/VSTLに連合なし投稿を含めるかを選択可能に
   - もともとのVRTL/VSTLでは連合なし投稿が常に含まれていましたが、正しくVRTL/VSTLのノートを表現するために含めないようにできるようになりました
