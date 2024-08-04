@@ -53,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.userSuspendService.doPostSuspend(user).catch(err => {});
 
 				this.queueService.createDeleteAccountJob(user, {
-					soft: false,
+					soft: true,
 				});
 			} else {
 				this.queueService.createDeleteAccountJob(user, {

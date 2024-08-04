@@ -35,7 +35,7 @@ export class DeleteAccountService {
 		await this.userSuspendService.doPostSuspend(user).catch(e => {});
 
 		this.queueService.createDeleteAccountJob(user, {
-			soft: false,
+			soft: true,
 		});
 
 		await this.usersRepository.update(user.id, {
