@@ -5,7 +5,7 @@
 		<div :class="$style.titleRoot">
 			<h1 :class="$style.logo">
 				<span :class="$style.visuallyHidden">はなみすきー</span>
-				<img :class="$style.logoImage" src="http://localhost:5174/files/246d8b49-65cf-454f-a52a-fd6562cf1ad6"/>
+				<img :class="$style.logoImage" src="https://static-assets.misskey.flowers/brand-assets/logotype/logotype_temp.png"/>
 			</h1>
 			<div :class="$style.cta">
 				<div :class="$style.actions">
@@ -280,7 +280,7 @@ function upcomingFeatureDialog() {
 
 .aboutWrapper {
 	margin: 0 16px;
-	padding: 32px;
+	padding: 16px;
 	border-radius: var(--radius);
 	background: var(--panel);
 }
@@ -438,6 +438,10 @@ function upcomingFeatureDialog() {
 
 	.action3 {
 		order: 3;
+	}
+
+	.aboutWrapper {
+		padding: 32px;
 	}
 
 	.featureInDevelopment {
