@@ -32,7 +32,7 @@ const devConfig: UserConfig = {
 	base: './',
 	server: {
 		host: 'localhost',
-		port: 5173,
+		port: 5174,
 		proxy: {
 			'/api': {
 				changeOrigin: true,
@@ -53,7 +53,7 @@ const devConfig: UserConfig = {
 			'/identicon': {
 				target: httpUrl,
 				rewrite(path) {
-					return path.replace('@localhost:5173', '');
+					return path.replace('@localhost:5174', '');
 				},
 			},
 			'/url': httpUrl,

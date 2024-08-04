@@ -2712,3 +2712,32 @@ _contextMenu:
   app: "アプリケーション"
   appWithShift: "Shiftキーでアプリケーション"
   native: "ブラウザのUI"
+
+_hana:
+  _inDevelopment:
+    title: "この機能は開発中です"
+    description: "はなみすきーは新規機能盛りだくさんで鋭意開発中です！\nどんな機能が実装されるかはお楽しみ。"
+  _welcome:
+    whatAboutX: "「{x}」とは？"
+    _aboutHana:
+      title: "はなみすきー"
+      description: "はなみすきーは、Misskeyベースの分散型SNSサービスです。\nあなたのSNS体験に「はな」を添える、数々の独自機能を備えています。"
+    _aboutDecentralized:
+      title: "分散型SNS"
+      description: "一般的なSNSサービス（X, Instagram, YouTubeなど）はそのサービス内で投稿データなどが完結するようになっています。しかし、分散型SNSは、サービス同士が共通の仕組みを通して連携しており、他のサービスのユーザーの投稿を見たり、フォローしたりできるのです。\nはなみすきーは標準で分散型テクノロジーのActivityPubに対応しており、他のMisskey/Mastodon等を利用したサービスやThreadsなどと通信することができます。"
+    _features:
+      inDevelopment: "近日提供予定"
+      _hanaMode:
+        title: "はなモードで、あなただけのSNS体験を"
+        description: "はなみすきー独自機能「はなモード」をオンにすると、投稿内容がローカルタイムライン（LTL）に流れないようになります。ただし、「ホーム」投稿とは違い、LTLへのリノートが可能なほか、外部サーバーには通常のパブリックの投稿として配信されます。\nこれにより、おひとりさまサーバーに近い分散SNS体験をワンクリックで構築することができます。"
+      _easyMigration:
+        title: "他サービスから簡単移行"
+        description: "他のMisskeyサーバーなどからの移行が簡単になる機能を提供！過去の投稿などもすべてはなみすきー上に引き継ぐことができます。"
+      _preciseSearching:
+        title: "最新技術を活用した高精度な検索"
+        description: "機械学習や最新の学術研究をもとに、はなみすきーのためにチューニングされた高精度で高速な検索機能を利用できます。また、はなみすきーの検索機能そのものが学術研究プロジェクトとなっているため、検索精度は日進月歩となることが期待できます。"
+      _lotsOfCustomEmojis:
+        title: "コミュニケーションがはかどる6,000以上のカスタム絵文字"
+        description: "ノートやリアクションでは6,000を超えるカスタム絵文字を利用可能。"
+    _cta:
+      title: "「はな」のあるSNS体験を楽しもう"
