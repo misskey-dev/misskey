@@ -196,7 +196,7 @@ async function matchHeatbeat() {
 async function matchUser() {
 	pleaseLogin();
 
-	const user = await os.selectUser({ includeSelf: false, localOnly: true });
+	const user = await os.selectUser({ includeSelf: false, localOnly: false });
 	if (user == null) return;
 
 	matchingUser.value = user;
@@ -237,9 +237,15 @@ function cancelMatching() {
 async function accept(user) {
 	const game = await misskeyApi('reversi/match', {
 		userId: user.id,
+		accept_only: true,
 	});
 	if (game) {
 		startGame(game);
+	} else {
+		//受けようとした招待が見つからなかった場合最新の情報に更新
+		misskeyApi('reversi/invitations').then(_invitations => {
+			invitations.value = _invitations;
+		});
 	}
 }
 

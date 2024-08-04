@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { ModuleRef } from '@nestjs/core';
 import { reversiUpdateKeys } from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
-import { IsNull, LessThan, MoreThan } from 'typeorm';
+import { LessThan, MoreThan } from 'typeorm';
 import type {
 	MiReversiGame,
 	ReversiGamesRepository,
 } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -22,7 +23,12 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { Serialized } from '@/types.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
+import type Logger from '@/logger.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
+import { ApRendererService } from './activitypub/ApRendererService.js';
+import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.js';
+import { LoggerService } from './LoggerService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
@@ -30,6 +36,7 @@ const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
 @Injectable()
 export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	private notificationService: NotificationService;
+	private logger: Logger;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -44,8 +51,12 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private reversiGameEntityService: ReversiGameEntityService,
+		private apRendererService: ApRendererService,
+		private apDeliverManagerService: ApDeliverManagerService,
+		private loggerService: LoggerService,
 		private idService: IdService,
 	) {
+		this.logger = this.loggerService.getLogger('reversi');
 	}
 
 	async onModuleInit() {
@@ -91,7 +102,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async matchSpecificUser(me: MiUser, targetUser: MiUser, multiple = false): Promise<MiReversiGame | null> {
+	public async matchSpecificUser(me: MiUser, targetUser: MiUser, multiple = false, accept_only = false): Promise<MiReversiGame | null> {
 		if (targetUser.id === me.id) {
 			throw new Error('You cannot match yourself.');
 		}
@@ -112,35 +123,95 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		}
 
 		//#region 相手から既に招待されてないか確認
-		const invitations = await this.redisClient.zrange(
+		const invitations = (await this.redisClient.zrange(
 			`reversi:matchSpecific:${me.id}`,
 			Date.now() - INVITATION_TIMEOUT_MS,
 			'+inf',
-			'BYSCORE');
+			'BYSCORE')).map(raw => JSON.parse(raw));
 
-		if (invitations.includes(targetUser.id)) {
-			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
+		for (const invite of invitations) {
+			if (invite.from_user_id === targetUser.id) {
+				const game_session_id:string|undefined = invite.game_session_id;
+				this.logger.info('ゲーム開始 共通セッションid=' + game_session_id);
+				await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, JSON.stringify(invite));
 
-			const game = await this.matched(targetUser.id, me.id, {
-				noIrregularRules: false,
-			});
+				const parentId = invite.host_user_id ? invite.host_user_id : targetUser.id;
+				const childId = parentId === me.id ? targetUser.id : me.id;
+				const game = await this.matched(parentId, childId, {
+					noIrregularRules: false,
+				}, game_session_id);
+				if (targetUser.host !== null && game_session_id) {
+					//重要。リモートユーザーが送ってきたIDの解決に使う
+					const redisPipeline = this.redisClient.pipeline();
+					redisPipeline.set(`reversi:federationId:${game_session_id}`, game.id);
+					redisPipeline.expire(`reversi:federationId:${game_session_id}`, 300);//適当、いい感じにしたい
+					await redisPipeline.exec();
+					//リモートユーザーに参加を飛ばす
+					if (targetUser.uri === null) {
+						throw new Error('WIP');
+					}
+					const join = await this.apRendererService.renderReversiJoin(game_session_id, me, targetUser as MiRemoteUser, new Date());
+					const content = this.apRendererService.addContext(join);
+					const dm = this.apDeliverManagerService.createDeliverManager({
+						id: me.id,
+						host: null,
+					}, content);
+					dm.addDirectRecipe(targetUser as MiRemoteUser);
+					trackPromise(dm.execute());
+				}
 
-			return game;
+				return game;
+			}
 		}
 		//#endregion
+		//参加のみフラグが付いていた場合は招待を確認するだけ
+		if (accept_only) {
+			return null;
+		}
+		if (targetUser.host !== null) {
+			//リモートユーザーに招待を飛ばす
+			if (targetUser.uri === null) {
+				throw new Error('WIP');
+			}
+			const remote_user : MiRemoteUser = targetUser as MiRemoteUser;
+			const game_session_id = randomUUID().toString();
+			const invite = await this.apRendererService.renderReversiInvite(game_session_id, me, remote_user, new Date());
+			const content = this.apRendererService.addContext(invite);
 
-		const redisPipeline = this.redisClient.pipeline();
-		redisPipeline.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), me.id);
-		redisPipeline.expire(`reversi:matchSpecific:${targetUser.id}`, 120, 'NX');
-		await redisPipeline.exec();
+			const redisPipeline = this.redisClient.pipeline();
+			redisPipeline.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), JSON.stringify(invite));
+			redisPipeline.expire(`reversi:matchSpecific:${targetUser.id}`, 120, 'NX', () => {
+				const undo = this.apRendererService.renderUndo(invite, me);
+				const content = this.apRendererService.addContext(undo);
+				const dm = this.apDeliverManagerService.createDeliverManager({
+					id: me.id,
+					host: null,
+				}, content);
+				dm.addDirectRecipe(targetUser as MiRemoteUser);
+				trackPromise(dm.execute());
+			});
+			await redisPipeline.exec();
+			const dm = this.apDeliverManagerService.createDeliverManager({
+				id: me.id,
+				host: null,
+			}, content);
+			dm.addDirectRecipe(targetUser as MiRemoteUser);
+			trackPromise(dm.execute());
+		} else {
+			//ローカルユーザーの待機リストに追加する
+			const redisPipeline = this.redisClient.pipeline();
+			redisPipeline.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), JSON.stringify({
+				from_user_id: me.id,
+			}));
+			redisPipeline.expire(`reversi:matchSpecific:${targetUser.id}`, 120, 'NX');
+			await redisPipeline.exec();
 
-		this.globalEventService.publishReversiStream(targetUser.id, 'invited', {
-			user: await this.userEntityService.pack(me, targetUser),
-		});
-
+			this.globalEventService.publishReversiStream(targetUser.id, 'invited', {
+				user: await this.userEntityService.pack(me, targetUser),
+			});
+		}
 		return null;
 	}
-
 	@bindThis
 	public async matchAnyUser(me: MiUser, options: { noIrregularRules: boolean }, multiple = false): Promise<MiReversiGame | null> {
 		if (!multiple) {
@@ -213,8 +284,11 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async matchSpecificUserCancel(user: MiUser, targetUserId: MiUser['id']) {
-		await this.redisClient.zrem(`reversi:matchSpecific:${targetUserId}`, user.id);
+	public async matchSpecificUserCancel(user: MiUser, targetUser: MiUser, game_session_id:string|undefined = undefined) {
+		await this.redisClient.zrem(`reversi:matchSpecific:${targetUser.id}`, JSON.stringify({
+			from_user_id: user.id,
+			game_session_id,
+		}));
 	}
 
 	@bindThis
@@ -267,6 +341,22 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		} else {
 			return;
 		}
+		const remote_user = user.id === game.user1Id ? game.user2 : game.user1;
+		if (user.host === null && remote_user && remote_user.host) {
+			if (game.federationId === null) throw new Error('game.federationId===null');
+			const update = await this.apRendererService.renderReversiUpdate(user, remote_user as MiRemoteUser, {
+				game_session_id: game.federationId,
+				type: 'ready_states',
+				ready,
+			});
+			const content = this.apRendererService.addContext(update);
+			const dm = this.apDeliverManagerService.createDeliverManager({
+				id: user.id,
+				host: null,
+			}, content);
+			dm.addDirectRecipe(remote_user as MiRemoteUser);
+			trackPromise(dm.execute());
+		}
 
 		if (isBothReady) {
 			// 3秒後、両者readyならゲーム開始
@@ -281,7 +371,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean; }): Promise<MiReversiGame> {
+	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean;}, federationId:string|null = null): Promise<MiReversiGame> {
 		const game = await this.reversiGamesRepository.insertOne({
 			id: this.idService.gen(),
 			user1Id: parentId,
@@ -295,6 +385,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			bw: 'random',
 			isLlotheo: false,
 			noIrregularRules: options.noIrregularRules,
+			federationId,
 		}, { relations: ['user1', 'user2'] });
 		this.cacheGame(game);
 
@@ -308,7 +399,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	private async startGame(game: MiReversiGame) {
 		let bw: number;
 		if (game.bw === 'random') {
-			bw = Math.random() > 0.5 ? 1 : 2;
+			//連合プレイの場合完全ランダムにすると同期が大変なので連合管理用のidから生成する
+			if (game.federationId) {
+				//境界外アクセスするとundefinedになる
+				const cp = game.federationId.codePointAt(0);
+				bw = cp ? (cp % 2 === 0 ? 1 : 2) : 1;
+			} else {
+				bw = Math.random() > 0.5 ? 1 : 2;
+			}
 		} else {
 			bw = parseInt(game.bw, 10);
 		}
@@ -445,6 +543,25 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			key: key,
 			value: value,
 		});
+
+		const remote_user = user.id === game.user1Id ? game.user2 : game.user1;
+
+		if (user.host === null && remote_user && remote_user.host !== null) {
+			if (game.federationId === null) throw new Error('game.federationId===null');
+			const update = await this.apRendererService.renderReversiUpdate(user, remote_user as MiRemoteUser, {
+				game_session_id: game.federationId,
+				type: 'settings',
+				key,
+				value,
+			});
+			const content = this.apRendererService.addContext(update);
+			const dm = this.apDeliverManagerService.createDeliverManager({
+				id: user.id,
+				host: null,
+			}, content);
+			dm.addDirectRecipe(remote_user as MiRemoteUser);
+			trackPromise(dm.execute());
+		}
 	}
 
 	@bindThis
@@ -453,7 +570,10 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (game == null) throw new Error('game not found');
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
-		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
+		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) {
+			this.logger.info('Reversi:putStoneToGame user is not player');
+			return;
+		}
 
 		const myColor =
 			((game.user1Id === user.id) && game.black === 1) || ((game.user2Id === user.id) && game.black === 2)
@@ -468,8 +588,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			logs: game.logs,
 		});
 
-		if (engine.turn !== myColor) return;
-		if (!engine.canPut(myColor, pos)) return;
+		if (engine.turn !== myColor) {
+			this.logger.info('Reversi:putStoneToGame bad turn');
+			return;
+		}
+		if (!engine.canPut(myColor, pos)) {
+			this.logger.info('Reversi:putStoneToGame can not Putable');
+			return;
+		}
 
 		engine.putStone(pos);
 
@@ -500,6 +626,23 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			id: id ?? null,
 		});
 
+		const remote_user = user.id === game.user1Id ? game.user2 : game.user1;
+		if (user.host === null && remote_user && remote_user.host) {
+			if (game.federationId === null) throw new Error('game.federationId===null');
+			const update = await this.apRendererService.renderReversiUpdate(user, remote_user as MiRemoteUser, {
+				game_session_id: game.federationId,
+				type: 'putstone',
+				pos,
+			});
+			const content = this.apRendererService.addContext(update);
+			const dm = this.apDeliverManagerService.createDeliverManager({
+				id: user.id,
+				host: null,
+			}, content);
+			dm.addDirectRecipe(remote_user as MiRemoteUser);
+			trackPromise(dm.execute());
+		}
+
 		if (engine.isEnded) {
 			let winnerId;
 			if (engine.winner === true) {
@@ -524,7 +667,19 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 
 		const winnerId = game.user1Id === user.id ? game.user2Id : game.user1Id;
-
+		const remote_user = game.user1Id === user.id ? game.user2 : game.user1;
+		if (user.host === null && remote_user && remote_user.host != null && game.federationId !== null) {
+			const leave = await this.apRendererService.renderReversiLeave(user, remote_user as MiRemoteUser, {
+				game_session_id: game.federationId,
+			});
+			const content = this.apRendererService.addContext(leave);
+			const dm = this.apDeliverManagerService.createDeliverManager({
+				id: user.id,
+				host: null,
+			}, content);
+			dm.addDirectRecipe(remote_user as MiRemoteUser);
+			trackPromise(dm.execute());
+		}
 		await this.endGame(game, winnerId, 'surrender');
 	}
 
@@ -533,6 +688,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		const game = await this.get(gameId);
 		if (game == null) throw new Error('game not found');
 		if (game.isEnded) return;
+		//連合プレイの場合配送遅延などの影響で正しく時間制限するのが難しいので時間制限しない
+		if (game.federationId) return;
 
 		const engine = Reversi.Serializer.restoreGame({
 			map: game.map,
@@ -566,6 +723,19 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		this.globalEventService.publishReversiGameStream(game.id, 'canceled', {
 			userId: user.id,
 		});
+		const remote_user = game.user1Id === user.id ? game.user2 : game.user1;
+		if (user.host === null && remote_user && remote_user.host != null && game.federationId !== null) {
+			const leave = await this.apRendererService.renderReversiLeave(user, remote_user as MiRemoteUser, {
+				game_session_id: game.federationId,
+			});
+			const content = this.apRendererService.addContext(leave);
+			const dm = this.apDeliverManagerService.createDeliverManager({
+				id: user.id,
+				host: null,
+			}, content);
+			dm.addDirectRecipe(remote_user as MiRemoteUser);
+			trackPromise(dm.execute());
+		}
 	}
 
 	@bindThis

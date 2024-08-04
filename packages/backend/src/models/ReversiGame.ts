@@ -145,4 +145,8 @@ export class MiReversiGame {
 		length: 32, nullable: true,
 	})
 	public crc32: string | null;
+	@Column('varchar', {
+		length: 36, nullable: true,
+	})
+	public federationId: string | null;
 }
