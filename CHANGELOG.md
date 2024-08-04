@@ -7,7 +7,8 @@
 -
 
 ### Server
-- サーバー情報取得の際にモデレーター限定の情報が取得できないことがあるのを修正
+- サーバー情報取得の際にモデレーター限定の情報が取得できないことがあるのを修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/582)
 
 
 ## 2024.7.0
