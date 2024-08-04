@@ -317,7 +317,7 @@ function upcomingFeatureDialog() {
 
 .featureRoot {
 	max-width: 1280px;
-	padding: 16px;
+	padding: 0 16px;
 	margin: 0 auto;
 
 	display: grid;
@@ -442,6 +442,10 @@ function upcomingFeatureDialog() {
 
 	.featureInDevelopment {
 		font-size: 1em;
+	}
+
+	.featureRoot {
+		padding: 16px 32px;
 	}
 
 	.featureTitle {
