@@ -2,5 +2,3 @@
 {
 	"$schema": "http://json.schemastore.org/vsls",
 	"gitignore": "exclude"
-}
-
