@@ -66,6 +66,13 @@ export const meta = {
 			id: '4362f8dc-731f-4ad8-a694-be5a88922a24',
 			httpStatusCode: 404,
 		},
+
+		userSuspended: {
+			message: 'User is suspended.',
+			code: 'USER_SUSPENDED',
+			id: 'c1e1b0d6-2b7c-4c1d-9f1d-2d3d6e8d7e7f',
+			httpStatusCode: 403,
+		},
 	},
 } as const;
 
@@ -147,8 +154,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					user = await this.usersRepository.findOneBy(q);
 				}
 
-				if (user == null || (!isModerator && user.isSuspended)) {
+				if (user == null) {
 					throw new ApiError(meta.errors.noSuchUser);
+				}
+
+				if (!isModerator) {
+					if (user.isDeleted && user.isSuspended) {
+						throw new ApiError(meta.errors.noSuchUser);
+					}
+					if (user.isSuspended) {
+						throw new ApiError(meta.errors.userSuspended);
+					}
 				}
 
 				if (user.host == null) {

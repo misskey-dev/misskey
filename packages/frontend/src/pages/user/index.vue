@@ -24,7 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XRaw v-else-if="tab === 'raw'" key="raw" :user="user"/>
 			</MkHorizontalSwipe>
 		</div>
-		<MkError v-else-if="error" @retry="fetchUser()"/>
+		<div v-else-if="error">
+			<MkError @retry="fetchUser()"/>
+		</div>
+		<div v-else-if="userstatus">
+			<MkUserNotFound v-if="userstatus === 'notfound'"/>
+			<MkUserSuspended v-else-if="userstatus === 'suspended'"/>
+		</div>
 		<MkLoading v-else/>
 	</div>
 </MkStickyContainer>
@@ -38,6 +44,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
+import MkUserNotFound from '@/components/MkUserNotFound.vue';
+import MkUserSuspended from '@/components/MkUserSuspended.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
@@ -62,7 +70,8 @@ const props = withDefaults(defineProps<{
 const tab = ref(props.page);
 
 const user = ref<null | Misskey.entities.UserDetailed>(null);
-const error = ref<any>(null);
+const error = ref<null | any>(null);
+const userstatus = ref<null | any>(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
@@ -70,7 +79,13 @@ function fetchUser(): void {
 	misskeyApi('users/show', Misskey.acct.parse(props.acct)).then(u => {
 		user.value = u;
 	}).catch(err => {
-		error.value = err;
+		if (err.id && err.id === '4362f8dc-731f-4ad8-a694-be5a88922a24') { // User not found
+			userstatus.value = 'notfound';
+		} else if (err.id && err.id === 'c1e1b0d6-2b7c-4c1d-9f1d-2d3d6e8d7e7f') { // User suspended
+			userstatus.value = 'suspended';
+		} else {
+			error.value = err;
+		}
 	});
 }
 
