@@ -199,7 +199,6 @@ export class ApRequestService {
 			headers: req.request.headers,
 		}, {
 			throwErrorWhenResponseNotOk: true,
-			validators: [validateContentTypeSetAsActivityPub],
 		});
 
 		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
@@ -216,6 +215,8 @@ export class ApRequestService {
 					return await this.signedGet(href, user, false);
 				}
 			}
+		} else {
+			validateContentTypeSetAsActivityPub(res);
 		}
 		//#endregion
 
