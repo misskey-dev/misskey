@@ -7,7 +7,7 @@
 -
 
 ### Server
--
+- enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
 
 
 ## 2024.7.0
