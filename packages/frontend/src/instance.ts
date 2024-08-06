@@ -14,15 +14,28 @@ import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERR
 //#region loader
 const providedMetaEl = document.getElementById('misskey_meta');
 
-let cachedMeta = miLocalStorage.getItem('instance') ? JSON.parse(miLocalStorage.getItem('instance')!) : null;
+let cachedMeta = miLocalStorage.getItem('instance') ? (miLocalStorage.getItemAsJson('instance') ?? null) : null;
 let cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
 const providedMeta = providedMetaEl && providedMetaEl.textContent ? JSON.parse(providedMetaEl.textContent) : null;
 const providedAt = providedMetaEl && providedMetaEl.dataset.generatedAt ? parseInt(providedMetaEl.dataset.generatedAt) : 0;
+
 if (providedAt > cachedAt) {
-	miLocalStorage.setItem('instance', JSON.stringify(providedMeta));
-	miLocalStorage.setItem('instanceCachedAt', providedAt.toString());
-	cachedMeta = providedMeta;
-	cachedAt = providedAt;
+	if (providedMeta != null) {
+		miLocalStorage.setItemAsJson('instance', providedMeta);
+		miLocalStorage.setItem('instanceCachedAt', providedAt.toString());
+		cachedMeta = providedMeta;
+		cachedAt = providedAt;
+	} else {
+		misskeyApi('meta', {
+			detail: true,
+		}).then(meta => {
+			const now = Date.now();
+			miLocalStorage.setItemAsJson('instance', meta);
+			miLocalStorage.setItem('instanceCachedAt', now.toString());
+			cachedMeta = meta;
+			cachedAt = now;
+		});
+	}
 }
 //#endregion
 

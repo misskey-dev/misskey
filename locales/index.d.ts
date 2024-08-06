@@ -5068,6 +5068,14 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * サーバー情報をHTMLに埋め込む
+     */
+    "provideMetaInHtml": string;
+    /**
+     * クライアント起動時の負荷を低減させることができますが、クライアントのHTMLページをCDNにキャッシュさせている場合、起動の際に古いサーバー情報が使用されてしまうため、不具合に繋がります。そのような構成で運用している場合は、この設定を無効にしてください。
+     */
+    "provideMetaInHtmlDescription": string;
     "_delivery": {
         /**
          * 配信状態

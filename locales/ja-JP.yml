@@ -1263,6 +1263,8 @@ confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示�
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
+provideMetaInHtml: "サーバー情報をHTMLに埋め込む"
+provideMetaInHtmlDescription: "クライアント起動時の負荷を低減させることができますが、クライアントのHTMLページをCDNにキャッシュさせている場合、起動の際に古いサーバー情報が使用されてしまうため、不具合に繋がります。そのような構成で運用している場合は、この設定を無効にしてください。"
 
 _delivery:
   status: "配信状態"

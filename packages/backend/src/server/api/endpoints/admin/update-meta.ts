@@ -167,6 +167,7 @@ export const paramDef = {
 		urlPreviewRequireContentLength: { type: 'boolean' },
 		urlPreviewUserAgent: { type: 'string', nullable: true },
 		urlPreviewSummaryProxyUrl: { type: 'string', nullable: true },
+		provideMetaInHtml: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -630,6 +631,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.summalyProxy !== undefined || ps.urlPreviewSummaryProxyUrl !== undefined) {
 				const value = ((ps.urlPreviewSummaryProxyUrl ?? ps.summalyProxy) ?? '').trim();
 				set.urlPreviewSummaryProxyUrl = value === '' ? null : value;
+			}
+
+			if (ps.provideMetaInHtml !== undefined) {
+				set.provideMetaInHtml = ps.provideMetaInHtml;
 			}
 
 			const before = await this.metaService.fetch(true);
