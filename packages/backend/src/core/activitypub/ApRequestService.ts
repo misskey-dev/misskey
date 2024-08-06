@@ -217,8 +217,9 @@ export class ApRequestService {
 				}
 			}
 		}
-		validateContentTypeSetAsActivityPub(res);
 		//#endregion
+
+		validateContentTypeSetAsActivityPub(res);
 
 		return await res.json();
 	}
