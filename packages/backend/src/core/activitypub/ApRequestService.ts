@@ -209,16 +209,15 @@ export class ApRequestService {
 			const document = window.document;
 			document.documentElement.innerHTML = html;
 
-			const alternate = document.querySelector('meta > link[rel="alternate"][type="application/activity+json"]');
+			const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
 			if (alternate) {
 				const href = alternate.getAttribute('href');
 				if (href) {
 					return await this.signedGet(href, user, false);
 				}
 			}
-		} else {
-			validateContentTypeSetAsActivityPub(res);
 		}
+		validateContentTypeSetAsActivityPub(res);
 		//#endregion
 
 		return await res.json();
