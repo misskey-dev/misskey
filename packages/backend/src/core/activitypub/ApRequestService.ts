@@ -180,7 +180,8 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
+		const _followAlternate = followAlternate ?? true;
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedGet({
@@ -200,6 +201,23 @@ export class ApRequestService {
 			throwErrorWhenResponseNotOk: true,
 			validators: [validateContentTypeSetAsActivityPub],
 		});
+
+		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
+		if (res.headers.get('Content-type')?.startsWith('text/html;') && _followAlternate === true) {
+			const html = await res.text();
+			const window = new Window();
+			const document = window.document;
+			document.documentElement.innerHTML = html;
+
+			const alternate = document.querySelector('meta > link[rel="alternate"][type="application/activity+json"]');
+			if (alternate) {
+				const href = alternate.getAttribute('href');
+				if (href) {
+					return await this.signedGet(href, user, false);
+				}
+			}
+		}
+		//#endregion
 
 		return await res.json();
 	}
