@@ -14,6 +14,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
@@ -112,7 +113,7 @@ export default class Connection {
 
 		const { type, body } = obj;
 
-		if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
+		if (!isJsonObject(body)) return;
 
 		switch (type) {
 			case 'readNotification': this.onReadNotification(body); break;
@@ -221,7 +222,7 @@ export default class Connection {
 		if (typeof id !== 'string') return;
 		if (typeof channel !== 'string') return;
 		if (typeof pong !== 'boolean' && typeof pong !== 'undefined' && pong !== null) return;
-		if (typeof params !== 'undefined' && (typeof params !== 'object' || params === null || Array.isArray(params))) return;
+		if (typeof params !== 'undefined' && !isJsonObject(params)) return;
 		this.connectChannel(id, params, channel, pong ?? undefined);
 	}
 
