@@ -7,7 +7,7 @@
 -
 
 ### Server
--
+- Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
 
 
 ## 2024.7.0
