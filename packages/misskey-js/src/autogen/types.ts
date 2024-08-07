@@ -4910,6 +4910,7 @@ export type components = {
       canSearchNotes: boolean;
       canUseTranslator: boolean;
       canUseDriveFileInSoundSettings: boolean;
+      canUseReaction: boolean;
       canHideAds: boolean;
       driveCapacityMb: number;
       alwaysMarkNsfw: boolean;

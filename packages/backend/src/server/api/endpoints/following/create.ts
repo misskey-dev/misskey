@@ -58,6 +58,12 @@ export const meta = {
 			code: 'BLOCKED',
 			id: 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0',
 		},
+
+		followingAnotherBot: {
+			message: 'Following another bot account is not allowed.',
+			code: 'FOLLOWING_BOT_NOT_ALLOWED',
+			id: '9a61d572-4a95-7f6b-b595-2817d42017b0',
+		},
 	},
 
 	res: {
@@ -99,6 +105,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
+
+			if ( me.isBot && followee.isBot ) {
+				throw new ApiError(meta.errors.followingAnotherBot);
+			}
 
 			try {
 				await this.userFollowingService.follow(follower, followee, { withReplies: ps.withReplies });
