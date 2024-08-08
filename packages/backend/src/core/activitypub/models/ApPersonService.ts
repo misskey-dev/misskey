@@ -296,17 +296,17 @@ export class ApPersonService implements OnModuleInit {
 
 		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
-		const [followingVisibility, followersVisibility] = await Promise.all(
+		const [publicReactions, followingIsPublic, followersIsPublic] = await Promise.all(
 			[
+				this.isPublicCollection(person.liked, resolver),
 				this.isPublicCollection(person.following, resolver),
 				this.isPublicCollection(person.followers, resolver),
-			].map((p): Promise<'public' | 'private'> => p
-				.then(isPublic => isPublic ? 'public' : 'private')
+			].map((p): Promise<boolean> => p
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('error occurred while fetching actor collection', { stack: err });
 					}
-					return 'private';
+					return false;
 				})
 			)
 		);
@@ -372,8 +372,9 @@ export class ApPersonService implements OnModuleInit {
 					description: _description,
 					url,
 					fields,
-					followingVisibility,
-					followersVisibility,
+					publicReactions,
+					followingVisibility: followingIsPublic ? 'public' : 'private',
+					followersVisibility: followersIsPublic ? 'public' : 'private',
 					birthday: bday?.[0] ?? null,
 					location: person['vcard:Address'] ?? null,
 					userHost: host,
@@ -481,19 +482,19 @@ export class ApPersonService implements OnModuleInit {
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
-		const [followingVisibility, followersVisibility] = await Promise.all(
+		const [publicReactions, followingIsPublic, followersIsPublic] = await Promise.all(
 			[
+				this.isPublicCollection(person.liked, resolver),
 				this.isPublicCollection(person.following, resolver),
 				this.isPublicCollection(person.followers, resolver),
-			].map((p): Promise<'public' | 'private' | undefined> => p
-				.then(isPublic => isPublic ? 'public' : 'private')
+			].map((p): Promise<boolean | undefined> => p
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('error occurred while fetching actor collection', { stack: err });
 						// Do not update the visibiility on transient errors.
 						return undefined;
 					}
-					return 'private';
+					return false;
 				})
 			)
 		);
@@ -566,8 +567,9 @@ export class ApPersonService implements OnModuleInit {
 			url,
 			fields,
 			description: _description,
-			followingVisibility,
-			followersVisibility,
+			publicReactions,
+			followingVisibility: followingIsPublic ? 'public' : followingIsPublic === false ? 'private' : undefined,
+			followersVisibility: followersIsPublic ? 'public' : followersIsPublic === false ? 'private' : undefined,
 			birthday: bday?.[0] ?? null,
 			location: person['vcard:Address'] ?? null,
 		});
