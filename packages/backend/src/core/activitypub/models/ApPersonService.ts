@@ -488,13 +488,12 @@ export class ApPersonService implements OnModuleInit {
 			].map((p): Promise<'public' | 'private' | undefined> => p
 				.then(isPublic => isPublic ? 'public' : 'private')
 				.catch(err => {
-					if (err instanceof StatusError && !err.isRetryable) {
-						return 'private';
-					} else {
+					if (!(err instanceof StatusError) || err.isRetryable) {
 						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
 						// Do not update the visibiility on transient errors.
 						return undefined;
 					}
+					return 'private';
 				})
 			)
 		);
