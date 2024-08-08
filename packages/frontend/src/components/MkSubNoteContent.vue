@@ -14,11 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<details v-if="note.files && note.files.length > 0">
 		<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
-		<MkMediaList :mediaList="note.files"/>
+		<MkMediaList :mediaList="note.files" :originalEntityUrl="`${url}/notes/${note.id}`"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
-		<MkPoll :noteId="note.id" :poll="note.poll"/>
+		<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="inEmbedPage"/>
 	</details>
 	<button v-if="isLong && collapsed" :class="$style.fade" class="_button" @click="collapsed = false">
 		<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
@@ -30,18 +30,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { url } from '@/config.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
 const isLong = shouldCollapsed(props.note, []);
+
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const collapsed = ref(isLong);
 </script>

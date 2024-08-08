@@ -75,20 +75,22 @@ html {
 		}
 	}
 
-	&.f-1 {
-		font-size: 15px;
-	}
+	&:not(.embed) {
+		&.f-1 {
+			font-size: 15px;
+		}
 
-	&.f-2 {
-		font-size: 16px;
-	}
+		&.f-2 {
+			font-size: 16px;
+		}
 
-	&.f-3 {
-		font-size: 17px;
-	}
+		&.f-3 {
+			font-size: 17px;
+		}
 
-	&.useSystemFont {
-		font-family: system-ui;
+		&.useSystemFont {
+			font-family: system-ui;
+		}
 	}
 }
 

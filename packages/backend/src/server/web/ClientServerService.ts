@@ -425,6 +425,13 @@ export class ClientServerService {
 		// Manifest
 		fastify.get('/manifest.json', async (request, reply) => await this.manifestHandler(reply));
 
+		// Embed Javascript
+		fastify.get('/embed.js', async (request, reply) => {
+			return await reply.sendFile('/embed.js', staticAssets, {
+				maxAge: ms('1 day'),
+			});
+		});
+
 		fastify.get('/robots.txt', async (request, reply) => {
 			return await reply.sendFile('/robots.txt', staticAssets);
 		});
@@ -762,7 +769,7 @@ export class ClientServerService {
 		});
 		//#endregion
 
-		//region noindex pages
+		//#region noindex pages
 		// Tags
 		fastify.get<{ Params: { clip: string; } }>('/tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
@@ -772,7 +779,13 @@ export class ClientServerService {
 		fastify.get<{ Params: { clip: string; } }>('/user-tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
 		});
-		//endregion
+		//#endregion
+
+		//#region embed pages
+		fastify.get('/embed*', async (request, reply) => {
+			reply.removeHeader('X-Frame-Options');
+			return await renderBase(reply, { noindex: true, embed: true });
+		});
 
 		fastify.get('/_info_card_', async (request, reply) => {
 			const meta = await this.metaService.fetch(true);
@@ -787,6 +800,7 @@ export class ClientServerService {
 				originalNotesCount: await this.notesRepository.countBy({ userHost: IsNull() }),
 			});
 		});
+		//#endregion
 
 		fastify.get('/bios', async (request, reply) => {
 			return await reply.view('bios', {

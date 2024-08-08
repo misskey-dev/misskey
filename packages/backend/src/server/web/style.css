@@ -9,6 +9,13 @@ html {
 	color: var(--fg);
 }
 
+html.embed {
+	box-sizing: border-box;
+	background-color: transparent;
+	color-scheme: light dark;
+	max-width: 500px;
+}
+
 #splash {
 	position: fixed;
 	z-index: 10000;
@@ -20,6 +27,21 @@ html {
 	background-color: var(--bg);
 	opacity: 1;
 	transition: opacity 0.5s ease;
+}
+
+html.embed #splash {
+	box-sizing: border-box;
+	min-height: 300px;
+	border-radius: var(--radius, 12px);
+	border: 1px solid var(--divider, #e8e8e8);
+}
+
+html.embed.norounded #splash {
+	border-radius: 0;
+}
+
+html.embed.noborder #splash {
+	border: none;
 }
 
 #splashIcon {

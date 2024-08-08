@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
+	<MkAvatar :class="$style.avatar" :user="note.user" link :preview="!inEmbedPage"/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
@@ -31,6 +31,8 @@ import MkCwButton from '@/components/MkCwButton.vue';
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
+
+const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const showContent = ref(false);
 </script>

@@ -20,6 +20,7 @@ import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { copyEmbedCode } from '@/scripts/get-embed-code.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -153,6 +154,19 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 		action: (): void => {
 			copyToClipboard(`${url}/notes/${note.id}`);
 			os.success();
+		},
+	};
+}
+
+function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuItem | undefined {
+	if (note.url != null || note.uri != null) return undefined;
+	if (['specified', 'followers'].includes(note.visibility)) return undefined;
+
+	return {
+		icon: 'ti ti-code',
+		text,
+		action: (): void => {
+			copyEmbedCode('notes', note.id);
 		},
 	};
 }
@@ -317,7 +331,7 @@ export function getNoteMenu(props: {
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			} : undefined,
+			} : getNoteEmbedCodeMenu(appearNote, i18n.ts.copyEmbedCode),
 			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
@@ -450,14 +464,14 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-		, (appearNote.url || appearNote.uri) ? {
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink),
+		(appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
-		} : undefined]
+		} : getNoteEmbedCodeMenu(appearNote, i18n.ts.copyEmbedCode)]
 			.filter(x => x !== undefined);
 	}
 

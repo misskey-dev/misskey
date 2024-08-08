@@ -50,6 +50,8 @@ const devConfig: UserConfig = {
 				ws: true,
 			},
 			'/favicon.ico': httpUrl,
+			'/robots.txt': httpUrl,
+			'/embed.js': httpUrl,
 			'/identicon': {
 				target: httpUrl,
 				rewrite(path) {

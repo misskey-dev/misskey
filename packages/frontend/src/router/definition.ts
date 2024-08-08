@@ -580,6 +580,18 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
 }, {
+	path: '/embed/notes/:noteId',
+	component: page(() => import('@/pages/embed/note.vue')),
+}, {
+	path: '/embed/user-timeline/@:username',
+	component: page(() => import('@/pages/embed/user-timeline.vue')),
+}, {
+	path: '/embed/clips/:clipId',
+	component: page(() => import('@/pages/embed/clip.vue')),
+}, {
+	path: '/embed/tags/:tag',
+	component: page(() => import('@/pages/embed/tag.vue')),
+}, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
 }, {

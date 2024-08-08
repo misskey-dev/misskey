@@ -130,6 +130,7 @@ export function getConfig(): UserConfig {
 			rollupOptions: {
 				input: {
 					app: './src/_boot_.ts',
+					embedApp: './src/_embed_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),
 				output: {
