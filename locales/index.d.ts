@@ -6770,6 +6770,16 @@ export interface Locale extends ILocale {
                  */
                 "flavor": string;
             };
+            "_markedAsGorilla": {
+                /**
+                 * うほうほうほうほほ！？？！？！
+                 */
+                "title": string;
+                /**
+                 * アカウントをGorillaとして設定した
+                 */
+                "description": string;
+            };
         };
     };
     "_role": {

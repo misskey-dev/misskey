@@ -1747,6 +1747,10 @@ _achievements:
       title: "ダブル🤯"
       description: "バブルゲームで最も大きいモノを2つ同時に出した"
       flavor: "これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて"
+    _markedAsGorilla:
+      title: "うほうほうほうほほ！？？！？！"
+      description: "アカウントをGorillaとして設定した"
+
 
 _role:
   new: "ロールの作成"

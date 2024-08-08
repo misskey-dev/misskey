@@ -100,6 +100,7 @@ import { navbarItemDef } from '@/navbar.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store';
 import { i18n } from '@/i18n';
+import {instance} from "@/instance.js";
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 let bannerUrl = ref(defaultStore.state.bannerUrl);
@@ -142,6 +143,9 @@ watch(darkMode, () => {
 		iconUrl.value = iconLight;
 	}
 });
+if (!iconUrl.value){
+	iconUrl.value = instance.iconUrl || instance.faviconUrl || '/favicon.ico';
+}
 // gaming.valueに新しい値を代入する
 if (darkMode.value && gamingMode.value == true) {
 	gaming.value = 'dark';

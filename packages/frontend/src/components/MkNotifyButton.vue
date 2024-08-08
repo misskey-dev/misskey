@@ -20,7 +20,7 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import { defaultStore } from '@/store.js';
-
+import { misskeyApi } from '@/scripts/misskey-api.js';
 let gaming = ref('');
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
@@ -87,7 +87,6 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 function onNotifyChange(user: Misskey.entities.UserDetailed) {
 	if (user.id === props.user.id) {
 		notify.value = user.notify;
-		console.log(props.user.notify);
 	}
 }
 

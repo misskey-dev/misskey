@@ -22,6 +22,6 @@
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		popup: '#2C3E50',
 		renote: '@accent',
-		acrylicPanel: ':alpha<0.3<@panel'
+		acrylicPanel: ':alpha<0.4<@panel'
 	},
 }

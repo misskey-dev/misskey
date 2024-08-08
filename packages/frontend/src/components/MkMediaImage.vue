@@ -17,14 +17,14 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 		}"
 	>
 		<ImgWithBlurhash
-			:hash="image.blurhash"
+			:hash="image.blurhash ?? null"
 			:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
 			:forceBlurhash="hide"
 			:cover="hide || cover"
 			:alt="image.comment || image.name"
 			:title="image.comment || image.name"
-			:width="image.properties.width"
-			:height="image.properties.height"
+			:width="image.properties.width ?? null"
+			:height="image.properties.height ?? null"
 			:style="hide ? 'filter: brightness(0.7);' : null"
 		/>
 	</component>

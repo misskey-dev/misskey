@@ -81,7 +81,11 @@ watch(darkMode, () => {
 	} else {
 		iconUrl.value = iconLight;
 	}
+	if (!iconUrl.value){
+		iconUrl.value = instance.iconUrl || instance.faviconUrl || '/favicon.ico';
+	}
 });
+
 misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,
