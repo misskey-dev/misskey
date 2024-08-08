@@ -13,7 +13,7 @@ import accepts from 'accepts';
 import vary from 'vary';
 import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
+import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository, MiNoteReaction } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -352,6 +352,94 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
+	private async liked(
+		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
+		reply: FastifyReply,
+	) {
+		const userId = request.params.user;
+
+		const cursor = request.query.cursor;
+		if (cursor != null && typeof cursor !== 'string') {
+			reply.code(400);
+			return;
+		}
+
+		const page = request.query.page === 'true';
+
+		const user = await this.usersRepository.findOneBy({
+			id: userId,
+			host: IsNull(),
+		});
+
+		if (user == null) {
+			reply.code(404);
+			return;
+		}
+
+		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+		if (!profile.publicReactions) {
+			reply.code(403);
+			reply.header('Cache-Control', 'public, max-age=30');
+			return;
+		}
+
+		const limit = 10;
+		const partOf = `${this.config.url}/users/${userId}/liked`;
+		const query = {
+			userId: user.id,
+		} as FindOptionsWhere<MiNoteReaction>;
+
+		if (page) {
+			// カーソルが指定されている場合
+			if (cursor) {
+				query.id = LessThan(cursor);
+			}
+
+			const [reactions, reactionsCount] = await Promise.all([
+				this.noteReactionsRepository.find({
+					where: query,
+					take: limit + 1,
+					order: { id: -1 },
+				}),
+				this.noteReactionsRepository.count({ where: query }),
+			]);
+
+			// 「次のページ」があるかどうか
+			const inStock = reactions.length === limit + 1;
+			if (inStock) reactions.pop();
+
+			const renderedLikes = await Promise.all(reactions.map(reaction => this.apRendererService.renderLike(reaction, { uri: null })));
+			const rendered = this.apRendererService.renderOrderedCollectionPage(
+				`${partOf}?${url.query({
+					page: 'true',
+					cursor,
+				})}`,
+				reactionsCount, renderedLikes, partOf,
+				undefined,
+				inStock ? `${partOf}?${url.query({
+					page: 'true',
+					cursor: reactions.at(-1)!.id,
+				})}` : undefined,
+			);
+
+			this.setResponseType(request, reply);
+			return (this.apRendererService.addContext(rendered));
+		} else {
+			// index page
+			const reactionsCount = await this.noteReactionsRepository.count({ where: query });
+			const rendered = this.apRendererService.renderOrderedCollection(
+				partOf,
+				reactionsCount,
+				`${partOf}?page=true`,
+			);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.addContext(rendered));
+		}
+	}
+
+	@bindThis
 	private async featured(request: FastifyRequest<{ Params: { user: string; }; }>, reply: FastifyReply) {
 		const userId = request.params.user;
 
@@ -617,6 +705,12 @@ export class ActivityPubServerService {
 			Params: { user: string; };
 			Querystring: { cursor?: string; page?: string; };
 		}>('/users/:user/following', async (request, reply) => await this.following(request, reply));
+
+		// liked
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { cursor?: string; page?: string; };
+		}>('/users/:user/liked', async (request, reply) => await this.liked(request, reply));
 
 		// featured
 		fastify.get<{ Params: { user: string; }; }>('/users/:user/collections/featured', async (request, reply) => await this.featured(request, reply));
