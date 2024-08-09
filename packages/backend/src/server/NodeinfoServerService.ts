@@ -134,7 +134,7 @@ export class NodeinfoServerService {
 			return document;
 		};
 
-		const cache = new MemorySingleCache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
+		const cache = new MemorySingleCache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10); // 10m
 
 		fastify.get(nodeinfo2_1path, async (request, reply) => {
 			const base = await cache.fetch(() => nodeinfo2(21));
