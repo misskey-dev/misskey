@@ -486,6 +486,7 @@ export class ApRendererService {
 			outbox: `${id}/outbox`,
 			followers: `${id}/followers`,
 			following: `${id}/following`,
+			liked: `${id}/liked`,
 			featured: `${id}/collections/featured`,
 			sharedInbox: `${this.config.url}/inbox`,
 			endpoints: { sharedInbox: `${this.config.url}/inbox` },
