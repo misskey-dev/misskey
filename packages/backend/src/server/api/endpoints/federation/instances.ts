@@ -170,7 +170,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const instances = await query.limit(ps.limit).offset(ps.offset).getMany();
 
-			return await this.instanceEntityService.packMany(instances);
+			return await this.instanceEntityService.packMany(instances, me);
 		});
 	}
 }
