@@ -5068,6 +5068,18 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * ページ閲覧数
+     */
+    "pageViewCount": string;
+    /**
+     * 人気のユーザーの算出基準
+     */
+    "preferPopularUserFactor": string;
+    /**
+     * ページ閲覧数はローカルユーザーにのみ適用されます（リモートユーザーはフォロワー数で表示されます）。「無効」に設定すると、ローカル・リモートどちらの「人気のユーザー」セクションも表示されなくなります。
+     */
+    "preferPopularUserFactorDescription": string;
     "_delivery": {
         /**
          * 配信状態
