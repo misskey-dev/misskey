@@ -44,6 +44,11 @@ export const packedFlashSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		visibility: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['private', 'public'],
+		},
 		likedCount: {
 			type: 'number',
 			optional: false, nullable: true,
