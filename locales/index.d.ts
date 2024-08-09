@@ -9679,6 +9679,14 @@ export interface Locale extends ILocale {
          * 通報の通知先を削除
          */
         "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * ジョブキューをクリア
+         */
+        "clearQueue": string;
+        /**
+         * ジョブキューを再試行
+         */
+        "promoteQueue": string;
     };
     "_fileViewer": {
         /**
