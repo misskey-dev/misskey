@@ -219,7 +219,7 @@ describe('ActivityPub', () => {
 				first: `${actor.id}/following?page=1`,
 			};
 			actor.followers = `${actor.id}/followers`;
-			actor.liked ={
+			actor.liked = {
 				id: `${actor.id}/following`,
 				type: 'OrderedCollection',
 				totalItems: 0,
