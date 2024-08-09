@@ -87,6 +87,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
+	<FormSlot>
+		<MkFolder class="_margin">
+			<template #icon><i class="ti ti-link"></i></template>
+			<template #label>{{ i18n.ts._profile.myMutualBanner }}</template>
+
+			<MkInput v-model="myMutualBanner.description" class="_margin" small>
+				<template #label>{{ i18n.ts._profile.mutualBannerDescriptionEdit }}</template>
+			</MkInput>
+			<MkInput v-model="myMutualBanner.url" class="_margin" type="url" small>
+				<template #label>URL</template>
+			</MkInput>
+			<div>
+				<p>{{ i18n.ts._profile.mutualBanner }}</p>
+				<img class="_margin" :class="$style.mutualBannerImg" :src="myMutualBanner.imgUrl">
+				<MkButton class="_button _margin" @click="ev => changeMutualBannerFile(ev)">{{ i18n.ts.selectFile }}</MkButton>
+			</div>
+
+			<MkButton class="_button" primary @click="saveMyMutualBanner">{{ i18n.ts.save }}</MkButton>
+			<MkButton class="_button" primary @click="deleteMyMutualBanner">{{ i18n.ts.delete }}</MkButton>
+		</MkFolder>
+		<template #caption>
+			<span>{{ i18n.ts._profile.myMutualBannerDescription }}<br>
+				{{ i18n.ts.recommended }} 200x40<br>
+				{{ i18n.ts.maximum }} 300x60
+			</span>
+		</template>
+	</FormSlot>
 
 	<MkFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
@@ -152,6 +179,12 @@ watch(() => profile, () => {
 });
 
 const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
+const myMutualBanner = ref<{ fileId: string; description?: string; url?: string | null; imgUrl?: string; }>({
+	fileId: $i.myMutualBanner?.fileId ?? '',
+	description: $i.myMutualBanner?.description ?? '',
+	url: $i.myMutualBanner?.url ?? '',
+	imgUrl: $i.myMutualBanner?.imgUrl ?? '',
+});
 const fieldEditMode = ref(false);
 
 function addField() {
@@ -175,6 +208,40 @@ function saveFields() {
 		fields: fields.value.filter(field => field.name !== '' && field.value !== '').map(field => ({ name: field.name, value: field.value })),
 	});
 	globalEvents.emit('requestClearPageCache');
+}
+
+function isValidUrl(url: string): boolean {
+	try {
+		new URL(url);
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
+
+function saveMyMutualBanner() {
+	if ( myMutualBanner.value.fileId === '' || myMutualBanner.value.url && !isValidUrl(myMutualBanner.value.url)) {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.invalidParamError,
+			text: i18n.ts.invalidParamErrorDescription,
+		});
+		return;
+	}
+	os.apiWithDialog('i/update', {
+		myMutualBanner: {
+			fileId: myMutualBanner.value.fileId,
+			description: myMutualBanner.value.description,
+			url: myMutualBanner.value.url === '' ? null : myMutualBanner.value.url,
+		},
+	});
+}
+
+function deleteMyMutualBanner() {
+	os.apiWithDialog('i/update', {
+		myMutualBanner: null,
+	});
+	myMutualBanner.value = { fileId: '', description: '', url: '' };
 }
 
 function save() {
@@ -201,6 +268,13 @@ function save() {
 	if (profile.isCat) {
 		claimAchievement('markedAsCat');
 	}
+}
+
+function changeMutualBannerFile(ev: MouseEvent) {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.mutualBanner).then(async (file) => {
+		myMutualBanner.value.imgUrl = file.url;
+		myMutualBanner.value.fileId = file.id;
+	});
 }
 
 function changeAvatar(ev) {
@@ -350,4 +424,13 @@ definePageMetadata(() => ({
 .dragItemForm {
 	flex-grow: 1;
 }
+
+.mutualBannerImg {
+	max-width: 300px;
+	min-width: 200px;
+	max-height: 60px;
+	min-height: 40px;
+	object-fit: contain;
+}
+
 </style>

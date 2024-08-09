@@ -143,6 +143,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dd>
 						</dl>
 					</div>
+					<div v-if="user?.myMutualBanner" class="fields">
+						{{ i18n.ts.mutualBannerThisUser }}
+
+						<div :class="$style.myMutualBanner">
+							<MkLink :hideIcon="true" :url="user.myMutualBanner.url">
+								<img :class="$style.mutualBannerImg" :src="user.myMutualBanner.imgUrl" :alt="user.myMutualBanner.description"/>
+							</MkLink>
+							<span>{{ (user.myMutualBanner?.description === '' || user.myMutualBanner?.description === null) ? i18n.ts.noDescription : user.myMutualBanner?.description }}</span>
+							<MkButton v-if="$i && $i?.id !== user.id && !$i?.mutualBanners?.some(banner => banner.id === user.myMutualBanner?.id) " @click="mutualBannerFollow(user.myMutualBanner?.id)">{{ i18n.ts.follow }}</MkButton>
+							<MkButton v-else-if="$i && $i?.id !== user.id" @click="mutualBannerUnFollow(user.myMutualBanner?.id)">{{ i18n.ts.unfollow }}</MkButton>
+						</div>
+					</div>
+					<div v-if="user?.mutualBanners && user?.mutualBanners.length > 0" class="fields">
+						{{ i18n.ts.mutualBanner }}
+						<div :class="$style.mutualBanner">
+							<div v-for="(mutualBanner, i) in mutualBanners?.slice(0, 9)" :key="i">
+								<MkLink :hideIcon="true" :url="mutualBanner.url">
+									<img :class="$style.mutualBannerImg" :src="mutualBanner.imgUrl" :alt="mutualBanner.description"/>
+								</MkLink>
+							</div>
+						</div>
+					</div>
 					<div class="status">
 						<MkA :to="userPage(user)">
 							<b>{{ number(user.notesCount) }}</b>
@@ -212,6 +234,7 @@ import { confetti } from '@/scripts/confetti.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { useRouter } from '@/router/supplier.js';
+import MkLink from '@/components/MkLink.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -253,6 +276,7 @@ const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote);
 const editModerationNote = ref(false);
+const mutualBanners = ref(props.user.mutualBanners);
 
 watch(moderationNote, async () => {
 	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
@@ -296,6 +320,23 @@ function showMemoTextarea() {
 	isEditingMemo.value = true;
 	nextTick(() => {
 		memoTextareaEl.value?.focus();
+	});
+}
+
+function mutualBannerFollow(id: string) {
+	os.apiWithDialog('i/update', {
+		mutualBannerPining: [
+			...($i?.mutualBanners?.map(banner => banner.id) ?? []),
+			id,
+		],
+	});
+}
+
+function mutualBannerUnFollow(id:string) {
+	os.apiWithDialog('i/update', {
+		mutualBannerPining: [
+			...($i?.mutualBanners?.map(banner => banner.id) ?? []).filter(bannerId => bannerId !== id),
+		],
 	});
 }
 
@@ -787,4 +828,28 @@ onUnmounted(() => {
 	color: rgb(255, 255, 255);
 	background-color: rgb(54, 54, 54);
 }
+
+.myMutualBanner {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	flex-flow: column wrap;
+	padding: 16px;
+}
+
+.mutualBanner {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	padding: 16px;
+}
+
+.mutualBannerImg {
+	max-width: 300px;
+	min-width: 200px;
+	max-height: 60px;
+	min-height: 40px;
+	object-fit: contain;
+}
+
 </style>

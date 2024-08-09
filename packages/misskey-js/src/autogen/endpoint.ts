@@ -37,6 +37,7 @@ import type {
 	AdminAvatarDecorationsUpdateRequest,
 	AdminUnsetUserAvatarRequest,
 	AdminUnsetUserBannerRequest,
+	AdminUnsetUserMutualBannerRequest,
 	AdminDriveDeleteAllFilesOfAUserRequest,
 	AdminDriveFilesRequest,
 	AdminDriveFilesResponse,
@@ -608,6 +609,7 @@ export type Endpoints = {
 	'admin/avatar-decorations/update': { req: AdminAvatarDecorationsUpdateRequest; res: EmptyResponse };
 	'admin/unset-user-avatar': { req: AdminUnsetUserAvatarRequest; res: EmptyResponse };
 	'admin/unset-user-banner': { req: AdminUnsetUserBannerRequest; res: EmptyResponse };
+	'admin/unset-user-mutual-banner': { req: AdminUnsetUserMutualBannerRequest; res: EmptyResponse };
 	'admin/drive/clean-remote-files': { req: EmptyRequest; res: EmptyResponse };
 	'admin/drive/cleanup': { req: EmptyRequest; res: EmptyResponse };
 	'admin/drive/delete-all-files-of-a-user': { req: AdminDriveDeleteAllFilesOfAUserRequest; res: EmptyResponse };

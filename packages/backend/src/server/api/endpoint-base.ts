@@ -18,6 +18,17 @@ const ajv = new Ajv({
 });
 
 ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
+ajv.addFormat('url', {
+	type: 'string',
+	validate: (url: string) => {
+		try {
+			new URL(url);
+			return true;
+		} catch (e) {
+			return false;
+		}
+	},
+});
 
 export type Response = Record<string, any> | void;
 

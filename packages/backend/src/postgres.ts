@@ -83,6 +83,8 @@ import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
+import { MiUserBanner } from '@/models/UserBanner.js';
+import { MiUserBannerPining } from '@/models/UserBannerPining.js';
 
 import { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -203,6 +205,8 @@ export const entities = [
 	MiFlash,
 	MiFlashLike,
 	MiUserMemo,
+	MiUserBanner,
+	MiUserBannerPining,
 	MiBubbleGameRecord,
 	MiReversiGame,
 	...charts,

@@ -11,6 +11,7 @@ import {
 	packedMeDetailedSchema,
 	packedUserDetailedSchema,
 	packedUserSchema,
+	packedUserBannerSchema,
 } from '@/models/json-schema/user.js';
 import { packedAbuseUserReportSchema } from '@/models/json-schema/abuse-user-report.js';
 import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
@@ -68,6 +69,7 @@ export const refs = {
 	MeDetailed: packedMeDetailedSchema,
 	UserDetailed: packedUserDetailedSchema,
 	User: packedUserSchema,
+	UserBanner: packedUserBannerSchema,
 
 	UserList: packedUserListSchema,
 	UserListMembership: packedUserListMembershipSchema,

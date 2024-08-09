@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="(ev: MouseEvent) => warningExternalWebsite(ev, url)"
 >
 	<slot></slot>
-	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
+	<i v-if="target === '_blank' && !hideIcon" class="ti ti-external-link" :class="$style.icon"></i>
 </component>
 </template>
 
@@ -34,7 +34,9 @@ const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
 	navigationBehavior?: MkABehavior;
+	hideIcon?: boolean;
 }>(), {
+	hideIcon: false,
 });
 
 const self = props.url.startsWith(local);

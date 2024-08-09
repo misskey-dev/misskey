@@ -62,6 +62,7 @@ export const permissions = [
 	'write:admin:suspend-user',
 	'write:admin:unset-user-avatar',
 	'write:admin:unset-user-banner',
+	'write:admin:unset-user-mutual-banner',
 	'write:admin:unsuspend-user',
 	'write:admin:meta',
 	'write:admin:user-note',
@@ -144,6 +145,7 @@ export const moderationLogTypes = [
 	'deleteAvatarDecoration',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'unsetUserMutualBanner',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -360,6 +362,13 @@ export type ModerationLogPayloads = {
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
+		fileId: string;
+	};
+	unsetUserMutualBanner: {
+		userId: string;
+		userUsername: string;
+		userBannerDescription: string | null;
+		userBannerUrl: string;
 		fileId: string;
 	};
 };

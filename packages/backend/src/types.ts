@@ -96,6 +96,7 @@ export const moderationLogTypes = [
 	'deleteAvatarDecoration',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'unsetUserMutualBanner',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -314,6 +315,13 @@ export type ModerationLogPayloads = {
 		userHost: string | null;
 		fileId: string;
 	};
+	unsetUserMutualBanner: {
+		userId: string;
+		userUsername: string;
+		userBannerDescription: string | null;
+		userBannerUrl: string | null;
+		fileId: string;
+	}
 };
 
 export type Serialized<T> = {

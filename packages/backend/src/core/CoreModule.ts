@@ -5,6 +5,8 @@
 
 import { Module } from '@nestjs/common';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { UserBannerEntityService } from '@/core/entities/UserBannerEntityService.js';
+import { UserBannerPiningEntityService } from '@/core/entities/UserBannerPiningEntityService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
@@ -35,6 +37,8 @@ import { ModerationLogService } from './ModerationLogService.js';
 import { NoteCreateService } from './NoteCreateService.js';
 import { NoteDeleteService } from './NoteDeleteService.js';
 import { NotePiningService } from './NotePiningService.js';
+import { UserBannerPiningService } from './UserBannerPiningService.js';
+import { UserBannerService } from './UserBannerService.js';
 import { NoteReadService } from './NoteReadService.js';
 import { NotificationService } from './NotificationService.js';
 import { PollService } from './PollService.js';
@@ -173,6 +177,8 @@ const $ModerationLogService: Provider = { provide: 'ModerationLogService', useEx
 const $NoteCreateService: Provider = { provide: 'NoteCreateService', useExisting: NoteCreateService };
 const $NoteDeleteService: Provider = { provide: 'NoteDeleteService', useExisting: NoteDeleteService };
 const $NotePiningService: Provider = { provide: 'NotePiningService', useExisting: NotePiningService };
+const $UserBannerPiningService: Provider = { provide: 'UserBannerPiningService', useExisting: UserBannerPiningService };
+const $UserBannerService: Provider = { provide: 'UserBannerService', useExisting: UserBannerService };
 const $NoteReadService: Provider = { provide: 'NoteReadService', useExisting: NoteReadService };
 const $NotificationService: Provider = { provide: 'NotificationService', useExisting: NotificationService };
 const $PollService: Provider = { provide: 'PollService', useExisting: PollService };
@@ -253,6 +259,8 @@ const $PageLikeEntityService: Provider = { provide: 'PageLikeEntityService', use
 const $SigninEntityService: Provider = { provide: 'SigninEntityService', useExisting: SigninEntityService };
 const $UserEntityService: Provider = { provide: 'UserEntityService', useExisting: UserEntityService };
 const $UserListEntityService: Provider = { provide: 'UserListEntityService', useExisting: UserListEntityService };
+const $UserBannerEntityService: Provider = { provide: 'UserBannerEntityService', useExisting: UserBannerEntityService };
+const $UserBannerPiningEntityService: Provider = { provide: 'UserBannerPiningEntityService', useExisting: UserBannerPiningEntityService };
 const $FlashEntityService: Provider = { provide: 'FlashEntityService', useExisting: FlashEntityService };
 const $FlashLikeEntityService: Provider = { provide: 'FlashLikeEntityService', useExisting: FlashLikeEntityService };
 const $RoleEntityService: Provider = { provide: 'RoleEntityService', useExisting: RoleEntityService };
@@ -315,6 +323,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoteCreateService,
 		NoteDeleteService,
 		NotePiningService,
+		UserBannerPiningService,
+		UserBannerService,
 		NoteReadService,
 		NotificationService,
 		PollService,
@@ -393,6 +403,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SigninEntityService,
 		UserEntityService,
 		UserListEntityService,
+		UserBannerEntityService,
+		UserBannerPiningEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
 		RoleEntityService,
@@ -451,6 +463,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoteCreateService,
 		$NoteDeleteService,
 		$NotePiningService,
+		$UserBannerService,
+		$UserBannerPiningService,
 		$NoteReadService,
 		$NotificationService,
 		$PollService,
@@ -529,6 +543,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SigninEntityService,
 		$UserEntityService,
 		$UserListEntityService,
+		$UserBannerEntityService,
+		$UserBannerPiningEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
 		$RoleEntityService,
@@ -588,6 +604,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoteCreateService,
 		NoteDeleteService,
 		NotePiningService,
+		UserBannerService,
+		UserBannerPiningService,
 		NoteReadService,
 		NotificationService,
 		PollService,
@@ -665,6 +683,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SigninEntityService,
 		UserEntityService,
 		UserListEntityService,
+		UserBannerEntityService,
+		UserBannerPiningEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
 		RoleEntityService,
@@ -723,6 +743,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoteCreateService,
 		$NoteDeleteService,
 		$NotePiningService,
+		$UserBannerService,
+		$UserBannerPiningService,
 		$NoteReadService,
 		$NotificationService,
 		$PollService,
@@ -800,6 +822,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SigninEntityService,
 		$UserEntityService,
 		$UserListEntityService,
+		$UserBannerEntityService,
+		$UserBannerPiningEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
 		$RoleEntityService,

@@ -2401,6 +2401,14 @@ export interface Locale extends ILocale {
      */
     "unsetUserBannerConfirm": string;
     /**
+     * 相互バナーを解除
+     */
+    "unsetUserMutualBanner": string;
+    /**
+     * 相互バナーを解除しますか？
+     */
+    "unsetUserMutualBannerConfirm": string;
+    /**
      * すべてのファイルを削除
      */
     "deleteAllFiles": string;
@@ -5083,6 +5091,18 @@ export interface Locale extends ILocale {
      * こちら
      */
     "here": string;
+    /**
+     * 相互バナー
+     */
+    "mutualBanner": string;
+    /**
+     * このユーザーのバナー
+     */
+    "mutualBannerThisUser": string;
+    /**
+     * 最大
+     */
+    "maximum": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -8213,6 +8233,10 @@ export interface Locale extends ILocale {
          */
         "write:admin:unset-user-banner": string;
         /**
+         * ユーザーの相互バナーを削除する
+         */
+        "write:admin:unset-user-mutual-banner": string;
+        /**
          * ユーザーの凍結を解除する
          */
         "write:admin:unsuspend-user": string;
@@ -8798,6 +8822,22 @@ export interface Locale extends ILocale {
          * 最大{max}つまでデコレーションを付けられます。
          */
         "avatarDecorationMax": ParameterizedString<"max">;
+        /**
+         * 自身の相互リンクのバナーを設定
+         */
+        "myMutualBanner": string;
+        /**
+         * あなた自身が相互リンクのバナーとして設定してほしい画像を設定することができます。
+         */
+        "myMutualBannerDescription": string;
+        /**
+         * 相互リンクのバナー
+         */
+        "mutualBanner": string;
+        /**
+         * 説明
+         */
+        "mutualBannerDescriptionEdit": string;
     };
     "_exportOrImport": {
         /**
