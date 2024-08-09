@@ -5,7 +5,7 @@
 - Enhance: モデレーターはすべてのユーザーのフォロー・フォロワーの一覧を見られるように
 
 ### Client
--
+- Fix: iOSでユーザー名などがリンクとして誤検知される現象を抑制
 
 ### Server
 - Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
