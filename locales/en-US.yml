@@ -2494,7 +2494,7 @@ _moderationLogTypes:
   unsetUserAvatar: "Unset this user's avatar"
   unsetUserBanner: "Unset this user's banner"
   createSystemWebhook: "Create SystemWebhook"
-  updateSystemWebhook: "Update SystemWebHook"
+  updateSystemWebhook: "Update SystemWebhook"
   deleteSystemWebhook: "Delete SystemWebhook"
   createAbuseReportNotificationRecipient: "Create a recipient for abuse reports"
   updateAbuseReportNotificationRecipient: "Update recipients for abuse reports"
