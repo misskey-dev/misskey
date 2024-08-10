@@ -270,6 +270,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.mutualLinkSectionLimit, 'mutualLinkSectionLimit'])">
+							<template #label>{{ i18n.ts._role._options.mutualLinkSectionLimit }}</template>
+							<template #suffix>{{ policies.mutualLinkSectionLimit }}</template>
+							<MkInput v-model="policies.mutualLinkSectionLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.mutualLinkLimit, 'mutualLinkLimit'])">
+							<template #label>{{ i18n.ts._role._options.mutualLinkLimit }}</template>
+							<template #suffix>{{ policies.mutualLinkLimit }}</template>
+							<MkInput v-model="policies.mutualLinkLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canHideAds, 'canHideAds'])">
 							<template #label>{{ i18n.ts._role._options.canHideAds }}</template>
 							<template #suffix>{{ policies.canHideAds ? i18n.ts.yes : i18n.ts.no }}</template>

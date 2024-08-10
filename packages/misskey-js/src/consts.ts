@@ -62,7 +62,7 @@ export const permissions = [
 	'write:admin:suspend-user',
 	'write:admin:unset-user-avatar',
 	'write:admin:unset-user-banner',
-	'write:admin:unset-user-mutual-banner',
+	'write:admin:unset-user-mutual-link',
 	'write:admin:unsuspend-user',
 	'write:admin:meta',
 	'write:admin:user-note',
@@ -364,11 +364,9 @@ export type ModerationLogPayloads = {
 		userHost: string | null;
 		fileId: string;
 	};
-	unsetUserMutualBanner: {
+	unsetUserMutualLink: {
 		userId: string;
 		userUsername: string;
-		userBannerDescription: string | null;
-		userBannerUrl: string;
-		fileId: string;
+		mutualLinkSections: string;
 	};
 };

@@ -76,8 +76,6 @@ import {
 	MiWebhook,
 	MiBubbleGameRecord,
 	MiReversiGame,
-	MiUserBannerPining,
-	MiUserBanner,
 } from './_.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
@@ -205,18 +203,6 @@ const $userListMembershipsRepository: Provider = {
 const $userNotePiningsRepository: Provider = {
 	provide: DI.userNotePiningsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiUserNotePining),
-	inject: [DI.db],
-};
-
-const $userBannerRepository: Provider = {
-	provide: DI.userBannerRepository,
-	useFactory: (db: DataSource) => db.getRepository(MiUserBanner),
-	inject: [DI.db],
-};
-
-const $userBannerPiningRepository: Provider = {
-	provide: DI.userBannerPiningRepository,
-	useFactory: (db: DataSource) => db.getRepository(MiUserBannerPining),
 	inject: [DI.db],
 };
 
@@ -539,8 +525,6 @@ const $abuseReportResolversRepository: Provider = {
 		$userListFavoritesRepository,
 		$userListMembershipsRepository,
 		$userNotePiningsRepository,
-		$userBannerPiningRepository,
-		$userBannerRepository,
 		$userIpsRepository,
 		$usedUsernamesRepository,
 		$followingsRepository,
@@ -613,8 +597,6 @@ const $abuseReportResolversRepository: Provider = {
 		$userListFavoritesRepository,
 		$userListMembershipsRepository,
 		$userNotePiningsRepository,
-		$userBannerPiningRepository,
-		$userBannerRepository,
 		$userIpsRepository,
 		$usedUsernamesRepository,
 		$followingsRepository,

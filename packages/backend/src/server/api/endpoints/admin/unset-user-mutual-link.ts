@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserBannerRepository, UsersRepository } from '@/models/_.js';
+import type {
+	UsersRepository,
+	UserProfilesRepository,
+} from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -9,7 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-	kind: 'write:admin:unset-user-mutual-banner',
+	kind: 'write:admin:unset-user-mutual-link',
 } as const;
 
 export const paramDef = {
@@ -26,32 +29,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
-		@Inject(DI.userBannerRepository)
-		private userBannerRepository: UserBannerRepository,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
+			const userProfile = await this.userProfilesRepository.findOneBy({ userId: ps.userId });
 
-			if (user == null) {
+			if (user == null || userProfile == null) {
 				throw new Error('user not found');
 			}
 
-			const mutualBanner = await this.userBannerRepository.findOneBy({ userId: user.id });
-
-			if (mutualBanner == null) return;
-
-			await this.userBannerRepository.delete({
-				id: mutualBanner.id,
+			await this.userProfilesRepository.update(user.id, {
+				mutualLinkSections: [],
 			});
 
-			this.moderationLogService.log(me, 'unsetUserMutualBanner', {
+			this.moderationLogService.log(me, 'unsetUserMutualLink', {
 				userId: user.id,
 				userUsername: user.username,
-				userBannerDescription: mutualBanner.description,
-				userBannerUrl: mutualBanner.url,
-				fileId: mutualBanner.fileId,
+				userMutualLinkSections: userProfile.mutualLinkSections,
 			});
 		});
 	}

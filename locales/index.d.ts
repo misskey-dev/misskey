@@ -2401,13 +2401,13 @@ export interface Locale extends ILocale {
      */
     "unsetUserBannerConfirm": string;
     /**
-     * 相互バナーを解除
+     * 相互リンクを解除
      */
-    "unsetUserMutualBanner": string;
+    "unsetUserMutualLink": string;
     /**
-     * 相互バナーを解除しますか？
+     * 相互リンクを解除しますか？
      */
-    "unsetUserMutualBannerConfirm": string;
+    "unsetUserMutualLinkConfirm": string;
     /**
      * すべてのファイルを削除
      */
@@ -5092,9 +5092,9 @@ export interface Locale extends ILocale {
      */
     "here": string;
     /**
-     * 相互バナー
+     * 相互リンク
      */
-    "mutualBanner": string;
+    "mutualLink": string;
     /**
      * このユーザーのバナー
      */
@@ -6884,6 +6884,14 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
+            /**
+             * 相互リンクのセクションの最大数
+             */
+            "mutualLinkSectionLimit": string;
+            /**
+             * セクション内の相互リンクの最大数
+             */
+            "mutualLinkLimit": string;
         };
         "_condition": {
             /**
@@ -8233,9 +8241,9 @@ export interface Locale extends ILocale {
          */
         "write:admin:unset-user-banner": string;
         /**
-         * ユーザーの相互バナーを削除する
+         * ユーザーの相互リンクを削除する
          */
-        "write:admin:unset-user-mutual-banner": string;
+        "write:admin:unset-user-mutual-link": string;
         /**
          * ユーザーの凍結を解除する
          */
@@ -8823,21 +8831,49 @@ export interface Locale extends ILocale {
          */
         "avatarDecorationMax": ParameterizedString<"max">;
         /**
-         * 自身の相互リンクのバナーを設定
+         * 相互リンクを編集
          */
-        "myMutualBanner": string;
-        /**
-         * あなた自身が相互リンクのバナーとして設定してほしい画像を設定することができます。
-         */
-        "myMutualBannerDescription": string;
+        "mutualLinksEdit": string;
         /**
          * 相互リンクのバナー
          */
-        "mutualBanner": string;
+        "mutualLinksBanner": string;
         /**
          * 説明
          */
-        "mutualBannerDescriptionEdit": string;
+        "mutualLinksDescriptionEdit": string;
+        /**
+         * リンク先のURL
+         */
+        "mutualLinksUrl": string;
+        /**
+         * このセクションをプロフィールにピン留め
+         */
+        "mutualLinkPining": string;
+        /**
+         * 相互リンクを設定すると、あなたのプロフィールにバナーが表示されます。
+         */
+        "mutualLinksDescription": string;
+        /**
+         * 相互リンクを追加
+         */
+        "addMutualLink": string;
+        /**
+         * セクションを追加
+         */
+        "addMutualLinkSection": string;
+        /**
+         * セクション名
+         */
+        "sectionName": string;
+        /**
+         * セクション名を表示しないようにする
+         */
+        "sectionNameNoneDescription": string;
+        /**
+         * セクション名を表示しない
+         */
+        "sectionNameNone": string;
     };
     "_exportOrImport": {
         /**

@@ -60,8 +60,6 @@ import { MiUserListMembership } from '@/models/UserListMembership.js';
 import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { MiUserPending } from '@/models/UserPending.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
-import { MiUserBanner } from '@/models/UserBanner.js';
-import { MiUserBannerPining } from '@/models/UserBannerPining.js';
 import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
@@ -136,8 +134,6 @@ export {
 	MiUserNotePining,
 	MiUserPending,
 	MiUserProfile,
-	MiUserBanner,
-	MiUserBannerPining,
 	MiUserPublickey,
 	MiUserSecurityKey,
 	MiWebhook,
@@ -210,8 +206,6 @@ export type UserListMembershipsRepository = Repository<MiUserListMembership>;
 export type UserNotePiningsRepository = Repository<MiUserNotePining>;
 export type UserPendingsRepository = Repository<MiUserPending>;
 export type UserProfilesRepository = Repository<MiUserProfile>;
-export type UserBannerRepository = Repository<MiUserBanner>;
-export type UserBannerPiningRepository = Repository<MiUserBannerPining>;
 export type UserPublickeysRepository = Repository<MiUserPublickey>;
 export type UserSecurityKeysRepository = Repository<MiUserSecurityKey>;
 export type WebhooksRepository = Repository<MiWebhook>;

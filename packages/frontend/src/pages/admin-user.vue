@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkButton v-if="user.host == null" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 								<MkButton inline danger @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 								<MkButton inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
-								<MkButton inline danger @click="unsetUserMutualBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserMutualBanner }}</MkButton>
+								<MkButton inline danger @click="unsetUserMutualLink"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserMutualLink }}</MkButton>
 							</div>
 						</MkFolder>
 
@@ -365,10 +365,10 @@ async function unsetUserBanner() {
 	}).then(refreshUser);
 }
 
-async function unsetUserMutualBanner() {
+async function unsetUserMutualLink() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserMutualBannerConfirm,
+		text: i18n.ts.unsetUserMutualLinkConfirm,
 	});
 	if (confirm.canceled) return;
 

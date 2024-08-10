@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { inspect } from 'node:util';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { api, post, role, signup, successfulApiCall, uploadFile, failedApiCall } from '../utils.js';
+import { api, failedApiCall, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('ユーザー', () => {
@@ -74,8 +74,7 @@ describe('ユーザー', () => {
 			lang: user.lang,
 			fields: user.fields,
 			verifiedLinks: user.verifiedLinks,
-			myMutualBanner: user.myMutualBanner,
-			mutualBanners: user.mutualBanners,
+			mutualLinkSections: user.mutualLinkSections,
 			followersCount: user.followersCount,
 			followingCount: user.followingCount,
 			notesCount: user.notesCount,

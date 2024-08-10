@@ -386,6 +386,29 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'string',
 			nullable: false, optional: true,
 		},
+		mutualLinkSections: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					name: { type: 'string', nullable: true },
+					mutualLinks: {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								url: { type: 'string' },
+								fileId: { type: 'string', format: 'misskey:id' },
+								description: { type: 'string', nullable: true },
+								imgSrc: { type: 'string' },
+							},
+							required: ['url', 'fileId'],
+						},
+					},
+				},
+				required: ['mutualLinks'],
+			},
+		},
 		//#region relations
 		isFollowing: {
 			type: 'boolean',
@@ -427,80 +450,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 		withReplies: {
 			type: 'boolean',
 			nullable: false, optional: true,
-		},
-		mutualBanners: {
-			type: 'array',
-			nullable: true, optional: false,
-			items: {
-				type: 'object',
-				nullable: false, optional: false,
-				properties: {
-					id: {
-						type: 'string',
-						format: 'id',
-						nullable: false, optional: false,
-					},
-					user: {
-						type: 'object',
-						nullable: false, optional: false,
-						ref: 'UserLite',
-					},
-					description: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					imgUrl: {
-						type: 'string',
-						format: 'url',
-						nullable: false, optional: false,
-					},
-					url: {
-						type: 'string',
-						format: 'url',
-						nullable: false, optional: false,
-					},
-					fileId: {
-						type: 'string',
-						format: 'id',
-						nullable: false, optional: false,
-					},
-				},
-			},
-		},
-		myMutualBanner: {
-			type: 'object',
-			nullable: true, optional: false,
-			properties: {
-				id: {
-					type: 'string',
-					format: 'id',
-					nullable: false, optional: false,
-				},
-				user: {
-					type: 'object',
-					nullable: false, optional: false,
-					ref: 'UserLite',
-				},
-				description: {
-					type: 'string',
-					nullable: true, optional: false,
-				},
-				imgUrl: {
-					type: 'string',
-					format: 'url',
-					nullable: false, optional: false,
-				},
-				url: {
-					type: 'string',
-					format: 'url',
-					nullable: false, optional: false,
-				},
-				fileId: {
-					type: 'string',
-					format: 'id',
-					nullable: false, optional: false,
-				},
-			},
 		},
 		//#endregion
 	},
@@ -786,38 +735,4 @@ export const packedUserSchema = {
 			ref: 'UserDetailed',
 		},
 	],
-} as const;
-
-export const packedUserBannerSchema = {
-	type: 'object',
-	properties: {
-		id: {
-			type: 'string',
-			nullable: false, optional: false,
-			format: 'id',
-		},
-		user: {
-			type: 'object',
-			nullable: false, optional: false,
-			ref: 'UserLite',
-		},
-		description: {
-			type: 'string',
-			nullable: true, optional: false,
-		},
-		imgUrl: {
-			type: 'string',
-			format: 'url',
-			nullable: false, optional: false,
-		},
-		url: {
-			type: 'string',
-			nullable: true, optional: false,
-		},
-		fileId: {
-			type: 'string',
-			format: 'id',
-			nullable: false, optional: false,
-		},
-	},
 } as const;

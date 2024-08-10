@@ -31,7 +31,7 @@ import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-dec
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
 import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
 import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
-import * as ep___admin_unsetUserMutualBanner from './endpoints/admin/unset-user-mutual-banner.js';
+import * as ep___admin_unsetUserMutualLink from './endpoints/admin/unset-user-mutual-link.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_deleteAllFilesOfAUser from './endpoints/admin/drive/delete-all-files-of-a-user.js';
@@ -420,7 +420,7 @@ const eps = [
 	['admin/avatar-decorations/update', ep___admin_avatarDecorations_update],
 	['admin/unset-user-avatar', ep___admin_unsetUserAvatar],
 	['admin/unset-user-banner', ep___admin_unsetUserBanner],
-	['admin/unset-user-mutual-banner', ep___admin_unsetUserMutualBanner],
+	['admin/unset-user-mutual-link', ep___admin_unsetUserMutualLink],
 	['admin/drive/clean-remote-files', ep___admin_drive_cleanRemoteFiles],
 	['admin/drive/cleanup', ep___admin_drive_cleanup],
 	['admin/drive/delete-all-files-of-a-user', ep___admin_drive_deleteAllFilesOfAUser],

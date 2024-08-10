@@ -7,7 +7,6 @@ export type UserDetailedNotMe = components['schemas']['UserDetailedNotMe'];
 export type MeDetailed = components['schemas']['MeDetailed'];
 export type UserDetailed = components['schemas']['UserDetailed'];
 export type User = components['schemas']['User'];
-export type UserBanner = components['schemas']['UserBanner'];
 export type UserList = components['schemas']['UserList'];
 export type UserListMembership = components['schemas']['UserListMembership'];
 export type Ad = components['schemas']['Ad'];

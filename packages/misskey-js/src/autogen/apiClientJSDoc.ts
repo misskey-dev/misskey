@@ -281,9 +281,9 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-mutual-banner*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-mutual-link*
      */
-    request<E extends 'admin/unset-user-mutual-banner', P extends Endpoints[E]['req']>(
+    request<E extends 'admin/unset-user-mutual-link', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

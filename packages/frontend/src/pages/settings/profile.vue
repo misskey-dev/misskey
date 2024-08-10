@@ -88,31 +88,77 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
 	<FormSlot>
-		<MkFolder class="_margin">
+		<MkFolder>
 			<template #icon><i class="ti ti-link"></i></template>
-			<template #label>{{ i18n.ts._profile.myMutualBanner }}</template>
+			<template #label>{{ i18n.ts._profile.mutualLinksEdit }}</template>
 
-			<MkInput v-model="myMutualBanner.description" class="_margin" small>
-				<template #label>{{ i18n.ts._profile.mutualBannerDescriptionEdit }}</template>
-			</MkInput>
-			<MkInput v-model="myMutualBanner.url" class="_margin" type="url" small>
-				<template #label>URL</template>
-			</MkInput>
-			<div>
-				<p>{{ i18n.ts._profile.mutualBanner }}</p>
-				<img class="_margin" :class="$style.mutualBannerImg" :src="myMutualBanner.imgUrl">
-				<MkButton class="_button _margin" @click="ev => changeMutualBannerFile(ev)">{{ i18n.ts.selectFile }}</MkButton>
+			<div :class="$style.metadataRoot">
+				<div :class="$style.metadataMargin">
+					<MkButton inline style="margin-right: 8px;" :disabled="mutualLinkSections.length >= $i.policies.mutualLinkSectionLimit" @click="addMutualLinkSections"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLinkSection }}</MkButton>
+					<MkButton v-if="!mutualLinkSectionEditMode" inline danger style="margin-right: 8px;" @click="mutualLinkSectionEditMode = !mutualLinkSectionEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+					<MkButton v-else inline style="margin-right: 8px;" @click="mutualLinkSectionEditMode = !mutualLinkSectionEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
+					<MkButton inline primary @click="saveMutualLinks"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</div>
+
+				<Sortable
+					v-model="mutualLinkSections"
+					class="_gaps_s"
+					itemKey="id"
+					:animation="150"
+					:handle="'.' + $style.dragItemHandle"
+					@start="e => e.item.classList.add('active')"
+					@end="e => e.item.classList.remove('active')"
+				>
+					<template #item="{element: sectionElement,index: sectionIndex}">
+						<div :class="$style.mutualLinkSectionRoot">
+							<button v-if="!mutualLinkSectionEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+							<button v-if="mutualLinkSectionEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLinkSection(sectionIndex)"><i class="ti ti-x"></i></button>
+							<FormSlot :style="{flexGrow: 1}">
+								<MkFolder>
+									<template #label>{{ sectionElement.name || i18n.ts._profile.sectionNameNone }}</template>
+
+									<div :class="$style.metadataMargin">
+										<MkInput v-model="sectionElement.name" :disabled="sectionElement.none" :placeholder="i18n.ts._profile.sectionName" :max="32"></MkInput>
+										<MkSwitch v-model="sectionElement.none" @update:modelValue="()=>{sectionElement.name = null}">{{ i18n.ts._profile.sectionNameNoneDescription }}</MkSwitch>
+										<MkButton inline style="margin-right: 8px;" :disabled="sectionElement.mutualLinks.length >= $i.policies.mutualLinkLimit" @click="addMutualLinks(sectionIndex)"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLink }}</MkButton>
+									</div>
+									<Sortable
+										v-model="sectionElement.mutualLinks"
+										class="_gaps_s"
+										itemKey="id"
+										:animation="150"
+										:handle="'.' + $style.dragItemHandle"
+										@start="e => e.item.classList.add('active')"
+										@end="e => e.item.classList.remove('active')"
+									>
+										<template #item="{element: linkElement,index: linkIndex}">
+											<div :class="$style.mutualLinkRoot">
+												<button v-if="!mutualLinkSectionEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+												<button v-if="mutualLinkSectionEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLink(sectionIndex,linkIndex)"><i class="ti ti-x"></i></button>
+
+												<div class="_gaps_s" :style="{flex: 1}">
+													<MkInput v-model="linkElement.url" small>
+														<template #label>{{ i18n.ts._profile.mutualLinksUrl }}</template>
+													</MkInput>
+													<MkInput v-model="linkElement.description" small>
+														<template #label>{{ i18n.ts._profile.mutualLinksDescriptionEdit }}</template>
+													</MkInput>
+													<span>{{ i18n.ts._profile.mutualLinksBanner }}</span>
+													<img :class="$style.mutualLinkImg" :src="linkElement.imgSrc">
+													<MkButton class="_button" @click="ev => changeMutualLinkFile(ev, sectionIndex, linkIndex)">{{ i18n.ts.selectFile }}</MkButton>
+												</div>
+											</div>
+										</template>
+									</Sortable>
+								</MkFolder>
+							</FormSlot>
+						</div>
+					</template>
+				</Sortable>
 			</div>
-
-			<MkButton class="_button" primary @click="saveMyMutualBanner">{{ i18n.ts.save }}</MkButton>
-			<MkButton class="_button" primary @click="deleteMyMutualBanner">{{ i18n.ts.delete }}</MkButton>
 		</MkFolder>
-		<template #caption>
-			<span>{{ i18n.ts._profile.myMutualBannerDescription }}<br>
-				{{ i18n.ts.recommended }} 200x40<br>
-				{{ i18n.ts.maximum }} 300x60
-			</span>
-		</template>
+
+		<template #caption>{{ i18n.ts._profile.mutualLinksDescription }}</template>
 	</FormSlot>
 
 	<MkFolder>
@@ -136,7 +182,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent, Ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -155,11 +201,11 @@ import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import * as Misskey from "misskey-js";
 
 const $i = signinRequired();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
 const profile = reactive({
@@ -178,20 +224,32 @@ watch(() => profile, () => {
 	deep: true,
 });
 
+const mutualLinkSections = ref($i.mutualLinkSections ?? []) as Ref<Misskey.entities.UserDetailed['mutualLinkSections']>;
 const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
-const myMutualBanner = ref<{ fileId: string; description?: string; url?: string | null; imgUrl?: string; }>({
-	fileId: $i.myMutualBanner?.fileId ?? '',
-	description: $i.myMutualBanner?.description ?? '',
-	url: $i.myMutualBanner?.url ?? '',
-	imgUrl: $i.myMutualBanner?.imgUrl ?? '',
-});
 const fieldEditMode = ref(false);
+const mutualLinkSectionEditMode = ref(false);
 
 function addField() {
 	fields.value.push({
 		id: Math.random().toString(),
 		name: '',
 		value: '',
+	});
+}
+
+function addMutualLinks(index:number) {
+	mutualLinkSections.value[index].mutualLinks.push({
+		fileId: '',
+		url: '',
+		imgSrc: '',
+		description: '',
+	});
+}
+
+function addMutualLinkSections() {
+	mutualLinkSections.value.push({
+		name: null,
+		mutualLinks: [],
 	});
 }
 
@@ -203,6 +261,14 @@ function deleteField(index: number) {
 	fields.value.splice(index, 1);
 }
 
+function deleteMutualLinkSection(index: number) {
+	mutualLinkSections.value.splice(index, 1);
+}
+
+function deleteMutualLink(sectionIndex:number, index: number) {
+	mutualLinkSections.value[sectionIndex].mutualLinks.splice(index, 1);
+}
+
 function saveFields() {
 	os.apiWithDialog('i/update', {
 		fields: fields.value.filter(field => field.name !== '' && field.value !== '').map(field => ({ name: field.name, value: field.value })),
@@ -210,38 +276,10 @@ function saveFields() {
 	globalEvents.emit('requestClearPageCache');
 }
 
-function isValidUrl(url: string): boolean {
-	try {
-		new URL(url);
-		return true;
-	} catch (_) {
-		return false;
-	}
-}
-
-function saveMyMutualBanner() {
-	if ( myMutualBanner.value.fileId === '' || myMutualBanner.value.url && !isValidUrl(myMutualBanner.value.url)) {
-		os.alert({
-			type: 'error',
-			title: i18n.ts.invalidParamError,
-			text: i18n.ts.invalidParamErrorDescription,
-		});
-		return;
-	}
+function saveMutualLinks() {
 	os.apiWithDialog('i/update', {
-		myMutualBanner: {
-			fileId: myMutualBanner.value.fileId,
-			description: myMutualBanner.value.description,
-			url: myMutualBanner.value.url === '' ? null : myMutualBanner.value.url,
-		},
+		mutualLinkSections: mutualLinkSections.value,
 	});
-}
-
-function deleteMyMutualBanner() {
-	os.apiWithDialog('i/update', {
-		myMutualBanner: null,
-	});
-	myMutualBanner.value = { fileId: '', description: '', url: '' };
 }
 
 function save() {
@@ -270,10 +308,10 @@ function save() {
 	}
 }
 
-function changeMutualBannerFile(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.mutualBanner).then(async (file) => {
-		myMutualBanner.value.imgUrl = file.url;
-		myMutualBanner.value.fileId = file.id;
+function changeMutualLinkFile(ev: MouseEvent, sectionIndex: number, linkIndex: number) {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.mutualLink).then(async (file) => {
+		mutualLinkSections.value[sectionIndex].mutualLinks[linkIndex].imgSrc = file.url;
+		mutualLinkSections.value[sectionIndex].mutualLinks[linkIndex].fileId = file.id;
 	});
 }
 
@@ -373,6 +411,36 @@ definePageMetadata(() => ({
 	container-type: inline-size;
 }
 
+.mutualLinkRoot{
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	gap: 8px;
+	padding-bottom: .75em;
+	border-bottom: solid 0.5px var(--divider);
+	flex: 1;
+	&:last-child {
+		border-bottom: 0;
+	}
+
+}
+.mutualLinkSectionRoot{
+	display: flex;
+	padding-bottom: .75em;
+	align-items: center;
+	border-bottom: solid 0.5px var(--divider);
+	overflow: clip;
+	&:last-child {
+		border-bottom: 0;
+	}
+
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
+		align-items: center;
+	}
+
+}
+
 .metadataMargin {
 	margin-bottom: 1.5em;
 }
@@ -425,11 +493,9 @@ definePageMetadata(() => ({
 	flex-grow: 1;
 }
 
-.mutualBannerImg {
-	max-width: 300px;
-	min-width: 200px;
-	max-height: 60px;
-	min-height: 40px;
+.mutualLinkImg {
+	max-width: 150px;
+	max-height: 30px;
 	object-fit: contain;
 }
 
