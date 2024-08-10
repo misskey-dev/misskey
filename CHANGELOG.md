@@ -1,15 +1,21 @@
 ## Unreleased
 
 ### General
--
+- Fix: リモートユーザのフォロー・フォロワーの一覧が非公開設定の場合も表示できてしまう問題を修正
+- Enhance: モデレーターはすべてのユーザーのフォロー・フォロワーの一覧を見られるように
 
 ### Client
--
+- Enhance: 「自分のPlay」ページにおいてPlayが非公開かどうかが一目でわかるように
+- Fix: Play編集時に公開範囲が「パブリック」にリセットされる問題を修正
+- Fix: ページ遷移に失敗することがある問題を修正
 
 ### Server
+- Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
+  - 通知ページや通知カラム(デッキ)を開いている状態において、新たに発生した通知が既読されない問題が修正されます。
+  - これにより、プッシュ通知が有効な同条件下の環境において、プッシュ通知が常に発生してしまう問題も修正されます。
+- Fix: Play各種エンドポイントの返り値に`visibility`が含まれていない問題を修正
 - Fix: Prevent memory leak from memory caches (#14310)
 - Fix: More reliable memory cache eviction (#14311)
-
 
 ## 2024.7.0
 
