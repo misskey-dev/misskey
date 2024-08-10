@@ -1973,7 +1973,7 @@ _ago:
   justNow: "Agora mesmo"
   secondsAgo: "{n}s atrás"
   minutesAgo: "{n}m atrás"
-  hoursAgo: "{h}h atrás"
+  hoursAgo: "{n}h atrás"
   daysAgo: "{n}d atrás"
   weeksAgo: "{n} semanas atrás"
   monthsAgo: "{n} meses atrás"
@@ -2615,7 +2615,7 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "Configurações da prévia de URL"
   enable: "Habilitar prévia de URL"
-  timeout: "Tempo esgotado ao obter prévia (ms)"
+  timeout: "Tempo máximo para obter a prévia (ms)"
   timeoutDescription: "Se demorar mais que esse valor para obter uma prévia, ela não será gerada."
   maximumContentLength: "Content-Length máximo (em bytes)"
   maximumContentLengthDescription: "Se o Content-Length for maior que esse valor, a prévia não será gerada."
