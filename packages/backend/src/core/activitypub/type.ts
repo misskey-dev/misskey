@@ -61,10 +61,10 @@ export function getApId(value: string | IObject): string {
 /**
  * Get ActivityStreams Object type
  */
-export function getApType(value: IObject): string | undefined {
+export function getApType(value: IObject): string | null {
 	if (typeof value.type === 'string') return value.type;
 	if (Array.isArray(value.type) && typeof value.type[0] === 'string') return value.type[0];
-	return undefined;
+	return null;
 }
 
 export function getOneApHrefNullable(value: ApObject | undefined): string | undefined {
@@ -246,7 +246,7 @@ export interface IKey extends IObject {
 	publicKeyPem: string | Buffer;
 }
 
-export const validDocument = ['Audio', 'Document', 'Image', 'Page', 'Video'];
+export const validDocumentTypes = ['Audio', 'Document', 'Image', 'Page', 'Video'];
 
 export interface IApDocument extends IObject {
 	type: 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
@@ -254,7 +254,7 @@ export interface IApDocument extends IObject {
 
 export const isDocument = (object: IObject): object is IApDocument => {
 	const type = getApType(object);
-	return type != null && validDocument.includes(type);
+	return type != null && validDocumentTypes.includes(type);
 };
 
 export interface IApImage extends IApDocument {
