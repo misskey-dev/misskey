@@ -235,29 +235,22 @@ const menuDef = computed(() => [{
 	}],
 }]);
 
-watch(narrow, () => {
-	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
-	}
-});
-
 onMounted(() => {
 	if (el.value != null) {
 		ro.observe(el.value);
 		narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 	}
 	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
+		router.replace('/admin/overview');
 	}
 });
 
 onActivated(() => {
 	if (el.value != null) {
-		ro.observe(el.value);
 		narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 	}
 	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
+		router.replace('/admin/overview');
 	}
 });
 
