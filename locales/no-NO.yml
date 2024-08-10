@@ -721,5 +721,9 @@ _deck:
     direct: "Direkte"
 _webhookSettings:
   name: "Navn"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-post"
 _moderationLogTypes:
   suspend: "Suspender"

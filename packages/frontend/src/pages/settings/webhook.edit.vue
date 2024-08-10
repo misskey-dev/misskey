@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkInput>
 
 	<FormSection>
-		<template #label>{{ i18n.ts._webhookSettings.events }}</template>
+		<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
 		<div class="_gaps_s">
 			<MkSwitch v-model="event_follow">{{ i18n.ts._webhookSettings._events.follow }}</MkSwitch>
