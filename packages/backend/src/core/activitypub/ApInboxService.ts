@@ -215,7 +215,7 @@ export class ApInboxService {
 
 		if (isFollow(object)) return await this.acceptFollow(actor, object);
 
-		return `skip: Unknown Accept type: ${getApType(object)}`;
+		return `skip: Unknown Accept type: ${getApType(object) ?? 'undefined'}}`;
 	}
 
 	@bindThis
@@ -279,7 +279,7 @@ export class ApInboxService {
 
 		if (isPost(target)) await this.announceNote(actor, activity, target);
 
-		return `skip: unknown object type ${getApType(target)}`;
+		return `skip: unknown object type ${getApType(target) ?? 'undefined'}}`;
 	}
 
 	@bindThis
@@ -399,7 +399,7 @@ export class ApInboxService {
 		if (isPost(object)) {
 			return await this.createNote(resolver, actor, object, false, activity, additionalCc);
 		} else {
-			return `skip: Unknown type ${getApType(object)}`;
+			return `skip: Unknown type ${getApType(object) ?? 'undefined'}}`;
 		}
 	}
 
@@ -586,7 +586,7 @@ export class ApInboxService {
 
 		if (isFollow(object)) return await this.rejectFollow(actor, object);
 
-		return `skip: Unknown Reject type: ${getApType(object)}`;
+		return `skip: Unknown Reject type: ${getApType(object) ?? 'undefined'}}`;
 	}
 
 	@bindThis
@@ -657,7 +657,7 @@ export class ApInboxService {
 		if (isAnnounce(object)) return await this.undoAnnounce(actor, object);
 		if (isAccept(object)) return await this.undoAccept(actor, object);
 
-		return `skip: unknown object type ${getApType(object)}`;
+		return `skip: unknown object type ${getApType(object) ?? 'undefined'}}`;
 	}
 
 	@bindThis
@@ -809,7 +809,7 @@ export class ApInboxService {
 				unlock();
 			}
 		} else {
-			return `skip: Unknown type: ${getApType(object)}`;
+			return `skip: Unknown type: ${getApType(object) ?? 'undefined'}}`;
 		}
 	}
 
