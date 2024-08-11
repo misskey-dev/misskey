@@ -9,6 +9,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -44,16 +45,16 @@ class ReversiGameChannel extends Channel {
 				this.ready(body);
 				break;
 			case 'updateSettings':
-				if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
+				if (!isJsonObject(body)) return;
 				if (typeof body.key !== 'string') return;
-				if (typeof body.value !== 'object' || body.value === null || Array.isArray(body.value)) return;
+				if (!isJsonObject(body.value)) return;
 				this.updateSettings(body.key, body.value);
 				break;
 			case 'cancel':
 				this.cancelGame();
 				break;
 			case 'putStone':
-				if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
+				if (!isJsonObject(body)) return;
 				if (typeof body.pos !== 'number') return;
 				if (typeof body.id !== 'string') return;
 				this.putStone(body.pos, body.id);
