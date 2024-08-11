@@ -231,7 +231,7 @@ describe('ユーザー', () => {
 		rolePublic = await role(root, { isPublic: true, name: 'Public Role' });
 		await api('admin/roles/assign', { userId: userRolePublic.id, roleId: rolePublic.id }, root);
 		userRoleBadge = await signup({ username: 'userRoleBadge' });
-		roleBadge = await role(root, { asBadge: true, name: 'Badge Role' });
+		roleBadge = await role(root, { asBadge: true, name: 'Badge Role', isPublic: true });
 		await api('admin/roles/assign', { userId: userRoleBadge.id, roleId: roleBadge.id }, root);
 		userSilenced = await signup({ username: 'userSilenced' });
 		await post(userSilenced, { text: 'test' });
@@ -655,7 +655,16 @@ describe('ユーザー', () => {
 			iconUrl: roleBadge.iconUrl,
 			displayOrder: roleBadge.displayOrder,
 		}]);
-		assert.deepStrictEqual(response.roles, []); // バッヂだからといってrolesが取れるとは限らない
+		assert.deepStrictEqual(response.roles, [{
+			id: roleBadge.id,
+			name: roleBadge.name,
+			color: roleBadge.color,
+			iconUrl: roleBadge.iconUrl,
+			description: roleBadge.description,
+			isModerator: roleBadge.isModerator,
+			isAdministrator: roleBadge.isAdministrator,
+			displayOrder: roleBadge.displayOrder,
+		}]);
 	});
 	test('をID指定のリスト形式で取得することができる（空）', async () => {
 		const parameters = { userIds: [] };

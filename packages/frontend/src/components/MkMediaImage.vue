@@ -93,7 +93,7 @@ const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 //	}
 //}
 
-function showHiddenContent(ev: MouseEvent) {
+async function showHiddenContent(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
 	}
@@ -110,8 +110,16 @@ function showHiddenContent(ev: MouseEvent) {
 	}
 
 	if (hide.value) {
-		ev.preventDefault();
+//		ev.preventDefault();
 		ev.stopPropagation();
+		if (props.image.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.ts.sensitiveMediaRevealConfirm,
+			});
+			if (canceled) return;
+		}
+
 		hide.value = false;
 	}
 }

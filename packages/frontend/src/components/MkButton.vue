@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:type="type"
 	:name="name"
 	:value="value"
+	:disabled="disabled"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
@@ -55,6 +56,7 @@ const props = defineProps<{
 	asLike?: boolean;
 	name?: string;
 	value?: string;
+	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -248,7 +250,6 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&:focus-visible {
-		outline: solid 2px var(--focus);
 		outline-offset: 2px;
 	}
 
