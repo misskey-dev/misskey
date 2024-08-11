@@ -60,6 +60,9 @@ export function getApId(value: string | IObject): string {
 
 /**
  * Get ActivityStreams Object type
+ *
+ * タイプ判定ができなかった場合に、あえてエラーではなくnullを返すようにしている。
+ * 詳細: https://github.com/misskey-dev/misskey/issues/14239
  */
 export function getApType(value: IObject): string | null {
 	if (typeof value.type === 'string') return value.type;
