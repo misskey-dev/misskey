@@ -20,6 +20,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/582)
 - Fix: 公開範囲がダイレクトのノートをユーザーアクティビティのチャート生成に使用しないように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/679)
+- Fix: ActivityPubのエンティティタイプ判定で不明なタイプを受け取った場合でも処理を継続するように
+  - キュー処理のつまりが改善される可能性があります
 
 ## 2024.7.0
 
