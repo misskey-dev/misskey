@@ -113,7 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.invalidParam);
 			}
 
-			const calcHash = createHash('sha256').update(`${ps.folderId}:${ps.isSensitive}`);
+			const calcHash = createHash('sha256').update(`${ps.folderId}:${ps.name}:${ps.isSensitive}`);
 			await stream.pipeline(fs.createReadStream(file.path, { encoding: 'binary', start: 0, end: 1024 * 1024 }), calcHash);
 			const hash = calcHash.digest('base64');
 			logger.setContext({ userId: me.id, hash, ip, headers });
