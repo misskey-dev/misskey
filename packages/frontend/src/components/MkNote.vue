@@ -1211,8 +1211,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .text {
 	overflow-wrap: break-word;
-	transform: rotate(0.03deg);
-	display: inline-block;
 }
 
 .replyIcon {

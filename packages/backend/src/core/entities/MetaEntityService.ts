@@ -77,6 +77,7 @@ export class MetaEntityService {
 			version: this.config.version,
 			providesTarball: this.config.publishTarballInsteadOfProvideRepositoryUrl,
 
+			backgroundImageUrls: instance.backgroundImageUrls,
 			name: instance.name,
 			shortName: instance.shortName,
 			uri: this.config.url,

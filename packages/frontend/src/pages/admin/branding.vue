@@ -29,6 +29,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkInput>
 
+
+					<MkButton @click="addBackgroundImages">
+						{{ i18n.ts.add }}
+					</MkButton>
+
+					<div v-if="backgroundImageUrls && backgroundImageUrls.length > 0 ">
+						<div v-for="(url,index) in backgroundImageUrls" :key="url">
+							<MkInput v-model="backgroundImageUrls[index]" type="url">
+								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
+							</MkInput>
+						</div>
+					</div>
+
 					<MkInput v-model="app192IconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>
@@ -208,6 +221,7 @@ const iconLight = ref<string | null>(null);
 const bannerDark = ref<string | null>(null);
 const bannerLight = ref<string | null>(null);
 const manifestJsonOverride = ref<string>('{}');
+const backgroundImageUrls = ref<string[]>([]);
 const pointName = ref<string | null>(null);
 
 async function init() {
@@ -227,6 +241,7 @@ async function init() {
 	feedbackUrl.value = meta.feedbackUrl;
 	pointName.value = meta.pointName;
 	googleAnalyticsId.value = meta.googleAnalyticsId;
+	backgroundImageUrls.value = meta.backgroundImageUrls;
 	manifestJsonOverride.value =
 		meta.manifestJsonOverride === ''
 			? '{}'
@@ -241,6 +256,7 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		iconUrl: iconUrl.value,
 		app192IconUrl: app192IconUrl.value,
+		backgroundImageUrls: backgroundImageUrls.value,
 		app512IconUrl: app512IconUrl.value,
 		bannerUrl: bannerUrl.value,
 		backgroundImageUrl: backgroundImageUrl.value,
@@ -270,6 +286,10 @@ function save() {
 	}).then(() => {
 		fetchInstance(true);
 	});
+}
+
+function addBackgroundImages() {
+	backgroundImageUrls.value.push('');
 }
 
 const headerTabs = computed(() => []);
