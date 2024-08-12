@@ -1665,6 +1665,7 @@ _achievements:
     _bubbleGameDoubleExplodingHead:
       title: "两个🤯"
       description: "你合成出了2个游戏里最大的Emoji"
+      flavor: ""
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -2425,7 +2426,7 @@ _webhookSettings:
   modifyWebhook: "编辑 webhook"
   name: "名称"
   secret: "密钥"
-  events: "何时运行 Webhook"
+  trigger: "触发器"
   active: "已启用"
   _events:
     follow: "关注时"
