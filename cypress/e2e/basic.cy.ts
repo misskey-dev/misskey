@@ -112,7 +112,7 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-user-setup-next]').click();
 
 		// 完了（「ホーム画面に進む」ボタン）
-		cy.get('[data-cy-user-setup-complete]').click();
+		cy.get('[data-cy-user-setup-complete] a').click();
 
 		// ホームにリダイレクトされる
 		cy.wait(5000);
