@@ -76,7 +76,7 @@ describe('After setup instance', () => {
 
 		// /onboarding にリダイレクトされる
 		cy.wait(5000);
-		cy.url().should('be', Cypress.config().baseUrl + '/onboarding');
+		cy.url().should('equal', Cypress.config().baseUrl + '/onboarding');
 
 		// 「始める」
 		// 最初にアニメーションがあるので待つ
@@ -116,7 +116,7 @@ describe('After setup instance', () => {
 
 		// ホームにリダイレクトされる
 		cy.wait(5000);
-		cy.url().should('be', Cypress.config().baseUrl + '/home');
+		cy.url().should('equal', Cypress.config().baseUrl + '/home');
   });
 
   it('signup with duplicated username', () => {
