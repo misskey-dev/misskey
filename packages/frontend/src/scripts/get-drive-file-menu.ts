@@ -41,6 +41,15 @@ function describe(file: Misskey.entities.DriveFile) {
 	});
 }
 
+function move(file: Misskey.entities.DriveFile) {
+	os.selectDriveFolder(false).then(folder => {
+		misskeyApi('drive/files/update', {
+			fileId: file.id,
+			folderId: folder[0] ? folder[0].id : null,
+		});
+	});
+}
+
 function toggleSensitive(file: Misskey.entities.DriveFile) {
 	misskeyApi('drive/files/update', {
 		fileId: file.id,
@@ -88,6 +97,10 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(file),
+	}, {
+		text: i18n.ts.move,
+		icon: 'ti ti-folder-symlink',
+		action: () => move(file),
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
 		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
