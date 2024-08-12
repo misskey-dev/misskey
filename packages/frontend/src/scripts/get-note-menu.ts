@@ -158,7 +158,6 @@ export function getNoteMenu(props: {
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
-
 	const appearNote = getAppearNote(props.note);
 
 	const cleanups = [] as (() => void)[];
@@ -498,7 +497,6 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
 }) {
-
 	const appearNote = getAppearNote(props.note);
 
 	const channelRenoteItems: MenuItem[] = [];
