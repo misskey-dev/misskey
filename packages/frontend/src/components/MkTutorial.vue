@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</Transition>
 	</div>
-	<div :class="[$style.pageFooter, { [$style.pageFooterShown]: (page > 0 && page < MAX_PAGE) }]">
+	<div :class="[$style.pageFooter, { [$style.pageFooterShown]: (page > 0 && page < MAX_PAGE) }]" :inert="(page <= 0 && page >= MAX_PAGE)">
 		<div class="_buttonsCenter">
 			<MkButton v-if="initialPage !== page" :disabled="areButtonsLocked" rounded @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 			<MkButton primary rounded gradate :disabled="!canContinue" data-cy-user-setup-next @click="next">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
@@ -272,7 +272,7 @@ function next() {
 
 		page.value = findNextTutorialPage();
 	} else {
-		page.value++;
+		page.value = Math.min(page.value + 1, MAX_PAGE);
 	}
 
 	emit('pageChanged', page.value);
@@ -304,7 +304,7 @@ function prev() {
 
 		page.value = findPrevTutorialPage();
 	} else {
-		page.value--;
+		page.value = Math.max(page.value - 1, 0);
 	}
 
 	emit('pageChanged', page.value);
