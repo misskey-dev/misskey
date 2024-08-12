@@ -8,8 +8,10 @@ import * as Misskey from 'misskey-js';
 export function isRenote(note: Misskey.entities.Note): boolean {
 	return (
 		note.renote != null &&
-		(note.cw == null && note.text == null) &&
-		note.fileIds?.length === 0 &&
+		note.reply == null &&
+		note.text == null &&
+		note.cw == null &&
+		(note.fileIds == null || note.fileIds.length === 0) &&
 		note.poll == null
 	);
 }
