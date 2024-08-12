@@ -42,6 +42,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkFormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const exampleCWNote = reactive<Misskey.entities.Note>({
 	id: '0000000000',
@@ -75,6 +76,10 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 	files: [],
 	replyId: null,
 	renoteId: null,
+});
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue: true,
 });
 </script>
 

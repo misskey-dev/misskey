@@ -7,17 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.onboardingRoot, { [$style.ready]: animationPhase >= 1 }]">
 	<MkAnimBg :class="$style.onboardingBg"/>
 	<div :class="[$style.onboardingContainer]">
-		<div :class="[$style.tutorialTitle, { [$style.showing]: (page !== 0) }]">
+		<div :class="[$style.tutorialTitle, { [$style.showing]: (tutorialEl?.page !== 0) }]">
 			<div :class="$style.text">
-				<span v-if="page === 1"><i class="ti ti-user-edit"></i> {{ i18n.ts._initialTutorial._profileSettings.title }}</span>
-				<span v-else-if="page === 2"><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</span>
-				<span v-else-if="page === 3"><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</span>
-				<span v-else-if="page === 4"><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</span>
-				<span v-else-if="page === 5"><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</span>
-				<span v-else-if="page === 6"><i class="ti ti-pencil-plus"></i> {{ i18n.ts._initialTutorial._postNote.title }}</span>
-				<span v-else-if="page === 7"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</span>
-				<span v-else-if="page === 8"><i class="ti ti-lock"></i> {{ i18n.ts.privacy }}</span>
-				<span v-else-if="page === MAX_PAGE"><!-- なんもなし --></span>
+				<span v-if="tutorialEl?.currentPageDef">
+					<i v-if="tutorialEl.currentPageDef.icon" :class="tutorialEl.currentPageDef.icon"></i> {{ tutorialEl.currentPageDef.title }}
+				</span>
 				<span v-else>{{ i18n.ts._initialTutorial.title }}</span>
 			</div>
 			<div v-if="instance.canSkipInitialTutorial" :class="$style.closeButton">
@@ -25,15 +19,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<MkTutorial
+			ref="tutorialEl"
 			:class="$style.tutorialRoot"
 			:showProgressbar="true"
 			:skippable="false"
 			:withSetup="true"
-			@pageChanged="pageChangeHandler"
 		>
 			<template #welcome="{ next }">
-				<!-- Tips for large-scale server admins: you should customize this slide for better branding -->
-				<!-- 大規模サーバーの管理者さんへ: このスライドの内容をサーバー独自でアレンジすると良さそうなのでやってみてね -->
 				<div ref="welcomePageRootEl" :class="$style.welcomePageRoot">
 					<canvas ref="confettiEl" :class="$style.welcomePageConfetti"></canvas>
 					<div
@@ -131,15 +123,11 @@ import { confirm as osConfirm } from '@/os.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkTutorial, { MAX_PAGE } from '@/components/MkTutorial.vue';
+import MkTutorial from '@/components/MkTutorial.vue';
 
 import FormLink from '@/components/form/link.vue';
 
-const page = ref(0);
-
-function pageChangeHandler(to: number) {
-	page.value = to;
-}
+const tutorialEl = shallowRef<InstanceType<typeof MkTutorial> | null>(null);
 
 // See: @/_boot_/common.ts L123 for details
 const query = new URLSearchParams(location.search);

@@ -30,6 +30,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { signinRequired } from '@/account.js';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const $i = signinRequired();
 
@@ -47,6 +48,10 @@ watch([isLocked, publicReactions, hideOnlineStatus, noCrawle, preventAiLearning]
 		noCrawle: !!noCrawle.value,
 		preventAiLearning: !!preventAiLearning.value,
 	});
+});
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue: true,
 });
 </script>
 

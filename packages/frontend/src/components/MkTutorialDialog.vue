@@ -11,17 +11,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="close(true)"
 	@closed="emit('closed')"
 >
-	<template v-if="page === 2" #header><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</template>
-	<template v-else-if="page === 3" #header><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</template>
-	<template v-else-if="page === 4" #header><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</template>
-	<template v-else-if="page === 6" #header><i class="ti ti-pencil-plus"></i> {{ i18n.ts._initialTutorial._postNote.title }}</template>
-	<template v-else-if="page === 7" #header><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</template>
+	<template v-if="tutorialEl?.currentPageDef" #header>
+		<i v-if="tutorialEl.currentPageDef.icon" :class="tutorialEl.currentPageDef.icon"></i>
+		{{ tutorialEl.currentPageDef.title }}
+	</template>
 	<template v-else #header>{{ i18n.ts._initialTutorial.title }}</template>
 
 	<XTutorial
+		ref="tutorialEl"
 		:initialPage="initialPage"
 		:skippable="true"
-		@pageChanged="handlePageChange"
 		@close="close"
 	/>
 </MkModalWindow>
@@ -34,7 +33,7 @@ import XTutorial from '@/components/MkTutorial.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
-const props = defineProps<{
+defineProps<{
 	initialPage?: number;
 }>();
 
@@ -44,12 +43,7 @@ const emit = defineEmits<{
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const page = ref(props.initialPage ?? 0);
-
-function handlePageChange(to: number) {
-	page.value = to;
-}
+const tutorialEl = shallowRef<InstanceType<typeof XTutorial>>();
 
 async function close(skip?: boolean) {
 	if (skip) {

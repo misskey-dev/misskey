@@ -22,23 +22,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
 	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
 	<div v-if="onceReacted"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
+	<div v-else><b :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</b></div>
 </div>
 </template>
 
 <script setup lang="ts">
 import * as Misskey from 'misskey-js';
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/account.js';
 import MkNote from '@/components/MkNote.vue';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const props = defineProps<{
 	phase: 'aboutNote' | 'howToReact';
-}>();
-
-const emit = defineEmits<{
-	(ev: 'reacted'): void;
 }>();
 
 const exampleNote = reactive<Misskey.entities.Note>({
@@ -74,11 +72,20 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	replyId: null,
 	renoteId: null,
 });
+
 const onceReacted = ref<boolean>(false);
+
+const canContinue = computed(() => {
+	if (props.phase === 'aboutNote') {
+		return true;
+	} else if (props.phase === 'howToReact') {
+		return onceReacted.value;
+	}
+	return true;
+});
 
 function addReaction(emoji) {
 	onceReacted.value = true;
-	emit('reacted');
 	exampleNote.reactions[emoji] = 1;
 	exampleNote.myReaction = emoji;
 
@@ -108,6 +115,10 @@ function removeReaction(emoji) {
 	delete exampleNote.reactions[emoji];
 	exampleNote.myReaction = undefined;
 }
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue,
+});
 </script>
 
 <style lang="scss" module>
@@ -126,5 +137,9 @@ function removeReaction(emoji) {
 	max-width: 300px;
 	margin: 0 auto;
 	border-radius: var(--radius);
+}
+
+.actionWaitText {
+	color: var(--error);
 }
 </style>

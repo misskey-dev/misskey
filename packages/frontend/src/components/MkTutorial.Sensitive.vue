@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@fileChangeSensitive="doSucceeded"
 	></MkPostForm>
 	<div v-if="onceSucceeded"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.sensitiveSucceeded }}</div>
+	<div v-else><b :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.doItToContinue }}</b></div>
 	<MkFolder>
 		<template #label>{{ i18n.ts.previewNoteText }}</template>
 		<MkNote :mock="true" :note="exampleNote" :class="$style.exampleRoot"></MkNote>
@@ -32,17 +33,13 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNote from '@/components/MkNote.vue';
 import { $i } from '@/account.js';
-
-const emit = defineEmits<{
-	(ev: 'succeeded'): void;
-}>();
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const onceSucceeded = ref<boolean>(false);
 
 function doSucceeded(fileId: string, to: boolean) {
 	if (fileId === exampleNote.fileIds?.[0] && to) {
 		onceSucceeded.value = true;
-		emit('succeeded');
 	}
 }
 
@@ -87,6 +84,9 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	renoteId: null,
 });
 
+defineExpose<TutorialPageCommonExpose>({
+	canContinue: onceSucceeded,
+});
 </script>
 
 <style lang="scss" module>
@@ -142,5 +142,9 @@ const exampleNote = reactive<Misskey.entities.Note>({
 .postText {
 	position: relative;
 	line-height: 40px;
+}
+
+.actionWaitText {
+	color: var(--error);
 }
 </style>

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="showProgressbar" :class="$style.progressBar">
 		<div :class="$style.progressBarValue" :style="{ width: `${(page / MAX_PAGE) * 100}%` }"></div>
 	</div>
-	<div v-if="showProgressbar && page !== 0 && page !== MAX_PAGE" :class="$style.progressText">{{ page }}/{{ MAX_PAGE - 1 }}</div>
+	<div v-if="showProgressbar && page !== 0 && page !== MAX_PAGE" :class="$style.progressText">{{ page }}/{{ MAX_PAGE }}</div>
 	<div :class="$style.tutorialMain">
 		<Transition
 			mode="out-in"
@@ -16,6 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveActiveClass="$style.transition_x_leaveActive"
 			:enterFromClass="$style.transition_x_enterFrom"
 			:leaveToClass="$style.transition_x_leaveTo"
+
+			@beforeLeave="areButtonsLocked = true"
+			@afterEnter="areButtonsLocked = false"
 		>
 			<slot v-if="page === 0" key="tutorialPage_0" name="welcome" :close="() => emit('close', true)" :next="next">
 				<div :class="$style.centerPage">
@@ -31,71 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 				</div>
 			</slot>
-			<div v-else-if="page === 1" key="tutorialPage_1" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<XProfileSettings/>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 2" key="tutorialPage_2" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<XNote phase="aboutNote"/>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 3" key="tutorialPage_3" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<div class="_gaps">
-							<XNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
-							<b v-if="!isReactionTutorialPushed" :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</b>
-						</div>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 4" key="tutorialPage_4" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<XTimeline/>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 5" key="tutorialPage_5" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<XFollowUsers/>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 6" key="tutorialPage_6" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<XPostNote/>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 7" key="tutorialPage_7" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<div class="_gaps">
-							<XSensitive @succeeded="isSensitiveTutorialSucceeded = true"/>
-							<b v-if="!isSensitiveTutorialSucceeded" :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.doItToContinue }}</b>
-						</div>
-					</MkSpacer>
-				</div>
-			</div>
-			<div v-else-if="page === 8" key="tutorialPage_8" :class="$style.pageContainer">
-				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-						<div class="_gaps">
-							<XPrivacySettings/>
-						</div>
-					</MkSpacer>
-				</div>
-			</div>
-			<slot v-else-if="page === 9" key="tutorialPage_9" name="finish" :close="() => emit('close')" :prev="prev">
+			<slot v-else-if="page === MAX_PAGE" :key="`tutorialPage_${MAX_PAGE}`" name="finish" :close="() => emit('close')" :prev="prev">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :marginMin="20" :marginMax="28">
@@ -110,18 +49,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div style="text-align: center;">{{ i18n.ts._initialTutorial._done.youCanReferTutorialBy }}</div>
 							<div style="text-align: center;">{{ i18n.tsx._initialTutorial._done.haveFun({ name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
-								<MkButton v-if="initialPage !== 4" rounded @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton rounded @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 								<MkButton rounded primary gradate @click="emit('close')">{{ i18n.ts.close }}</MkButton>
 							</div>
 						</div>
 					</MkSpacer>
 				</div>
 			</slot>
+			<div v-else :key="`tutorialPage_${page}`" :class="$style.pageContainer">
+				<div :class="$style.pageRoot">
+					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<component
+							:is="componentsDef[page - 1].component"
+							ref="tutorialPageEl"
+							v-bind="componentsDef[page - 1].props"
+						/>
+					</MkSpacer>
+				</div>
+			</div>
 		</Transition>
 	</div>
 	<div :class="[$style.pageFooter, { [$style.pageFooterShown]: (page > 0 && page < MAX_PAGE) }]">
 		<div class="_buttonsCenter">
-			<MkButton v-if="initialPage !== page" rounded @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+			<MkButton v-if="initialPage !== page" :disabled="areButtonsLocked" rounded @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 			<MkButton primary rounded gradate :disabled="!canContinue" data-cy-user-setup-continue @click="next">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</div>
 	</div>
@@ -129,14 +79,76 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+import type { Ref } from 'vue';
+import { i18n } from '@/i18n.js';
 
-// チュートリアルの枚数を増やしたら必ず変更すること！！
-export const MAX_PAGE = 9;
+/**
+ * 【ページの足し方】
+ *
+ * 1. ページコンポーネントを作成
+ *    このとき、TutorialPageCommonExposeを実装すること
+ *    （canContinueを変化させることで、次へボタンが押されるのをブロックできます。ギミックがないページはtrueでOK。）
+ * 2. tutorialBodyPagesDefにページのアイコン・タイトル・区分を追加
+ *    （区分がsetupの場合はwithSetup == falseのときにスキップされます）
+ * 3. componentsDefにページのコンポーネントを追加（順番を対応させること）
+ */
 
+/** チュートリアルページ用Expose */
+export type TutorialPageCommonExpose = {
+	canContinue: boolean | Ref<boolean>;
+};
+
+/** ページ メタデータ */
+export type TutorialPage = {
+	icon?: string;
+	type: 'tutorial' | 'setup';
+	title: string;
+};
+
+/**
+ * はじめと終わり以外のページ メタデータ
+ *
+ * （コンポーネントはsetup内で定義しています）
+ */
+export const tutorialBodyPagesDef = [{
+	icon: 'ti ti-user',
+	type: 'setup',
+	title: i18n.ts._initialTutorial._profileSettings.title,
+}, {
+	icon: 'ti ti-pencil',
+	type: 'tutorial',
+	title: i18n.ts._initialTutorial._note.title,
+}, {
+	icon: 'ti ti-mood-smile',
+	type: 'tutorial',
+	title: i18n.ts._initialTutorial._reaction.title,
+}, {
+	icon: 'ti ti-home',
+	type: 'tutorial',
+	title: i18n.ts._initialTutorial._timeline.title,
+}, {
+	icon: 'ti ti-user-add',
+	type: 'setup',
+	title: i18n.ts.follow,
+}, {
+	icon: 'ti ti-pencil-plus',
+	type: 'tutorial',
+	title: i18n.ts._initialTutorial._postNote.title,
+}, {
+	icon: 'ti ti-eye-exclamation',
+	type: 'tutorial',
+	title: i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title,
+}, {
+	icon: 'ti ti-lock',
+	type: 'setup',
+	title: i18n.ts._initialTutorial._privacySettings.title,
+}] as const satisfies TutorialPage[];
+
+export const MAX_PAGE = tutorialBodyPagesDef.length + 1; // 0始まりにするために +2 - 1 = +1
 </script>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, shallowRef, isRef, computed, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfileSettings from '@/components/MkTutorial.ProfileSettings.vue';
 import XNote from '@/components/MkTutorial.Note.vue';
@@ -146,10 +158,12 @@ import XPostNote from '@/components/MkTutorial.PostNote.vue';
 import XSensitive from '@/components/MkTutorial.Sensitive.vue';
 import XPrivacySettings from '@/components/MkTutorial.PrivacySettings.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { host } from '@/config.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+
+import type { Component } from 'vue';
+import type { Tuple } from '@/type.js';
 
 const props = defineProps<{
 	initialPage?: number;
@@ -166,8 +180,37 @@ const emit = defineEmits<{
 // テストの場合は全インタラクションをスキップする
 const isTest = (import.meta.env.MODE === 'test');
 
+type ComponentDef = {
+	component: Component;
+	props?: Record<string, unknown>;
+};
+
+/**
+ * はじめと終わり以外のページ コンポーネント
+ *
+ * （メタデータは上の方で定義しています）
+ */
+const componentsDef: Tuple<ComponentDef, typeof tutorialBodyPagesDef.length> = [
+	{ component: XProfileSettings },
+	{ component: XNote, props: { phase: 'aboutNote' } },
+	{ component: XNote, props: { phase: 'howToReact' } },
+	{ component: XTimeline },
+	{ component: XFollowUsers },
+	{ component: XPostNote },
+	{ component: XSensitive },
+	{ component: XPrivacySettings },
+] as const satisfies ComponentDef[];
+
 // eslint-disable-next-line vue/no-setup-props-destructure
 const page = ref(props.initialPage ?? 0);
+
+const currentPageDef = computed(() => {
+	if (page.value > 0 && page.value < MAX_PAGE - 1) {
+		return tutorialBodyPagesDef[page.value - 1];
+	} else {
+		return null;
+	}
+});
 
 watch(page, (to) => {
 	if (to === MAX_PAGE) {
@@ -175,26 +218,57 @@ watch(page, (to) => {
 	}
 });
 
-const isReactionTutorialPushed = ref<boolean>(isTest);
-const isSensitiveTutorialSucceeded = ref<boolean>(isTest);
+// ページコンポーネントのexposeを受け取る
+const tutorialPageEl = shallowRef<TutorialPageCommonExpose | null>(null);
+
+// トランジション中に連打されて進んじゃうのを防ぐ
+const areButtonsLocked = ref(false);
 
 const canContinue = computed(() => {
-	if (page.value === 3) {
-		return isReactionTutorialPushed.value;
-	} else if (page.value === 7) {
-		return isSensitiveTutorialSucceeded.value;
+	if (isTest) {
+		return true;
+	}
+
+	if (areButtonsLocked.value) {
+		return false;
+	}
+
+	if (tutorialPageEl.value) {
+		if (isRef(tutorialPageEl.value.canContinue)) {
+			return tutorialPageEl.value.canContinue.value;
+		} else {
+			return tutorialPageEl.value.canContinue;
+		}
 	} else {
 		return true;
 	}
 });
 
 function next() {
-	if (page.value === 0 && !props.withSetup) {
-		page.value += 2;
-	} else if (page.value === 4 && !props.withSetup) {
-		page.value += 2;
-	} else if (page.value === 7 && !props.withSetup) {
-		page.value += 2;
+	if (areButtonsLocked.value) {
+		return;
+	} else {
+		areButtonsLocked.value = true;
+	}
+
+	const bodyPagesDefIndex = page.value - 1;
+
+	if (!props.withSetup && tutorialBodyPagesDef[bodyPagesDefIndex + 1].type === 'setup') {
+		function findNextTutorialPage() {
+			for (let i = bodyPagesDefIndex + 1; i < tutorialBodyPagesDef.length; i++) {
+				if (tutorialBodyPagesDef[i] == null) {
+					break;
+				}
+
+				if (tutorialBodyPagesDef[i].type === 'tutorial') {
+					return i + 1; // はじめの1ページ分足す
+				}
+			}
+
+			return MAX_PAGE;
+		}
+
+		page.value = findNextTutorialPage();
 	} else {
 		page.value++;
 	}
@@ -203,18 +277,41 @@ function next() {
 }
 
 function prev() {
-	if (page.value === 2 && !props.withSetup) {
-		page.value -= 2;
-	} else if (page.value === 6 && !props.withSetup) {
-		page.value -= 2;
-	} else if (page.value === 9 && !props.withSetup) {
-		page.value -= 2;
+	if (areButtonsLocked.value) {
+		return;
+	} else {
+		areButtonsLocked.value = true;
+	}
+
+	const bodyPagesDefIndex = page.value - 1;
+
+	if (!props.withSetup && tutorialBodyPagesDef[bodyPagesDefIndex - 1].type === 'setup') {
+		function findPrevTutorialPage() {
+			for (let i = bodyPagesDefIndex - 1; i >= 0; i--) {
+				if (tutorialBodyPagesDef[i] == null) {
+					break;
+				}
+
+				if (tutorialBodyPagesDef[i].type === 'tutorial') {
+					return i + 1; // はじめの1ページ分足す
+				}
+			}
+
+			return 0;
+		}
+
+		page.value = findPrevTutorialPage();
 	} else {
 		page.value--;
 	}
 
 	emit('pageChanged', page.value);
 }
+
+defineExpose({
+	page,
+	currentPageDef,
+});
 </script>
 
 <style lang="scss" module>
@@ -309,10 +406,6 @@ function prev() {
 	flex-grow: 1;
 	line-height: 1.5;
 	margin-bottom: 56px;
-}
-
-.actionWaitText {
-	color: var(--error);
 }
 
 .pageFooter {

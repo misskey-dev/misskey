@@ -27,6 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { i18n } from '@/i18n.js';
 import { basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue: true,
+});
 </script>
 
 <style lang="scss" module>

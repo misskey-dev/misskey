@@ -40,6 +40,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { signinRequired } from '@/account.js';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const $i = signinRequired();
 
@@ -86,6 +87,10 @@ function setAvatar(ev: MouseEvent) {
 		$i.avatarUrl = i.avatarUrl;
 	});
 }
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue: true,
+});
 </script>
 
 <style lang="scss" module>
