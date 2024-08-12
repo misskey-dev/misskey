@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			},
 			{
 				[$style.localonly]:
-					defaultStore.state.showVisibilityColor && note.localOnly,
+					defaultStore.state.showVisibilityColor && note.localOnly && note.visibility === 'public',
 			},
 		]"
 		:tabindex="isDeleted ? '-1' : '0'"
