@@ -5,7 +5,12 @@
 
 import * as Misskey from 'misskey-js';
 
-export function isRenote(note: Misskey.entities.Note): boolean {
+type NonNullableRecord<T> = {
+	[P in keyof T]-?: NonNullable<T[P]>;
+};
+type NoteWithRenote = Omit<Misskey.entities.Note, 'renote' | 'renoteId'> & NonNullableRecord<Pick<Misskey.entities.Note, 'renote' | 'renoteId'>>;
+
+export function isRenote(note: Misskey.entities.Note): note is NoteWithRenote {
 	return (
 		note.renote != null &&
 		note.reply == null &&
@@ -16,6 +21,6 @@ export function isRenote(note: Misskey.entities.Note): boolean {
 	);
 }
 
-export function getAppearNote(note: Misskey.entities.Note): Misskey.entities.Note {
-	return isRenote(note) ? note.renote! : note;
+export function getAppearNote(note: Misskey.entities.Note) {
+	return isRenote(note) ? note.renote : note;
 }
