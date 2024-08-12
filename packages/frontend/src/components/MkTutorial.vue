@@ -178,7 +178,9 @@ const emit = defineEmits<{
 }>();
 
 // テストの場合は全インタラクションをスキップする
-const isTest = (import.meta.env.MODE === 'test');
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const isTest = (import.meta.env.MODE === 'test' || window.Cypress != null);
 
 type ComponentDef = {
 	component: Component;
