@@ -20,7 +20,7 @@ import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
-import { getAppearNote } from '@/scripts/note.js';
+import { getAppearNote } from '@/scripts/get-appear-note.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;

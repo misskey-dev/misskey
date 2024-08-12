@@ -29,4 +29,5 @@ export const moderationLogTypes = consts.moderationLogTypes;
 import * as api from './api.js';
 import * as entities from './entities.js';
 import * as acct from './acct.js';
-export { api, entities, acct };
+import * as note from './note.js';
+export { api, entities, acct, note };
