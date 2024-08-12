@@ -81,7 +81,8 @@ describe('After setup instance', () => {
 		// 「始める」
 		// 最初にアニメーションがあるので待つ
 		cy.get('[data-cy-user-setup-start]', { timeout: 15000 }).click();
-		cy.wait(700);
+
+		cy.wait(700);  // ← トランジション待ち（以下全てのページ遷移で待たせる）
 
 		// 【設定】プロフィール
 		cy.get('[data-cy-user-setup-user-name] input').type('ありす');
@@ -122,7 +123,6 @@ describe('After setup instance', () => {
 
 		// 完了（「ホーム画面に進む」ボタン）
 		cy.get('[data-cy-user-setup-complete] a').click();
-		cy.wait(700);
 
 		// ホームにリダイレクトされる
 		cy.wait(5000);
