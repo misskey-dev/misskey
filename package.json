@@ -21,7 +21,7 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
-		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
+		"build-misskey-js-with-types": "pnpm build-pre && pnpm -r build:tsc && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:docker": "pnpm check:connect && cd packages/backend && exec node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
@@ -46,29 +46,29 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"@tensorflow/tfjs-core": "4.19.0",
+		"@tensorflow/tfjs-core": "4.20.0",
 		"chokidar": "3.6.0",
-		"esbuild": "0.21.3",
+		"esbuild": "0.23.0",
 		"lodash": "4.17.21",
 		"sharp": "0.33.4"
 	},
 	"dependencies": {
-		"cssnano": "7.0.1",
-		"execa": "9.1.0",
+		"cssnano": "7.0.5",
+		"execa": "9.3.0",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.38",
-		"terser": "5.31.0",
-		"typescript": "5.4.5"
+		"postcss": "8.4.41",
+		"terser": "5.31.5",
+		"typescript": "5.5.4"
 	},
 	"devDependencies": {
-		"@types/node": "20.12.12",
+		"@types/node": "22.2.0",
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.10.0",
+		"cypress": "13.13.2",
 		"eslint": "8.57.0",
 		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.3"
+		"start-server-and-test": "2.0.5"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.19.0"

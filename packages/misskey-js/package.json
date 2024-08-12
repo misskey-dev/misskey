@@ -35,11 +35,11 @@
 		"url": "git+https://github.com/misskey-dev/misskey.js.git"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.43.7",
+		"@microsoft/api-extractor": "7.47.5",
 		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@swc/jest": "0.2.36",
 		"@types/jest": "29.5.12",
-		"@types/node": "20.12.12",
+		"@types/node": "22.2.0",
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"eslint": "8.57.0",
@@ -48,9 +48,9 @@
 		"jest-websocket-mock": "2.5.0",
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
-		"nodemon": "3.1.0",
-		"tsd": "0.31.0",
-		"typescript": "5.4.5"
+		"nodemon": "3.1.4",
+		"tsd": "0.31.1",
+		"typescript": "5.5.4"
 	},
 	"files": [
 		"built",
