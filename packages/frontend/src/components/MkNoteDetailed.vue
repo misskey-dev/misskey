@@ -268,7 +268,7 @@ if (noteViewInterruptors.length > 0) {
 	});
 }
 
-const isRenote = Misskey.note.isPureRenote(note.value);
+const isRenote = Misskey.note.isRenote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();

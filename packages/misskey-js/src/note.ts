@@ -1,6 +1,6 @@
-import type { Note, PureRenote } from './entities.js';
+import type { Note, Renote } from './entities.js';
 
-export function isPureRenote(note: Note): note is PureRenote {
+export function isRenote(note: Note): note is Renote {
 	return (
 		note.renote != null &&
 		note.reply == null &&
