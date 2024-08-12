@@ -522,7 +522,7 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(
-	props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true),
+	props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true,defaultStore.state.userWordMute),
 );
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
@@ -557,14 +557,17 @@ function checkMute(
 	noteToCheck: Misskey.entities.Note,
 	mutedWords: Array<string | string[]> | undefined | null,
 	checkOnly = false,
+	userWordMute: Array<{ user: Misskey.entities.User; words: Array<string | string[]> }> | undefined | null = null,
 ): boolean | "sensitiveMute" {
 	if (mutedWords == null) return false;
 
 	if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
-	if (noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords))
+	if (noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords)) return true;
+	if (noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords)) return true;
+
+	if (userWordMute && userWordMute.some(entry => entry.user.id === noteToCheck.userId && checkWordMute(noteToCheck, $i, entry.words))) {
 		return true;
-	if (noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords))
-		return true;
+	}
 
 	if (checkOnly) return false;
 
@@ -572,8 +575,8 @@ function checkMute(
 		inTimeline &&
 		!defaultStore.state.tl.filter.withSensitive &&
 		noteToCheck.files?.some((v) => v.isSensitive)
-	)
-		return "sensitiveMute";
+	) return "sensitiveMute";
+
 	return false;
 }
 

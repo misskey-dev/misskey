@@ -32,6 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
       <XInstanceMute/>
     </MkFolder>
+    <MkFolder>
+      <template #icon><i class="ti ti-message-off"></i></template>
+      <template #label>{{ i18n.ts.userWordMute }}</template>
+
+      <XUserWordMute :muted="defaultStore.state.userWordMute" @save="saveMutedUsers"/>
+    </MkFolder>
 
     <MkFolder>
       <template #icon><i class="ti ti-repeat-off"></i></template>
@@ -135,6 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
+import XUserWordMute from './mute-block.user-word-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user.js';
@@ -146,6 +153,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { infoImageUrl } from '@/instance.js';
 import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
+import {defaultStore} from "@/store.js";
+import * as Misskey from "misskey-js";
 
 const $i = signinRequired();
 
@@ -234,6 +243,10 @@ async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
 }
 async function saveMutedReactions(mutedReactions: (string | string[])[]) {
   await misskeyApi('i/update', { mutedReactions });
+}
+
+async function saveMutedUsers(mutedUsers: { user: Misskey.entities.UserLite; words: (string | string[])}[]) {
+	defaultStore.set('userWordMute', mutedUsers);
 }
 
 const headerActions = computed(() => []);

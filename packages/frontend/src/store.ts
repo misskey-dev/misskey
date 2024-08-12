@@ -271,6 +271,10 @@ export const defaultStore = markRaw(
 				props: Record<string, any>;
 			}[],
 		},
+		userWordMute:{
+			where: 'account',
+			default: [] as { user: Misskey.entities.UserLite; words: Array<string | string[]> }[],
+		},
 		widgets: {
 			where: 'account',
 			default: [] as {

@@ -2861,6 +2861,10 @@ export interface Locale extends ILocale {
      */
     "instanceMute": string;
     /**
+     * ユーザーワードミュート
+     */
+    "userWordMute": string;
+    /**
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;

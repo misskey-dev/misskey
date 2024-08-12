@@ -80,6 +80,7 @@ async function save() {
 
   let parsed;
   try {
+		console.log(mutedWords.value);
     parsed = parseMutes(mutedWords.value);
   } catch (err) {
     // already displayed error message in parseMutes
