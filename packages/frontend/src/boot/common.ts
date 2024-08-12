@@ -119,8 +119,16 @@ export async function common(createVue: () => App<Element>) {
 	await defaultStore.ready;
 	await deckStore.ready;
 
-	// 2024年4月1日JST以降に作成されたアカウントで、チュートリアルを完了していない通常ユーザーの場合、チュートリアルにリダイレクト
-	if (!instance.canSkipInitialTutorial && $i && !iAmModerator && new Date($i.createdAt).getTime() >= 1711897200000 && !claimedAchievements.includes('tutorialCompleted') && !location.pathname.startsWith('/onboarding') && !location.pathname.startsWith('/signup-complete')) {
+	// 2024年10月1日JST以降に作成されたアカウントで、チュートリアルを完了していない通常ユーザーの場合、チュートリアルにリダイレクト
+	if (
+		!instance.canSkipInitialTutorial &&
+		$i &&
+		!iAmModerator &&
+		new Date($i.createdAt).getTime() >= 1727708400000 &&
+		!claimedAchievements.includes('tutorialCompleted') &&
+		!location.pathname.startsWith('/onboarding') &&
+		!location.pathname.startsWith('/signup-complete')
+	) {
 		const param = new URLSearchParams();
 		param.set('redirected_from', location.pathname + location.search + location.hash);
 		location.replace('/onboarding?' + param.toString());
