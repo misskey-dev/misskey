@@ -116,7 +116,7 @@ describe('After setup instance', () => {
 
 		// ホームにリダイレクトされる
 		cy.wait(5000);
-		cy.url().should('equal', Cypress.config().baseUrl + '/home');
+		cy.url().should('equal', Cypress.config().baseUrl + '/');
   });
 
   it('signup with duplicated username', () => {

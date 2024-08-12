@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<div>{{ i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }) }}</div>
 								</div>
 								<div>{{ i18n.tsx._initialTutorial._onboardingLanding.description({ name: instance.name ?? host }) }}</div>
-								<MkButton large primary rounded gradate style="margin: 16px auto 0;" data-cy-user-setup-continue @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
+								<MkButton large primary rounded gradate style="margin: 16px auto 0;" data-cy-user-setup-start @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
 								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" data-cy-user-setup-close @click="cancel">{{ i18n.ts.later }}</MkButton>
 								<MkInfo v-else warn style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.ts._initialTutorial._onboardingLanding.adminForcesToTakeTutorial }}</MkInfo>
 								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 3 }) }}</MkInfo>
