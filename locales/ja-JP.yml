@@ -1269,8 +1269,6 @@ blockThisUser: "このユーザーをブロックする"
 muteThisUser: "このユーザーをミュートする"
 here: "こちら"
 mutualLink: "相互リンク"
-mutualBannerThisUser: "このユーザーのバナー"
-maximum: "最大"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2325,7 +2323,6 @@ _profile:
   mutualLinksBanner: "相互リンクのバナー"
   mutualLinksDescriptionEdit: "説明"
   mutualLinksUrl: "リンク先のURL"
-  mutualLinkPining: "このセクションをプロフィールにピン留め"
   mutualLinksDescription: "相互リンクを設定すると、あなたのプロフィールにバナーが表示されます。"
   addMutualLink: "相互リンクを追加"
   addMutualLinkSection: "セクションを追加"
