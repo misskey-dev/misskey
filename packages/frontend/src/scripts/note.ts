@@ -8,9 +8,18 @@ import * as Misskey from 'misskey-js';
 type NonNullableRecord<T> = {
 	[P in keyof T]-?: NonNullable<T[P]>;
 };
-type NoteWithRenote = Omit<Misskey.entities.Note, 'renote' | 'renoteId'> & NonNullableRecord<Pick<Misskey.entities.Note, 'renote' | 'renoteId'>>;
+type AllNullRecord<T> = {
+	[P in keyof T]: null;
+};
+type Renote =
+	Omit<Misskey.entities.Note, 'renote' | 'renoteId' | 'reply' | 'replyId' | 'text' | 'cw' | 'files' | 'fileIds' | 'poll'>
+	& AllNullRecord<Pick<Misskey.entities.Note, 'reply' | 'replyId' | 'text' | 'cw' | 'poll'>>
+	& { files: []; fileIds: []; }
+	& NonNullableRecord<Pick<Misskey.entities.Note, 'renote' | 'renoteId'>>;
 
-export function isRenote(note: Misskey.entities.Note): note is NoteWithRenote {
+// TODO: misskey-jsに移す
+
+export function isRenote(note: Misskey.entities.Note): note is Renote {
 	return (
 		note.renote != null &&
 		note.reply == null &&
