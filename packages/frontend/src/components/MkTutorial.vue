@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._landing.title }}</div>
 							<div>{{ i18n.ts._initialTutorial._landing.description }}</div>
-							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="next">{{ i18n.ts._initialTutorial.launchTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-start @click="next">{{ i18n.ts._initialTutorial.launchTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
 							<MkButton v-if="skippable" style="margin: 0 auto;" transparent rounded data-cy-user-setup-close @click="emit('close', true)">{{ i18n.ts.close }}</MkButton>
 						</div>
 					</MkSpacer>
@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.pageFooter, { [$style.pageFooterShown]: (page > 0 && page < MAX_PAGE) }]">
 		<div class="_buttonsCenter">
 			<MkButton v-if="initialPage !== page" :disabled="areButtonsLocked" rounded @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-			<MkButton primary rounded gradate :disabled="!canContinue" data-cy-user-setup-continue @click="next">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton primary rounded gradate :disabled="!canContinue" data-cy-user-setup-next @click="next">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</div>
 	</div>
 </div>
