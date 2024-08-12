@@ -19,13 +19,3 @@ export function isRenote(note: Misskey.entities.Note): boolean {
 export function getAppearNote(note: Misskey.entities.Note): Misskey.entities.Note {
 	return isRenote(note) ? note.renote! : note;
 }
-
-type Visibility = (typeof Misskey.noteVisibilities)[number];
-
-export function smallerVisibility(a: Visibility, b: Visibility): Visibility {
-	if (a === 'specified' || b === 'specified') return 'specified';
-	if (a === 'followers' || b === 'followers') return 'followers';
-	if (a === 'home' || b === 'home') return 'home';
-	// if (a === 'public' || b === 'public')
-	return 'public';
-}

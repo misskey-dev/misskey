@@ -20,7 +20,7 @@ import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
-import { smallerVisibility, getAppearNote } from '@/scripts/note.js';
+import { getAppearNote } from '@/scripts/note.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -481,6 +481,16 @@ export function getNoteMenu(props: {
 		menu,
 		cleanup,
 	};
+}
+
+type Visibility = (typeof Misskey.noteVisibilities)[number];
+
+function smallerVisibility(a: Visibility, b: Visibility): Visibility {
+	if (a === 'specified' || b === 'specified') return 'specified';
+	if (a === 'followers' || b === 'followers') return 'followers';
+	if (a === 'home' || b === 'home') return 'home';
+	// if (a === 'public' || b === 'public')
+	return 'public';
 }
 
 export function getRenoteMenu(props: {
