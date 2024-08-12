@@ -2401,11 +2401,11 @@ export interface Locale extends ILocale {
      */
     "unsetUserBannerConfirm": string;
     /**
-     * 相互リンクを解除
+     * 相互リンクを削除
      */
     "unsetUserMutualLink": string;
     /**
-     * 相互リンクを解除しますか？
+     * 相互リンクを削除しますか？
      */
     "unsetUserMutualLinkConfirm": string;
     /**
@@ -5095,14 +5095,6 @@ export interface Locale extends ILocale {
      * 相互リンク
      */
     "mutualLink": string;
-    /**
-     * このユーザーのバナー
-     */
-    "mutualBannerThisUser": string;
-    /**
-     * 最大
-     */
-    "maximum": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -8846,10 +8838,6 @@ export interface Locale extends ILocale {
          * リンク先のURL
          */
         "mutualLinksUrl": string;
-        /**
-         * このセクションをプロフィールにピン留め
-         */
-        "mutualLinkPining": string;
         /**
          * 相互リンクを設定すると、あなたのプロフィールにバナーが表示されます。
          */

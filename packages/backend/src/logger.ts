@@ -10,7 +10,6 @@ import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 import type { KEYWORD } from 'color-convert/conversions.js';
 
-// @ts-expect-error it gives error if we use pinoPretty.PinoPretty instead of pinoPretty.
 const pinoPrettyStream = pinoPretty({
 	levelFirst: false,
 	levelKey: 'level',

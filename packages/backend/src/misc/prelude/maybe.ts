@@ -4,7 +4,7 @@
  */
 
 export interface IMaybe<T> {
-	isJust(): this is IJust<T>;
+	isJust(): boolean;
 }
 
 export interface IJust<T> extends IMaybe<T> {
