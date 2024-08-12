@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #key>{{ i18n.ts.email }}</template>
 						<template #value><span class="_monospace">{{ info.email }}</span></template>
 					</MkKeyValue>
-					<MkKeyValue v-if="ips.length > 0" :copy="ips[0].ip" oneline>
+					<MkKeyValue v-if="iAmAdmin && ips && ips.length > 0" :copy="ips[0].ip" oneline>
 						<template #key>IP (recent)</template>
 						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
 					</MkKeyValue>
