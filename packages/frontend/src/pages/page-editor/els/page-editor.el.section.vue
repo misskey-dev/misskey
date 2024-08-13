@@ -29,6 +29,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkButton from '@/components/MkButton.vue';
+import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
@@ -52,8 +53,6 @@ watch(children, () => {
 }, {
 	deep: true,
 });
-
-const getPageBlockList = inject<() => any>('getPageBlockList');
 
 async function rename() {
 	const { canceled, result: title } = await os.inputText({
