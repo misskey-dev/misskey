@@ -207,7 +207,7 @@ watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility);
+const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : false));
 
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
@@ -368,13 +368,13 @@ const bottomItemDef = {
 watch(visibility, () => {
 	switch (visibility.value) {
 		case 'public':
-			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility;
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : false;
 			break;
 		case 'home':
-			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility;
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : false;
 			break;
 		case 'followers':
-			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility;
+			localOnly.value = props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : false;
 			break;
 	}
 
@@ -636,6 +636,9 @@ async function toggleLocalOnly() {
 	}
 
 	localOnly.value = !localOnly.value;
+	if (defaultStore.state.rememberNoteVisibility) {
+		defaultStore.set('localOnly', localOnly.value);
+	}
 }
 
 async function toggleReactionAcceptance() {
@@ -875,7 +878,6 @@ async function applyDraft(draft: noteDrafts.NoteDraft, native = false) {
 	useCw.value = draft.data.useCw;
 	cw.value = draft.data.cw;
 	visibility.value = draft.data.visibility;
-	localOnly.value = draft.data.localOnly;
 	files.value = (draft.data.files || []).filter(draftFile => draftFile);
 	if (draft.data.poll) {
 		poll.value = draft.data.poll;

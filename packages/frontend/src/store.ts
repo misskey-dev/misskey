@@ -111,6 +111,10 @@ export const defaultStore = markRaw(
 			where: 'account',
 			default: false,
 		},
+		localOnly: {
+			where: 'deviceAccount',
+			default: false,
+		},
 		rememberReactionAcceptance: {
 			where: 'account',
 			default: false,
