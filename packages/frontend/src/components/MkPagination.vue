@@ -191,7 +191,8 @@ const props = withDefaults(
 		displayLimit?: number;
 	}>(),
 	{
-		displayLimit: 20,
+		displayLimit: 40,
+		virtualScrollOn: false,
 	},
 );
 
