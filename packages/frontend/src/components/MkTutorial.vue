@@ -192,7 +192,7 @@ type ComponentDef = {
  *
  * （メタデータは上の方で定義しています）
  */
-const componentsDef: Tuple<ComponentDef, typeof tutorialBodyPagesDef.length> = [
+const componentsDef = [
 	{ component: XProfileSettings },
 	{ component: XNote, props: { phase: 'aboutNote' } },
 	{ component: XNote, props: { phase: 'howToReact' } },
@@ -201,7 +201,7 @@ const componentsDef: Tuple<ComponentDef, typeof tutorialBodyPagesDef.length> = [
 	{ component: XPostNote },
 	{ component: XSensitive },
 	{ component: XPrivacySettings },
-] as const satisfies ComponentDef[];
+] as const satisfies Tuple<ComponentDef, typeof tutorialBodyPagesDef.length>;
 
 // eslint-disable-next-line vue/no-setup-props-destructure
 const page = ref(props.initialPage ?? 0);
