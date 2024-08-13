@@ -399,11 +399,13 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		return invitations;
 	}
 
+	@bindThis
 	public isValidReversiUpdateKey(key: unknown): key is typeof reversiUpdateKeys[number] {
 		if (typeof key !== 'string') return false;
 		return (reversiUpdateKeys as string[]).includes(key);
 	}
 
+	@bindThis
 	public isValidReversiUpdateValue<K extends typeof reversiUpdateKeys[number]>(key: K, value: unknown): value is MiReversiGame[K] {
 		switch (key) {
 			case 'map':
