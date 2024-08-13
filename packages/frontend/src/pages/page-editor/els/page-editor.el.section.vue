@@ -53,11 +53,11 @@ watch(children, () => {
 	deep: true,
 });
 
-const getPageBlockList = inject<(any) => any>('getPageBlockList');
+const getPageBlockList = inject<() => any>('getPageBlockList');
 
 async function rename() {
 	const { canceled, result: title } = await os.inputText({
-		title: 'Enter title',
+		title: i18n.ts._pages.enterSectionTitle,
 		default: props.modelValue.title,
 	});
 	if (canceled) return;
