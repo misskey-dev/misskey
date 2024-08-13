@@ -208,7 +208,7 @@ const page = ref(props.initialPage ?? 0);
 
 const currentPageDef = computed(() => {
 	if (page.value > 0 && page.value < MAX_PAGE - 1) {
-		return tutorialBodyPagesDef[page.value - 1];
+		return tutorialBodyPagesDef[page.value - 1] ?? null;
 	} else {
 		return null;
 	}
