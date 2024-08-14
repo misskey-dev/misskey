@@ -8,7 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="600"
 	:height="650"
-	@close="close(true)"
+	:withCloseButton="false"
+	:escKeyDisabled="true"
 	@closed="emit('closed')"
 >
 	<template v-if="page === 1" #header><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</template>
@@ -35,7 +36,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._landing.title }}</div>
 							<div>{{ i18n.ts._initialTutorial._landing.description }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="page++">{{ i18n.ts._initialTutorial.launchTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
-							<MkButton style="margin: 0 auto;" transparent rounded @click="close(true)">{{ i18n.ts.close }}</MkButton>
 						</div>
 					</MkSpacer>
 				</div>

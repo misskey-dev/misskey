@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.title">
 				<slot name="header"></slot>
 			</span>
-			<button v-if="!withOkButton" :class="$style.headerButton" class="_button" data-cy-modal-window-close @click="$emit('close')"><i class="ti ti-x"></i></button>
+			<button v-if="!withOkButton && withCloseButton" :class="$style.headerButton" class="_button" data-cy-modal-window-close @click="$emit('close')"><i class="ti ti-x"></i></button>
 			<button v-if="withOkButton" :class="$style.headerButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="ti ti-check"></i></button>
 		</div>
 		<div :class="$style.body">
@@ -27,12 +27,16 @@ import MkModal from './MkModal.vue';
 
 const props = withDefaults(defineProps<{
 	withOkButton: boolean;
+	withCloseButton: boolean;
 	okButtonDisabled: boolean;
+	escKeyDisabled: boolean;
 	width: number;
 	height: number;
 }>(), {
 	withOkButton: false,
+	withCloseButton: true,
 	okButtonDisabled: false,
+	escKeyDisabled: false,
 	width: 400,
 	height: 500,
 });
@@ -60,6 +64,7 @@ const onBgClick = () => {
 
 const onKeydown = (evt) => {
 	if (evt.which === 27) { // Esc
+		if (props.escKeyDisabled) return;
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();

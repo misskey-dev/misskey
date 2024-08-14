@@ -1330,7 +1330,7 @@ _initialAccountSetting:
   pushNotificationDescription: "Enabling push notifications will allow you to receive notifications from {name} directly on your device."
   initialAccountSettingCompleted: "Profile setup complete!"
   haveFun: "Enjoy {name}!"
-  youCanContinueTutorial: "You can proceed to a tutorial on how to use {name} (Misskey) or you can exit the setup here and start using it immediately."
+  continueTutorial: "Now, let's proceed with a tutorial on how to use {name} (Misskey)."
   startTutorial: "Start Tutorial"
   skipAreYouSure: "Really skip profile setup?"
   laterAreYouSure: "Really do profile setup later?"
