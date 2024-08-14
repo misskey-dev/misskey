@@ -13,7 +13,7 @@ import accepts from 'accepts';
 import vary from 'vary';
 import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository, MiNoteReaction } from '@/models/_.js';
+import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -386,36 +386,37 @@ export class ActivityPubServerService {
 
 		const limit = 10;
 		const partOf = `${this.config.url}/users/${userId}/liked`;
-		const query = {
-			userId: user.id,
-		} as FindOptionsWhere<MiNoteReaction>;
+		const query = this.noteReactionsRepository.createQueryBuilder('reaction')
+			.andWhere('reaction.userId = :userId', { userId: user.id });
 
 		if (page) {
+			const countPromise = query.getCount();
+
 			// カーソルが指定されている場合
 			if (cursor) {
-				query.id = LessThan(cursor);
+				query.andWhere('reaction.id < :id', { id: cursor });
 			}
 
 			const [reactions, reactionsCount] = await Promise.all([
-				this.noteReactionsRepository.find({
-					where: query,
-					take: limit + 1,
-					order: { id: -1 },
-				}),
-				this.noteReactionsRepository.count({ where: query }),
+				query
+					.limit(limit + 1)
+					.orderBy('reaction.id', 'DESC')
+					.innerJoinAndSelect('reaction.note', 'note')
+					.getMany(),
+				countPromise,
 			]);
 
 			// 「次のページ」があるかどうか
 			const inStock = reactions.length === limit + 1;
 			if (inStock) reactions.pop();
 
-			const renderedLikes = await Promise.all(reactions.map(reaction => this.apRendererService.renderLike(reaction, { uri: null })));
+			const reactedNoteUris = await Promise.all(reactions.map(reaction => reaction.note!.uri || `${this.config.url}/notes/${reaction.note!.uri}`));
 			const rendered = this.apRendererService.renderOrderedCollectionPage(
 				`${partOf}?${url.query({
 					page: 'true',
 					cursor,
 				})}`,
-				reactionsCount, renderedLikes, partOf,
+				reactionsCount, reactedNoteUris, partOf,
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
@@ -427,7 +428,7 @@ export class ActivityPubServerService {
 			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
-			const reactionsCount = await this.noteReactionsRepository.count({ where: query });
+			const reactionsCount = await query.getCount();
 			const rendered = this.apRendererService.renderOrderedCollection(
 				partOf,
 				reactionsCount,
