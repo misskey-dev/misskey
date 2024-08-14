@@ -386,25 +386,22 @@ export class ActivityPubServerService {
 
 		const limit = 10;
 		const partOf = `${this.config.url}/users/${userId}/liked`;
-		const query = this.noteReactionsRepository.createQueryBuilder('reaction')
-			.andWhere('reaction.userId = :userId', { userId: user.id });
 
 		if (page) {
-			const countPromise = query.getCount();
+			const query = this.noteReactionsRepository.createQueryBuilder('reaction')
+				.andWhere('reaction.userId = :userId', { userId: user.id });
 
 			// カーソルが指定されている場合
 			if (cursor) {
 				query.andWhere('reaction.id < :id', { id: cursor });
 			}
 
-			const [reactions, reactionsCount] = await Promise.all([
-				query
-					.limit(limit + 1)
-					.orderBy('reaction.id', 'DESC')
-					.innerJoinAndSelect('reaction.note', 'note')
-					.getMany(),
-				countPromise,
-			]);
+			const reactions = await query
+				.limit(limit + 1)
+				.orderBy('reaction.id', 'DESC')
+				.innerJoinAndSelect('reaction.note', 'note')
+				.distinctOn(['note.id'])
+				.getMany();
 
 			// 「次のページ」があるかどうか
 			const inStock = reactions.length === limit + 1;
@@ -416,7 +413,7 @@ export class ActivityPubServerService {
 					page: 'true',
 					cursor,
 				})}`,
-				reactionsCount, reactedNotes, partOf,
+				undefined, reactedNotes, partOf,
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
@@ -428,10 +425,9 @@ export class ActivityPubServerService {
 			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
-			const reactionsCount = await query.getCount();
 			const rendered = this.apRendererService.renderOrderedCollection(
 				partOf,
-				reactionsCount,
+				undefined,
 				`${partOf}?page=true`,
 			);
 			reply.header('Cache-Control', 'public, max-age=180');
