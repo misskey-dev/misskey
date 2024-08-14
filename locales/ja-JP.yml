@@ -2567,6 +2567,7 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "通報の通知先を作成"
   updateAbuseReportNotificationRecipient: "通報の通知先を更新"
   deleteAbuseReportNotificationRecipient: "通報の通知先を削除"
+  deleteAccount: "アカウントを削除"
 
 _fileViewer:
   title: "ファイルの詳細"
