@@ -2328,7 +2328,7 @@ _profile:
   addMutualLinkSection: "セクションを追加"
   sectionName: "セクション名"
   sectionNameNoneDescription: "セクション名を表示しないようにする"
-  sectionNameNone: "セクション名を表示しない"
+  sectionNameNone: "名前が表示されないセクション"
 
 _exportOrImport:
   allNotes: "全てのノート"

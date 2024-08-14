@@ -2272,7 +2272,7 @@ _profile:
   addMutualLinkSection: "Add section"
   sectionName: "Section name"
   sectionNameNoneDescription: "Do not display the section name"
-  sectionNameNone: "Hide section name"
+  sectionNameNone: "Section without name"
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"

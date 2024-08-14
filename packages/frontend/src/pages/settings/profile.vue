@@ -117,11 +117,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkFolder>
 									<template #label>{{ sectionElement.name || i18n.ts._profile.sectionNameNone }}</template>
 
-									<div :class="$style.metadataMargin">
-										<MkInput v-model="sectionElement.name" :disabled="sectionElement.none" :placeholder="i18n.ts._profile.sectionName" :max="32"></MkInput>
-										<MkSwitch v-model="sectionElement.none" @update:modelValue="()=>{sectionElement.name = null}">{{ i18n.ts._profile.sectionNameNoneDescription }}</MkSwitch>
+									<div class="_gaps_s" :class="$style.metadataMargin">
+										<MkInput v-if="sectionElement.name !== null" v-model="sectionElement.name" :placeholder="i18n.ts._profile.sectionName" :max="32"></MkInput>
+										<MkSwitch v-model="sectionElement.none" @update:modelValue="()=>{ sectionElement.none ? sectionElement.name = null : sectionElement.name = 'New Section' }">{{ i18n.ts._profile.sectionNameNoneDescription }}</MkSwitch>
 										<MkButton inline style="margin-right: 8px;" :disabled="sectionElement.mutualLinks.length >= $i.policies.mutualLinkLimit" @click="addMutualLinks(sectionIndex)"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLink }}</MkButton>
 									</div>
+
 									<Sortable
 										v-model="sectionElement.mutualLinks"
 										class="_gaps_s"
@@ -248,7 +249,7 @@ function addMutualLinks(index:number) {
 
 function addMutualLinkSections() {
 	mutualLinkSections.value.push({
-		name: null,
+		name: 'New Section',
 		mutualLinks: [],
 	});
 }

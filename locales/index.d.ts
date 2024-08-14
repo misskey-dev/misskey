@@ -8859,7 +8859,7 @@ export interface Locale extends ILocale {
          */
         "sectionNameNoneDescription": string;
         /**
-         * セクション名を表示しない
+         * 名前が表示されないセクション
          */
         "sectionNameNone": string;
     };

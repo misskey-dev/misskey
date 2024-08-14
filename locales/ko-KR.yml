@@ -2256,7 +2256,7 @@ _profile:
   addMutualLinkSection: "섹션 추가"
   sectionName: "섹션 이름"
   sectionNameNoneDescription: "섹션 이름이 표시되지 않도록 합니다."
-  sectionNameNone: "섹션 이름을 숨기기"
+  sectionNameNone: "이름이 표시되지 않는 섹션"
 _exportOrImport:
   allNotes: "모든 노트"
   favoritedNotes: "즐겨찾기한 노트"
