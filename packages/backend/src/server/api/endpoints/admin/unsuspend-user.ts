@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -32,6 +33,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private usersRepository: UsersRepository,
 
 		private userSuspendService: UserSuspendService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -40,7 +42,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('user not found');
 			}
 
-			await this.userSuspendService.unsuspend(user, me);
+			await this.usersRepository.update(user.id, {
+				isSuspended: false,
+			});
+
+			this.moderationLogService.log(me, 'unsuspend', {
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
+			});
+
+			this.userSuspendService.doPostUnsuspend(user);
 		});
 	}
 }
