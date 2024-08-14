@@ -9,7 +9,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { MiUser } from '@/models/User.js';
-import type { FollowingsRepository } from '@/models/_.js';
+import type { FollowingsRepository, FollowRequestsRepository } from '@/models/_.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -27,6 +27,9 @@ export class UserSuspendService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		@Inject(DI.followRequestsRepository)
+		private followRequestsRepository: FollowRequestsRepository,
+
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
@@ -41,6 +44,11 @@ export class UserSuspendService {
 		this.logger.warn(`doPostSuspend: ${user.id} (host: ${user.host})`);
 
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
+
+		await Promise.all([
+			this.followRequestsRepository.delete({ followeeId: user.id }),
+			this.followRequestsRepository.delete({ followerId: user.id }),
+		]).catch(() => null);
 
 		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにDelete配信
