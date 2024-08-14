@@ -410,13 +410,13 @@ export class ActivityPubServerService {
 			const inStock = reactions.length === limit + 1;
 			if (inStock) reactions.pop();
 
-			const reactedNoteUris = await Promise.all(reactions.map(reaction => reaction.note!.uri || `${this.config.url}/notes/${reaction.note!.uri}`));
+			const reactedNotes = await Promise.all(reactions.map(({ note }) => note!.uri || this.apRendererService.renderNote(note!, false)));
 			const rendered = this.apRendererService.renderOrderedCollectionPage(
 				`${partOf}?${url.query({
 					page: 'true',
 					cursor,
 				})}`,
-				reactionsCount, reactedNoteUris, partOf,
+				reactionsCount, reactedNotes, partOf,
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
