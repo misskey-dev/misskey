@@ -397,12 +397,13 @@ export const packedUserDetailedNotMeOnlySchema = {
 						items: {
 							type: 'object',
 							properties: {
+								id: { type: 'string', format: 'misskey:id' },
 								url: { type: 'string' },
 								fileId: { type: 'string', format: 'misskey:id' },
 								description: { type: 'string', nullable: true },
 								imgSrc: { type: 'string' },
 							},
-							required: ['url', 'fileId'],
+							required: ['id', 'url', 'fileId'],
 						},
 					},
 				},

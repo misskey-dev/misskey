@@ -35,6 +35,7 @@ import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfig } from '@/models/json-schema/user.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
+import { IdService } from "@/core/IdService.js";
 
 export const meta = {
 	tags: ['account'],
@@ -268,6 +269,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
+		private idService: IdService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private globalEventService: GlobalEventService,
@@ -377,6 +379,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						}
 
 						return {
+							id: this.idService.gen(),
 							url: mutualLink.url,
 							fileId: file.id,
 							imgSrc: this.driveFileEntityService.getPublicUrl(file),

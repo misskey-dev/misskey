@@ -3845,6 +3845,8 @@ export type components = {
       mutualLinkSections: ({
           name: string | null;
           mutualLinks: ({
+              /** Format: misskey:id */
+              id: string;
               url: string;
               /** Format: misskey:id */
               fileId: string;
