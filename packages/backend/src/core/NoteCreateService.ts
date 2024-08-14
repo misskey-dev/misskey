@@ -253,6 +253,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const meta = await this.metaService.fetch();
 		const policies = await this.roleService.getUserPolicies(user.id);
 
+		if (!policies.canCreateContent) {
+			this.logger.error('Request rejected because user has no permission to create content', { user: user.id, note: data });
+			throw new IdentifiableError('5b1c2b67-50a6-4a8a-a59c-0ede40890de3', 'User has no permission to create content.');
+		}
+
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = meta.sensitiveWords;
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? this.utilityService.concatNoteContentsForKeyWordCheck({ text: data.text, pollChoices: data.poll?.choices }), sensitiveWords)) {

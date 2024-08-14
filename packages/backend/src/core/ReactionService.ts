@@ -116,7 +116,12 @@ export class ReactionService {
 		if (!await this.noteEntityService.isVisibleForMe(note, user.id)) {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
 		}
+
 		const policies = await this.roleService.getUserPolicies(user.id);
+
+		if (!policies.canUpdateContent) {
+			throw new IdentifiableError('cf63c2de-0df1-4db5-9fff-b2110b6e5450', 'User has no permission to update content.');
+		}
 
 		let reaction = _reaction ?? FALLBACK;
 		if (note.reactionAcceptance === 'likeOnly' || !policies.canUseReaction || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
