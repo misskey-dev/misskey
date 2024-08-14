@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div :class="$style.metadataRoot">
 				<div :class="$style.metadataMargin">
-					<MkButton inline style="margin-right: 8px;" :disabled="mutualLinkSections.length >= $i.policies.mutualLinkSectionLimit" @click="addMutualLinkSections"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLinkSection }}</MkButton>
+					<MkButton inline style="margin-right: 8px;" @click="addMutualLinkSections"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLinkSection }}</MkButton>
 					<MkButton v-if="!mutualLinkSectionEditMode" inline danger style="margin-right: 8px;" @click="mutualLinkSectionEditMode = !mutualLinkSectionEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					<MkButton v-else inline style="margin-right: 8px;" @click="mutualLinkSectionEditMode = !mutualLinkSectionEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
 					<MkButton inline primary @click="saveMutualLinks"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
@@ -109,7 +109,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@start="e => e.item.classList.add('active')"
 					@end="e => e.item.classList.remove('active')"
 				>
-					<template #item="{element: sectionElement,index: sectionIndex}">
+					<template #item="{ element: sectionElement, index: sectionIndex }">
 						<div :class="$style.mutualLinkSectionRoot">
 							<button v-if="!mutualLinkSectionEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
 							<button v-if="mutualLinkSectionEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLinkSection(sectionIndex)"><i class="ti ti-x"></i></button>
@@ -118,9 +118,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<template #label>{{ sectionElement.name || i18n.ts._profile.sectionNameNone }}</template>
 
 									<div class="_gaps_s" :class="$style.metadataMargin">
+										<MkInfo v-if="sectionIndex >= $i.policies.mutualLinkSectionLimit" warn><Mfm :text="i18n.tsx._profile.policyDisplayLimitExceeded({ max: $i.policies.mutualLinkSectionLimit })"/></MkInfo>
 										<MkInput v-if="sectionElement.name !== null" v-model="sectionElement.name" :placeholder="i18n.ts._profile.sectionName" :max="32"></MkInput>
 										<MkSwitch v-model="sectionElement.none" @update:modelValue="()=>{ sectionElement.none ? sectionElement.name = null : sectionElement.name = 'New Section' }">{{ i18n.ts._profile.sectionNameNoneDescription }}</MkSwitch>
-										<MkButton inline style="margin-right: 8px;" :disabled="sectionElement.mutualLinks.length >= $i.policies.mutualLinkLimit" @click="addMutualLinks(sectionIndex)"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLink }}</MkButton>
+										<MkButton inline style="margin-right: 8px;" @click="addMutualLinks(sectionIndex)"><i class="ti ti-plus"></i> {{ i18n.ts._profile.addMutualLink }}</MkButton>
 									</div>
 
 									<Sortable
@@ -132,12 +133,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 										@start="e => e.item.classList.add('active')"
 										@end="e => e.item.classList.remove('active')"
 									>
-										<template #item="{element: linkElement,index: linkIndex}">
+										<template #item="{ element: linkElement, index: linkIndex }">
 											<div :class="$style.mutualLinkRoot">
 												<button v-if="!mutualLinkSectionEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
 												<button v-if="mutualLinkSectionEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLink(sectionIndex,linkIndex)"><i class="ti ti-x"></i></button>
 
 												<div class="_gaps_s" :style="{flex: 1}">
+													<MkInfo v-if="linkIndex >= $i.policies.mutualLinkLimit" warn><Mfm :text="i18n.tsx._profile.policyDisplayLimitExceeded({ max: $i.policies.mutualLinkLimit })"/></MkInfo>
 													<MkInput v-model="linkElement.url" small>
 														<template #label>{{ i18n.ts._profile.mutualLinksUrl }}</template>
 													</MkInput>

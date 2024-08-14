@@ -2255,8 +2255,9 @@ _profile:
   addMutualLink: "서로링크 추가"
   addMutualLinkSection: "섹션 추가"
   sectionName: "섹션 이름"
-  sectionNameNoneDescription: "섹션 이름이 표시되지 않도록 합니다."
+  sectionNameNoneDescription: "섹션 이름이 표시되지 않도록 합니다"
   sectionNameNone: "이름이 표시되지 않는 섹션"
+  policyDisplayLimitExceeded: "현재 지원 플랜의 표시 제한({max}개)을 초과하였기 때문에 이 항목은 표시되지 않습니다. [여기](https://go.misskey.io/donate)에서 플랜을 업그레이드할 수 있습니다."
 _exportOrImport:
   allNotes: "모든 노트"
   favoritedNotes: "즐겨찾기한 노트"

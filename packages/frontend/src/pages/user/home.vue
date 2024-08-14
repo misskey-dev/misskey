@@ -80,7 +80,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 						</MkOmit>
 					</div>
-					<MkContainer v-if="user?.mutualLinkSections?.length > 0" :showHeader="false" :max-height="200" class="fields" :style="{borderRadius: 0}">
+					<MkContainer v-if="$i && $i.id == user.id && user?.mutualLinkSections?.slice(0, $i.policies.mutualLinkSectionLimit).length > 0" :showHeader="false" :max-height="200" class="fields" :style="{borderRadius: 0}">
+						<div v-for="(section, index) in user?.mutualLinkSections.slice(0, $i.policies.mutualLinkSectionLimit)" :key="index" :class="$style.mutualLinkSections">
+							<span v-if="section.name">{{ section.name }}</span>
+							<div :class="$style.mutualLinks">
+								<div v-for="mutualLink in section.mutualLinks.slice(0, $i.policies.mutualLinkLimit)" :key="mutualLink.id">
+									<MkLink :hideIcon="true" :url="mutualLink.url">
+										<img :class="$style.mutualLinkImg" :src="mutualLink.imgSrc" :alt="mutualLink.description"/>
+									</MkLink>
+								</div>
+							</div>
+						</div>
+					</MkContainer>
+					<MkContainer v-else-if="user?.mutualLinkSections?.length > 0" :showHeader="false" :max-height="200" class="fields" :style="{borderRadius: 0}">
 						<div v-for="(section, index) in user?.mutualLinkSections" :key="index" :class="$style.mutualLinkSections">
 							<span v-if="section.name">{{ section.name }}</span>
 							<div :class="$style.mutualLinks">

@@ -2329,6 +2329,7 @@ _profile:
   sectionName: "セクション名"
   sectionNameNoneDescription: "セクション名を表示しないようにする"
   sectionNameNone: "名前が表示されないセクション"
+  policyDisplayLimitExceeded: "現在の支援プランの表示上限({max}個)を超えているため、この項目は表示されません。[ここ](https://go.misskey.io/donate)からプランをアップグレードできます。"
 
 _exportOrImport:
   allNotes: "全てのノート"

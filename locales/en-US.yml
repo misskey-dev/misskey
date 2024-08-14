@@ -2273,6 +2273,7 @@ _profile:
   sectionName: "Section name"
   sectionNameNoneDescription: "Do not display the section name"
   sectionNameNone: "Section without name"
+  policyDisplayLimitExceeded: "The number of items displayed exceeds the current support plan's limit ({max}). This item will not be displayed. You can upgrade your plan [here](https://go.misskey.io/donate)."
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"

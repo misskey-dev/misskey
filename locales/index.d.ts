@@ -8862,6 +8862,10 @@ export interface Locale extends ILocale {
          * 名前が表示されないセクション
          */
         "sectionNameNone": string;
+        /**
+         * 現在の支援プランの表示上限({max}個)を超えているため、この項目は表示されません。[ここ](https://go.misskey.io/donate)からプランをアップグレードできます。
+         */
+        "policyDisplayLimitExceeded": ParameterizedString<"max">;
     };
     "_exportOrImport": {
         /**

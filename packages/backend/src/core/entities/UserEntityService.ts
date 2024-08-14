@@ -533,7 +533,7 @@ export class UserEntityService implements OnModuleInit {
 				lang: profile!.lang,
 				fields: profile!.fields,
 				verifiedLinks: profile!.verifiedLinks,
-				mutualLinkSections: profile!.mutualLinkSections,
+				mutualLinkSections: isMe ? profile!.mutualLinkSections : profile!.mutualLinkSections.slice(0, policies!.mutualLinkSectionLimit).map(section => ({ ...section, mutualLinks: section.mutualLinks.slice(0, policies!.mutualLinkLimit) })),
 				followersCount: followersCount ?? 0,
 				followingCount: followingCount ?? 0,
 				notesCount: user.notesCount,
