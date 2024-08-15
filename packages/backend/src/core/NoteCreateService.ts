@@ -361,7 +361,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
-			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
+			mentionedUsers = data.apMentions ?? await this.noteEntityService.ExtractMentionedUsers(user, combinedTokens);
 		}
 
 		// if the host is media-silenced, custom emojis are not allowed
@@ -733,18 +733,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private isQuote(note: Option & { renote: MiNote }): note is Option & { renote: MiNote } & (
-		{ text: string } | { cw: string } | { reply: MiNote } | { poll: IPoll } | { files: MiDriveFile[] }
-	) {
-		// NOTE: SYNC WITH misc/is-quote.ts
-		return note.text != null ||
-			note.reply != null ||
-			note.cw != null ||
-			note.poll != null ||
-			(note.files != null && note.files.length > 0);
-	}
-
-	@bindThis
 	private incRenoteCount(renote: MiNote) {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
@@ -809,7 +797,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
 		if (data.localOnly) return null;
 
-		const content = this.isRenote(data) && !this.isQuote(data)
+		const content = this.isRenote(data) && !this.noteEntityService.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 
@@ -832,23 +820,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 			})
 			.where('id = :id', { id: user.id })
 			.execute();
-	}
-
-	@bindThis
-	private async extractMentionedUsers(user: { host: MiUser['host']; }, tokens: mfm.MfmNode[]): Promise<MiUser[]> {
-		if (tokens == null) return [];
-
-		const mentions = extractMentions(tokens);
-		let mentionedUsers = (await Promise.all(mentions.map(m =>
-			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
-		))).filter(x => x != null);
-
-		// Drop duplicate users
-		mentionedUsers = mentionedUsers.filter((u, i, self) =>
-			i === self.findIndex(u2 => u.id === u2.id),
-		);
-
-		return mentionedUsers;
 	}
 
 	@bindThis

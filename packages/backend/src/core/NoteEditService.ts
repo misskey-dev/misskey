@@ -7,7 +7,6 @@ import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
-import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
@@ -46,13 +45,6 @@ import { SearchService } from '@/core/SearchService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-
-type MinimumUser = {
-	id: MiUser['id'];
-	host: MiUser['host'];
-	username: MiUser['username'];
-	uri: MiUser['uri'];
-};
 
 type Option = {
 	publishedAt?: Date | null;
@@ -198,7 +190,7 @@ export class NoteEditService implements OnApplicationShutdown {
 		}
 
 		// Check blocking
-		if (data.renote && !this.isQuote(data)) {
+		if (data.renote && !this.noteEntityService.isQuote(data)) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
@@ -236,7 +228,7 @@ export class NoteEditService implements OnApplicationShutdown {
 
 			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
-			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
+			mentionedUsers = data.apMentions ?? await this.noteEntityService.ExtractMentionedUsers(user, combinedTokens);
 		}
 
 		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
@@ -438,16 +430,8 @@ export class NoteEditService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private isQuote(note: Option): note is Option & { renote: MiNote } {
-		// sync with misc/is-quote.ts
-		return !!note.renote && (!!note.text || !!note.cw || (!!note.files && !!note.files.length) || !!note.poll);
-	}
-
-	@bindThis
 	private async renderNoteOrRenoteActivity(data: Option, note: MiNote, userId: string) {
-		const content = data.renote && !this.isQuote(data)
-			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
-			: this.apRendererService.renderNoteUpdate(await this.apRendererService.renderNote(note, false, true), { id: userId });
+		const content = this.apRendererService.renderNoteUpdate(await this.apRendererService.renderNote(note, false, true), { id: userId });
 
 		return this.apRendererService.addContext(content);
 	}
@@ -457,23 +441,6 @@ export class NoteEditService implements OnApplicationShutdown {
 		if (note.text == null && note.cw == null) return;
 
 		this.searchService.indexNote(note);
-	}
-
-	@bindThis
-	private async extractMentionedUsers(user: { host: MiUser['host']; }, tokens: mfm.MfmNode[]): Promise<MiUser[]> {
-		if (tokens == null) return [];
-
-		const mentions = extractMentions(tokens);
-		let mentionedUsers = (await Promise.all(mentions.map(m =>
-			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
-		))).filter(x => x != null) as MiUser[];
-
-		// Drop duplicate users
-		mentionedUsers = mentionedUsers.filter((u, i, self) =>
-			i === self.findIndex(u2 => u.id === u2.id),
-		);
-
-		return mentionedUsers;
 	}
 
 	@bindThis
