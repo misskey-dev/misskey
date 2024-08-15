@@ -477,44 +477,6 @@ export class NoteEditService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async checkHibernation(followings: MiFollowing[]) {
-		if (followings.length === 0) return;
-
-		const shuffle = (array: MiFollowing[]) => {
-			for (let i = array.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[array[i], array[j]] = [array[j], array[i]];
-			}
-			return array;
-		};
-
-		// ランダムに最大1000件サンプリング
-		const samples = shuffle(followings).slice(0, Math.min(followings.length, 1000));
-
-		const hibernatedUsers = await this.usersRepository.find({
-			where: {
-				id: In(samples.map(x => x.followerId)),
-				lastActiveDate: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 50))),
-			},
-			select: ['id'],
-		});
-
-		if (hibernatedUsers.length > 0) {
-			this.usersRepository.update({
-				id: In(hibernatedUsers.map(x => x.id)),
-			}, {
-				isHibernated: true,
-			});
-
-			this.followingsRepository.update({
-				followerId: In(hibernatedUsers.map(x => x.id)),
-			}, {
-				isFollowerHibernated: true,
-			});
-		}
-	}
-
-	@bindThis
 	public dispose(): void {
 		this.#shutdownController.abort();
 	}
