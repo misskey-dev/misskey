@@ -79,6 +79,13 @@ export function useNoteCapture(props: {
 				props.isDeletedRef.value = true;
 				break;
 			}
+
+			case 'edited': {
+				Object.entries(body.note).forEach(([key, value]) => {
+					note.value[key] = value;
+				});
+				break;
+			}
 		}
 	}
 

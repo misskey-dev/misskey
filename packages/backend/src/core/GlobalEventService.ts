@@ -120,6 +120,9 @@ export interface NoteEventTypes {
 	updated: {
 		note: MiNote;
 	};
+	edited: {
+		note: MiNote;
+	};
 	reacted: {
 		reaction: string;
 		emoji?: {

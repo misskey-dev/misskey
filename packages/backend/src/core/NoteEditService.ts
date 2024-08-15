@@ -380,8 +380,6 @@ export class NoteEditService implements OnApplicationShutdown {
 			// Pack the note
 			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 
-			this.globalEventService.publishNotesStream(noteObj);
-
 			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.userWebhookService.getActiveWebhooks().then(webhooks => {
