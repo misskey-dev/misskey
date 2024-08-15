@@ -117,9 +117,6 @@ export interface NoteEventTypes {
 	deleted: {
 		deletedAt: Date;
 	};
-	updated: {
-		note: MiNote;
-	};
 	edited: {
 		note: MiNote;
 	};

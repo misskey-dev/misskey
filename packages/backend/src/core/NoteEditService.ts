@@ -46,6 +46,13 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
+type MinimumUser = {
+	id: MiUser['id'];
+	host: MiUser['host'];
+	username: MiUser['username'];
+	uri: MiUser['uri'];
+};
+
 type Option = {
 	publishedAt?: Date | null;
 	name?: string | null;
