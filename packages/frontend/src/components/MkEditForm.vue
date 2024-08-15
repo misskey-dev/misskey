@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
-	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i>{{ i18n.ts.quoteAttached }}</div>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
@@ -368,8 +368,6 @@ async function onPaste(ev: ClipboardEvent) {
 				insertTextAtCursor(textareaEl.value, paste);
 				return;
 			}
-
-			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
 		});
 	}
 
@@ -606,6 +604,12 @@ async function post(ev?: MouseEvent) {
 
 function cancel() {
 	emit('cancel');
+}
+
+function insertMention() {
+	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
+		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
+	});
 }
 
 async function insertEmoji(ev: MouseEvent) {
