@@ -109,20 +109,28 @@ export type House = 'e' | 's' | 'w' | 'n';
  */
 export type Huro = {
 	type: 'pon';
-	tiles: [TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId];
 	from: House;
 } | {
 	type: 'cii';
-	tiles: [TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId];
 	from: House;
 } | {
 	type: 'ankan';
-	tiles: [TileId, TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId, TileId];
 } | {
 	type: 'minkan';
-	tiles: [TileId, TileId, TileId, TileId];
+	tiles: readonly [TileId, TileId, TileId, TileId];
 	from: House | null; // null で加槓
 };
+
+export type PointFactor = {
+	isYakuman: false;
+	fan: number;
+} | {
+	isYakuman: true;
+	value: number;
+}
 
 export const CALL_HURO_TYPES = ['pon', 'cii', 'minkan'] as const;
 
@@ -279,18 +287,23 @@ export const PINZU_TILES = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'
 export const SOUZU_TILES = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9'] as const satisfies TileType[];
 export const CHAR_TILES = ['e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
 export const YAOCHU_TILES = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'] as const satisfies TileType[];
+export const TERMINAL_TILES = ['m1', 'm9', 'p1', 'p9', 's1', 's9'] as const satisfies TileType[];
 const KOKUSHI_TILES: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 
-export function isManzu<T extends TileType>(tile: T): tile is typeof MANZU_TILES[number] {
-	return MANZU_TILES.includes(tile);
+export function includes<A extends ReadonlyArray<unknown>>(array: A, searchElement: unknown): searchElement is A[number] {
+	return array.includes(searchElement);
 }
 
-export function isPinzu<T extends TileType>(tile: T): tile is typeof PINZU_TILES[number] {
-	return PINZU_TILES.includes(tile);
+export function isManzu(tile: TileType): tile is typeof MANZU_TILES[number] {
+	return includes(MANZU_TILES, tile);
 }
 
-export function isSouzu<T extends TileType>(tile: T): tile is typeof SOUZU_TILES[number] {
-	return SOUZU_TILES.includes(tile);
+export function isPinzu(tile: TileType): tile is typeof PINZU_TILES[number] {
+	return includes(PINZU_TILES, tile);
+}
+
+export function isSouzu(tile: TileType): tile is typeof SOUZU_TILES[number] {
+	return includes(SOUZU_TILES, tile);
 }
 
 export function isSameNumberTile(a: TileType, b: TileType): boolean {
@@ -328,16 +341,24 @@ export function fanToPoint(fan: number, isParent: boolean): number {
 	return point;
 }
 
+export function calcPoint(factor: PointFactor, isParent: boolean): number {
+	if (factor.isYakuman) {
+		return 32000 * factor.value * (isParent ? 1.5 : 1);
+	} else {
+		return fanToPoint(factor.fan, isParent);
+	}
+}
+
 export function calcOwnedDoraCount(handTiles: TileType[], huros: Huro[], doras: TileType[]): number {
 	let count = 0;
 	for (const t of handTiles) {
 		if (doras.includes(t)) count++;
 	}
 	for (const huro of huros) {
-		if (huro.type === 'pon' && doras.includes(huro.tile)) count += 3;
-		if (huro.type === 'cii') count += huro.tiles.filter(t => doras.includes(t)).length;
-		if (huro.type === 'minkan' && doras.includes(huro.tile)) count += 4;
-		if (huro.type === 'ankan' && doras.includes(huro.tile)) count += 4;
+		if (huro.type === 'pon' && includes(doras, huro.tiles[0])) count += 3;
+		if (huro.type === 'cii') count += huro.tiles.filter(t => includes(doras, t)).length;
+		if (huro.type === 'minkan' && includes(doras, huro.tiles[0])) count += 4;
+		if (huro.type === 'ankan' && includes(doras, huro.tiles[0])) count += 4;
 	}
 	return count;
 }
@@ -355,7 +376,7 @@ export function calcRedDoraCount(handTiles: TileId[], huros: Huro[]): number {
 	return count;
 }
 
-export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<House, number> {
+export function calcTsumoHoraPointDeltas(house: House, fansOrFactor: number | PointFactor): Record<House, number> {
 	const isParent = house === 'e';
 
 	const deltas: Record<House, number> = {
@@ -365,7 +386,7 @@ export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<Hou
 		n: 0,
 	};
 
-	const point = fanToPoint(fans, isParent);
+	const point = typeof fansOrFactor == 'number' ? fanToPoint(fansOrFactor, isParent) : calcPoint(fansOrFactor, isParent);
 	deltas[house] = point;
 	if (isParent) {
 		const childPoint = Math.ceil(point / 3);
@@ -440,6 +461,10 @@ export function isShuntu(tiles: [TileType, TileType, TileType]): boolean {
 
 export function isKotsu(tiles: [TileType, TileType, TileType]): boolean {
 	return tiles[0] === tiles[1];
+}
+
+export function mentsuEquals(tiles1: [TileType, TileType, TileType], tiles2: [TileType, TileType, TileType]): boolean {
+	return tiles1[0] == tiles2[0] && tiles1[1] == tiles2[1] && tiles1[2] == tiles2[2];
 }
 
 export const SHUNTU_PATTERNS: [TileType, TileType, TileType][] = [

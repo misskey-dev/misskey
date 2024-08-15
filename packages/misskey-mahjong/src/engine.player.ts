@@ -6,7 +6,7 @@
 import CRC32 from 'crc-32';
 import { TileType, House, Huro, TileId } from './common.js';
 import * as Common from './common.js';
-import { YAKU_DEFINITIONS } from './common.yaku.js';
+import { calcYakusWithDetail, convertHuroForCalcYaku } from './common.yaku.js';
 
 //#region syntax suger
 function $(tid: TileId): Common.TileInstance {
@@ -53,7 +53,19 @@ export type PlayerState = {
 		w: Huro[];
 		n: Huro[];
 	};
+	firstTurnFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
 	riichis: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
+	doubleRiichis: {
 		e: boolean;
 		s: boolean;
 		w: boolean;
@@ -65,6 +77,12 @@ export type PlayerState = {
 		w: boolean;
 		n: boolean;
 	};
+	rinshanFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	}
 	points: {
 		e: number;
 		s: number;
@@ -80,7 +98,7 @@ export type PlayerState = {
 };
 
 export type KyokuResult = {
-	yakus: { name: string; fan: number; isYakuman: boolean; }[];
+	yakus: { name: string; fan: number | null; isYakuman: boolean; }[];
 	doraCount: number;
 	pointDeltas: { e: number; s: number; w: number; n: number; };
 };
@@ -241,31 +259,30 @@ export class PlayerGameEngine {
 	public commit_tsumoHora(house: House, handTiles: TileId[], tsumoTile: TileId): KyokuResult {
 		console.log('commit_tsumoHora', this.state.turn, house);
 
-		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-			house: house,
+		const yakus = calcYakusWithDetail({
+			seatWind: house,
 			handTiles: handTiles.map(id => $type(id)),
-			huros: this.state.huros[house],
+			huros: this.state.huros[house].map(convertHuroForCalcYaku),
 			tsumoTile: $type(tsumoTile),
 			ronTile: null,
+			firstTurn: this.state.firstTurnFlags[house],
 			riichi: this.state.riichis[house],
+			doubleRiichi: this.state.doubleRiichis[house],
 			ippatsu: this.state.ippatsus[house],
-		}));
+			rinshan: this.state.rinshanFlags[house],
+			haitei: this.state.tilesCount == 0,
+		});
 		const doraCount =
 			Common.calcOwnedDoraCount(handTiles.map(id => $type(id)), this.state.huros[house], this.doras) +
 			Common.calcRedDoraCount(handTiles, this.state.huros[house]);
-		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
-		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
+		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, yakus);
 		this.state.points.e += pointDeltas.e;
 		this.state.points.s += pointDeltas.s;
 		this.state.points.w += pointDeltas.w;
 		this.state.points.n += pointDeltas.n;
 
 		return {
-			yakus: yakus.map(yaku => ({
-				name: yaku.name,
-				fan: yaku.fan,
-				isYakuman: yaku.isYakuman,
-			})),
+			yakus: yakus.yakus,
 			doraCount,
 			pointDeltas,
 		};
@@ -293,24 +310,27 @@ export class PlayerGameEngine {
 			n: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
 		};
 
+		const ronTile = $type(this.state.hoTiles[callee].at(-1)!);
 		for (const house of callers) {
-			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-				house: house,
-				handTiles: handTiles[house].map(id => $type(id)),
-				huros: this.state.huros[house],
+			const yakus = calcYakusWithDetail({
+				seatWind: house,
+				handTiles: handTiles[house].map(id => $type(id)).concat([ronTile]),
+				huros: this.state.huros[house].map(convertHuroForCalcYaku),
 				tsumoTile: null,
-				ronTile: $type(this.state.hoTiles[callee].at(-1)!),
+				ronTile: ronTile,
+				firstTurn: this.state.firstTurnFlags[house],
 				riichi: this.state.riichis[house],
+				doubleRiichi: this.state.doubleRiichis[house],
 				ippatsu: this.state.ippatsus[house],
-			}));
+				hotei: this.state.tilesCount == 0,
+			});
 			const doraCount =
 				Common.calcOwnedDoraCount(handTiles[house].map(id => $type(id)), this.state.huros[house], this.doras) +
 				Common.calcRedDoraCount(handTiles[house], this.state.huros[house]);
-			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
-			const point = Common.fanToPoint(fans, house === 'e');
+			const point = Common.calcPoint(yakus, house === 'e');
 			this.state.points[callee] -= point;
 			this.state.points[house] += point;
-			resultMap[house].yakus = yakus.map(yaku => ({ name: yaku.name, fan: yaku.fan, isYakuman: yaku.isYakuman }));
+			resultMap[house].yakus = yakus.yakus;
 			resultMap[house].doraCount = doraCount;
 			resultMap[house].pointDeltas[callee] = -point;
 			resultMap[house].pointDeltas[house] = point;
@@ -329,7 +349,7 @@ export class PlayerGameEngine {
 	 * @param caller ポンした人
 	 * @param callee 牌を捨てた人
 	 */
-	public commit_pon(caller: House, callee: House, tiles: TileId[]) {
+	public commit_pon(caller: House, callee: House, tiles: readonly [TileId, TileId, TileId]) {
 		this.state.canPon = null;
 
 		this.state.hoTiles[callee].pop();
@@ -351,7 +371,7 @@ export class PlayerGameEngine {
 	 * @param caller 大明槓した人
 	 * @param callee 牌を捨てた人
 	 */
-	public commit_kan(caller: House, callee: House, tiles: TileId[], rinsyan: TileId) {
+	public commit_kan(caller: House, callee: House, tiles: readonly [TileId, TileId, TileId, TileId], rinsyan: TileId) {
 		this.state.canKan = null;
 
 		this.state.hoTiles[callee].pop();
@@ -383,7 +403,7 @@ export class PlayerGameEngine {
 	 * @param caller チーした人
 	 * @param callee 牌を捨てた人
 	 */
-	public commit_cii(caller: House, callee: House, tiles: TileId[]) {
+	public commit_cii(caller: House, callee: House, tiles: readonly [TileId, TileId, TileId]) {
 		this.state.canCii = null;
 
 		this.state.hoTiles[callee].pop();

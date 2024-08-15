@@ -7,7 +7,9 @@ import CRC32 from 'crc-32';
 import { TileType, House, Huro, TileId } from './common.js';
 import * as Common from './common.js';
 import { PlayerState } from './engine.player.js';
-import { YAKU_DEFINITIONS } from "./common.yaku.js";
+import { calcYakusWithDetail, convertHuroForCalcYaku, YakuData, YakuSet } from './common.yaku.js';
+
+export const INITIAL_POINT = 25000;
 
 //#region syntax suger
 function $(tid: TileId): Common.TileInstance {
@@ -134,12 +136,32 @@ class StateManager {
 			pattern.filter(t => hand.includes(t)).length >= 2);
 	}
 
-	public tsumo(): TileId {
-		const tile = this.$state.tiles.pop();
+	private withTsumoTile(tile: TileId | undefined, isRinshan: boolean): TileId {
 		if (tile == null) throw new Error('No tiles left');
 		if (this.$state.turn == null) throw new Error('Not your turn');
 		this.$state.handTiles[this.$state.turn].push(tile);
+		this.$state.rinshanFlags[this.$state.turn] = isRinshan;
 		return tile;
+	}
+
+	public tsumo(): TileId {
+		return this.withTsumoTile(this.$state.tiles.pop(), false);
+	}
+
+	public rinshanTsumo(): TileId {
+		return this.withTsumoTile(this.$state.tiles.shift(), true);
+	}
+
+	public clearFirstTurnAndIppatsus(): void {
+		this.$state.firstTurnFlags.e = false;
+		this.$state.firstTurnFlags.s = false;
+		this.$state.firstTurnFlags.w = false;
+		this.$state.firstTurnFlags.n = false;
+
+		this.$state.ippatsus.e = false;
+		this.$state.ippatsus.s = false;
+		this.$state.ippatsus.w = false;
+		this.$state.ippatsus.n = false;
 	}
 }
 
@@ -178,7 +200,19 @@ export type MasterState = {
 		w: Huro[];
 		n: Huro[];
 	};
+	firstTurnFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
 	riichis: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
+	doubleRiichis: {
 		e: boolean;
 		s: boolean;
 		w: boolean;
@@ -190,6 +224,12 @@ export type MasterState = {
 		w: boolean;
 		n: boolean;
 	};
+	rinshanFlags: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	}
 	points: {
 		e: number;
 		s: number;
@@ -304,7 +344,7 @@ export class MasterGameEngine {
 		return this.stateManager.turn;
 	}
 
-	public static createInitialState(): MasterState {
+	public static createInitialState(preset: Partial<MasterState> = {}): MasterState {
 		const ikasama: TileId[] = [125, 129, 9, 56, 57, 61, 77, 81, 85, 133, 134, 135, 121, 122];
 
 		const tiles = shuffle([...Common.TILE_ID_MAP.keys()]);
@@ -350,7 +390,19 @@ export class MasterGameEngine {
 				w: [],
 				n: [],
 			},
+			firstTurnFlags: {
+				e: true,
+				s: true,
+				w: true,
+				n: true,
+			},
 			riichis: {
+				e: false,
+				s: false,
+				w: false,
+				n: false,
+			},
+			doubleRiichis: {
 				e: false,
 				s: false,
 				w: false,
@@ -362,11 +414,17 @@ export class MasterGameEngine {
 				w: false,
 				n: false,
 			},
+			rinshanFlags: {
+				e: false,
+				s: false,
+				w: false,
+				n: false,
+			},
 			points: {
-				e: 25000,
-				s: 25000,
-				w: 25000,
-				n: 25000,
+				e: INITIAL_POINT,
+				s: INITIAL_POINT,
+				w: INITIAL_POINT,
+				n: INITIAL_POINT,
 			},
 			turn: 'e',
 			nextTurnAfterAsking: null,
@@ -376,6 +434,7 @@ export class MasterGameEngine {
 				cii: null,
 				kan: null,
 			},
+			...preset,
 		};
 	}
 
@@ -433,7 +492,13 @@ export class MasterGameEngine {
 		if (riichi) {
 			tx.$state.riichis[house] = true;
 			tx.$state.ippatsus[house] = true;
+			if (tx.$state.firstTurnFlags[house]) {
+				tx.$state.doubleRiichis[house] = true;
+			}
 		}
+
+		tx.$state.firstTurnFlags[house] = false;
+		tx.$state.rinshanFlags[house] = false;
 
 		const canRonHouses: House[] = [];
 		switch (house) {
@@ -548,20 +613,17 @@ export class MasterGameEngine {
 	public commit_kakan(house: House, tid: TileId) {
 		const tx = this.startTransaction();
 
-		const pon = tx.$state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tid));
+		const pon = tx.$state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tid)) as Huro & {type: 'pon'};
 		if (pon == null) throw new Error('No such pon');
 		tx.$state.handTiles[house].splice(tx.$state.handTiles[house].indexOf(tid), 1);
-		const tiles = [tid, ...pon.tiles];
+		const tiles = [tid, ...pon.tiles] as const;
 		tx.$state.huros[house].push({ type: 'minkan', tiles: tiles, from: pon.from });
 
-		tx.$state.ippatsus.e = false;
-		tx.$state.ippatsus.s = false;
-		tx.$state.ippatsus.w = false;
-		tx.$state.ippatsus.n = false;
+		tx.clearFirstTurnAndIppatsus();
 
 		tx.$state.activatedDorasCount++;
 
-		const rinsyan = tx.tsumo();
+		const rinsyan = tx.rinshanTsumo();
 
 		tx.$commit();
 
@@ -587,17 +649,14 @@ export class MasterGameEngine {
 		tx.$state.handTiles[house].splice(tx.$state.handTiles[house].indexOf(t2), 1);
 		tx.$state.handTiles[house].splice(tx.$state.handTiles[house].indexOf(t3), 1);
 		tx.$state.handTiles[house].splice(tx.$state.handTiles[house].indexOf(t4), 1);
-		const tiles = [t1, t2, t3, t4];
+		const tiles = [t1, t2, t3, t4] as const;
 		tx.$state.huros[house].push({ type: 'ankan', tiles: tiles });
 
-		tx.$state.ippatsus.e = false;
-		tx.$state.ippatsus.s = false;
-		tx.$state.ippatsus.w = false;
-		tx.$state.ippatsus.n = false;
+		tx.clearFirstTurnAndIppatsus();
 
 		tx.$state.activatedDorasCount++;
 
-		const rinsyan = tx.tsumo();
+		const rinsyan = tx.rinshanTsumo();
 
 		tx.$commit();
 
@@ -611,36 +670,40 @@ export class MasterGameEngine {
 	 * ツモ和了
 	 * @param house
 	 */
-	public commit_tsumoHora(house: House) {
+	public commit_tsumoHora(house: House, doLog = true) {
 		const tx = this.startTransaction();
 
 		if (tx.$state.turn !== house) throw new Error('Not your turn');
 
-		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-			house: house,
+		const yakus = calcYakusWithDetail({
+			seatWind: house,
 			handTiles: tx.handTileTypes[house],
-			huros: tx.$state.huros[house],
+			huros: tx.$state.huros[house].map(convertHuroForCalcYaku),
 			tsumoTile: tx.handTileTypes[house].at(-1)!,
 			ronTile: null,
+			firstTurn: tx.$state.firstTurnFlags[house],
 			riichi: tx.$state.riichis[house],
+			doubleRiichi: tx.$state.doubleRiichis[house],
 			ippatsu: tx.$state.ippatsus[house],
-		}));
+			rinshan: tx.$state.rinshanFlags[house],
+			haitei: tx.$state.tiles.length == 0,
+		});
 		const doraCount =
 			Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.$state.huros[house], tx.doras) +
 			Common.calcRedDoraCount(tx.$state.handTiles[house], tx.$state.huros[house]);
-		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
-		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
+		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, yakus);
 		tx.$state.points.e += pointDeltas.e;
 		tx.$state.points.s += pointDeltas.s;
 		tx.$state.points.w += pointDeltas.w;
 		tx.$state.points.n += pointDeltas.n;
-		console.log('yakus', house, yakus);
+		if (doLog) console.log('yakus', house, yakus);
 
 		tx.$commit();
 
 		return {
 			handTiles: tx.$state.handTiles[house],
 			tsumoTile: tx.$state.handTiles[house].at(-1)!,
+			yakus,
 		};
 	}
 
@@ -649,7 +712,7 @@ export class MasterGameEngine {
 		cii: false | 'x__' | '_x_' | '__x';
 		kan: boolean;
 		ron: House[];
-	}) {
+	}, doLog = true) {
 		const tx = this.startTransaction();
 
 		if (tx.$state.askings.pon == null && tx.$state.askings.cii == null && tx.$state.askings.kan == null && tx.$state.askings.ron == null) throw new Error();
@@ -668,26 +731,31 @@ export class MasterGameEngine {
 			const callers = answers.ron;
 			const callee = ron.callee;
 
-			for (const house of callers) {
-				const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-					house: house,
-					handTiles: tx.handTileTypes[house],
-					huros: tx.$state.huros[house],
+			const yakus: { [K in House]?: YakuSet } = Object.fromEntries(callers.map(house => {
+				const ronTile = tx.hoTileTypes[callee].at(-1)!;
+				const yakus = calcYakusWithDetail({
+					seatWind: house,
+					handTiles: tx.handTileTypes[house].concat([ronTile]),
+					huros: tx.$state.huros[house].map(convertHuroForCalcYaku),
 					tsumoTile: null,
-					ronTile: tx.hoTileTypes[callee].at(-1)!,
+					ronTile,
+					firstTurn: tx.$state.firstTurnFlags[house],
 					riichi: tx.$state.riichis[house],
+					doubleRiichi: tx.$state.doubleRiichis[house],
 					ippatsu: tx.$state.ippatsus[house],
-				}));
+					hotei: tx.$state.tiles.length == 0,
+				});
 				const doraCount =
 					Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.$state.huros[house], tx.doras) +
 					Common.calcRedDoraCount(tx.$state.handTiles[house], tx.$state.huros[house]);
-				const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
-				const point = Common.fanToPoint(fans, house === 'e');
+				const point = Common.calcPoint(yakus, house === 'e');
 				tx.$state.points[callee] -= point;
 				tx.$state.points[house] += point;
-				console.log('fans point', fans, point);
-				console.log('yakus', house, yakus);
-			}
+				if (doLog) {
+					console.log('yakus', house, yakus);
+				}
+				return [house, yakus] as const;
+			}));
 
 			tx.$commit();
 
@@ -696,6 +764,7 @@ export class MasterGameEngine {
 				callers: ron.callers,
 				callee: ron.callee,
 				turn: null,
+				yakus,
 			};
 		} else if (kan != null && answers.kan) {
 			// 大明槓
@@ -712,17 +781,14 @@ export class MasterGameEngine {
 			tx.$state.handTiles[kan.caller].splice(tx.$state.handTiles[kan.caller].indexOf(t2), 1);
 			tx.$state.handTiles[kan.caller].splice(tx.$state.handTiles[kan.caller].indexOf(t3), 1);
 
-			const tiles = [tile, t1, t2, t3];
+			const tiles = [tile, t1, t2, t3] as const;
 			tx.$state.huros[kan.caller].push({ type: 'minkan', tiles: tiles, from: kan.callee });
 
-			tx.$state.ippatsus.e = false;
-			tx.$state.ippatsus.s = false;
-			tx.$state.ippatsus.w = false;
-			tx.$state.ippatsus.n = false;
+			tx.clearFirstTurnAndIppatsus();
 
 			tx.$state.activatedDorasCount++;
 
-			const rinsyan = tx.tsumo();
+			const rinsyan = tx.rinshanTsumo();
 
 			tx.$state.turn = kan.caller;
 
@@ -746,13 +812,10 @@ export class MasterGameEngine {
 			tx.$state.handTiles[pon.caller].splice(tx.$state.handTiles[pon.caller].indexOf(t1), 1);
 			tx.$state.handTiles[pon.caller].splice(tx.$state.handTiles[pon.caller].indexOf(t2), 1);
 
-			const tiles = [tile, t1, t2];
+			const tiles = [tile, t1, t2] as const;
 			tx.$state.huros[pon.caller].push({ type: 'pon', tiles: tiles, from: pon.callee });
 
-			tx.$state.ippatsus.e = false;
-			tx.$state.ippatsus.s = false;
-			tx.$state.ippatsus.w = false;
-			tx.$state.ippatsus.n = false;
+			tx.clearFirstTurnAndIppatsus();
 
 			tx.$state.turn = pon.caller;
 
@@ -816,10 +879,7 @@ export class MasterGameEngine {
 
 			tx.$state.huros[cii.caller].push({ type: 'cii', tiles: tiles, from: cii.callee });
 
-			tx.$state.ippatsus.e = false;
-			tx.$state.ippatsus.s = false;
-			tx.$state.ippatsus.w = false;
-			tx.$state.ippatsus.n = false;
+			tx.clearFirstTurnAndIppatsus();
 
 			tx.$state.turn = cii.caller;
 
@@ -891,17 +951,35 @@ export class MasterGameEngine {
 				w: this.$state.huros.w,
 				n: this.$state.huros.n,
 			},
+			firstTurnFlags: {
+				e: this.$state.firstTurnFlags.e,
+				s: this.$state.firstTurnFlags.s,
+				w: this.$state.firstTurnFlags.w,
+				n: this.$state.firstTurnFlags.n,
+			},
 			riichis: {
 				e: this.$state.riichis.e,
 				s: this.$state.riichis.s,
 				w: this.$state.riichis.w,
 				n: this.$state.riichis.n,
 			},
+			doubleRiichis: {
+				e: this.$state.doubleRiichis.e,
+				s: this.$state.doubleRiichis.s,
+				w: this.$state.doubleRiichis.w,
+				n: this.$state.doubleRiichis.n,
+			},
 			ippatsus: {
 				e: this.$state.ippatsus.e,
 				s: this.$state.ippatsus.s,
 				w: this.$state.ippatsus.w,
 				n: this.$state.ippatsus.n,
+			},
+			rinshanFlags: {
+				e: this.$state.rinshanFlags.e,
+				s: this.$state.rinshanFlags.s,
+				w: this.$state.rinshanFlags.w,
+				n: this.$state.rinshanFlags.n,
 			},
 			points: {
 				e: this.$state.points.e,
@@ -911,6 +989,10 @@ export class MasterGameEngine {
 			},
 			latestDahaiedTile: null,
 			turn: this.$state.turn,
+			canPon: null,
+			canCii: null,
+			canKan: null,
+			canRon: null,
 		};
 	}
 
