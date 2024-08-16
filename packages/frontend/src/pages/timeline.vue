@@ -60,7 +60,7 @@ provide('shouldOmitHeaderTitle', true);
 const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
 
-type TimelinePageSrc = BasicTimelineType & `list:${string}`;
+type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
