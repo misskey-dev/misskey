@@ -13,6 +13,7 @@ import {
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { UserSearchService } from '@/core/UserSearchService.js';
+import { FlashService } from '@/core/FlashService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
@@ -213,6 +214,7 @@ const $UserWebhookService: Provider = { provide: 'UserWebhookService', useExisti
 const $SystemWebhookService: Provider = { provide: 'SystemWebhookService', useExisting: SystemWebhookService };
 const $UtilityService: Provider = { provide: 'UtilityService', useExisting: UtilityService };
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
+const $FlashService: Provider = { provide: 'FlashService', useExisting: FlashService };
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
 const $ClipService: Provider = { provide: 'ClipService', useExisting: ClipService };
 const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
@@ -361,6 +363,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SystemWebhookService,
 		UtilityService,
 		FileInfoService,
+		FlashService,
 		SearchService,
 		ClipService,
 		FeaturedService,
@@ -505,6 +508,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SystemWebhookService,
 		$UtilityService,
 		$FileInfoService,
+		$FlashService,
 		$SearchService,
 		$ClipService,
 		$FeaturedService,
@@ -650,6 +654,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SystemWebhookService,
 		UtilityService,
 		FileInfoService,
+		FlashService,
 		SearchService,
 		ClipService,
 		FeaturedService,

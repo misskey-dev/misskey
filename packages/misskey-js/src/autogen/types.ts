@@ -23608,6 +23608,18 @@ export type operations = {
    * **Credential required**: *No*
    */
   flash___featured: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** @default 10 */
+          limit?: number;
+        };
+      };
+    };
     responses: {
       /** @description OK (with results) */
       200: {

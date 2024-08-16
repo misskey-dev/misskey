@@ -318,6 +318,7 @@ import * as ep___pages_update from './endpoints/pages/update.js';
 import * as ep___flash_create from './endpoints/flash/create.js';
 import * as ep___flash_delete from './endpoints/flash/delete.js';
 import * as ep___flash_featured from './endpoints/flash/featured.js';
+import * as ep___v2_flash_featured from './endpoints/v2/flash/featured.js';
 import * as ep___flash_like from './endpoints/flash/like.js';
 import * as ep___flash_show from './endpoints/flash/show.js';
 import * as ep___flash_unlike from './endpoints/flash/unlike.js';
@@ -701,6 +702,7 @@ const $pages_update: Provider = { provide: 'ep:pages/update', useClass: ep___pag
 const $flash_create: Provider = { provide: 'ep:flash/create', useClass: ep___flash_create.default };
 const $flash_delete: Provider = { provide: 'ep:flash/delete', useClass: ep___flash_delete.default };
 const $flash_featured: Provider = { provide: 'ep:flash/featured', useClass: ep___flash_featured.default };
+const $v2_flash_featured: Provider = { provide: 'ep:v2/flash/featured', useClass: ep___v2_flash_featured.default };
 const $flash_like: Provider = { provide: 'ep:flash/like', useClass: ep___flash_like.default };
 const $flash_show: Provider = { provide: 'ep:flash/show', useClass: ep___flash_show.default };
 const $flash_unlike: Provider = { provide: 'ep:flash/unlike', useClass: ep___flash_unlike.default };
@@ -1088,6 +1090,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$flash_create,
 		$flash_delete,
 		$flash_featured,
+		$v2_flash_featured,
 		$flash_like,
 		$flash_show,
 		$flash_unlike,
@@ -1469,6 +1472,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$flash_create,
 		$flash_delete,
 		$flash_featured,
+		$v2_flash_featured,
 		$flash_like,
 		$flash_show,
 		$flash_unlike,
