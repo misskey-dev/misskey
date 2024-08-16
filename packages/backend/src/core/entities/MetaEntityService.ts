@@ -160,6 +160,7 @@ export class MetaEntityService {
 			proxyAccountName: proxyAccount ? proxyAccount.username : null,
 			features: {
 				localTimeline: instance.policies.ltlAvailable,
+				hanamiTimeline: instance.policies.hanamiTlAvailable,
 				globalTimeline: instance.policies.gtlAvailable,
 				registration: !instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,

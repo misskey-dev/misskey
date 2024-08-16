@@ -46,7 +46,7 @@ export const meta = {
 		bothWithRepliesAndWithFiles: {
 			message: 'Specifying both withReplies and withFiles is not supported',
 			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
-			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f'
+			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f',
 		},
 	},
 } as const;
@@ -207,10 +207,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (followees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
 					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInHanaMode IS FALSE)');
 				} else {
 					qb.where('note.userId = :meId', { meId: me.id });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInHanaMode IS FALSE)');
 				}
 			}))
 			.innerJoinAndSelect('note.user', 'user')

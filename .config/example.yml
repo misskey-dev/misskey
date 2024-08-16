@@ -319,5 +319,10 @@ signToActivityPubGet: true
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
 
+# timeout and maximum size for imports (e.g. note imports)
+#import:
+#  downloadTimeout: 30
+#  maxFileSize: 262144000
+
 # PID File of master process
 #pidFile: /tmp/misskey.pid

@@ -331,6 +331,22 @@ export interface Locale extends ILocale {
      */
     "import": string;
     /**
+     * インポート元
+     */
+    "importOrigin": string;
+    /**
+     * 他サービスでエクスポートしたノートなどをインポートすることができます。
+     */
+    "importNoteInfo": string;
+    /**
+     * すべてのノートがインポートできるわけではありません。改変のないMisskey以外では全くインポートできない場合もあります。
+     */
+    "importNoteDisclaimer": string;
+    /**
+     * インポートされたノートは、ユーザーページ以外には表示されない場合があります。
+     */
+    "importNoteWarm": string;
+    /**
      * エクスポート
      */
     "export": string;
@@ -5871,6 +5887,10 @@ export interface Locale extends ILocale {
     };
     "_timelineDescription": {
         /**
+         * はなみタイムラインでは、フォローしているアカウントの投稿に加えて、連合しているサーバーの人気な投稿も見られます。
+         */
+        "hanami": string;
+        /**
          * ホームタイムラインでは、あなたがフォローしているアカウントの投稿を見られます。
          */
         "home": string;
@@ -6432,6 +6452,16 @@ export interface Locale extends ILocale {
                  * 名前はまだない。
                  */
                 "flavor": string;
+            };
+            "_markedAsHanaModeUser": {
+                /**
+                 * 菫ほどな小さき人に生まれたし
+                 */
+                "title": string;
+                /**
+                 * はなモードを有効にした
+                 */
+                "description": string;
             };
             "_following1": {
                 /**
@@ -7034,6 +7064,10 @@ export interface Locale extends ILocale {
              */
             "ltlAvailable": string;
             /**
+             * はなみタイムラインの閲覧
+             */
+            "hanamiTlAvailable": string;
+            /**
              * パブリック投稿の許可
              */
             "canPublicNote": string;
@@ -7041,6 +7075,10 @@ export interface Locale extends ILocale {
              * ノート内の最大メンション数
              */
             "mentionMax": string;
+            /**
+             * ノートのインポート
+             */
+            "canImportNotes": string;
             /**
              * サーバー招待コードの発行
              */
@@ -7187,6 +7225,10 @@ export interface Locale extends ILocale {
              * botユーザー
              */
             "isBot": string;
+            /**
+             * はなモードが有効なユーザー
+             */
+            "isInHanaMode": string;
             /**
              * サスペンド済みユーザー
              */
@@ -9251,6 +9293,10 @@ export interface Locale extends ILocale {
          */
         "home": string;
         /**
+         * はなみ
+         */
+        "hanami": string;
+        /**
          * ローカル
          */
         "local": string;
@@ -10733,6 +10779,7 @@ export interface Locale extends ILocale {
          */
         "native": string;
     };
+
     "_reactionChecksMuting": {
         /**
          * リアクションでミュートを考慮する
@@ -10846,6 +10893,144 @@ export interface Locale extends ILocale {
          * 全てのノート
          */
         "all": string;
+
+    "_hana": {
+        /**
+         * はなみすきー設定
+         */
+        "hanaSettings": string;
+        /**
+         * はなモード
+         */
+        "hanaMode": string;
+        /**
+         * はな
+         */
+        "hanaModeShort": string;
+        "_inDevelopment": {
+            /**
+             * この機能は開発中です
+             */
+            "title": string;
+            /**
+             * はなみすきーは新規機能盛りだくさんで鋭意開発中です！
+             * どんな機能が実装されるかはお楽しみ。
+             */
+            "description": string;
+        };
+        "_welcome": {
+            /**
+             * 「{x}」とは？
+             */
+            "whatAboutX": ParameterizedString<"x">;
+            "_aboutHana": {
+                /**
+                 * はなみすきー
+                 */
+                "title": string;
+                /**
+                 * はなみすきーは、Misskeyベースの分散型SNSサービスです。
+                 * あなたのSNS体験に「はな」を添える、数々の独自機能を備えています。
+                 */
+                "description": string;
+            };
+            "_aboutDecentralized": {
+                /**
+                 * 分散型SNS
+                 */
+                "title": string;
+                /**
+                 * 一般的なSNSサービス（X, Instagram, YouTubeなど）はそのサービス内で投稿データなどが完結するようになっています。しかし、分散型SNSは、サービス同士が共通の仕組みを通して連携しており、他のサービスのユーザーの投稿を見たり、フォローしたりできるのです。
+                 * はなみすきーは標準で分散型テクノロジーのActivityPubに対応しており、他のMisskey/Mastodon等を利用したサービスやThreadsなどと通信することができます。
+                 */
+                "description": string;
+            };
+            "_features": {
+                /**
+                 * 近日提供予定
+                 */
+                "inDevelopment": string;
+                "_hanaMode": {
+                    /**
+                     * はなモードで、あなただけのSNS体験を
+                     */
+                    "title": string;
+                    /**
+                     * はなみすきー独自機能「はなモード」をオンにすると、投稿内容がローカルタイムライン（LTL）に流れないようになります。ただし、「ホーム」投稿とは違い、LTLへのリノートが可能なほか、外部サーバーには通常のパブリックの投稿として配信されます。
+                     * これにより、おひとりさまサーバーに近い分散SNS体験をワンクリックで構築することができます。
+                     */
+                    "description": string;
+                };
+                "_easyMigration": {
+                    /**
+                     * 他サービスから簡単移行
+                     */
+                    "title": string;
+                    /**
+                     * 他のMisskeyサーバーなどからの移行が簡単になる機能を提供！過去の投稿もはなみすきー上に引き継ぐことができます。
+                     */
+                    "description": string;
+                };
+                "_preciseSearching": {
+                    /**
+                     * 最新技術を活用した高精度な検索
+                     */
+                    "title": string;
+                    /**
+                     * 機械学習や最新の学術研究をもとに、はなみすきーのためにチューニングされた高精度で高速な検索機能を利用できます。また、はなみすきーの検索機能そのものが学術研究プロジェクトとなっているため、検索精度は日進月歩となることが期待できます。
+                     */
+                    "description": string;
+                };
+            };
+            "_cta": {
+                /**
+                 * 「はな」のあるSNS体験を楽しもう
+                 */
+                "title": string;
+            };
+        };
+        "_hanaModeSwitcher": {
+            /**
+             * こんな方におすすめ
+             */
+            "recomenddedFor": string;
+            /**
+             * 通常
+             */
+            "normal": string;
+            /**
+             * LTLが使えます
+             */
+            "normal1": string;
+            /**
+             * 公開範囲「パブリック」で投稿した内容はLTLに表示されます
+             */
+            "normal2": string;
+            /**
+             * サーバー内のユーザーとの交流を重視したい方
+             */
+            "normalRecommend": string;
+            /**
+             * LTLが使えません
+             */
+            "hana1": string;
+            /**
+             * 公開範囲「パブリック」で投稿した内容はLTLに表示されません
+             */
+            "hana2": string;
+            /**
+             * フォロー中ユーザーの最新のノートとFediverseの人気の投稿をザッピングできる「はなみタイムライン」が使用できます
+             */
+            "hana3": string;
+            /**
+             * おひとりさまサーバーのような分散SNS体験をしたい方（内々での交流だけでなく、外部サーバーとの交流もしっかり重視したい方）
+             */
+            "hanaRecommend": string;
+            /**
+             * 一定期間にモードを変更できる回数には制限があります。
+             */
+            "saveConfirmDescription": string;
+        };
     };
 }
 declare const locales: {

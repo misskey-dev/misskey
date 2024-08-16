@@ -108,6 +108,12 @@ function connectChannel() {
 			withFiles: props.onlyFiles ? true : undefined,
 		});
 		connection2 = stream.useChannel('main');
+	}	else if (props.src === 'hanami') {
+		connection = stream.useChannel('hanamiTimeline', {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		});
+		connection2 = stream.useChannel('main');
 	} else if (props.src === 'local') {
 		connection = stream.useChannel('localTimeline', {
 			withRenotes: props.withRenotes,
@@ -173,6 +179,12 @@ function updatePaginationQuery() {
 		};
 	} else if (props.src === 'home') {
 		endpoint = 'notes/timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'hanami') {
+		endpoint = 'notes/hanami-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,

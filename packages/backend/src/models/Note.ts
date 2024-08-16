@@ -83,6 +83,11 @@ export class MiNote {
 	})
 	public localOnly: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public isNoteInHanaMode: boolean;
+
 	@Column('varchar', {
 		length: 64, nullable: true,
 	})

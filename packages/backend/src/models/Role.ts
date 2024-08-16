@@ -84,6 +84,13 @@ type CondFormulaValueIsCat = {
 };
 
 /**
+ * はなモードを有効にしたアカウントの場合のみ成立とする
+ */
+type CondFormulaValueIsinHanaMode = {
+	type: 'isInHanaMode';
+};
+
+/**
  * 「ユーザを見つけやすくする」が有効なアカウントの場合のみ成立とする
  */
 type CondFormulaValueIsExplorable = {
@@ -180,6 +187,7 @@ export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueIsLocked |
 	CondFormulaValueIsBot |
 	CondFormulaValueIsCat |
+	CondFormulaValueIsinHanaMode |
 	CondFormulaValueIsExplorable |
 	CondFormulaValueRoleAssignedTo |
 	CondFormulaValueCreatedLessThan |

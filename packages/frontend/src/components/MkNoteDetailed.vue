@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="isMyRenote" class="ti ti-dots" style="margin-right: 4px;"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
+			<span v-if="note.visibility === 'public' && note.channel == null && note.user.isInHanaMode === true" style="margin-left: 0.5em;"><i class="ti ti-hanamisskey-hanamode"></i></span>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
@@ -54,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkA>
 					<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 					<div :class="$style.noteHeaderInfo">
+						<span v-if="note.visibility === 'public' && note.channel == null && note.isNoteInHanaMode === true" style="margin-left: 0.5em;" :title="`${i18n.ts._visibility[note.visibility]} (${i18n.ts._hana.hanaMode})`"><i class="ti ti-hanamisskey-hanamode"></i></span>
 						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
 							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>

@@ -10,9 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ i18n.ts.visibility }}
 		</div>
 		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
-			<div :class="$style.icon"><i class="ti ti-world"></i></div>
+			<div :class="$style.icon">
+				<i v-if="$i.isInHanaMode" class="ti ti-hanamisskey-hanamode"></i>
+				<i v-else class="ti ti-world"></i>
+			</div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}{{ $i.isInHanaMode ? ` (${i18n.ts._hana.hanaModeShort})` : '' }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
@@ -46,6 +49,10 @@ import { nextTick, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
+
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 

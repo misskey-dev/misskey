@@ -5,6 +5,8 @@
 
 import { envOption } from "@/env.js";
 
+import { Optional } from '@nestjs/common';
+
 export const packedRoleCondFormulaLogicsSchema = {
 	type: 'object',
 	properties: {
@@ -178,6 +180,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		hanamiTlAvailable: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canPublicNote: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -187,6 +193,10 @@ export const packedRolePoliciesSchema = {
 			optional: false, nullable: false,
 		},
 		canInvite: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canImportNotes: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},

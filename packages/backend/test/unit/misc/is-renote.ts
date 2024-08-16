@@ -19,6 +19,7 @@ const base: MiNote = {
 	userId: 'some-user-id',
 	user: null,
 	localOnly: false,
+	isNoteInHanaMode: false,
 	reactionAcceptance: null,
 	renoteCount: 0,
 	repliesCount: 0,
