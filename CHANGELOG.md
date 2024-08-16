@@ -22,6 +22,7 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/679)
 - Fix: ActivityPubのエンティティタイプ判定で不明なタイプを受け取った場合でも処理を継続するように
   - キュー処理のつまりが改善される可能性があります
+- Fix: リバーシの対局設定の変更が反映されないのを修正
 
 ## 2024.7.0
 
