@@ -55,7 +55,8 @@ const tab = ref('featured');
 
 const featuredFlashsPagination = {
 	endpoint: 'flash/featured' as const,
-	noPaging: true,
+	limit: 5,
+	offsetMode: true,
 };
 const myFlashsPagination = {
 	endpoint: 'flash/my' as const,

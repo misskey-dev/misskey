@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: Playの「人気」タブで10件以上表示可能に #14399
 
 ### Client
 -
