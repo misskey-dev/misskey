@@ -127,7 +127,7 @@ export const tutorialBodyPagesDef = [{
 	type: 'tutorial',
 	title: i18n.ts._initialTutorial._timeline.title,
 }, {
-	icon: 'ti ti-user-add',
+	icon: 'ti ti-user',
 	type: 'setup',
 	title: i18n.ts.follow,
 }, {
@@ -207,7 +207,7 @@ const componentsDef: Tuple<ComponentDef, typeof tutorialBodyPagesDef.length> = [
 const page = ref(props.initialPage ?? 0);
 
 const currentPageDef = computed(() => {
-	if (page.value > 0 && page.value < MAX_PAGE - 1) {
+	if (page.value > 0 && page.value < MAX_PAGE) {
 		return tutorialBodyPagesDef[page.value - 1] ?? null;
 	} else {
 		return null;
