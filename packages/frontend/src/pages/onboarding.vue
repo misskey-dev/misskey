@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.onboardingRoot, { [$style.ready]: animationPhase >= 1 }]">
 	<MkAnimBg :class="$style.onboardingBg"/>
 	<div :class="[$style.onboardingContainer]">
-		<div :class="[$style.tutorialTitle, { [$style.showing]: (tutorialEl?.page !== 0) }]">
+		<div :class="[$style.tutorialTitle, { [$style.showing]: ((tutorialEl?.page ?? 0) !== 0) }]">
 			<div :class="$style.text">
 				<span v-if="tutorialEl?.currentPageDef">
 					<i v-if="tutorialEl.currentPageDef.icon" :class="tutorialEl.currentPageDef.icon"></i> {{ tutorialEl.currentPageDef.title }}
