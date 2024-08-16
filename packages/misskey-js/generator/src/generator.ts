@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 import { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
@@ -20,9 +20,7 @@ async function generateBaseTypes(
 	}
 	lines.push('');
 
-	const json = await readFile(openApiJsonPath, 'utf-8');
-
-	const generatedTypes = await openapiTS(json, {
+	const generatedTypes = await openapiTS(openApiJsonPath, {
 		exportType: true,
 		transform(schemaObject) {
 			if ('format' in schemaObject && schemaObject.format === 'binary') {

@@ -92,6 +92,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1);
 
 		const info = {
+			operationId: endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
 			summary: endpoint.name,
 			description: desc,
 			externalDocs: {
@@ -209,15 +210,9 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 
 		spec.paths['/' + endpoint.name] = {
 			...(endpoint.meta.allowGet ? {
-				get: {
-					...info,
-					operationId: 'get_____' + endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
-				},
+				get: info,
 			} : {}),
-			post: {
-				...info,
-				operationId: 'post_____' + endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
-			},
+			post: info,
 		};
 	}
 
