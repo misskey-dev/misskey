@@ -318,7 +318,7 @@ export type ModerationLogPayloads = {
 	unsetUserMutualLink: {
 		userId: string;
 		userUsername: string;
-		userMutualLinkSections: { name: string | null; mutualLinks: { fileId: string; description: string | null; imgSrc: string; }[]; }[] | []
+		userMutualLinkSections: { name: string | null; mutualLinks: { id: string; url: string; fileId: string; description: string | null; imgSrc: string; }[]; }[] | []
 	}
 };
 

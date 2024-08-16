@@ -50,6 +50,7 @@ export class MiUserProfile {
 		name: string | null;
 		mutualLinks: {
 			id: string;
+			url: string;
 			fileId: MiDriveFile['id'];
 			description: string | null;
 			imgSrc: string;
