@@ -9002,6 +9002,10 @@ export interface Locale extends ILocale {
          */
         "chooseBlock": string;
         /**
+         * セクションタイトルを入力
+         */
+        "enterSectionTitle": string;
+        /**
          * 種類を選択
          */
         "selectType": string;
@@ -9695,6 +9699,10 @@ export interface Locale extends ILocale {
          * 通報の通知先を削除
          */
         "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * アカウントを削除
+         */
+        "deleteAccount": string;
     };
     "_fileViewer": {
         /**
