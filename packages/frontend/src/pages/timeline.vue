@@ -37,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import type { BasicTimelineType } from '@/timelines.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
@@ -54,7 +55,6 @@ import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, hasLocalOnly } from '@/timelines.js';
-import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
