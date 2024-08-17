@@ -98,12 +98,9 @@ function showMenu(ev: MouseEvent) {
 		icon: 'ti ti-cloud-upload',
 		action: () => {
 			os.selectDriveFolder(false).then(async folder => {
-				if (folder[0] == null) {
-					return;
-				}
 				misskeyApi('drive/files/upload-from-url', {
 					url: props.image.url,
-					folderId: folder ? folder[0].id : undefined,
+					folderId: folder[0]?.id,
 				});
 			});
 		},
