@@ -32,6 +32,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</MkRadios>
 
+  <MkSelect v-model="searchEngine" class="_formBlock">
+    <template #label>{{ i18n.ts.searchEngine }}</template>
+    <option value="https://google.com/search?">
+      Google Search (google.com)
+    </option>
+    <option value="https://duckduckgo.com/?">
+      DuckDuckGo (duckduckgo.com)
+    </option>
+    <option value="https://search.yahoo.com/search?">
+      Yahoo! Search (search.yahoo.com)
+    </option>
+    <option value="https://www.ecosia.org/search?">
+      Ecosia (ecosia.org)
+    </option>
+    <option value="https://www.startpage.com/do/search?">
+      Startpage (startpage.com)
+    </option>
+    <option value="https://search.disroot.org/search?">
+      SearX (search.disroot.org)
+    </option>
+    <template #caption>{{ i18n.ts.searchEngineCaption }}</template>
+  </MkSelect>
+
 	<FormSection>
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
@@ -324,6 +347,7 @@ const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('u
 const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
 const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
 const contextMenu = computed(defaultStore.makeGetterSetter('contextMenu'));
+const searchEngine = computed(defaultStore.makeGetterSetter('searchEngine'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
