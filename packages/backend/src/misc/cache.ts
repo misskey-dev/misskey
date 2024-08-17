@@ -72,6 +72,10 @@ export class RedisKVCache<T> {
 
 	/**
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 * This awaits the call to Redis to ensure that the write succeeded, which is important for a few reasons:
+	 *   * Other code uses this to synchronize changes between worker processes. A failed write can internally de-sync the cluster.
+	 *   * Without an `await`, consecutive calls could race. An unlucky race could result in the older write overwriting the newer value.
+	 *   * Not awaiting here makes the entire cache non-consistent. The prevents many possible uses.
 	 */
 	@bindThis
 	public async fetch(key: string): Promise<T> {
@@ -172,6 +176,10 @@ export class RedisSingleCache<T> {
 
 	/**
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 * This awaits the call to Redis to ensure that the write succeeded, which is important for a few reasons:
+	 *   * Other code uses this to synchronize changes between worker processes. A failed write can internally de-sync the cluster.
+	 *   * Without an `await`, consecutive calls could race. An unlucky race could result in the older write overwriting the newer value.
+	 *   * Not awaiting here makes the entire cache non-consistent. The prevents many possible uses.
 	 */
 	@bindThis
 	public async fetch(): Promise<T> {
