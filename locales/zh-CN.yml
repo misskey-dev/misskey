@@ -1665,6 +1665,7 @@ _achievements:
     _bubbleGameDoubleExplodingHead:
       title: "两个🤯"
       description: "你合成出了2个游戏里最大的Emoji"
+      flavor: ""
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -2498,6 +2499,8 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "新建了举报通知"
   updateAbuseReportNotificationRecipient: "更新了举报通知"
   deleteAbuseReportNotificationRecipient: "删除了举报通知"
+  deletePage: "删除了页面"
+  deleteFlash: "删除了 Play"
 _fileViewer:
   title: "文件信息"
   type: "文件类型"
