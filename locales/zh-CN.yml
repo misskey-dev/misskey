@@ -2499,6 +2499,7 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "新建了举报通知"
   updateAbuseReportNotificationRecipient: "更新了举报通知"
   deleteAbuseReportNotificationRecipient: "删除了举报通知"
+  deleteAccount: "删除了账户"
   deletePage: "删除了页面"
   deleteFlash: "删除了 Play"
 _fileViewer:
