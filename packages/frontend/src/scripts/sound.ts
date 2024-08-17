@@ -9,6 +9,7 @@ import { RateLimiter } from '@/scripts/rate-limiter.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
+let canPlay = true;
 
 export const soundsTypes = [
 	// 音声なし
