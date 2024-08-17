@@ -2316,6 +2316,7 @@ _pages:
   eyeCatchingImageSet: "设置封面图片"
   eyeCatchingImageRemove: "删除封面图片"
   chooseBlock: "添加块"
+  enterSectionTitle: "输入会话标题"
   selectType: "选择类型"
   contentBlocks: "内容"
   inputBlocks: "输入"
@@ -2502,6 +2503,7 @@ _moderationLogTypes:
   deleteAccount: "删除了账户"
   deletePage: "删除了页面"
   deleteFlash: "删除了 Play"
+  deleteGalleryPost: "删除了图库稿件"
 _fileViewer:
   title: "文件信息"
   type: "文件类型"
