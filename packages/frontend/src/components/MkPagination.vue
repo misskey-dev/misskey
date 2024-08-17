@@ -75,6 +75,22 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 
 	offsetMode?: boolean;
 
+	/**
+	 * ページ数を返してくるエンドポイントに対応するモード.
+	 * リクエストに以下のプロパティが含まれている必要がある.
+	 *
+	 * ◯リクエスト
+	 * ```json
+	 * { limit: number; page: number; }
+	 * ```
+	 *
+	 * ◯レスポンス
+	 * ```json
+	 * { items: T[]; page: number; count; number; allPages: number; allCount: number; }
+	 * ```
+	 */
+	pagingMode?: boolean;
+
 	pageEl?: HTMLElement;
 };
 
