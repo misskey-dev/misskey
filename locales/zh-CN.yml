@@ -1665,6 +1665,7 @@ _achievements:
     _bubbleGameDoubleExplodingHead:
       title: "两个🤯"
       description: "你合成出了2个游戏里最大的Emoji"
+      flavor: ""
 _role:
   new: "创建角色"
   edit: "编辑角色"
