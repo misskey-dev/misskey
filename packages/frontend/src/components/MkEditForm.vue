@@ -607,7 +607,7 @@ function cancel() {
 }
 
 function insertMention() {
-	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
+	os.selectUser({ localOnly: props.initialLocalOnly ?? false, includeSelf: true }).then(user => {
 		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
 	});
 }
