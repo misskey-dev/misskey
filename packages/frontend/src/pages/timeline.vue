@@ -240,7 +240,7 @@ function closeTutorial(): void {
 }
 
 function switchTlIfNeeded() {
-	if (isBasicTimeline(src.value) && !availableBasicTimelines().includes(src.value)) {
+	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
 		src.value = availableBasicTimelines()[0];
 	}
 }
