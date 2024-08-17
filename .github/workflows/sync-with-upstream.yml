@@ -1,0 +1,23 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    # every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # Required for creating PRs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync with upstream repository
+        uses: nadesskey/create-upstream-sync-pr-action@v1.0.0
+        with:
+          base: 'develop' # Branch to create PR
+          head: 'master' # Branch to merge (should be upstream branch name)
