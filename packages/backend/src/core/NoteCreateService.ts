@@ -305,7 +305,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Check blocking
-		if (this.isRenote(data) && !this.isQuote(data)) {
+		if (this.isRenote(data) && !this.noteEntityService.isQuote(data)) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
@@ -645,7 +645,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			// If it is renote
 			if (this.isRenote(data)) {
-				const type = this.isQuote(data) ? 'quote' : 'renote';
+				const type = this.noteEntityService.isQuote(data) ? 'quote' : 'renote';
 
 				// Notify
 				if (data.renote.userHost === null) {
