@@ -98,6 +98,12 @@ export function uploadFile(
 							title: i18n.ts.failedToUpload,
 							text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
 						});
+					} else if (xhr.status === 524) {
+						alert({
+							type: 'error',
+							title: i18n.ts.failedToUpload,
+							text: i18n.ts.cannotUploadBecauseTimeout,
+						});
 					} else if (ev.target?.response) {
 						const res = JSON.parse(ev.target.response);
 						if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
