@@ -204,6 +204,7 @@ export class ApRequestService {
 
 		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
 		const contentType = res.headers.get('content-type');
+
 		if (contentType?.split(';')[0]?.trimEnd()?.toLowerCase() === 'text/html' && _followAlternate === true) {
 			const html = await res.text();
 			const window = new Window();
