@@ -1,11 +1,16 @@
 import type { operations } from './autogen/types.js';
 import type {
-	AbuseReportNotificationRecipient, Ad,
+	AbuseReportNotificationRecipient,
+	Ad,
 	Announcement,
-	EmojiDetailed, InviteCode,
+	EmojiDetailed,
+	InviteCode,
 	MetaDetailed,
 	Note,
-	Role, SystemWebhook, UserLite,
+	Role,
+	ReversiGameDetailed,
+	SystemWebhook,
+	UserLite,
 } from './autogen/models.js';
 
 export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'roleAssigned', 'achievementEarned'] as const;
@@ -160,7 +165,7 @@ export const reversiUpdateKeys = [
 	'canPutEverywhere',
 	'loopedBoard',
 	'timeLimitForEachTurn',
-] as const;
+] as const satisfies (keyof ReversiGameDetailed)[];
 
 export type ReversiUpdateKey = typeof reversiUpdateKeys[number];
 
