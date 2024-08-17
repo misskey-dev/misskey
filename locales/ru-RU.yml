@@ -1612,8 +1612,6 @@ _sfx:
   note: "Заметки"
   noteMy: "Собственные заметки"
   notification: "Уведомления"
-  antenna: "Антенна"
-  channel: "Канал"
 _ago:
   future: "Из будущего"
   justNow: "Только что"
@@ -1983,6 +1981,10 @@ _webhookSettings:
   createWebhook: "Создать вебхук"
   name: "Название"
   active: "Вкл."
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Электронная почта"
 _moderationLogTypes:
   suspend: "Заморозить"
   addCustomEmoji: "Добавлено эмодзи"
