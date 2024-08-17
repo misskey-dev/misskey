@@ -24,7 +24,7 @@ type AllNullRecord<T> = {
 	[P in keyof T]: null;
 };
 
-export type Renote =
+export type PureRenote =
 	Omit<Note, 'renote' | 'renoteId' | 'reply' | 'replyId' | 'text' | 'cw' | 'files' | 'fileIds' | 'poll'>
 	& AllNullRecord<Pick<Note, 'reply' | 'replyId' | 'text' | 'cw' | 'poll'>>
 	& { files: []; fileIds: []; }
