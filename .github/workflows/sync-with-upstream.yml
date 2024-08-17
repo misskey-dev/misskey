@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Sync with upstream repository
-        uses: nadesskey/create-upstream-sync-pr-action@v1.0.0
+        uses: nadesskey/create-upstream-sync-pr-action@v1.0
         with:
           base: 'develop' # Branch to create PR
           head: 'develop' # Branch to merge (should be upstream branch name)
