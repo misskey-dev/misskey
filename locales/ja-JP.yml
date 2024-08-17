@@ -2371,6 +2371,7 @@ _pages:
   eyeCatchingImageSet: "アイキャッチ画像を設定"
   eyeCatchingImageRemove: "アイキャッチ画像を削除"
   chooseBlock: "ブロックを追加"
+  enterSectionTitle: "セクションタイトルを入力"
   selectType: "種類を選択"
   contentBlocks: "コンテンツ"
   inputBlocks: "入力"
@@ -2567,6 +2568,7 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "通報の通知先を作成"
   updateAbuseReportNotificationRecipient: "通報の通知先を更新"
   deleteAbuseReportNotificationRecipient: "通報の通知先を削除"
+  deleteAccount: "アカウントを削除"
 
 _fileViewer:
   title: "ファイルの詳細"
