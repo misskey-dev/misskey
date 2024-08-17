@@ -17,6 +17,7 @@
 - Fix: 特定の条件下でノートの削除ボタンが出ないのを修正
 
 ### Server
+- enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
 - Enhance: 凍結されたアカウントのフォローリクエストを表示しないように
 - Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
   - 通知ページや通知カラム(デッキ)を開いている状態において、新たに発生した通知が既読されない問題が修正されます。
