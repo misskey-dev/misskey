@@ -27,15 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkSpacer>
 	<template #footer>
-		<div :class="$style.footer">
-			<MkSpacer>
-				<div class="_buttons">
-					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
-					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-				</div>
-			</MkSpacer>
-		</div>
+		<MkSpacer>
+			<div class="_buttons">
+				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			</div>
+		</MkSpacer>
 	</template>
 </MkStickyContainer>
 </template>
@@ -465,8 +463,3 @@ definePageMetadata(() => ({
 	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>
-<style lang="scss" module>
-.footer {
-	background: var(--panel);
-}
-</style>
