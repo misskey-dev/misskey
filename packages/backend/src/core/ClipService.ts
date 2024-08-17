@@ -134,6 +134,10 @@ export class ClipService {
 			throw new ClipService.NoSuchClipError();
 		}
 
+		if (await this.clipNotesRepository.existsBy({ clipId, noteId })) {
+			throw new ClipService.AlreadyAddedError();
+		}
+
 		const policies = await this.roleService.getUserPolicies(me.id);
 
 		const currentClipCount = await this.clipsRepository.countBy({
@@ -141,6 +145,13 @@ export class ClipService {
 		});
 		if (currentClipCount > policies.clipLimit) {
 			throw new ClipService.ClipLimitExceededError();
+		}
+
+		const currentNoteCount = await this.clipNotesRepository.countBy({
+			clipId: clip.id,
+		});
+		if (currentNoteCount >= policies.noteEachClipsLimit) {
+			throw new ClipService.TooManyClipNotesError();
 		}
 
 		const currentNoteCounts = await this.clipNotesRepository
@@ -152,13 +163,6 @@ export class ClipService {
 			.getRawMany<{ count: number }>();
 		if (currentNoteCounts.some((x) => x.count > policies.noteEachClipsLimit)) {
 			throw new ClipService.ClipNotesLimitExceededError();
-		}
-
-		const currentNoteCount = await this.clipNotesRepository.countBy({
-			clipId: clip.id,
-		});
-		if (currentNoteCount >= policies.noteEachClipsLimit) {
-			throw new ClipService.TooManyClipNotesError();
 		}
 
 		try {
