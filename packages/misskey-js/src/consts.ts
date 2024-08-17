@@ -4,9 +4,12 @@ import type {
 	Ad,
 	Announcement,
 	EmojiDetailed,
+	Flash,
+	GalleryPost,
 	InviteCode,
 	MetaDetailed,
 	Note,
+	Page,
 	Role,
 	ReversiGameDetailed,
 	SystemWebhook,
@@ -405,18 +408,18 @@ export type ModerationLogPayloads = {
 		pageId: string;
 		pageUserId: string;
 		pageUserUsername: string;
-		page: any;
+		page: Page;
 	};
 	deleteFlash: {
 		flashId: string;
 		flashUserId: string;
 		flashUserUsername: string;
-		flash: any;
+		flash: Flash;
 	};
 	deleteGalleryPost: {
 		postId: string;
 		postUserId: string;
 		postUserUsername: string;
-		post: any;
+		post: GalleryPost;
 	};
 };
