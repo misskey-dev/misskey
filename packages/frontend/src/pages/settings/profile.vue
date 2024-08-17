@@ -112,7 +112,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #item="{ element: sectionElement, index: sectionIndex }">
 						<div :class="$style.mutualLinkSectionRoot">
 							<button v-if="!mutualLinkSectionEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
-							<button v-if="mutualLinkSectionEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLinkSection(sectionIndex)"><i class="ti ti-x"></i></button>
+
+							{{sectionElement.length }}
+							<button v-if="mutualLinkSectionEditMode" :disabled="sectionElement.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLinkSection(sectionIndex)"><i class="ti ti-x"></i></button>
 							<FormSlot :style="{flexGrow: 1}">
 								<MkFolder>
 									<template #label>{{ sectionElement.name || i18n.ts._profile.sectionNameNone }}</template>
@@ -136,7 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 										<template #item="{ element: linkElement, index: linkIndex }">
 											<div :class="$style.mutualLinkRoot">
 												<button v-if="!mutualLinkSectionEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
-												<button v-if="mutualLinkSectionEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLink(sectionIndex,linkIndex)"><i class="ti ti-x"></i></button>
+												<button v-if="mutualLinkSectionEditMode" class="_button" :class="$style.dragItemRemove" @click="deleteMutualLink(sectionIndex,linkIndex)"><i class="ti ti-x"></i></button>
 
 												<div class="_gaps_s" :style="{flex: 1}">
 													<MkInfo v-if="linkIndex >= $i.policies.mutualLinkLimit" warn><Mfm :text="i18n.tsx._profile.policyDisplayLimitExceeded({ max: $i.policies.mutualLinkLimit })"/></MkInfo>

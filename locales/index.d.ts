@@ -5095,6 +5095,10 @@ export interface Locale extends ILocale {
      * 相互リンク
      */
     "mutualLink": string;
+    /**
+     * このファイルをドライブに保存する
+     */
+    "saveThisFile": string;
     "_bubbleGame": {
         /**
          * 遊び方

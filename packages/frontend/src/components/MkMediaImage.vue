@@ -62,6 +62,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { $i, iAmModerator } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -91,6 +92,20 @@ function showMenu(ev: MouseEvent) {
 		icon: 'ti ti-eye-off',
 		action: () => {
 			hide.value = true;
+		},
+	}, {
+		text: i18n.ts.saveThisFile,
+		icon: 'ti ti-cloud-upload',
+		action: () => {
+			os.selectDriveFolder(false).then(async folder => {
+				if (folder[0] == null) {
+					return;
+				}
+				misskeyApi('drive/files/upload-from-url', {
+					url: props.image.url,
+					folderId: folder ? folder[0].id : undefined,
+				});
+			});
 		},
 	}];
 

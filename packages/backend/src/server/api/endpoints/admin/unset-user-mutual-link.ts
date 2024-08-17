@@ -19,8 +19,9 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		itemId: { type: 'string', format: 'misskey:id' },
 	},
-	required: ['userId'],
+	required: ['userId', 'itemId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -43,7 +44,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			await this.userProfilesRepository.update(user.id, {
-				mutualLinkSections: [],
+				mutualLinkSections: userProfile.mutualLinkSections.map(section => ({
+					...section,
+					mutualLinks: section.mutualLinks.filter(item => item.id !== ps.itemId),
+				})),
 			});
 
 			this.moderationLogService.log(me, 'unsetUserMutualLink', {

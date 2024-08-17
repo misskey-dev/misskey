@@ -66,7 +66,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkButton v-if="user.host == null" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 								<MkButton inline danger @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 								<MkButton inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
-								<MkButton inline danger @click="unsetUserMutualLink"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserMutualLink }}</MkButton>
+								<MkFolder v-if="user?.mutualLinkSections && user?.mutualLinkSections.reduce((acc, section) => acc + section.mutualLinks.length, 0) > 0">
+									<template #icon><i class="ti ti-link"></i></template>
+									<template #label>{{ i18n.ts._profile.mutualLinksEdit }}</template>
+
+									<div v-for="mutualLinkSection in user?.mutualLinkSections">
+										<div v-for="mutualLink in mutualLinkSection.mutualLinks" :key="mutualLink.id" :class="$style.fields">
+											<p> {{ mutualLink.url }} </p>
+											<img :class="$style.mutualLinkImg" :src="mutualLink.imgSrc" :alt="mutualLink.description"/>
+											<p> {{ mutualLink.description }} </p>
+											<MkButton inline danger @click="unsetUserMutualLink(mutualLink.id)"><i class="ti ti-link"></i> {{ i18n.ts.unsetUserMutualLink }}</MkButton>
+										</div>
+									</div>
+								</MkFolder>
 							</div>
 						</MkFolder>
 
@@ -365,15 +377,16 @@ async function unsetUserBanner() {
 	}).then(refreshUser);
 }
 
-async function unsetUserMutualLink() {
+async function unsetUserMutualLink(mutualLinkid: string) {
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.unsetUserMutualLinkConfirm,
 	});
 	if (confirm.canceled) return;
 
-	await os.apiWithDialog('admin/unset-user-mutual-banner', {
+	await os.apiWithDialog('admin/unset-user-mutual-link', {
 		userId: user.value.id,
+		itemId: mutualLinkid,
 	}).then(refreshUser);
 }
 
@@ -704,5 +717,17 @@ definePageMetadata(() => ({
 	padding: 8px 12px;
 	border-radius: 6px;
 	cursor: pointer;
+}
+
+.mutualLinkImg {
+	max-width: 200px;
+	max-height: 40px;
+}
+.fields {
+	padding: 24px;
+	border-bottom: solid 0.5px var(--divider);
+	&:last-child {
+		border-bottom: none;
+	}
 }
 </style>

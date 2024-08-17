@@ -624,6 +624,7 @@ onUnmounted(() => {
 					padding: 24px;
 					font-size: 0.9em;
 					border-top: solid 0.5px var(--divider);
+					margin-top: 0.5px;
 
 					> .field {
 						display: flex;

@@ -1269,6 +1269,7 @@ blockThisUser: "このユーザーをブロックする"
 muteThisUser: "このユーザーをミュートする"
 here: "こちら"
 mutualLink: "相互リンク"
+saveThisFile: "このファイルをドライブに保存する"
 
 _bubbleGame:
   howToPlay: "遊び方"

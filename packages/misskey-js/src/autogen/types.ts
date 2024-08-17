@@ -6855,6 +6855,8 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           userId: string;
+          /** Format: misskey:id */
+          itemId: string;
         };
       };
     };
