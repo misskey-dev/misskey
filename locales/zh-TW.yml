@@ -2316,6 +2316,7 @@ _pages:
   eyeCatchingImageSet: "設定封面影像"
   eyeCatchingImageRemove: "刪除封面影像"
   chooseBlock: "新增方塊"
+  enterSectionTitle: "輸入區段的標題"
   selectType: "選擇類型"
   contentBlocks: "內容"
   inputBlocks: "輸入"
@@ -2499,6 +2500,10 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "建立接收檢舉的通知對象"
   updateAbuseReportNotificationRecipient: "更新接收檢舉的通知對象"
   deleteAbuseReportNotificationRecipient: "刪除接收檢舉的通知對象"
+  deleteAccount: "刪除帳戶"
+  deletePage: "刪除頁面"
+  deleteFlash: "刪除 Play"
+  deleteGalleryPost: "刪除相簿的貼文"
 _fileViewer:
   title: "檔案詳細資訊"
   type: "檔案類型 "
