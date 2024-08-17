@@ -2830,6 +2830,9 @@ type ReversiShowGameResponse = operations['reversi___show-game']['responses']['2
 type ReversiSurrenderRequest = operations['reversi___surrender']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+export const reversiUpdateKeys: ["map", "bw", "isLlotheo", "canPutEverywhere", "loopedBoard", "timeLimitForEachTurn"];
+
+// @public (undocumented)
 type ReversiVerifyRequest = operations['reversi___verify']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
