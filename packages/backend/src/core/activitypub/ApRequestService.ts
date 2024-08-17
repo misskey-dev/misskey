@@ -6,6 +6,7 @@
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import { JSDOM } from 'jsdom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -179,7 +180,8 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
+		const _followAlternate = followAlternate ?? true;
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedGet({
@@ -197,8 +199,24 @@ export class ApRequestService {
 			headers: req.request.headers,
 		}, {
 			throwErrorWhenResponseNotOk: true,
-			validators: [validateContentTypeSetAsActivityPub],
 		});
+
+		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
+		if (res.headers.get('Content-type')?.startsWith('text/html;') && _followAlternate) {
+			const html = await res.text();
+			const fragment = JSDOM.fragment(html);
+
+			const alternate = fragment.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
+			if (alternate) {
+				const href = alternate.getAttribute('href');
+				if (href) {
+					return await this.signedGet(href, user, false);
+				}
+			}
+		}
+		//#endregion
+
+		validateContentTypeSetAsActivityPub(res);
 
 		return await res.json();
 	}
