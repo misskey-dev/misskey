@@ -20,4 +20,4 @@ jobs:
         uses: nadesskey/create-upstream-sync-pr-action@v1.0.0
         with:
           base: 'develop' # Branch to create PR
-          head: 'master' # Branch to merge (should be upstream branch name)
+          head: 'develop' # Branch to merge (should be upstream branch name)
