@@ -782,8 +782,8 @@ importers:
         specifier: 6.1.1
         version: 6.1.1
       cropperjs:
-        specifier: 2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: 2.0.0-rc.0
+        version: 2.0.0-rc.0
       date-fns:
         specifier: 3.6.0
         version: 3.6.0
@@ -5280,8 +5280,8 @@ packages:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
 
-  cropperjs@2.0.0-beta.4:
-    resolution: {integrity: sha512-tWIQnvbou6eJvQkajwhGLOOEw03dM/i23FmnUQtMKjuzbTDSMP61kcwM77Uit8MXEWcUb5PH8n4jawyrFvj5ag==}
+  cropperjs@2.0.0-rc.0:
+    resolution: {integrity: sha512-/1oQT6Ten55trDVsC3OsVqp09ugf0T/QP8NKcvq0wIUTqpfDqpqD/Nk+c5sdbSKeoGyCwnswZYJJkFgLVm0HFA==}
 
   cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
@@ -15844,7 +15844,7 @@ snapshots:
     dependencies:
       luxon: 3.5.0
 
-  cropperjs@2.0.0-beta.4:
+  cropperjs@2.0.0-rc.0:
     dependencies:
       '@cropper/elements': 2.0.0-rc.1
       '@cropper/utils': 2.0.0-rc.1
