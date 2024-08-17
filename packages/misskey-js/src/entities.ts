@@ -159,6 +159,9 @@ export type ModerationLog = {
 } | {
 	type: 'deleteAbuseReportNotificationRecipient';
 	info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
+} | {
+	type: 'deleteAccount';
+	info: ModerationLogPayloads['deleteAccount'];
 });
 
 export type ServerStats = {
