@@ -1254,6 +1254,7 @@ launchApp: "앱 실행"
 useNativeUIForVideoAudioPlayer: "브라우저 UI에서 미디어 재생"
 here: "여기"
 mutualLink: "서로링크"
+saveThisFile: "이 파일을 드라이브에 저장"
 _bubbleGame:
   howToPlay: "설명"
   hold: "홀드"
