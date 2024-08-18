@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+
 ## 2024.8.0
 
 ### General
@@ -33,6 +45,8 @@
 - Fix: 無制限にストリーミングのチャンネルに接続できる問題を修正
 - Fix: ベースロールのポリシーを変更した際にモデログに記録されないのを修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/700)
+- Fix: Prevent memory leak from memory caches (#14310)
+- Fix: More reliable memory cache eviction (#14311)
 
 ## 2024.7.0
 
