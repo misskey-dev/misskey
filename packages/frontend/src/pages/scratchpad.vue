@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true" class="">
 				<template #header>UIs</template>
 				<div :class="$style.logs">
-					<div v-for="{ id, type } in components" :key="id" class="log print">id: {{ id }}, type: {{ type }}</div>
+					<div v-for="c in components" :key="c.id" class="log print">{{ JSON.stringify(c) }}</div>
 				</div>
 			</MkContainer>
 
