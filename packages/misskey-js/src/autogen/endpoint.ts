@@ -463,8 +463,9 @@ import type {
 	FlashCreateRequest,
 	FlashCreateResponse,
 	FlashDeleteRequest,
-	FlashFeaturedRequest,
 	FlashFeaturedResponse,
+	V2FlashFeaturedRequest,
+	V2FlashFeaturedResponse,
 	FlashLikeRequest,
 	FlashShowRequest,
 	FlashShowResponse,
@@ -886,7 +887,8 @@ export type Endpoints = {
 	'pages/update': { req: PagesUpdateRequest; res: EmptyResponse };
 	'flash/create': { req: FlashCreateRequest; res: FlashCreateResponse };
 	'flash/delete': { req: FlashDeleteRequest; res: EmptyResponse };
-	'flash/featured': { req: FlashFeaturedRequest; res: FlashFeaturedResponse };
+	'flash/featured': { req: EmptyRequest; res: FlashFeaturedResponse };
+	'v2/flash/featured': { req: V2FlashFeaturedRequest; res: V2FlashFeaturedResponse };
 	'flash/like': { req: FlashLikeRequest; res: EmptyResponse };
 	'flash/show': { req: FlashShowRequest; res: FlashShowResponse };
 	'flash/unlike': { req: FlashUnlikeRequest; res: EmptyResponse };
@@ -1269,6 +1271,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'flash/create': 'application/json',
 	'flash/delete': 'application/json',
 	'flash/featured': 'application/json',
+	'v2/flash/featured': 'application/json',
 	'flash/like': 'application/json',
 	'flash/show': 'application/json',
 	'flash/unlike': 'application/json',

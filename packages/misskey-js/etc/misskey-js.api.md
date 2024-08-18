@@ -1653,8 +1653,9 @@ declare namespace entities {
         FlashCreateRequest,
         FlashCreateResponse,
         FlashDeleteRequest,
-        FlashFeaturedRequest,
         FlashFeaturedResponse,
+        V2FlashFeaturedRequest,
+        V2FlashFeaturedResponse,
         FlashLikeRequest,
         FlashShowRequest,
         FlashShowResponse,
@@ -1902,9 +1903,6 @@ type FlashCreateResponse = operations['flash___create']['responses']['200']['con
 
 // @public (undocumented)
 type FlashDeleteRequest = operations['flash___delete']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type FlashFeaturedRequest = operations['flash___featured']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FlashFeaturedResponse = operations['flash___featured']['responses']['200']['content']['application/json'];
@@ -3227,6 +3225,12 @@ type UsersShowResponse = operations['users___show']['responses']['200']['content
 
 // @public (undocumented)
 type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type V2FlashFeaturedRequest = operations['v2___flash___featured']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type V2FlashFeaturedResponse = operations['v2___flash___featured']['responses']['200']['content']['application/json'];
 
 // Warnings were encountered during analysis:
 //
