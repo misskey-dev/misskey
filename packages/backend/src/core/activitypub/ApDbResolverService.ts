@@ -230,7 +230,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		 * keyIdで見つからない場合、まずはキャッシュを更新して再取得
 		 * If not found with keyId, update cache and reacquire
 		 */
-		const cacheRaw = this.publicKeyByUserIdCache.cache.get(user.id);
+		const cacheRaw = this.publicKeyByUserIdCache.getRaw(user.id);
 		if (cacheRaw && Date.now() - cacheRaw.date > 1000 * 60 * 5) {
 			const exactKey = await this.refreshAndFindKey(user.id, keyId);
 			if (exactKey) return { user, key: exactKey };

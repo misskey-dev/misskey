@@ -169,11 +169,6 @@ export class RedisSingleCache<T> {
 	}
 
 	@bindThis
-	public getRaw(): T | undefined {
-		return this.memoryCache.get();
-	}
-
-	@bindThis
 	public async delete(): Promise<void> {
 		this.memoryCache.delete();
 		await this.redisClient.del(`singlecache:${this.name}`);
@@ -240,6 +235,11 @@ export class MemoryKVCache<T> {
 			return undefined;
 		}
 		return cached.value;
+	}
+
+	@bindThis
+	public getRaw(key: string): { date: number; value: T; } | undefined {
+		return this.cache.get(key);
 	}
 
 	@bindThis
