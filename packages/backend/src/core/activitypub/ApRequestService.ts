@@ -6,6 +6,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { genRFC3230DigestHeader, signAsDraftToRequest } from '@misskey-dev/node-http-message-signatures';
+import { Window } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -126,7 +127,9 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id'] }, level: string, followAlternate?: boolean): Promise<unknown> {
+		const _followAlternate = followAlternate ?? true;
+
 		const key = await this.userKeypairService.getLocalUserPrivateKey(user.id, level);
 		const req = await createSignedGet({
 			level,
@@ -152,8 +155,28 @@ export class ApRequestService {
 			headers: req.request.headers,
 		}, {
 			throwErrorWhenResponseNotOk: true,
-			validators: [validateContentTypeSetAsActivityPub],
 		});
+
+		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
+		const contentType = res.headers.get('content-type');
+
+		if ((contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' && _followAlternate === true) {
+			const html = await res.text();
+			const window = new Window();
+			const document = window.document;
+			document.documentElement.innerHTML = html;
+
+			const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
+			if (alternate) {
+				const href = alternate.getAttribute('href');
+				if (href) {
+					return await this.signedGet(href, user, level, false);
+				}
+			}
+		}
+		//#endregion
+
+		validateContentTypeSetAsActivityPub(res);
 
 		return await res.json();
 	}

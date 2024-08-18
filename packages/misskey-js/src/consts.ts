@@ -4,9 +4,12 @@ import type {
 	Ad,
 	Announcement,
 	EmojiDetailed,
+	Flash,
+	GalleryPost,
 	InviteCode,
 	MetaDetailed,
 	Note,
+	Page,
 	Role,
 	ReversiGameDetailed,
 	SystemWebhook,
@@ -155,6 +158,9 @@ export const moderationLogTypes = [
 	'updateAbuseReportNotificationRecipient',
 	'deleteAbuseReportNotificationRecipient',
 	'deleteAccount',
+	'deletePage',
+	'deleteFlash',
+	'deleteGalleryPost',
 ] as const;
 
 // See: packages/backend/src/core/ReversiService.ts@L410
@@ -397,5 +403,23 @@ export type ModerationLogPayloads = {
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
+	};
+	deletePage: {
+		pageId: string;
+		pageUserId: string;
+		pageUserUsername: string;
+		page: Page;
+	};
+	deleteFlash: {
+		flashId: string;
+		flashUserId: string;
+		flashUserUsername: string;
+		flash: Flash;
+	};
+	deleteGalleryPost: {
+		postId: string;
+		postUserId: string;
+		postUserUsername: string;
+		post: GalleryPost;
 	};
 };

@@ -1,12 +1,26 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+
 ## 2024.8.0
 
 ### General
 - Enhance: モデレーターはすべてのユーザーのフォロー・フォロワーの一覧を見られるように
 - Enhance: アカウントの削除のモデレーションログを残すように
+- Enhance: 不適切なページ、ギャラリー、Playを管理者権限で削除できるように
 - Fix: リモートユーザのフォロー・フォロワーの一覧が非公開設定の場合も表示できてしまう問題を修正
 
 ### Client
 - Enhance: 「自分のPlay」ページにおいてPlayが非公開かどうかが一目でわかるように
+- Enhance: 不適切なページ、ギャラリー、Playを通報できるように
 - Fix: Play編集時に公開範囲が「パブリック」にリセットされる問題を修正
 - Fix: ページ遷移に失敗することがある問題を修正
 - Fix: iOSでユーザー名などがリンクとして誤検知される現象を抑制
@@ -15,6 +29,7 @@
 - Fix: 特定の条件下でノートの削除ボタンが出ないのを修正
 
 ### Server
+- Enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
 - Enhance: 凍結されたアカウントのフォローリクエストを表示しないように
 - Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
   - 通知ページや通知カラム(デッキ)を開いている状態において、新たに発生した通知が既読されない問題が修正されます。
@@ -30,6 +45,8 @@
 - Fix: 無制限にストリーミングのチャンネルに接続できる問題を修正
 - Fix: ベースロールのポリシーを変更した際にモデログに記録されないのを修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/700)
+- Fix: Prevent memory leak from memory caches (#14310)
+- Fix: More reliable memory cache eviction (#14311)
 
 ## 2024.7.0
 
