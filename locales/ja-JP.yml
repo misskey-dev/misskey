@@ -703,7 +703,7 @@ abuseReports: "通報"
 reportAbuse: "通報"
 reportAbuseRenote: "リノートを通報"
 reportAbuseOf: "{name}を通報する"
-fillAbuseReportDescription: "通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。"
+fillAbuseReportDescription: "通報理由の詳細を記入してください。対象のノートやページなどがある場合はそのURLも記入してください。"
 abuseReported: "内容が送信されました。ご報告ありがとうございました。"
 reporter: "通報者"
 reporteeOrigin: "通報先"
@@ -2323,8 +2323,8 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
-  vmimiRelay: "ぶいみみリレー"
-  vmimiRelaySocial: "ぶいみみソーシャル"
+  vmimi-relay: "ぶいみみリレー"
+  vmimi-relay-social: "ぶいみみソーシャル"
 
 _play:
   new: "Playの作成"
@@ -2377,6 +2377,7 @@ _pages:
   eyeCatchingImageSet: "アイキャッチ画像を設定"
   eyeCatchingImageRemove: "アイキャッチ画像を削除"
   chooseBlock: "ブロックを追加"
+  enterSectionTitle: "セクションタイトルを入力"
   selectType: "種類を選択"
   contentBlocks: "コンテンツ"
   inputBlocks: "入力"
@@ -2573,6 +2574,10 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "通報の通知先を作成"
   updateAbuseReportNotificationRecipient: "通報の通知先を更新"
   deleteAbuseReportNotificationRecipient: "通報の通知先を削除"
+  deleteAccount: "アカウントを削除"
+  deletePage: "ページを削除"
+  deleteFlash: "Playを削除"
+  deleteGalleryPost: "ギャラリーの投稿を削除"
 
 _fileViewer:
   title: "ファイルの詳細"
