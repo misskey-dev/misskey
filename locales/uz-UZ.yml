@@ -1089,6 +1089,10 @@ _webhookSettings:
   _events:
     renote: "Qayta qayd qilinganda"
     mention: "Eslanganda"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "To'xtatish"
   resetPassword: "Parolni tiklash"

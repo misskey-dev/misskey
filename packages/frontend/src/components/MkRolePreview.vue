@@ -4,25 +4,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-adaptive-bg :to="forModeration ? `/admin/roles/${role.id}` : `/roles/${role.id}`" class="_panel" :class="$style.root" tabindex="-1" :style="{ '--color': role.color }">
-	<div :class="$style.title">
-		<span :class="$style.icon">
-			<template v-if="role.iconUrl">
-				<img :class="$style.badge" :src="role.iconUrl"/>
+<MkA :to="forModeration ? `/admin/roles/${role.id}` : `/roles/${role.id}`" :class="$style.root" tabindex="-1" :style="{ '--color': role.color }">
+	<template v-if="forModeration">
+		<i v-if="role.isPublic" class="ti ti-world" :class="$style.icon" style="color: var(--success)"></i>
+		<i v-else class="ti ti-lock" :class="$style.icon" style="color: var(--warn)"></i>
+	</template>
+
+	<div v-adaptive-bg class="_panel" :class="$style.body">
+		<div :class="$style.bodyTitle">
+			<span :class="$style.bodyIcon">
+				<template v-if="role.iconUrl">
+					<img :class="$style.bodyBadge" :src="role.iconUrl"/>
+				</template>
+				<template v-else>
+					<i v-if="role.isAdministrator" class="ti ti-crown" style="color: var(--accent);"></i>
+					<i v-else-if="role.isModerator" class="ti ti-shield" style="color: var(--accent);"></i>
+					<i v-else class="ti ti-user" style="opacity: 0.7;"></i>
+				</template>
+			</span>
+			<span :class="$style.bodyName">{{ role.name }}</span>
+			<template v-if="detailed">
+				<span v-if="role.target === 'manual'" :class="$style.bodyUsers">{{ role.usersCount }} users</span>
+				<span v-else-if="role.target === 'conditional'" :class="$style.bodyUsers">? users</span>
 			</template>
-			<template v-else>
-				<i v-if="role.isAdministrator" class="ti ti-crown" style="color: var(--accent);"></i>
-				<i v-else-if="role.isModerator" class="ti ti-shield" style="color: var(--accent);"></i>
-				<i v-else class="ti ti-user" style="opacity: 0.7;"></i>
-			</template>
-		</span>
-		<span :class="$style.name">{{ role.name }}</span>
-		<template v-if="detailed">
-			<span v-if="role.target === 'manual'" :class="$style.users">{{ role.usersCount }} users</span>
-			<span v-else-if="role.target === 'conditional'" :class="$style.users">({{ i18n.ts._role.conditional }})</span>
-		</template>
+		</div>
+		<div :class="$style.bodyDescription">{{ role.description }}</div>
 	</div>
-	<div :class="$style.description">{{ role.description }}</div>
 </MkA>
 </template>
 
@@ -42,34 +49,44 @@ const props = withDefaults(defineProps<{
 
 <style lang="scss" module>
 .root {
-	display: block;
-	padding: 16px 20px;
-	border-left: solid 6px var(--color);
-}
-
-.title {
 	display: flex;
+	align-items: center;
 }
 
 .icon {
+	margin: 0 12px;
+}
+
+.body {
+	display: block;
+	padding: 16px 20px;
+	flex: 1;
+	border-left: solid 6px var(--color);
+}
+
+.bodyTitle {
+	display: flex;
+}
+
+.bodyIcon {
 	margin-right: 8px;
 }
 
-.badge {
+.bodyBadge {
 	height: 1.3em;
 	vertical-align: -20%;
 }
 
-.name {
+.bodyName {
 	font-weight: bold;
 }
 
-.users {
+.bodyUsers {
 	margin-left: auto;
 	opacity: 0.7;
 }
 
-.description {
+.bodyDescription {
 	opacity: 0.7;
 	font-size: 85%;
 }
