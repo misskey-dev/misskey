@@ -1,12 +1,19 @@
 import type { operations } from './autogen/types.js';
 import type {
-	AbuseReportNotificationRecipient, Ad,
+	AbuseReportNotificationRecipient,
+	Ad,
 	Announcement,
-	EmojiDetailed, InviteCode,
+	EmojiDetailed,
+	Flash,
+	GalleryPost,
+	InviteCode,
 	MetaDetailed,
 	Note,
+	Page,
+	Role,
 	ReversiGameDetailed,
-	Role, SystemWebhook, UserLite,
+	SystemWebhook,
+	UserLite,
 } from './autogen/models.js';
 
 export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'roleAssigned', 'achievementEarned'] as const;
@@ -150,6 +157,10 @@ export const moderationLogTypes = [
 	'createAbuseReportNotificationRecipient',
 	'updateAbuseReportNotificationRecipient',
 	'deleteAbuseReportNotificationRecipient',
+	'deleteAccount',
+	'deletePage',
+	'deleteFlash',
+	'deleteGalleryPost',
 ] as const;
 
 // See: packages/backend/src/core/ReversiService.ts@L410
@@ -387,5 +398,28 @@ export type ModerationLogPayloads = {
 	deleteAbuseReportNotificationRecipient: {
 		recipientId: string;
 		recipient: AbuseReportNotificationRecipient;
+	};
+	deleteAccount: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+	};
+	deletePage: {
+		pageId: string;
+		pageUserId: string;
+		pageUserUsername: string;
+		page: Page;
+	};
+	deleteFlash: {
+		flashId: string;
+		flashUserId: string;
+		flashUserUsername: string;
+		flash: Flash;
+	};
+	deleteGalleryPost: {
+		postId: string;
+		postUserId: string;
+		postUserUsername: string;
+		post: GalleryPost;
 	};
 };
