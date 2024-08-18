@@ -437,6 +437,10 @@ export const packedMeDetailedOnlySchema = {
 			nullable: true, optional: false,
 			format: 'id',
 		},
+		followedMessage: {
+			type: 'string',
+			nullable: true, optional: false,
+		},
 		isModerator: {
 			type: 'boolean',
 			nullable: true, optional: false,

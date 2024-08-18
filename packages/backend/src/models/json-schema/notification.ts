@@ -266,6 +266,10 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 				format: 'id',
 			},
+			message: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	}, {
 		type: 'object',

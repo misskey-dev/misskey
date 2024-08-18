@@ -67,6 +67,7 @@ export type MiNotification = {
 	id: string;
 	createdAt: string;
 	notifierId: MiUser['id'];
+	message: string | null;
 } | {
 	type: 'roleAssigned';
 	id: string;
