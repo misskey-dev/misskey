@@ -3,6 +3,7 @@ import {
 	Announcement,
 	EmojiDetailed,
 	MeDetailed,
+	Note,
 	Page,
 	Role,
 	RolePolicies,
@@ -15,6 +16,19 @@ export * from './autogen/models.js';
 
 export type ID = string;
 export type DateString = string;
+
+type NonNullableRecord<T> = {
+	[P in keyof T]-?: NonNullable<T[P]>;
+};
+type AllNullRecord<T> = {
+	[P in keyof T]: null;
+};
+
+export type PureRenote =
+	Omit<Note, 'renote' | 'renoteId' | 'reply' | 'replyId' | 'text' | 'cw' | 'files' | 'fileIds' | 'poll'>
+	& AllNullRecord<Pick<Note, 'reply' | 'replyId' | 'text' | 'cw' | 'poll'>>
+	& { files: []; fileIds: []; }
+	& NonNullableRecord<Pick<Note, 'renote' | 'renoteId'>>;
 
 export type PageEvent = {
 	pageId: Page['id'];
@@ -142,6 +156,9 @@ export type ModerationLog = {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
+	type: 'unsetUserBanner';
+	info: ModerationLogPayloads['unsetUserBanner'];
+} | {
 	type: 'createSystemWebhook';
 	info: ModerationLogPayloads['createSystemWebhook'];
 } | {
@@ -159,6 +176,18 @@ export type ModerationLog = {
 } | {
 	type: 'deleteAbuseReportNotificationRecipient';
 	info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
+} | {
+	type: 'deleteAccount';
+	info: ModerationLogPayloads['deleteAccount'];
+} | {
+	type: 'deletePage';
+	info: ModerationLogPayloads['deletePage'];
+} | {
+	type: 'deleteFlash';
+	info: ModerationLogPayloads['deleteFlash'];
+} | {
+	type: 'deleteGalleryPost';
+	info: ModerationLogPayloads['deleteGalleryPost'];
 });
 
 export type ServerStats = {
