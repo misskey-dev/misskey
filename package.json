@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2024.7.0",
+	"version": "2024.8.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -61,7 +61,7 @@
 		"glob": "11.0.0"
 	},
 	"devDependencies": {
-		"@misskey-dev/eslint-plugin": "2.0.2",
+		"@misskey-dev/eslint-plugin": "2.0.3",
 		"@types/node": "20.14.12",
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",
