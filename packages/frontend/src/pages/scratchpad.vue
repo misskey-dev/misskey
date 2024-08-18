@@ -30,6 +30,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkContainer>
 
+			<MkContainer :foldable="true" class="">
+				<template #header>UIs</template>
+				<div :class="$style.logs">
+					<div v-for="{ id, type } in components" :key="id" class="log print">id: {{ id }}, type: {{ type }}</div>
+				</div>
+			</MkContainer>
+
 			<div class="">
 				{{ i18n.ts.scratchpadDescription }}
 			</div>
