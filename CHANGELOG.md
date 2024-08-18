@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: フォローされた際のメッセージを設定できるように
 
 ### Client
 -
