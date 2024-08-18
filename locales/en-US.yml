@@ -2499,6 +2499,7 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "Create a recipient for abuse reports"
   updateAbuseReportNotificationRecipient: "Update recipients for abuse reports"
   deleteAbuseReportNotificationRecipient: "Delete a recipient for abuse reports"
+  deleteFlash: "Delete Play"
 _fileViewer:
   title: "File details"
   type: "File type"

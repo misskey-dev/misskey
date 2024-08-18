@@ -245,10 +245,12 @@ function reportAbuse() {
 
 	const pageUrl = `${url}/@${props.username}/pages/${props.pageName}`;
 
-	os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 		user: page.value.user,
 		initialComment: `Page: ${pageUrl}\n-----\n`,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 
 function showMenu(ev: MouseEvent) {
