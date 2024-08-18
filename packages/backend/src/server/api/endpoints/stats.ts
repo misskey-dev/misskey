@@ -79,11 +79,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const originalUsersCount = usersChart.local.total[0];
 
 			const [
-				reactionsCount,
+				//reactionsCount,
 				//originalReactionsCount,
 				instances,
 			] = await Promise.all([
-				this.noteReactionsRepository.count({ cache: 3600000 }), // 1 hour
+				//this.noteReactionsRepository.count({ cache: 3600000 }), // 1 hour
 				//this.noteReactionsRepository.count({ where: { userHost: IsNull() }, cache: 3600000 }),
 				this.instancesRepository.count({ cache: 3600000 }),
 			]);
@@ -93,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				originalNotesCount,
 				usersCount,
 				originalUsersCount,
-				reactionsCount,
+				//reactionsCount,
 				//originalReactionsCount,
 				instances,
 				driveUsageLocal: 0,

@@ -1,3 +1,10 @@
+## Unreleased
+
+### Client
+
+### Server
+- Enhance: removed `reactionsCount` from `/api/stats` response due to performance reasons (#224)
+
 ## 2024.8.0 (merged to 2024.8.0-kinel.1)
 
 ### General
