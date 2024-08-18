@@ -54,8 +54,9 @@ const router = useRouter();
 const tab = ref('featured');
 
 const featuredFlashsPagination = {
-	endpoint: 'flash/featured' as const,
-	limit: 5,
+	endpoint: 'v2/flash/featured' as const,
+	limit: 10,
+	pagingMode: true,
 };
 const myFlashsPagination = {
 	endpoint: 'flash/my' as const,
