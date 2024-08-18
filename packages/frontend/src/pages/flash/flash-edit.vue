@@ -27,13 +27,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkSpacer>
 	<template #footer>
-		<MkSpacer>
-			<div class="_buttons">
-				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
-				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-			</div>
-		</MkSpacer>
+		<div :class="$style.footer">
+			<MkSpacer>
+				<div class="_buttons">
+					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				</div>
+			</MkSpacer>
+		</div>
 	</template>
 </MkStickyContainer>
 </template>
@@ -463,3 +465,10 @@ definePageMetadata(() => ({
 	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>
+<style lang="scss" module>
+.footer {
+	backdrop-filter: var(--blur, blur(15px));
+	background: var(--acrylicBg);
+	border-top: solid .5px var(--divider);
+}
+</style>
