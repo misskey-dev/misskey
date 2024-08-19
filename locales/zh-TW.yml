@@ -1967,7 +1967,7 @@ _soundSettings:
   driveFileTypeWarnDescription: "請選擇音效檔案"
   driveFileDurationWarn: "音效太長了"
   driveFileDurationWarnDescription: "使用長音效檔可能會影響 Misskey 的使用體驗。仍要使用此檔案嗎？"
-  driveFileError: "無法載入語音。請更改設定"
+  driveFileError: "無法載入語音。請變更設定"
 _ago:
   future: "未來"
   justNow: "剛剛"
@@ -2316,6 +2316,7 @@ _pages:
   eyeCatchingImageSet: "設定封面影像"
   eyeCatchingImageRemove: "刪除封面影像"
   chooseBlock: "新增方塊"
+  enterSectionTitle: "輸入區段的標題"
   selectType: "選擇類型"
   contentBlocks: "內容"
   inputBlocks: "輸入"
@@ -2439,6 +2440,7 @@ _webhookSettings:
   _systemEvents:
     abuseReport: "當使用者檢舉時"
     abuseReportResolved: "當處理了使用者的檢舉時"
+    userCreated: "使用者被新增時"
   deleteConfirm: "請問是否要刪除 Webhook？"
 _abuseReport:
   _notificationRecipient:
@@ -2498,6 +2500,10 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "建立接收檢舉的通知對象"
   updateAbuseReportNotificationRecipient: "更新接收檢舉的通知對象"
   deleteAbuseReportNotificationRecipient: "刪除接收檢舉的通知對象"
+  deleteAccount: "刪除帳戶"
+  deletePage: "刪除頁面"
+  deleteFlash: "刪除 Play"
+  deleteGalleryPost: "刪除相簿的貼文"
 _fileViewer:
   title: "檔案詳細資訊"
   type: "檔案類型 "
@@ -2632,4 +2638,5 @@ _mediaControls:
 _contextMenu:
   title: "內容功能表"
   app: "應用程式"
+  appWithShift: "Shift 鍵應用程式"
   native: "瀏覽器的使用者介面"

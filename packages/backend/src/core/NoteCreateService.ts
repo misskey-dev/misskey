@@ -509,7 +509,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const meta = await this.metaService.fetch();
 
 		this.notesChart.update(note, true);
-		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+		if (note.visibility !== 'specified' && (meta.enableChartsForRemoteUser || (user.host == null))) {
 			this.perUserNotesChart.update(user, note, true);
 		}
 
