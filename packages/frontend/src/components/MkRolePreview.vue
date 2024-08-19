@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.bodyName">{{ role.name }}</span>
 			<template v-if="detailed">
 				<span v-if="role.target === 'manual'" :class="$style.bodyUsers">{{ role.usersCount }} users</span>
-				<span v-else-if="role.target === 'conditional'" :class="$style.bodyUsers">({{ i18n.ts._role.conditional }})</span>
+				<span v-else-if="role.target === 'conditional'" :class="$style.bodyUsers">? users</span>
 			</template>
 		</div>
 		<div :class="$style.bodyDescription">{{ role.description }}</div>
