@@ -26,8 +26,8 @@ export const meta = {
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
 		notSupportFileType: {
-			message: 'Not support file type.',
-			code: 'NOT_SUPPORT_FILE_TYPE',
+			message: 'Unsupported file type.',
+			code: 'UNSUPPORTED_FILE_TYPE',
 			id: 'f7599d96-8750-af68-1633-9575d625c1a7',
 		},
 		duplicateName: {
