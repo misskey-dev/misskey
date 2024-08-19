@@ -13,15 +13,13 @@ import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
-import MkEmojiKitchen from '@/components/global/MkEmojiKitchen.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
-import { host } from '@/config';
-import { defaultStore } from '@/store';
-import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
+import { host } from '@/config.js';
+import { defaultStore } from '@/store.js';
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 import { uhoize as doUhoize } from '@/scripts/uhoize.js';
 import { safeParseFloat } from '@/scripts/safe-parse.js';
@@ -244,7 +242,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
 					case 'blur': {
-						const radius = parseFloat(token.props.args.rad ?? '6');
+						const radius = parseFloat(<string>token.props.args.rad ?? '6');
 						return h('span', {
 							class: '_mfm_blur_',
 							style: `--blur-px: ${radius}px;`,
@@ -269,15 +267,15 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							rotateText = '';
 						}
 						if (token.props.args.x) {
-							const degrees = parseFloat(token.props.args.x ?? '0');
+							const degrees = parseFloat(<string>token.props.args.x ?? '0');
 							rotateText += ` rotateX(${degrees}deg)`;
 						}
 						if (token.props.args.y) {
-							const degrees = parseFloat(token.props.args.y ?? '0');
+							const degrees = parseFloat(<string>token.props.args.y ?? '0');
 							rotateText += ` rotateY(${degrees}deg)`;
 						}
 						if (token.props.args.z) {
-							const degrees = parseFloat(token.props.args.z ?? '0');
+							const degrees = parseFloat(<string>token.props.args.z ?? '0');
 							rotateText += ` rotateZ(${degrees}deg)`;
 						}
 						style = `transform: ${rotateText}; transform-origin: center center;`;
@@ -343,29 +341,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							}
 							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
-					}
-					case 'mix': {
-						const ch = token.children;
-						if (ch.length != 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
-							style = null;
-							break;
-						}
-
-						const emoji1 = ch[0].props.emoji;
-						const emoji2 = ch[1].props.emoji;
-
-						const mixedEmojiUrl = mixEmoji(emoji1, emoji2);
-						if (!mixedEmojiUrl) {
-							style = null;
-							break;
-						}
-
-						return h(MkEmojiKitchen, {
-							key: Math.random(),
-							name: emoji1 + emoji2,
-							normal: props.plain,
-							url: mixedEmojiUrl,
-						});
 					}
 					case 'unixtime': {
 						const child = token.children[0];
@@ -497,7 +472,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							name: token.props.name,
 							url: props.emojiUrls && props.emojiUrls[token.props.name],
 							normal: props.plain,
-							host: props.author.host ? props.author.host : null,
+							host: props?.author?.host ? props?.author?.host : null,
 							useOriginalSize: scale >= 2.5,
 						})];
 					}
