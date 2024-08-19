@@ -4,11 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="gridItems.length === 0" style="text-align: center">
-	{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
-</div>
-
-<MkStickyContainer v-else>
+<MkStickyContainer>
 	<template #default>
 		<div class="_gaps">
 			<MkFolder>
@@ -140,11 +136,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<XRegisterLogsFolder :logs="requestLogs"/>
 
-			<div :class="$style.gridArea">
-				<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+			<div v-if="gridItems.length === 0" style="text-align: center">
+				{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 			</div>
 
-			<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+			<template v-else>
+				<div :class="$style.gridArea">
+					<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+				</div>
+
+				<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+			</template>
 
 			<div :class="$style.buttons">
 				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">{{ i18n.ts.delete }}</MkButton>

@@ -76,11 +76,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<XRegisterLogsFolder :logs="requestLogs"/>
 
-		<div v-if="gridItems.length > 0" :class="$style.gridArea">
-			<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+		<div v-if="gridItems.length === 0" style="text-align: center">
+			{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 		</div>
 
-		<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+		<template v-else>
+			<div v-if="gridItems.length > 0" :class="$style.gridArea">
+				<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+			</div>
+
+			<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+		</template>
 
 		<div v-if="gridItems.length > 0" class="_gaps" :class="$style.buttons">
 			<MkButton primary @click="onImportClicked">
