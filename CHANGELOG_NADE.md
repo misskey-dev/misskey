@@ -8,6 +8,13 @@
 
 ### Server
 -->
+
+## nade 1.5.7
+### Server
+- https://github.com/misskey-dev/misskey/pull/13495 の変更を取り込み
+### Development
+- E2Eテストが落ちる問題を一時的に回避（ Cherry-picked from https://github.com/niri-la/misskey.niri.la/pull/217/commits/92a55ade4300aecc2a4d49e8f82f75893b0534c6 ）
+
 ## nade 1.5.6
 ### Client
 - Fix: マージミスによる存在しない変数が呼ばれる問題を修正
