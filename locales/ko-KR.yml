@@ -2446,7 +2446,7 @@ _abuseReport:
   _notificationRecipient:
     createRecipient: "신고 수신자 추가"
     modifyRecipient: "신고 수신자 편집"
-    recipientType: "알림 수신 유형"
+    recipientType: "알림 종류"
     _recipientType:
       mail: "이메일"
       webhook: "Webhook"
@@ -2454,7 +2454,7 @@ _abuseReport:
         mail: "모더레이터 권한을 가진 사용자의 이메일 주소에 알림을 보냅니다 (신고를 받은 때에만)"
         webhook: "지정한 SystemWebhook에 알림을 보냅니다 (신고를 받은 때와 해결했을 때에 송신)"
     keywords: "키워드"
-    notifiedUser: "신고 알림을 보낼 유저"
+    notifiedUser: "알릴 사용자"
     notifiedWebhook: "사용할 Webhook"
     deleteConfirm: "수신자를 삭제하시겠습니까?"
 _moderationLogTypes:
