@@ -472,6 +472,16 @@ export class ApRendererService {
 
 		const hashtagTags = user.tags.map(tag => this.renderHashtag(tag));
 
+		let liked;
+		if (profile.publicReactions) {
+			const likedId = `${id}/liked`;
+			liked = this.renderOrderedCollection(
+				likedId,
+				undefined,
+				`${likedId}?page=true`,
+			);
+		}
+
 		const tag = [
 			...apemojis,
 			...hashtagTags,
@@ -486,7 +496,7 @@ export class ApRendererService {
 			outbox: `${id}/outbox`,
 			followers: `${id}/followers`,
 			following: `${id}/following`,
-			liked: `${id}/liked`,
+			liked,
 			featured: `${id}/collections/featured`,
 			sharedInbox: `${this.config.url}/inbox`,
 			endpoints: { sharedInbox: `${this.config.url}/inbox` },
