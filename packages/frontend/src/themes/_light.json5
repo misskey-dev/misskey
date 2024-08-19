@@ -13,6 +13,7 @@
 		accentDarken: ':darken<10<@accent',
 		accentLighten: ':lighten<10<@accent',
 		accentedBg: ':alpha<0.15<@accent',
+		love: '#dd2e44',
 		focus: ':alpha<0.3<@accent',
 		bg: '#fff',
 		acrylicBg: ':alpha<0.5<@bg',

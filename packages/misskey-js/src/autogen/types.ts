@@ -3769,6 +3769,7 @@ export type components = {
       /** @default false */
       securityKeys: boolean;
       roles: components['schemas']['RoleLite'][];
+      followedMessage?: string | null;
       memo: string | null;
       moderationNote?: string;
       isFollowing?: boolean;

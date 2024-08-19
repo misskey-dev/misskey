@@ -197,6 +197,14 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
+
+	--eventFollow: #36aed2;
+	--eventRenote: #36d298;
+	--eventReply: #007aff;
+	--eventReactionHeart: #dd2e44;
+	--eventReaction: #e99a0b;
+	--eventAchievement: #cb9a11;
+	--eventOther: #88a6b7;
 }
 
 .head {
