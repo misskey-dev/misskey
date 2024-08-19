@@ -68,7 +68,7 @@ import {
 } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { getBodyScrollHeight,	getScrollContainer,	scroll,	scrollToBottom } from '@/scripts/scroll.js';
+import { getBodyScrollHeight, getScrollContainer, scroll, scrollToBottom } from '@/scripts/scroll.js';
 import { defaultStore } from '@/store.js';
 import { MisskeyEntity } from '@/types/date-separated-list.js';
 import { i18n } from '@/i18n.js';
@@ -79,11 +79,6 @@ export type Paging2<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints>
 	endpoint: E;
 	limit: number;
 	params?: Misskey.Endpoints[E]['req'] | ComputedRef<Misskey.Endpoints[E]['req']>;
-
-	/**
-	 * items 配列の中身を逆順にする(新しい方が最後)
-	 */
-	reversed?: boolean;
 
 	/**
 	 * 表示するページの範囲。これを逸脱したページのアイテムは破棄される
@@ -168,7 +163,7 @@ const scrollableElement = computed(() => contentEl.value ? getScrollContainer(co
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
 const scrollObserver = ref<IntersectionObserver>();
 
-watch([() => props.pagination.reversed, scrollableElement], () => {
+watch(scrollableElement, () => {
 	if (scrollObserver.value) scrollObserver.value.disconnect();
 
 	scrollObserver.value = new IntersectionObserver(entries => {
@@ -176,7 +171,7 @@ watch([() => props.pagination.reversed, scrollableElement], () => {
 		backed.value = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement.value,
-		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
+		rootMargin: '100% 0px -100% 0px',
 		threshold: 0.01,
 	});
 }, { immediate: true });
@@ -235,14 +230,7 @@ async function init(): Promise<void> {
 	initializing.value = true;
 
 	fetch().then(res => {
-		if (res.empty) {
-		} else {
-			if (props.pagination.reversed) {
-				fetching.value = true;
-			}
-
-			updatePageItems('more', res);
-		}
+		updatePageItems('more', res);
 
 		error.value = false;
 		initializing.value = false;
@@ -267,7 +255,10 @@ const fetchMore = async (): Promise<void> => {
 
 		return nextTick(() => {
 			if (scrollableElement.value) {
-				scroll(scrollableElement.value, { top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight), behavior: 'instant' });
+				scroll(scrollableElement.value, {
+					top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight),
+					behavior: 'instant',
+				});
 			} else {
 				window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
 			}
@@ -277,25 +268,8 @@ const fetchMore = async (): Promise<void> => {
 	};
 
 	await fetch({ direction: 'more' }).then(res => {
-		if (res.empty) {
-			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					fetching.value = false;
-				});
-			} else {
-				updatePageItems('more', res);
-				fetching.value = false;
-			}
-		} else {
-			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					fetching.value = false;
-				});
-			} else {
-				updatePageItems('more', res);
-				fetching.value = false;
-			}
-		}
+		updatePageItems('more', res);
+		fetching.value = false;
 	}, () => {
 		fetching.value = false;
 	});
@@ -332,7 +306,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 /** ページが範囲内にあるかどうか */
 const isPageInRange = (page: number): boolean => {
 	// pageMoreとpageAheadの差がpageRange以下であれば範囲内
-	return　(pageMore.value - page) <= pageRange && (page - pageAhead.value) <= pageRange;
+	return (pageMore.value - page) <= pageRange && (page - pageAhead.value) <= pageRange;
 };
 
 /** 取得したレスポンスを読み取ってページ関連の情報を更新 */
@@ -409,7 +383,7 @@ onActivated(() => {
 });
 
 onDeactivated(() => {
-	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl.value ? rootEl.value.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+	isBackTop.value = window.scrollY === 0;
 });
 
 function toBottom() {
@@ -417,19 +391,7 @@ function toBottom() {
 }
 
 onBeforeMount(() => {
-	init().then(() => {
-		if (props.pagination.reversed) {
-			nextTick(() => {
-				setTimeout(toBottom, 800);
-
-				// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
-				// more = trueを遅らせる
-				setTimeout(() => {
-					fetching.value = false;
-				}, 2000);
-			});
-		}
-	});
+	init();
 });
 
 onBeforeUnmount(() => {
