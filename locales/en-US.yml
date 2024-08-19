@@ -2316,6 +2316,7 @@ _pages:
   eyeCatchingImageSet: "Set thumbnail"
   eyeCatchingImageRemove: "Delete thumbnail"
   chooseBlock: "Add a block"
+  enterSectionTitle: "Enter a section title"
   selectType: "Select a type"
   contentBlocks: "Content"
   inputBlocks: "Input"
@@ -2499,6 +2500,10 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "Create a recipient for abuse reports"
   updateAbuseReportNotificationRecipient: "Update recipients for abuse reports"
   deleteAbuseReportNotificationRecipient: "Delete a recipient for abuse reports"
+  deleteAccount: "Delete the account"
+  deletePage: "Delete the page"
+  deleteFlash: "Delete Play"
+  deleteGalleryPost: "Delete the gallery post"
 _fileViewer:
   title: "File details"
   type: "File type"

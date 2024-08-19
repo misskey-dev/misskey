@@ -1,7 +1,13 @@
-## 2024.x.x (Unreleased)
+## Unreleased
+
+### General
+-
 
 ### Client
 - Fix: 一部画面のページネーションが動作しにくくなっていたのを修正 ( #12766 , #11449 )
+
+### Server
+-
 
 ## 2024.8.0
 
@@ -22,7 +28,7 @@
 - Fix: 特定の条件下でノートの削除ボタンが出ないのを修正
 
 ### Server
-- enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
+- Enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
 - Enhance: 凍結されたアカウントのフォローリクエストを表示しないように
 - Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
   - 通知ページや通知カラム(デッキ)を開いている状態において、新たに発生した通知が既読されない問題が修正されます。
@@ -38,6 +44,8 @@
 - Fix: 無制限にストリーミングのチャンネルに接続できる問題を修正
 - Fix: ベースロールのポリシーを変更した際にモデログに記録されないのを修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/700)
+- Fix: Prevent memory leak from memory caches (#14310)
+- Fix: More reliable memory cache eviction (#14311)
 
 ## 2024.7.0
 
