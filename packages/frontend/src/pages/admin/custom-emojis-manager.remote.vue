@@ -269,7 +269,7 @@ async function importEmojis(targets: GridItem[]) {
 }
 
 async function refreshCustomEmojis() {
-	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
+	const query: Misskey.entities.V2AdminEmojiListRequest['query'] = {
 		name: emptyStrToUndefined(queryName.value),
 		host: emptyStrToUndefined(queryHost.value),
 		uri: emptyStrToUndefined(queryUri.value),
@@ -282,7 +282,7 @@ async function refreshCustomEmojis() {
 	}
 
 	const result = await os.promiseDialog(
-		misskeyApi('admin/emoji/v2/list', {
+		misskeyApi('v2/admin/emoji/list', {
 			limit: 100,
 			query: query,
 			page: currentPage.value,

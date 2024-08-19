@@ -59,8 +59,8 @@ import type {
 	AdminEmojiSetCategoryBulkRequest,
 	AdminEmojiSetLicenseBulkRequest,
 	AdminEmojiUpdateRequest,
-	AdminEmojiV2ListRequest,
-	AdminEmojiV2ListResponse,
+	V2AdminEmojiListRequest,
+	V2AdminEmojiListResponse,
 	AdminFederationDeleteAllFilesRequest,
 	AdminFederationRefreshRemoteInstanceMetadataRequest,
 	AdminFederationRemoveAllFollowingRequest,
@@ -618,7 +618,7 @@ export type Endpoints = {
 	'admin/emoji/set-category-bulk': { req: AdminEmojiSetCategoryBulkRequest; res: EmptyResponse };
 	'admin/emoji/set-license-bulk': { req: AdminEmojiSetLicenseBulkRequest; res: EmptyResponse };
 	'admin/emoji/update': { req: AdminEmojiUpdateRequest; res: EmptyResponse };
-	'admin/emoji/v2/list': { req: AdminEmojiV2ListRequest; res: AdminEmojiV2ListResponse };
+	'v2/admin/emoji/list': { req: V2AdminEmojiListRequest; res: V2AdminEmojiListResponse };
 	'admin/federation/delete-all-files': { req: AdminFederationDeleteAllFilesRequest; res: EmptyResponse };
 	'admin/federation/refresh-remote-instance-metadata': { req: AdminFederationRefreshRemoteInstanceMetadataRequest; res: EmptyResponse };
 	'admin/federation/remove-all-following': { req: AdminFederationRemoveAllFollowingRequest; res: EmptyResponse };
@@ -1001,7 +1001,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'admin/emoji/set-category-bulk': 'application/json',
 	'admin/emoji/set-license-bulk': 'application/json',
 	'admin/emoji/update': 'application/json',
-	'admin/emoji/v2/list': 'application/json',
+	'v2/admin/emoji/list': 'application/json',
 	'admin/federation/delete-all-files': 'application/json',
 	'admin/federation/refresh-remote-instance-metadata': 'application/json',
 	'admin/federation/remove-all-following': 'application/json',

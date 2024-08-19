@@ -46,11 +46,11 @@ function createRender(params: {
 			msw: {
 				handlers: [
 					...commonHandlers,
-					http.post('/api/admin/emoji/v2/list', async ({ request }) => {
+					http.post('/api/v2/admin/emoji/list', async ({ request }) => {
 						await delay(100);
 
 						const bodyStream = request.body as ReadableStream;
-						const body = await new Response(bodyStream).json() as entities.AdminEmojiV2ListRequest;
+						const body = await new Response(bodyStream).json() as entities.V2AdminEmojiListRequest;
 
 						const emojis = storedEmojis;
 						const limit = body.limit ?? 10;

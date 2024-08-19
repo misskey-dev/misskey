@@ -557,7 +557,7 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 async function refreshCustomEmojis() {
 	const limit = 100;
 
-	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
+	const query: Misskey.entities.V2AdminEmojiListRequest['query'] = {
 		name: emptyStrToUndefined(queryName.value),
 		type: emptyStrToUndefined(queryType.value),
 		aliases: emptyStrToUndefined(queryAliases.value),
@@ -576,7 +576,7 @@ async function refreshCustomEmojis() {
 	}
 
 	const result = await os.promiseDialog(
-		misskeyApi('admin/emoji/v2/list', {
+		misskeyApi('v2/admin/emoji/list', {
 			query: query,
 			limit: limit,
 			page: currentPage.value,

@@ -396,14 +396,14 @@ export type paths = {
      */
     post: operations['admin___emoji___update'];
   };
-  '/admin/emoji/v2/list': {
+  '/v2/admin/emoji/list': {
     /**
-     * admin/emoji/v2/list
+     * v2/admin/emoji/list
      * @description No description provided.
      *
      * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
      */
-    post: operations['admin___emoji___v2___list'];
+    post: operations['v2___admin___emoji___list'];
   };
   '/admin/federation/delete-all-files': {
     /**
@@ -7659,12 +7659,12 @@ export type operations = {
     };
   };
   /**
-   * admin/emoji/v2/list
+   * v2/admin/emoji/list
    * @description No description provided.
    *
    * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
    */
-  admin___emoji___v2___list: {
+  v2___admin___emoji___list: {
     requestBody: {
       content: {
         'application/json': {

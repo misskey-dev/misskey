@@ -200,12 +200,6 @@ type AdminEmojiSetLicenseBulkRequest = operations['admin___emoji___set-license-b
 type AdminEmojiUpdateRequest = operations['admin___emoji___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type AdminEmojiV2ListRequest = operations['admin___emoji___v2___list']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type AdminEmojiV2ListResponse = operations['admin___emoji___v2___list']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type AdminFederationDeleteAllFilesRequest = operations['admin___federation___delete-all-files']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1258,8 +1252,8 @@ declare namespace entities {
         AdminEmojiSetCategoryBulkRequest,
         AdminEmojiSetLicenseBulkRequest,
         AdminEmojiUpdateRequest,
-        AdminEmojiV2ListRequest,
-        AdminEmojiV2ListResponse,
+        V2AdminEmojiListRequest,
+        V2AdminEmojiListResponse,
         AdminFederationDeleteAllFilesRequest,
         AdminFederationRefreshRemoteInstanceMetadataRequest,
         AdminFederationRemoveAllFollowingRequest,
@@ -3235,6 +3229,12 @@ type UsersShowResponse = operations['users___show']['responses']['200']['content
 
 // @public (undocumented)
 type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type V2AdminEmojiListRequest = operations['v2___admin___emoji___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['responses']['200']['content']['application/json'];
 
 // Warnings were encountered during analysis:
 //
