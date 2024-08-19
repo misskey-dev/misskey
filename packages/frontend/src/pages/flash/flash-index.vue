@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="700">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'featured'" key="featured">
-				<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
+				<MkPagination2 v-slot="{items}" :pagination="featuredFlashsPagination">
 					<div class="_gaps_s">
 						<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
 					</div>
-				</MkPagination>
+				</MkPagination2>
 			</div>
 
 			<div v-else-if="tab === 'my'" key="my">
@@ -43,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkFlashPreview from '@/components/MkFlashPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import MkPagination2 from '@/components/MkPagination2.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { i18n } from '@/i18n.js';
@@ -56,7 +57,6 @@ const tab = ref('featured');
 const featuredFlashsPagination = {
 	endpoint: 'v2/flash/featured' as const,
 	limit: 10,
-	pagingMode: true,
 };
 const myFlashsPagination = {
 	endpoint: 'flash/my' as const,

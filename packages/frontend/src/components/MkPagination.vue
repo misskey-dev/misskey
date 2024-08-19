@@ -45,6 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll.js';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility.js';
@@ -74,43 +75,10 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 
 	offsetMode?: boolean;
 
-	/**
-	 * ページ数を返してくるエンドポイントに対応するモード.
-	 * リクエストに以下のプロパティが含まれている必要がある.
-	 *
-	 * ◯リクエスト
-	 * ```json
-	 * {
-	 *   limit: number;
-	 * 	 page: number;
-	 * }
-	 * ```
-	 *
-	 * ◯レスポンス
-	 * ```json
-	 * {
-	 *   items: T[];
-	 *   page: number;
-	 *   count: number;
-	 *   allPages: number;
-	 *   allCount: number;
-	 * }
-	 * ```
-	 */
-	pagingMode?: boolean;
-
 	pageEl?: HTMLElement;
 };
 
 type MisskeyEntityMap = Map<string, MisskeyEntity>;
-
-type PagingResponse = {
-	items: MisskeyEntity[];
-	page: number;
-	count: number;
-	allPages: number;
-	allCount: number;
-}
 
 function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 	return entities.map(en => [en.id, en]);
@@ -158,11 +126,6 @@ const items = ref<MisskeyEntityMap>(new Map());
 const queue = ref<MisskeyEntityMap>(new Map());
 
 const offset = ref(0);
-
-/**
- * ページ数. ページングモードの場合のみ使用
- */
-const page = ref(1);
 
 /**
  * 初期化中かどうか（trueならMkLoadingで全て隠す）
@@ -240,8 +203,12 @@ async function init(): Promise<void> {
 	items.value = new Map();
 	queue.value = new Map();
 	fetching.value = true;
-
-	fetch({ allowPartial: true }).then(res => {
+	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
+	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+		...params,
+		limit: props.pagination.limit ?? 10,
+		allowPartial: true,
+	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
@@ -272,8 +239,16 @@ const reload = (): Promise<void> => {
 const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
-
-	await fetch({ direction: 'more' }).then(res => {
+	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
+	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+		...params,
+		limit: SECOND_FETCH_LIMIT,
+		...(props.pagination.offsetMode ? {
+			offset: offset.value,
+		} : {
+			untilId: Array.from(items.value.keys()).at(-1),
+		}),
+	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
@@ -328,8 +303,16 @@ const fetchMore = async (): Promise<void> => {
 const fetchMoreAhead = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
-
-	fetch({ direction: 'ahead' }).then(res => {
+	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
+	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+		...params,
+		limit: SECOND_FETCH_LIMIT,
+		...(props.pagination.offsetMode ? {
+			offset: offset.value,
+		} : {
+			sinceId: Array.from(items.value.keys()).at(-1),
+		}),
+	}).then(res => {
 		if (res.length === 0) {
 			items.value = concatMapWithArray(items.value, res);
 			more.value = false;
@@ -342,79 +325,6 @@ const fetchMoreAhead = async (): Promise<void> => {
 	}, err => {
 		moreFetching.value = false;
 	});
-};
-
-const fetch = async (params: {
-	direction?: 'more' | 'ahead';
-	allowPartial?: boolean;
-}): Promise<MisskeyEntity[]> => {
-	const pagination = props.pagination;
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let requestParams: any = {
-		...(
-			props.pagination.params
-				? (isRef(pagination.params) ? pagination.params.value : pagination.params)
-				: {}
-		),
-		allowPartial: params.allowPartial,
-	};
-
-	switch (true) {
-		case pagination.offsetMode: {
-			requestParams = {
-				...requestParams,
-				limit: SECOND_FETCH_LIMIT,
-				offset: offset.value,
-			};
-			break;
-		}
-		case pagination.pagingMode: {
-			const limit = pagination.limit;
-			const _page = page.value <= 0 ? 1 : page.value;
-			switch (params.direction) {
-				case 'more': {
-					requestParams = { ...requestParams, limit, page: _page + 1 };
-					break;
-				}
-				case 'ahead': {
-					requestParams = { ...requestParams, limit, page: _page - 1 };
-					break;
-				}
-				default: {
-					requestParams = { ...requestParams, limit, page: _page };
-					break;
-				}
-			}
-			break;
-		}
-		default: {
-			const limit = SECOND_FETCH_LIMIT;
-			switch (params.direction) {
-				case 'more': {
-					requestParams = { ...requestParams, limit, untilId: Array.from(items.value.keys()).at(-1) };
-					break;
-				}
-				case 'ahead': {
-					requestParams = { ...requestParams, limit, sinceId: Array.from(items.value.keys()).at(-1) };
-					break;
-				}
-				default: {
-					requestParams = { ...requestParams, limit };
-					break;
-				}
-			}
-			break;
-		}
-	}
-
-	if (!pagination.pagingMode) {
-		return misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, requestParams);
-	} else {
-		const res = await misskeyApi<PagingResponse>(props.pagination.endpoint, requestParams);
-		page.value = res.page;
-		return res.items;
-	}
 };
 
 /**
