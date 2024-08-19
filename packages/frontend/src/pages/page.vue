@@ -62,8 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div :class="$style.other">
+							<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
 							<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
 							<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+							<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 						</div>
 					</div>
 					<div :class="$style.pageUser">
@@ -77,14 +79,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.pageDate">
 						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
 						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
-					</div>
-					<div :class="$style.pageLinks">
-						<MkA v-if="!$i || $i.id !== page.userId" :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ i18n.ts._pages.viewSource }}</MkA>
-						<template v-if="$i && $i.id === page.userId">
-							<MkA :to="`/pages/edit/${page.id}`" class="link">{{ i18n.ts._pages.editThisPage }}</MkA>
-							<button v-if="$i.pinnedPageId === page.id" class="link _textButton" @click="pin(false)">{{ i18n.ts.unpin }}</button>
-							<button v-else class="link _textButton" @click="pin(true)">{{ i18n.ts.pin }}</button>
-						</template>
 					</div>
 				</div>
 				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
@@ -104,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -126,6 +120,10 @@ import { isSupportShare } from '@/scripts/navigator.js';
 import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { useRouter } from '@/router/supplier.js';
+import { MenuItem } from '@/types/menu';
+
+const router = useRouter();
 
 const props = defineProps<{
 	pageName: string;
@@ -240,6 +238,69 @@ function pin(pin) {
 	os.apiWithDialog('i/update', {
 		pinnedPageId: pin ? page.value.id : null,
 	});
+}
+
+function reportAbuse() {
+	if (!page.value) return;
+
+	const pageUrl = `${url}/@${props.username}/pages/${props.pageName}`;
+
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		user: page.value.user,
+		initialComment: `Page: ${pageUrl}\n-----\n`,
+	}, {
+		closed: () => dispose(),
+	});
+}
+
+function showMenu(ev: MouseEvent) {
+	if (!page.value) return;
+
+	const menu: MenuItem[] = [
+		...($i && $i.id === page.value.userId ? [
+			{
+				icon: 'ti ti-code',
+				text: i18n.ts._pages.viewSource,
+				action: () => router.push(`/@${props.username}/pages/${props.pageName}/view-source`),
+			},
+			...($i.pinnedPageId === page.value.id ? [{
+				icon: 'ti ti-pinned-off',
+				text: i18n.ts.unpin,
+				action: () => pin(false),
+			}] : [{
+				icon: 'ti ti-pin',
+				text: i18n.ts.pin,
+				action: () => pin(true),
+			}]),
+		] : []),
+		...($i && $i.id !== page.value.userId ? [
+			{
+				icon: 'ti ti-exclamation-circle',
+				text: i18n.ts.reportAbuse,
+				action: reportAbuse,
+			},
+			...($i.isModerator || $i.isAdmin ? [
+				{
+					type: 'divider' as const,
+				},
+				{
+					icon: 'ti ti-trash',
+					text: i18n.ts.delete,
+					danger: true,
+					action: () => os.confirm({
+						type: 'warning',
+						text: i18n.ts.deleteConfirm,
+					}).then(({ canceled }) => {
+						if (canceled || !page.value) return;
+
+						os.apiWithDialog('pages/delete', { pageId: page.value.id });
+					}),
+				},
+			] : []),
+		] : []),
+	];
+
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
 watch(() => path.value, fetchPage, { immediate: true });
