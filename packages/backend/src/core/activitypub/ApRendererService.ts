@@ -472,15 +472,12 @@ export class ApRendererService {
 
 		const hashtagTags = user.tags.map(tag => this.renderHashtag(tag));
 
-		let liked;
-		if (profile.publicReactions) {
-			const likedId = `${id}/liked`;
-			liked = this.renderOrderedCollection(
-				likedId,
-				undefined,
-				`${likedId}?page=true`,
-			);
-		}
+		const likedId = `${id}/liked`;
+		const liked = this.renderOrderedCollection(
+			likedId,
+			undefined,
+			profile.publicReactions ? `${likedId}?page=true` : undefined,
+		);
 
 		const tag = [
 			...apemojis,
