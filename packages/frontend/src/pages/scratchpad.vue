@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true">
 				<template #header>Components</template>
 				<div :class="$style.components">
-					<div v-for="(c, i) in components" :key="i">
+					<div v-for="(c, i) in components" :key="i" :class="'scratchpad_' + c.value.type">
 						<div :class="$style.componentType">{{ c.value.type }}</div>
 						<div :class="$style.componentId">{{ c.value.id }}</div>
 					</div>
@@ -209,9 +209,11 @@ definePageMetadata(() => ({
 
 .componentType {
 	display: inline-block;
-	border-width: 2px;
+	border: hidden;
 	border-radius: 10px;
-	border-color: var(--accent);
+	background-color: var(--panelHighlight);
+	padding: 2px 8px;
+	margin: 2px 8px;
 }
 
 .componentId {
