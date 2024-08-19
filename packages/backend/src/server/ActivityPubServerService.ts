@@ -400,12 +400,14 @@ export class ActivityPubServerService {
 				.limit(limit + 1)
 				.orderBy('reaction.id', 'DESC')
 				.innerJoinAndSelect('reaction.note', 'note')
+				.leftJoinAndSelect('note.user', 'noteUser')
 				.andWhere(new Brackets(qb => {
 					qb
 						.where('note.visibility = \'public\'')
 						.orWhere('note.visibility = \'home\'');
 				}))
 				.andWhere('note.localOnly = FALSE')
+				.andWhere('noteUser.isSuspended = FALSE')
 				.getMany();
 
 			// 「次のページ」があるかどうか
