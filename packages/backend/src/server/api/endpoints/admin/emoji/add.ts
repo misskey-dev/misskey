@@ -25,7 +25,7 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
-		notSupportFileType: {
+		unsupportedFileType: {
 			message: 'Unsupported file type.',
 			code: 'UNSUPPORTED_FILE_TYPE',
 			id: 'f7599d96-8750-af68-1633-9575d625c1a7',
@@ -87,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
 			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
-			if (!FILE_TYPE_IMAGE.includes(driveFile.type)) throw new ApiError(meta.errors.notSupportFileType);
+			if (!FILE_TYPE_IMAGE.includes(driveFile.type)) throw new ApiError(meta.errors.unsupportedFileType);
 
 			const emoji = await this.customEmojiService.add({
 				originalUrl: driveFile.url,
