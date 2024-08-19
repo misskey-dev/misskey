@@ -130,7 +130,7 @@ const pageAhead = ref(1);
 const pageItems = new Map<number, MisskeyEntity['id'][]>();
 
 /** 表示するページの範囲 */
-const pageRange = props.pagination.pageRange ?? 2;
+const pageRange = props.pagination.pageRange ?? 5;
 
 /** APIから取得したページ数の最大値 */
 const pageLast = ref(1);
