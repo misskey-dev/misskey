@@ -30,10 +30,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkContainer>
 
-			<MkContainer :foldable="true" class="">
-				<template #header>UIs</template>
-				<div :class="$style.logs">
-					<div v-for="c in components" :key="c.id" class="log print">{{ [c.id, c.type, c.value.id, c.value.type] }}</div>
+			<MkContainer :foldable="true">
+				<template #header>Components</template>
+				<div :class="$style.components">
+					<div v-for="(c, i) in components" :key="i">
+						<div :class="$style.componentType">{{ c.value.type }}</div>
+						<div :class="$style.componentId">{{ c.value.id }}</div>
+					</div>
 				</div>
 			</MkContainer>
 
@@ -198,5 +201,20 @@ definePageMetadata(() => ({
 			}
 		}
 	}
+}
+
+.components {
+	padding: 16px;
+}
+
+.componentType {
+	display: inline-block;
+	border-width: 2px;
+	border-radius: 10px;
+	border-color: var(--accent);
+}
+
+.componentId {
+	display: inline-block;
 }
 </style>
