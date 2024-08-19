@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: ハイライトからセンシティブなメディアを含むノートを除外するオプション
 
 ### Client
 -
