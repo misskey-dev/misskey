@@ -400,7 +400,6 @@ export class ActivityPubServerService {
 				.limit(limit + 1)
 				.orderBy('reaction.id', 'DESC')
 				.innerJoinAndSelect('reaction.note', 'note')
-				.distinctOn(['note.id'])
 				.getMany();
 
 			// 「次のページ」があるかどうか
