@@ -20,6 +20,8 @@ import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
 
+const MAX_CHANNELS_PER_CONNECTION = 32;
+
 /**
  * Main stream connection
  */
@@ -255,6 +257,10 @@ export default class Connection {
 	 */
 	@bindThis
 	public connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
+		if (this.channels.length >= MAX_CHANNELS_PER_CONNECTION) {
+			return;
+		}
+
 		const channelService = this.channelsService.getChannelService(channel);
 
 		if (channelService.requireCredential && this.user == null) {
