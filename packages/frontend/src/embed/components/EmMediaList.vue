@@ -34,12 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
-import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
-import XBanner from '@/components/MkMediaBanner.vue';
-import XImage from '@/components/MkMediaImage.vue';
-import XVideo from '@/components/MkMediaVideo.vue';
+import XBanner from './EmMediaBanner.vue';
+import XImage from './EmMediaImage.vue';
+import XVideo from './EmMediaVideo.vue';
 import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { defaultStore } from '@/store.js';
