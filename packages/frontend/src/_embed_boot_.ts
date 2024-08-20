@@ -52,7 +52,7 @@ window.addEventListener('message', setIframeIdHandler);
 
 // 起動
 common(() => createApp(
-	defineAsyncComponent(() => import('@/ui/embed.vue')),
+	defineAsyncComponent(() => import('@/embed/ui.vue')),
 ), bootOptions).then(async ({ app }) => {
 	//#region Embed Provide
 	app.provide('EMBED_PAGE', true);
