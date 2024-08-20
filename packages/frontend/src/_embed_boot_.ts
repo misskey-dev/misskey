@@ -15,8 +15,11 @@ import { setIframeId, postMessageToParentWindow } from '@/scripts/post-message.j
 import { parseEmbedParams } from '@/scripts/embed-page.js';
 import { defaultStore } from '@/store.js';
 import { useRouter } from '@/router/supplier.js';
+import { createEmbedRouter } from '@/router/definition.embed.js';
 
-const bootOptions: Partial<CommonBootOptions> = {};
+const bootOptions: Partial<CommonBootOptions> = {
+	routerFactory: createEmbedRouter,
+};
 
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
