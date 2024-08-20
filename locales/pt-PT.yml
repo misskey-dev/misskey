@@ -1675,7 +1675,7 @@ _role:
   descriptionOfPermission: "<b>Moderador</b> permite que você execute operações básicas relacionadas à moderação.\n<b>Administradores</b> podem alterar todas as configurações do servidor."
   assignTarget: "Atribuir"
   descriptionOfAssignTarget: "<b>Manual</b> para gerenciar manualmente quem está incluído neste cargo.\n<b>Condicional</b> define uma condição e os usuários que corresponderem a ela serão incluídos automaticamente."
-  manual: "Documentação"
+  manual: "Manual"
   manualRoles: "Cargos manuais"
   conditional: "Condicional"
   conditionalRoles: "Cargos condicionais"
