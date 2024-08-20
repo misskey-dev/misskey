@@ -522,7 +522,7 @@ function toggleReact() {
 }
 
 function onContextmenu(ev: MouseEvent): void {
-	if (props.mock) {
+	if (props.mock || inEmbedPage) {
 		return;
 	}
 

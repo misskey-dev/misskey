@@ -26,7 +26,6 @@ import { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { embedPage } from '@/config.js';
 import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
 import { focusParent } from '@/scripts/focus.js';
 
@@ -658,8 +657,7 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	if (
 		defaultStore.state.contextMenu === 'native' ||
-		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey) ||
-    embedPage
+		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
 	) {
 		return Promise.resolve();
 	}
