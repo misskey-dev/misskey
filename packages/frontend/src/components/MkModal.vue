@@ -288,10 +288,11 @@ const align = () => {
 const onOpened = () => {
 	emit('opened');
 
-	// NOTE: Chromatic テストの際に undefined になる場合がある
-	if (content.value == null) return;
-
+	// contentの子要素にアクセスするためレンダリングの完了を待つ必要がある（nextTickが必要）
 	nextTick(() => {
+		// NOTE: Chromatic テストの際に undefined になる場合がある
+		if (content.value == null) return;
+
 		// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 		const el = content.value.children[0];
 		el.addEventListener('mousedown', ev => {
