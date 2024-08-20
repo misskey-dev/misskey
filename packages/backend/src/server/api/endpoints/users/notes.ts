@@ -21,6 +21,8 @@ import { ApiError } from '@/server/api/error.js';
 export const meta = {
 	tags: ['users', 'notes'],
 
+	requireCredential: true,
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

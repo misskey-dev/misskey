@@ -12,7 +12,7 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['flash'],
 
-	requireCredential: false,
+	requireCredential: true,
 
 	res: {
 		type: 'array',
