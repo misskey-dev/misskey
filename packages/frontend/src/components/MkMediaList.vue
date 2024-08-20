@@ -93,7 +93,6 @@ async function calcAspectRatio() {
 
 onMounted(() => {
 	calcAspectRatio();
-	if (defaultStore.state.imageNewTab) return;
 
 	lightbox = new PhotoSwipeLightbox({
 		dataSource: props.mediaList
