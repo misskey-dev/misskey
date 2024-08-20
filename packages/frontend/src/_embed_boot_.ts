@@ -7,7 +7,7 @@
 import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
-import '@/style.embed.scss';
+import '@/embed/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import type { CommonBootOptions } from '@/boot/common.js';
 import { common } from '@/boot/common.js';
