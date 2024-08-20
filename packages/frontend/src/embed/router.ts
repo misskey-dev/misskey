@@ -10,16 +10,16 @@ import { $i } from '@/account.js';
 
 const routes: RouteDef[] = [{
 	path: '/embed/notes/:noteId',
-	component: page(() => import('@/pages/embed/note.vue')),
+	component: page(() => import('@/embed/pages/note.vue')),
 }, {
 	path: '/embed/user-timeline/@:username',
-	component: page(() => import('@/pages/embed/user-timeline.vue')),
+	component: page(() => import('@/embed/pages/user-timeline.vue')),
 }, {
 	path: '/embed/clips/:clipId',
-	component: page(() => import('@/pages/embed/clip.vue')),
+	component: page(() => import('@/embed/pages/clip.vue')),
 }, {
 	path: '/embed/tags/:tag',
-	component: page(() => import('@/pages/embed/tag.vue')),
+	component: page(() => import('@/embed/pages/tag.vue')),
 }, {
 	path: '/:(*)',
 	component: page(() => import('@/pages/not-found.vue')),

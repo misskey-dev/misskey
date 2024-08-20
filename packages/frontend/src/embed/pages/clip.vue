@@ -43,7 +43,7 @@ import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
-import XEmbedTimelineUI from '@/pages/embed/_timeline_ui_.vue';
+import XEmbedTimelineUI from '@/embed/pages/_timeline_ui_.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';

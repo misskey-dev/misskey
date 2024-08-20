@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, shallowRef, inject, onActivated } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
-import XEmbedTimelineUI from '@/pages/embed/_timeline_ui_.vue';
+import XEmbedTimelineUI from '@/embed/pages/_timeline_ui_.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
