@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :class="$style.banner">
-		<XBanner :media="media" :inert="inEmbedPage"/>
-		<a v-if="inEmbedPage && originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
+		<XBanner :media="media" :inert="true"/>
+		<a v-if="originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
 	</div>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
@@ -17,9 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			]"
 		>
 			<div v-for="media in mediaList.filter(media => previewable(media))" :class="$style.media">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :video="media" :class="$style.mediaInner" :inert="inEmbedPage"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.mediaInner" class="image" :inert="inEmbedPage" :data-id="media.id" :image="media" :raw="raw"/>
-				<a v-if="inEmbedPage && originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
+				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :video="media" :class="$style.mediaInner" :inert="true"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.mediaInner" class="image" :inert="true" :data-id="media.id" :image="media" :raw="raw"/>
+				<a v-if="originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
 			</div>
 		</div>
 	</div>
@@ -42,8 +42,6 @@ const props = defineProps<{
 	/** 埋め込みページ用 親要素の正規URL */
 	originalEntityUrl?: string;
 }>();
-
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
