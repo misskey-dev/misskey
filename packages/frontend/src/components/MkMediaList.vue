@@ -5,10 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<div v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :class="$style.banner">
-		<XBanner :media="media" :inert="inEmbedPage"/>
-		<a v-if="inEmbedPage && originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
-	</div>
+	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
 			ref="gallery"
@@ -21,18 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
-			<div v-for="media in mediaList.filter(media => previewable(media))" :class="$style.media">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :video="media" :class="$style.mediaInner" :inert="inEmbedPage"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.mediaInner" class="image" :inert="inEmbedPage" :data-id="media.id" :image="media" :raw="raw"/>
-				<a v-if="inEmbedPage && originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
-			</div>
+			<template v-for="media in mediaList.filter(media => previewable(media))">
+				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+			</template>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, inject } from 'vue';
+import { computed, onMounted, onUnmounted, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -48,12 +44,7 @@ import { focusParent } from '@/scripts/focus.js';
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
 	raw?: boolean;
-
-	/** 埋め込みページ用 親要素の正規URL */
-	originalEntityUrl?: string;
 }>();
-
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
@@ -102,7 +93,7 @@ async function calcAspectRatio() {
 
 onMounted(() => {
 	calcAspectRatio();
-	if (defaultStore.state.imageNewTab || inEmbedPage) return;
+	if (defaultStore.state.imageNewTab) return;
 
 	lightbox = new PhotoSwipeLightbox({
 		dataSource: props.mediaList
@@ -316,26 +307,6 @@ defineExpose({
 .media {
 	overflow: hidden; // clipにするとバグる
 	border-radius: 8px;
-	position: relative;
-
-	>.mediaInner {
-		width: 100%;
-		height: 100%;
-	}
-}
-
-.banner {
-	position: relative;
-}
-
-.mediaLinkForEmbed::after {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 1;
-	content: '';
 }
 
 :global(.pswp) {
