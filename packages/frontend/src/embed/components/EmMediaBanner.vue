@@ -4,70 +4,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
-	<EmMediaAudio v-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :audio="media"/>
-	<div v-else-if="media.isSensitive && hide" :class="$style.sensitive" @click="show">
-		<span style="font-size: 1.6em;"><i class="ti ti-alert-triangle"></i></span>
-		<b>{{ i18n.ts.sensitive }}</b>
-		<span>{{ i18n.ts.clickToShow }}</span>
+<a :href="href" target="_blank" :class="$style.root">
+	<div :class="$style.label">
+		<template v-if="media.type.startsWith('audio')"><i class="ti ti-music"></i> {{ i18n.ts.audio }}</template>
+		<template v-else><i class="ti ti-file"></i> {{ i18n.ts.file }}</template>
 	</div>
-	<a
-		v-else :class="$style.download"
-		:href="media.url"
-		:title="media.name"
-		:download="media.name"
-	>
-		<span style="font-size: 1.6em;"><i class="ti ti-download"></i></span>
-		<b>{{ media.name }}</b>
-	</a>
-</div>
+	<div :class="$style.go">
+		<i class="ti ti-chevron-right"></i>
+	</div>
+</a>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
+<script setup lang="ts">
 import * as Misskey from 'misskey-js';
-import EmMediaAudio from './EmMediaAudio.vue';
 import { i18n } from '@/i18n.js';
 
-const props = defineProps<{
+defineProps<{
 	media: Misskey.entities.DriveFile;
+	href: string;
 }>();
-
-const hide = ref(true);
-
-async function show() {
-	hide.value = false;
-}
 </script>
 
 <style lang="scss" module>
 .root {
-	width: 100%;
-	border-radius: 4px;
-	margin-top: 4px;
-	overflow: clip;
-}
-
-.download,
-.sensitive {
+	box-sizing: border-box;
 	display: flex;
 	align-items: center;
-	font-size: 12px;
-	padding: 8px 12px;
-	white-space: nowrap;
+	width: 100%;
+	padding: var(--margin);
+	margin-top: 4px;
+	border: 1px solid var(--inputBorder);
+	border-radius: var(--radius);
+	background-color: var(--panel);
+	transition: background-color .1s, border-color .1s;
+
+	&:hover {
+		text-decoration: none;
+		border-color: var(--inputBorderHover);
+		background-color: var(--buttonHoverBg);
+	}
 }
 
-.download {
-	background: var(--noteAttachedFile);
+.label {
+	font-size: .9em;
 }
 
-.sensitive {
-	background: #111;
-	color: #fff;
-}
-
-.audio {
-	border-radius: 8px;
-	overflow: clip;
+.go {
+	margin-left: auto;
 }
 </style>

@@ -8,14 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<a
 		:title="image.name"
 		:class="$style.imageContainer"
-		:href="image.url"
+		:href="href ?? image.url"
 		target="_blank"
 		rel="noopener"
-		style="cursor: zoom-in;"
 	>
 		<ImgWithBlurhash
 			:hash="image.blurhash"
-			:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
+			:src="hide ? null : url"
 			:forceBlurhash="hide"
 			:cover="hide || cover"
 			:alt="image.comment || image.name"
@@ -26,10 +25,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 	</a>
 	<template v-if="hide">
-		<div :class="$style.hiddenText">
+		<div :class="$style.hiddenText" @click="hide = !hide">
 			<div :class="$style.hiddenTextWrapper">
-				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
-				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.dataSaver.media && image.size ? bytes(image.size) : i18n.ts.image }}</b>
+				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
+				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ i18n.ts.image }}</b>
 				<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</div>
 		</div>
@@ -39,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="image.comment" :class="$style.indicator">ALT</div>
 		<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 	</div>
-	<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
+	<i v-if="!hide" class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
 </div>
 </template>
 
@@ -52,6 +51,7 @@ import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
+	href?: string;
 	raw?: boolean;
 	cover?: boolean;
 }>(), {

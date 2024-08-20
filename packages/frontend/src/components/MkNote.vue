@@ -79,7 +79,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
-						<MkMediaList ref="galleryEl" :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
+						<EmMediaList v-if="inEmbedPage" ref="galleryEl" :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
+						<MkMediaList v-else ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
 					<div v-if="isEnabledUrlPreview">
@@ -187,6 +188,7 @@ import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
+import EmMediaList from '@/embed/components/EmMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';

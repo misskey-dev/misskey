@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :class="$style.banner">
-		<XBanner :media="media" :inert="true"/>
-		<a v-if="originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
+		<XBanner :media="media" :href="originalEntityUrl"/>
 	</div>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
@@ -17,9 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			]"
 		>
 			<div v-for="media in mediaList.filter(media => previewable(media))" :class="$style.media">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :video="media" :class="$style.mediaInner" :inert="true"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.mediaInner" class="image" :inert="true" :data-id="media.id" :image="media" :raw="raw"/>
-				<a v-if="originalEntityUrl" :href="originalEntityUrl" target="_blank" rel="noopener" :class="$style.mediaLinkForEmbed"></a>
+				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.mediaInner" :video="media" :href="originalEntityUrl"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.mediaInner" class="image" :image="media" :raw="raw" :href="originalEntityUrl"/>
 			</div>
 		</div>
 	</div>
@@ -43,8 +41,6 @@ const props = defineProps<{
 	originalEntityUrl?: string;
 }>();
 
-const pswpZIndex = os.claimZIndex('middle');
-document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
 
 let activeEl: HTMLElement | null = null;
@@ -149,15 +145,5 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 
 .banner {
 	position: relative;
-}
-
-.mediaLinkForEmbed::after {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 1;
-	content: '';
 }
 </style>
