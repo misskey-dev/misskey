@@ -266,7 +266,6 @@ export async function common(createVue: () => App<Element>) {
 }
 
 function removeSplash() {
-	console.log('remove splash');
 	const splash = document.getElementById('splash');
 	if (splash) {
 		splash.style.opacity = '0';
