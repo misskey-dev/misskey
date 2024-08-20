@@ -13,11 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div
 			:class="[
 				$style.medias,
-				count === 1 ? [$style.n1, {
-					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
-					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
-					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
-				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
+				count === 1 ? [$style.n1] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
 			<div v-for="media in mediaList.filter(media => previewable(media))" :class="$style.media">
@@ -31,16 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, inject } from 'vue';
+import { computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
-import 'photoswipe/style.css';
 import XBanner from './EmMediaBanner.vue';
 import XImage from './EmMediaImage.vue';
 import XVideo from './EmMediaVideo.vue';
 import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { defaultStore } from '@/store.js';
-import { focusParent } from '@/scripts/focus.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
