@@ -1,7 +1,7 @@
 block vars
 
 block loadClientEntry
-	- const clientEntry = embed ? config.clientEmbedEntry : config.clientEntry;
+	- const clientEntry = config.clientEntry;
 
 doctype html
 
@@ -17,7 +17,7 @@ doctype html
 	 https://github.com/misskey-dev/misskey
 
 
-html(class=embed && 'embed')
+html
 
 	head
 		meta(charset='utf-8')
@@ -75,12 +75,8 @@ html(class=embed && 'embed')
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson
 
-		if embed
-			script
-				include ../boot.embed.js
-		else
-			script
-				include ../boot.js
+		script
+			include ../boot.js
 
 	body
 		noscript: p
