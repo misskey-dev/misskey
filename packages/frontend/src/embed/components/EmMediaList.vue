@@ -162,42 +162,4 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	z-index: 1;
 	content: '';
 }
-
-:global(.pswp) {
-	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--modalBg) !important;
-}
-</style>
-
-<style lang="scss">
-.pswp__bg {
-	background: var(--modalBg);
-	backdrop-filter: var(--modalBgFilter);
-}
-
-.pswp__alt-text-container {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	position: absolute;
-	bottom: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-
-	width: 75%;
-	max-width: 800px;
-}
-
-.pswp__alt-text {
-	color: var(--fg);
-	margin: 0 auto;
-	text-align: center;
-	padding: var(--margin);
-	border-radius: var(--radius);
-	max-height: 8em;
-	overflow-y: auto;
-	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
-	white-space: pre-line;
-}
 </style>
