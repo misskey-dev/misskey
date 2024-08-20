@@ -201,7 +201,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	--eventFollow: #36aed2;
 	--eventRenote: #36d298;
 	--eventReply: #007aff;
-	--eventReactionHeart: #dd2e44;
+	--eventReactionHeart: var(--love);
 	--eventReaction: #e99a0b;
 	--eventAchievement: #cb9a11;
 	--eventOther: #88a6b7;
