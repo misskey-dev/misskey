@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			controls
 			@keydown.prevent
 		>
-			<source :src="video.url" :type="video.type">
+			<source :src="video.url">
 		</video>
 		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
@@ -53,13 +53,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:poster="video.thumbnailUrl ?? undefined"
 			:title="video.comment ?? undefined"
 			:alt="video.comment"
-			tabindex="-1"
 			preload="metadata"
 			playsinline
 			@keydown.prevent
 			@click.self="togglePlayPause"
 		>
-			<source :src="video.url" :type="video.type">
+			<source :src="video.url">
 		</video>
 		<button v-if="isReady && !isPlaying" class="_button" :class="$style.videoOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
 		<div v-else-if="!isActuallyPlaying" :class="$style.videoLoading">
@@ -110,7 +109,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, inject, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import { type Keymap } from '@/scripts/hotkey.js';
@@ -128,13 +127,10 @@ const props = defineProps<{
 	video: Misskey.entities.DriveFile;
 }>();
 
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
-
 const keymap = {
 	'up': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && videoEl.value) {
 				volume.value = Math.min(volume.value + 0.1, 1);
 			}
@@ -143,7 +139,6 @@ const keymap = {
 	'down': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && videoEl.value) {
 				volume.value = Math.max(volume.value - 0.1, 0);
 			}
@@ -152,7 +147,6 @@ const keymap = {
 	'left': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && videoEl.value) {
 				videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
 			}
@@ -161,14 +155,12 @@ const keymap = {
 	'right': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && videoEl.value) {
 				videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
 			}
 		},
 	},
 	'space': () => {
-		if (inEmbedPage) return;
 		if (hasFocus()) {
 			togglePlayPause();
 		}

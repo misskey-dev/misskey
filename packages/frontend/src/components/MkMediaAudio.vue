@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="$style.nativeAudio"
 			@keydown.prevent
 		>
-			<source :src="audio.url" :type="audio.type">
+			<source :src="audio.url">
 		</audio>
 	</div>
 
@@ -39,10 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<audio
 			ref="audioEl"
 			preload="metadata"
-			tabindex="-1"
-			@keydown.prevent
+			@keydown.prevent="() => {}"
 		>
-			<source :src="audio.url" :type="audio.type">
+			<source :src="audio.url">
 		</audio>
 		<div :class="[$style.controlsChild, $style.controlsLeft]">
 			<button
@@ -89,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, watch, computed, ref, inject, onDeactivated, onActivated, onMounted } from 'vue';
+import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
@@ -105,13 +104,10 @@ const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
 }>();
 
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
-
 const keymap = {
 	'up': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && audioEl.value) {
 				volume.value = Math.min(volume.value + 0.1, 1);
 			}
@@ -120,7 +116,6 @@ const keymap = {
 	'down': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && audioEl.value) {
 				volume.value = Math.max(volume.value - 0.1, 0);
 			}
@@ -129,7 +124,6 @@ const keymap = {
 	'left': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && audioEl.value) {
 				audioEl.value.currentTime = Math.max(audioEl.value.currentTime - 5, 0);
 			}
@@ -138,14 +132,12 @@ const keymap = {
 	'right': {
 		allowRepeat: true,
 		callback: () => {
-    	if (inEmbedPage) return;
 			if (hasFocus() && audioEl.value) {
 				audioEl.value.currentTime = Math.min(audioEl.value.currentTime + 5, audioEl.value.duration);
 			}
 		},
 	},
 	'space': () => {
-		if (inEmbedPage) return;
 		if (hasFocus()) {
 			togglePlayPause();
 		}

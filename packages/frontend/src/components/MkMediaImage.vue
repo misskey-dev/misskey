@@ -14,8 +14,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			title: image.name,
 			class: $style.imageContainer,
 			href: image.url,
-			target: '_blank',
-			rel: 'noopener',
 			style: 'cursor: zoom-in;'
 		}"
 	>
