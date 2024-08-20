@@ -31,13 +31,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkContainer>
 
 			<MkContainer :foldable="true">
-				<template #header>Components</template>
-				<div :class="$style.components">
-					<div v-for="(c, i) in components" :key="i" :class="'scratchpad_' + c.value.type">
-						<div :class="$style.componentType">{{ c.value.type }}</div>
-						<div :class="$style.componentId">{{ c.value.id }}</div>
+				<template #header>{{ i18n.ts.uiComponentMonitor }}</template>
+				<div :class="$style.uicMonitor">
+					<div v-for="(c, i) in components" :key="i">
+						<div :class="$style.uicMonitorType">{{ c.value.type }}</div>
+						<div :class="$style.uicMonitorId">{{ c.value.id }}</div>
 					</div>
 				</div>
+				<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
 			</MkContainer>
 
 			<div class="">
@@ -203,20 +204,27 @@ definePageMetadata(() => ({
 	}
 }
 
-.components {
+.uicMonitor {
 	padding: 16px;
 }
 
-.componentType {
+.uicMonitorType {
 	display: inline-block;
 	border: hidden;
 	border-radius: 10px;
 	background-color: var(--panelHighlight);
 	padding: 2px 8px;
 	margin: 2px 8px;
+	font-size: 12px;
 }
 
-.componentId {
+.uicMonitorId {
 	display: inline-block;
+}
+
+.uicMonitorDescription {
+	display: inline-block;
+	font-size: 12px;
+	padding-top: 16px;
 }
 </style>
