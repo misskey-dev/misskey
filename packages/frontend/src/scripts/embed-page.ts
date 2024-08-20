@@ -54,7 +54,7 @@ export const defaultEmbedParams = {
 	border: true,
 	autoload: false,
 	header: true,
-} as const;
+} as const satisfies EmbedParams;
 
 //#endregion
 
