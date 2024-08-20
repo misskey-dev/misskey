@@ -101,7 +101,6 @@ import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { MOBILE_THRESHOLD } from '@/const.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -146,9 +145,9 @@ mainRouter.navHook = (path, flag): boolean => {
 	return false;
 };
 
-const isMobile = ref(window.innerWidth <= MOBILE_THRESHOLD);
+const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
-	isMobile.value = window.innerWidth <= MOBILE_THRESHOLD;
+	isMobile.value = window.innerWidth <= 500;
 });
 
 const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';

@@ -48,7 +48,6 @@ import { scrollToTop } from '@/scripts/scroll.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { MOBILE_THRESHOLD } from '@/const.js';
 import { PageHeaderItem } from '@/types/page-header.js';
 
 const props = withDefaults(defineProps<{
@@ -113,10 +112,10 @@ onMounted(() => {
 	globalEvents.on('themeChanged', calcBg);
 
 	if (el.value && el.value.parentElement) {
-		narrow.value = el.value.parentElement.offsetWidth < MOBILE_THRESHOLD;
+		narrow.value = el.value.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
 			if (el.value && el.value.parentElement && document.body.contains(el.value as HTMLElement)) {
-				narrow.value = el.value.parentElement.offsetWidth < MOBILE_THRESHOLD;
+				narrow.value = el.value.parentElement.offsetWidth < 500;
 			}
 		});
 		ro.observe(el.value.parentElement as HTMLElement);

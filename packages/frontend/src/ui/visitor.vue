@@ -72,7 +72,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, provide, ref, computed } from 'vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
-import { DESKTOP_THRESHOLD } from '@/const.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
@@ -84,6 +83,8 @@ import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { mainRouter } from '@/router/main.js';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
+
+const DESKTOP_THRESHOLD = 1100;
 
 const pageMetadata = ref<null | PageMetadata>(null);
 

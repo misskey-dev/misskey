@@ -86,7 +86,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
 import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@/config.js';
-import { MOBILE_THRESHOLD } from '@/const.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deviceKind } from '@/scripts/device-kind.js';
@@ -108,6 +107,7 @@ const props = withDefaults(defineProps<{
 	showActions: true,
 });
 
+const MOBILE_THRESHOLD = 500;
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 
 const self = props.url.startsWith(local);
