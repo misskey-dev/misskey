@@ -782,9 +782,16 @@ export class ClientServerService {
 		//#endregion
 
 		//#region embed pages
-		fastify.get('/embed*', async (request, reply) => {
+		fastify.get('/embed/*', async (request, reply) => {
+			const meta = await this.metaService.fetch();
+
 			reply.removeHeader('X-Frame-Options');
-			return await renderBase(reply, { noindex: true, embed: true });
+
+			reply.header('Cache-Control', 'public, max-age=3600');
+			return await reply.view('base-embed', {
+				title: meta.name ?? 'Misskey',
+				...await this.generateCommonPugData(meta),
+			});
 		});
 
 		fastify.get('/_info_card_', async (request, reply) => {

@@ -73,7 +73,8 @@ async function buildBackendStyle() {
   await fs.mkdir('./packages/backend/built/server/web', { recursive: true });
 
   for (const file of [
-    './packages/backend/src/server/web/style.css',
+		'./packages/backend/src/server/web/style.css',
+		'./packages/backend/src/server/web/style.embed.css',
     './packages/backend/src/server/web/bios.css',
     './packages/backend/src/server/web/cli.css',
     './packages/backend/src/server/web/error.css'

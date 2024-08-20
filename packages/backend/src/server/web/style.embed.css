@@ -1,0 +1,27 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+html.embed {
+	box-sizing: border-box;
+	background-color: transparent;
+	color-scheme: light dark;
+	max-width: 500px;
+}
+
+html.embed #splash {
+	box-sizing: border-box;
+	min-height: 300px;
+	border-radius: var(--radius, 12px);
+	border: 1px solid var(--divider, #e8e8e8);
+}
+
+html.embed.norounded #splash {
+	border-radius: 0;
+}
+
+html.embed.noborder #splash {
+	border: none;
+}
