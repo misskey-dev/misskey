@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<XEmbedTimelineUI v-if="tag" :showHeader="embedParams.header">
+	<XEmTimelineUI v-if="tag" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="false"
 			/>
 		</template>
-	</XEmbedTimelineUI>
+	</XEmTimelineUI>
 	<XNotFound v-else/>
 </div>
 </template>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, shallowRef, inject, onActivated } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
-import XEmbedTimelineUI from '@/embed/pages/_timeline_ui_.vue';
+import XEmTimelineUI from '@/embed/ui/timeline.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
