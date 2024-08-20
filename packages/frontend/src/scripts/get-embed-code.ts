@@ -5,11 +5,12 @@
 import { defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { url } from '@/config.js';
-import { MOBILE_THRESHOLD } from '@/const.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import type { EmbedParams, EmbeddableEntity } from '@/scripts/embed-page.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@/scripts/embed-page.js';
+
+const MOBILE_THRESHOLD = 500;
 
 /**
  * パラメータを正規化する（埋め込みコード作成用）
