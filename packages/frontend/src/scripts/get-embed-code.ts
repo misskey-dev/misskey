@@ -52,7 +52,7 @@ export function getEmbedCode(path: string, params?: EmbedParams): string {
 	}
 
 	const iframeCode = [
-		`<iframe src="${url + path + paramString}" data-misskey-embed-id="${iframeId}" style="border: none; width: 100%; max-width: 500px; height: 300px; color-scheme: light dark;"></iframe>`,
+		`<iframe src="${url + path + paramString}" data-misskey-embed-id="${iframeId}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="border: none; width: 100%; max-width: 500px; height: 300px; color-scheme: light dark;"></iframe>`,
 		`<script defer src="${url}/embed.js"></script>`,
 	];
 	return iframeCode.join('\n');
