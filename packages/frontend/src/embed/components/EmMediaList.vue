@@ -11,14 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
-			ref="gallery"
 			:class="[
 				$style.medias,
-				count === 1 ? [$style.n1, {
-					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
-					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
-					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
-				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
+				count === 1 ? [$style.n1] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
 			<div v-for="media in mediaList.filter(media => previewable(media))" :class="$style.media">
@@ -32,16 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, inject } from 'vue';
+import { computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
-import 'photoswipe/style.css';
 import XBanner from './EmMediaBanner.vue';
 import XImage from './EmMediaImage.vue';
 import XVideo from './EmMediaVideo.vue';
 import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { defaultStore } from '@/store.js';
-import { focusParent } from '@/scripts/focus.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
@@ -53,182 +45,17 @@ const props = defineProps<{
 
 const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
-const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
-let lightbox: PhotoSwipeLightbox | null = null;
 
 let activeEl: HTMLElement | null = null;
-
-const popstateHandler = (): void => {
-	if (lightbox?.pswp && lightbox.pswp.isOpen === true) {
-		lightbox.pswp.close();
-	}
-};
-
-async function calcAspectRatio() {
-	if (!gallery.value) return;
-
-	const img = props.mediaList[0];
-
-	if (props.mediaList.length !== 1 || !(img.properties.width && img.properties.height)) {
-		gallery.value.style.aspectRatio = '';
-		return;
-	}
-
-	const ratioMax = (ratio: number) => {
-		if (img.properties.width == null || img.properties.height == null) return '';
-		return `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
-	};
-
-	switch (defaultStore.state.mediaListWithOneImageAppearance) {
-		case '16_9':
-			gallery.value.style.aspectRatio = ratioMax(16 / 9);
-			break;
-		case '1_1':
-			gallery.value.style.aspectRatio = ratioMax(1 / 1);
-			break;
-		case '2_3':
-			gallery.value.style.aspectRatio = ratioMax(2 / 3);
-			break;
-		default:
-			gallery.value.style.aspectRatio = '';
-			break;
-	}
-}
-
-onMounted(() => {
-	calcAspectRatio();
-	if (defaultStore.state.imageNewTab || inEmbedPage) return;
-
-	lightbox = new PhotoSwipeLightbox({
-		dataSource: props.mediaList
-			.filter(media => {
-				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
-				return media.type.startsWith('image') && FILE_TYPE_BROWSERSAFE.includes(media.type);
-			})
-			.map(media => {
-				const item = {
-					src: media.url,
-					w: media.properties.width,
-					h: media.properties.height,
-					alt: media.comment ?? media.name,
-					comment: media.comment ?? media.name,
-				};
-				if (media.properties.orientation != null && media.properties.orientation >= 5) {
-					[item.w, item.h] = [item.h, item.w];
-				}
-				return item;
-			}),
-		gallery: gallery.value,
-		mainClass: 'pswp',
-		children: '.image',
-		thumbSelector: '.image',
-		loop: false,
-		padding: window.innerWidth > 500 ? {
-			top: 32,
-			bottom: 90,
-			left: 32,
-			right: 32,
-		} : {
-			top: 0,
-			bottom: 78,
-			left: 0,
-			right: 0,
-		},
-		imageClickAction: 'close',
-		tapAction: 'close',
-		bgOpacity: 1,
-		showAnimationDuration: 100,
-		hideAnimationDuration: 100,
-		returnFocus: false,
-		pswpModule: PhotoSwipe,
-	});
-
-	lightbox.addFilter('itemData', (itemData) => {
-		// element is children
-		const { element } = itemData;
-
-		const id = element?.dataset.id;
-		const file = props.mediaList.find(media => media.id === id);
-		if (!file) return itemData;
-
-		itemData.src = file.url;
-		itemData.w = Number(file.properties.width);
-		itemData.h = Number(file.properties.height);
-		if (file.properties.orientation != null && file.properties.orientation >= 5) {
-			[itemData.w, itemData.h] = [itemData.h, itemData.w];
-		}
-		itemData.msrc = file.thumbnailUrl ?? undefined;
-		itemData.alt = file.comment ?? file.name;
-		itemData.comment = file.comment ?? file.name;
-		itemData.thumbCropped = true;
-
-		return itemData;
-	});
-
-	lightbox.on('uiRegister', () => {
-		lightbox?.pswp?.ui?.registerElement({
-			name: 'altText',
-			className: 'pswp__alt-text-container',
-			appendTo: 'wrapper',
-			onInit: (el, pswp) => {
-				const textBox = document.createElement('p');
-				textBox.className = 'pswp__alt-text _acrylic';
-				el.appendChild(textBox);
-
-				pswp.on('change', () => {
-					textBox.textContent = pswp.currSlide?.data.comment;
-				});
-			},
-		});
-	});
-
-	lightbox.on('afterInit', () => {
-		activeEl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-		focusParent(activeEl, true, true);
-		lightbox?.pswp?.element?.focus({
-			preventScroll: true,
-		});
-		history.pushState(null, '', '#pswp');
-	});
-
-	lightbox.on('destroy', () => {
-		focusParent(activeEl, true, false);
-		activeEl = null;
-		if (window.location.hash === '#pswp') {
-			history.back();
-		}
-	});
-
-	window.addEventListener('popstate', popstateHandler);
-
-	lightbox.init();
-});
-
-onUnmounted(() => {
-	window.removeEventListener('popstate', popstateHandler);
-	lightbox?.destroy();
-	lightbox = null;
-	activeEl = null;
-});
 
 const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
-
-const openGallery = () => {
-	if (props.mediaList.filter(media => previewable(media)).length > 0) {
-		lightbox?.loadAndOpen(0);
-	}
-};
-
-defineExpose({
-	openGallery,
-});
 </script>
 
 <style lang="scss" module>
@@ -334,43 +161,5 @@ defineExpose({
 	bottom: 0;
 	z-index: 1;
 	content: '';
-}
-
-:global(.pswp) {
-	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--modalBg) !important;
-}
-</style>
-
-<style lang="scss">
-.pswp__bg {
-	background: var(--modalBg);
-	backdrop-filter: var(--modalBgFilter);
-}
-
-.pswp__alt-text-container {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	position: absolute;
-	bottom: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-
-	width: 75%;
-	max-width: 800px;
-}
-
-.pswp__alt-text {
-	color: var(--fg);
-	margin: 0 auto;
-	text-align: center;
-	padding: var(--margin);
-	border-radius: var(--radius);
-	max-height: 8em;
-	overflow-y: auto;
-	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
-	white-space: pre-line;
 }
 </style>
