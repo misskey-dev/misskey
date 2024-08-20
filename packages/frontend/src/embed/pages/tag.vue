@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkEmTimelineContainer v-if="tag" :showHeader="embedParams.header">
+	<EmTimelineContainer v-if="tag" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="false"
 			/>
 		</template>
-	</MkEmTimelineContainer>
+	</EmTimelineContainer>
 	<XNotFound v-else/>
 </div>
 </template>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, shallowRef, inject, onActivated } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
-import MkEmTimelineContainer from '@/embed/components/MkEmTimelineContainer.vue';
+import EmTimelineContainer from '@/embed/components/EmTimelineContainer.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<MkLoading v-if="loading"/>
-	<MkEmTimelineContainer v-else-if="clip" :showHeader="embedParams.header">
+	<EmTimelineContainer v-else-if="clip" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="false"
 			/>
 		</template>
-	</MkEmTimelineContainer>
+	</EmTimelineContainer>
 	<XNotFound v-else/>
 </div>
 </template>
@@ -43,7 +43,7 @@ import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
-import MkEmTimelineContainer from '@/embed/components/MkEmTimelineContainer.vue';
+import EmTimelineContainer from '@/embed/components/EmTimelineContainer.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
