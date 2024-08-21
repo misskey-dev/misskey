@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="mock" :class="$style.name">
 		<MkUserName :user="note.user"/>
 	</div>
-	<MkA v-else v-user-preview="inEmbedPage ? undefined : note.user.id" :class="$style.name" :to="userPage(note.user)">
+	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -46,7 +46,6 @@ defineProps<{
 }>();
 
 const mock = inject<boolean>('mock', false);
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 </script>
 
 <style lang="scss" module>

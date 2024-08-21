@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
-		<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="inEmbedPage"/>
+		<MkPoll :noteId="note.id" :poll="note.poll"/>
 	</details>
 	<button v-if="isLong && collapsed" :class="$style.fade" class="_button" @click="collapsed = false">
 		<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, inject } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
@@ -43,8 +43,6 @@ const props = defineProps<{
 }>();
 
 const isLong = shouldCollapsed(props.note, []);
-
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const collapsed = ref(isLong);
 </script>
