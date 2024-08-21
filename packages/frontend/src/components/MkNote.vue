@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link :preview="!inEmbedPage && !mock"/>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<MkA v-user-preview="inEmbedPage ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link :preview="!inEmbedPage && !mock"/>
+		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!inEmbedPage && !mock"/>
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:author="appearNote.user"
 							:nyaize="'respect'"
 							:emojiUrls="appearNote.emojis"
-							:enableEmojiMenu="!inEmbedPage"
+							:enableEmojiMenu="true"
 							:enableEmojiMenuReaction="true"
 						/>
 						<div v-if="translating || translation" :class="$style.translation">
@@ -79,10 +79,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
-						<EmMediaList v-if="inEmbedPage" ref="galleryEl" :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
-						<MkMediaList v-else ref="galleryEl" :mediaList="appearNote.files"/>
+						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
+					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
 					<div v-if="isEnabledUrlPreview">
 						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					</div>
@@ -101,25 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
 				</template>
 			</MkReactionsViewer>
-			<footer v-if="inEmbedPage" :class="$style.footer">
-				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
-					<i class="ti ti-arrow-back-up"></i>
-				</a>
-				<a v-if="canRenote" :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
-					<i class="ti ti-repeat"></i>
-				</a>
-				<a v-else :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button" disabled>
-					<i class="ti ti-ban"></i>
-				</a>
-				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-					<i v-else class="ti ti-plus"></i>
-				</a>
-				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
-					<i class="ti ti-dots"></i>
-				</a>
-			</footer>
-			<footer v-else :class="$style.footer">
+			<footer :class="$style.footer">
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
@@ -157,14 +138,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="!hardMuted" :class="$style.muted" @click="muted = false">
 	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
 		<template #name>
-			<MkA v-user-preview="inEmbedPage ? undefined : appearNote.userId" :to="userPage(appearNote.user)">
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
 	<I18n v-else :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="inEmbedPage ? undefined : appearNote.userId" :to="userPage(appearNote.user)">
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
@@ -188,7 +169,6 @@ import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
-import EmMediaList from '@/embed/components/EmMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
@@ -218,7 +198,6 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { host } from '@/config.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { url } from '@/config.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
@@ -242,7 +221,6 @@ const emit = defineEmits<{
 const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const note = ref(deepClone(props.note));
 
@@ -373,7 +351,7 @@ provide('react', (reaction: string) => {
 	});
 });
 
-if (props.mock || inEmbedPage) {
+if (props.mock) {
 	watch(() => props.note, (to) => {
 		note.value = deepClone(to);
 	}, { deep: true });
@@ -386,7 +364,7 @@ if (props.mock || inEmbedPage) {
 	});
 }
 
-if (!props.mock && !inEmbedPage) {
+if (!props.mock) {
 	useTooltip(renoteButton, async (showing) => {
 		const renotes = await misskeyApi('notes/renotes', {
 			noteId: appearNote.value.id,
@@ -524,7 +502,7 @@ function toggleReact() {
 }
 
 function onContextmenu(ev: MouseEvent): void {
-	if (props.mock || inEmbedPage) {
+	if (props.mock) {
 		return;
 	}
 
@@ -649,7 +627,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
 	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
 	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	//contain-intrinsic-size: 0 128px;
 
 	&:focus-visible {
 		outline: none;
@@ -953,12 +931,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 	&:hover {
 		color: var(--fgHighlighted);
 	}
-}
-
-.footerButtonLink:hover,
-.footerButtonLink:focus,
-.footerButtonLink:active {
-	text-decoration: none;
 }
 
 .footerButtonCount {
