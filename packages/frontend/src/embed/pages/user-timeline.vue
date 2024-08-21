@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 		<template #body>
-			<MkNotes
+			<MkEmNotes
 				ref="notesEl"
 				:pagination="pagination"
 				:disableAutoLoad="!embedParams.autoload"
@@ -48,10 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkNotes from '@/components/MkNotes.vue';
+import type { Paging } from '@/components/MkPagination.vue';
+import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
+import MkEmNotes from '@/components/MkEmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/embed/components/EmTimelineContainer.vue';
-import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -60,7 +61,6 @@ import { scrollToTop } from '@/scripts/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 import { useRouter } from '@/router/supplier.js';
 import { defaultEmbedParams } from '@/scripts/embed-page.js';
-import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
 
 const props = defineProps<{
 	username: string;
