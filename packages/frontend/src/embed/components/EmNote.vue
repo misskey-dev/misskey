@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
 				</template>
 			</MkReactionsViewer>
-			<footer v-if="inEmbedPage" :class="$style.footer">
+			<footer :class="$style.footer">
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-arrow-back-up"></i>
 				</a>
@@ -118,38 +118,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-dots"></i>
 				</a>
-			</footer>
-			<footer v-else :class="$style.footer">
-				<button :class="$style.footerButton" class="_button" @click="reply()">
-					<i class="ti ti-arrow-back-up"></i>
-					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
-				</button>
-				<button
-					v-if="canRenote"
-					ref="renoteButton"
-					:class="$style.footerButton"
-					class="_button"
-					@mousedown.prevent="renote()"
-				>
-					<i class="ti ti-repeat"></i>
-					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.renoteCount) }}</p>
-				</button>
-				<button v-else :class="$style.footerButton" class="_button" disabled>
-					<i class="ti ti-ban"></i>
-				</button>
-				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
-					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-					<i v-else class="ti ti-plus"></i>
-					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
-				</button>
-				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
-					<i class="ti ti-paperclip"></i>
-				</button>
-				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown.prevent="showMenu()">
-					<i class="ti ti-dots"></i>
-				</button>
 			</footer>
 		</div>
 	</article>
