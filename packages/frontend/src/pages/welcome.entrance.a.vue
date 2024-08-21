@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-if="meta" class="rsqzvsbo">
 	<MkFeaturedPhotos class="bg"/>
-	<XTimeline class="tl"/>
+	<!-- <XTimeline class="tl"/> -->
 	<div class="shape1"></div>
 	<div class="shape2"></div>
 	<div class="logo-wrapper">
@@ -23,23 +23,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="contents">
 		<MkVisitorDashboard/>
 	</div>
-	<div v-if="instances && instances.length > 0" class="federation">
+	<!-- <div v-if="instances && instances.length > 0" class="federation">
 		<MarqueeText :duration="40">
 			<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
-				<!--<MkInstanceCardMini :instance="instance"/>-->
+				<MkInstanceCardMini :instance="instance">
 				<img v-if="instance.iconUrl" class="icon" :src="getInstanceIcon(instance)" alt=""/>
 				<span class="name _monospace">{{ instance.host }}</span>
 			</MkA>
 		</MarqueeText>
-	</div>
+	</div> -->
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XTimeline from './welcome.timeline.vue';
-import MarqueeText from '@/components/MkMarquee.vue';
+// import XTimeline from './welcome.timeline.vue';
+// import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';

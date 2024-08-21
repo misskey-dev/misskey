@@ -15,7 +15,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: false,
+	requireCredential: true,
 	allowGet: true,
 	cacheSec: 3600,
 
