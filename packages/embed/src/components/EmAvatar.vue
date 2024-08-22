@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]" @click="onClick">
 	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
@@ -38,13 +38,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, inject } from 'vue';
+import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import EmA from './EmA.vue';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash.js';
-import { acct, userPage } from '@/filters/user.js';
+import { userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 
 const props = withDefaults(defineProps<{
@@ -97,15 +95,6 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 	const offsetY = decoration.offsetY ?? 0;
 	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
 }
-
-const color = ref<string | undefined>();
-
-watch(() => props.user.avatarBlurhash, () => {
-	if (props.user.avatarBlurhash == null) return;
-	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
-}, {
-	immediate: true,
-});
 </script>
 
 <style lang="scss" module>
