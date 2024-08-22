@@ -7,7 +7,6 @@
 import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
-import '@/embed/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import type { CommonBootOptions } from '@/boot/common.js';
 import { common } from '@/boot/common.js';
@@ -15,7 +14,7 @@ import { setIframeId, postMessageToParentWindow } from '@/scripts/post-message.j
 import { parseEmbedParams } from '@/scripts/embed-page.js';
 import { defaultStore } from '@/store.js';
 import { useRouter } from '@/router/supplier.js';
-import { createEmbedRouter } from '@/embed/router.js';
+import { createEmbedRouter } from '@/router.js';
 
 const bootOptions: Partial<CommonBootOptions> = {
 	routerFactory: createEmbedRouter,
@@ -52,7 +51,7 @@ window.addEventListener('message', setIframeIdHandler);
 
 // 起動
 common(() => createApp(
-	defineAsyncComponent(() => import('@/embed/ui.vue')),
+	defineAsyncComponent(() => import('@/ui.vue')),
 ), bootOptions).then(async ({ app }) => {
 	//#region Embed Provide
 	app.provide('EMBED_PAGE', true);
