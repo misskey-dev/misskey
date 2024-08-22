@@ -13,6 +13,9 @@ const fs = require('fs');
 	fs.rmSync(__dirname + '/../packages/frontend/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/frontend/node_modules', { recursive: true, force: true });
 
+	fs.rmSync(__dirname + '/../packages/embed/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/embed/node_modules', { recursive: true, force: true });
+
 	fs.rmSync(__dirname + '/../packages/sw/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/sw/node_modules', { recursive: true, force: true });
 

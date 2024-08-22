@@ -9,6 +9,7 @@
 	"packageManager": "pnpm@9.6.0",
 	"workspaces": [
 		"packages/frontend",
+		"packages/embed",
 		"packages/backend",
 		"packages/sw",
 		"packages/misskey-js",
