@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 		<template #body>
-			<MkNotes
+			<EmNotes
 				ref="notesEl"
 				:pagination="pagination"
 				:disableAutoLoad="!embedParams.autoload"
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, shallowRef, inject, onActivated } from 'vue';
-import MkNotes from '@/components/MkNotes.vue';
+import EmNotes from '@/embed/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/embed/components/EmTimelineContainer.vue';
 import type { Paging } from '@/components/MkPagination.vue';
@@ -78,7 +78,7 @@ const pagination = computed(() => ({
 	},
 } as Paging));
 
-const notesEl = shallowRef<InstanceType<typeof MkNotes> | null>(null);
+const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
 function top(ev: MouseEvent) {
 	const target = ev.target as HTMLElement | null;

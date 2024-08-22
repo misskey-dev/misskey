@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 		<template #body>
-			<MkEmNotes
+			<EmNotes
 				ref="notesEl"
 				:pagination="pagination"
 				:disableAutoLoad="!embedParams.autoload"
@@ -50,7 +50,7 @@ import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/MkPagination.vue';
 import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
-import MkEmNotes from '@/components/MkEmNotes.vue';
+import EmNotes from '@/embed/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/embed/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -90,7 +90,7 @@ const pagination = computed(() => ({
 } as Paging));
 const loading = ref(true);
 
-const notesEl = shallowRef<InstanceType<typeof MkNotes> | null>(null);
+const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
 function top(ev: MouseEvent) {
 	const target = ev.target as HTMLElement | null;
