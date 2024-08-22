@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: metaをHTMLに埋め込むかどうかを設定で変更できるように
 
 ### Client
 -

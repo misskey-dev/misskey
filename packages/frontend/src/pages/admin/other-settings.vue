@@ -36,6 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
 				</div>
+
+				<div class="_panel" style="padding: 16px;">
+					<MkSwitch v-model="provideMetaInHtml">
+						<template #label>{{ i18n.ts.provideMetaInHtml }}</template>
+						<template #caption>{{ i18n.ts.provideMetaInHtmlDescription }}</template>
+					</MkSwitch>
+				</div>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -57,6 +64,7 @@ const enableServerMachineStats = ref<boolean>(false);
 const enableIdenticonGeneration = ref<boolean>(false);
 const enableChartsForRemoteUser = ref<boolean>(false);
 const enableChartsForFederatedInstances = ref<boolean>(false);
+const provideMetaInHtml = ref<boolean>(false);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -64,6 +72,7 @@ async function init() {
 	enableIdenticonGeneration.value = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser.value = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances.value = meta.enableChartsForFederatedInstances;
+	provideMetaInHtml.value = meta.provideMetaInHtml;
 }
 
 function save() {
@@ -72,6 +81,7 @@ function save() {
 		enableIdenticonGeneration: enableIdenticonGeneration.value,
 		enableChartsForRemoteUser: enableChartsForRemoteUser.value,
 		enableChartsForFederatedInstances: enableChartsForFederatedInstances.value,
+		provideMetaInHtml: provideMetaInHtml.value,
 	}).then(() => {
 		fetchInstance(true);
 	});

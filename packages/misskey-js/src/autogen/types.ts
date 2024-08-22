@@ -5135,6 +5135,7 @@ export type operations = {
             urlPreviewRequireContentLength: boolean;
             urlPreviewUserAgent: string | null;
             urlPreviewSummaryProxyUrl: string | null;
+            provideMetaInHtml: boolean;
           };
         };
       };
@@ -9384,6 +9385,7 @@ export type operations = {
           urlPreviewRequireContentLength?: boolean;
           urlPreviewUserAgent?: string | null;
           urlPreviewSummaryProxyUrl?: string | null;
+          provideMetaInHtml?: boolean;
         };
       };
     };

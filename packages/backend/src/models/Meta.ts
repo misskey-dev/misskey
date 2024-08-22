@@ -625,4 +625,9 @@ export class MiMeta {
 		nullable: true,
 	})
 	public urlPreviewUserAgent: string | null;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public provideMetaInHtml: boolean;
 }
