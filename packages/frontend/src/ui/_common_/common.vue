@@ -253,6 +253,7 @@ if ($i) {
 	color: #ff0;
 	background: rgba(0, 0, 0, 0.5);
 	padding: 4px 5px;
+	border-bottom-right-radius: 8px;
 	pointer-events: none;
 	user-select: none;
 
