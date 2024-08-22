@@ -4,7 +4,6 @@
  */
 
 import { miLocalStorage } from '@/local-storage.js';
-import { isEmbedPage } from '@/scripts/embed-page.js';
 
 const address = new URL(document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || location.href);
 const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
@@ -22,9 +21,6 @@ export const version = _VERSION_;
 export const instanceName = siteName === 'Misskey' || siteName == null ? host : siteName;
 export const ui = miLocalStorage.getItem('ui');
 export const debug = miLocalStorage.getItem('debug') === 'true';
-// config.tsでインポートしているファイルと、その内部で使用される関数では使用できない。
-// それらでembedPageの判定をしたい場合は関数を直接呼び出すこと
-export const embedPage = isEmbedPage();
 
 export function updateLocale(newLocale): void {
 	locale = newLocale;

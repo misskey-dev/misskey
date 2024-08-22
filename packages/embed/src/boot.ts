@@ -10,7 +10,6 @@ import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import { setIframeId, postMessageToParentWindow } from '@/scripts/post-message.js';
 import { parseEmbedParams } from '@/embed-page.js';
-import { createEmbedRouter } from '@/router.js';
 
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);

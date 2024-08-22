@@ -47,3 +47,42 @@ export const defaultEmbedParams = {
 } as const satisfies EmbedParams;
 
 //#endregion
+
+/**
+ * パラメータを正規化する（埋め込みページ初期化用）
+ * @param searchParams URLSearchParamsもしくはクエリ文字列
+ * @returns 正規化されたパラメータ
+ */
+export function parseEmbedParams(searchParams: URLSearchParams | string): ParsedEmbedParams {
+	let _searchParams: URLSearchParams;
+	if (typeof searchParams === 'string') {
+		_searchParams = new URLSearchParams(searchParams);
+	} else if (searchParams instanceof URLSearchParams) {
+		_searchParams = searchParams;
+	} else {
+		throw new Error('searchParams must be URLSearchParams or string');
+	}
+
+	const params: EmbedParams = {};
+	for (const key in defaultEmbedParams) {
+		const value = _searchParams.get(key);
+		if (value != null) {
+			if (value === 'true') {
+				params[key] = true;
+			} else if (value === 'false') {
+				params[key] = false;
+			} else if (!isNaN(Number(value))) {
+				params[key] = Number(value);
+			} else if (key === 'colorMode' && ['light', 'dark'].includes(value)) {
+				params[key] = value as 'light' | 'dark';
+			} else {
+				params[key] = value;
+			}
+		}
+	}
+
+	return {
+		...defaultEmbedParams,
+		...params,
+	};
+}
