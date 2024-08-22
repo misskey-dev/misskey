@@ -88,7 +88,12 @@ async function onClick() {
 		if (isFollowing.value) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
+				text: {
+					text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
+					plain: true,
+					author: props.user,
+					emojiUrls: props.user.emojis,
+				},
 			});
 
 			if (canceled) return;
@@ -97,24 +102,44 @@ async function onClick() {
 				userId: props.user.id,
 			});
 		} else {
-			if (defaultStore.state.alwaysConfirmFollow) {
+			if (hasPendingFollowRequestFromYou.value) {
 				const { canceled } = await os.confirm({
-					type: 'question',
-					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+					type: 'warning',
+					text: {
+						text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+						plain: true,
+						author: props.user,
+						emojiUrls: props.user.emojis,
+					},
 				});
 
 				if (canceled) {
 					wait.value = false;
 					return;
 				}
-			}
 
-			if (hasPendingFollowRequestFromYou.value) {
 				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou.value = false;
 			} else {
+				if (defaultStore.state.alwaysConfirmFollow) {
+					const { canceled } = await os.confirm({
+						type: 'question',
+						text: {
+							text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+							plain: true,
+							author: props.user,
+							emojiUrls: props.user.emojis,
+						},
+					});
+
+					if (canceled) {
+						wait.value = false;
+						return;
+					}
+				}
+
 				await misskeyApi('following/create', {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,

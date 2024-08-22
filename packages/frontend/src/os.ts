@@ -10,6 +10,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/scripts/form.js';
+import type { DialogTextFormattingProps } from '@/components/MkDialog.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -218,8 +219,8 @@ export function toast(message: string) {
 
 export function alert(props: {
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 }): Promise<void> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, props, {
@@ -233,8 +234,8 @@ export function alert(props: {
 
 export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	okText?: string;
 	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
@@ -260,8 +261,8 @@ export function actions<T extends {
 	danger?: boolean,
 }[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	actions: T;
 }): Promise<{
 	canceled: true; result: undefined;
@@ -291,8 +292,8 @@ export function actions<T extends {
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string;
@@ -305,8 +306,8 @@ export function inputText(props: {
 }>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: string | null;
@@ -319,8 +320,8 @@ export function inputText(props: {
 }>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: string | null;
@@ -354,8 +355,8 @@ export function inputText(props: {
 
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function inputNumber(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: number;
@@ -365,8 +366,8 @@ export function inputNumber(props: {
 	canceled: false; result: number;
 }>;
 export function inputNumber(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
@@ -376,8 +377,8 @@ export function inputNumber(props: {
 	canceled: false; result: number | null;
 }>;
 export function inputNumber(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
@@ -406,8 +407,8 @@ export function inputNumber(props: {
 }
 
 export function inputDate(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	placeholder?: string | null;
 	default?: string | null;
 }): Promise<{
@@ -455,8 +456,8 @@ type SelectItem<C> = {
 
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function select<C = any>(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	default: string;
 	items: (SelectItem<C> | {
 		sectionTitle: string;
@@ -468,8 +469,8 @@ export function select<C = any>(props: {
 	canceled: false; result: C;
 }>;
 export function select<C = any>(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	default?: string | null;
 	items: (SelectItem<C> | {
 		sectionTitle: string;
@@ -481,8 +482,8 @@ export function select<C = any>(props: {
 	canceled: false; result: C | null;
 }>;
 export function select<C = any>(props: {
-	title?: string;
-	text?: string;
+	title?: DialogTextFormattingProps;
+	text?: DialogTextFormattingProps;
 	default?: string | null;
 	items: (SelectItem<C> | {
 		sectionTitle: string;
