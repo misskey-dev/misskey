@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="500"
 	:height="550"
+	:zPriority="'veryHigh'"
 	@close="cancel"
 	@closed="emit('closed')"
 >

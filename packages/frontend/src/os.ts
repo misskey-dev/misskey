@@ -144,8 +144,14 @@ const zIndexes = {
 	low: 1000000,
 	middle: 2000000,
 	high: 3000000,
+
+	/** botアカウントインジケータよりも上に表示させる必要があるもの専用 */
+	veryHigh: 4000000,
 };
-export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
+
+export type ZPriority = keyof typeof zIndexes;
+
+export function claimZIndex(priority: ZPriority = 'low'): number {
 	zIndexes[priority] += 100;
 	return zIndexes[priority];
 }

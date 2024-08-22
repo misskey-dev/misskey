@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <div v-if="dev" id="devTicker"><span>DEV BUILD</span></div>
 
-<div v-if="$i && $i.isBot" id="botWarn"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
+<div v-if="$i && $i.isBot" id="botWarn" :style="{ zIndex: botWarnZIndex }"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
 </template>
 
 <script lang="ts" setup>
@@ -53,6 +53,7 @@ import { popups } from '@/os.js';
 import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
 import { uploads } from '@/scripts/upload.js';
 import * as sound from '@/scripts/sound.js';
+import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
@@ -63,6 +64,8 @@ const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.v
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
+
+const botWarnZIndex = ref(os.claimZIndex('veryHigh'));
 
 const notifications = ref<Misskey.entities.Notification[]>([]);
 
@@ -251,7 +254,6 @@ if ($i) {
 	width: 100%;
 	height: max-content;
 	text-align: center;
-	z-index: 2147483647;
 	color: #ff0;
 	background: rgba(0, 0, 0, 0.5);
 	padding: 4px 7px;
