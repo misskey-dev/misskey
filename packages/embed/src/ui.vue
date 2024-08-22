@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		:class="$style.routerViewContainer"
 	>
-		<RouterView/>
+		<!-- TODO -->
 	</div>
 
 	<XCommon/>
@@ -27,13 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, provide, ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
+import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
 import XCommon from '@/ui/_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 import { mainRouter } from '@/router/main.js';
 import { postMessageToParentWindow } from '@/scripts/post-message.js';
 import { defaultEmbedParams } from '@/scripts/embed-page.js';
-import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
 
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
