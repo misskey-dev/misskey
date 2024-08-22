@@ -176,10 +176,10 @@
 				<span class="button-label-big">Reload / リロード</span>
 			</button>
 			<p><b>The following actions may solve the problem. / 以下を行うと解決する可能性があります。</b></p>
-			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
 			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
 			<p>Disable an adblocker / アドブロッカーを無効にする</p>
-	 		<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
+	 		<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
+			<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
 			<details style="color: #86b300;">
 				<summary>Other options / その他のオプション</summary>
 				<a href="/flush">
@@ -212,7 +212,7 @@
 		<summary>
 			<code>ERROR CODE: ${code}</code>
 		</summary>
-		<code>${JSON.stringify(details)}</code>`;
+		<code>${details.toString()} ${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
 		addStyle(`
 		* {
