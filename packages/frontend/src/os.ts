@@ -144,9 +144,6 @@ const zIndexes = {
 	low: 1000000,
 	middle: 2000000,
 	high: 3000000,
-
-	/** botアカウントインジケータよりも上に表示させる必要があるもの専用 */
-	veryHigh: 4000000,
 };
 
 export type ZPriority = keyof typeof zIndexes;

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" :zPriority="zPriority" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
+<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
 	<div ref="rootEl" :class="$style.root" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }">
 		<div ref="headerEl" :class="$style.header">
 			<button v-if="withOkButton && withCloseButton" :class="$style.headerButton" class="_button" @click="emit('close')"><i class="ti ti-x"></i></button>
@@ -23,7 +23,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef, ref } from 'vue';
-import type { ZPriority } from '@/os.js';
 import MkModal from './MkModal.vue';
 
 const props = withDefaults(defineProps<{
@@ -32,14 +31,12 @@ const props = withDefaults(defineProps<{
 	okButtonDisabled: boolean;
 	width: number;
 	height: number;
-	zPriority: ZPriority;
 }>(), {
 	withOkButton: false,
 	withCloseButton: true,
 	okButtonDisabled: false,
 	width: 400,
 	height: 500,
-	zPriority: 'low',
 });
 
 const emit = defineEmits<{

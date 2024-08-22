@@ -39,9 +39,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 
-<div v-if="dev" id="devTicker"><span>DEV BUILD</span></div>
+<div id="devTicker">
+	<div>
+		<div v-if="$i && $i.isBot">{{ i18n.ts.loggedInAsBot }}</div>
+		<div v-if="dev">DEV BUILD</div>
+	</div>
+</div>
 
-<div v-if="$i && $i.isBot" id="botWarn" :style="{ zIndex: botWarnZIndex }"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
 </template>
 
 <script lang="ts" setup>
@@ -53,7 +57,6 @@ import { popups } from '@/os.js';
 import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
 import { uploads } from '@/scripts/upload.js';
 import * as sound from '@/scripts/sound.js';
-import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
@@ -64,8 +67,6 @@ const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.v
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
-
-const botWarnZIndex = ref(os.claimZIndex('veryHigh'));
 
 const notifications = ref<Misskey.entities.Notification[]>([]);
 
@@ -244,28 +245,6 @@ if ($i) {
 	}
 }
 
-#botWarn {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	margin: auto;
-	width: 100%;
-	height: max-content;
-	text-align: center;
-	color: #ff0;
-	background: rgba(0, 0, 0, 0.5);
-	padding: 4px 7px;
-	font-size: 14px;
-	pointer-events: none;
-	user-select: none;
-
-	> span {
-		animation: dev-ticker-blink 2s infinite;
-	}
-}
-
 #devTicker {
 	position: fixed;
 	top: 0;
@@ -274,11 +253,10 @@ if ($i) {
 	color: #ff0;
 	background: rgba(0, 0, 0, 0.5);
 	padding: 4px 5px;
-	font-size: 14px;
 	pointer-events: none;
 	user-select: none;
 
-	> span {
+	> div {
 		animation: dev-ticker-blink 2s infinite;
 	}
 }
