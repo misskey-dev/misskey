@@ -396,7 +396,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				} else if (token.children.length === 1 && token.children[0].type === 'url') {
 					return [h(MkUrlPreview, {
 						url: token.children[0].props.url,
-					}];
+					})];
 				} else {
 					return [h('div', {
 						style: QUOTE_STYLE,
