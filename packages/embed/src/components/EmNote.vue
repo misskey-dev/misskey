@@ -5,32 +5,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-if="!hardMuted && muted === false"
 	v-show="!isDeleted"
 	ref="rootEl"
 	v-hotkey="keymap"
-	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
+	:class="[$style.root]"
 	:tabindex="isDeleted ? '-1' : '0'"
 >
-	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
+	<EmNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link :preview="!inEmbedPage && !mock"/>
+		<EmAvatar :class="$style.renoteAvatar" :user="note.user" link :preview="!inEmbedPage && !mock"/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<MkA v-user-preview="inEmbedPage ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
-					<MkUserName :user="note.user"/>
-				</MkA>
+				<EmA v-user-preview="inEmbedPage ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+					<EmUserName :user="note.user"/>
+				</EmA>
 			</template>
 		</I18n>
 		<div :class="$style.renoteInfo">
 			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @mousedown.prevent="showRenoteMenu()">
 				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
-				<MkTime :time="note.createdAt"/>
+				<EmTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
@@ -42,24 +41,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link :preview="!inEmbedPage && !mock"/>
+		<EmAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link :preview="!inEmbedPage && !mock"/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!inEmbedPage && !mock"/>
+		<EmAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!inEmbedPage && !mock"/>
 		<div :class="$style.main">
-			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<EmNoteHeader :note="appearNote" :mini="true"/>
+			<EmInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
-					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
+					<EmCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+						<EmA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
 						<Mfm
 							v-if="appearNote.text"
 							:parsedNodes="parsed"
@@ -71,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:enableEmojiMenuReaction="true"
 						/>
 						<div v-if="translating || translation" :class="$style.translation">
-							<MkLoading v-if="translating" mini/>
+							<EmLoading v-if="translating" mini/>
 							<div v-else-if="translation">
 								<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
 								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
@@ -80,13 +79,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
 						<EmMediaList v-if="inEmbedPage" ref="galleryEl" :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
-						<MkMediaList v-else ref="galleryEl" :mediaList="appearNote.files"/>
+						<EmMediaList v-else ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
-					<div v-if="isEnabledUrlPreview">
-						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
-					</div>
-					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+					<EmPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
+					<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>
@@ -94,13 +90,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+				<EmA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</EmA>
 			</div>
-			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
+			<EmReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
-					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
+					<EmA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</EmA>
 				</template>
-			</MkReactionsViewer>
+			</EmReactionsViewer>
 			<footer :class="$style.footer">
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-arrow-back-up"></i>
@@ -122,73 +118,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</article>
 </div>
-<div v-else-if="!hardMuted" :class="$style.muted" @click="muted = false">
-	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
-		<template #name>
-			<MkA v-user-preview="inEmbedPage ? undefined : appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
-		</template>
-	</I18n>
-	<I18n v-else :src="i18n.ts.userSaysSomething" tag="small">
-		<template #name>
-			<MkA v-user-preview="inEmbedPage ? undefined : appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
-		</template>
-	</I18n>
-</div>
-<div v-else>
-	<!--
-		MkDateSeparatedList uses TransitionGroup which requires single element in the child elements
-		so MkNote create empty div instead of no elements
-	-->
-</div>
 </template>
 
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import MkNoteSub from '@/components/MkNoteSub.vue';
-import MkNoteHeader from '@/components/MkNoteHeader.vue';
-import MkNoteSimple from '@/components/MkNoteSimple.vue';
-import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
-import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
-import MkMediaList from '@/components/MkMediaList.vue';
-import EmMediaList from '@/embed/components/EmMediaList.vue';
-import MkCwButton from '@/components/MkCwButton.vue';
-import MkPoll from '@/components/MkPoll.vue';
-import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
-import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import EmNoteSub from '@/components/EmNoteSub.vue';
+import EmNoteHeader from '@/components/EmNoteHeader.vue';
+import EmNoteSimple from '@/components/EmNoteSimple.vue';
+import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
+import EmReactionsViewerDetails from '@/components/EmReactionsViewer.details.vue';
+import EmMediaList from '@/components/EmMediaList.vue';
+import EmCwButton from '@/components/EmCwButton.vue';
+import EmPoll from '@/components/EmPoll.vue';
+import EmUsersTooltip from '@/components/EmUsersTooltip.vue';
+import EmUrlPreview from '@/components/EmUrlPreview.vue';
+import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
-import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
-import number from '@/filters/number.js';
 import * as os from '@/os.js';
 import * as sound from '@/scripts/sound.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { defaultStore, noteViewInterruptors } from '@/store.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
-import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
-import { useTooltip } from '@/scripts/use-tooltip.js';
-import { claimAchievement } from '@/scripts/achievements.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { MenuItem } from '@/types/menu.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { host } from '@/config.js';
-import { isEnabledUrlPreview } from '@/instance.js';
 import { url } from '@/config.js';
-import { type Keymap } from '@/scripts/hotkey.js';
-import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 
 const props = withDefaults(defineProps<{
@@ -214,25 +175,6 @@ const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const note = ref(deepClone(props.note));
 
-// plugin
-if (noteViewInterruptors.length > 0) {
-	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note.value);
-		for (const interruptor of noteViewInterruptors) {
-			try {
-				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-				if (result === null) {
-					isDeleted.value = true;
-					return;
-				}
-			} catch (err) {
-				console.error(err);
-			}
-		}
-		note.value = result as Misskey.entities.Note;
-	});
-}
-
 const isRenote = Misskey.note.isPureRenote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
@@ -243,15 +185,12 @@ const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
 const appearNote = computed(() => getAppearNote(note.value));
 const galleryEl = shallowRef<InstanceType<typeof MkMediaList>>();
-const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
 const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
-const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
-const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
@@ -268,339 +207,10 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${appearNote.value.id}`,
 }));
 
-/* Overload FunctionにLintが対応していないのでコメントアウト
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
-*/
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' {
-	if (mutedWords == null) return false;
+watch(() => props.note, (to) => {
+	note.value = deepClone(to);
+}, { deep: true });
 
-	if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
-	if (noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords)) return true;
-	if (noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords)) return true;
-
-	if (checkOnly) return false;
-
-	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
-	return false;
-}
-
-const keymap = {
-	'r': () => {
-		if (renoteCollapsed.value) return;
-		reply();
-	},
-	'e|a|plus': () => {
-		if (renoteCollapsed.value) return;
-		react();
-	},
-	'q': () => {
-		if (renoteCollapsed.value) return;
-		renote();
-	},
-	'm': () => {
-		if (renoteCollapsed.value) return;
-		showMenu();
-	},
-	'c': () => {
-		if (renoteCollapsed.value) return;
-		if (!defaultStore.state.showClipButtonInNoteFooter) return;
-		clip();
-	},
-	'o': () => {
-		if (renoteCollapsed.value) return;
-		galleryEl.value?.openGallery();
-	},
-	'v|enter': () => {
-		if (renoteCollapsed.value) {
-			renoteCollapsed.value = false;
-		} else if (appearNote.value.cw != null) {
-			showContent.value = !showContent.value;
-		} else if (isLong) {
-			collapsed.value = !collapsed.value;
-		}
-	},
-	'esc': {
-		allowRepeat: true,
-		callback: () => blur(),
-	},
-	'up|k|shift+tab': {
-		allowRepeat: true,
-		callback: () => focusBefore(),
-	},
-	'down|j|tab': {
-		allowRepeat: true,
-		callback: () => focusAfter(),
-	},
-} as const satisfies Keymap;
-
-provide('react', (reaction: string) => {
-	misskeyApi('notes/reactions/create', {
-		noteId: appearNote.value.id,
-		reaction: reaction,
-	});
-});
-
-if (props.mock || inEmbedPage) {
-	watch(() => props.note, (to) => {
-		note.value = deepClone(to);
-	}, { deep: true });
-} else {
-	useNoteCapture({
-		rootEl: rootEl,
-		note: appearNote,
-		pureNote: note,
-		isDeletedRef: isDeleted,
-	});
-}
-
-if (!props.mock && !inEmbedPage) {
-	useTooltip(renoteButton, async (showing) => {
-		const renotes = await misskeyApi('notes/renotes', {
-			noteId: appearNote.value.id,
-			limit: 11,
-		});
-
-		const users = renotes.map(x => x.user);
-
-		if (users.length < 1) return;
-
-		const { dispose } = os.popup(MkUsersTooltip, {
-			showing,
-			users,
-			count: appearNote.value.renoteCount,
-			targetElement: renoteButton.value,
-		}, {
-			closed: () => dispose(),
-		});
-	});
-
-	if (appearNote.value.reactionAcceptance === 'likeOnly') {
-		useTooltip(reactButton, async (showing) => {
-			const reactions = await misskeyApiGet('notes/reactions', {
-				noteId: appearNote.value.id,
-				limit: 10,
-				_cacheKey_: appearNote.value.reactionCount,
-			});
-
-			const users = reactions.map(x => x.user);
-
-			if (users.length < 1) return;
-
-			const { dispose } = os.popup(MkReactionsViewerDetails, {
-				showing,
-				reaction: '❤️',
-				users,
-				count: appearNote.value.reactionCount,
-				targetElement: reactButton.value!,
-			}, {
-				closed: () => dispose(),
-			});
-		});
-	}
-}
-
-function renote(viaKeyboard = false) {
-	pleaseLogin(undefined, pleaseLoginContext.value);
-	showMovedDialog();
-
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
-	os.popupMenu(menu, renoteButton.value, {
-		viaKeyboard,
-	});
-}
-
-function reply(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
-	if (props.mock) {
-		return;
-	}
-	os.post({
-		reply: appearNote.value,
-		channel: appearNote.value.channel,
-	}).then(() => {
-		focus();
-	});
-}
-
-function react(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
-	showMovedDialog();
-	if (appearNote.value.reactionAcceptance === 'likeOnly') {
-		sound.playMisskeySfx('reaction');
-
-		if (props.mock) {
-			return;
-		}
-
-		misskeyApi('notes/reactions/create', {
-			noteId: appearNote.value.id,
-			reaction: '❤️',
-		});
-		const el = reactButton.value;
-		if (el) {
-			const rect = el.getBoundingClientRect();
-			const x = rect.left + (el.offsetWidth / 2);
-			const y = rect.top + (el.offsetHeight / 2);
-			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
-				end: () => dispose(),
-			});
-		}
-	} else {
-		blur();
-		reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
-			sound.playMisskeySfx('reaction');
-
-			if (props.mock) {
-				emit('reaction', reaction);
-				return;
-			}
-
-			misskeyApi('notes/reactions/create', {
-				noteId: appearNote.value.id,
-				reaction: reaction,
-			});
-			if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
-				claimAchievement('reactWithoutRead');
-			}
-		}, () => {
-			focus();
-		});
-	}
-}
-
-function undoReact(targetNote: Misskey.entities.Note): void {
-	const oldReaction = targetNote.myReaction;
-	if (!oldReaction) return;
-
-	if (props.mock) {
-		emit('removeReaction', oldReaction);
-		return;
-	}
-
-	misskeyApi('notes/reactions/delete', {
-		noteId: targetNote.id,
-	});
-}
-
-function toggleReact() {
-	if (appearNote.value.myReaction == null) {
-		react();
-	} else {
-		undoReact(appearNote.value);
-	}
-}
-
-function onContextmenu(ev: MouseEvent): void {
-	if (props.mock || inEmbedPage) {
-		return;
-	}
-
-	const isLink = (el: HTMLElement): boolean => {
-		if (el.tagName === 'A') return true;
-		// 再生速度の選択などのために、Audio要素のコンテキストメニューはブラウザデフォルトとする。
-		if (el.tagName === 'AUDIO') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-		return false;
-	};
-
-	if (ev.target && isLink(ev.target as HTMLElement)) return;
-	if (window.getSelection()?.toString() !== '') return;
-
-	if (defaultStore.state.useReactionPickerForContextMenu) {
-		ev.preventDefault();
-		react();
-	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted, currentClip: currentClip?.value });
-		os.contextMenu(menu, ev).then(focus).finally(cleanup);
-	}
-}
-
-function showMenu(): void {
-	if (props.mock) {
-		return;
-	}
-
-	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted, currentClip: currentClip?.value });
-	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
-}
-
-async function clip(): Promise<void> {
-	if (props.mock) {
-		return;
-	}
-
-	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
-}
-
-function showRenoteMenu(): void {
-	if (props.mock) {
-		return;
-	}
-
-	function getUnrenote(): MenuItem {
-		return {
-			text: i18n.ts.unrenote,
-			icon: 'ti ti-trash',
-			danger: true,
-			action: () => {
-				misskeyApi('notes/delete', {
-					noteId: note.value.id,
-				});
-				isDeleted.value = true;
-			},
-		};
-	}
-
-	if (isMyRenote) {
-		pleaseLogin(undefined, pleaseLoginContext.value);
-		os.popupMenu([
-			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
-			{ type: 'divider' },
-			getUnrenote(),
-		], renoteTime.value);
-	} else {
-		os.popupMenu([
-			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
-			{ type: 'divider' },
-			getAbuseNoteMenu(note.value, i18n.ts.reportAbuseRenote),
-			($i?.isModerator || $i?.isAdmin) ? getUnrenote() : undefined,
-		], renoteTime.value);
-	}
-}
-
-function focus() {
-	rootEl.value?.focus();
-}
-
-function blur() {
-	rootEl.value?.blur();
-}
-
-function focusBefore() {
-	focusPrev(rootEl.value);
-}
-
-function focusAfter() {
-	focusNext(rootEl.value);
-}
-
-function readPromo() {
-	misskeyApi('promo/read', {
-		noteId: appearNote.value.id,
-	});
-	isDeleted.value = true;
-}
-
-function emitUpdReaction(emoji: string, delta: number) {
-	if (delta < 0) {
-		emit('removeReaction', emoji);
-	} else if (delta > 0) {
-		emit('reaction', emoji);
-	}
-}
 </script>
 
 <style lang="scss" module>
