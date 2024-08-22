@@ -25,12 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XBanner from './EmMediaBanner.vue';
 import XImage from './EmMediaImage.vue';
 import XVideo from './EmMediaVideo.vue';
-import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 
 const props = defineProps<{
@@ -38,12 +37,10 @@ const props = defineProps<{
 	raw?: boolean;
 
 	/** 埋め込みページ用 親要素の正規URL */
-	originalEntityUrl?: string;
+	originalEntityUrl: string;
 }>();
 
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
-
-let activeEl: HTMLElement | null = null;
 
 const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
