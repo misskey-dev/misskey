@@ -172,6 +172,7 @@ export class SearchService {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
+		const createdAt = this.idService.parse(note.id).date;
 		if (this.meilisearch) {
 			switch (this.meilisearchIndexScope) {
 				case 'global':
@@ -190,7 +191,7 @@ export class SearchService {
 
 			await this.meilisearchNoteIndex?.addDocuments([{
 				id: note.id,
-				createdAt: this.idService.parse(note.id).date.getTime(),
+				createdAt: createdAt.getTime(),
 				userId: note.userId,
 				userHost: note.userHost,
 				channelId: note.channelId,
@@ -202,7 +203,7 @@ export class SearchService {
 			});
 		}	else if (this.elasticsearch) {
 			const body = {
-				createdAt: this.idService.parse(note.id).date.getTime(),
+				createdAt: createdAt.getTime(),
 				userId: note.userId,
 				userHost: note.userHost,
 				channelId: note.channelId,
@@ -211,11 +212,11 @@ export class SearchService {
 				tags: note.tags,
 			};
 			await this.elasticsearch.index({
-				index: this.elasticsearchNoteIndex + `-${new Date().toISOString().slice(0, 7).replace(/-/g, '')}` as string,
+				index: `${this.elasticsearchNoteIndex}-${createdAt.toISOString().slice(0, 7).replace(/-/g, '')}`,
 				id: note.id,
 				body: body,
 			}).catch((error) => {
-				console.error(error);
+				this.logger.error(error);
 			});
 		}
 	}
@@ -226,6 +227,13 @@ export class SearchService {
 
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.deleteDocument(note.id);
+		} else if (this.elasticsearch) {
+			await this.elasticsearch.delete({
+				index: `${this.elasticsearchNoteIndex}-${this.idService.parse(note.id).date.toISOString().slice(0, 7).replace(/-/g, '')}`,
+				id: note.id,
+			}).catch((error) => {
+				this.logger.error(error);
+			});
 		}
 	}
 
