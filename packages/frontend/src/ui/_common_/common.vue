@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 
-<div id="devTicker">
+<div id="envTicker">
 	<div>
 		<div v-if="$i && $i.isBot">{{ i18n.ts.loggedInAsBot }}</div>
 		<div v-if="dev">DEV BUILD</div>
@@ -245,7 +245,7 @@ if ($i) {
 	}
 }
 
-#devTicker {
+#envTicker {
 	position: fixed;
 	top: 0;
 	left: 0;
