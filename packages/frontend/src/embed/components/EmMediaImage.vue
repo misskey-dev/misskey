@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 	</a>
 	<template v-if="hide">
-		<div :class="$style.hiddenText" @click="hide = !hide">
+		<div :class="$style.hiddenText">
 			<div :class="$style.hiddenTextWrapper">
 				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
 				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ i18n.ts.image }}</b>
-				<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
+				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</div>
 		</div>
 	</template>
@@ -43,9 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { i18n } from '@/i18n.js';
 
@@ -67,10 +66,6 @@ const url = computed(() => (props.raw)
 );
 
 async function onclick(ev: MouseEvent) {
-	if (!props.controls) {
-		return;
-	}
-
 	if (hide.value) {
 		ev.stopPropagation();
 		hide.value = false;
