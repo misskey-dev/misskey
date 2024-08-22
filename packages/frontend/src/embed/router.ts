@@ -6,7 +6,6 @@
 import type { IRouter, RouteDef } from '@/nirax.js';
 import { Router } from '@/nirax.js';
 import { page } from '@/router/definition.js';
-import { $i } from '@/account.js';
 
 const routes: RouteDef[] = [{
 	path: '/embed/notes/:noteId',
@@ -26,5 +25,5 @@ const routes: RouteDef[] = [{
 }];
 
 export function createEmbedRouter(path: string): IRouter {
-	return new Router(routes, path, !!$i, page(() => import('@/pages/not-found.vue')));
+	return new Router(routes, path, false, page(() => import('@/pages/not-found.vue')));
 }
