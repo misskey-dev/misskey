@@ -7,17 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	v-show="!isDeleted"
 	ref="rootEl"
-	v-hotkey="keymap"
 	:class="[$style.root]"
 	:tabindex="isDeleted ? '-1' : '0'"
 >
-	<EmNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
+	<EmNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<EmAvatar :class="$style.renoteAvatar" :user="note.user" link :preview="!inEmbedPage && !mock"/>
+		<EmAvatar :class="$style.renoteAvatar" :user="note.user" link/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
@@ -40,16 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
-	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-		<EmAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link :preview="!inEmbedPage && !mock"/>
-		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
-	</div>
-	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
+	<article :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<EmAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!inEmbedPage && !mock"/>
+		<EmAvatar :class="$style.avatar" :user="appearNote.user"/>
 		<div :class="$style.main">
 			<EmNoteHeader :note="appearNote" :mini="true"/>
-			<EmInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<EmInstanceTicker v-if="appearNote.user.instance" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
@@ -78,8 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
-						<EmMediaList v-if="inEmbedPage" ref="galleryEl" :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
-						<EmMediaList v-else ref="galleryEl" :mediaList="appearNote.files"/>
+						<EmMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 					</div>
 					<EmPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
 					<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
@@ -132,21 +126,14 @@ import EmReactionsViewerDetails from '@/components/EmReactionsViewer.details.vue
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
-import EmUsersTooltip from '@/components/EmUsersTooltip.vue';
-import EmUrlPreview from '@/components/EmUrlPreview.vue';
 import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
-import * as sound from '@/scripts/sound.js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { deepClone } from '@/scripts/clone.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
-import { MenuItem } from '@/types/menu.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { host } from '@/config.js';
 import { url } from '@/config.js';
@@ -155,13 +142,8 @@ import { getAppearNote } from '@/scripts/get-appear-note.js';
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
 	pinned?: boolean;
-	mock?: boolean;
-	withHardMute?: boolean;
 }>(), {
-	mock: false,
 });
-
-provide('mock', props.mock);
 
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
@@ -184,7 +166,6 @@ const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
 const appearNote = computed(() => getAppearNote(note.value));
-const galleryEl = shallowRef<InstanceType<typeof MkMediaList>>();
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
@@ -193,14 +174,7 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
-const renoteCollapsed = ref(
-	defaultStore.state.collapseRenotes && isRenote && (
-		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
-		(appearNote.value.myReaction != null)
-	),
-);
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
@@ -656,12 +630,6 @@ watch(() => props.note, (to) => {
 	.quoteNote {
 		padding: 12px;
 	}
-}
-
-.muted {
-	padding: 8px;
-	text-align: center;
-	opacity: 0.7;
 }
 
 .reactionOmitted {
