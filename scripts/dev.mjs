@@ -65,13 +65,19 @@ execa('pnpm', ['--filter', 'backend', 'dev'], {
 	stderr: process.stderr,
 });
 
+execa('pnpm', ['--filter', 'frontend-shared', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 execa('pnpm', ['--filter', 'frontend', process.env.MK_DEV_PREFER === 'backend' ? 'watch' : 'dev'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
-execa('pnpm', ['--filter', 'embed', process.env.MK_DEV_PREFER === 'backend' ? 'watch' : 'dev'], {
+execa('pnpm', ['--filter', 'frontend-embed', process.env.MK_DEV_PREFER === 'backend' ? 'watch' : 'dev'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

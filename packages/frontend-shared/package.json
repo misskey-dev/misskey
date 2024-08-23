@@ -1,0 +1,36 @@
+{
+	"name": "frontend-shared",
+	"type": "module",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./built/index.js",
+			"types": "./built/index.d.ts"
+		},
+		"./*": {
+			"import": "./built/*",
+			"types": "./built/*"
+		}
+	},
+	"scripts": {
+		"build": "node ./build.js",
+		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"tsd": "tsd",
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@types/node": "20.14.12",
+		"@typescript-eslint/eslint-plugin": "7.17.0",
+		"@typescript-eslint/parser": "7.17.0",
+		"typescript": "5.5.4",
+		"esbuild": "0.23.0"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+	}
+}

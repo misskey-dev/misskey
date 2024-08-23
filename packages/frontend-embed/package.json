@@ -1,5 +1,5 @@
 {
-	"name": "embed",
+	"name": "frontend-embed",
 	"private": true,
 	"type": "module",
 	"scripts": {
