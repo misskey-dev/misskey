@@ -695,6 +695,10 @@ export const defaultStore = markRaw(
 		where: 'device',
 		default: false,
 	},
+  contextMenu: {
+		where: 'device',
+		default: 'app' as 'app' | 'appWithShift' | 'native',
+  },
 
 		sound_masterVolume: {
 			where: 'device',

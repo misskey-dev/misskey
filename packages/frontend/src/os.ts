@@ -11,6 +11,7 @@ import * as Misskey from 'misskey-js';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/scripts/form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import XPostFormDialog from '@/components/XPostFormDialog.vue';
@@ -466,15 +467,20 @@ export function authenticateDialog(): Promise<{
 	});
 }
 
+type SelectItem<C> = {
+	value: C;
+	text: string;
+};
+
 // default が指定されていたら result は null になり得ないことを保証する overload function
 export function select<C = any>(props: {
 	title?: string;
 	text?: string;
 	default: string;
-	items: {
-		value: C;
-		text: string;
-	}[];
+	items: (SelectItem<C> | {
+		sectionTitle: string;
+		items: SelectItem<C>[];
+	} | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
@@ -484,10 +490,10 @@ export function select<C = any>(props: {
 	title?: string;
 	text?: string;
 	default?: string | null;
-	items: {
-		value: C;
-		text: string;
-	}[];
+	items: (SelectItem<C> | {
+		sectionTitle: string;
+		items: SelectItem<C>[];
+	} | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
@@ -497,10 +503,10 @@ export function select<C = any>(props: {
 	title?: string;
 	text?: string;
 	default?: string | null;
-	items: {
-		value: C;
-		text: string;
-	}[];
+	items: (SelectItem<C> | {
+		sectionTitle: string;
+		items: SelectItem<C>[];
+	} | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
@@ -511,7 +517,7 @@ export function select<C = any>(props: {
 			title: props.title,
 			text: props.text,
 			select: {
-				items: props.items,
+				items: props.items.filter(x => x !== undefined),
 				default: props.default ?? null,
 			},
 		}, {
@@ -675,6 +681,13 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 }
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
+	if (
+		defaultStore.state.contextMenu === 'native' ||
+		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
+	) {
+		return Promise.resolve();
+	}
+
 	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
 	ev.preventDefault();
 	return new Promise(resolve => nextTick(() => {

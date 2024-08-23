@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.preview">
-	<div :class="$style.preview__content1">
+	<div>
 		<MkInput v-model="text">
 			<template #label>Text</template>
 		</MkInput>

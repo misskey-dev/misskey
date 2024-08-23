@@ -50,6 +50,7 @@ export class InstanceEntityService {
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
 			isSilenced: this.utilityService.isSilencedHost(meta.silencedHosts, instance.host),
+			isMediaSilenced: this.utilityService.isMediaSilencedHost(meta.mediaSilencedHosts, instance.host),
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,
@@ -62,8 +63,9 @@ export class InstanceEntityService {
 	@bindThis
 	public packMany(
 		instances: MiInstance[],
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
-		return Promise.all(instances.map(x => this.pack(x)));
+		return Promise.all(instances.map(x => this.pack(x, me)));
 	}
 }
 

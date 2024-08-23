@@ -7,9 +7,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
 import { QueueService } from '@/core/QueueService.js';
-import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -33,9 +33,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		private userEntityService: UserEntityService,
-		private queueService: QueueService,
-		private userSuspendService: UserSuspendService,
+		private deleteAccoountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -48,22 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('cannot delete a root account');
 			}
 
-			if (this.userEntityService.isLocalUser(user)) {
-				// 物理削除する前にDelete activityを送信する
-				await this.userSuspendService.doPostSuspend(user).catch(err => {});
-
-				this.queueService.createDeleteAccountJob(user, {
-					soft: false,
-				});
-			} else {
-				this.queueService.createDeleteAccountJob(user, {
-					soft: true, // リモートユーザーの削除は、完全にDBから物理削除してしまうと再度連合してきてアカウントが復活する可能性があるため、soft指定する
-				});
-			}
-
-			await this.usersRepository.update(user.id, {
-				isDeleted: true,
-			});
+			await this.deleteAccoountService.deleteAccount(user);
 		});
 	}
 }

@@ -35,6 +35,8 @@ coverage
 !/.config/example.yml
 !/.config/docker_example.yml
 !/.config/docker_example.env
+docker-compose.yml
+compose.yml
 .devcontainer/compose.yml
 !/.devcontainer/compose.yml
 

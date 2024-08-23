@@ -334,6 +334,12 @@ export const packedMetaLiteSchema = {
 			optional: false,
 			nullable: true,
 		},
+		noteSearchableScope: {
+			type: 'string',
+			enum: ['local', 'global'],
+			optional: false, nullable: false,
+			default: 'local',
+		},
 	},
 } as const;
 

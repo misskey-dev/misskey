@@ -67,6 +67,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
 					:selectedFiles="selectedFiles"
 					@chosen="chooseFolder"
+					@unchose="unchoseFolder"
 					@move="move"
 					@upload="upload"
 					@removeFile="removeFile"
@@ -453,6 +454,11 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 			emit('change-selection', [folderToChoose]);
 		}
 	}
+}
+
+function unchoseFolder(folderToUnchose: Misskey.entities.DriveFolder) {
+	selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToUnchose.id);
+	emit('change-selection', selectedFolders.value);
 }
 
 function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {

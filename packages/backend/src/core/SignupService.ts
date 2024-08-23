@@ -23,6 +23,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { envOption } from '@/env.js';
+import { UserService } from '@/core/UserService.js';
 
 @Injectable()
 export class SignupService {
@@ -36,6 +37,7 @@ export class SignupService {
 		@Inject(DI.config)
 		private config: Config,
 		private utilityService: UtilityService,
+		private userService: UserService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
@@ -179,7 +181,8 @@ export class SignupService {
 			);
 		});
 
-		this.usersChart.update(account, true);
+		this.usersChart.update(account, true).then();
+		this.userService.notifySystemWebhook(account, 'userCreated').then();
 
 		return { account, secret };
 	}

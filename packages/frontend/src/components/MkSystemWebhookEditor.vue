@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License-Identifier: AGPL-3.0-only
+SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
+SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
@@ -17,20 +18,22 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 	<template #header>
 		{{ mode === 'create' ? i18n.ts._webhookSettings.createWebhook : i18n.ts._webhookSettings.modifyWebhook }}
 	</template>
-	<MkSpacer :marginMin="20" :marginMax="28">
-		<MkLoading v-if="loading !== 0"/>
-		<div v-else :class="$style.root" class="_gaps_m">
-			<MkInput v-model="title">
-				<template #label>{{ i18n.ts._webhookSettings.name }}</template>
-			</MkInput>
-			<MkInput v-model="url">
-				<template #label>URL</template>
-			</MkInput>
-			<MkInput v-model="secret">
-				<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
-			</MkInput>
-			<MkFolder :defaultOpen="true">
-				<template #label>{{ i18n.ts._webhookSettings.events }}</template>
+
+	<div style="display: flex; flex-direction: column; min-height: 100%;">
+		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
+			<MkLoading v-if="loading !== 0"/>
+			<div v-else :class="$style.root" class="_gaps_m">
+				<MkInput v-model="title">
+					<template #label>{{ i18n.ts._webhookSettings.name }}</template>
+				</MkInput>
+				<MkInput v-model="url">
+					<template #label>URL</template>
+				</MkInput>
+				<MkInput v-model="secret">
+					<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
+				</MkInput>
+				<MkFolder :defaultOpen="true">
+					<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
 				<div class="_gaps_s">
 					<MkSwitch v-model="events.abuseReport" :disabled="disabledEvents.abuseReport">
@@ -51,19 +54,19 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 				</div>
 			</MkFolder>
 
-			<MkSwitch v-model="isActive">
-				<template #label>{{ i18n.ts.enable }}</template>
-			</MkSwitch>
-
-			<div :class="$style.footer" class="_buttonsCenter">
-				<MkButton primary :disabled="disableSubmitButton" @click="onSubmitClicked">
-					<i class="ti ti-check"></i>
-					{{ i18n.ts.ok }}
-				</MkButton>
-				<MkButton @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+				<MkSwitch v-model="isActive">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
 			</div>
+		</MkSpacer>
+		<div :class="$style.footer" class="_buttonsCenter">
+			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked">
+				<i class="ti ti-check"></i>
+				{{ i18n.ts.ok }}
+			</MkButton>
+			<MkButton rounded @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
@@ -234,9 +237,14 @@ onMounted(async () => {
 }
 
 .footer {
-	display: flex;
-	justify-content: center;
-	align-items: flex-end;
-	margin-top: 20px;
+	position: sticky;
+	z-index: 10000;
+	bottom: 0;
+	left: 0;
+	padding: 12px;
+	border-top: solid 0.5px var(--divider);
+	background: var(--acrylicBg);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
 }
 </style>

@@ -1,6 +1,6 @@
 {
 	"name": "type4ny",
-	"version": "0.1.2-beta",
+	"version": "0.1.3-beta",
 	"codename": "emerald",
 	"repository": {
 		"type": "git",
@@ -63,7 +63,7 @@
 		"glob": "11.0.0"
 	},
 	"devDependencies": {
-		"@misskey-dev/eslint-plugin": "2.0.2",
+		"@misskey-dev/eslint-plugin": "2.0.3",
 		"@types/node": "20.14.12",
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",

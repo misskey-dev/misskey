@@ -154,6 +154,16 @@ export const meta = {
 					nullable: false,
 				},
 			},
+			mediaSilencedHosts: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'string',
+					optional: false,
+					nullable: false,
+				},
+			},
 			pinnedUsers: {
 				type: 'array',
 				optional: false,
@@ -690,7 +700,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					hiddenTags: instance.hiddenTags,
 					blockedHosts: instance.blockedHosts,
 					silencedHosts: instance.silencedHosts,
-					sensitiveWords: instance.sensitiveWords,
+					mediaSilencedHosts: instance.mediaSilencedHosts,sensitiveWords: instance.sensitiveWords,
 					prohibitedWords: instance.prohibitedWords,
 					preservedUsernames: instance.preservedUsernames,
 					hcaptchaSecretKey: instance.hcaptchaSecretKey,

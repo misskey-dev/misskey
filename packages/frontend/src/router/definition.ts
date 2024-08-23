@@ -240,6 +240,9 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/search.vue')),
 	query: {
 		q: 'query',
+		userId: 'userId',
+		username: 'username',
+		host: 'host',
 		channel: 'channel',
 		type: 'type',
 		origin: 'origin',

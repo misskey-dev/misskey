@@ -106,6 +106,7 @@ export class ReactionService {
 		note: MiNote,
 		_reaction?: string | null,
 	) {
+		const meta = await this.metaService.fetch();
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(
@@ -173,6 +174,11 @@ export class ReactionService {
 									'nonSensitiveOnlyForLocalLikeOnlyForRemote') &&
 							emoji.isSensitive
 						) {
+							reaction = FALLBACK;
+						}
+
+						// for media silenced host, custom emoji reactions are not allowed
+						if (reacterHost != null && this.utilityService.isMediaSilencedHost(meta.mediaSilencedHosts, reacterHost)) {
 							reaction = FALLBACK;
 						}
 					} else {
@@ -265,8 +271,6 @@ export class ReactionService {
 				}
 			}
 		}
-
-		const meta = await this.metaService.fetch();
 
 		if (meta.enableChartsForRemoteUser || user.host == null) {
 			this.perUserReactionsChart.update(user, note);

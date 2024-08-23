@@ -92,7 +92,7 @@ export class NoteDeleteService {
 				this.deliverToConcerned(user, note, content);
 			}
 
-			// also deliever delete activity to cascaded notes
+			// also deliver delete activity to cascaded notes
 			const federatedLocalCascadingNotes = (cascadingNotes).filter(note => !note.localOnly && note.userHost == null); // filter out local-only notes
 			for (const cascadingNote of federatedLocalCascadingNotes) {
 				if (!cascadingNote.user) continue;

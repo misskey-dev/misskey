@@ -20,7 +20,7 @@ import { host as hostRaw } from '@/config.js';
 import { defaultStore } from '@/store.js';
 
 defineProps<{
-	user: Misskey.entities.User;
+	user: Misskey.entities.UserLite;
 	detail?: boolean;
 }>();
 

@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 -->
 
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -67,6 +67,7 @@ async function setChannel() {
 }
 
 async function post() {
+	if (props.column.channelId == null) return;
 	if (!channel.value || channel.value.id !== props.column.channelId) {
 		channel.value = await misskeyApi('channels/show', {
 			channelId: props.column.channelId,
