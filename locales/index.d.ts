@@ -5397,10 +5397,6 @@ export interface Locale extends ILocale {
      */
     "sensitiveMediaRevealConfirm": string;
     /**
-     * デフォルトのプロファイルに追加する
-     */
-    "addToDefaultEmojiPicker": string;
-    /**
      * 作成したリスト
      */
     "createdLists": string;
@@ -5408,6 +5404,10 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * デフォルトのプロファイルに追加する
+     */
+    "addToDefaultEmojiPicker": string;
     "_delivery": {
         /**
          * 配信状態
