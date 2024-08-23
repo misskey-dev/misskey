@@ -203,6 +203,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
 
 		// ファイルサイズが制限を超えていた場合
+		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
 		if (multipartData.file.truncated) {
 			cleanup();
 			reply.code(413);
