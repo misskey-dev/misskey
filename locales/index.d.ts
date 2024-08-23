@@ -5068,6 +5068,15 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * センシティブなメディアは選択できません
+     */
+    "cannotSelectSensitiveMedia": string;
+    /**
+     * 自分でセンシティブ設定を行っていないのにこのエラーが出ている場合、自動判定によりセンシティブなメディアとされている可能性があります。
+     * サーバーの規則に照らして不要な場合は、ファイルのセンシティブ設定を解除してもう一度お試しください。
+     */
+    "cannotSelectSensitiveMediaDescription": string;
     "_delivery": {
         /**
          * 配信状態
