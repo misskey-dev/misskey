@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]" @click="onClick">
-	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
-	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
+	<EmImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<EmUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
 			<div v-if="false" :class="$style.layer">
@@ -40,10 +40,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
+import EmImgWithBlurhash from './EmImgWithBlurhash.vue';
 import EmA from './EmA.vue';
 import { userPage } from '@/utils.js';
-import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
+import EmUserOnlineIndicator from '@/components/EmUserOnlineIndicator.vue';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;

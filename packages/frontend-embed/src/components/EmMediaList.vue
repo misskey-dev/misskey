@@ -30,7 +30,7 @@ import * as Misskey from 'misskey-js';
 import XBanner from './EmMediaBanner.vue';
 import XImage from './EmMediaImage.vue';
 import XVideo from './EmMediaVideo.vue';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { FILE_TYPE_BROWSERSAFE } from '@/to-be-shared/const.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
