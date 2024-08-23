@@ -134,7 +134,7 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import EmMediaList from './EmMediaList.vue';
 import MkNoteSub from '@/components/MkNoteSub.vue';
-import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkNoteSimple from '@/components/EmNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
