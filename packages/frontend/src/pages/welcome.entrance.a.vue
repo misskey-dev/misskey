@@ -67,6 +67,8 @@ misskeyApiGet('federation/instances', {
 
 <style lang="scss" scoped>
 .rsqzvsbo {
+	display:flex;
+	justify-content: center;
 	> .bg {
 		position: fixed;
 		top: 0;
@@ -74,7 +76,6 @@ misskeyApiGet('federation/instances', {
 		width: 80vw; // 100%からshapeの幅を引いている
 		height: 100vh;
 	}
-	display:flex;
 	> .tl {
 		position: fixed;
 		top: 0;
@@ -156,7 +157,6 @@ misskeyApiGet('federation/instances', {
 			display: none;
 		}
 	}
-	justify-content: center;
 
 	> .contents {
 		position: relative;

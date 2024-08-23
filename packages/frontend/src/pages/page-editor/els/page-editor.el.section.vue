@@ -30,8 +30,7 @@ import { i18n } from '@/i18n.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
-
-const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
+import XBlocks from '../page-editor.blocks.vue';
 
 const props = withDefaults(defineProps<{
 	modelValue: any,

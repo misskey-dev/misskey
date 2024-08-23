@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 export const unicodeEmojiCategories = ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'] as const;
 
 export type UnicodeEmojiDef = {
@@ -11,10 +10,16 @@ export type UnicodeEmojiDef = {
 	category: typeof unicodeEmojiCategories[number];
 }
 
-// initial converted from https://github.com/muan/emojilib/commit/242fe68be86ed6536843b83f7e32f376468b38fb
-import _emojilist from '../emojilist.json';
+let _emojilist: any;
 
-export const emojilist: UnicodeEmojiDef[] = _emojilist.map(x => ({
+async function loadEmojiList() {
+	if (!_emojilist) {
+		_emojilist = (await import('../emojilist.json')).default;
+	}
+	return _emojilist;
+}
+
+export const emojilist: UnicodeEmojiDef[] = (await loadEmojiList()).map((x: any) => ({
 	name: x[1] as string,
 	char: x[0] as string,
 	category: unicodeEmojiCategories[x[2]],

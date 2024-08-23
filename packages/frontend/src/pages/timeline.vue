@@ -38,11 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import {computed, watch, provide, shallowRef, ref, onMounted, onActivated, defineAsyncComponent} from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkPostForm from '@/components/MkPostForm.vue';
+const MkPostForm = defineAsyncComponent(() => import('@/components/MkPostForm.vue'));
+
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
@@ -61,7 +62,7 @@ import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBa
 import type { BasicTimelineType } from '@/timelines.js';
 import { isLocalTimelineAvailable, isGlobalTimelineAvailable } from '@/scripts/get-timeline-available.js';
 import { ui } from '@/config.js';
-import XPostForm from '@/components/XPostForm.vue';
+const XPostForm = defineAsyncComponent(() => import('@/components/XPostForm.vue'));
 
 provide('shouldOmitHeaderTitle', true);
 

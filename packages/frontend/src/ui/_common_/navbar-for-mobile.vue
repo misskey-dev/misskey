@@ -477,7 +477,6 @@ function more() {
   color: var(--navIndicator);
   font-size: 8px;
   animation: blink 1s infinite;
-
   &.gamingDark {
     color: white;
   }
@@ -485,12 +484,6 @@ function more() {
   &.gamingLight {
     color: black;
   }
-	position: absolute;
-	top: 0;
-	left: 20px;
-	color: var(--navIndicator);
-	font-size: 8px;
-	animation: global-blink 1s infinite;
 
 	&:has(.itemIndicateValueIcon) {
 		animation: none;

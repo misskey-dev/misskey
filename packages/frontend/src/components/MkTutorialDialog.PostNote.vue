@@ -35,10 +35,11 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 
 <script setup lang="ts">
 import * as Misskey from 'misskey-js';
-import { reactive } from 'vue';
+import {defineAsyncComponent, reactive} from 'vue';
 import { i18n } from '@/i18n.js';
 import MkNote from '@/components/MkNote.vue';
-import MkPostForm from '@/components/MkPostForm.vue';
+const MkPostForm = defineAsyncComponent(() => import('@/components/MkPostForm.vue'));
+
 import MkFormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
 

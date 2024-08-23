@@ -7,6 +7,7 @@ import * as Misskey from 'misskey-js';
 import { defineAsyncComponent, Ref, ref } from 'vue';
 import { popup } from '@/os.js';
 import { defaultStore } from '@/store.js';
+import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 
 class ReactionPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
@@ -21,7 +22,7 @@ class ReactionPicker {
 
 	public async init() {
 		const reactionsRef = defaultStore.reactiveState.reactions;
-		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
+		await popup(MkEmojiPickerDialog, {
 			src: this.src,
 			pinnedEmojis: reactionsRef,
 			asReactionPicker: true,

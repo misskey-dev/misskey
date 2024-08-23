@@ -433,13 +433,13 @@ definePageMetadata(() => ({
 		.pageBannerTitleUser {
 			--height: 32px;
 			flex-shrink: 0;
+			line-height: var(--height);
 
 			.avatar {
 				height: var(--height);
 				width: var(--height);
 			}
 
-			line-height: var(--height);
 		}
 
 		.pageBannerTitleSubActions {

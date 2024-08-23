@@ -1,13 +1,14 @@
 import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import {type UserConfig, defineConfig} from 'vite';
+import {type UserConfig, defineConfig, splitVendorChunkPlugin} from 'vite';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -81,6 +82,10 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
+			visualizer({
+				filename: './dist/stats.html',
+				open: true,
+			})
 		],
 
 		resolve: {

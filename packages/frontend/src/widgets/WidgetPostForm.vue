@@ -7,11 +7,10 @@ SPDX-FileCopyrightText: syuilo and misskey-project , Type4ny-projectSPDX-License
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
-import MkPostForm from '@/components/MkPostForm.vue';
-
+const MkPostForm = defineAsyncComponent(() => import('@/components/MkPostForm.vue'));
 const name = 'postForm';
 
 const widgetPropsDef = {

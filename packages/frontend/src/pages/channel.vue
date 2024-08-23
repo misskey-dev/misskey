@@ -69,9 +69,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import {computed, watch, ref, defineAsyncComponent} from 'vue';
 import * as Misskey from 'misskey-js';
-import MkPostForm from '@/components/MkPostForm.vue';
+const MkPostForm = defineAsyncComponent(() => import('@/components/MkPostForm.vue'));
+
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';

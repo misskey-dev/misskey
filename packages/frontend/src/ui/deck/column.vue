@@ -314,6 +314,7 @@ function onDrop(ev) {
 		background: var(--acrylicBg) !important;
 		-webkit-backdrop-filter: var(--blur, blur(10px));
 		backdrop-filter: var(--blur, blur(10px));
+		scrollbar-color: var(--scrollbarHandle) transparent;
 
 		> .header {
 			background: transparent;
@@ -327,12 +328,12 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: transparent;
 			}
-			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 
 	&.paged {
 		background: var(--bg) !important;
+		scrollbar-color: var(--scrollbarHandle) transparent;
 
 		> .body {
 			background: var(--bg) !important;
@@ -341,7 +342,6 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: inherit;
 			}
-			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 }
@@ -422,10 +422,10 @@ function onDrop(ev) {
 	box-sizing: border-box;
 	container-type: size;
 	background-color: var(--bg);
+	scrollbar-color: var(--scrollbarHandle) var(--panel);
 
 	&::-webkit-scrollbar-track {
 		background: var(--panel);
 	}
-	scrollbar-color: var(--scrollbarHandle) var(--panel);
 }
 </style>
