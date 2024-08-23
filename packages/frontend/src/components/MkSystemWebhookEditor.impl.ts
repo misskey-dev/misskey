@@ -24,22 +24,23 @@ export type MkSystemWebhookResult = {
 };
 
 export async function showSystemWebhookEditorDialog(props: MkSystemWebhookEditorProps): Promise<MkSystemWebhookResult | null> {
-	const { dispose, result } = await new Promise<{ dispose: () => void, result: MkSystemWebhookResult | null }>(async resolve => {
-		const res = await os.popup(
+	const { result } = await new Promise<{ result: MkSystemWebhookResult | null }>(async resolve => {
+		const { dispose } = os.popup(
 			defineAsyncComponent(() => import('@/components/MkSystemWebhookEditor.vue')),
 			props,
 			{
 				submitted: (ev: MkSystemWebhookResult) => {
-					resolve({ dispose: res.dispose, result: ev });
+					resolve({ result: ev });
+				},
+				canceled: () => {
+					resolve({ result: null });
 				},
 				closed: () => {
-					resolve({ dispose: res.dispose, result: null });
+					dispose();
 				},
 			},
 		);
 	});
-
-	dispose();
 
 	return result;
 }

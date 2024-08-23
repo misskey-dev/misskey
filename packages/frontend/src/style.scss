@@ -113,6 +113,10 @@ a {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 
+	&:focus-visible {
+		outline-offset: 2px;
+	}
+
 	&:hover {
 		text-decoration: underline;
 	}
@@ -143,12 +147,21 @@ rt {
 	white-space: initial;
 }
 
+:focus-visible {
+	outline: var(--focus) solid 2px;
+	outline-offset: -2px;
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
 .ti {
 	width: 1.28em;
 	vertical-align: -12%;
 	line-height: 1em;
 
-	&:before {
+	&::before {
 		font-size: 128%;
 	}
 }
@@ -230,10 +243,6 @@ rt {
 	line-height: inherit;
 	max-width: 100%;
 
-	&:focus-visible {
-		outline: none;
-	}
-
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;
@@ -246,11 +255,11 @@ rt {
 	background: var(--accent);
 
 	&:not(:disabled):hover {
-		background: var(--X8);
+		background: hsl(from var(--accent) h s calc(l + 5));
 	}
 
 	&:not(:disabled):active {
-		background: var(--X9);
+		background: hsl(from var(--accent) h s calc(l - 5));
 	}
 }
 
@@ -260,22 +269,26 @@ rt {
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 
 	&:not(:disabled):hover {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 
 	&:not(:disabled):active {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 }
 
 ._help {
 	color: var(--accent);
-	cursor: help
+	cursor: help;
 }
 
 ._textButton {
 	@extend ._button;
 	color: var(--accent);
+
+	&:focus-visible {
+		outline-offset: 2px;
+	}
 
 	&:not(:disabled):hover {
 		text-decoration: underline;

@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="buttons right">
 		<template v-if="actions">
 			<template v-for="action in actions">
-				<MkButton v-if="action.asFullButton" class="fullButton" primary @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
-				<button v-else v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+				<MkButton v-if="action.asFullButton" class="fullButton" primary :disabled="action.disabled" @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
+				<button v-else v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" :disabled="action.disabled" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</template>
 	</div>
@@ -56,6 +56,7 @@ const props = defineProps<{
 		text: string;
 		icon: string;
 		asFullButton?: boolean;
+		disabled?: boolean;
 		handler: (ev: MouseEvent) => void;
 	}[];
 	thin?: boolean;
