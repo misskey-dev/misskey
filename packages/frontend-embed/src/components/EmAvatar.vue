@@ -42,7 +42,7 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import EmA from './EmA.vue';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@/utils.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 
 const props = withDefaults(defineProps<{
