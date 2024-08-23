@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { colorizeEmoji } from '@/scripts/emojilist.js';
+import { colorizeEmoji } from '@/to-be-shared/emojilist.js';
 
 const props = defineProps<{
 	emoji: string;
