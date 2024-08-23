@@ -9461,6 +9461,10 @@ export interface Locale extends ILocale {
          * Webhookを削除しますか？
          */
         "deleteConfirm": string;
+        /**
+         * テスト通知は保存された情報をもとに送信されるため、設定変更後にテストを行う場合は、事前に設定を保存しておく必要があります。
+         */
+        "testRemarks": string;
     };
     "_abuseReport": {
         "_notificationRecipient": {

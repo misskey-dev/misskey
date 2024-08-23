@@ -5,15 +5,19 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { WebhooksRepository } from '@/models/_.js';
-import type { MiWebhook } from '@/models/Webhook.js';
+import { type WebhooksRepository } from '@/models/_.js';
+import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents } from '@/core/GlobalEventService.js';
+import Logger from '@/logger.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class UserWebhookService implements OnApplicationShutdown {
+	private logger: Logger;
 	private activeWebhooksFetched = false;
 	private activeWebhooks: MiWebhook[] = [];
 
@@ -22,8 +26,11 @@ export class UserWebhookService implements OnApplicationShutdown {
 		private redisForSub: Redis.Redis,
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
+		private loggerService: LoggerService,
+		private queueService: QueueService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
+		this.logger = this.loggerService.getLogger('webhook');
 	}
 
 	@bindThis
@@ -36,6 +43,36 @@ export class UserWebhookService implements OnApplicationShutdown {
 		}
 
 		return this.activeWebhooks;
+	}
+
+	/**
+	 * UserWebhook をWebhook配送キューに追加する
+	 * @see QueueService.systemWebhookDeliver
+	 * // TODO: contentの型を厳格化する
+	 */
+	@bindThis
+	public async enqueueUserWebhook<T extends WebhookEventTypes>(
+		webhook: MiWebhook | MiWebhook['id'],
+		type: T,
+		content: unknown,
+		opts?: {
+			attempts?: number;
+		},
+	) {
+		const webhookEntity = typeof webhook === 'string'
+			? (await this.getActiveWebhooks()).find(a => a.id === webhook)
+			: webhook;
+		if (!webhookEntity || !webhookEntity.active) {
+			this.logger.debug(`UserWebhook is not active or not found : ${webhook}`);
+			return;
+		}
+
+		if (!webhookEntity.on.includes(type)) {
+			this.logger.debug(`UserWebhook ${webhookEntity.id} is not listening to ${type}`);
+			return;
+		}
+
+		return this.queueService.userWebhookDeliver(webhookEntity, type, content, opts);
 	}
 
 	@bindThis

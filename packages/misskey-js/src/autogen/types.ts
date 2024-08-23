@@ -797,6 +797,16 @@ export type paths = {
      */
     post: operations['admin___system-webhook___update'];
   };
+  '/admin/system-webhook/test': {
+    /**
+     * admin/system-webhook/test
+     * @description No description provided.
+     *
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *read:admin:system-webhook*
+     */
+    post: operations['admin___system-webhook___test'];
+  };
   '/announcements': {
     /**
      * announcements
@@ -2435,6 +2445,15 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:account*
      */
     post: operations['i___webhooks___delete'];
+  };
+  '/i/webhooks/test': {
+    /**
+     * i/webhooks/test
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    post: operations['i___webhooks___test'];
   };
   '/invite/create': {
     /**
@@ -4969,6 +4988,20 @@ export type components = {
       cacheRemoteSensitiveFiles: boolean;
     };
     MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+    UserWebhook: {
+      /** Format: misskey:id */
+      id: string;
+      /** Format: misskey:id */
+      userId: string;
+      name: string;
+      on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+      url: string;
+      secret: string;
+      active: boolean;
+      /** Format: date-time */
+      latestSentAt: string | null;
+      latestStatus: number | null;
+    };
     SystemWebhook: {
       id: string;
       isActive: boolean;
@@ -10313,6 +10346,67 @@ export type operations = {
       };
       /** @description I'm Ai */
       418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/system-webhook/test
+   * @description No description provided.
+   *
+   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+   * **Credential required**: *Yes* / **Permission**: *read:admin:system-webhook*
+   */
+  'admin___system-webhook___test': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          webhookId: string;
+          /** @enum {string} */
+          type: 'abuseReport' | 'abuseReportResolved' | 'userCreated';
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
         content: {
           'application/json': components['schemas']['Error'];
         };
@@ -20132,6 +20226,66 @@ export type operations = {
       };
       /** @description I'm Ai */
       418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * i/webhooks/test
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:account*
+   */
+  i___webhooks___test: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          webhookId: string;
+          /** @enum {string} */
+          type: 'mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction';
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
         content: {
           'application/json': components['schemas']['Error'];
         };

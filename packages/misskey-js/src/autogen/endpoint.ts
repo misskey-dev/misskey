@@ -117,6 +117,7 @@ import type {
 	AdminSystemWebhookShowResponse,
 	AdminSystemWebhookUpdateRequest,
 	AdminSystemWebhookUpdateResponse,
+	AdminSystemWebhookTestRequest,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AnnouncementsShowRequest,
@@ -376,6 +377,7 @@ import type {
 	IWebhooksShowResponse,
 	IWebhooksUpdateRequest,
 	IWebhooksDeleteRequest,
+	IWebhooksTestRequest,
 	InviteCreateResponse,
 	InviteDeleteRequest,
 	InviteListRequest,
@@ -660,6 +662,7 @@ export type Endpoints = {
 	'admin/system-webhook/list': { req: AdminSystemWebhookListRequest; res: AdminSystemWebhookListResponse };
 	'admin/system-webhook/show': { req: AdminSystemWebhookShowRequest; res: AdminSystemWebhookShowResponse };
 	'admin/system-webhook/update': { req: AdminSystemWebhookUpdateRequest; res: AdminSystemWebhookUpdateResponse };
+	'admin/system-webhook/test': { req: AdminSystemWebhookTestRequest; res: EmptyResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
@@ -826,6 +829,7 @@ export type Endpoints = {
 	'i/webhooks/show': { req: IWebhooksShowRequest; res: IWebhooksShowResponse };
 	'i/webhooks/update': { req: IWebhooksUpdateRequest; res: EmptyResponse };
 	'i/webhooks/delete': { req: IWebhooksDeleteRequest; res: EmptyResponse };
+	'i/webhooks/test': { req: IWebhooksTestRequest; res: EmptyResponse };
 	'invite/create': { req: EmptyRequest; res: InviteCreateResponse };
 	'invite/delete': { req: InviteDeleteRequest; res: EmptyResponse };
 	'invite/list': { req: InviteListRequest; res: InviteListResponse };
@@ -1042,6 +1046,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'admin/system-webhook/list': 'application/json',
 	'admin/system-webhook/show': 'application/json',
 	'admin/system-webhook/update': 'application/json',
+	'admin/system-webhook/test': 'application/json',
 	'announcements': 'application/json',
 	'announcements/show': 'application/json',
 	'antennas/create': 'application/json',
@@ -1208,6 +1213,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'i/webhooks/show': 'application/json',
 	'i/webhooks/update': 'application/json',
 	'i/webhooks/delete': 'application/json',
+	'i/webhooks/test': 'application/json',
 	'invite/create': 'application/json',
 	'invite/delete': 'application/json',
 	'invite/list': 'application/json',

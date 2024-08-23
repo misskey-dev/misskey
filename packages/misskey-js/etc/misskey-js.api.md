@@ -359,6 +359,9 @@ type AdminSystemWebhookShowRequest = operations['admin___system-webhook___show']
 type AdminSystemWebhookShowResponse = operations['admin___system-webhook___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookTestRequest = operations['admin___system-webhook___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1308,6 +1311,7 @@ declare namespace entities {
         AdminSystemWebhookShowResponse,
         AdminSystemWebhookUpdateRequest,
         AdminSystemWebhookUpdateResponse,
+        AdminSystemWebhookTestRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1567,6 +1571,7 @@ declare namespace entities {
         IWebhooksShowResponse,
         IWebhooksUpdateRequest,
         IWebhooksDeleteRequest,
+        IWebhooksTestRequest,
         InviteCreateResponse,
         InviteDeleteRequest,
         InviteListRequest,
@@ -1814,6 +1819,7 @@ declare namespace entities {
         MetaLite,
         MetaDetailedOnly,
         MetaDetailed,
+        UserWebhook,
         SystemWebhook,
         AbuseReportNotificationRecipient
     }
@@ -2316,6 +2322,9 @@ type IWebhooksShowRequest = operations['i___webhooks___show']['requestBody']['co
 
 // @public (undocumented)
 type IWebhooksShowResponse = operations['i___webhooks___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksTestRequest = operations['i___webhooks___test']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IWebhooksUpdateRequest = operations['i___webhooks___update']['requestBody']['content']['application/json'];
@@ -3261,6 +3270,9 @@ type UsersShowResponse = operations['users___show']['responses']['200']['content
 
 // @public (undocumented)
 type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UserWebhook = components['schemas']['UserWebhook'];
 
 // Warnings were encountered during analysis:
 //
