@@ -1263,6 +1263,7 @@ confirmWhenRevealingSensitiveMedia: "민감한 미디어를 열 때 두 번 확�
 sensitiveMediaRevealConfirm: "민감한 미디어입니다. 표시할까요?"
 createdLists: "만든 리스트"
 createdAntennas: "만든 안테나"
+clipNoteLimitExceeded: "더 이상 이 클립에 노트를 추가 할 수 없습니다."
 _delivery:
   status: "전송 상태"
   stop: "정지됨"
