@@ -66,6 +66,11 @@ export async function getNoteClipMenu(props: {
 							});
 							if (props.currentClip?.id === clip.id) props.isDeleted.value = true;
 						}
+					} else if (err.id === 'f0dba960-ff73-4615-8df4-d6ac5d9dc118') {
+						os.alert({
+							type: 'error',
+							text: i18n.ts.clipNoteLimitExceeded,
+						});
 					} else {
 						os.alert({
 							type: 'error',
