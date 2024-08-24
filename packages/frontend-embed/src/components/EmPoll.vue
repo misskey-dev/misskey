@@ -33,7 +33,7 @@ import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { sum } from '@/scripts/array.js';
 import { i18n } from '@/i18n.js';
 import { host } from '@/config.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@/to-be-shared/use-interval.js';
 
 const props = defineProps<{
 	noteId: string;

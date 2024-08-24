@@ -136,9 +136,6 @@ const preventAppearFetchMoreTimer = ref<number | null>(null);
 const isBackTop = ref(false);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
-const {
-	enableInfiniteScroll,
-} = defaultStore.reactiveState;
 
 const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
 const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);

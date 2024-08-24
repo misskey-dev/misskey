@@ -36,10 +36,9 @@ import * as Misskey from 'misskey-js';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
 import EmCwButton from '@/components/EmCwButton.vue';
-import { notePage } from '@/filters/note.js';
+import { notePage } from '@/utils.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
