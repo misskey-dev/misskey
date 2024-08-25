@@ -17,7 +17,7 @@ import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
-import { host, embedPage } from '@/config.js';
+import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 import { safeParseFloat } from '@/scripts/safe-parse.js';
@@ -377,7 +377,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					code: token.props.code,
 					lang: token.props.lang ?? undefined,
-					copyButton: !embedPage, // 埋め込みページからクリップボードにはアクセスさせない
+					copyButton: true,
 				})];
 			}
 
@@ -401,7 +401,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'emojiCode': {
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				if (props.author?.host == null) {
 					return [h(MkCustomEmoji, {
 						key: Math.random(),
