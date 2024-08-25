@@ -686,214 +686,6 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
 
-  packages/embed:
-    dependencies:
-      '@discordapp/twemoji':
-        specifier: 15.0.3
-        version: 15.0.3
-      '@github/webauthn-json':
-        specifier: 2.1.1
-        version: 2.1.1
-      '@rollup/plugin-json':
-        specifier: 6.1.0
-        version: 6.1.0(rollup@4.19.1)
-      '@rollup/plugin-replace':
-        specifier: 5.0.7
-        version: 5.0.7(rollup@4.19.1)
-      '@rollup/pluginutils':
-        specifier: 5.1.0
-        version: 5.1.0(rollup@4.19.1)
-      '@tabler/icons-webfont':
-        specifier: 3.3.0
-        version: 3.3.0
-      '@twemoji/parser':
-        specifier: 15.1.1
-        version: 15.1.1
-      '@vitejs/plugin-vue':
-        specifier: 5.1.0
-        version: 5.1.0(vite@5.3.5(@types/node@20.14.12)(sass@1.77.8)(terser@5.31.3))(vue@3.4.37(typescript@5.5.4))
-      '@vue/compiler-sfc':
-        specifier: 3.4.37
-        version: 3.4.37
-      aiscript-vscode:
-        specifier: github:aiscript-dev/aiscript-vscode#v0.1.11
-        version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/e1e1b27f2f72cd28a473e004b6da0d8fc0bd40d9
-      astring:
-        specifier: 1.8.6
-        version: 1.8.6
-      buraha:
-        specifier: 0.0.1
-        version: 0.0.1
-      compare-versions:
-        specifier: 6.1.1
-        version: 6.1.1
-      date-fns:
-        specifier: 2.30.0
-        version: 2.30.0
-      escape-regexp:
-        specifier: 0.0.1
-        version: 0.0.1
-      estree-walker:
-        specifier: 3.0.3
-        version: 3.0.3
-      eventemitter3:
-        specifier: 5.0.1
-        version: 5.0.1
-      idb-keyval:
-        specifier: 6.2.1
-        version: 6.2.1
-      is-file-animated:
-        specifier: 1.0.2
-        version: 1.0.2
-      json5:
-        specifier: 2.2.3
-        version: 2.2.3
-      mfm-js:
-        specifier: 0.24.0
-        version: 0.24.0
-      misskey-js:
-        specifier: workspace:*
-        version: link:../misskey-js
-      punycode:
-        specifier: 2.3.1
-        version: 2.3.1
-      rollup:
-        specifier: 4.19.1
-        version: 4.19.1
-      sanitize-html:
-        specifier: 2.13.0
-        version: 2.13.0
-      sass:
-        specifier: 1.77.8
-        version: 1.77.8
-      shiki:
-        specifier: 1.12.0
-        version: 1.12.0
-      strict-event-emitter-types:
-        specifier: 2.0.0
-        version: 2.0.0
-      throttle-debounce:
-        specifier: 5.0.2
-        version: 5.0.2
-      tinycolor2:
-        specifier: 1.6.0
-        version: 1.6.0
-      tsc-alias:
-        specifier: 1.8.10
-        version: 1.8.10
-      tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: 5.5.4
-        version: 5.5.4
-      uuid:
-        specifier: 10.0.0
-        version: 10.0.0
-      vite:
-        specifier: 5.3.5
-        version: 5.3.5(@types/node@20.14.12)(sass@1.77.8)(terser@5.31.3)
-      vue:
-        specifier: 3.4.37
-        version: 3.4.37(typescript@5.5.4)
-    devDependencies:
-      '@misskey-dev/summaly':
-        specifier: 5.1.0
-        version: 5.1.0
-      '@testing-library/vue':
-        specifier: 8.1.0
-        version: 8.1.0(@vue/compiler-sfc@3.4.37)(@vue/server-renderer@3.4.37(vue@3.4.37(typescript@5.5.4)))(vue@3.4.37(typescript@5.5.4))
-      '@types/escape-regexp':
-        specifier: 0.0.3
-        version: 0.0.3
-      '@types/estree':
-        specifier: 1.0.5
-        version: 1.0.5
-      '@types/micromatch':
-        specifier: 4.0.9
-        version: 4.0.9
-      '@types/node':
-        specifier: 20.14.12
-        version: 20.14.12
-      '@types/punycode':
-        specifier: 2.1.4
-        version: 2.1.4
-      '@types/sanitize-html':
-        specifier: 2.11.0
-        version: 2.11.0
-      '@types/throttle-debounce':
-        specifier: 5.0.2
-        version: 5.0.2
-      '@types/tinycolor2':
-        specifier: 1.4.6
-        version: 1.4.6
-      '@types/uuid':
-        specifier: 10.0.0
-        version: 10.0.0
-      '@types/ws':
-        specifier: 8.5.11
-        version: 8.5.11
-      '@typescript-eslint/eslint-plugin':
-        specifier: 7.17.0
-        version: 7.17.0(@typescript-eslint/parser@7.17.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: 7.17.0
-        version: 7.17.0(eslint@9.8.0)(typescript@5.5.4)
-      '@vitest/coverage-v8':
-        specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.77.8)(terser@5.31.3))
-      '@vue/runtime-core':
-        specifier: 3.4.37
-        version: 3.4.37
-      acorn:
-        specifier: 8.12.1
-        version: 8.12.1
-      cross-env:
-        specifier: 7.0.3
-        version: 7.0.3
-      eslint-plugin-import:
-        specifier: 2.29.1
-        version: 2.29.1(@typescript-eslint/parser@7.17.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)
-      eslint-plugin-vue:
-        specifier: 9.27.0
-        version: 9.27.0(eslint@9.8.0)
-      fast-glob:
-        specifier: 3.3.2
-        version: 3.3.2
-      happy-dom:
-        specifier: 10.0.3
-        version: 10.0.3
-      intersection-observer:
-        specifier: 0.12.2
-        version: 0.12.2
-      micromatch:
-        specifier: 4.0.7
-        version: 4.0.7
-      msw:
-        specifier: 2.3.4
-        version: 2.3.4(typescript@5.5.4)
-      nodemon:
-        specifier: 3.1.4
-        version: 3.1.4
-      prettier:
-        specifier: 3.3.3
-        version: 3.3.3
-      start-server-and-test:
-        specifier: 2.0.4
-        version: 2.0.4
-      vite-plugin-turbosnap:
-        specifier: 1.0.3
-        version: 1.0.3
-      vue-component-type-helpers:
-        specifier: 2.0.29
-        version: 2.0.29
-      vue-eslint-parser:
-        specifier: 9.4.3
-        version: 9.4.3(eslint@9.8.0)
-      vue-tsc:
-        specifier: 2.0.29
-        version: 2.0.29(typescript@5.5.4)
-
   packages/frontend:
     dependencies:
       '@discordapp/twemoji':
@@ -1251,6 +1043,232 @@ importers:
       vue-tsc:
         specifier: 2.0.29
         version: 2.0.29(typescript@5.5.4)
+
+  packages/frontend-embed:
+    dependencies:
+      '@discordapp/twemoji':
+        specifier: 15.0.3
+        version: 15.0.3
+      '@github/webauthn-json':
+        specifier: 2.1.1
+        version: 2.1.1
+      '@rollup/plugin-json':
+        specifier: 6.1.0
+        version: 6.1.0(rollup@4.19.1)
+      '@rollup/plugin-replace':
+        specifier: 5.0.7
+        version: 5.0.7(rollup@4.19.1)
+      '@rollup/pluginutils':
+        specifier: 5.1.0
+        version: 5.1.0(rollup@4.19.1)
+      '@tabler/icons-webfont':
+        specifier: 3.3.0
+        version: 3.3.0
+      '@twemoji/parser':
+        specifier: 15.1.1
+        version: 15.1.1
+      '@vitejs/plugin-vue':
+        specifier: 5.1.0
+        version: 5.1.0(vite@5.3.5(@types/node@20.14.12)(sass@1.77.8)(terser@5.31.3))(vue@3.4.37(typescript@5.5.4))
+      '@vue/compiler-sfc':
+        specifier: 3.4.37
+        version: 3.4.37
+      aiscript-vscode:
+        specifier: github:aiscript-dev/aiscript-vscode#v0.1.11
+        version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/e1e1b27f2f72cd28a473e004b6da0d8fc0bd40d9
+      astring:
+        specifier: 1.8.6
+        version: 1.8.6
+      buraha:
+        specifier: 0.0.1
+        version: 0.0.1
+      compare-versions:
+        specifier: 6.1.1
+        version: 6.1.1
+      date-fns:
+        specifier: 2.30.0
+        version: 2.30.0
+      escape-regexp:
+        specifier: 0.0.1
+        version: 0.0.1
+      estree-walker:
+        specifier: 3.0.3
+        version: 3.0.3
+      eventemitter3:
+        specifier: 5.0.1
+        version: 5.0.1
+      idb-keyval:
+        specifier: 6.2.1
+        version: 6.2.1
+      is-file-animated:
+        specifier: 1.0.2
+        version: 1.0.2
+      json5:
+        specifier: 2.2.3
+        version: 2.2.3
+      mfm-js:
+        specifier: 0.24.0
+        version: 0.24.0
+      misskey-js:
+        specifier: workspace:*
+        version: link:../misskey-js
+      punycode:
+        specifier: 2.3.1
+        version: 2.3.1
+      rollup:
+        specifier: 4.19.1
+        version: 4.19.1
+      sanitize-html:
+        specifier: 2.13.0
+        version: 2.13.0
+      sass:
+        specifier: 1.77.8
+        version: 1.77.8
+      shiki:
+        specifier: 1.12.0
+        version: 1.12.0
+      strict-event-emitter-types:
+        specifier: 2.0.0
+        version: 2.0.0
+      throttle-debounce:
+        specifier: 5.0.2
+        version: 5.0.2
+      tinycolor2:
+        specifier: 1.6.0
+        version: 1.6.0
+      tsc-alias:
+        specifier: 1.8.10
+        version: 1.8.10
+      tsconfig-paths:
+        specifier: 4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
+      vite:
+        specifier: 5.3.5
+        version: 5.3.5(@types/node@20.14.12)(sass@1.77.8)(terser@5.31.3)
+      vue:
+        specifier: 3.4.37
+        version: 3.4.37(typescript@5.5.4)
+    devDependencies:
+      '@misskey-dev/summaly':
+        specifier: 5.1.0
+        version: 5.1.0
+      '@testing-library/vue':
+        specifier: 8.1.0
+        version: 8.1.0(@vue/compiler-sfc@3.4.37)(@vue/server-renderer@3.4.37(vue@3.4.37(typescript@5.5.4)))(vue@3.4.37(typescript@5.5.4))
+      '@types/escape-regexp':
+        specifier: 0.0.3
+        version: 0.0.3
+      '@types/estree':
+        specifier: 1.0.5
+        version: 1.0.5
+      '@types/micromatch':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/node':
+        specifier: 20.14.12
+        version: 20.14.12
+      '@types/punycode':
+        specifier: 2.1.4
+        version: 2.1.4
+      '@types/sanitize-html':
+        specifier: 2.11.0
+        version: 2.11.0
+      '@types/throttle-debounce':
+        specifier: 5.0.2
+        version: 5.0.2
+      '@types/tinycolor2':
+        specifier: 1.4.6
+        version: 1.4.6
+      '@types/uuid':
+        specifier: 10.0.0
+        version: 10.0.0
+      '@types/ws':
+        specifier: 8.5.11
+        version: 8.5.11
+      '@typescript-eslint/eslint-plugin':
+        specifier: 7.17.0
+        version: 7.17.0(@typescript-eslint/parser@7.17.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)(typescript@5.5.4)
+      '@typescript-eslint/parser':
+        specifier: 7.17.0
+        version: 7.17.0(eslint@9.8.0)(typescript@5.5.4)
+      '@vitest/coverage-v8':
+        specifier: 1.6.0
+        version: 1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.77.8)(terser@5.31.3))
+      '@vue/runtime-core':
+        specifier: 3.4.37
+        version: 3.4.37
+      acorn:
+        specifier: 8.12.1
+        version: 8.12.1
+      cross-env:
+        specifier: 7.0.3
+        version: 7.0.3
+      eslint-plugin-import:
+        specifier: 2.29.1
+        version: 2.29.1(@typescript-eslint/parser@7.17.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)
+      eslint-plugin-vue:
+        specifier: 9.27.0
+        version: 9.27.0(eslint@9.8.0)
+      fast-glob:
+        specifier: 3.3.2
+        version: 3.3.2
+      happy-dom:
+        specifier: 10.0.3
+        version: 10.0.3
+      intersection-observer:
+        specifier: 0.12.2
+        version: 0.12.2
+      micromatch:
+        specifier: 4.0.7
+        version: 4.0.7
+      msw:
+        specifier: 2.3.4
+        version: 2.3.4(typescript@5.5.4)
+      nodemon:
+        specifier: 3.1.4
+        version: 3.1.4
+      prettier:
+        specifier: 3.3.3
+        version: 3.3.3
+      start-server-and-test:
+        specifier: 2.0.4
+        version: 2.0.4
+      vite-plugin-turbosnap:
+        specifier: 1.0.3
+        version: 1.0.3
+      vue-component-type-helpers:
+        specifier: 2.0.29
+        version: 2.0.29
+      vue-eslint-parser:
+        specifier: 9.4.3
+        version: 9.4.3(eslint@9.8.0)
+      vue-tsc:
+        specifier: 2.0.29
+        version: 2.0.29(typescript@5.5.4)
+
+  packages/frontend-shared:
+    devDependencies:
+      '@types/node':
+        specifier: 20.14.12
+        version: 20.14.12
+      '@typescript-eslint/eslint-plugin':
+        specifier: 7.17.0
+        version: 7.17.0(@typescript-eslint/parser@7.17.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)(typescript@5.5.4)
+      '@typescript-eslint/parser':
+        specifier: 7.17.0
+        version: 7.17.0(eslint@9.8.0)(typescript@5.5.4)
+      esbuild:
+        specifier: 0.23.0
+        version: 0.23.0
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
 
   packages/misskey-bubble-game:
     dependencies:
@@ -5588,9 +5606,6 @@ packages:
   '@vue/compiler-core@3.4.31':
     resolution: {integrity: sha512-skOiodXWTV3DxfDhB4rOf3OGalpITLlgCeOwb+Y9GJpfQ8ErigdBUHomBzvG78JoVE8MJoQsb+qhZiHfKeNeEg==}
 
-  '@vue/compiler-core@3.4.34':
-    resolution: {integrity: sha512-Z0izUf32+wAnQewjHu+pQf1yw00EGOmevl1kE+ljjjMe7oEfpQ+BI3/JNK7yMB4IrUsqLDmPecUrpj3mCP+yJQ==}
-
   '@vue/compiler-core@3.4.37':
     resolution: {integrity: sha512-ZDDT/KiLKuCRXyzWecNzC5vTcubGz4LECAtfGPENpo0nrmqJHwuWtRLxk/Sb9RAKtR9iFflFycbkjkY+W/PZUQ==}
 
@@ -5641,9 +5656,6 @@ packages:
 
   '@vue/shared@3.4.31':
     resolution: {integrity: sha512-Yp3wtJk//8cO4NItOPpi3QkLExAr/aLBGZMmTtW9WpdwBCJpRM6zj9WgWktXAl8IDIozwNMByT45JP3tO3ACWA==}
-
-  '@vue/shared@3.4.34':
-    resolution: {integrity: sha512-x5LmiRLpRsd9KTjAB8MPKf0CDPMcuItjP0gbNqFCIgL1I8iYp4zglhj9w9FPCdIbHG2M91RVeIbArFfFTz9I3A==}
 
   '@vue/shared@3.4.37':
     resolution: {integrity: sha512-nIh8P2fc3DflG8+5Uw8PT/1i17ccFn0xxN/5oE9RfV5SVnd7G0XEFRwakrnNFE/jlS95fpGXDVG5zDETS26nmg==}
@@ -14468,7 +14480,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.18
+      '@jridgewell/trace-mapping': 0.3.25
       '@types/node': 20.14.12
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
@@ -14518,7 +14530,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.24.7
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.18
+      '@jridgewell/trace-mapping': 0.3.25
       babel-plugin-istanbul: 6.1.1
       chalk: 4.1.2
       convert-source-map: 2.0.0
@@ -16412,7 +16424,7 @@ snapshots:
       '@storybook/global': 5.0.0
       '@storybook/preview-api': 8.1.11
       '@storybook/types': 8.1.11
-      '@vue/compiler-core': 3.4.34
+      '@vue/compiler-core': 3.4.37
       lodash: 4.17.21
       ts-dedent: 2.2.0
       type-fest: 2.19.0
@@ -17527,14 +17539,6 @@ snapshots:
       estree-walker: 2.0.2
       source-map-js: 1.2.0
 
-  '@vue/compiler-core@3.4.34':
-    dependencies:
-      '@babel/parser': 7.24.7
-      '@vue/shared': 3.4.34
-      entities: 4.5.0
-      estree-walker: 2.0.2
-      source-map-js: 1.2.0
-
   '@vue/compiler-core@3.4.37':
     dependencies:
       '@babel/parser': 7.24.7
@@ -17620,8 +17624,6 @@ snapshots:
       vue: 3.4.37(typescript@5.5.4)
 
   '@vue/shared@3.4.31': {}
-
-  '@vue/shared@3.4.34': {}
 
   '@vue/shared@3.4.37': {}
 

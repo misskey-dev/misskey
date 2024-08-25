@@ -14,8 +14,7 @@
 		}
 	},
 	"scripts": {
-		"build": "node ./build.js",
-		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"build": "",
 		"tsd": "tsd",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsc --noEmit",

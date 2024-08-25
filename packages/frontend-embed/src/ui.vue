@@ -20,15 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<!-- TODO -->
 	</div>
-
-	<XCommon/>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
 import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
-import XCommon from '@/ui/_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 import { mainRouter } from '@/router/main.js';
