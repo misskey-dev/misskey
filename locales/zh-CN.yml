@@ -1263,6 +1263,7 @@ confirmWhenRevealingSensitiveMedia: "显示敏感内容前需要确认"
 sensitiveMediaRevealConfirm: "这是敏感内容。是否显示？"
 createdLists: "已创建的列表"
 createdAntennas: "已创建的天线"
+clipNoteLimitExceeded: "无法再往此便签内添加更多帖子"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
