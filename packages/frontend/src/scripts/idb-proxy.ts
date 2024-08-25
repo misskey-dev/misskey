@@ -10,7 +10,6 @@ import {
 	set as iset,
 	del as idel,
 } from 'idb-keyval';
-import { embedPage } from '@/config.js';
 import { miLocalStorage } from '@/local-storage.js';
 
 const PREFIX = 'idbfallback::';
@@ -27,10 +26,7 @@ if (window.Cypress) {
 	console.log('Cypress detected. It will use localStorage.');
 }
 
-if (embedPage) {
-	idbAvailable = false;
-	console.log('Embed page detected. It will use safeSessionStorage.');
-} else if (idbAvailable) {
+if (idbAvailable) {
 	await iset('idb-test', 'test')
 		.catch(err => {
 			console.error('idb error', err);

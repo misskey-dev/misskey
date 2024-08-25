@@ -14,7 +14,6 @@ import { apiUrl } from '@/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
-import { embedPage } from '@/config.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -23,7 +22,6 @@ type Account = Misskey.entities.MeDetailed & { token: string };
 const accountData = miLocalStorage.getItem('account');
 
 function initAccount() {
-	if (embedPage) return null;
 	if (accountData) return reactive(JSON.parse(accountData) as Account);
 	return null;
 }
@@ -85,14 +83,10 @@ export async function signout() {
 }
 
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
-	if (embedPage) return [];
-
 	return (await get('accounts')) || [];
 }
 
 export async function addAccount(id: Account['id'], token: Account['token']) {
-	if (embedPage) return;
-
 	const accounts = await getAccounts();
 	if (!accounts.some(x => x.id === id)) {
 		await set('accounts', accounts.concat([{ id, token }]));
@@ -194,8 +188,6 @@ export async function refreshAccount() {
 }
 
 export async function login(token: Account['token'], redirect?: string) {
-	if (embedPage) return;
-
 	const showing = ref(true);
 	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
 		success: false,

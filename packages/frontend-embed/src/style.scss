@@ -127,7 +127,9 @@ rt {
 }
 
 ._button {
-	@extend ._noSelect;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
 	appearance: none;
 	display: inline-block;
 	padding: 0;
