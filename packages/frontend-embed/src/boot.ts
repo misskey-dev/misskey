@@ -8,7 +8,7 @@ import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
-import { setIframeId } from '@/to-be-shared/post-message.js';
+import { setIframeId } from '@/post-message.js';
 import { parseEmbedParams } from '@/embed-page.js';
 
 const params = new URLSearchParams(location.search);
