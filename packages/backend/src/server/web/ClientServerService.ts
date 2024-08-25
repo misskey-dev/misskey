@@ -61,7 +61,8 @@ const staticAssets = `${_dirname}/../../../assets/`;
 const clientAssets = `${_dirname}/../../../../frontend/assets/`;
 const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
-const viteOut = `${_dirname}/../../../../../built/_vite_/`;
+const frontendViteOut = `${_dirname}/../../../../../built/_frontend_vite_/`;
+const frontendEmbedViteOut = `${_dirname}/../../../../../built/_frontend_embed_vite_/`;
 const tarball = `${_dirname}/../../../../../built/tarball/`;
 
 @Injectable()
@@ -280,8 +281,15 @@ export class ClientServerService {
 		if (this.config.clientManifestExists) {
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
-					root: viteOut,
+					root: frontendViteOut,
 					prefix: '/vite/',
+					maxAge: ms('30 days'),
+					immutable: true,
+					decorateReply: false,
+				});
+				fastify.register(fastifyStatic, {
+					root: frontendEmbedViteOut,
+					prefix: '/embed_vite/',
 					maxAge: ms('30 days'),
 					immutable: true,
 					decorateReply: false,

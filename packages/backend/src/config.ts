@@ -160,9 +160,10 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	clientEntry: string;
-	clientEmbedEntry: string;
-	clientManifestExists: boolean;
+	frontendEntry: string;
+	frontendManifestExists: boolean;
+	frontendEmbedEntry: string;
+	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
@@ -197,10 +198,16 @@ const path = process.env.MISSKEY_CONFIG_YML
 
 export function loadConfig(): Config {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
-	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
-	const clientManifest = clientManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
-		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' }, 'src/_embed_boot_.ts': { file: 'src/_embed_boot_.ts' } };
+
+	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
+	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
+	const frontendManifest = frontendManifestExists ?
+		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
+		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
+	const frontendEmbedManifest = frontendEmbedManifestExists ?
+		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
+		: { 'src/boot.ts': { file: 'src/boot.ts' } };
+
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
@@ -271,9 +278,10 @@ export function loadConfig(): Config {
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
 		userAgent: `Misskey/${version} (${config.url})`,
-		clientEntry: clientManifest['src/_boot_.ts'],
-		clientEmbedEntry: clientManifest['src/_embed_boot_.ts'],
-		clientManifestExists: clientManifestExists,
+		frontendEntry: frontendManifest['src/_boot_.ts'],
+		frontendManifestExists: frontendManifestExists,
+		frontendEmbedEntry: frontendEmbedManifest['src/boot.ts'],
+		frontendEmbedManifestExists: frontendEmbedManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
