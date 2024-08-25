@@ -1,12 +1,10 @@
 import path from 'path';
-import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
-import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -69,28 +67,14 @@ export function getConfig(): UserConfig {
 
 		plugins: [
 			pluginVue(),
-			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
-			...process.env.NODE_ENV === 'production'
-				? [
-					pluginReplace({
-						preventAssignment: true,
-						values: {
-							'isChromatic()': JSON.stringify(false),
-						},
-					}),
-				]
-				: [],
 		],
 
 		resolve: {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
-				'/client-assets/': __dirname + '/assets/',
-				'/static-assets/': __dirname + '/../backend/assets/',
-				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
-				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
+				'/static-assets/': __dirname + '/../backend/assets/'
 			},
 		},
 
@@ -113,10 +97,7 @@ export function getConfig(): UserConfig {
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
-			_DATA_TRANSFER_DRIVE_FILE_: JSON.stringify('mk_drive_file'),
-			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
-			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
-			__VUE_OPTIONS_API__: true,
+			__VUE_OPTIONS_API__: false,
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
@@ -129,14 +110,12 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/_boot_.ts',
-					embedApp: './src/_embed_boot_.ts',
+					app: './src/boot.ts',
 				},
 				external: externalPackages.map(p => p.match),
 				output: {
 					manualChunks: {
 						vue: ['vue'],
-						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
 					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
 					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
@@ -160,27 +139,12 @@ export function getConfig(): UserConfig {
 
 			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 			commonjsOptions: {
-				include: [/misskey-js/, /misskey-reversi/, /misskey-bubble-game/, /node_modules/],
+				include: [/misskey-js/, /node_modules/],
 			},
 		},
 
 		worker: {
 			format: 'es',
-		},
-
-		test: {
-			environment: 'happy-dom',
-			deps: {
-				optimizer: {
-					web: {
-						include: [
-							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-							'browser-image-resizer',
-						],
-					},
-				},
-			},
-			includeSource: ['src/**/*.ts'],
 		},
 	};
 }
