@@ -8,7 +8,7 @@
 
 ### Server
 - ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
-
+- Fix: Continue importing from file if single emoji import fails
 
 ## 2024.8.0
 
