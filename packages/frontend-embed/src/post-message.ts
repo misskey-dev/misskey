@@ -4,7 +4,6 @@
  */
 
 export const postMessageEventTypes = [
-	'misskey:shareForm:shareCompleted',
 	'misskey:embed:ready',
 	'misskey:embed:changeHeight',
 ] as const;
@@ -12,7 +11,6 @@ export const postMessageEventTypes = [
 export type PostMessageEventType = typeof postMessageEventTypes[number];
 
 export interface PostMessageEventPayload extends Record<PostMessageEventType, any> {
-	'misskey:shareForm:shareCompleted': undefined;
 	'misskey:embed:ready': undefined;
 	'misskey:embed:changeHeight': {
 		height: number;

@@ -25,9 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
-import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
-import { postMessageToParentWindow } from '@/scripts/post-message.js';
-import { defaultEmbedParams } from '@/scripts/embed-page.js';
+import type { ParsedEmbedParams } from '@/embed-page.js';
+import { postMessageToParentWindow } from '@/post-message.js';
+import { defaultEmbedParams } from '@/embed-page.js';
 
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
