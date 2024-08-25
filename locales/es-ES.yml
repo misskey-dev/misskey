@@ -184,6 +184,7 @@ loginFailed: "Error al iniciar sesión."
 showOnRemote: "Ver en una instancia remota"
 continueOnRemote: "Ver en una instancia remota"
 chooseServerOnMisskeyHub: "Elegir un servidor en Misskey Hub"
+specifyServerHost: "Especifica una instancia directamente"
 inputHostName: "Introduzca el dominio"
 general: "General"
 wallpaper: "Fondo de pantalla"
@@ -2405,6 +2406,8 @@ _abuseReport:
   _notificationRecipient:
     _recipientType:
       mail: "Correo"
+      webhook: "Webhook"
+    keywords: "Palabras Clave"
 _moderationLogTypes:
   createRole: "Rol creado"
   deleteRole: "Rol eliminado"
