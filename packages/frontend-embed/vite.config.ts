@@ -61,7 +61,7 @@ export function getConfig(): UserConfig {
 		base: '/vite/',
 
 		server: {
-			port: 5173,
+			port: 5174,
 		},
 
 		plugins: [
