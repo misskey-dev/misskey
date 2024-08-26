@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</I18n>
 		<div :class="$style.renoteInfo">
-			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @mousedown.prevent="showRenoteMenu()">
+			<button ref="renoteTime" :class="$style.renoteTime" class="_button">
 				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<EmTime :time="note.createdAt"/>
 			</button>
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
-	<article :class="$style.article" @contextmenu.stop="onContextmenu">
+	<article :class="$style.article">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<EmAvatar :class="$style.avatar" :user="appearNote.user"/>
 		<div :class="$style.main">
@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<EmA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</EmA>
 			</div>
-			<EmReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
+			<EmReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16">
 				<template #more>
 					<EmA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</EmA>
 				</template>
@@ -94,11 +94,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-arrow-back-up"></i>
 				</a>
-				<a v-if="canRenote" :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
+				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
 					<i class="ti ti-repeat"></i>
-				</a>
-				<a v-else :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button" disabled>
-					<i class="ti ti-ban"></i>
 				</a>
 				<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.footerButton, $style.footerButtonLink]" class="_button">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
@@ -124,14 +121,9 @@ import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
-import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { userPage } from '@/utils.js';
-import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
-import { getNoteSummary } from '@/scripts/get-note-summary.js';
-import { shouldCollapsed } from '@/scripts/collapsed.js';
-import { host } from '@/config.js';
+import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
 import { url } from '@/config.js';
 
 function getAppearNote(note: Misskey.entities.Note) {
@@ -153,7 +145,7 @@ const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
-const note = ref(deepClone(props.note));
+const note = ref((props.note));
 
 const isRenote = Misskey.note.isPureRenote(note.value);
 
@@ -166,23 +158,11 @@ const clipButton = shallowRef<HTMLElement>();
 const appearNote = computed(() => getAppearNote(note.value));
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
-const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
-const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
+const isLong = shouldCollapsed(appearNote.value, []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
-
-const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
-	type: 'lookup',
-	url: `https://${host}/notes/${appearNote.value.id}`,
-}));
-
-watch(() => props.note, (to) => {
-	note.value = deepClone(to);
-}, { deep: true });
-
 </script>
 
 <style lang="scss" module>
