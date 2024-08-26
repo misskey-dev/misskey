@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/EmPagination.vue';
 import type { ParsedEmbedParams } from '@/embed-page.js';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
@@ -50,7 +50,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { url, instanceName } from '@/config.js';
-import { scrollToTop } from '@/scripts/scroll.js';
+import { scrollToTop } from '@/to-be-shared/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 
