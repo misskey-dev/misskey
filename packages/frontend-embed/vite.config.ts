@@ -58,7 +58,7 @@ function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	return {
-		base: '/vite/',
+		base: '/embed_vite/',
 
 		server: {
 			port: 5174,
