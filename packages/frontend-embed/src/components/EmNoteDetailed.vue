@@ -139,11 +139,9 @@ import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { userPage } from '@/filters/user.js';
-import { notePage } from '@/filters/note.js';
+import { userPage } from '@/utils.js';
+import { notePage } from '@/utils.js';
 import number from '@/filters/number.js';
-import { defaultStore } from '@/store.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/scripts/clone.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
@@ -175,8 +173,7 @@ const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
 const isLong = shouldCollapsed(appearNote.value, urls ?? []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
+const showTicker = appearNote.value.user.instance != null;
 </script>
 
 <style lang="scss" module>
