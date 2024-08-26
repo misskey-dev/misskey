@@ -140,9 +140,8 @@ import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
-import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
 import { instance } from '@/instance.js';
 import { url } from '@/config.js';
 
@@ -152,7 +151,7 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-const note = ref(deepClone(props.note));
+const note = ref(props.note);
 
 const isRenote = (
 	note.value.renote != null &&
