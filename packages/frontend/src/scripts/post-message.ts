@@ -9,37 +9,17 @@ export const postMessageEventTypes = [
 
 export type PostMessageEventType = typeof postMessageEventTypes[number];
 
-export interface PostMessageEventPayload extends Record<PostMessageEventType, any> {
-	'misskey:shareForm:shareCompleted': undefined;
-}
-
-export type MiPostMessageEvent<T extends PostMessageEventType = PostMessageEventType> = {
-	type: T;
-	iframeId?: string;
-	payload?: PostMessageEventPayload[T];
-}
-
-let defaultIframeId: string | null = null;
-
-export function setIframeId(id: string): void {
-	if (defaultIframeId != null) return;
-
-	if (_DEV_) console.log('setIframeId', id);
-	defaultIframeId = id;
-}
+export type MiPostMessageEvent = {
+	type: PostMessageEventType;
+	payload?: any;
+};
 
 /**
  * 親フレームにイベントを送信
  */
-export function postMessageToParentWindow<T extends PostMessageEventType = PostMessageEventType>(type: T, payload?: PostMessageEventPayload[T], iframeId: string | null = null): void {
-	let _iframeId = iframeId;
-	if (_iframeId == null) {
-		_iframeId = defaultIframeId;
-	}
-	if (_DEV_) console.log('postMessageToParentWindow', type, _iframeId, payload);
-	window.parent.postMessage({
+export function postMessageToParentWindow(type: PostMessageEventType, payload?: any): void {
+	window.postMessage({
 		type,
-		iframeId: _iframeId,
 		payload,
 	}, '*');
 }

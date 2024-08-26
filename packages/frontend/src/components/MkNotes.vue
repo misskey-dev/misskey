@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:direction="pagination.reversed ? 'up' : 'down'"
 				:reversed="pagination.reversed"
 				:noGap="noGap"
-				:ad="ad"
+				:ad="true"
 				:class="$style.notes"
 			>
 				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
@@ -39,14 +39,11 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
-	ad?: boolean;
-}>(), {
-	ad: true,
-});
+}>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

@@ -21,13 +21,8 @@ type Account = Misskey.entities.MeDetailed & { token: string };
 
 const accountData = miLocalStorage.getItem('account');
 
-function initAccount() {
-	if (accountData) return reactive(JSON.parse(accountData) as Account);
-	return null;
-}
-
 // TODO: 外部からはreadonlyに
-export const $i = initAccount();
+export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;

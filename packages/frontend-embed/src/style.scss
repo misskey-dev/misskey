@@ -45,24 +45,6 @@ html {
 			}
 		}
 	}
-
-	&:not(.embed) {
-		&.f-1 {
-			font-size: 15px;
-		}
-
-		&.f-2 {
-			font-size: 16px;
-		}
-
-		&.f-3 {
-			font-size: 17px;
-		}
-
-		&.useSystemFont {
-			font-family: system-ui;
-		}
-	}
 }
 
 html, body {
