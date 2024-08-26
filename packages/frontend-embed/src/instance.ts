@@ -9,4 +9,5 @@ import { misskeyApi } from '@/misskey-api.js';
 
 export const instance = {
 	iconUrl: 'TODO',
+	mediaProxy: 'TODO',
 };

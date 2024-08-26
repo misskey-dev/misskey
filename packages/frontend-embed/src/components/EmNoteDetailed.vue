@@ -129,13 +129,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import EmMediaList from './EmMediaList.vue';
+import EmMediaList from '@/components/EmMediaList.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteSimple from '@/components/EmNoteSimple.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
+import EmA from '@/components/EmA.vue';
+import EmAvatar from '@/components/EmAvatar.vue';
+import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
