@@ -39,7 +39,7 @@ import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired, updateAccount } from '@/account.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const $i = signinRequired();
@@ -53,6 +53,7 @@ watch(name, () => {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: name.value || null,
 	});
+	updateAccount({ name: name.value });
 });
 
 watch(description, () => {
@@ -61,6 +62,7 @@ watch(description, () => {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		description: description.value || null,
 	});
+	updateAccount({ description: description.value });
 });
 
 function setAvatar(ev: MouseEvent) {
@@ -83,8 +85,7 @@ function setAvatar(ev: MouseEvent) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: originalOrCropped.id,
 		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
+		updateAccount({ avatarId: i.avatarId, avatarUrl: i.avatarUrl });
 	});
 }
 

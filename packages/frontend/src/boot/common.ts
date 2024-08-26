@@ -129,10 +129,14 @@ export async function common(createVue: () => App<Element>) {
 		!location.pathname.startsWith('/onboarding') &&
 		!location.pathname.startsWith('/signup-complete')
 	) {
-		const param = new URLSearchParams();
-		param.set('redirected_from', location.pathname + location.search + location.hash);
-		location.replace('/onboarding?' + param.toString());
-		return;
+		await refreshAccount();
+
+		if ($i && !$i.achievements.map((v) => v.name).includes('tutorialCompleted')) {
+			const param = new URLSearchParams();
+			param.set('redirected_from', location.pathname + location.search + location.hash);
+			location.replace('/onboarding?' + param.toString());
+			return;
+		}
 	}
 
 	const fetchInstanceMetaPromise = fetchInstance();
