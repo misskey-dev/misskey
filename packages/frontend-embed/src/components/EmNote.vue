@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<EmA v-user-preview="inEmbedPage ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+				<EmA v-user-preview="true ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<EmUserName :user="note.user"/>
 				</EmA>
 			</template>
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:author="appearNote.user"
 							:nyaize="'respect'"
 							:emojiUrls="appearNote.emojis"
-							:enableEmojiMenu="!inEmbedPage"
+							:enableEmojiMenu="!true"
 							:enableEmojiMenuReaction="true"
 						/>
 						<div v-if="translating || translation" :class="$style.translation">
@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="appearNote.files && appearNote.files.length > 0">
 						<EmMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 					</div>
-					<EmPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="inEmbedPage" :class="$style.poll"/>
+					<EmPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
 					<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
@@ -151,7 +151,6 @@ const emit = defineEmits<{
 const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const note = ref(deepClone(props.note));
 

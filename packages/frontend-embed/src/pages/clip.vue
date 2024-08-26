@@ -41,34 +41,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, shallowRef, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { Paging } from '@/components/MkPagination.vue';
+import type { ParsedEmbedParams } from '@/embed-page.js';
 import EmNotes from '@/embed/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/embed/components/EmTimelineContainer.vue';
-import type { Paging } from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { url, instanceName } from '@/config.js';
 import { scrollToTop } from '@/scripts/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
-import { useRouter } from '@/router/supplier.js';
-import { defaultEmbedParams } from '@/scripts/embed-page.js';
-import type { ParsedEmbedParams } from '@/scripts/embed-page.js';
+import { defaultEmbedParams } from '@/embed-page.js';
 
 const props = defineProps<{
 	clipId: string;
 }>();
-
-function redirectIfNotEmbedPage() {
-	const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
-
-	if (!inEmbedPage) {
-		const router = useRouter();
-		router.replace(`/clips/${props.clipId}`);
-	}
-}
-
-redirectIfNotEmbedPage();
 
 onActivated(redirectIfNotEmbedPage);
 

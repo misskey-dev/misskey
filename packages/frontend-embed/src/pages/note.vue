@@ -17,22 +17,10 @@ import * as Misskey from 'misskey-js';
 import EmNoteDetailed from '@/embed/components/EmNoteDetailed.vue';
 import XNotFound from '@/pages/not-found.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
 
 const props = defineProps<{
 	noteId: string;
 }>();
-
-function redirectIfNotEmbedPage() {
-	const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
-
-	if (!inEmbedPage) {
-		const router = useRouter();
-		router.replace(`/notes/${props.noteId}`);
-	}
-}
-
-redirectIfNotEmbedPage();
 
 onActivated(redirectIfNotEmbedPage);
 
