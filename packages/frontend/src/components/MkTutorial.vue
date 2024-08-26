@@ -246,6 +246,38 @@ const canContinue = computed(() => {
 	}
 });
 
+function findNextPage(type: TutorialPage['type']) {
+	const bodyPagesDefIndex = page.value - 1;
+
+	for (let i = bodyPagesDefIndex + 1; i < tutorialBodyPagesDef.length; i++) {
+		if (tutorialBodyPagesDef[i] == null) {
+			break;
+		}
+
+		if (tutorialBodyPagesDef[i].type === type) {
+			return i + 1; // はじめの1ページ分足す
+		}
+	}
+
+	return MAX_PAGE;
+}
+
+function findPrevPage(type: TutorialPage['type']) {
+	const bodyPagesDefIndex = page.value - 1;
+
+	for (let i = bodyPagesDefIndex - 1; i >= 0; i--) {
+		if (tutorialBodyPagesDef[i] == null) {
+			break;
+		}
+
+		if (tutorialBodyPagesDef[i].type === type) {
+			return i + 1; // はじめの1ページ分足す
+		}
+	}
+
+	return 0;
+}
+
 function next() {
 	if (areButtonsLocked.value) {
 		return;
@@ -255,22 +287,8 @@ function next() {
 
 	const bodyPagesDefIndex = page.value - 1;
 
-	if (!props.withSetup && tutorialBodyPagesDef[bodyPagesDefIndex + 1].type === 'setup') {
-		function findNextTutorialPage() {
-			for (let i = bodyPagesDefIndex + 1; i < tutorialBodyPagesDef.length; i++) {
-				if (tutorialBodyPagesDef[i] == null) {
-					break;
-				}
-
-				if (tutorialBodyPagesDef[i].type === 'tutorial') {
-					return i + 1; // はじめの1ページ分足す
-				}
-			}
-
-			return MAX_PAGE;
-		}
-
-		page.value = findNextTutorialPage();
+	if (!props.withSetup && tutorialBodyPagesDef[bodyPagesDefIndex + 1].type !== 'tutorial') {
+		page.value = findNextPage('tutorial');
 	} else {
 		page.value = Math.min(page.value + 1, MAX_PAGE);
 	}
@@ -287,22 +305,8 @@ function prev() {
 
 	const bodyPagesDefIndex = page.value - 1;
 
-	if (!props.withSetup && tutorialBodyPagesDef[bodyPagesDefIndex - 1].type === 'setup') {
-		function findPrevTutorialPage() {
-			for (let i = bodyPagesDefIndex - 1; i >= 0; i--) {
-				if (tutorialBodyPagesDef[i] == null) {
-					break;
-				}
-
-				if (tutorialBodyPagesDef[i].type === 'tutorial') {
-					return i + 1; // はじめの1ページ分足す
-				}
-			}
-
-			return 0;
-		}
-
-		page.value = findPrevTutorialPage();
+	if (!props.withSetup && tutorialBodyPagesDef[bodyPagesDefIndex - 1].type !== 'tutorial') {
+		page.value = findPrevPage('tutorial');
 	} else {
 		page.value = Math.max(page.value - 1, 0);
 	}
