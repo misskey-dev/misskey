@@ -40,7 +40,7 @@ html
 		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v3.3.0')
 		link(rel='modulepreload' href=`/vite/${entry.file}`)
 
-		if !config.clientManifestExists
+		if !config.frontendManifestExists
 				script(type="module" src="/vite/@vite/client")
 
 		if Array.isArray(entry.css)

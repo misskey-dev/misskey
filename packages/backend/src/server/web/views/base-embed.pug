@@ -19,14 +19,14 @@ html(class='embed')
 		link(rel='apple-touch-icon' href= appleTouchIcon || '/apple-touch-icon.png')
 		//- https://github.com/misskey-dev/misskey/issues/9842
 		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v3.3.0')
-		link(rel='modulepreload' href=`/vite/${entry.file}`)
+		link(rel='modulepreload' href=`/embed_vite/${entry.file}`)
 
-		if !config.clientManifestExists
-				script(type="module" src="/vite/@vite/client")
+		if !config.frontendEmbedManifestExists
+				script(type="module" src="/embed_vite/@vite/client")
 
 		if Array.isArray(entry.css)
 			each href in entry.css
-				link(rel='stylesheet' href=`/vite/${href}`)
+				link(rel='stylesheet' href=`/embed_vite/${href}`)
 
 		title
 			block title

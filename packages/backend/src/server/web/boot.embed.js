@@ -86,7 +86,7 @@
 
 	//#region Script
 	async function importAppScript() {
-		await import(`/vite/${CLIENT_ENTRY}`)
+		await import(`/embed_vite/${CLIENT_ENTRY}`)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT');
