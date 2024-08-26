@@ -110,12 +110,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</a>
 			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 				<i class="ti ti-repeat"></i>
-				<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.renoteCount) }}</p>
+				<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ (appearNote.renoteCount) }}</p>
 			</a>
 			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 				<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
-				<p v-if="(appearNote.reactionAcceptance === 'likeOnly') && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
+				<p v-if="(appearNote.reactionAcceptance === 'likeOnly') && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ (appearNote.reactionCount) }}</p>
 			</a>
 			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 				<i class="ti ti-dots"></i>
@@ -138,9 +138,7 @@ import EmPoll from '@/components/EmPoll.vue';
 import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
-import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
-import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
 import { instance } from '@/instance.js';
 import { url } from '@/config.js';
@@ -166,8 +164,7 @@ const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entiti
 const showContent = ref(false);
 const isDeleted = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
-const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
-const isLong = shouldCollapsed(appearNote.value, urls ?? []);
+const isLong = shouldCollapsed(appearNote.value, []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const showTicker = appearNote.value.user.instance != null;
 </script>
