@@ -35,7 +35,7 @@ import * as Misskey from 'misskey-js';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

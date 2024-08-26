@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
-import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+import { getProxiedImageUrl } from '@/to-be-shared/media-proxy.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 
 const props = defineProps<{
