@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
-					<EmCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
+					<EmButton rounded full small style="margin: 4px 0;" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</EmButton>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
@@ -119,7 +119,6 @@ import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmNoteSimple from '@/components/EmNoteSimple.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
-import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';

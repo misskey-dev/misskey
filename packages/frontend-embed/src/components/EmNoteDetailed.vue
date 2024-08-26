@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
 				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
-				<EmCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
+				<EmButton rounded full small style="margin: 4px 0;" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</EmButton>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
 				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
@@ -132,7 +132,6 @@ import EmMediaList from '@/components/EmMediaList.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteSimple from '@/components/EmNoteSimple.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
-import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';

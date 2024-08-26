@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
 					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
-					<EmCwButton v-model="showContent" :text="note.text" :files="note.files" :poll="note.poll"/>
+					<EmButton rounded full small @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</EmButton>
 				</p>
 				<div v-show="note.cw == null || showContent">
 					<EmSubNoteContent :class="$style.text" :note="note"/>
@@ -35,9 +35,8 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
-import EmCwButton from '@/components/EmCwButton.vue';
 import { notePage } from '@/utils.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
