@@ -9,22 +9,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="rootEl"
 	:class="$style.root"
 >
-	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
+	<EmNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link/>
+		<EmAvatar :class="$style.renoteAvatar" :user="note.user" link/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<span :class="$style.renoteText">
 			<I18n :src="i18n.ts.renotedBy" tag="span">
 				<template #user>
-					<MkA :class="$style.renoteName" :to="userPage(note.user)">
-						<MkUserName :user="note.user"/>
-					</MkA>
+					<EmA :class="$style.renoteName" :to="userPage(note.user)">
+						<EmUserName :user="note.user"/>
+					</EmA>
 				</template>
 			</I18n>
 		</span>
 		<div :class="$style.renoteInfo">
 			<div class="$style.renoteTime">
-				<MkTime :time="note.createdAt"/>
+				<EmTime :time="note.createdAt"/>
 			</div>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
@@ -36,17 +36,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article :class="$style.note">
 		<header :class="$style.noteHeader">
-			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link/>
+			<EmAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link/>
 			<div :class="$style.noteHeaderBody">
 				<div :class="$style.noteHeaderBodyUpper">
 					<div style="min-width: 0;">
 						<div class="_nowrap">
-							<MkA :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
-								<MkUserName :nowrap="true" :user="appearNote.user"/>
-							</MkA>
+							<EmA :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
+								<EmUserName :nowrap="true" :user="appearNote.user"/>
+							</EmA>
 							<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 						</div>
-						<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
+						<div :class="$style.noteHeaderUsername"><EmAcct :user="appearNote.user"/></div>
 					</div>
 					<div :class="$style.noteHeaderInfo">
 						<a :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
@@ -54,17 +54,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</a>
 					</div>
 				</div>
-				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+				<EmInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
 				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
-				<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
+				<EmCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
 				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-				<MkA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+				<EmA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
 				<Mfm
 					v-if="appearNote.text"
 					:parsedNodes="parsed"
@@ -77,8 +77,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="appearNote.files && appearNote.files.length > 0">
 					<EmMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 				</div>
-				<MkPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
-				<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+				<EmPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
+				<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 				<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 					<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 				</button>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
 				</button>
 			</div>
-			<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+			<EmA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</EmA>
 		</div>
 		<footer>
 			<div :class="$style.noteFooterInfo">
@@ -96,15 +96,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 				</span>
 				<span v-if="appearNote.localOnly" style="display: inline-block; margin-right: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
-				<MkA :to="notePage(appearNote)">
-					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
-				</MkA>
+				<EmA :to="notePage(appearNote)">
+					<EmTime :time="appearNote.createdAt" mode="detail" colored/>
+				</EmA>
 			</div>
-			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :maxNumber="16" :note="appearNote">
+			<EmReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :maxNumber="16" :note="appearNote">
 				<template #more>
-					<MkA :to="`/notes/${appearNote.id}`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
+					<EmA :to="`/notes/${appearNote.id}`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</EmA>
 				</template>
-			</MkReactionsViewer>
+			</EmReactionsViewer>
 			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
 				<i class="ti ti-arrow-back-up"></i>
 			</a>
@@ -130,12 +130,12 @@ import { computed, inject, ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import EmMediaList from './EmMediaList.vue';
-import MkNoteSub from '@/components/MkNoteSub.vue';
-import MkNoteSimple from '@/components/EmNoteSimple.vue';
-import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
-import MkCwButton from '@/components/MkCwButton.vue';
-import MkPoll from '@/components/MkPoll.vue';
-import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import EmNoteSub from '@/components/EmNoteSub.vue';
+import EmNoteSimple from '@/components/EmNoteSimple.vue';
+import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
+import EmCwButton from '@/components/EmCwButton.vue';
+import EmPoll from '@/components/EmPoll.vue';
+import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import number from '@/filters/number.js';
