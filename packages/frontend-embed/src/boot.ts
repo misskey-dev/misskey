@@ -16,6 +16,8 @@ console.info('Misskey Embed');
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
 
+console.info(embedParams);
+
 // サイズの制限
 document.documentElement.style.maxWidth = '500px';
 

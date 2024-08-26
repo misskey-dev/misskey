@@ -29,6 +29,9 @@ import type { ParsedEmbedParams } from '@/embed-page.js';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 
+const page = location.href.split('/')[1];
+console.log(page);
+
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 //#region Embed Style

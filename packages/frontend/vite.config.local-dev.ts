@@ -53,7 +53,10 @@ const devConfig: UserConfig = {
 			'/favicon.ico': httpUrl,
 			'/robots.txt': httpUrl,
 			'/embed.js': httpUrl,
-			'/embed': embedUrl,
+			'/embed': {
+				target: embedUrl,
+				ws: true,
+			},
 			'/identicon': {
 				target: httpUrl,
 				rewrite(path) {
