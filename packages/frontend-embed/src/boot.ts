@@ -37,6 +37,30 @@ const app = createApp(
 app.provide('embedParams', embedParams);
 //#endregion
 
+// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
+// なぜか2回実行されることがあるため、mountするdivを1つに制限する
+const rootEl = ((): HTMLElement => {
+	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
+
+	const currentRoot = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+
+	if (currentRoot) {
+		console.warn('multiple import detected');
+		return currentRoot;
+	}
+
+	const root = document.createElement('div');
+	root.id = MISSKEY_MOUNT_DIV_ID;
+	document.body.appendChild(root);
+	return root;
+})();
+
+app.mount(rootEl);
+
+// boot.jsのやつを解除
+window.onerror = null;
+window.onunhandledrejection = null;
+
 removeSplash();
 
 function removeSplash() {
