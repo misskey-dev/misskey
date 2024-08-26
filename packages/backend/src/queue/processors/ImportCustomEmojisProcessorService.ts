@@ -94,17 +94,17 @@ export class ImportCustomEmojisProcessorService {
 						name: record.fileName,
 						force: true,
 					});
-  				await this.customEmojiService.add({
-  					name: emojiInfo.name,
-  					category: emojiInfo.category,
-  					host: null,
-  					aliases: emojiInfo.aliases,
-  					driveFile,
-  					license: emojiInfo.license,
-  					isSensitive: emojiInfo.isSensitive,
-  					localOnly: emojiInfo.localOnly,
-  					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
-  				});
+					await this.customEmojiService.add({
+						name: emojiInfo.name,
+						category: emojiInfo.category,
+						host: null,
+						aliases: emojiInfo.aliases,
+						driveFile,
+						license: emojiInfo.license,
+						isSensitive: emojiInfo.isSensitive,
+						localOnly: emojiInfo.localOnly,
+						roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+					});
 				} catch (e) {
 					if (e instanceof Error || typeof e === 'string') {
 						this.logger.error(`couldn't import ${emojiPath} for ${emojiInfo.name}: ${e}`);
