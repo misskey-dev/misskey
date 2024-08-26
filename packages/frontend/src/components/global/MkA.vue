@@ -32,8 +32,6 @@ const props = withDefaults(defineProps<{
 
 const behavior = props.behavior ?? inject<MkABehavior>('linkNavigationBehavior', null);
 
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
-
 const el = shallowRef<HTMLElement>();
 
 defineExpose({ $el: el });
@@ -51,8 +49,6 @@ const active = computed(() => {
 });
 
 function onContextmenu(ev) {
-	if (inEmbedPage) return;
-
 	const selection = window.getSelection();
 	if (selection && selection.toString() !== '') return;
 	os.contextMenu([{

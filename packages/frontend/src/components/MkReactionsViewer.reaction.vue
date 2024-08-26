@@ -44,7 +44,6 @@ const props = defineProps<{
 }>();
 
 const mock = inject<boolean>('mock', false);
-const inEmbedPage = inject<boolean>('EMBED_PAGE', false);
 
 const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
@@ -145,7 +144,7 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-if (!mock && !inEmbedPage) {
+if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
 		const reactions = await misskeyApiGet('notes/reactions', {
 			noteId: props.note.id,

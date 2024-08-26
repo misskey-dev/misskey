@@ -377,7 +377,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					code: token.props.code,
 					lang: token.props.lang ?? undefined,
-					copyButton: true,
 				})];
 			}
 
