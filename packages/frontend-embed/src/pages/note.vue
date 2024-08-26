@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.noteEmbedRoot">
-	<MkLoading v-if="loading"/>
+	<EmLoading v-if="loading"/>
 	<EmNoteDetailed v-else-if="note" :note="note"/>
 	<XNotFound v-else/>
 </div>
@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, provide, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
-import EmNoteDetailed from '@/embed/components/EmNoteDetailed.vue';
+import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
+import EmLoading from '@/components/EmLoading.vue';
 import XNotFound from '@/pages/not-found.vue';
 import { misskeyApi } from '@/misskey-api.js';
 
