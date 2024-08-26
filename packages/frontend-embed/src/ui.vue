@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		:class="$style.routerViewContainer"
 	>
-		<!-- TODO -->
+		<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
 	</div>
 </div>
 </template>
@@ -28,9 +28,10 @@ import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
 import type { ParsedEmbedParams } from '@/embed-page.js';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { defaultEmbedParams } from '@/embed-page.js';
+import EmNotePage from '@/pages/note.vue';
 
-const page = location.href.split('/')[1];
-console.log(page);
+const page = location.pathname.split('/')[2];
+const contentId = location.pathname.split('/')[3];
 
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
