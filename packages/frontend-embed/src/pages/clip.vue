@@ -58,8 +58,6 @@ const props = defineProps<{
 	clipId: string;
 }>();
 
-onActivated(redirectIfNotEmbedPage);
-
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 const clip = ref<Misskey.entities.Clip | null>(null);

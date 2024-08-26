@@ -55,10 +55,6 @@ const props = defineProps<{
 	tag: string;
 }>();
 
-redirectIfNotEmbedPage();
-
-onActivated(redirectIfNotEmbedPage);
-
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 const pagination = computed(() => ({

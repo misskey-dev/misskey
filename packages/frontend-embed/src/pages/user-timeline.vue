@@ -65,10 +65,6 @@ const props = defineProps<{
 	username: string;
 }>();
 
-redirectIfNotEmbedPage();
-
-onActivated(redirectIfNotEmbedPage);
-
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 
 const user = ref<Misskey.entities.UserLite | null>(null);

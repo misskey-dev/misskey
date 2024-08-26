@@ -22,8 +22,6 @@ const props = defineProps<{
 	noteId: string;
 }>();
 
-onActivated(redirectIfNotEmbedPage);
-
 provide('EMBED_ORIGINAL_ENTITY_URL', `/notes/${props.noteId}`);
 
 const note = ref<Misskey.entities.Note | null>(null);
