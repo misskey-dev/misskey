@@ -72,6 +72,7 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
+				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/'
 			},
 		},
