@@ -11,6 +11,8 @@ import { createApp, defineAsyncComponent } from 'vue';
 import { setIframeId } from '@/post-message.js';
 import { parseEmbedParams } from '@/embed-page.js';
 
+console.info('Misskey Embed');
+
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
 

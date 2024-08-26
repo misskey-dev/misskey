@@ -29,7 +29,7 @@ const devConfig: UserConfig = {
 	...defaultConfig,
 	root: 'src',
 	publicDir: '../assets',
-	base: './',
+	base: '/embed',
 	server: {
 		host: 'localhost',
 		port: 5174,
