@@ -30,10 +30,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
-import { sum } from '@/scripts/array.js';
 import { i18n } from '@/i18n.js';
 import { host } from '@/config.js';
 import { useInterval } from '@/to-be-shared/use-interval.js';
+
+function sum(xs: number[]): number {
+	return xs.reduce((a, b) => a + b, 0);
+}
 
 const props = defineProps<{
 	noteId: string;
