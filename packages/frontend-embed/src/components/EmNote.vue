@@ -44,7 +44,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<EmAvatar :class="$style.avatar" :user="appearNote.user"/>
 		<div :class="$style.main">
 			<EmNoteHeader :note="appearNote" :mini="true"/>
-			<EmInstanceTicker v-if="appearNote.user.instance" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
@@ -125,7 +124,6 @@ import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
-import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { userPage } from '@/utils.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
@@ -135,7 +133,10 @@ import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { host } from '@/config.js';
 import { url } from '@/config.js';
-import { getAppearNote } from '@/scripts/get-appear-note.js';
+
+function getAppearNote(note: Misskey.entities.Note) {
+	return Misskey.note.isPureRenote(note) ? note.renote : note;
+}
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

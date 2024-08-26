@@ -54,7 +54,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</a>
 					</div>
 				</div>
-				<EmInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
@@ -135,7 +134,6 @@ import EmNoteSimple from '@/components/EmNoteSimple.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmCwButton from '@/components/EmCwButton.vue';
 import EmPoll from '@/components/EmPoll.vue';
-import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmTime from '@/components/EmTime.vue';
@@ -169,7 +167,6 @@ const isDeleted = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const isLong = shouldCollapsed(appearNote.value, []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
-const showTicker = appearNote.value.user.instance != null;
 </script>
 
 <style lang="scss" module>
