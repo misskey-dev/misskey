@@ -16,17 +16,16 @@ import { ref, provide, inject, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import EmNoteDetailed from '@/embed/components/EmNoteDetailed.vue';
 import XNotFound from '@/pages/not-found.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/misskey-api.js';
 
 const props = defineProps<{
 	noteId: string;
 }>();
 
-provide('EMBED_ORIGINAL_ENTITY_URL', `/notes/${props.noteId}`);
-
 const note = ref<Misskey.entities.Note | null>(null);
 const loading = ref(true);
 
+// TODO: クライアント側でAPIを叩くのは二度手間なので予めHTMLに埋め込んでおく
 misskeyApi('notes/show', {
 	noteId: props.noteId,
 }).then(res => {
