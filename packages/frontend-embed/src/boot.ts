@@ -35,3 +35,17 @@ const app = createApp(
 app.provide('embedParams', embedParams);
 //#endregion
 
+removeSplash();
+
+function removeSplash() {
+	const splash = document.getElementById('splash');
+	if (splash) {
+		splash.style.opacity = '0';
+		splash.style.pointerEvents = 'none';
+
+		// transitionendイベントが発火しない場合があるため
+		window.setTimeout(() => {
+			splash.remove();
+		}, 1000);
+	}
+}
