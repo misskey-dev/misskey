@@ -278,7 +278,7 @@ export class ClientServerService {
 		});
 
 		//#region vite assets
-		if (this.config.clientManifestExists) {
+		if (this.config.frontendEmbedManifestExists) {
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
 					root: frontendViteOut,
