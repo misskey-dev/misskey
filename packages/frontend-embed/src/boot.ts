@@ -24,7 +24,24 @@ const embedParams = parseEmbedParams(params);
 
 console.info(embedParams);
 
-applyTheme(darkTheme);
+if (embedParams.colorMode === 'dark') {
+	applyTheme(darkTheme);
+} else if (embedParams.colorMode === 'light') {
+	applyTheme(lightTheme);
+} else {
+	if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		applyTheme(darkTheme);
+	} else {
+		applyTheme(lightTheme);
+	}
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
+		if (mql.matches) {
+			applyTheme(darkTheme);
+		} else {
+			applyTheme(lightTheme);
+		}
+	});
+}
 
 // サイズの制限
 document.documentElement.style.maxWidth = '500px';
