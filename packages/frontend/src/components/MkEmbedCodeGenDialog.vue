@@ -91,6 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { shallowRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
+import type { EmbeddableEntity, EmbedParams } from '@/scripts/embed-page.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 
 import MkInput from '@/components/MkInput.vue';
@@ -107,7 +108,6 @@ import { url } from '@/config.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
 import { embedRouteWithScrollbar } from '@/scripts/embed-page.js';
-import type { EmbeddableEntity, EmbedParams } from '@/scripts/embed-page.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;

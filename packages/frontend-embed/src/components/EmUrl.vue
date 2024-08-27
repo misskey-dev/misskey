@@ -5,8 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	:behavior="props.navigationBehavior"
+	:is="self ? EmA : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
@@ -27,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
+import EmA from './EmA.vue';
 import { url as local } from '@/config.js';
 import { safeURIDecode } from '@/to-be-shared/safe-uri-decode.js';
 
@@ -34,7 +34,6 @@ const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
-	navigationBehavior?: MkABehavior;
 }>(), {
 	showUrlPreview: true,
 });
