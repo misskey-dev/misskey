@@ -19,15 +19,6 @@ function set(key: string, value: any) {
 
 const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);
-export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
-	const categories = new Set<string>();
-	for (const emoji of customEmojis.value) {
-		if (emoji.category && emoji.category !== 'null') {
-			categories.add(emoji.category);
-		}
-	}
-	return markRaw([...Array.from(categories), null]);
-});
 
 export const customEmojisMap = new Map<string, Misskey.entities.EmojiSimple>();
 watch(customEmojis, emojis => {

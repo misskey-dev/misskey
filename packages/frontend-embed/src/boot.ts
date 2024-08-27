@@ -11,6 +11,7 @@ import { createApp, defineAsyncComponent } from 'vue';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-dark.json5';
 import { applyTheme } from './theme.js';
+import { fetchCustomEmojis } from './custom-emojis.js';
 import { setIframeId } from '@/post-message.js';
 import { parseEmbedParams } from '@/embed-page.js';
 
@@ -35,6 +36,10 @@ function setIframeIdHandler(event: MessageEvent) {
 }
 
 window.addEventListener('message', setIframeIdHandler);
+
+try {
+	await fetchCustomEmojis();
+} catch (err) { /* empty */ }
 
 const app = createApp(
 	defineAsyncComponent(() => import('@/ui.vue')),
