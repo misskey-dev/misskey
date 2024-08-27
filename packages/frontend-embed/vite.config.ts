@@ -5,6 +5,7 @@ import { type UserConfig, defineConfig } from 'vite';
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
+import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -66,6 +67,7 @@ export function getConfig(): UserConfig {
 
 		plugins: [
 			pluginVue(),
+			pluginJson5(),
 		],
 
 		resolve: {

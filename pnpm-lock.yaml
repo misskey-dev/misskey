@@ -1100,6 +1100,9 @@ importers:
       is-file-animated:
         specifier: 1.0.2
         version: 1.0.2
+      json5:
+        specifier: 2.2.3
+        version: 2.2.3
       mfm-js:
         specifier: 0.24.0
         version: 0.24.0

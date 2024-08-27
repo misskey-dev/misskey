@@ -8,6 +8,9 @@ import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
+import lightTheme from '@@/themes/l-light.json5';
+import darkTheme from '@@/themes/d-dark.json5';
+import { applyTheme } from './theme.js';
 import { setIframeId } from '@/post-message.js';
 import { parseEmbedParams } from '@/embed-page.js';
 
@@ -17,6 +20,8 @@ const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
 
 console.info(embedParams);
+
+applyTheme(darkTheme);
 
 // サイズの制限
 document.documentElement.style.maxWidth = '500px';
