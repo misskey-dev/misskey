@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<MkLoading v-if="iframeLoading" :class="$style.embedCodeGenPreviewSpinner"/>
 					<div :class="$style.embedCodeGenPreviewWrapper">
-						<div :class="$style.embedCodeGenPreviewTitle">{{ i18n.ts.preview }}</div>
+						<div class="_acrylic" :class="$style.embedCodeGenPreviewTitle">{{ i18n.ts.preview }}</div>
 						<div ref="resizerRootEl" :class="$style.embedCodeGenPreviewResizerRoot" inert>
 							<div
 								:class="$style.embedCodeGenPreviewResizer"
@@ -326,16 +326,12 @@ onUnmounted(() => {
 }
 
 .embedCodeGenPreviewTitle {
-	width: fit-content;
-	flex-shrink: 0;
-	padding: 0 8px;
-	background-color: var(--panel);
-	border-right: 1px solid var(--divider);
-	border-bottom: 1px solid var(--divider);
-	border-bottom-right-radius: var(--radius);
-	height: 28px;
-	line-height: 28px;
-	box-sizing: border-box;
+	position: absolute;
+	z-index: 100;
+	top: 8px;
+	left: 8px;
+	padding: 6px 8px;
+	border-radius: 6px;
 }
 
 .embedCodeGenPreviewSpinner {

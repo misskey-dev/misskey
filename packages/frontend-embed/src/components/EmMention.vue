@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkA v-user-preview="canonical" :class="[$style.root]" :to="url" :style="{ background: bgCss }">
-	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
 		<span v-if="(host != localHost)" :class="$style.host">@{{ toUnicode(host) }}</span>
@@ -31,8 +30,6 @@ const url = `/${canonical}`;
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--mention'));
 bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
-
-const avatarUrl = `/avatar/@${props.username}@${props.host}`;
 </script>
 
 <style lang="scss" module>
@@ -41,15 +38,6 @@ const avatarUrl = `/avatar/@${props.username}@${props.host}`;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
 	color: var(--mention);
-}
-
-.icon {
-	width: 1.5em;
-	height: 1.5em;
-	object-fit: cover;
-	margin: 0 0.2em 0 0;
-	vertical-align: bottom;
-	border-radius: 100%;
 }
 
 .host {

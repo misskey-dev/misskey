@@ -136,6 +136,8 @@ import EmPoll from '@/components/EmPoll.vue';
 import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmTime from '@/components/EmTime.vue';
+import EmUserName from '@/components/EmUserName.vue';
+import EmAcct from '@/components/EmAcct.vue';
 import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
