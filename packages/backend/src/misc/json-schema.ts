@@ -145,6 +145,7 @@ export interface Schema extends OfSchema {
 	readonly nullable?: boolean;
 	readonly optional?: boolean;
 	readonly items?: Schema;
+	readonly prefixItems?: ReadonlyArray<Schema>;
 	readonly properties?: Obj;
 	readonly required?: ReadonlyArray<Extract<keyof NonNullable<this['properties']>, string>>;
 	readonly description?: string;
@@ -198,6 +199,7 @@ type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X
 //type UnionObjectSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? ObjectSchemaType<X> : never;
 type UnionObjType<s extends Obj, a extends readonly any[], X extends ReadonlyArray<keyof s> = a[number]> = X extends any ? ObjType<s, X> : never;
 type ArrayUnion<T> = T extends any ? Array<T> : never;
+type ArrayToTuple<X extends ReadonlyArray<Schema>> = { [K in keyof X]: SchemaType<X[K]> };
 
 type ObjectSchemaTypeDef<p extends Schema> =
 	p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
@@ -233,6 +235,7 @@ export type SchemaTypeDef<p extends Schema> =
 			never
 		) :
 		p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
+		p['prefixItems'] extends ReadonlyArray<Schema> ? ArrayToTuple<p['prefixItems']> :
 		any[]
 	) :
 	p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
