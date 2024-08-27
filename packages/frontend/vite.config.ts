@@ -65,6 +65,9 @@ export function getConfig(): UserConfig {
 
 		server: {
 			port: 5173,
+			headers: { // なんか効かない
+				'X-Frame-Options': 'DENY',
+			},
 		},
 
 		plugins: [
