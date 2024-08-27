@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<EmNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
 			<p v-if="note.cw != null" :class="$style.cw">
-				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
+				<EmMfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
 				<EmButton rounded full small @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</EmButton>
 			</p>
 			<div v-show="note.cw == null || showContent">
@@ -26,6 +26,7 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
+import EmMfm from '@/components/EmMfm.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

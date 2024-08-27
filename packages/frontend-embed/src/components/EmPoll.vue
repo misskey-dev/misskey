@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
-				<Mfm :text="choice.text" :plain="true"/>
+				<EmMfm :text="choice.text" :plain="true"/>
 				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
 			</span>
 		</li>
@@ -33,6 +33,7 @@ import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { i18n } from '@/i18n.js';
 import { host } from '@/config.js';
 import { useInterval } from '@/to-be-shared/use-interval.js';
+import EmMfm from '@/components/EmMfm.js';
 
 function sum(xs: number[]): number {
 	return xs.reduce((a, b) => a + b, 0);

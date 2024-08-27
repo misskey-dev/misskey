@@ -58,13 +58,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
-				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+				<EmMfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 				<EmButton rounded full small style="margin: 4px 0;" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</EmButton>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
 				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 				<EmA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
-				<Mfm
+				<EmMfm
 					v-if="appearNote.text"
 					:parsedNodes="parsed"
 					:text="appearNote.text"
@@ -142,6 +142,7 @@ import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
 import { instance } from '@/instance.js';
 import { url } from '@/config.js';
+import EmMfm from '@/components/EmMfm.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

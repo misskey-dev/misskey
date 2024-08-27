@@ -46,14 +46,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<EmNoteHeader :note="appearNote" :mini="true"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+					<EmMfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 					<EmButton rounded full small style="margin: 4px 0;" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</EmButton>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<EmA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
-						<Mfm
+						<EmMfm
 							v-if="appearNote.text"
 							:parsedNodes="parsed"
 							:text="appearNote.text"
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<EmLoading v-if="translating" mini/>
 							<div v-else-if="translation">
 								<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
+								<EmMfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -120,6 +120,7 @@ import EmNoteSimple from '@/components/EmNoteSimple.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmPoll from '@/components/EmPoll.vue';
+import EmMfm from '@/components/EmMfm.js';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
