@@ -25,6 +25,9 @@ import { NotificationService } from '@/core/NotificationService.js';
 import { Serialized } from '@/types.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import type Logger from '@/logger.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { NodeinfoServerService } from '@/server/NodeinfoServerService.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import { ApRendererService } from './activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.js';
@@ -55,6 +58,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		private apDeliverManagerService: ApDeliverManagerService,
 		private loggerService: LoggerService,
 		private idService: IdService,
+		private federatedInstanceService: FederatedInstanceService,
+		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 	) {
 		this.logger = this.loggerService.getLogger('reversi');
 	}
@@ -99,6 +104,41 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			crc32: game.crc32,
 			noIrregularRules: game.noIrregularRules,
 		} satisfies Partial<MiReversiGame>;
+	}
+
+	@bindThis
+	public async remoteVersion(host:string): Promise<string | null> {
+		const cache = await this.redisClient.get(`reversi:federation:version:${host}`);
+		if (cache !== null) {
+			return cache.length === 0 ? null : cache;
+		}
+		const instance = await this.federatedInstanceService.fetch(host);
+		const nodeinfo = await this.fetchInstanceMetadataService.fetchNodeinfo(instance);
+		const reversiVersion = nodeinfo.metadata?.reversiVersion;
+		if (typeof(reversiVersion) === 'string') {
+			//0.0.0-foo => 0.0.0
+			const version = reversiVersion.split('-')[0];
+			await this.redisClient.setex(`reversi:federation:version:${host}`, version, 5 * 60);
+			return version;
+		}
+		await this.redisClient.setex(`reversi:federation:version:${host}`, '', 5 * 60);
+		return null;
+	}
+	@bindThis
+	public async federationAvailable(host:string): Promise<boolean | null> {
+		const version = await this.remoteVersion(host);
+		if (version === null) {
+			//初期の実装はバージョンを返さない
+			return null;
+		}
+		const versionElements = version.split('.');
+		if (versionElements.length === 3) {
+			if (versionElements[0] !== NodeinfoServerService.reversiVersion.split('-')[0].split('.')[0]) {
+				//メジャーバージョン不一致
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@bindThis

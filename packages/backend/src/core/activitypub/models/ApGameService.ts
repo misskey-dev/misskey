@@ -13,6 +13,7 @@ import { NotificationService } from '@/core/NotificationService.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { ReversiGamesRepository } from '@/models/_.js';
+import { NodeinfoServerService } from '@/server/NodeinfoServerService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { UserEntityService } from '../../entities/UserEntityService.js';
@@ -93,6 +94,10 @@ export class ApGameService {
 		const targetUser = local_user;
 		const fromUser = remote_user;
 		if (!game.game_state.game_session_id) throw Error('bad session' + JSON.stringify(game));
+		if (await this.reversiService.federationAvailable(remote_user.host) === false) {
+			//確実に利用できない時
+			return;
+		}
 		const redisPipeline = this.redisClient.pipeline();
 		redisPipeline.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), JSON.stringify( {
 			from_user_id: fromUser.id,
