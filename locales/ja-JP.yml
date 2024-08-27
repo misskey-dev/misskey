@@ -1266,6 +1266,7 @@ createdAntennas: "作成したアンテナ"
 fromX: "{x}から"
 copyEmbedCode: "埋め込みコードをコピー"
 noteOfThisUser: "このユーザーのノート一覧"
+clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 
 _delivery:
   status: "配信状態"

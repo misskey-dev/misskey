@@ -5080,6 +5080,10 @@ export interface Locale extends ILocale {
      * このユーザーのノート一覧
      */
     "noteOfThisUser": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    "clipNoteLimitExceeded": string;
     "_delivery": {
         /**
          * 配信状態
