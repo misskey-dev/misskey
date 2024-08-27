@@ -3,14 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
-import { deepClone } from './clone.js';
 import type { BundledTheme } from 'shiki/themes';
-import { globalEvents } from '@/events.js';
-import { miLocalStorage } from '@/local-storage.js';
 
 export type Theme = {
 	id: string;
@@ -28,39 +24,6 @@ export type Theme = {
 	};
 };
 
-export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
-
-export const getBuiltinThemes = () => Promise.all(
-	[
-		'l-light',
-		'l-coffee',
-		'l-apricot',
-		'l-rainy',
-		'l-botanical',
-		'l-vivid',
-		'l-cherry',
-		'l-sushi',
-		'l-u0',
-
-		'd-dark',
-		'd-persimmon',
-		'd-astro',
-		'd-future',
-		'd-botanical',
-		'd-green-lime',
-		'd-green-orange',
-		'd-cherry',
-		'd-ice',
-		'd-u0',
-	].map(name => import(`@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
-);
-
-export const getBuiltinThemesRef = () => {
-	const builtinThemes = ref<Theme[]>([]);
-	getBuiltinThemes().then(themes => builtinThemes.value = themes);
-	return builtinThemes;
-};
-
 let timeout: number | null = null;
 
 export function applyTheme(theme: Theme, persist = true) {
@@ -75,7 +38,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
 
 	// Deep copy
-	const _theme = deepClone(theme);
+	const _theme = JSON.parse(JSON.stringify(theme));
 
 	if (_theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === _theme.base);
@@ -96,14 +59,6 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	document.documentElement.style.setProperty('color-scheme', colorScheme);
-
-	if (persist) {
-		miLocalStorage.setItem('theme', JSON.stringify(props));
-		miLocalStorage.setItem('colorScheme', colorScheme);
-	}
-
-	// 色計算など再度行えるようにクライアント全体に通知
-	globalEvents.emit('themeChanged');
 }
 
 function compile(theme: Theme): Record<string, string> {
@@ -144,12 +99,4 @@ function compile(theme: Theme): Record<string, string> {
 
 function genValue(c: tinycolor.Instance): string {
 	return c.toRgbString();
-}
-
-export function validateTheme(theme: Record<string, any>): boolean {
-	if (theme.id == null || typeof theme.id !== 'string') return false;
-	if (theme.name == null || typeof theme.name !== 'string') return false;
-	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
-	if (theme.props == null || typeof theme.props !== 'object') return false;
-	return true;
 }
