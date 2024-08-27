@@ -12,10 +12,6 @@ import EmLink from '@/components/EmLink.vue';
 import EmMention from '@/components/EmMention.vue';
 import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
-import EmCode from '@/components/EmCode.vue';
-import EmCodeInline from '@/components/EmCodeInline.vue';
-import EmGoogle from '@/components/EmGoogle.vue';
-import EmSparkle from '@/components/EmSparkle.vue';
 import EmA from '@/components/EmA.vue';
 import { host } from '@/config.js';
 import { nyaize as doNyaize } from '@/to-be-shared/nyaize.js';
@@ -367,18 +363,16 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'blockCode': {
-				return [h(EmCode, {
+				return [h('code', {
 					key: Math.random(),
-					code: token.props.code,
 					lang: token.props.lang ?? undefined,
-				})];
+				}, token.props.code)];
 			}
 
 			case 'inlineCode': {
-				return [h(EmCodeInline, {
+				return [h('code', {
 					key: Math.random(),
-					code: token.props.code,
-				})];
+				}, token.props.code)];
 			}
 
 			case 'quote': {
@@ -440,10 +434,9 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'search': {
-				return [h(EmGoogle, {
+				return [h('div', {
 					key: Math.random(),
-					q: token.props.query,
-				})];
+				}, token.props.query)];
 			}
 
 			case 'plain': {
