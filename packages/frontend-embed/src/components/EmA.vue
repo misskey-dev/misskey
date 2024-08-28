@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a ref="el" :href="to" @click.prevent="nav">
+<a ref="el" :href="to" target="_blank" rel="noopener">
 	<slot></slot>
 </a>
 </template>
@@ -22,8 +22,4 @@ const props = withDefaults(defineProps<{
 const el = shallowRef<HTMLElement>();
 
 defineExpose({ $el: el });
-
-function nav(ev: MouseEvent) {
-	location.href = props.to;
-}
 </script>
