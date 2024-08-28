@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
+<EmPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
 		<div class="_fullinfo">
 			<img :src="infoImageUrl" class="_ghost"/>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root, { [$style.noGap]: noGap }]">
-			<MkDateSeparatedList
+			<EmDateSeparatedList
 				ref="notes"
 				v-slot="{ item: note }"
 				:items="notes"
@@ -25,17 +25,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="$style.notes"
 			>
 				<EmNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
-			</MkDateSeparatedList>
+			</EmDateSeparatedList>
 		</div>
 	</template>
-</MkPagination>
+</EmPagination>
 </template>
 
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
 import EmNote from '@/components/EmNote.vue';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import EmDateSeparatedList from '@/components/EmDateSeparatedList.vue';
+import EmPagination, { Paging } from '@/components/EmPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<{
 	ad: true,
 });
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = shallowRef<InstanceType<typeof EmPagination>>();
 
 defineExpose({
 	pagingComponent,

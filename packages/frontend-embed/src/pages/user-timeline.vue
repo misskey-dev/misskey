@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkLoading v-if="loading"/>
+	<EmLoading v-if="loading"/>
 	<EmTimelineContainer v-else-if="user" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.userHeader">
 				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
-					<MkAvatar :class="$style.avatar" :user="user"/>
+					<EmAvatar :class="$style.avatar" :user="user"/>
 				</a>
 				<div :class="$style.headerTitle">
 					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
 							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
-								<MkUserName :user="user"/>
+								<EmUserName :user="user"/>
 							</a>
 							<span v-else>{{ i18n.ts.user }}</span>
 						</template>
