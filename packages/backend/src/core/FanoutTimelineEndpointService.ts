@@ -13,7 +13,7 @@ import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
@@ -55,24 +55,20 @@ export class FanoutTimelineEndpointService {
 
 	@bindThis
 	private async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
-		let noteIds: string[];
-		let shouldFallbackToDb = false;
-
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
-		const shouldPrepend = ps.sinceId && !ps.untilId;
-		const idCompare: (a: string, b: string) => number = shouldPrepend ? (a, b) => a < b ? -1 : 1 : (a, b) => a > b ? -1 : 1;
+		const ascending = ps.sinceId && !ps.untilId;
+		const idCompare: (a: string, b: string) => number = ascending ? (a, b) => a < b ? -1 : 1 : (a, b) => a > b ? -1 : 1;
 
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
 		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
-		const redisResultIds = Array.from(new Set(redisResult.flat(1)));
+		const redisResultIds = Array.from(new Set(redisResult.flat(1))).sort(idCompare);
 
-		redisResultIds.sort(idCompare);
-		noteIds = redisResultIds.slice(0, ps.limit);
-
-		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
+		let noteIds = redisResultIds.slice(0, ps.limit);
+		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
+		const shouldFallbackToDb = noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true);
@@ -95,7 +91,7 @@ export class FanoutTimelineEndpointService {
 
 			if (ps.excludePureRenotes) {
 				const parentFilter = filter;
-				filter = (note) => !isPureRenote(note) && parentFilter(note);
+				filter = (note) => (!isRenote(note) || isQuote(note)) && parentFilter(note);
 			}
 
 			if (ps.me) {
@@ -116,7 +112,7 @@ export class FanoutTimelineEndpointService {
 				filter = (note) => {
 					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
-					if (isPureRenote(note) && isUserRelated(note, userIdsWhoMeMutingRenotes, ps.ignoreAuthorFromMute)) return false;
+					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
 
 					return parentFilter(note);
@@ -142,9 +138,7 @@ export class FanoutTimelineEndpointService {
 
 				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
 					// 十分Redisからとれた
-					const result = redisTimeline.slice(0, ps.limit);
-					if (shouldPrepend) result.reverse();
-					return result;
+					return redisTimeline.slice(0, ps.limit);
 				}
 			}
 
@@ -152,8 +146,7 @@ export class FanoutTimelineEndpointService {
 			const remainingToRead = ps.limit - redisTimeline.length;
 			let dbUntil: string | null;
 			let dbSince: string | null;
-			if (shouldPrepend) {
-				redisTimeline.reverse();
+			if (ascending) {
 				dbUntil = ps.untilId;
 				dbSince = noteIds[noteIds.length - 1];
 			} else {
@@ -161,7 +154,7 @@ export class FanoutTimelineEndpointService {
 				dbSince = ps.sinceId;
 			}
 			const gotFromDb = await ps.dbFallback(dbUntil, dbSince, remainingToRead);
-			return shouldPrepend ? [...gotFromDb, ...redisTimeline] : [...redisTimeline, ...gotFromDb];
+			return [...redisTimeline, ...gotFromDb];
 		}
 
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);

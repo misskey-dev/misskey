@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			scrolling="no"
 			:allow="player.allow == null ? 'autoplay;encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
 			:class="$style.playerIframe"
-			:src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')"
+			:src="transformPlayerUrl(player.url)"
 			:style="{ border: 0 }"
 		></iframe>
 		<span v-else>invalid url</span>
@@ -91,6 +91,7 @@ import * as os from '@/os.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
+import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
 import { defaultStore } from '@/store.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
@@ -152,15 +153,16 @@ requestUrl.hash = '';
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`)
 	.then(res => {
 		if (!res.ok) {
-			fetching.value = false;
-			unknownUrl.value = true;
-			return;
+			if (_DEV_) {
+				console.warn(`[HTTP${res.status}] Failed to fetch url preview`);
+			}
+			return null;
 		}
 
 		return res.json();
 	})
-	.then((info: SummalyResult) => {
-		if (info.url == null) {
+	.then((info: SummalyResult | null) => {
+		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
 			return;
@@ -187,11 +189,13 @@ function adjustTweetHeight(message: any) {
 	if (height) tweetHeight.value = height;
 }
 
-const openPlayer = (): void => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
+function openPlayer(): void {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
 		url: requestUrl.href,
+	}, {
+		// TODO
 	});
-};
+}
 
 (window as any).addEventListener('message', adjustTweetHeight);
 

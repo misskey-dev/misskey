@@ -59,7 +59,7 @@ import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -83,11 +83,21 @@ const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 		: props.image.thumbnailUrl,
 );
 
-function onclick() {
+async function onclick(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
 	}
+
 	if (hide.value) {
+		ev.stopPropagation();
+		if (props.image.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.ts.sensitiveMediaRevealConfirm,
+			});
+			if (canceled) return;
+		}
+
 		hide.value = false;
 	}
 }
@@ -114,6 +124,13 @@ function showMenu(ev: MouseEvent) {
 		action: () => {
 			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
 		},
+	}] : []), ...($i?.id === props.image.userId ? [{
+		type: 'divider' as const,
+	}, {
+		type: 'link' as const,
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-info-circle',
+		to: `/my/drive/file/${props.image.id}`,
 	}] : [])], ev.currentTarget ?? ev.target);
 }
 

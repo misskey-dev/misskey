@@ -6,7 +6,7 @@
 		"moduleResolution": "nodenext",
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true,
+		"sourceMap": false,
 		"outDir": "./built/",
 		"removeComments": true,
 		"strict": true,
@@ -15,6 +15,7 @@
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
+		"exactOptionalPropertyTypes": true,
 		"typeRoots": [
 			"./node_modules/@types"
 		],

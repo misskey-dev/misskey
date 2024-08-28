@@ -72,10 +72,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@syuilo</span>
 						</a>
-						<a href="https://github.com/tamaina" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/7973572?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@tamaina</span>
-						</a>
 						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
 							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
@@ -102,13 +98,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>Special thanks</template>
 					<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));grid-gap:24px;align-items:center;">
 						<div>
-							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
+							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
 						</div>
 						<div>
-							<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/xserver.png" alt="XServer"></a>
+							<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/xserver.png" alt="XServer"></a>
 						</div>
 						<div>
-							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
+							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="pepabo" title="GMO Pepabo" href="https://pepabo.com/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/gmo_pepabo.svg" alt="GMO Pepabo"></a>
 						</div>
 					</div>
 				</FormSection>
@@ -222,6 +221,51 @@ const patronsWithIcon = [{
 }, {
 	name: '有栖かずみ',
 	icon: 'https://assets.misskey-hub.net/patrons/9240e8e0ba294a8884143e99ac7ed6a0.jpg',
+}, {
+	name: 'イカロ(コアラ)',
+	icon: 'https://assets.misskey-hub.net/patrons/50b9bdc03735412c80807dbdf32cecb6.jpg',
+}, {
+	name: 'ハチノス３号',
+	icon: 'https://assets.misskey-hub.net/patrons/030347a6f8ce4e82bc5184b5aad09a18.jpg',
+}, {
+	name: 'Takeno',
+	icon: 'https://assets.misskey-hub.net/patrons/6fba81536aea48fe94a30909c502dfa1.jpg',
+}, {
+	name: 'くびすじ',
+	icon: 'https://assets.misskey-hub.net/patrons/aa5789850b2149aeb5b89ebe2e9083db.jpg',
+}, {
+	name: '古道京紗＠ぷらいべったー',
+	icon: 'https://assets.misskey-hub.net/patrons/18346d0519704963a4beabe6abc170af.jpg',
+}, {
+	name: '越貝鯛丸',
+	icon: 'https://assets.misskey-hub.net/patrons/86c7374de37849b882d8ebbc833dc968.jpg',
+}, {
+	name: '☔あめ🍬(灬˘╰╯˘灬)',
+	icon: 'https://assets.misskey-hub.net/patrons/676eea72d4884d3f89aababbb62533fb.jpg',
+}, {
+	name: '貯水よび',
+	icon: 'https://assets.misskey-hub.net/patrons/2974506d53244bbe94a67707b27099e2.jpg',
+}, {
+	name: 'はるかさ',
+	icon: 'https://assets.misskey-hub.net/patrons/26ce2432739a400aa3aa0de0ef67a107.jpg',
+}, {
+	name: '天鈴のあ',
+	icon: 'https://assets.misskey-hub.net/patrons/995cdbb00bd6421184461a883adfe1d9.jpg',
+}, {
+	name: 'えとゔぁす',
+	icon: 'https://assets.misskey-hub.net/patrons/2578f441b82a44cfaa55ba83a318b26e.jpg',
+}, {
+	name: 'Soli',
+	icon: 'https://assets.misskey-hub.net/patrons/448070c81ebd41eda4ea2328291b2efe.jpg',
+}, {
+	name: 'ささくれりょう',
+	icon: 'https://assets.misskey-hub.net/patrons/cf55022cee6c41da8e70a43587aaad9a.jpg',
+}, {
+	name: 'Macop',
+	icon: 'https://assets.misskey-hub.net/patrons/ee052bf550014d36a643ce3dce595640.jpg',
+}, {
+	name: 'なっかあ',
+	icon: 'https://assets.misskey-hub.net/patrons/c2f5f3e394e74a64912284a2f4ca710e.jpg',
 }];
 
 const patrons = [
@@ -324,6 +368,9 @@ const patrons = [
 	'てば',
 	'たっくん',
 	'SHO SEKIGUCHI',
+	'塩キャベツ',
+	'はとぽぷさん',
+	'100の人 (エスパー・イーシア)',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));

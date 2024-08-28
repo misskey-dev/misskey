@@ -846,6 +846,10 @@ icon: "Avatar"
 replies: "Javob berish"
 renotes: "Qayta qayd etish"
 flip: "Teskari"
+_delivery:
+  stop: "To'xtatilgan"
+  _type:
+    none: "Yuborilmoqda"
 _achievements:
   _types:
     _viewInstanceChart:
@@ -1085,9 +1089,12 @@ _webhookSettings:
   _events:
     renote: "Qayta qayd qilinganda"
     mention: "Eslanganda"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "To'xtatish"
   resetPassword: "Parolni tiklash"
 _reversi:
   total: "Jami"
-

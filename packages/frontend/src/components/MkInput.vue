@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:autocomplete="autocomplete"
 			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
+			:inputmode="inputmode"
 			:step="step"
 			:list="id"
 			:min="min"
@@ -63,6 +64,7 @@ const props = defineProps<{
 	mfmAutocomplete?: boolean | SuggestionType[],
 	autocapitalize?: string;
 	spellcheck?: boolean;
+	inputmode?: 'none' | 'text' | 'search' | 'email' | 'url' | 'numeric' | 'tel' | 'decimal';
 	step?: any;
 	datalist?: string[];
 	min?: number;
@@ -77,7 +79,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'change', _ev: KeyboardEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
-	(ev: 'enter'): void;
+	(ev: 'enter', _ev: KeyboardEvent): void;
 	(ev: 'update:modelValue', value: string | number): void;
 }>();
 
@@ -109,7 +111,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
-		emit('enter');
+		emit('enter', ev);
 	}
 };
 

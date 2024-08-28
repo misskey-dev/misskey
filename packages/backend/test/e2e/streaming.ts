@@ -34,6 +34,7 @@ describe('Streaming', () => {
 		let kyoko: misskey.entities.SignupResponse;
 		let chitose: misskey.entities.SignupResponse;
 		let kanako: misskey.entities.SignupResponse;
+		let erin: misskey.entities.SignupResponse;
 
 		// Remote users
 		let akari: misskey.entities.SignupResponse;
@@ -53,6 +54,7 @@ describe('Streaming', () => {
 			kyoko = await signup({ username: 'kyoko' });
 			chitose = await signup({ username: 'chitose' });
 			kanako = await signup({ username: 'kanako' });
+			erin = await signup({ username: 'erin' }); // erin:  A generic fifth participant
 
 			akari = await signup({ username: 'akari', host: 'example.com' });
 			chinatsu = await signup({ username: 'chinatsu', host: 'example.com' });
@@ -63,13 +65,19 @@ describe('Streaming', () => {
 			takumiNote = await post(takumi, { text: 'piyo' });
 
 			// Follow: ayano => kyoko
-			await api('following/create', { userId: kyoko.id }, ayano);
+			await api('following/create', { userId: kyoko.id, withReplies: false }, ayano);
 
 			// Follow: ayano => akari
 			await follow(ayano, akari);
 
 			// Follow: kyoko => chitose
 			await api('following/create', { userId: chitose.id }, kyoko);
+
+			// Follow: erin <=> ayano each other.
+			// erin => ayano: withReplies: true
+			await api('following/create', { userId: ayano.id, withReplies: true }, erin);
+			// ayano => erin: withReplies: false
+			await api('following/create', { userId: erin.id, withReplies: false }, ayano);
 
 			// Mute: chitose => kanako
 			await api('mute/create', { userId: kanako.id }, chitose);
@@ -158,19 +166,17 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
-			/* なんか失敗する
 			test('フォローしているユーザーの visibility: followers な投稿への返信が流れる', async () => {
-				const note = await api('notes/create', { text: 'foo', visibility: 'followers' }, kyoko);
+				const note = await post(kyoko, { text: 'foo', visibility: 'followers' });
 
 				const fired = await waitFire(
 					ayano, 'homeTimeline',		// ayano:home
-					() => api('notes/create', { text: 'bar', visibility: 'followers', replyId: note.body.id }, kyoko),	// kyoko posts
+					() => api('notes/create', { text: 'bar', visibility: 'followers', replyId: note.id }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.reply.text === 'foo',
 				);
 
 				assert.strictEqual(fired, true);
 			});
-			*/
 
 			test('フォローしているユーザーのフォローしていないユーザーの visibility: followers な投稿への返信が流れない', async () => {
 				const chitoseNote = await post(chitose, { text: 'followers-only post', visibility: 'followers' });
@@ -295,6 +301,28 @@ describe('Streaming', () => {
 					() => api('notes/create', { poll: { choices: ['kinoko', 'takenoko'] }, renoteId: kyokoNote.id }, kyoko),	// kyoko renote with poll
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 					{ withRenotes: false },
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: true のとき自分のfollowers投稿に対するリプライが流れる', async () => {
+				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
+				const fired = await waitFire(
+					erin, 'homeTimeline',	// erin:home
+					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
+					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
+				const ayanoNote = await post(ayano, { text: 'hi', visibility: 'followers' });
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'hello', replyId: ayanoNote.id }, erin),	// erin reply to ayano's followers post
+					msg => msg.type === 'note' && msg.body.userId === erin.id,	// wait erin
 				);
 
 				assert.strictEqual(fired, true);
@@ -477,6 +505,38 @@ describe('Streaming', () => {
 
 				assert.strictEqual(fired, false);
 			});
+
+			test('withReplies: true のとき自分のfollowers投稿に対するリプライが流れる', async () => {
+				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
+				const fired = await waitFire(
+					erin, 'homeTimeline',	// erin:home
+					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
+					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
+				const ayanoNote = await post(ayano, { text: 'hi', visibility: 'followers' });
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:home
+					() => api('notes/create', { text: 'hello', replyId: ayanoNote.id }, erin),	// erin reply to ayano's followers post
+					msg => msg.type === 'note' && msg.body.userId === erin.id,	// wait erin
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: true のフォローしていない人のfollowersノートに対するリプライが流れない', async () => {
+				const fired = await waitFire(
+					erin, 'homeTimeline',	// erin:home
+					() => api('notes/create', { text: 'hello', replyId: chitose.id }, ayano),	// ayano reply to chitose's post
+					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
+				);
+
+				assert.strictEqual(fired, false);
+			});
 		});
 
 		describe('Global Timeline', () => {
@@ -510,6 +570,16 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, false);
+			});
+
+			test('withReplies = falseでフォローしてる人によるリプライが流れてくる', async () => {
+				const fired = await waitFire(
+					ayano, 'globalTimeline',		// ayano:Global
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, kyoko),	// kyoko posts
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, true);
 			});
 		});
 
@@ -601,7 +671,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -618,7 +688,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートに対するリプライがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 
@@ -635,7 +705,7 @@ describe('Streaming', () => {
 
 			// #10443
 			test('ミュートしているサーバのノートに対するリノートがリストTLに流れない', async () => {
-				await api('/i/update', {
+				await api('i/update', {
 					mutedInstances: ['example.com'],
 				}, chitose);
 

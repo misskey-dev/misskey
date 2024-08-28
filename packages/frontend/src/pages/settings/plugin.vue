@@ -42,12 +42,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<MkFolder>
+					<template #icon><i class="ti ti-terminal-2"></i></template>
+					<template #label>{{ i18n.ts._plugin.viewLog }}</template>
+
+					<div class="_gaps_s">
+						<div class="_buttons">
+							<MkButton inline @click="copy(pluginLogs.get(plugin.id)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+						</div>
+
+						<MkCode :code="pluginLogs.get(plugin.id)?.join('\n') ?? ''"/>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._plugin.viewSource }}</template>
 
 					<div class="_gaps_s">
 						<div class="_buttons">
-							<MkButton inline @click="copy(plugin)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+							<MkButton inline @click="copy(plugin.src)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
 						</div>
 
 						<MkCode :code="plugin.src ?? ''" lang="is"/>
@@ -69,11 +82,12 @@ import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { pluginLogs } from '@/plugin.js';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
@@ -87,8 +101,8 @@ async function uninstall(plugin) {
 	});
 }
 
-function copy(plugin) {
-	copyToClipboard(plugin.src ?? '');
+function copy(text) {
+	copyToClipboard(text ?? '');
 	os.success();
 }
 

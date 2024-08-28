@@ -38,7 +38,7 @@
 # Option 3: If neither of the above applies to you.
 #           (In this case, the source code should be published
 #           on the Misskey interface.  IT IS NOT ENOUGH TO
-#           DISCLOSE THE SOURCE CODE WEHN A USER REQUESTS IT BY
+#           DISCLOSE THE SOURCE CODE WHEN A USER REQUESTS IT BY
 #           E-MAIL OR OTHER MEANS.  If you are not satisfied
 #           with this, it is recommended that you read the
 #           license again carefully.  Anyway, enabling this
@@ -204,6 +204,21 @@ redis:
 # ID SETTINGS AFTER THAT!
 
 id: 'aidx'
+
+#   ┌────────────────┐
+#───┘ Error tracking └──────────────────────────────────────────
+
+# Sentry is available for error tracking.
+# See the Sentry documentation for more details on options.
+
+#sentryForBackend:
+#  enableNodeProfiling: true
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+
+#sentryForFrontend:
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────

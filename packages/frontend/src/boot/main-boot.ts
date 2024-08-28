@@ -5,6 +5,7 @@
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { common } from './common.js';
+import type * as Misskey from 'misskey-js';
 import { ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
@@ -13,7 +14,6 @@ import * as sound from '@/scripts/sound.js';
 import { $i, signout, updateAccount } from '@/account.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
@@ -21,6 +21,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -35,7 +36,9 @@ export async function mainBoot() {
 	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
-		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
+			closed: () => dispose(),
+		});
 	}
 
 	const stream = useStream();
@@ -67,61 +70,62 @@ export async function mainBoot() {
 		});
 	}
 
-	const hotkeys = {
-		'd': (): void => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
-		's': (): void => {
-			mainRouter.push('/search');
-		},
-	};
-
-	if (defaultStore.state.enableSeasonalScreenEffect) {
-		const month = new Date().getMonth() + 1;
-		if (defaultStore.state.hemisphere === 'S') {
-			// ▼南半球
-			if (month === 7 || month === 8) {
-				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect({}).render();
-			}
-		} else {
-			// ▼北半球
-			if (month === 12 || month === 1) {
-				const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SnowfallEffect({}).render();
-			} else if (month === 3 || month === 4) {
-				const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
-				new SakuraEffect({
-					sakura: true,
-				}).render();
+	try {
+		if (defaultStore.state.enableSeasonalScreenEffect) {
+			const month = new Date().getMonth() + 1;
+			if (defaultStore.state.hemisphere === 'S') {
+				// ▼南半球
+				if (month === 7 || month === 8) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				}
+			} else {
+				// ▼北半球
+				if (month === 12 || month === 1) {
+					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				} else if (month === 3 || month === 4) {
+					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					new SakuraEffect({
+						sakura: true,
+					}).render();
+				}
 			}
 		}
+	} catch (error) {
+		// console.error(error);
+		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
 	}
 
 	if ($i) {
-		// only add post shortcuts if logged in
-		hotkeys['p|n'] = post;
-
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
-				popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
+					closed: () => dispose(),
+				});
 			}
 		});
 
 		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
-			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 				announcement,
-			}, {}, 'closed');
+			}, {
+				closed: () => dispose(),
+			});
 		}
 
-		stream.on('announcementCreated', (ev) => {
+		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
-				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 					announcement,
-				}, {}, 'closed');
+				}, {
+					closed: () => dispose(),
+				});
 			}
-		});
+		}
+
+		stream.on('announcementCreated', onAnnouncementCreated);
 
 		if ($i.isDeleted) {
 			alert({
@@ -187,14 +191,26 @@ export async function mainBoot() {
 		if ($i.followersCount >= 500) claimAchievement('followers500');
 		if ($i.followersCount >= 1000) claimAchievement('followers1000');
 
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365) {
-			claimAchievement('passedSinceAccountCreated1');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 2) {
-			claimAchievement('passedSinceAccountCreated2');
-		}
-		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 3) {
+		const createdAt = new Date($i.createdAt);
+		const createdAtThreeYearsLater = new Date($i.createdAt);
+		createdAtThreeYearsLater.setFullYear(createdAtThreeYearsLater.getFullYear() + 3);
+		if (now >= createdAtThreeYearsLater) {
 			claimAchievement('passedSinceAccountCreated3');
+			claimAchievement('passedSinceAccountCreated2');
+			claimAchievement('passedSinceAccountCreated1');
+		} else {
+			const createdAtTwoYearsLater = new Date($i.createdAt);
+			createdAtTwoYearsLater.setFullYear(createdAtTwoYearsLater.getFullYear() + 2);
+			if (now >= createdAtTwoYearsLater) {
+				claimAchievement('passedSinceAccountCreated2');
+				claimAchievement('passedSinceAccountCreated1');
+			} else {
+				const createdAtOneYearLater = new Date($i.createdAt);
+				createdAtOneYearLater.setFullYear(createdAtOneYearLater.getFullYear() + 1);
+				if (now >= createdAtOneYearLater) {
+					claimAchievement('passedSinceAccountCreated1');
+				}
+			}
 		}
 
 		if (claimedAchievements.length >= 30) {
@@ -215,29 +231,34 @@ export async function mainBoot() {
 			claimAchievement('client60min');
 		}, 1000 * 60 * 60);
 
-		const lastUsed = miLocalStorage.getItem('lastUsed');
-		if (lastUsed) {
-			const lastUsedDate = parseInt(lastUsed, 10);
-			// 二時間以上前なら
-			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.tsx.welcomeBackWithName({
-					name: $i.name || $i.username,
-				}));
-			}
-		}
-		miLocalStorage.setItem('lastUsed', Date.now().toString());
+		// 邪魔
+		//const lastUsed = miLocalStorage.getItem('lastUsed');
+		//if (lastUsed) {
+		//	const lastUsedDate = parseInt(lastUsed, 10);
+		//	// 二時間以上前なら
+		//	if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
+		//		toast(i18n.tsx.welcomeBackWithName({
+		//			name: $i.name || $i.username,
+		//		}));
+		//	}
+		//}
+		//miLocalStorage.setItem('lastUsed', Date.now().toString());
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
-				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
+					closed: () => dispose(),
+				});
 			}
 		}
 
 		const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
 		if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
-			popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {
+				closed: () => dispose(),
+			});
 		}
 
 		if ('Notification' in window) {
@@ -298,6 +319,9 @@ export async function mainBoot() {
 			updateAccount({ hasUnreadAnnouncement: false });
 		});
 
+		// 個人宛てお知らせが発行されたとき
+		main.on('announcementCreated', onAnnouncementCreated);
+
 		// トークンが再生成されたとき
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
 		main.on('myTokenRegenerated', () => {
@@ -306,7 +330,19 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	document.addEventListener('keydown', makeHotkey(hotkeys));
+	const keymap = {
+		'p|n': () => {
+			if ($i == null) return;
+			post();
+		},
+		'd': () => {
+			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		},
+		's': () => {
+			mainRouter.push('/search');
+		},
+	} as const satisfies Keymap;
+	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }

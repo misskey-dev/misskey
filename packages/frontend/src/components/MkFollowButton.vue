@@ -42,6 +42,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { host } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
@@ -63,7 +65,7 @@ const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFro
 const wait = ref(false);
 const connection = useStream().useChannel('main');
 
-if (props.user.isFollowing == null) {
+if (props.user.isFollowing == null && $i) {
 	misskeyApi('users/show', {
 		userId: props.user.id,
 	})
@@ -78,6 +80,8 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 }
 
 async function onClick() {
+	pleaseLogin(undefined, { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` });
+
 	wait.value = true;
 
 	try {
@@ -93,6 +97,18 @@ async function onClick() {
 				userId: props.user.id,
 			});
 		} else {
+			if (defaultStore.state.alwaysConfirmFollow) {
+				const { canceled } = await os.confirm({
+					type: 'question',
+					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+				});
+
+				if (canceled) {
+					wait.value = false;
+					return;
+				}
+			}
+
 			if (hasPendingFollowRequestFromYou.value) {
 				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
@@ -108,6 +124,8 @@ async function onClick() {
 					withReplies: defaultStore.state.defaultWithReplies,
 				});
 				hasPendingFollowRequestFromYou.value = true;
+
+				if ($i == null) return;
 
 				claimAchievement('following1');
 
@@ -171,17 +189,7 @@ onBeforeUnmount(() => {
 	}
 
 	&:focus-visible {
-		&:after {
-			content: "";
-			pointer-events: none;
-			position: absolute;
-			top: -5px;
-			right: -5px;
-			bottom: -5px;
-			left: -5px;
-			border: 2px solid var(--focus);
-			border-radius: 32px;
-		}
+		outline-offset: 2px;
 	}
 
 	&:hover {

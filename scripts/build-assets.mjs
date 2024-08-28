@@ -13,7 +13,7 @@ import * as terser from 'terser';
 
 import { build as buildLocales } from '../locales/index.js';
 import generateDTS from '../locales/generateDTS.js';
-import meta from '../package.json' assert { type: "json" };
+import meta from '../package.json' with { type: "json" };
 import buildTarball from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
@@ -34,7 +34,7 @@ async function copyFrontendFonts() {
 }
 
 async function copyFrontendTablerIcons() {
-  await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont', './built/_frontend_dist_/tabler-icons', { dereference: true, recursive: true });
+  await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont/dist', './built/_frontend_dist_/tabler-icons', { dereference: true, recursive: true });
 }
 
 async function copyFrontendLocales() {

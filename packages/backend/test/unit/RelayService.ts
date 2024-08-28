@@ -90,7 +90,8 @@ describe('RelayService', () => {
 
 		expect(queueService.deliver).toHaveBeenCalled();
 		expect(queueService.deliver.mock.lastCall![1]?.type).toBe('Undo');
-		expect(queueService.deliver.mock.lastCall![1]?.object.type).toBe('Follow');
+		expect(typeof queueService.deliver.mock.lastCall![1]?.object).toBe('object');
+		expect((queueService.deliver.mock.lastCall![1]?.object as any).type).toBe('Follow');
 		expect(queueService.deliver.mock.lastCall![2]).toBe('https://example.com');
 		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
 

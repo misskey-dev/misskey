@@ -17,20 +17,16 @@ export function useChartTooltip(opts: { position: 'top' | 'middle' } = { positio
 		borderColor: string;
 		text: string;
 	}[] | null>(null);
-	let disposeTooltipComponent;
-
-	os.popup(MkChartTooltip, {
+	const { dispose: disposeTooltipComponent } = os.popup(MkChartTooltip, {
 		showing: tooltipShowing,
 		x: tooltipX,
 		y: tooltipY,
 		title: tooltipTitle,
 		series: tooltipSeries,
-	}, {}).then(({ dispose }) => {
-		disposeTooltipComponent = dispose;
-	});
+	}, {});
 
 	onUnmounted(() => {
-		if (disposeTooltipComponent) disposeTooltipComponent();
+		disposeTooltipComponent();
 	});
 
 	onDeactivated(() => {
@@ -53,11 +49,11 @@ export function useChartTooltip(opts: { position: 'top' | 'middle' } = { positio
 		const rect = context.chart.canvas.getBoundingClientRect();
 
 		tooltipShowing.value = true;
-		tooltipX.value = rect.left + window.pageXOffset + context.tooltip.caretX;
+		tooltipX.value = rect.left + window.scrollX + context.tooltip.caretX;
 		if (opts.position === 'top') {
-			tooltipY.value = rect.top + window.pageYOffset;
+			tooltipY.value = rect.top + window.scrollY;
 		} else if (opts.position === 'middle') {
-			tooltipY.value = rect.top + window.pageYOffset + context.tooltip.caretY;
+			tooltipY.value = rect.top + window.scrollY + context.tooltip.caretY;
 		}
 	}
 

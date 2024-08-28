@@ -13,12 +13,15 @@ import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
+import { CONTEXT } from '@/core/activitypub/misc/contexts.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActor, IApDocument, ICollection, IPost } from '@/core/activitypub/type.js';
-import { MiMeta, MiNote } from '@/models/_.js';
+import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
+import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -84,10 +87,12 @@ async function createRandomRemoteUser(
 }
 
 describe('ActivityPub', () => {
+	let userProfilesRepository: UserProfilesRepository;
 	let imageService: ApImageService;
 	let noteService: ApNoteService;
 	let personService: ApPersonService;
 	let rendererService: ApRendererService;
+	let jsonLdService: JsonLdService;
 	let resolver: MockResolver;
 
 	const metaInitial = {
@@ -124,10 +129,13 @@ describe('ActivityPub', () => {
 		await app.init();
 		app.enableShutdownHooks();
 
+		userProfilesRepository = app.get(DI.userProfilesRepository);
+
 		noteService = app.get<ApNoteService>(ApNoteService);
 		personService = app.get<ApPersonService>(ApPersonService);
 		rendererService = app.get<ApRendererService>(ApRendererService);
 		imageService = app.get<ApImageService>(ApImageService);
+		jsonLdService = app.get<JsonLdService>(JsonLdService);
 		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
@@ -198,6 +206,53 @@ describe('ActivityPub', () => {
 			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.strictEqual(user.name, null);
+		});
+	});
+
+	describe('Collection visibility', () => {
+		test('Public following/followers', async () => {
+			const actor = createRandomActor();
+			actor.following = {
+				id: `${actor.id}/following`,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				first: `${actor.id}/following?page=1`,
+			};
+			actor.followers = `${actor.id}/followers`;
+
+			resolver.register(actor.id, actor);
+			resolver.register(actor.followers, {
+				id: actor.followers,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				first: `${actor.followers}?page=1`,
+			});
+
+			const user = await personService.createPerson(actor.id, resolver);
+			const userProfile = await userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			assert.deepStrictEqual(userProfile.followingVisibility, 'public');
+			assert.deepStrictEqual(userProfile.followersVisibility, 'public');
+		});
+
+		test('Private following/followers', async () => {
+			const actor = createRandomActor();
+			actor.following = {
+				id: `${actor.id}/following`,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				// first: …
+			};
+			actor.followers = `${actor.id}/followers`;
+
+			resolver.register(actor.id, actor);
+			//resolver.register(actor.followers, { … });
+
+			const user = await personService.createPerson(actor.id, resolver);
+			const userProfile = await userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			assert.deepStrictEqual(userProfile.followingVisibility, 'private');
+			assert.deepStrictEqual(userProfile.followersVisibility, 'private');
 		});
 	});
 
@@ -295,7 +350,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				imageObject,
 			);
-			assert.ok(!driveFile.isLink);
+			assert.ok(driveFile && !driveFile.isLink);
 
 			const sensitiveImageObject: IApDocument = {
 				type: 'Document',
@@ -308,7 +363,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(!sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile && !sensitiveDriveFile.isLink);
 		});
 
 		test('cacheRemoteFiles=false disables caching', async () => {
@@ -324,7 +379,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				imageObject,
 			);
-			assert.ok(driveFile.isLink);
+			assert.ok(driveFile && driveFile.isLink);
 
 			const sensitiveImageObject: IApDocument = {
 				type: 'Document',
@@ -337,7 +392,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile && sensitiveDriveFile.isLink);
 		});
 
 		test('cacheRemoteSensitiveFiles=false only affects sensitive files', async () => {
@@ -353,7 +408,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				imageObject,
 			);
-			assert.ok(!driveFile.isLink);
+			assert.ok(driveFile && !driveFile.isLink);
 
 			const sensitiveImageObject: IApDocument = {
 				type: 'Document',
@@ -366,7 +421,57 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile && sensitiveDriveFile.isLink);
+		});
+
+		test('Link is not an attachment files', async () => {
+			const linkObject: IObject = {
+				type: 'Link',
+				href: 'https://example.com/',
+			};
+			const driveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				linkObject,
+			);
+			assert.strictEqual(driveFile, null);
+		});
+	});
+
+	describe('JSON-LD', () =>{
+		test('Compaction', async () => {
+			const jsonLd = jsonLdService.use();
+
+			const object = {
+				'@context': [
+					'https://www.w3.org/ns/activitystreams',
+					{
+						_misskey_quote: 'https://misskey-hub.net/ns#_misskey_quote',
+						unknown: 'https://example.org/ns#unknown',
+						undefined: null,
+					},
+				],
+				id: 'https://example.com/notes/42',
+				type: 'Note',
+				attributedTo: 'https://example.com/users/1',
+				to: ['https://www.w3.org/ns/activitystreams#Public'],
+				content: 'test test foo',
+				_misskey_quote: 'https://example.com/notes/1',
+				unknown: 'test test bar',
+				undefined: 'test test baz',
+			};
+			const compacted = await jsonLd.compact(object);
+
+			assert.deepStrictEqual(compacted, {
+				'@context': CONTEXT,
+				id: 'https://example.com/notes/42',
+				type: 'Note',
+				attributedTo: 'https://example.com/users/1',
+				to: 'as:Public',
+				content: 'test test foo',
+				_misskey_quote: 'https://example.com/notes/1',
+				'https://example.org/ns#unknown': 'test test bar',
+				// undefined: 'test test baz',
+			});
 		});
 	});
 });

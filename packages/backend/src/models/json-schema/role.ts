@@ -57,6 +57,20 @@ export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 	},
 } as const;
 
+export const packedRoleCondFormulaValueUserSettingBooleanSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['isSuspended', 'isLocked', 'isBot', 'isCat', 'isExplorable'],
+		},
+	},
+} as const;
+
 export const packedRoleCondFormulaValueAssignedRoleSchema = {
 	type: 'object',
 	properties: {
@@ -136,6 +150,9 @@ export const packedRoleCondFormulaValueSchema = {
 			ref: 'RoleCondFormulaValueIsLocalOrRemote',
 		},
 		{
+			ref: 'RoleCondFormulaValueUserSettingBooleanSchema',
+		},
+		{
 			ref: 'RoleCondFormulaValueAssignedRole',
 		},
 		{
@@ -208,6 +225,10 @@ export const packedRolePoliciesSchema = {
 			optional: false, nullable: false,
 		},
 		alwaysMarkNsfw: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUpdateBioMedia: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},

@@ -20,11 +20,11 @@ import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
-const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
+const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
 @Injectable()
 export class CustomEmojiService implements OnApplicationShutdown {
-	private cache: MemoryKVCache<MiEmoji | null>;
+	private emojisCache: MemoryKVCache<MiEmoji | null>;
 	public localEmojisCache: RedisSingleCache<Map<string, MiEmoji>>;
 
 	constructor(
@@ -40,7 +40,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
+		this.emojisCache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12); // 12h
 
 		this.localEmojisCache = new RedisSingleCache<Map<string, MiEmoji>>(this.redisClient, 'localEmojis', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -68,7 +68,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		localOnly: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
-		const emoji = await this.emojisRepository.insert({
+		const emoji = await this.emojisRepository.insertOne({
 			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
@@ -82,7 +82,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
-		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		if (data.host == null) {
 			this.localEmojisCache.refresh();
@@ -334,7 +334,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			host,
 		})) ?? null;
 
-		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
+		const emoji = await this.emojisCache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
 		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
@@ -346,10 +346,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	@bindThis
 	public async populateEmojis(emojiNames: string[], noteUserHost: string | null): Promise<Record<string, string>> {
 		const emojis = await Promise.all(emojiNames.map(x => this.populateEmoji(x, noteUserHost)));
-		const res = {} as any;
+		const res = {} as Record<string, string>;
 		for (let i = 0; i < emojiNames.length; i++) {
-			if (emojis[i] != null) {
-				res[emojiNames[i]] = emojis[i];
+			const resolvedEmoji = emojis[i];
+			if (resolvedEmoji != null) {
+				res[emojiNames[i]] = resolvedEmoji;
 			}
 		}
 		return res;
@@ -360,7 +361,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async prefetchEmojis(emojis: { name: string; host: string | null; }[]): Promise<void> {
-		const notCachedEmojis = emojis.filter(emoji => this.cache.get(`${emoji.name} ${emoji.host}`) == null);
+		const notCachedEmojis = emojis.filter(emoji => this.emojisCache.get(`${emoji.name} ${emoji.host}`) == null);
 		const emojisQuery: any[] = [];
 		const hosts = new Set(notCachedEmojis.map(e => e.host));
 		for (const host of hosts) {
@@ -375,7 +376,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			select: ['name', 'host', 'originalUrl', 'publicUrl'],
 		}) : [];
 		for (const emoji of _emojis) {
-			this.cache.set(`${emoji.name} ${emoji.host}`, emoji);
+			this.emojisCache.set(`${emoji.name} ${emoji.host}`, emoji);
 		}
 	}
 
@@ -400,7 +401,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.cache.dispose();
+		this.emojisCache.dispose();
 	}
 
 	@bindThis

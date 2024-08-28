@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { ModuleRef } from '@nestjs/core';
+import { reversiUpdateKeys } from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import { IsNull, LessThan, MoreThan } from 'typeorm';
 import type {
@@ -281,7 +282,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean; }): Promise<MiReversiGame> {
-		const game = await this.reversiGamesRepository.insert({
+		const game = await this.reversiGamesRepository.insertOne({
 			id: this.idService.gen(),
 			user1Id: parentId,
 			user2Id: childId,
@@ -294,10 +295,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			bw: 'random',
 			isLlotheo: false,
 			noIrregularRules: options.noIrregularRules,
-		}).then(x => this.reversiGamesRepository.findOneOrFail({
-			where: { id: x.identifiers[0].id },
-			relations: ['user1', 'user2'],
-		}));
+		}, { relations: ['user1', 'user2'] });
 		this.cacheGame(game);
 
 		const packed = await this.reversiGameEntityService.packDetail(game);
@@ -402,17 +400,39 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async updateSettings(gameId: MiReversiGame['id'], user: MiUser, key: string, value: any) {
+	public isValidReversiUpdateKey(key: unknown): key is typeof reversiUpdateKeys[number] {
+		if (typeof key !== 'string') return false;
+		return (reversiUpdateKeys as string[]).includes(key);
+	}
+
+	@bindThis
+	public isValidReversiUpdateValue<K extends typeof reversiUpdateKeys[number]>(key: K, value: unknown): value is MiReversiGame[K] {
+		switch (key) {
+			case 'map':
+				return Array.isArray(value) && value.every(row => typeof row === 'string');
+			case 'bw':
+				return typeof value === 'string' && ['random', '1', '2'].includes(value);
+			case 'isLlotheo':
+				return typeof value === 'boolean';
+			case 'canPutEverywhere':
+				return typeof value === 'boolean';
+			case 'loopedBoard':
+				return typeof value === 'boolean';
+			case 'timeLimitForEachTurn':
+				return typeof value === 'number' && value >= 0;
+			default:
+				return false;
+		}
+	}
+
+	@bindThis
+	public async updateSettings<K extends typeof reversiUpdateKeys[number]>(gameId: MiReversiGame['id'], user: MiUser, key: K, value: MiReversiGame[K]) {
 		const game = await this.get(gameId);
 		if (game == null) throw new Error('game not found');
 		if (game.isStarted) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 		if ((game.user1Id === user.id) && game.user1Ready) return;
 		if ((game.user2Id === user.id) && game.user2Ready) return;
-
-		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard', 'timeLimitForEachTurn'].includes(key)) return;
-
-		// TODO: より厳格なバリデーション
 
 		const updatedGame = {
 			...game,

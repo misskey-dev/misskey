@@ -39,6 +39,12 @@ describe('MfmService', () => {
 			const output = '<p>foo <i>bar</i></p>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
+
+		test('escape', () => {
+			const input = '```\n<p>Hello, world!</p>\n```';
+			const output = '<p><pre><code>&lt;p&gt;Hello, world!&lt;/p&gt;</code></pre></p>';
+			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
+		});
 	});
 
 	describe('fromHtml', () => {

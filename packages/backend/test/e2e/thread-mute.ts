@@ -24,31 +24,31 @@ describe('Note thread mute', () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
 
-		const res = await api('/notes/mentions', {}, alice);
+		const res = await api('notes/mentions', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolReply.id), false);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolReplyWithoutMention.id), false);
+		assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
+		assert.strictEqual(res.body.some(note => note.id === carolReply.id), false);
+		assert.strictEqual(res.body.some(note => note.id === carolReplyWithoutMention.id), false);
 	});
 
 	test('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
 		// 状態リセット
-		await api('/i/read-all-unread-notes', {}, alice);
+		await api('i/read-all-unread-notes', {}, alice);
 
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 
-		const res = await api('/i', {}, alice);
+		const res = await api('i', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.hasUnreadMentions, false);
@@ -56,11 +56,11 @@ describe('Note thread mute', () => {
 
 	test('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise<void>(async done => {
 		// 状態リセット
-		await api('/i/read-all-unread-notes', {}, alice);
+		await api('i/read-all-unread-notes', {}, alice);
 
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		let fired = false;
 
@@ -84,17 +84,17 @@ describe('Note thread mute', () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
-		await api('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
 
-		const res = await api('/i/notifications', {}, alice);
+		const res = await api('i/notifications', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((notification: any) => notification.note.id === carolReply.id), false);
-		assert.strictEqual(res.body.some((notification: any) => notification.note.id === carolReplyWithoutMention.id), false);
+		assert.strictEqual(res.body.some(notification => 'note' in notification && notification.note.id === carolReply.id), false);
+		assert.strictEqual(res.body.some(notification => 'note' in notification && notification.note.id === carolReplyWithoutMention.id), false);
 
 		// NOTE: bobの投稿はスレッドミュート前に行われたため通知に含まれていてもよい
 	});

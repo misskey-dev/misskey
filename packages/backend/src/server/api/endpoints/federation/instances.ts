@@ -117,9 +117,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (typeof ps.suspended === 'boolean') {
 				if (ps.suspended) {
-					query.andWhere('instance.isSuspended = TRUE');
+					query.andWhere('instance.suspensionState != \'none\'');
 				} else {
-					query.andWhere('instance.isSuspended = FALSE');
+					query.andWhere('instance.suspensionState = \'none\'');
 				}
 			}
 
@@ -170,7 +170,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const instances = await query.limit(ps.limit).offset(ps.offset).getMany();
 
-			return await this.instanceEntityService.packMany(instances);
+			return await this.instanceEntityService.packMany(instances, me);
 		});
 	}
 }
