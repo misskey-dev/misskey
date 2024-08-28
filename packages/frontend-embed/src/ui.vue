@@ -19,6 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.routerViewContainer"
 	>
 		<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
+		<EmUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
+		<XNotFound v-else/>
 	</div>
 </div>
 </template>
@@ -29,6 +31,7 @@ import type { ParsedEmbedParams } from '@/embed-page.js';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 import EmNotePage from '@/pages/note.vue';
+import EmUserTimelinePage from '@/pages/user-timeline.vue';
 
 const page = location.pathname.split('/')[2];
 const contentId = location.pathname.split('/')[3];

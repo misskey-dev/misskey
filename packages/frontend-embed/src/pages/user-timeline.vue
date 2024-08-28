@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
 					<MkAvatar :class="$style.avatar" :user="user"/>
 				</a>
-				<div :class="$style.headerTitle" @click="top">
+				<div :class="$style.headerTitle">
 					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
 							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
@@ -57,8 +57,6 @@ import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { url, instanceName } from '@/config.js';
-import { scrollToTop } from '@/to-be-shared/scroll.js';
-import { isLink } from '@/scripts/is-link.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 
 const props = defineProps<{
@@ -77,15 +75,6 @@ const pagination = computed(() => ({
 const loading = ref(true);
 
 const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
-
-function top(ev: MouseEvent) {
-	const target = ev.target as HTMLElement | null;
-	if (target && isLink(target)) return;
-
-	if (notesEl.value) {
-		scrollToTop(notesEl.value.$el as HTMLElement, { behavior: 'smooth' });
-	}
-}
 
 misskeyApi('users/show', {
 	username: props.username,
