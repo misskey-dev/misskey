@@ -15,7 +15,6 @@ import { updateI18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
-import type { IRouter } from '@/nirax.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
@@ -23,22 +22,10 @@ import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { createMainRouter } from '@/router/definition.js';
 import { setupRouter } from '@/router/main.js';
+import { createMainRouter } from '@/router/definition.js';
 
-export type CommonBootOptions = {
-	forceColorMode: 'dark' | 'light' | 'auto';
-	routerFactory: ((path: string) => IRouter);
-};
-
-const defaultCommonBootOptions: CommonBootOptions = {
-	forceColorMode: 'auto',
-	routerFactory: createMainRouter,
-};
-
-export async function common(createVue: () => App<Element>, partialOptions?: Partial<CommonBootOptions>) {
-	const bootOptions = Object.assign(defaultCommonBootOptions, partialOptions);
-
+export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
 
 	if (_DEV_) {
@@ -180,19 +167,15 @@ export async function common(createVue: () => App<Element>, partialOptions?: Par
 	});
 
 	//#region Sync dark mode
-	if (ColdDeviceStorage.get('syncDeviceDarkMode') && bootOptions.forceColorMode === 'auto') {
+	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
 		defaultStore.set('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (ColdDeviceStorage.get('syncDeviceDarkMode') && bootOptions.forceColorMode === 'auto') {
+		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
 			defaultStore.set('darkMode', mql.matches);
 		}
 	});
-
-	if (bootOptions.forceColorMode !== 'auto') {
-		defaultStore.set('darkMode', bootOptions.forceColorMode === 'dark');
-	}
 	//#endregion
 
 	fetchInstanceMetaPromise.then(() => {
@@ -257,7 +240,7 @@ export async function common(createVue: () => App<Element>, partialOptions?: Par
 
 	const app = createVue();
 
-	setupRouter(app, bootOptions.routerFactory);
+	setupRouter(app, createMainRouter);
 
 	if (_DEV_) {
 		app.config.performance = true;
