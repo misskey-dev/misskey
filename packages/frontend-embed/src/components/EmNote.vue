@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article :class="$style.article">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<EmAvatar :class="$style.avatar" :user="appearNote.user"/>
+		<EmAvatar :class="$style.avatar" :user="appearNote.user" link/>
 		<div :class="$style.main">
 			<EmNoteHeader :note="appearNote" :mini="true"/>
 			<div style="container-type: inline-size;">

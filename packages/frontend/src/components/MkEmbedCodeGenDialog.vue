@@ -324,8 +324,9 @@ onUnmounted(() => {
 	z-index: 100;
 	top: 8px;
 	left: 8px;
-	padding: 6px 8px;
+	padding: 6px 10px;
 	border-radius: 6px;
+	font-size: 85%;
 }
 
 .embedCodeGenPreviewSpinner {

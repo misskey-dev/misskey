@@ -4,13 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a ref="el" :href="to" target="_blank" rel="noopener">
+<a :href="to" target="_blank" rel="noopener">
 	<slot></slot>
 </a>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, shallowRef } from 'vue';
+import { } from 'vue';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -18,8 +18,4 @@ const props = withDefaults(defineProps<{
 }>(), {
 	activeClass: null,
 });
-
-const el = shallowRef<HTMLElement>();
-
-defineExpose({ $el: el });
 </script>

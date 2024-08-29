@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]" @click="onClick">
+<component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]">
 	<EmImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
@@ -45,12 +45,10 @@ import { userPage } from '@/utils.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	target?: string | null;
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
 }>(), {
-	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
@@ -61,18 +59,13 @@ const emit = defineEmits<{
 }>();
 
 const bound = computed(() => props.link
-	? { to: userPage(props.user), target: props.target }
+	? { to: userPage(props.user) }
 	: {});
 
 const url = computed(() => {
 	if (props.user.avatarUrl == null) return null;
 	return props.user.avatarUrl;
 });
-
-function onClick(ev: MouseEvent): void {
-	if (props.link) return;
-	emit('click', ev);
-}
 
 function getDecorationUrl(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
 	return decoration.url;
