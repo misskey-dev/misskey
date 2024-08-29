@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XChart from './overview.queue.chart.vue';
+import type { ApQueueDomain } from '@/pages/admin/queue.vue';
 import number from '@/filters/number.js';
 import { useStream } from '@/stream.js';
 
@@ -53,7 +54,7 @@ const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
 const chartWaiting = shallowRef<InstanceType<typeof XChart>>();
 
 const props = defineProps<{
-	domain: 'deliver' | 'inbox';
+	domain: ApQueueDomain;
 }>();
 
 function onStats(stats: Misskey.entities.QueueStats) {
@@ -69,10 +70,10 @@ function onStats(stats: Misskey.entities.QueueStats) {
 }
 
 function onStatsLog(statsLog: Misskey.entities.QueueStatsLog) {
-	const dataProcess: Misskey.entities.QueueStats['deliver' | 'inbox']['activeSincePrevTick'][] = [];
-	const dataActive: Misskey.entities.QueueStats['deliver' | 'inbox']['active'][] = [];
-	const dataDelayed: Misskey.entities.QueueStats['deliver' | 'inbox']['delayed'][] = [];
-	const dataWaiting: Misskey.entities.QueueStats['deliver' | 'inbox']['waiting'][] = [];
+	const dataProcess: Misskey.entities.QueueStats[ApQueueDomain]['activeSincePrevTick'][] = [];
+	const dataActive: Misskey.entities.QueueStats[ApQueueDomain]['active'][] = [];
+	const dataDelayed: Misskey.entities.QueueStats[ApQueueDomain]['delayed'][] = [];
+	const dataWaiting: Misskey.entities.QueueStats[ApQueueDomain]['waiting'][] = [];
 
 	for (const stats of [...statsLog].reverse()) {
 		dataProcess.push(stats[props.domain].activeSincePrevTick);
