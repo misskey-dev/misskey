@@ -313,11 +313,11 @@ export const packedNotificationSchema = {
 			},
 			header: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			icon: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 		},
 	}, {
