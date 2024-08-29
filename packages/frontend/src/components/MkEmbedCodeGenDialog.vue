@@ -59,7 +59,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="dark">{{ i18n.ts.dark }}</option>
 					</MkSelect>
 					<MkSwitch v-if="isEmbedWithScrollbar" v-model="header">{{ i18n.ts._embedCodeGen.header }}</MkSwitch>
-					<MkSwitch v-if="isEmbedWithScrollbar" v-model="autoload">{{ i18n.ts._embedCodeGen.autoload }}</MkSwitch>
 					<MkSwitch v-model="rounded">{{ i18n.ts._embedCodeGen.rounded }}</MkSwitch>
 					<MkSwitch v-model="border">{{ i18n.ts._embedCodeGen.border }}</MkSwitch>
 					<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight || maxHeight <= 0)" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
@@ -141,7 +140,6 @@ const phase = ref<'input' | 'result'>('input');
 // 本URL生成用params
 const paramsForUrl = computed<EmbedParams>(() => ({
 	header: header.value,
-	autoload: autoload.value,
 	maxHeight: typeof maxHeight.value === 'number' ? Math.max(0, maxHeight.value) : undefined,
 	colorMode: colorMode.value === 'auto' ? undefined : colorMode.value,
 	rounded: rounded.value,
@@ -162,7 +160,6 @@ const embedPreviewUrl = computed(() => {
 
 const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(props.entity));
 const header = ref(props.params?.header ?? true);
-const autoload = ref(props.params?.autoload ?? false);
 const maxHeight = ref(props.params?.maxHeight !== 0 ? props.params?.maxHeight ?? undefined : 500);
 
 const colorMode = ref<'light' | 'dark' | 'auto'>(props.params?.colorMode ?? 'auto');
@@ -174,7 +171,6 @@ function applyToPreview() {
 
 	paramsForPreview.value = {
 		header: header.value,
-		autoload: false, // プレビューはスクロールできないので常にfalse
 		maxHeight: typeof maxHeight.value === 'number' ? Math.max(0, maxHeight.value) : undefined,
 		colorMode: colorMode.value === 'auto' ? undefined : colorMode.value,
 		rounded: rounded.value,
@@ -354,6 +350,7 @@ onUnmounted(() => {
 }
 
 .embedCodeGenPreviewIframe {
+	display: block;
 	border: none;
 	width: 500px;
 	color-scheme: light dark;
