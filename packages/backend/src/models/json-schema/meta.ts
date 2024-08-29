@@ -253,6 +253,10 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: false,
 			default: 'local',
 		},
+		reversiVersion: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 

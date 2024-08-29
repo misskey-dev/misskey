@@ -119,6 +119,7 @@ export class FetchInstanceMetadataService {
 				updates.openRegistrations = info.openRegistrations;
 				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
 				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email ?? null) : null : null;
+				updates.reversiVersion = info.metadata ? info.metadata.reversiVersion ?? null : null;
 			}
 
 			if (name) updates.name = name;

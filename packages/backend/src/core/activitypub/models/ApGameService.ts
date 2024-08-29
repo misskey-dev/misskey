@@ -94,7 +94,7 @@ export class ApGameService {
 		const targetUser = local_user;
 		const fromUser = remote_user;
 		if (!game.game_state.game_session_id) throw Error('bad session' + JSON.stringify(game));
-		if (await this.reversiService.federationAvailable(remote_user.host) === false) {
+		if ((await this.reversiService.federationAvailable(remote_user.host)) === false) {
 			//確実に利用できない時
 			return;
 		}

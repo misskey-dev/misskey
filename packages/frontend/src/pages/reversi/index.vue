@@ -120,6 +120,7 @@ import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
+import { instance } from '@/instance.js';
 
 const myGamesPagination = {
 	endpoint: 'reversi/games' as const,
@@ -198,6 +199,34 @@ async function matchUser() {
 
 	const user = await os.selectUser({ includeSelf: false, localOnly: false });
 	if (user == null) return;
+	if (user.host) {
+		let remote_instance = await misskeyApi('federation/show-instance', {
+			host: user.host,
+		});
+		//初期のバージョン番号を持たない実装は1.0.0扱いにする
+		const reversiVersion = remote_instance?.reversiVersion ?? '1.0.0';
+
+		const versionElements = reversiVersion.split('.');
+		if (versionElements.length === 3) {
+			if (versionElements[0] !== instance.reversiVersion.split('.')[0]) {
+				//メジャーバージョン不一致
+				await os.alert({
+					type: 'error',
+					text: i18n.ts._reversi.remoteVersionBad,
+				});
+				return;
+			}
+		}
+		//バージョン番号不明の場合は警告だけ出す
+		if (!remote_instance?.reversiVersion) {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.ts._reversi.remoteVersionUnknown,
+				caption: i18n.ts._reversi.remoteVersionUnknownCaption,
+			});
+			if (canceled) return;
+		}
+	}
 
 	matchingUser.value = user;
 

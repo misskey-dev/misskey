@@ -118,10 +118,10 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (typeof(reversiVersion) === 'string') {
 			//0.0.0-foo => 0.0.0
 			const version = reversiVersion.split('-')[0];
-			await this.redisClient.setex(`reversi:federation:version:${host}`, version, 5 * 60);
+			await this.redisClient.setex(`reversi:federation:version:${host}`, 5 * 60, version);
 			return version;
 		}
-		await this.redisClient.setex(`reversi:federation:version:${host}`, '', 5 * 60);
+		await this.redisClient.setex(`reversi:federation:version:${host}`, 5 * 60, '');
 		return null;
 	}
 	@bindThis
@@ -133,7 +133,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		}
 		const versionElements = version.split('.');
 		if (versionElements.length === 3) {
-			if (versionElements[0] !== NodeinfoServerService.reversiVersion.split('-')[0].split('.')[0]) {
+			if (versionElements[0] !== NodeinfoServerService.reversiVersion.split('.')[0]) {
 				//メジャーバージョン不一致
 				return false;
 			}
