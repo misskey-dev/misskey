@@ -1,21 +1,21 @@
 {
 	"name": "frontend-shared",
 	"type": "module",
-	"main": "./built/index.js",
-	"types": "./built/index.d.ts",
+	"main": "./js-built/index.js",
+	"types": "./js-built/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./built/index.js",
-			"types": "./built/index.d.ts"
+			"import": "./js-built/index.js",
+			"types": "./js-built/index.d.ts"
 		},
 		"./*": {
-			"import": "./built/*",
-			"types": "./built/*"
+			"import": "./js-built/*",
+			"types": "./js-built/*"
 		}
 	},
 	"scripts": {
-		"build": "",
-		"tsd": "tsd",
+		"build": "node ./build.js",
+		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -28,7 +28,7 @@
 		"esbuild": "0.23.0"
 	},
 	"files": [
-		"built"
+		"js-built"
 	],
 	"dependencies": {
 	}
