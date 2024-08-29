@@ -29,6 +29,7 @@ export const meta = {
 					type: 'number',
 				},
 			],
+			unevaluatedItems: false,
 		},
 		example: [[
 			'example.com',
