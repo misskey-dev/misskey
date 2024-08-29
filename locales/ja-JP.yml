@@ -1348,6 +1348,7 @@ sensitiveMediaRevealConfirm: "センシティブなメディアです。表示�
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
 addToDefaultEmojiPicker: "デフォルトのプロファイルに追加する"
+clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 
 _delivery:
   status: "配信状態"

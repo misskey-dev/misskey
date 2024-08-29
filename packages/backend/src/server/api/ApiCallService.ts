@@ -199,8 +199,17 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 
-		const [path] = await createTemp();
+		const [path, cleanup] = await createTemp();
 		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
+
+		// ファイルサイズが制限を超えていた場合
+		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
+		if (multipartData.file.truncated) {
+			cleanup();
+			reply.code(413);
+			reply.send();
+			return;
+		}
 
 		const fields = {} as Record<string, unknown>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
