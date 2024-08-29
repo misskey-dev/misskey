@@ -138,12 +138,12 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
-import { signinRequired } from '@/account.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
-const $i = signinRequired();
+import { $i } from '@/account.js';
+
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
 	pinnedEmojis?: string[];
@@ -160,7 +160,7 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 	(ev: 'esc'): void;
 }>();
-const profileMax = $i.policies.emojiPickerProfileLimit;
+const profileMax = $i?.policies.emojiPickerProfileLimit;
 const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 

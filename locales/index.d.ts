@@ -5405,13 +5405,13 @@ export interface Locale extends ILocale {
      */
     "createdAntennas": string;
     /**
-     * これ以上このクリップにノートを追加できません。
-     */
-    "clipNoteLimitExceeded": string;
-    /**
      * デフォルトのプロファイルに追加する
      */
     "addToDefaultEmojiPicker": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    "clipNoteLimitExceeded": string;
     "_delivery": {
         /**
          * 配信状態
