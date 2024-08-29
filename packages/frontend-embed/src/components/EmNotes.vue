@@ -7,25 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <EmPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
 		<div class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.noNotes }}</div>
 		</div>
 	</template>
 
 	<template #default="{ items: notes }">
-		<div :class="[$style.root, { [$style.noGap]: noGap }]">
-			<EmDateSeparatedList
-				ref="notes"
-				v-slot="{ item: note }"
-				:items="notes"
-				:direction="pagination.reversed ? 'up' : 'down'"
-				:reversed="pagination.reversed"
-				:noGap="noGap"
-				:ad="ad"
-				:class="$style.notes"
-			>
-				<EmNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
-			</EmDateSeparatedList>
+		<div :class="[$style.root]">
+			<EmNote v-for="note in notes" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 		</div>
 	</template>
 </EmPagination>
@@ -34,10 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
 import EmNote from '@/components/EmNote.vue';
-import EmDateSeparatedList from '@/components/EmDateSeparatedList.vue';
 import EmPagination, { Paging } from '@/components/EmPagination.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
@@ -57,21 +43,6 @@ defineExpose({
 
 <style lang="scss" module>
 .root {
-	&.noGap {
-		> .notes {
-			background: var(--panel);
-		}
-	}
-
-	&:not(.noGap) {
-		> .notes {
-			background: var(--bg);
-
-			.note {
-				background: var(--panel);
-				border-radius: var(--radius);
-			}
-		}
-	}
+	background: var(--panel);
 }
 </style>

@@ -4,42 +4,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<Transition
-	:enterActiveClass="$style.transition_fade_enterActive"
-	:leaveActiveClass="$style.transition_fade_leaveActive"
-	:enterFromClass="$style.transition_fade_enterFrom"
-	:leaveToClass="$style.transition_fade_leaveTo"
-	mode="out-in"
->
-	<MkLoading v-if="fetching"/>
+<EmLoading v-if="fetching"/>
 
-	<MkError v-else-if="error" @retry="init()"/>
+<EmError v-else-if="error" @retry="init()"/>
 
-	<div v-else-if="empty" key="_empty_" class="empty">
-		<slot name="empty">
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
-		</slot>
-	</div>
-
-	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
-			<MkLoading v-else class="loading"/>
+<div v-else-if="empty" key="_empty_" class="empty">
+	<slot name="empty">
+		<div class="_fullinfo">
+			<div>{{ i18n.ts.nothing }}</div>
 		</div>
-		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
-			<MkLoading v-else class="loading"/>
-		</div>
+	</slot>
+</div>
+
+<div v-else ref="rootEl">
+	<div v-show="pagination.reversed && more" key="_more_" class="_margin">
+		<button v-if="!moreFetching" class="_buttonPrimary" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMoreAhead">
+			{{ i18n.ts.loadMore }}
+		</button>
+		<EmLoading v-else class="loading"/>
 	</div>
-</Transition>
+	<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
+	<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
+		<button v-if="!moreFetching" class="_buttonPrimary" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore">
+			{{ i18n.ts.loadMore }}
+		</button>
+		<EmLoading v-else class="loading"/>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -87,8 +78,8 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 
 </script>
 <script lang="ts" setup>
-import { infoImageUrl } from '@/instance.js';
-import MkButton from '@/components/MkButton.vue';
+import EmError from '@/components/EmError.vue';
+import EmLoading from '@/components/EmLoading.vue';
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
@@ -125,7 +116,7 @@ const queue = ref<MisskeyEntityMap>(new Map());
 const offset = ref(0);
 
 /**
- * 初期化中かどうか（trueならMkLoadingで全て隠す）
+ * 初期化中かどうか（trueならEmLoadingで全て隠す）
  */
 const fetching = ref(true);
 
