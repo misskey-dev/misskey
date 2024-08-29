@@ -121,6 +121,8 @@ import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import EmMfm from '@/components/EmMfm.js';
+import EmA from '@/components/EmA.vue';
+import EmAvatar from '@/components/EmAvatar.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
