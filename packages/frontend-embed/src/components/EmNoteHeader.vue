@@ -33,6 +33,10 @@ import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import { notePage } from '@/utils.js';
 import { userPage } from '@/utils.js';
+import EmA from '@/components/EmA.vue';
+import EmUserName from '@/components/EmUserName.vue';
+import EmAcct from '@/components/EmAcct.vue';
+import EmTime from '@/components/EmTime.vue';
 
 defineProps<{
 	note: Misskey.entities.Note;
