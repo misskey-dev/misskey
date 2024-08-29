@@ -1264,7 +1264,7 @@ sensitiveMediaRevealConfirm: "センシティブなメディアです。表示�
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
 fromX: "{x}から"
-copyEmbedCode: "埋め込みコードをコピー"
+genEmbedCode: "埋め込みコードを生成"
 noteOfThisUser: "このユーザーのノート一覧"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 

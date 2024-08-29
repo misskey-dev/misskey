@@ -17,7 +17,7 @@ import { notesSearchAvailable, canSearchNonLocalNotes } from '@/scripts/check-pe
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
-import { copyEmbedCode } from '@/scripts/get-embed-code.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import { MenuItem } from '@/types/menu.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
@@ -182,12 +182,12 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		},
 	}] : [{
 		icon: 'ti ti-code',
-		text: i18n.ts.copyEmbedCode,
+		text: i18n.ts.genEmbedCode,
 		type: 'parent' as const,
 		children: [{
 			text: i18n.ts.noteOfThisUser,
 			action: () => {
-				copyEmbedCode('user-timeline', user.username);
+				genEmbedCode('user-timeline', user.id);
 			},
 		}], // TODO: ユーザーカードの埋め込みなど
 	}]), {

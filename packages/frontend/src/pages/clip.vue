@@ -44,7 +44,7 @@ import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { copyEmbedCode } from '@/scripts/get-embed-code.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 
 const props = defineProps<{
 	clipId: string,
@@ -140,9 +140,9 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 			},
 		}, {
 			icon: 'ti ti-code',
-			text: i18n.ts.copyEmbedCode,
+			text: i18n.ts.genEmbedCode,
 			action: () => {
-				copyEmbedCode('clips', clip.value!.id);
+				genEmbedCode('clips', clip.value!.id);
 			},
 		}, ...(isSupportShare() ? [{
 			icon: 'ti ti-share',

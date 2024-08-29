@@ -60,7 +60,7 @@ import { url, instanceName } from '@/config.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 
 const props = defineProps<{
-	username: string;
+	userId: string;
 }>();
 
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
@@ -77,7 +77,7 @@ const loading = ref(true);
 const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
 misskeyApi('users/show', {
-	username: props.username,
+	userId: props.userId,
 }).then(res => {
 	user.value = res;
 	loading.value = false;

@@ -5073,9 +5073,9 @@ export interface Locale extends ILocale {
      */
     "fromX": ParameterizedString<"x">;
     /**
-     * 埋め込みコードをコピー
+     * 埋め込みコードを生成
      */
-    "copyEmbedCode": string;
+    "genEmbedCode": string;
     /**
      * このユーザーのノート一覧
      */

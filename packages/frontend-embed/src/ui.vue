@@ -35,6 +35,7 @@ import EmUserTimelinePage from '@/pages/user-timeline.vue';
 
 const page = location.pathname.split('/')[2];
 const contentId = location.pathname.split('/')[3];
+console.log(page, contentId);
 
 const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
 

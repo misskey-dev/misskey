@@ -4,10 +4,10 @@
  */
 import { defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
+import type { EmbedParams, EmbeddableEntity } from '@/scripts/embed-page.js';
 import { url } from '@/config.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import type { EmbedParams, EmbeddableEntity } from '@/scripts/embed-page.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@/scripts/embed-page.js';
 
 const MOBILE_THRESHOLD = 500;
@@ -64,7 +64,7 @@ export function getEmbedCode(path: string, params?: EmbedParams): string {
  *
  * カスタマイズ機能がいらない場合（事前にパラメータを指定する場合）は getEmbedCode を直接使ってください
  */
-export function copyEmbedCode(entity: EmbeddableEntity, idOrUsername: string, params?: EmbedParams) {
+export function genEmbedCode(entity: EmbeddableEntity, id: string, params?: EmbedParams) {
 	const _params = { ...params };
 
 	if (embedRouteWithScrollbar.includes(entity) && _params.maxHeight == null) {
@@ -73,13 +73,12 @@ export function copyEmbedCode(entity: EmbeddableEntity, idOrUsername: string, pa
 
 	// PCじゃない場合はコードカスタマイズ画面を出さずにそのままコピー
 	if (window.innerWidth < MOBILE_THRESHOLD) {
-		const _idOrUsername = entity === 'user-timeline' ? `@${idOrUsername}` : idOrUsername;
-		copyToClipboard(getEmbedCode(`/embed/${entity}/${_idOrUsername}`, _params));
+		copyToClipboard(getEmbedCode(`/embed/${entity}/${id}`, _params));
 		os.success();
 	} else {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkEmbedCodeGenDialog.vue')), {
 			entity,
-			idOrUsername,
+			id,
 			params: _params,
 		}, {
 			closed: () => dispose(),

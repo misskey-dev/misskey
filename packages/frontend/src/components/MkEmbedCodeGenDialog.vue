@@ -117,7 +117,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
 	entity: EmbeddableEntity;
-	idOrUsername: string;
+	id: string;
 	params?: EmbedParams;
 }>();
 
@@ -152,13 +152,12 @@ const paramsForUrl = computed<EmbedParams>(() => ({
 const paramsForPreview = ref<EmbedParams>(props.params ?? {});
 
 const embedPreviewUrl = computed(() => {
-	const _idOrUsername = props.entity === 'user-timeline' ? '@' + props.idOrUsername : props.idOrUsername;
 	const paramClass = new URLSearchParams(normalizeEmbedParams(paramsForPreview.value));
 	if (paramClass.has('maxHeight')) {
 		const maxHeight = parseInt(paramClass.get('maxHeight')!);
 		paramClass.set('maxHeight', maxHeight === 0 ? '500' : Math.min(maxHeight, 700).toString()); // プレビューであまりにも縮小されると見づらいため、700pxまでに制限
 	}
-	return `${url}/embed/${props.entity}/${_idOrUsername}${paramClass.toString() ? '?' + paramClass.toString() : ''}`;
+	return `${url}/embed/${props.entity}/${props.id}${paramClass.toString() ? '?' + paramClass.toString() : ''}`;
 });
 
 const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(props.entity));
@@ -193,8 +192,7 @@ function applyToPreview() {
 const result = ref('');
 
 function generate() {
-	const _idOrUsername = props.entity === 'user-timeline' ? '@' + props.idOrUsername : props.idOrUsername;
-	result.value = getEmbedCode(`/embed/${props.entity}/${_idOrUsername}`, paramsForUrl.value);
+	result.value = getEmbedCode(`/embed/${props.entity}/${props.id}`, paramsForUrl.value);
 	phase.value = 'result';
 }
 

@@ -28,7 +28,7 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import { copyEmbedCode } from '@/scripts/get-embed-code.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 
 const props = defineProps<{
 	tag: string;
@@ -57,10 +57,10 @@ const headerActions = computed(() => [{
 	label: i18n.ts.more,
 	handler: (ev: MouseEvent) => {
 		os.popupMenu([{
-			text: i18n.ts.copyEmbedCode,
+			text: i18n.ts.genEmbedCode,
 			icon: 'ti ti-code',
 			action: () => {
-				copyEmbedCode('tags', props.tag);
+				genEmbedCode('tags', props.tag);
 			},
 		}], ev.currentTarget ?? ev.target);
 	}

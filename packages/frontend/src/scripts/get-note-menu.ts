@@ -21,7 +21,7 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
-import { copyEmbedCode } from '@/scripts/get-embed-code.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -165,7 +165,7 @@ function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuIt
 		icon: 'ti ti-code',
 		text,
 		action: (): void => {
-			copyEmbedCode('notes', note.id);
+			genEmbedCode('notes', note.id);
 		},
 	};
 }
@@ -324,7 +324,7 @@ export function getNoteMenu(props: {
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			} : getNoteEmbedCodeMenu(appearNote, i18n.ts.copyEmbedCode),
+			} : getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode),
 			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
@@ -464,7 +464,7 @@ export function getNoteMenu(props: {
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
-		} : getNoteEmbedCodeMenu(appearNote, i18n.ts.copyEmbedCode)]
+		} : getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode)]
 			.filter(x => x !== undefined);
 	}
 
