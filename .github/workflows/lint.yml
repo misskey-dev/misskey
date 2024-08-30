@@ -78,6 +78,7 @@ jobs:
       matrix:
         workspace:
         - backend
+        - sw
         - misskey-js
     steps:
     - uses: actions/checkout@v4.1.1
@@ -92,7 +93,7 @@ jobs:
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter misskey-js run build
-      if: ${{ matrix.workspace == 'backend' }}
+      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'sw' }}
     - run: pnpm --filter misskey-reversi run build
       if: ${{ matrix.workspace == 'backend' }}
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck
