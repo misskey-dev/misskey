@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import { colorizeEmoji, getEmojiName } from 'frontend-shared/emojilist.js';
+import { colorizeEmoji, getEmojiName } from '@@/js/emojilist.js';
 import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@/scripts/emoji-base.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';

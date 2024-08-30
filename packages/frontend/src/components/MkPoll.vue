@@ -36,7 +36,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { host } from '@/config.js';
-import { useInterval } from 'frontend-shared/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 
 const props = defineProps<{
 	noteId: string;
