@@ -1,5 +1,9 @@
 # DIFFRENCE
 
+## 2024.8.0-yami-1.1.0
+### Server
+* Cherry-Pick リバーシの連合に対応(yojo-art/cherrypick)
+
 ## 2024.8.0-yami-1.0.1/1.0.2/1.0.3/1.0.4
 ### Client
 * エントランスからユーザー数/ノート数/チャートを削除
