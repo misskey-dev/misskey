@@ -59,7 +59,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					const userDetail = await cli.request('users/show', { userId: data.body.userId }, account.token);
 					return [i18n.ts._notification.youWereFollowed, {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('user-plus'),
 						data,
 						actions: userDetail.isFollowing ? [] : [
@@ -74,7 +74,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'mention':
 					return [i18n.tsx._notification.youGotMention({ name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('at'),
 						data,
 						actions: [
@@ -88,7 +88,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'reply':
 					return [i18n.tsx._notification.youGotReply({ name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('arrow-back-up'),
 						data,
 						actions: [
@@ -102,7 +102,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'renote':
 					return [i18n.tsx._notification.youRenoted({ name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('repeat'),
 						data,
 						actions: [
@@ -116,7 +116,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'quote':
 					return [i18n.tsx._notification.youGotQuote({ name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('quote'),
 						data,
 						actions: [
@@ -136,7 +136,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'note':
 					return [i18n.ts._notification.newNote + ': ' + getUserName(data.body.user), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						data,
 					}];
 
@@ -163,7 +163,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					const tag = `reaction:${data.body.note.id}`;
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						tag,
 						badge,
 						data,
@@ -179,7 +179,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'receiveFollowRequest':
 					return [i18n.ts._notification.youReceivedFollowRequest, {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('user-plus'),
 						data,
 						actions: [
@@ -197,7 +197,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'followRequestAccepted':
 					return [i18n.ts._notification.yourFollowRequestAccepted, {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('circle-check'),
 						data,
 					}];
@@ -237,7 +237,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 		case 'unreadAntennaNote':
 			return [i18n.tsx._notification.unreadAntennaNote({ name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
-				icon: data.body.note.user.avatarUrl,
+				icon: data.body.note.user.avatarUrl ?? undefined,
 				badge: iconUrl('antenna'),
 				tag: `antenna:${data.body.antenna.id}`,
 				data,
