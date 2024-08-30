@@ -246,8 +246,8 @@ importers:
         specifier: 14.4.2
         version: 14.4.2
       happy-dom:
-        specifier: 10.0.3
-        version: 10.0.3
+        specifier: 15.6.1
+        version: 15.6.1
       hpagent:
         specifier: 1.2.0
         version: 1.2.0
@@ -7553,6 +7553,10 @@ packages:
   happy-dom@10.0.3:
     resolution: {integrity: sha512-WkCP+Z5fX6U5PY+yHP3ElV5D9PoxRAHRWPFq3pG9rg/6Hjf5ak7dozAgSCywsTRUq2qfa8vV8OQvUy5pRXy8EQ==}
 
+  happy-dom@15.6.1:
+    resolution: {integrity: sha512-dsMHLsJHZYhXeExP47B2siAfKNVxptlwFss3/bq/9sG3iBt0P2WYFBq68JgMR5vB5gsN2Ev0feTTPD/+rosUNQ==}
+    engines: {node: '>=18.0.0'}
+
   har-schema@2.0.0:
     resolution: {integrity: sha512-Oqluz6zhGX8cyRaTQlFMPw80bSJVG2x/cFb8ZPhUILGgHka9SsokCCOQgpveePerqidZOrT14ipqfJb7ILcW5Q==}
     engines: {node: '>=4'}
@@ -11595,6 +11599,9 @@ packages:
 
   vue-component-type-helpers@2.0.29:
     resolution: {integrity: sha512-58i+ZhUAUpwQ+9h5Hck0D+jr1qbYl4voRt5KffBx8qzELViQ4XdT/Tuo+mzq8u63teAG8K0lLaOiL5ofqW38rg==}
+
+  vue-component-type-helpers@2.1.6:
+    resolution: {integrity: sha512-ng11B8B/ZADUMMOsRbqv0arc442q7lifSubD0v8oDXIFoMg/mXwAPUunrroIDkY+mcD0dHKccdaznSVp8EoX3w==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -16224,7 +16231,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.37(typescript@5.5.4)
-      vue-component-type-helpers: 2.0.29
+      vue-component-type-helpers: 2.1.6
     transitivePeerDependencies:
       - encoding
       - prettier
@@ -16243,7 +16250,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.37(typescript@5.5.4)
-      vue-component-type-helpers: 2.0.29
+      vue-component-type-helpers: 2.1.6
 
   '@swc/cli@0.3.12(@swc/core@1.6.6)(chokidar@3.5.3)':
     dependencies:
@@ -20061,6 +20068,12 @@ snapshots:
       iconv-lite: 0.6.3
       webidl-conversions: 7.0.0
       whatwg-encoding: 2.0.0
+      whatwg-mimetype: 3.0.0
+
+  happy-dom@15.6.1:
+    dependencies:
+      entities: 4.5.0
+      webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
 
   har-schema@2.0.0: {}
@@ -24588,6 +24601,8 @@ snapshots:
   vue-component-type-helpers@2.0.16: {}
 
   vue-component-type-helpers@2.0.29: {}
+
+  vue-component-type-helpers@2.1.6: {}
 
   vue-demi@0.14.7(vue@3.4.37(typescript@5.5.4)):
     dependencies:
