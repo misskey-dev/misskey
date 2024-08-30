@@ -78,6 +78,7 @@ jobs:
       matrix:
         workspace:
         - backend
+        - sw
         - misskey-js
     steps:
     - uses: actions/checkout@v4.1.1
