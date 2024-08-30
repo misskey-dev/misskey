@@ -10,7 +10,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
 
-const entryPoints = globSync('./src/**/**.{ts,tsx}');
+const entryPoints = globSync('./js/**/**.{ts,tsx}');
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {
@@ -49,6 +49,8 @@ async function buildSrc() {
 	} else {
 		await buildDts();
 	}
+
+	fs.copyFileSync('./js/emojilist.json', './js-built/emojilist.json');
 
 	console.log(`[${_package.name}] finish building.`);
 }
