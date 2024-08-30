@@ -31,5 +31,6 @@
 		"js-built"
 	],
 	"dependencies": {
+		"vue": "3.4.37"
 	}
 }
