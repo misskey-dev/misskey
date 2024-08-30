@@ -160,6 +160,8 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
+	convert: Ref<Blob | null>;
+	converting: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
@@ -281,6 +283,20 @@ export function getNoteMenu(props: {
 		props.translation.value = res;
 	}
 
+	async function convert(): Promise<void> {
+		if (props.convert.value != null) return;
+		props.converting.value = true;
+		const res = await misskeyApi('notes/tts', {
+			noteId: appearNote.id,
+		});
+		if (res.headers.get('Content-Type')?.startsWith('audio/')) {
+			props.convert.value = await res.blob();
+		  } else {
+			console.error('API did not return audio data.');
+		  }
+		props.converting.value = false;
+	}
+
 	let menu: MenuItem[];
 	if ($i) {
 		const statePromise = misskeyApi('notes/state', {
@@ -320,6 +336,11 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
+			} : undefined,
+			$i && $i.policies.canUseTTS && instance.ttsAvailable ? {
+				icon: 'ti ti-headphone',
+				text: 'TTS',
+				action: convert,
 			} : undefined,
 			{ type: 'divider' },
 			statePromise.then(state => state.isFavorited ? {

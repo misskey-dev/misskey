@@ -216,6 +216,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canUseTTS: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canHideAds: {
 			type: 'boolean',
 			optional: false, nullable: false,

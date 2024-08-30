@@ -3545,9 +3545,17 @@ export interface Locale extends ILocale {
      */
     "translate": string;
     /**
+     * 変換
+     */
+    "converting": string;
+    /**
      * {x}から翻訳
      */
     "translatedFrom": ParameterizedString<"x">;
+    /**
+     * {x}から変換
+     */
+    "convertedFrom": ParameterizedString<"x">;
     /**
      * アカウントの削除が進行中です
      */
@@ -6739,6 +6747,10 @@ export interface Locale extends ILocale {
              */
             "canUseTranslator": string;
             /**
+             * TTS機能の利用
+             */
+            "canUseTTS": string;
+            /**
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
@@ -7155,6 +7167,10 @@ export interface Locale extends ILocale {
          * Misskeyを翻訳
          */
         "translation": string;
+        /**
+         * Misskeyを変換
+         */
+        "convert": string;
         /**
          * Misskeyに寄付
          */

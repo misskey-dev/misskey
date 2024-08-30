@@ -353,6 +353,12 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public hfAuthKey: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public termsOfServiceUrl: string | null;
 
 	@Column('varchar', {

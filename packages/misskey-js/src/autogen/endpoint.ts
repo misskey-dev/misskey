@@ -446,6 +446,8 @@ import type {
 	NotesTimelineResponse,
 	NotesTranslateRequest,
 	NotesTranslateResponse,
+	NotesTTSRequest,
+	NotesTTSResponse,
 	NotesUnrenoteRequest,
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
@@ -869,6 +871,7 @@ export type Endpoints = {
 	'notes/thread-muting/delete': { req: NotesThreadMutingDeleteRequest; res: EmptyResponse };
 	'notes/timeline': { req: NotesTimelineRequest; res: NotesTimelineResponse };
 	'notes/translate': { req: NotesTranslateRequest; res: NotesTranslateResponse };
+	'notes/tts': { req: NotesTTSRequest; res: NotesTTSResponse };
 	'notes/unrenote': { req: NotesUnrenoteRequest; res: EmptyResponse };
 	'notes/user-list-timeline': { req: NotesUserListTimelineRequest; res: NotesUserListTimelineResponse };
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
@@ -1251,6 +1254,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'notes/thread-muting/delete': 'application/json',
 	'notes/timeline': 'application/json',
 	'notes/translate': 'application/json',
+	'notes/tts': 'application/json',
 	'notes/unrenote': 'application/json',
 	'notes/user-list-timeline': 'application/json',
 	'notifications/create': 'application/json',

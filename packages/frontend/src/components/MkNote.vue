@@ -77,6 +77,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
 							</div>
 						</div>
+						<div v-if="converting || convert" :class="$style.translation">
+							<MkLoading v-if="converting" mini/>
+							<div v-else-if="converturl">
+								<!--<b>{{ i18n.tsx.convertedFrom({ x: appearNote.id }) }}: </b>-->
+								<b>{{ 'From ' + appearNote.id }} </b>
+								<MkMediaAudio :audio="converturl"/>
+							</div>
+						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
@@ -160,12 +168,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide, onUnmounted } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkMediaAudio from '@/components/MkMediaAudio.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -264,6 +273,9 @@ const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
+const convert = ref<Blob | null>(null);
+const converting = ref(false);
+const converturl = ref<Misskey.entities.NotesTTSResponse | null>(null);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
 const renoteCollapsed = ref(
@@ -611,6 +623,25 @@ function emitUpdReaction(emoji: string, delta: number) {
 		emit('reaction', emoji);
 	}
 }
+
+watch(convert, (newBlob) => {
+  if (converturl.value && converturl.value.url) {
+    URL.revokeObjectURL(converturl.value.url);
+  }
+
+  if (newBlob) {
+    converturl.value = { url: URL.createObjectURL(newBlob) };
+  } else {
+    converturl.value = null;
+  }
+});
+console.log(converturl)
+
+onUnmounted(() => {
+  if (converturl.value && converturl.value.url) {
+    URL.revokeObjectURL(converturl.value.url);
+  }
+});
 </script>
 
 <style lang="scss" module>

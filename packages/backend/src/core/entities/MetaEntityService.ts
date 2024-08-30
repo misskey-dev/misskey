@@ -121,6 +121,7 @@ export class MetaEntityService {
 			enableServiceWorker: instance.enableServiceWorker,
 
 			translatorAvailable: instance.deeplAuthKey != null,
+			ttsAvailable: instance.hfAuthKey != null,
 
 			serverRules: instance.serverRules,
 
