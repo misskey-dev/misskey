@@ -51,14 +51,14 @@ onMounted(async () => {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => ({
 			x: getDate(i).getTime(),
 			y: v,
 		}));
 	};
 
-	const formatMinus = (arr) => {
+	const formatMinus = (arr: number[]) => {
 		return arr.map((v, i) => ({
 			x: getDate(i).getTime(),
 			y: -v,
@@ -78,7 +78,6 @@ onMounted(async () => {
 		type: 'line',
 		data: {
 			datasets: [{
-				stack: 'a',
 				parsing: false,
 				label: 'Out: Succ',
 				data: format(raw.deliverSucceeded).slice().reverse(),
@@ -92,7 +91,6 @@ onMounted(async () => {
 				fill: true,
 				clip: 8,
 			}, {
-				stack: 'a',
 				parsing: false,
 				label: 'Out: Fail',
 				data: formatMinus(raw.deliverFailed).slice().reverse(),
@@ -137,7 +135,6 @@ onMounted(async () => {
 					min: getDate(chartLimit).getTime(),
 				},
 				y: {
-					stacked: true,
 					position: 'left',
 					suggestedMax: 10,
 					grid: {
