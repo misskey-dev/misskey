@@ -14,7 +14,13 @@ import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
 import EmA from '@/components/EmA.vue';
 import { host } from '@/config.js';
-import { safeParseFloat } from '@/to-be-shared/safe-parse.js';
+
+function safeParseFloat(str: unknown): number | null {
+	if (typeof str !== 'string' || str === '') return null;
+	const num = parseFloat(str);
+	if (isNaN(num)) return null;
+	return num;
+}
 
 const QUOTE_STYLE = `
 display: block;

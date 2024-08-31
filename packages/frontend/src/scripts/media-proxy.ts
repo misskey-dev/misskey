@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { query } from '@/scripts/url.js';
+import { query } from '@@/js/url.js';
 import { url } from '@/config.js';
 import { instance } from '@/instance.js';
 

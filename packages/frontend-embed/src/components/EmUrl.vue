@@ -28,7 +28,14 @@ import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import EmA from './EmA.vue';
 import { url as local } from '@/config.js';
-import { safeURIDecode } from '@/to-be-shared/safe-uri-decode.js';
+
+function safeURIDecode(str: string): string {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
 
 const props = withDefaults(defineProps<{
 	url: string;

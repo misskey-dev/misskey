@@ -19,7 +19,13 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
-import { safeParseFloat } from '@/scripts/safe-parse.js';
+
+function safeParseFloat(str: unknown): number | null {
+	if (typeof str !== 'string' || str === '') return null;
+	const num = parseFloat(str);
+	if (isNaN(num)) return null;
+	return num;
+}
 
 const QUOTE_STYLE = `
 display: block;
