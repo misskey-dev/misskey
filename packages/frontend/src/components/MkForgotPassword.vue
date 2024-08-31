@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.forgotPassword }}</template>
 
 	<MkSpacer :marginMin="20" :marginMax="28">
-		<form v-if="instance.enableEmail" @submit.prevent="onSubmit">
+		<form v-if="serverMetadata.enableEmail" @submit.prevent="onSubmit">
 			<div class="_gaps_m">
 				<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
 					<template #label>{{ i18n.ts.username }}</template>
@@ -39,14 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const emit = defineEmits<{
 	(ev: 'done'): void;

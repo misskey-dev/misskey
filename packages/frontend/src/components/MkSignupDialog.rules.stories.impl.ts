@@ -9,7 +9,7 @@ import { StoryObj } from '@storybook/vue3';
 import { onBeforeUnmount } from 'vue';
 import MkSignupServerRules from './MkSignupDialog.rules.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { instance } from '@/server-metadata.js';
 export const Empty = {
 	render(args) {
 		return {

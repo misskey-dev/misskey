@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination ref="paginationComponent" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noFollowRequests }}</div>
 				</div>
 			</template>
@@ -44,7 +44,8 @@ import { userPage, acct } from '@/filters/user.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { infoImageUrl } from '@/instance.js';
+import { inject } from 'vue';
+const serverMetadata = inject('serverMetadata');
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

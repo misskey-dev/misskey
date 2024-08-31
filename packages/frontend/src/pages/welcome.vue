@@ -17,11 +17,11 @@ import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { fetchInstance } from '@/instance.js';
+import { fetchServerMetadata } from '@/server-metadata.js';
 
 const instance = ref<Misskey.entities.MetaDetailed | null>(null);
 
-fetchInstance(true).then((res) => {
+fetchServerMetadata(true).then((res) => {
 	instance.value = res;
 });
 

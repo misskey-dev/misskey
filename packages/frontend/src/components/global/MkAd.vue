@@ -42,16 +42,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 import { url as local, host } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 
-type Ad = (typeof instance)['ads'][number];
+const serverMetadata = inject('serverMetadata');
+
+type Ad = (typeof serverMetadata)['ads'][number];
 
 const props = defineProps<{
 	prefer: string[];
@@ -68,7 +69,7 @@ const choseAd = (): Ad | null => {
 		return props.specify;
 	}
 
-	const allAds = instance.ads.map(ad => defaultStore.state.mutedAds.includes(ad.id) ? {
+	const allAds = serverMetadata.ads.map(ad => defaultStore.state.mutedAds.includes(ad.id) ? {
 		...ad,
 		ratio: 0,
 	} : ad);

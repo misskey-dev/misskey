@@ -142,7 +142,7 @@ import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
-import { instance } from '@/instance.js';
+import { instance } from '@/server-metadata.js';
 import { url } from '@/config.js';
 import EmMfm from '@/components/EmMfm.js';
 

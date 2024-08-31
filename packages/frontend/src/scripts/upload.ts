@@ -13,7 +13,7 @@ import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
 import { alert } from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { fetchServerMetadata } from '@/server-metadata.js';
 
 type Uploading = {
 	id: string;
@@ -40,16 +40,16 @@ export function uploadFile(
 
 	if (folder && typeof folder === 'object') folder = folder.id;
 
-	if (file.size > instance.maxFileSize) {
-		alert({
-			type: 'error',
-			title: i18n.ts.failedToUpload,
-			text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
-		});
-		return Promise.reject();
-	}
+	return fetchServerMetadata().then((serverMetadata) => new Promise((resolve, reject) => {
+		if (file.size > serverMetadata.maxFileSize) {
+			alert({
+				type: 'error',
+				title: i18n.ts.failedToUpload,
+				text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
+			});
+			return reject();
+		}
 
-	return new Promise((resolve, reject) => {
 		const id = uuid();
 
 		const reader = new FileReader();
@@ -158,5 +158,5 @@ export function uploadFile(
 			xhr.send(formData);
 		};
 		reader.readAsArrayBuffer(file);
-	});
+	}));
 }

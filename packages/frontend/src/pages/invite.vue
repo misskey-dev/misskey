@@ -8,9 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>
 		<MkPageHeader/>
 	</template>
-	<MKSpacer v-if="!instance.disableRegistration || !($i && ($i.isAdmin || $i.policies.canInvite))" :contentMax="1200">
+	<MKSpacer v-if="!serverMetadata.disableRegistration || !($i && ($i.isAdmin || $i.policies.canInvite))" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
+			<img v-if="serverMetadata.serverErrorImageUrl" :class="$style.img" :src="serverMetadata.serverErrorImageUrl" class="_ghost"/>
 			<div :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ i18n.ts.nothing }}
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
+import { computed, inject, ref, shallowRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -45,13 +45,14 @@ import MkButton from '@/components/MkButton.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { serverErrorImageUrl, instance } from '@/instance.js';
 import { $i } from '@/account.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const currentInviteLimit = ref<null | number>(null);
-const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
-const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
+const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && serverMetadata.policies.inviteLimit))) as number;
+const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && serverMetadata.policies.inviteLimitCycle)) as number;
 
 const pagination: Paging = {
 	endpoint: 'invite/list' as const,

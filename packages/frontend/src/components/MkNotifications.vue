@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkPagination ref="pagingComponent" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
+				<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.noNotifications }}</div>
 			</div>
 		</template>
@@ -32,7 +32,8 @@ import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@/const.js';
-import { infoImageUrl } from '@/instance.js';
+import { inject } from 'vue';
+const serverMetadata = inject('serverMetadata');
 import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import * as Misskey from 'misskey-js';

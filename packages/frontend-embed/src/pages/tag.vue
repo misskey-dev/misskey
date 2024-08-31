@@ -45,7 +45,7 @@ import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { instance } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
 import { scrollToTop } from '@@/js/scroll.js';
 import { isLink } from '@/scripts/is-link.js';

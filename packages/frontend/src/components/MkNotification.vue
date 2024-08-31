@@ -148,7 +148,8 @@ import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { signinRequired } from '@/account.js';
-import { infoImageUrl } from '@/instance.js';
+import { inject } from 'vue';
+const serverMetadata = inject('serverMetadata');
 
 const $i = signinRequired();
 

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</template>
 
-	<div v-if="isBasicTimeline(widgetProps.src) && !isAvailableBasicTimeline(widgetProps.src)" :class="$style.disabled">
+	<div v-if="isBasicTimeline(widgetProps.src) && !isAvailableBasicTimeline(serverMetadata, widgetProps.src)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
@@ -80,6 +80,8 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
+const serverMetadata = inject('serverMetadata');
+
 const menuOpened = ref(false);
 
 const setSrc = (src) => {
@@ -109,7 +111,7 @@ const choose = async (ev) => {
 			setSrc('list');
 		},
 	}));
-	os.popupMenu([...availableBasicTimelines().map(tl => ({
+	os.popupMenu([...availableBasicTimelines(serverMetadata).map(tl => ({
 		text: i18n.ts._timelines[tl],
 		icon: basicTimelineIconClass(tl),
 		action: () => { setSrc(tl); },

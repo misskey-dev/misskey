@@ -8,7 +8,6 @@ import * as Misskey from 'misskey-js';
 import { claimAchievement } from './achievements.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
@@ -170,7 +169,7 @@ function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuIt
 	};
 }
 
-export function getNoteMenu(props: {
+export function getNoteMenu(ctx: { serverMetadata: Misskey.entities.MetaDetailed }, props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
@@ -330,7 +329,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.share,
 				action: share,
 			}] : []),
-			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
+			$i && $i.policies.canUseTranslator && ctx.serverMetadata.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
@@ -375,7 +374,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.user,
 				children: async () => {
 					const user = appearNote.userId === $i?.id ? $i : await misskeyApi('users/show', { userId: appearNote.userId });
-					const { menu, cleanup } = getUserMenu(user);
+					const { menu, cleanup } = getUserMenu(ctx, user);
 					cleanups.push(cleanup);
 					return menu;
 				},
@@ -458,13 +457,13 @@ export function getNoteMenu(props: {
 			text: i18n.ts.copyContent,
 			action: copyContent,
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink),
-		(appearNote.url || appearNote.uri) ? {
-			icon: 'ti ti-external-link',
-			text: i18n.ts.showOnRemote,
-			action: () => {
-				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
-			},
-		} : getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode)]
+										(appearNote.url || appearNote.uri) ? {
+											icon: 'ti ti-external-link',
+											text: i18n.ts.showOnRemote,
+											action: () => {
+												window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
+											},
+										} : getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode)]
 			.filter(x => x !== undefined);
 	}
 

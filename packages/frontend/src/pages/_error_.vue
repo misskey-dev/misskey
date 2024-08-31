@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkLoading v-if="!loaded"/>
 <Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" :class="$style.root">
-		<img :src="serverErrorImageUrl" class="_ghost" :class="$style.img"/>
+		<img v-if="serverMetadata.serverErrorImageUrl" :src="serverMetadata.serverErrorImageUrl" class="_ghost" :class="$style.img"/>
 		<div class="_gaps">
 			<div><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></div>
 			<div v-if="meta && (version === meta.version)">{{ i18n.ts.pageLoadErrorDescription }}</div>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -36,7 +36,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { defaultStore } from '@/store.js';
-import { serverErrorImageUrl } from '@/instance.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const props = withDefaults(defineProps<{
 	error?: Error;

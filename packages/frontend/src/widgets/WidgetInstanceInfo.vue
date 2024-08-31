@@ -5,13 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_panel">
-	<div :class="$style.container" :style="{ backgroundImage: instance.bannerUrl ? `url(${ instance.bannerUrl })` : null }">
+	<div :class="$style.container" :style="{ backgroundImage: serverMetadata.bannerUrl ? `url(${ serverMetadata.bannerUrl })` : null }">
 		<div :class="$style.iconContainer">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.icon"/>
+			<img :src="serverMetadata.iconUrl ?? serverMetadata.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.icon"/>
 		</div>
 		<div :class="$style.bodyContainer">
 			<div :class="$style.body">
-				<MkA :class="$style.name" to="/about" behavior="window">{{ instance.name }}</MkA>
+				<MkA :class="$style.name" to="/about" behavior="window">{{ serverMetadata.name }}</MkA>
 				<div :class="$style.host">{{ host }}</div>
 			</div>
 		</div>
@@ -20,10 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { host } from '@/config.js';
-import { instance } from '@/instance.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const name = 'instanceInfo';
 

@@ -26,7 +26,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
@@ -35,6 +34,8 @@ import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
+
+const mediaProxy = inject('mediaProxy');
 
 const props = defineProps<{
 	name: string;
@@ -69,14 +70,14 @@ const url = computed(() => {
 	const proxied =
 		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
 			? rawUrl.value
-			: getProxiedImageUrl(
+			: mediaProxy.getProxiedImageUrl(
 				rawUrl.value,
 				props.useOriginalSize ? undefined : 'emoji',
 				false,
 				true,
 			);
 	return defaultStore.reactiveState.disableShowingAnimatedImages.value
-		? getStaticImageUrl(proxied)
+		? mediaProxy.getStaticImageUrl(proxied)
 		: proxied;
 });
 

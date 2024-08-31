@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="instance.enableEmail" class="_gaps_m">
+<div v-if="serverMetadata.enableEmail" class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
 		<MkInput v-model="emailAddress" type="email" manualSave>
@@ -42,13 +42,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSection>
 </div>
-<div v-if="!instance.enableEmail" class="_gaps_m">
+<div v-if="!serverMetadata.enableEmail" class="_gaps_m">
 	<MkInfo>{{ i18n.ts.emailNotSupported }}</MkInfo>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, inject } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -58,7 +58,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { instance } from '@/instance.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const $i = signinRequired();
 

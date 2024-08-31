@@ -11,26 +11,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { instanceName } from '@/config.js';
-import { instance as Instance } from '@/instance.js';
-import { getProxiedImageUrlNullable } from '@/to-be-shared/media-proxy.js';
+import { computed, inject } from 'vue';
+
+const mediaProxy = inject('mediaProxy');
 
 const props = defineProps<{
-	instance?: {
+	instance: {
 		faviconUrl?: string | null
 		name?: string | null
 		themeColor?: string | null
 	}
 }>();
 
-// if no instance data is given, this is for the local instance
-const instance = props.instance ?? {
-	name: instanceName,
-	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
-};
-
-const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
+const faviconUrl = computed(() => mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview'));
 
 const themeColor = instance.themeColor ?? '#777777';
 

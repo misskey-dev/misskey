@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, shallowRef, ref, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
@@ -41,7 +41,8 @@ import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { apiUrl } from '@/config.js';
 import { i18n } from '@/i18n.js';
-import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+
+const mediaProxy = inject('mediaProxy');
 
 const emit = defineEmits<{
 	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
@@ -55,7 +56,7 @@ const props = defineProps<{
 	uploadFolder?: string | null;
 }>();
 
-const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
+const imgUrl = mediaProxy.getProxiedImageUrl(props.file.url, undefined, true);
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 const imgEl = shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;

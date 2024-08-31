@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
+				<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</template>
@@ -52,7 +52,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
-import { infoImageUrl } from '@/instance.js';
+import { inject } from 'vue';
+const serverMetadata = inject('serverMetadata');
 
 const list = ref<InstanceType<typeof FormPagination>>();
 
