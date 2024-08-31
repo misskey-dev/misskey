@@ -397,7 +397,7 @@ export const defaultStore = markRaw(
 		},
 		showFixedPostForm: {
 			where: 'device',
-			default: false,
+			default: true,
 		},
 		showFixedPostFormInChannel: {
 			where: 'device',
