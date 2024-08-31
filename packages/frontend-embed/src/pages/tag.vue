@@ -47,7 +47,7 @@ import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { url, instanceName } from '@/config.js';
-import { scrollToTop } from '@/scripts/scroll.js';
+import { scrollToTop } from '@@/js/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 
