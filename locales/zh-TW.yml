@@ -1263,6 +1263,7 @@ confirmWhenRevealingSensitiveMedia: "要顯示敏感媒體時需確認"
 sensitiveMediaRevealConfirm: "這是敏感媒體。確定要顯示嗎？"
 createdLists: "已建立的清單"
 createdAntennas: "已建立的天線"
+clipNoteLimitExceeded: "沒辦法在這個摘錄中增加更多貼文了。"
 _delivery:
   status: "傳送狀態"
   stop: "停止發送"
