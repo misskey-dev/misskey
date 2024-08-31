@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkPagination ref="pagingComponent" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
+				<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.noNotifications }}</div>
 			</div>
 		</template>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated, inject } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -32,10 +32,11 @@ import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@@/js/const.js';
-import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import * as Misskey from 'misskey-js';
+
+const serverMetadata = inject('serverMetadata');
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];

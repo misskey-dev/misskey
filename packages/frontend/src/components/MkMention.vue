@@ -15,13 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { MkABehavior } from '@/components/global/MkA.vue';
+
+const mediaProxy = inject('mediaProxy');
 
 const props = defineProps<{
 	username: string;
@@ -42,7 +43,7 @@ bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
 
 const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
-	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
+	? mediaProxy.getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );
 </script>

@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="divider"></div>
 	<div class="about">
 		<button v-click-anime class="item _button" @click="openInstanceMenu">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+			<img :src="serverMetadata.iconUrl ?? serverMetadata.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 		</button>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, ref, shallowRef } from 'vue';
+import { defineAsyncComponent, computed, watch, ref, shallowRef, inject } from 'vue';
 import { openInstanceMenu } from './_common_/common.js';
 // import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
@@ -60,8 +60,9 @@ import MkButton from '@/components/MkButton.vue';
 // import { mainRouter } from '@/router.js';
 //import MisskeyLogo from '@assets/client/misskey.svg';
 import { defaultStore } from '@/store.js';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const WINDOW_THRESHOLD = 1400;
 

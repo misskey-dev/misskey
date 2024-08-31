@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<a href="https://misskey-hub.net/docs/for-users/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 								</template>
 							</I18n>
-							<div>{{ i18n.tsx._initialAccountSetting.haveFun({ name: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._initialAccountSetting.haveFun({ name: serverMetadata.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
 								<MkButton v-if="initialPage !== 4" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 								<MkButton rounded primary gradate @click="close(false)">{{ i18n.ts.close }}</MkButton>
@@ -148,7 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, watch } from 'vue';
+import { inject, ref, shallowRef, watch } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XNote from '@/components/MkTutorialDialog.Note.vue';
@@ -157,10 +157,11 @@ import XPostNote from '@/components/MkTutorialDialog.PostNote.vue';
 import XSensitive from '@/components/MkTutorialDialog.Sensitive.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 import { host } from '@@/js/config.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import * as os from '@/os.js';
+
+const serverMetadata = inject('serverMetadata');
 
 const props = defineProps<{
 	initialPage?: number;

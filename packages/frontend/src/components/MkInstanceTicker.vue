@@ -11,10 +11,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { instanceName } from '@@/js/config.js';
-import { instance as Instance } from '@/instance.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { computed, inject } from 'vue';
+import { instanceName } from '@/config.js';
+
+const mediaProxy = inject('mediaProxy');
 
 const props = defineProps<{
 	instance?: {
@@ -30,7 +30,7 @@ const instance = props.instance ?? {
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
 };
 
-const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
+const faviconUrl = computed(() => props.instance ? mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : mediaProxy.getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
 
 const themeColor = instance.themeColor ?? '#777777';
 

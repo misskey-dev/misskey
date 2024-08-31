@@ -34,13 +34,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import { computed, watch, provide, shallowRef, ref, onMounted, onActivated, inject } from 'vue';
+import { scroll } from '@@/js/scroll.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import type { BasicTimelineType } from '@/timelines.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { scroll } from '@@/js/scroll.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
@@ -53,9 +54,10 @@ import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
+
+const serverMetadata = inject('serverMetadata');
 
 const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
@@ -63,7 +65,7 @@ const rootEl = shallowRef<HTMLElement>();
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
 const queue = ref(0);
-const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
+const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline(serverMetadata, 'local') ? 'local' : 'global');
 const src = computed<TimelinePageSrc>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
@@ -240,8 +242,8 @@ function closeTutorial(): void {
 }
 
 function switchTlIfNeeded() {
-	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
-		src.value = availableBasicTimelines()[0];
+	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(serverMetadata, src.value)) {
+		src.value = availableBasicTimelines(serverMetadata)[0];
 	}
 }
 
@@ -297,7 +299,7 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: true,
-}))), ...availableBasicTimelines().map(tl => ({
+}))), ...availableBasicTimelines(serverMetadata).map(tl => ({
 	key: tl,
 	title: i18n.ts._timelines[tl],
 	icon: basicTimelineIconClass(tl),
@@ -319,7 +321,7 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	onClick: chooseChannel,
 }] as Tab[]);
 
-const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
+const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines(serverMetadata).map(tl => ({
 	key: tl,
 	title: i18n.ts._timelines[tl],
 	icon: basicTimelineIconClass(tl),

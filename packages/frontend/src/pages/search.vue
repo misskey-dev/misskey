@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'note'" key="note" :contentMax="800">
-			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
+			<div v-if="isNotesSearchAvailable(serverMetadata) || ignoreNotesSearchAvailable">
 				<XNote v-bind="props"/>
 			</div>
 			<div v-else>
@@ -25,12 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, toRef } from 'vue';
+import { computed, defineAsyncComponent, inject, ref, toRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { notesSearchAvailable } from '@/scripts/check-permissions.js';
+import { isNotesSearchAvailable } from '@/scripts/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+
+const serverMetadata = inject('serverMetadata');
 
 const props = withDefaults(defineProps<{
 	query?: string,

@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { instance } from '@/instance.js';
+import * as Misskey from 'misskey-js';
 import { $i } from '@/account.js';
 
-export const notesSearchAvailable = (
-	// FIXME: instance.policies would be null in Vitest
+export function isNotesSearchAvailable(serverMetadata: Misskey.entities.MetaDetailed): boolean {
+	// FIXME: serverMetadata.policies would be null in Vitest
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	($i == null && instance.policies != null && instance.policies.canSearchNotes) ||
+	return ($i == null && serverMetadata.policies != null && serverMetadata.policies.canSearchNotes) ||
 	($i != null && $i.policies.canSearchNotes) ||
-	false
-) as boolean;
+	false;
+}
 
-export const canSearchNonLocalNotes = (
-	instance.noteSearchableScope === 'global'
-);
+export function canSearchNonLocalNotes(serverMetadata: Misskey.entities.MetaDetailed): boolean {
+	return serverMetadata.noteSearchableScope === 'global';
+}

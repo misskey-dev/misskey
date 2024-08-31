@@ -18,16 +18,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { inject, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@@/js/use-interval.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const name = 'instanceCloud';
 
@@ -48,6 +47,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	props,
 	emit,
 );
+
+const mediaProxy = inject('mediaProxy');
 
 const cloud = shallowRef<InstanceType<typeof MkTagCloud> | null>();
 const activeInstances = shallowRef<Misskey.entities.FederationInstance[] | null>(null);
@@ -70,7 +71,7 @@ useInterval(() => {
 });
 
 function getInstanceIcon(instance): string {
-	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
+	return mediaProxy.getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? mediaProxy.getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 
 defineExpose<WidgetComponentExpose>({

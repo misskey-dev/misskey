@@ -19,7 +19,7 @@ const serverMetadata = inject(DI.serverMetadata)!;
 const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
-	instance?: {
+	instance: {
 		faviconUrl?: string | null
 		name?: string | null
 		themeColor?: string | null

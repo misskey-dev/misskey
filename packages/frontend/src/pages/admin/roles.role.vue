@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img :src="infoImageUrl" class="_ghost"/>
+									<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -74,7 +74,8 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { infoImageUrl } from '@/instance.js';
+import { inject } from 'vue';
+const serverMetadata = inject('serverMetadata');
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
