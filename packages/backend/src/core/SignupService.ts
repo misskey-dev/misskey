@@ -6,7 +6,7 @@
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { DataSource, IsNull } from 'typeorm';
+import {DataSource, In, IsNull, Not} from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
 import { MiUser } from '@/models/User.js';
@@ -64,7 +64,7 @@ export class SignupService {
 		if (
 			envOption.managed &&
 			this.config.maxLocalUsers !== -1 &&
-			(await this.usersRepository.count({ where: { host: IsNull() } })) >=
+			(await this.usersRepository.count({ where: { host: IsNull() , username: Not(In(['instance.actor','relay.actor'])) } })) >=
 				this.config.maxLocalUsers
 		) {
 			throw new Error('MAX_LOCAL_USERS');

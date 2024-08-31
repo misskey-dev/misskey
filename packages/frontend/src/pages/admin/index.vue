@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16">
 			<div class="lxpfedzu _gaps">
 				<div class="banner">
-					<img :src="iconUrl" alt="" class="icon"/>
+					<img :src="iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
 				</div>
 
 				<div class="_gaps_s">
