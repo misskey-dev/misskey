@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
+import isChromatic from 'chromatic';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { chartVLine } from '@/scripts/chart-vline.js';
@@ -41,7 +42,7 @@ const { handler: externalTooltipHandler } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
 
 onMounted(async () => {
-	const now = new Date();
+	const now = isChromatic() ? new Date('2024-08-31T10:00:00Z') : new Date();
 
 	const getDate = (ago: number) => {
 		const y = now.getFullYear();
