@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { ILocale, ParameterizedString } from '../../../../locales/index.js';
+import type { ILocale, ParameterizedString } from '../../../locales/index.js';
 
 type FlattenKeys<T extends ILocale, TPrediction> = keyof {
 	[K in keyof T as T[K] extends ILocale
@@ -32,15 +32,18 @@ type Tsx<T extends ILocale> = {
 
 export class I18n<T extends ILocale> {
 	private tsxCache?: Tsx<T>;
+	private devMode: boolean;
 
-	constructor(public locale: T) {
+	constructor(public locale: T, devMode = false) {
+		this.devMode = devMode;
+
 		//#region BIND
 		this.t = this.t.bind(this);
 		//#endregion
 	}
 
 	public get ts(): T {
-		if (_DEV_) {
+		if (this.devMode) {
 			class Handler<TTarget extends ILocale> implements ProxyHandler<TTarget> {
 				get(target: TTarget, p: string | symbol): unknown {
 					const value = target[p as keyof TTarget];
@@ -72,7 +75,7 @@ export class I18n<T extends ILocale> {
 	}
 
 	public get tsx(): Tsx<T> {
-		if (_DEV_) {
+		if (this.devMode) {
 			if (this.tsxCache) {
 				return this.tsxCache;
 			}
@@ -137,7 +140,6 @@ export class I18n<T extends ILocale> {
 			return this.tsxCache = new Proxy(this.locale, new Handler()) as unknown as Tsx<T>;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (this.tsxCache) {
 			return this.tsxCache;
 		}
@@ -211,7 +213,7 @@ export class I18n<T extends ILocale> {
 		for (const k of key.split('.')) {
 			str = str[k];
 
-			if (_DEV_) {
+			if (this.devMode) {
 				if (typeof str === 'undefined') {
 					console.error(`Unexpected locale key: ${key}`);
 					return key;
@@ -220,7 +222,7 @@ export class I18n<T extends ILocale> {
 		}
 
 		if (args) {
-			if (_DEV_) {
+			if (this.devMode) {
 				const missing = Array.from((str as string).matchAll(/\{(\w+)\}/g), ([, parameter]) => parameter).filter(parameter => !Object.hasOwn(args, parameter));
 
 				if (missing.length) {
@@ -231,7 +233,7 @@ export class I18n<T extends ILocale> {
 			for (const [k, v] of Object.entries(args)) {
 				const search = `{${k}}`;
 
-				if (_DEV_) {
+				if (this.devMode) {
 					if (!(str as string).includes(search)) {
 						console.error(`Unexpected locale parameter: ${k} at ${key}`);
 					}

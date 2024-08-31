@@ -4,11 +4,11 @@
  */
 
 import { markRaw } from 'vue';
+import { I18n } from '@@/js/i18n.js';
 import type { Locale } from '../../../locales/index.js';
 import { locale } from '@/config.js';
-import { I18n } from '@/to-be-shared/i18n.js';
 
-export const i18n = markRaw(new I18n<Locale>(locale));
+export const i18n = markRaw(new I18n<Locale>(locale, _DEV_));
 
 export function updateI18n(newLocale: Locale) {
 	i18n.locale = newLocale;
