@@ -171,6 +171,9 @@ onMounted(async () => {
 						duration: 0,
 					},
 					external: externalTooltipHandler,
+					callbacks: {
+						label: context => `${context.dataset.label}: ${Math.abs(context.parsed.y)}`,
+					},
 				},
 				gradient,
 			},
