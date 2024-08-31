@@ -14,7 +14,6 @@ import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
 import EmA from '@/components/EmA.vue';
 import { host } from '@/config.js';
-import { nyaize as doNyaize } from '@/to-be-shared/nyaize.js';
 import { safeParseFloat } from '@/to-be-shared/safe-parse.js';
 
 const QUOTE_STYLE = `
@@ -81,7 +80,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 				if (!disableNyaize && shouldNyaize) {
-					text = doNyaize(text);
+					text = Misskey.nyaize(text);
 				}
 
 				if (!props.plain) {
@@ -271,14 +270,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							const child = token.children[0];
 							let text = child.type === 'text' ? child.props.text : '';
 							if (!disableNyaize && shouldNyaize) {
-								text = doNyaize(text);
+								text = Misskey.nyaize(text);
 							}
 							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
 						} else {
 							const rt = token.children.at(-1)!;
 							let text = rt.type === 'text' ? rt.props.text : '';
 							if (!disableNyaize && shouldNyaize) {
-								text = doNyaize(text);
+								text = Misskey.nyaize(text);
 							}
 							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
