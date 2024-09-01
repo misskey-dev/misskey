@@ -1353,6 +1353,10 @@ export interface Locale extends ILocale {
      */
     "addFile": string;
     /**
+     * ファイルを表示
+     */
+    "showFile": string;
+    /**
      * ドライブは空です
      */
     "emptyDrive": string;
@@ -9165,6 +9169,10 @@ export interface Locale extends ILocale {
          * 通知の履歴をリセットする
          */
         "flushNotification": string;
+        /**
+         * {x}のエクスポートが完了しました
+         */
+        "exportOfXCompleted": ParameterizedString<"x">;
         "_types": {
             /**
              * すべて
@@ -9218,6 +9226,14 @@ export interface Locale extends ILocale {
              * 実績の獲得
              */
             "achievementEarned": string;
+            /**
+             * エクスポートが完了した
+             */
+            "exportCompleted": string;
+            /**
+             * 通知のテスト
+             */
+            "test": string;
             /**
              * 連携アプリからの通知
              */

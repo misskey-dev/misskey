@@ -7,6 +7,8 @@ import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 import { MiAccessToken } from './AccessToken.js';
 import { MiRole } from './Role.js';
+import { MiDriveFile } from './DriveFile.js';
+import { exportableEntities } from '@/types.js';
 
 export type MiNotification = {
 	type: 'note';
@@ -77,6 +79,12 @@ export type MiNotification = {
 	id: string;
 	createdAt: string;
 	achievement: string;
+} | {
+	type: 'exportCompleted';
+	id: string;
+	createdAt: string;
+	exportedEntitity: typeof exportableEntities[number];
+	fileId: MiDriveFile['id'];
 } | {
 	type: 'app';
 	id: string;
