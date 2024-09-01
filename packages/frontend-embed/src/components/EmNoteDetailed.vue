@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.noteHeaderInfo">
 						<a :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
-							<img :src="serverMetadataiconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
+							<img :src="serverMetadata.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
 						</a>
 					</div>
 				</div>

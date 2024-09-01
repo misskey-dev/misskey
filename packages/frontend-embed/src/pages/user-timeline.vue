@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
 						:class="$style.instanceIcon"
-						:src="serverMetadataiconUrl || '/favicon.ico'"
+						:src="serverMetadata.iconUrl || '/favicon.ico'"
 					/>
 				</a>
 			</div>
