@@ -119,7 +119,9 @@ import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { host } from '@/config.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const iconUrl = ref<string | null>(null);
 const app192IconUrl = ref<string | null>(null);

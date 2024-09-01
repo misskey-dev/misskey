@@ -70,7 +70,9 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const availableServerRules = serverMetadata.serverRules.length > 0;
 const availableTos = serverMetadata.tosUrl != null && serverMetadata.tosUrl !== '';

@@ -20,7 +20,9 @@ import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
 	instance: Misskey.entities.FederationInstance;

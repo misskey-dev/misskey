@@ -161,7 +161,9 @@ import { host } from '@/config.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import * as os from '@/os.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const props = defineProps<{
 	initialPage?: number;

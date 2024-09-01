@@ -37,7 +37,9 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { userListsCache } from '@/cache.js';
 import { inject } from 'vue';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 import { signinRequired } from '@/account.js';
 
 const $i = signinRequired();

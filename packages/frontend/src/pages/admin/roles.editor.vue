@@ -611,7 +611,9 @@ import { i18n } from '@/i18n.js';
 import { ROLE_POLICIES } from '@/const.js';
 import { deepClone } from '@/scripts/clone.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;

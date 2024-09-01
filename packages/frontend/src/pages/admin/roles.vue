@@ -256,7 +256,9 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { ROLE_POLICIES } from '@/const.js';
 import { useRouter } from '@/router/supplier.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const router = useRouter();
 const baseRoleQ = ref('');

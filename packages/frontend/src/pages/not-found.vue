@@ -18,7 +18,9 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const props = defineProps<{
 	showLoginPopup?: boolean;

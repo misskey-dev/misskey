@@ -90,7 +90,9 @@ import { miLocalStorage } from '@/local-storage.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({

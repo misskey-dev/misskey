@@ -47,7 +47,9 @@ import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i } from '@/account.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const currentInviteLimit = ref<null | number>(null);

@@ -45,8 +45,10 @@ import misskeysvg from '/client-assets/misskey.svg';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 
-const serverMetadata = inject('serverMetadata');
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
+const mediaProxy = inject(DI.mediaProxy);
 
 const instances = ref<Misskey.entities.FederationInstance[]>();
 

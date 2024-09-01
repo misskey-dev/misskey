@@ -38,7 +38,9 @@ import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReact
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const indexInfo = {
 	title: i18n.ts.settings,

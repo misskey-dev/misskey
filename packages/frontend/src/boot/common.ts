@@ -25,6 +25,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
+import { DI } from '@/di.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -234,8 +235,8 @@ export async function common(createVue: () => App<Element>) {
 	} catch (err) { /* empty */ }
 
 	const app = createVue();
-	app.provide('serverMetadata', serverMetadata);
-	app.provide('mediaProxy', new MediaProxy(serverMetadata, url));
+	app.provide(DI.serverMetadata, serverMetadata);
+	app.provide(DI.mediaProxy, new MediaProxy(serverMetadata, url));
 
 	setupRouter(app, createMainRouter);
 

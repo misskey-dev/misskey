@@ -19,7 +19,9 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const emit = defineEmits<{
 	(ev: 'retry'): void;

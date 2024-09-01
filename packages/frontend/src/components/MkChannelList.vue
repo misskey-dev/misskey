@@ -24,7 +24,9 @@ import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;

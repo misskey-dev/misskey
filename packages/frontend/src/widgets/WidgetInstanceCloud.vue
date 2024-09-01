@@ -48,7 +48,9 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const cloud = shallowRef<InstanceType<typeof MkTagCloud> | null>();
 const activeInstances = shallowRef<Misskey.entities.FederationInstance[] | null>(null);
