@@ -39,7 +39,7 @@ import { defaultStore } from '@/store.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = withDefaults(defineProps<{
 	error?: Error;

@@ -47,7 +47,7 @@ import { instanceName } from '@@/js/config.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = withDefaults(defineProps<{
 	role: string;

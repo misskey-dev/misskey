@@ -52,7 +52,7 @@ import MkInput from '@/components/MkInput.vue';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

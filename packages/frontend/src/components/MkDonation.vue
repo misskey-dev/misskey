@@ -46,7 +46,7 @@ import { miLocalStorage } from '@/local-storage.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

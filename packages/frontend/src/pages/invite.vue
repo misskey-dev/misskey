@@ -49,7 +49,7 @@ import { $i } from '@/account.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const currentInviteLimit = ref<null | number>(null);

@@ -92,7 +92,7 @@ import { i18n } from '@/i18n.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;

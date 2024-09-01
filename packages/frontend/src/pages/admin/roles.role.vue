@@ -77,7 +77,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();

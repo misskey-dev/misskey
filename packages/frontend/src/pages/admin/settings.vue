@@ -225,7 +225,7 @@ import MkSelect from '@/components/MkSelect.vue';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const name = ref<string | null>(null);
 const shortName = ref<string | null>(null);

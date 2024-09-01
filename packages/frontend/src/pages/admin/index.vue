@@ -44,7 +44,7 @@ import { useRouter } from '@/router/supplier.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const isEmpty = (x: string | null) => x == null || x === '';
 

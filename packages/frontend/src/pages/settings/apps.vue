@@ -55,7 +55,7 @@ import MkButton from '@/components/MkButton.vue';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const list = ref<InstanceType<typeof FormPagination>>();
 

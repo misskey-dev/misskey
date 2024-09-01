@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 </script>
 
 <style lang="scss" module>

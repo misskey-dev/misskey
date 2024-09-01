@@ -613,7 +613,7 @@ import { deepClone } from '@/scripts/clone.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;

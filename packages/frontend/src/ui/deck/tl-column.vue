@@ -45,7 +45,7 @@ import * as sound from '@/scripts/sound.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	column: Column;

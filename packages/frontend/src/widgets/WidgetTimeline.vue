@@ -82,7 +82,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const menuOpened = ref(false);
 

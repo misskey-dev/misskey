@@ -20,7 +20,7 @@ import { pleaseLogin } from '@/scripts/please-login.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	showLoginPopup?: boolean;

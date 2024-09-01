@@ -72,7 +72,7 @@ import * as os from '@/os.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const availableServerRules = serverMetadata.serverRules.length > 0;
 const availableTos = serverMetadata.tosUrl != null && serverMetadata.tosUrl !== '';

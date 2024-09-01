@@ -34,7 +34,7 @@ import { i18n } from '@/i18n.js';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 import { $i } from '@/account.js';
 
 const name = i18n.ts._widgets.birthdayFollowings;

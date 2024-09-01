@@ -40,7 +40,7 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	pagination: Paging;

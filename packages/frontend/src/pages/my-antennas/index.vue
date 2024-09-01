@@ -36,7 +36,7 @@ import { antennasCache } from '@/cache.js';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 

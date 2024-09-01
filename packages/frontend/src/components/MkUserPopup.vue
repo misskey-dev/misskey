@@ -69,7 +69,7 @@ import { $i } from '@/account.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
