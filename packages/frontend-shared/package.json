@@ -31,6 +31,7 @@
 		"js-built"
 	],
 	"dependencies": {
-		"vue": "3.4.37"
+		"vue": "3.4.37",
+		"misskey-js": "workspace:*"
 	}
 }

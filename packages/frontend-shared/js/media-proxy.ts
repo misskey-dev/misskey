@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { query } from '@@/js/url.js';
+import { query } from './url.js';
 import * as Misskey from 'misskey-js';
 
 export class MediaProxy {
