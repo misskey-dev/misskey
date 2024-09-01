@@ -224,7 +224,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					} as const satisfies Record<typeof data.body.exportedEntity, string>;
 
 					return [i18n.tsx._notification.exportOfXCompleted({ x: entityName[data.body.exportedEntity] }), {
-						badge: iconUrl('users'),
+						badge: iconUrl('circle-check'),
 						data,
 					}];
 				}
