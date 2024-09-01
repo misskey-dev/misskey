@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
 						:class="$style.instanceIcon"
-						:src="instance.iconUrl || '/favicon.ico'"
+						:src="serverMetadataiconUrl || '/favicon.ico'"
 					/>
 				</a>
 			</div>
@@ -62,7 +62,7 @@ import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/server-metadata.js';
+import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 

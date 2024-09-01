@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.noteHeaderInfo">
 						<a :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
-							<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
+							<img :src="serverMetadataiconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
 						</a>
 					</div>
 				</div>
@@ -142,7 +142,7 @@ import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
-import { instance } from '@/server-metadata.js';
+import { serverMetadata } from '@/server-metadata.js';
 import { url } from '@/config.js';
 import EmMfm from '@/components/EmMfm.js';
 

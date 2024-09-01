@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
 						:class="$style.instanceIcon"
-						:src="instance.iconUrl || '/favicon.ico'"
+						:src="serverMetadataiconUrl || '/favicon.ico'"
 					/>
 				</a>
 			</div>
@@ -39,15 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, shallowRef, inject, onActivated } from 'vue';
+import { scrollToTop } from '@@/js/scroll.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import type { ParsedEmbedParams } from '@/embed-page.js';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/server-metadata.js';
+import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
-import { scrollToTop } from '@@/js/scroll.js';
 import { isLink } from '@/scripts/is-link.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 

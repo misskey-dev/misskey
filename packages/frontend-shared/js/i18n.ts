@@ -4,6 +4,8 @@
  */
 import type { ILocale, ParameterizedString } from '../../../locales/index.js';
 
+type TODO = any;
+
 type FlattenKeys<T extends ILocale, TPrediction> = keyof {
 	[K in keyof T as T[K] extends ILocale
 		? FlattenKeys<T[K], TPrediction> extends infer C extends string
@@ -116,7 +118,7 @@ export class I18n<T extends ILocale> {
 							return () => value;
 						}
 
-						return (arg) => {
+						return (arg: TODO) => {
 							let str = quasis[0];
 
 							for (let i = 0; i < expressions.length; i++) {
@@ -155,7 +157,7 @@ export class I18n<T extends ILocale> {
 				const value = target[k as keyof typeof target];
 
 				if (typeof value === 'object') {
-					result[k] = build(value as ILocale);
+					(result as TODO)[k] = build(value as ILocale);
 				} else if (typeof value === 'string') {
 					const quasis: string[] = [];
 					const expressions: string[] = [];
@@ -182,7 +184,7 @@ export class I18n<T extends ILocale> {
 						continue;
 					}
 
-					result[k] = (arg) => {
+					(result as TODO)[k] = (arg: TODO) => {
 						let str = quasis[0];
 
 						for (let i = 0; i < expressions.length; i++) {
@@ -211,7 +213,7 @@ export class I18n<T extends ILocale> {
 		let str: string | ParameterizedString | ILocale = this.locale;
 
 		for (const k of key.split('.')) {
-			str = str[k];
+			str = (str as TODO)[k];
 
 			if (this.devMode) {
 				if (typeof str === 'undefined') {
