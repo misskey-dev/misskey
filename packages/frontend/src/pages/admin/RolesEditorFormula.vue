@@ -37,8 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div v-if="type === 'and' || type === 'or'" class="_gaps">
 		<div ref="dndParentEl" class="_gaps">
-			<div v-for="cond in values" :class="$style.item">
-				<RolesEditorFormula :modelValue="cond" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(cond)"/>
+			<div v-for="valueId in valueIds" :key="valueId" :class="$style.item">
+				<RolesEditorFormula :modelValue="valueKv[valueId]" draggable @update:modelValue="valuesItemUpdated" @remove="removeItem(valueId)"/>
 			</div>
 		</div>
 		<MkButton rounded style="margin: 0 auto;" @click="addValue"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
@@ -75,7 +75,7 @@ import { deepClone } from '@/scripts/clone.js';
 import { rolesCache } from '@/cache.js';
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
+	(ev: 'update:modelValue', value: Misskey.entities.RoleCondFormulaValue): void;
 	(ev: 'remove'): void;
 }>();
 
@@ -95,24 +95,38 @@ function assertValueNot(f: Misskey.entities.RoleCondFormulaValue): f is Misskey.
 const dndParentEl = shallowRef<HTMLElement>();
 const v = ref(deepClone(props.modelValue));
 
-const values = computed({
+const valueKv = computed(() => {
+	if (assertLogicFormula(v.value)) {
+		return Object.fromEntries(v.value.values.map(v => [v.id, v] as const));
+	} else {
+		return [];
+	}
+});
+
+const valueIds = computed({
 	get: () => {
 		if (assertLogicFormula(v.value)) {
-			return v.value.values;
+			return v.value.values.map(v => v.id);
 		} else {
 			return [];
 		}
 	},
 	set: (newVal) => {
 		if (assertLogicFormula(v.value)) {
-			v.value.values = newVal;
+			v.value.values = newVal.map(id => {
+				if (assertLogicFormula(v.value)) {
+					return v.value.values.find(v => v.id === id) ?? null;
+				} else {
+					return null;
+				}
+			}).filter(v => v !== null);
 		}
 	}
 });
 
 dragAndDrop({
 	parent: dndParentEl,
-	values,
+	values: valueIds,
 	group: 'roleFormula',
 	dragHandle: '.drag-handle',
 	plugins: [animations()],
@@ -154,15 +168,15 @@ function addValue() {
 	v.value.values.push({ id: uuid(), type: 'isRemote' });
 }
 
-function valuesItemUpdated(item) {
+function valuesItemUpdated(item: Misskey.entities.RoleCondFormulaValue) {
 	if (!assertLogicFormula(v.value)) return;
 	const i = v.value.values.findIndex(_item => _item.id === item.id);
 	v.value.values[i] = item;
 }
 
-function removeItem(item: Misskey.entities.RoleCondFormulaValue) {
+function removeItem(itemId: string) {
 	if (!assertLogicFormula(v.value)) return;
-	v.value.values = v.value.values.filter(_item => _item.id !== item.id);
+	v.value.values = v.value.values.filter(_item => _item.id !== itemId);
 }
 
 function removeSelf() {

@@ -11,17 +11,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<div>{{ i18n.ts._serverRules.description }}</div>
 				<div ref="dndParentEl" class="_gaps_m">
-					<div v-for="rule, index in serverRules" :key="`${rule}_${index}`" :class="$style.item">
+					<div v-for="rule, index in serverRules" :key="rule.id" :class="$style.item">
 						<div :class="$style.itemHeader">
 							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
 							<span :class="$style.itemHandle" class="handle"><i class="ti ti-menu"/></span>
-							<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
+							<button class="_button" :class="$style.itemRemove" @click="remove(rule.id)"><i class="ti ti-x"></i></button>
 						</div>
-						<MkInput v-model="serverRules[index]"/>
+						<MkInput v-model="rule.value"/>
 					</div>
 				</div>
 				<div :class="$style.commands">
-					<MkButton rounded @click="serverRules.push('')"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+					<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
 			</div>
@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, computed } from 'vue';
+import { v4 as uuid } from 'uuid';
 import { animations } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import XHeader from './_header_.vue';
@@ -42,7 +43,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 
-const serverRules = ref<string[]>(instance.serverRules);
+const serverRules = ref<{ id: string; value: string; }[]>(instance.serverRules.map((rule: string) => ({ id: uuid(), value: rule })));
 
 const dndParentEl = shallowRef<HTMLElement>();
 
@@ -53,16 +54,20 @@ dragAndDrop({
 	dragHandle: '.handle',
 });
 
-const save = async () => {
+async function save() {
 	await os.apiWithDialog('admin/update-meta', {
-		serverRules: serverRules.value,
+		serverRules: serverRules.value.map(rule => rule.value),
 	});
 	fetchInstance(true);
-};
+}
 
-const remove = (index: number): void => {
-	serverRules.value.splice(index, 1);
-};
+function add() {
+	serverRules.value.push({ id: uuid(), value: '' });
+}
+
+function remove(id: string) {
+	serverRules.value = serverRules.value.filter(rule => rule.id !== id);
+}
 
 const headerTabs = computed(() => []);
 

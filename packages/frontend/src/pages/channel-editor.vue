@@ -43,8 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
 					<div ref="dndParentEl">
-						<div v-for="pinnedNote, index in pinnedNotes" :class="$style.pinnedNote">
-							<button class="_button" :class="$style.pinnedNoteHandle" class="handle"><i class="ti ti-menu"></i></button>
+						<div v-for="pinnedNote, index in pinnedNotes" :key="pinnedNote.id" :class="$style.pinnedNote">
+							<button class="_button handle" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
 							{{ pinnedNote.id }}
 							<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
 						</div>
