@@ -121,7 +121,7 @@ import { host } from '@/config.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const iconUrl = ref<string | null>(null);
 const app192IconUrl = ref<string | null>(null);

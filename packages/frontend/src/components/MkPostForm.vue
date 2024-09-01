@@ -131,7 +131,7 @@ import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const $i = signinRequired();
 

@@ -34,7 +34,7 @@ import { useInterval } from '@@/js/use-interval.js';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const name = 'rss';
 

@@ -34,7 +34,7 @@ import { MkABehavior } from '@/components/global/MkA.vue';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 function safeURIDecode(str: string): string {
 	try {

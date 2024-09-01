@@ -68,7 +68,7 @@ import { openInstanceMenu } from '@/ui/_common_/common.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 

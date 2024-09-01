@@ -34,7 +34,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const pagination = {
 	endpoint: 'i/favorites' as const,

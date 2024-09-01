@@ -141,7 +141,7 @@ import MkLink from '@/components/MkLink.vue';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const initStats = () => misskeyApi('stats', {});
 </script>

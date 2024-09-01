@@ -43,7 +43,7 @@ import MkLink from '@/components/MkLink.vue';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 definePageMetadata(() => ({
 	title: i18n.ts.inquiry,

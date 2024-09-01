@@ -47,7 +47,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

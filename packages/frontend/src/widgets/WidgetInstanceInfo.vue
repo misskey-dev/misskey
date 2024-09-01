@@ -27,7 +27,7 @@ import { host } from '@/config.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const name = 'instanceInfo';
 

@@ -163,7 +163,7 @@ import * as os from '@/os.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	initialPage?: number;

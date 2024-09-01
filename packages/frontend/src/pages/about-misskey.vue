@@ -147,7 +147,7 @@ import { $i } from '@/account.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const patronsWithIcon = [{
 	name: 'カイヤン',

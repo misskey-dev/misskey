@@ -139,7 +139,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { inject } from 'vue';
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata);
+const serverMetadata = inject(DI.serverMetadata)!;
 import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
 
