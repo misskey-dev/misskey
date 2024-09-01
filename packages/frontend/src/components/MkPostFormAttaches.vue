@@ -4,11 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-show="props.modelValue.length != 0" :class="$style.root">
+<div
+	v-show="props.modelValue.length != 0"
+	:class="$style.root"
+	@dragover.stop
+	@dragenter.stop
+	@dragleave.stop
+	@drop.stop
+>
 	<div ref="dndParentEl" :class="$style.files">
-		<div v-for="item in items" :key="item.id" :class="$style.file" @click="showFileMenu(item, $event)" @contextmenu.prevent="showFileMenu(item, $event)">
-			<MkDriveFileThumbnail :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
-			<div v-if="item.isSensitive" :class="$style.sensitive">
+		<div v-for="fileId in fileIds" :key="fileId" :class="$style.file" @click="showFileMenu(fileKvs[fileId], $event)" @contextmenu.prevent="showFileMenu(fileKvs[fileId], $event)">
+			<MkDriveFileThumbnail :data-id="fileId" :class="$style.thumbnail" :file="fileKvs[fileId]" fit="cover"/>
+			<div v-if="fileKvs[fileId].isSensitive" :class="$style.sensitive">
 				<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 			</div>
 		</div>
@@ -18,10 +25,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject, watch } from 'vue';
+import { defineAsyncComponent, computed, inject, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { animations } from '@formkit/drag-and-drop';
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -35,19 +42,25 @@ const props = defineProps<{
 const mock = inject<boolean>('mock', false);
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any[]): void;
+	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;
 	(ev: 'detach', id: string): void;
 	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
 	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
 	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
 }>();
 
-const [dndParentEl, items] = useDragAndDrop(props.modelValue, {
-	plugins: [animations()],
+const dndParentEl = shallowRef<HTMLElement>();
+
+const fileKvs = computed(() => Object.fromEntries(props.modelValue.map(file => [file.id, file])));
+const fileIds = computed({
+	get: () => props.modelValue.map(file => file.id),
+	set: (ids: string[]) => emit('update:modelValue', ids.map(id => fileKvs.value[id])),
 });
 
-watch(items, () => {
-	emit('update:modelValue', items.value);
+dragAndDrop({
+	parent: dndParentEl,
+	values: fileIds,
+	plugins: [animations()],
 });
 
 let menuShowing = false;
@@ -69,7 +82,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
+		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
 
 	if (canceled) return;
