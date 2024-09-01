@@ -60,7 +60,9 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/account.js';
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;

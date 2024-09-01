@@ -137,7 +137,9 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { inject } from 'vue';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
 

@@ -42,7 +42,9 @@ import { lookupUser, lookupUserByEmail, lookupFile } from '@/scripts/admin-looku
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const isEmpty = (x: string | null) => x == null || x === '';
 

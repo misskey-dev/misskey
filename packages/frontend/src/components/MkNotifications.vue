@@ -32,6 +32,9 @@ import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@@/js/const.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import * as Misskey from 'misskey-js';

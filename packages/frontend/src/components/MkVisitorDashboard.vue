@@ -66,7 +66,9 @@ import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 import { openInstanceMenu } from '@/ui/_common_/common.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 

@@ -14,7 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject } from 'vue';
 import { instanceName } from '@/config.js';
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
 	instance?: {

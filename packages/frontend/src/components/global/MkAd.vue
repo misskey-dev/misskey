@@ -50,7 +50,9 @@ import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 type Ad = (typeof serverMetadata)['ads'][number];
 

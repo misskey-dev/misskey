@@ -67,9 +67,10 @@ import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { DI } from '@/di.js';
 
-const serverMetadata = inject('serverMetadata');
-const mediaProxy = inject('mediaProxy');
+const serverMetadata = inject(DI.serverMetadata);
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
 	showing: boolean;

@@ -84,7 +84,9 @@ import XFile from './MkFormDialog.file.vue';
 import type { Form } from '@/scripts/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const props = defineProps<{
 	title: string;

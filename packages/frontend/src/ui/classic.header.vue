@@ -56,7 +56,9 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const WINDOW_THRESHOLD = 1400;
 

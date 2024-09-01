@@ -155,7 +155,9 @@ import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { dateString } from '@/filters/date.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
 	host: string;

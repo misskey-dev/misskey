@@ -32,7 +32,9 @@ import * as os from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { MkABehavior } from '@/components/global/MkA.vue';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 function safeURIDecode(str: string): string {
 	try {

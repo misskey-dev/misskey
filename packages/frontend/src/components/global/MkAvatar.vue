@@ -49,7 +49,9 @@ import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store.js';
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const animation = ref(defaultStore.state.animation);
 const squareAvatars = ref(defaultStore.state.squareAvatars);

@@ -141,7 +141,9 @@ import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowB
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

@@ -91,7 +91,9 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 </script>
 <script lang="ts" setup>
 import { inject } from 'vue';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{

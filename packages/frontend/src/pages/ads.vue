@@ -20,7 +20,9 @@ import { inject } from 'vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 definePageMetadata(() => ({
 	title: i18n.ts.ads,

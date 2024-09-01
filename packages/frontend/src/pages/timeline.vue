@@ -57,7 +57,9 @@ import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBa
 
 provide('shouldOmitHeaderTitle', true);
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();

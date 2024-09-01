@@ -37,7 +37,9 @@ import { useInterval } from '@@/js/use-interval.js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';

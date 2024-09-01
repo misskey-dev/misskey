@@ -32,7 +32,9 @@ import { isNotesSearchAvailable } from '@/scripts/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const props = withDefaults(defineProps<{
 	query?: string,

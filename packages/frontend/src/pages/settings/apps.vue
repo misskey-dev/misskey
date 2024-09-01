@@ -53,7 +53,9 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import { inject } from 'vue';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const list = ref<InstanceType<typeof FormPagination>>();
 

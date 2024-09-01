@@ -175,8 +175,10 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { useRouter } from '@/router/supplier.js';
 
-const serverMetadata = inject('serverMetadata');
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
+const mediaProxy = inject(DI.mediaProxy);
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

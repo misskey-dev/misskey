@@ -149,7 +149,9 @@ import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { signinRequired } from '@/account.js';
 import { inject } from 'vue';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const $i = signinRequired();
 

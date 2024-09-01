@@ -44,7 +44,9 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { miLocalStorage } from '@/local-storage.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

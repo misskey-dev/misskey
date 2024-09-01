@@ -56,7 +56,9 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const connection = useStream().useChannel('main');
 const images = ref<Misskey.entities.DriveFile[]>([]);

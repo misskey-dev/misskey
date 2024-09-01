@@ -238,7 +238,9 @@ import MkButton from '@/components/MkButton.vue';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

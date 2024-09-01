@@ -121,8 +121,12 @@ import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 import { MenuItem } from '@/types/menu';
 
-const serverMetadata = inject('serverMetadata');
-const mediaProxy = inject('mediaProxy');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy);
 
 const router = useRouter();
 

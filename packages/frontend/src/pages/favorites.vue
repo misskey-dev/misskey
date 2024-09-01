@@ -32,7 +32,9 @@ import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { inject } from 'vue';
-const serverMetadata = inject('serverMetadata');
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata);
 
 const pagination = {
 	endpoint: 'i/favorites' as const,
