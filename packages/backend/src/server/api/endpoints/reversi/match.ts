@@ -42,6 +42,7 @@ export const paramDef = {
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
 		noIrregularRules: { type: 'boolean', default: false },
 		multiple: { type: 'boolean', default: false },
+		accept_only: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -62,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}) : null;
 
 			const game = target
-				? await this.reversiService.matchSpecificUser(me, target, ps.multiple)
+				? await this.reversiService.matchSpecificUser(me, target, ps.multiple, ps.accept_only)
 				: await this.reversiService.matchAnyUser(me, { noIrregularRules: ps.noIrregularRules }, ps.multiple);
 
 			if (game == null) return;

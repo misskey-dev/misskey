@@ -859,7 +859,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	z-index: 2;
 	width: 100%;
 	height: 64px;
-	background: linear-gradient(0deg, var(--panel), var(--X15));
+	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
 
 	&:hover > .collapsedLabel {
 		background: var(--panelHighlight);
