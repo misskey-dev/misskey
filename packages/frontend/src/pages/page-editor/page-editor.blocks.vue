@@ -12,10 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, computed, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { animations } from '@formkit/drag-and-drop';
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
@@ -39,10 +39,23 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.PageBlock[]): void;
 }>();
 
-const [dndParentEl, items] = useDragAndDrop(props.modelValue, {
+const items = computed({
+	get: () => props.modelValue,
+	set: (v) => emit('update:modelValue', v),
+});
+
+const dndParentEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: items,
 	dragHandle: '.drag-handle',
 	group: 'blocks',
 	plugins: [animations()],
+	threshold: {
+		horizontal: 0.5,
+		vertical: 0.5,
+	},
 });
 
 watch(items, (v) => {
