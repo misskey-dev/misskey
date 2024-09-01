@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="showDecoration">
 		<img
 			v-for="decoration in decorations ?? user.avatarDecorations"
-			:class="[$style.decoration, { [$style.decorationBlink]: decoration.blink }]"
+			:class="[$style.decoration]"
 			:src="getDecorationUrl(decoration)"
 			:style="{
 				rotate: getDecorationAngle(decoration),
@@ -60,7 +60,7 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
-	decorations?: (Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'> & { blink?: boolean; })[];
+	decorations?: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>[];
 	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
@@ -329,18 +329,5 @@ watch(() => props.user.avatarBlurhash, () => {
 	left: -50%;
 	width: 200%;
 	pointer-events: none;
-}
-
-.decorationBlink {
-	animation: blink 1s infinite;
-}
-
-@keyframes blink {
-	0%, 100% {
-		filter: brightness(2);
-	}
-	50% {
-		filter: brightness(1);
-	}
 }
 </style>

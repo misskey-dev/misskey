@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
-						<MkRadios v-model="game.bw" @click="updateSettings('bw')">
+						<MkRadios v-model="game.bw">
 							<option value="random">{{ i18n.ts.random }}</option>
 							<option :value="'1'">
 								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
@@ -54,11 +54,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkRadios>
 					</MkFolder>
 
-					<MkFolder v-if="!isFederation" :defaultOpen="true">
+					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts._reversi.timeLimitForEachTurn }}</template>
 						<template #suffix>{{ game.timeLimitForEachTurn }}{{ i18n.ts._time.second }}</template>
 
-						<MkRadios v-model="game.timeLimitForEachTurn" @click="updateSettings('timeLimitForEachTurn')">
+						<MkRadios v-model="game.timeLimitForEachTurn">
 							<option :value="5">5{{ i18n.ts._time.second }}</option>
 							<option :value="10">10{{ i18n.ts._time.second }}</option>
 							<option :value="30">30{{ i18n.ts._time.second }}</option>
@@ -154,13 +154,16 @@ const isOpReady = computed(() => {
 	if (game.value.user2Id !== $i.id && game.value.user2Ready) return true;
 	return false;
 });
-const isFederation = computed(() => {
-	if (game.value.user1.host !== null) return true;
-	if (game.value.user2.host !== null) return true;
-	return false;
-});
 
 const opponentHasSettingsChanged = ref(false);
+
+watch(() => game.value.bw, () => {
+	updateSettings('bw');
+});
+
+watch(() => game.value.timeLimitForEachTurn, () => {
+	updateSettings('timeLimitForEachTurn');
+});
 
 function chooseMap(ev: MouseEvent) {
 	const menu: MenuItem[] = [];

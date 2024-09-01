@@ -120,9 +120,5 @@ export const packedFederationInstanceSchema = {
 			type: 'string',
 			optional: true, nullable: true,
 		},
-		reversiVersion: {
-			type: 'string',
-			optional: true, nullable: true,
-		},
 	},
 } as const;

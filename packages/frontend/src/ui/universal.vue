@@ -427,7 +427,7 @@ $widgets-hide-threshold: 1090px;
 	}
 
 	&:active {
-		background: hsl(from var(--panel) h s calc(l - 2));
+		background: var(--X2);
 	}
 }
 
@@ -437,11 +437,11 @@ $widgets-hide-threshold: 1090px;
 	color: var(--fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, var(--X8), var(--X8));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, var(--X8), var(--X8));
 	}
 }
 
