@@ -138,7 +138,7 @@ export class ExportCustomEmojisProcessorService {
 				this.logger.succ(`Exported to: ${driveFile.id}`);
 
 				this.notificationService.createNotification(user.id, 'exportCompleted', {
-					exportedEntitity: 'customEmoji',
+					exportedEntity: 'customEmoji',
 					fileId: driveFile.id,
 				});
 

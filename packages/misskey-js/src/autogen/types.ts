@@ -4262,7 +4262,7 @@ export type components = {
       /** @enum {string} */
       type: 'exportCompleted';
       /** @enum {string} */
-      exportedEntitity: 'antenna' | 'blocking' | 'clip' | 'customEmoji' | 'favorite' | 'following' | 'muting' | 'note' | 'userList';
+      exportedEntity: 'antenna' | 'blocking' | 'clip' | 'customEmoji' | 'favorite' | 'following' | 'muting' | 'note' | 'userList';
       /** Format: id */
       fileId: string;
     }) | ({

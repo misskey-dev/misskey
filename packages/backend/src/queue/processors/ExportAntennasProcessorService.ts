@@ -99,7 +99,7 @@ export class ExportAntennasProcessorService {
 			this.logger.succ('Exported to: ' + driveFile.id);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'antenna',
+				exportedEntity: 'antenna',
 				fileId: driveFile.id,
 			});
 		} finally {

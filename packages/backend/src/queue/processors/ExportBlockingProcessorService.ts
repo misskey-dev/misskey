@@ -113,7 +113,7 @@ export class ExportBlockingProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'blocking',
+				exportedEntity: 'blocking',
 				fileId: driveFile.id,
 			});
 		} finally {

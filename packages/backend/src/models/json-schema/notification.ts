@@ -307,7 +307,7 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 				enum: ['exportCompleted'],
 			},
-			exportedEntitity: {
+			exportedEntity: {
 				type: 'string',
 				optional: false, nullable: false,
 				enum: exportableEntities,

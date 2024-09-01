@@ -117,7 +117,7 @@ export class ExportFollowingProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'following',
+				exportedEntity: 'following',
 				fileId: driveFile.id,
 			});
 		} finally {

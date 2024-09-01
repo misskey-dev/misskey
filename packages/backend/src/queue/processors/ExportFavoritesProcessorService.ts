@@ -127,7 +127,7 @@ export class ExportFavoritesProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'favorite',
+				exportedEntity: 'favorite',
 				fileId: driveFile.id,
 			});
 		} finally {

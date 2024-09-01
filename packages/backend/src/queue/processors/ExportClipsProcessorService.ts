@@ -83,7 +83,7 @@ export class ExportClipsProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'clip',
+				exportedEntity: 'clip',
 				fileId: driveFile.id,
 			});
 		} finally {

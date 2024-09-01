@@ -83,7 +83,7 @@ export type MiNotification = {
 	type: 'exportCompleted';
 	id: string;
 	createdAt: string;
-	exportedEntitity: typeof exportableEntities[number];
+	exportedEntity: typeof exportableEntities[number];
 	fileId: MiDriveFile['id'];
 } | {
 	type: 'app';

@@ -114,7 +114,7 @@ export class ExportMutingProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'muting',
+				exportedEntity: 'muting',
 				fileId: driveFile.id,
 			});
 		} finally {

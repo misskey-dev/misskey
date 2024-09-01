@@ -154,7 +154,7 @@ export class ExportNotesProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'note',
+				exportedEntity: 'note',
 				fileId: driveFile.id,
 			});
 		} finally {

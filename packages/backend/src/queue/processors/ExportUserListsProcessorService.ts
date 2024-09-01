@@ -93,7 +93,7 @@ export class ExportUserListsProcessorService {
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
-				exportedEntitity: 'userList',
+				exportedEntity: 'userList',
 				fileId: driveFile.id,
 			});
 		} finally {
