@@ -10,26 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<div class="_gaps_m">
 				<div>{{ i18n.ts._serverRules.description }}</div>
-				<Sortable
-					v-model="serverRules"
-					class="_gaps_m"
-					:itemKey="(_, i) => i"
-					:animation="150"
-					:handle="'.' + $style.itemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
-				>
-					<template #item="{element,index}">
-						<div :class="$style.item">
-							<div :class="$style.itemHeader">
-								<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-								<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
-								<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
-							</div>
-							<MkInput v-model="serverRules[index]"/>
+				<div ref="dndParentEl" class="_gaps_m">
+					<div v-for="rule, index in serverRules" :key="`${rule}_${index}`" :class="$style.item">
+						<div :class="$style.itemHeader">
+							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
+							<span :class="$style.itemHandle" class="handle"><i class="ti ti-menu"/></span>
+							<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
 						</div>
-					</template>
-				</Sortable>
+						<MkInput v-model="serverRules[index]"/>
+					</div>
+				</div>
 				<div :class="$style.commands">
 					<MkButton rounded @click="serverRules.push('')"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
@@ -41,7 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
+import { ref, shallowRef, computed } from 'vue';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import XHeader from './_header_.vue';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
@@ -50,9 +42,16 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const serverRules = ref<string[]>(instance.serverRules);
+
+const dndParentEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: serverRules,
+	plugins: [animations()],
+	dragHandle: '.handle',
+});
 
 const save = async () => {
 	await os.apiWithDialog('admin/update-meta', {

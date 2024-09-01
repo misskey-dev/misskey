@@ -5,32 +5,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
-		<template #item="{element}">
-			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
-				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
-				<div v-if="element.isSensitive" :class="$style.sensitive">
-					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
-				</div>
+	<div ref="dndParentEl" :class="$style.files">
+		<div v-for="item in items" :key="item.id" :class="$style.file" @click="showFileMenu(item, $event)" @contextmenu.prevent="showFileMenu(item, $event)">
+			<MkDriveFileThumbnail :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
+			<div v-if="item.isSensitive" :class="$style.sensitive">
+				<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 			</div>
-		</template>
-	</Sortable>
+		</div>
+	</div>
 	<p :class="$style.remain">{{ 16 - props.modelValue.length }}/16</p>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject } from 'vue';
+import { defineAsyncComponent, inject, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { animations } from '@formkit/drag-and-drop';
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const props = defineProps<{
-	modelValue: any[];
+	modelValue: Misskey.entities.DriveFile[];
 	detachMediaFn?: (id: string) => void;
 }>();
 
@@ -43,6 +41,14 @@ const emit = defineEmits<{
 	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
 	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
 }>();
+
+const [dndParentEl, items] = useDragAndDrop(props.modelValue, {
+	plugins: [animations()],
+});
+
+watch(items, () => {
+	emit('update:modelValue', items.value);
+});
 
 let menuShowing = false;
 

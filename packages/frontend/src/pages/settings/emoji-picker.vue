@@ -13,26 +13,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<div>
 				<div v-panel style="border-radius: 6px;">
-					<Sortable
-						v-model="pinnedEmojisForReaction"
-						:class="$style.emojis"
-						:itemKey="item => item"
-						:animation="150"
-						:delay="100"
-						:delayOnTouchOnly="true"
-					>
-						<template #item="{element}">
-							<button class="_button" :class="$style.emojisItem" @click="removeReaction(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-								<MkEmoji v-else :emoji="element" :normal="true"/>
-							</button>
-						</template>
-						<template #footer>
-							<button class="_button" :class="$style.emojisAdd" @click="chooseReaction">
-								<i class="ti ti-plus"></i>
-							</button>
-						</template>
-					</Sortable>
+					<div ref="forReactionDndParentEl" :class="$style.emojis">
+						<button v-for="emoji in pinnedEmojisForReaction" :key="`pinnedForReaction_${emoji}`" class="_button" :class="$style.emojisItem" @click="removeReaction(emoji, $event)">
+							<MkCustomEmoji v-if="emoji.startsWith(':')" :name="emoji" :normal="true" :fallbackToImage="true"/>
+							<MkEmoji v-else :emoji="emoji" :normal="true"/>
+						</button>
+						<button class="_button no-drag" :class="$style.emojisAdd" @click="chooseReaction">
+							<i class="ti ti-plus"></i>
+						</button>
+					</div>
 				</div>
 				<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
 			</div>
@@ -53,26 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<div>
 				<div v-panel style="border-radius: 6px;">
-					<Sortable
-						v-model="pinnedEmojis"
-						:class="$style.emojis"
-						:itemKey="item => item"
-						:animation="150"
-						:delay="100"
-						:delayOnTouchOnly="true"
-					>
-						<template #item="{element}">
-							<button class="_button" :class="$style.emojisItem" @click="removeEmoji(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-								<MkEmoji v-else :emoji="element" :normal="true"/>
-							</button>
-						</template>
-						<template #footer>
-							<button class="_button" :class="$style.emojisAdd" @click="chooseEmoji">
-								<i class="ti ti-plus"></i>
-							</button>
-						</template>
-					</Sortable>
+					<div ref="dndParentEl" :class="$style.emojis">
+						<button v-for="emoji in pinnedEmojis" :key="`pinned_${emoji}`" class="_button" :class="$style.emojisItem" @click="removeEmoji(emoji, $event)">
+							<MkCustomEmoji v-if="emoji.startsWith(':')" :name="emoji" :normal="true" :fallbackToImage="true"/>
+							<MkEmoji v-else :emoji="emoji" :normal="true"/>
+						</button>
+						<button class="_button no-drag" :class="$style.emojisAdd" @click="chooseEmoji">
+							<i class="ti ti-plus"></i>
+						</button>
+					</div>
 				</div>
 				<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
 			</div>
@@ -123,8 +101,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, Ref, watch } from 'vue';
-import Sortable from 'vuedraggable';
+import { computed, ref, Ref, shallowRef, watch } from 'vue';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
@@ -140,13 +119,34 @@ import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
-const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
-const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
+const pinnedEmojisForReaction = ref<string[]>(deepClone(defaultStore.state.reactions));
+const pinnedEmojis = ref<string[]>(deepClone(defaultStore.state.pinnedEmojis));
 
 const emojiPickerScale = computed(defaultStore.makeGetterSetter('emojiPickerScale'));
 const emojiPickerWidth = computed(defaultStore.makeGetterSetter('emojiPickerWidth'));
 const emojiPickerHeight = computed(defaultStore.makeGetterSetter('emojiPickerHeight'));
 const emojiPickerUseDrawerForMobile = computed(defaultStore.makeGetterSetter('emojiPickerUseDrawerForMobile'));
+
+const forReactionDndParentEl = shallowRef<HTMLElement>();
+const dndParentEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: forReactionDndParentEl,
+	values: pinnedEmojisForReaction,
+	plugins: [animations()],
+	draggable: (el: HTMLElement) => {
+		return !el.classList.contains('no-drag');
+	},
+});
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: pinnedEmojis,
+	plugins: [animations()],
+	draggable: (el: HTMLElement) => {
+		return !el.classList.contains('no-drag');
+	},
+});
 
 const removeReaction = (reaction: string, ev: MouseEvent) => remove(pinnedEmojisForReaction, reaction, ev);
 const chooseReaction = (ev: MouseEvent) => pickEmoji(pinnedEmojisForReaction, ev);

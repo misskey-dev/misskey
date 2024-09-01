@@ -55,32 +55,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
 
-				<Sortable
-					v-model="fields"
-					class="_gaps_s"
-					itemKey="id"
-					:animation="150"
-					:handle="'.' + $style.dragItemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
-				>
-					<template #item="{element, index}">
-						<div :class="$style.fieldDragItem">
-							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
-							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
-							<div :class="$style.dragItemForm">
-								<FormSplit :minWidth="200">
-									<MkInput v-model="element.name" small>
-										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
-									</MkInput>
-									<MkInput v-model="element.value" small>
-										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
-									</MkInput>
-								</FormSplit>
-							</div>
+				<div ref="fieldsRootEl" class="_gaps_s">
+					<div v-for="field, index in fields" :key="field.id" :class="$style.fieldDragItem">
+						<button v-if="!fieldEditMode" class="_button handle" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+						<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
+						<div :class="$style.dragItemForm">
+							<FormSplit :minWidth="200">
+								<MkInput v-model="field.name" small>
+									<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
+								</MkInput>
+								<MkInput v-model="field.value" small>
+									<template #label>{{ i18n.ts._profile.metadataContent }}</template>
+								</MkInput>
+							</FormSplit>
 						</div>
-					</template>
-				</Sortable>
+					</div>
+				</div>
 
 				<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 			</div>
@@ -109,7 +99,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, reactive, ref, shallowRef, watch } from 'vue';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -131,8 +123,6 @@ import MkTextarea from '@/components/MkTextarea.vue';
 
 const $i = signinRequired();
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
 const profile = reactive({
@@ -153,6 +143,16 @@ watch(() => profile, () => {
 
 const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
+
+const fieldsRootEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: fieldsRootEl,
+	values: fields,
+	plugins: [animations()],
+	dragHandle: '.handle',
+	draggable: () => !fieldEditMode.value,
+});
 
 function addField() {
 	fields.value.push({

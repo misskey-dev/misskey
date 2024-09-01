@@ -14,25 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
-		<Sortable
-			:modelValue="props.widgets"
-			itemKey="id"
-			handle=".handle"
-			:animation="150"
-			:group="{ name: 'SortableMkWidgets' }"
-			:class="$style.editEditing"
-			@update:modelValue="v => emit('updateWidgets', v)"
-		>
-			<template #item="{element}">
-				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
-					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
-					<div class="handle">
-						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
-					</div>
+		<div ref="dndParentEl" :class="$style.editEditing">
+			<div v-for="widget in widgets" :key="widget.id" :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
+				<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(widget.id)"><i class="ti ti-settings"></i></button>
+				<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(widget)"><i class="ti ti-x"></i></button>
+				<div class="handle">
+					<component :is="`widget-${widget.name}`" :ref="el => widgetRefs[widget.id] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="widget" @updateProps="updateWidget(widget.id, $event)"/>
 				</div>
-			</template>
-		</Sortable>
+			</div>
+		</div>
 	</template>
 	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
@@ -50,20 +40,30 @@ export type DefaultStoredWidget = {
 </script>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
+import { animations } from '@formkit/drag-and-drop';
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const props = defineProps<{
 	widgets: Widget[];
 	edit: boolean;
 }>();
+
+const [dndParentEl, widgets] = useDragAndDrop(props.widgets, {
+	group: 'SortableMkWidgets',
+	dragHandle: '.handle',
+	plugins: [animations()],
+});
+
+watch(widgets, () => {
+	emit('updateWidgets', widgets.value);
+});
 
 const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
