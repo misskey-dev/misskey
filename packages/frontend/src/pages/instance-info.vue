@@ -23,6 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #value><span class="_monospace">{{ instance.softwareName || `(${i18n.ts.unknown})` }} / {{ instance.softwareVersion || `(${i18n.ts.unknown})` }}</span></template>
 					</MkKeyValue>
 					<MkKeyValue oneline>
+						<template #key>{{ i18n.ts._reversi.reversi }}</template>
+						<template #value><span class="_monospace">{{ instance.reversiVersion || `(${i18n.ts.unknown})` }} </span></template>
+					</MkKeyValue>
+					<MkKeyValue oneline>
 						<template #key>{{ i18n.ts.administrator }}</template>
 						<template #value>{{ instance.maintainerName || `(${i18n.ts.unknown})` }} ({{ instance.maintainerEmail || `(${i18n.ts.unknown})` }})</template>
 					</MkKeyValue>
