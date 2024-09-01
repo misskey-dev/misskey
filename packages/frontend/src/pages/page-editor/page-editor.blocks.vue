@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="dndParentEl"></div>
-	<div v-for="item in items" :class="$style.item">
+<div ref="dndParentEl">
+	<div v-for="item in items" :key="item.id" :class="$style.item">
 		<component :is="getComponent(item.type)" :modelValue="item" @update:modelValue="updateItem" @remove="() => removeItem(item)"/>
 	</div>
 </div>
