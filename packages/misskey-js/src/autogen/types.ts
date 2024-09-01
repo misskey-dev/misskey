@@ -4610,7 +4610,6 @@ export type components = {
       /** Format: date-time */
       latestRequestReceivedAt: string | null;
       moderationNote?: string | null;
-      reversiVersion?: string | null;
     };
     GalleryPost: {
       /**
@@ -4948,7 +4947,6 @@ export type components = {
        * @enum {string}
        */
       noteSearchableScope: 'local' | 'global';
-      reversiVersion: string;
     };
     MetaDetailedOnly: {
       features?: {
@@ -27290,8 +27288,6 @@ export type operations = {
           noIrregularRules?: boolean;
           /** @default false */
           multiple?: boolean;
-          /** @default false */
-          accept_only?: boolean;
         };
       };
     };

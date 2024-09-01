@@ -96,7 +96,6 @@ const decorationsForPreview = computed(() => {
 		flipH: flipH.value,
 		offsetX: offsetX.value,
 		offsetY: offsetY.value,
-		blink: true,
 	};
 	const decorations = [...$i.avatarDecorations];
 	if (props.usingIndex != null) {
