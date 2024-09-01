@@ -13,9 +13,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@drop.stop
 >
 	<div ref="dndParentEl" :class="$style.files">
-		<div v-for="fileId in fileIds" :key="fileId" :class="$style.file" @click="showFileMenu(fileKvs[fileId], $event)" @contextmenu.prevent="showFileMenu(fileKvs[fileId], $event)">
-			<MkDriveFileThumbnail :data-id="fileId" :class="$style.thumbnail" :file="fileKvs[fileId]" fit="cover"/>
-			<div v-if="fileKvs[fileId].isSensitive" :class="$style.sensitive">
+		<div v-for="file in files" :key="file.id" :class="$style.file" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
+			<MkDriveFileThumbnail :data-id="file.id" :class="$style.thumbnail" :file="file" fit="cover"/>
+			<div v-if="file.isSensitive" :class="$style.sensitive">
 				<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 			</div>
 		</div>
@@ -51,15 +51,14 @@ const emit = defineEmits<{
 
 const dndParentEl = shallowRef<HTMLElement>();
 
-const fileKvs = computed(() => Object.fromEntries(props.modelValue.map(file => [file.id, file])));
-const fileIds = computed({
-	get: () => props.modelValue.map(file => file.id),
-	set: (ids: string[]) => emit('update:modelValue', ids.map(id => fileKvs.value[id])),
+const files = computed({
+	get: () => props.modelValue,
+	set: (v) => emit('update:modelValue', v),
 });
 
 dragAndDrop({
 	parent: dndParentEl,
-	values: fileIds,
+	values: files,
 	plugins: [animations()],
 });
 
