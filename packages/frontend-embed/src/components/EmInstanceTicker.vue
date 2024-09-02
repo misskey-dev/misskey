@@ -15,7 +15,7 @@ import { computed, inject } from 'vue';
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
 	instance: {

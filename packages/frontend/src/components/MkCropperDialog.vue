@@ -44,7 +44,7 @@ import { i18n } from '@/i18n.js';
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const emit = defineEmits<{
 	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;

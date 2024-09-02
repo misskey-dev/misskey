@@ -157,7 +157,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
 	host: string;

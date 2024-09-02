@@ -77,7 +77,7 @@ function prepend(note) {
 
 	tlNotesCount++;
 
-	if (instance.notesPerOneAd > 0 && tlNotesCount % instance.notesPerOneAd === 0) {
+	if (serverMetadata.notesPerOneAd > 0 && tlNotesCount % serverMetadata.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 

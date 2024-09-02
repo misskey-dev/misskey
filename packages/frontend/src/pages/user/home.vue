@@ -178,7 +178,7 @@ import { useRouter } from '@/router/supplier.js';
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

@@ -229,7 +229,7 @@ watch(router.currentRef, (to) => {
 	}
 });
 
-const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
+const emailNotConfigured = computed(() => serverMetadata.enableEmail && ($i.email == null || !$i.emailVerified));
 
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();

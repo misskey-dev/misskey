@@ -37,7 +37,7 @@ import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialo
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
 	name: string;

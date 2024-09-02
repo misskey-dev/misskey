@@ -51,7 +51,7 @@ import { defaultStore } from '@/store.js';
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const animation = ref(defaultStore.state.animation);
 const squareAvatars = ref(defaultStore.state.squareAvatars);

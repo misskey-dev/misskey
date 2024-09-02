@@ -39,7 +39,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';
