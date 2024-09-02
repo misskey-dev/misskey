@@ -12,10 +12,14 @@ import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-dark.json5';
+import { MediaProxy } from '@@/js/media-proxy.js';
 import { applyTheme } from './theme.js';
 import { fetchCustomEmojis } from './custom-emojis.js';
-import { setIframeId } from '@/post-message.js';
+import { DI } from './di.js';
+import { serverMetadata } from './server-metadata.js';
+import { url } from './config.js';
 import { parseEmbedParams } from '@/embed-page.js';
+import { setIframeId } from '@/post-message.js';
 
 console.info('Misskey Embed');
 
@@ -64,9 +68,9 @@ const app = createApp(
 	defineAsyncComponent(() => import('@/ui.vue')),
 );
 
-//#region Embed Provide
+app.provide(DI.mediaProxy, new MediaProxy(serverMetadata, url));
+
 app.provide('embedParams', embedParams);
-//#endregion
 
 // https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 // なぜか2回実行されることがあるため、mountするdivを1つに制限する
