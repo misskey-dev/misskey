@@ -124,7 +124,7 @@ import { MenuItem } from '@/types/menu';
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const router = useRouter();
 

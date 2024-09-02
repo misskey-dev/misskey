@@ -48,7 +48,7 @@ import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;
-const mediaProxy = inject(DI.mediaProxy);
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const instances = ref<Misskey.entities.FederationInstance[]>();
 
