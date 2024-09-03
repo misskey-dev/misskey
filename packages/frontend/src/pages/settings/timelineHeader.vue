@@ -11,7 +11,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Sortable
 					v-model="items"
 					itemKey="id"
-					:class="$style.container"
 					:animation="150"
 					:handle="'.' + $style.itemHandle"
 					@start="e => e.item.classList.add('active')"
@@ -185,9 +184,5 @@ definePageMetadata(() => ({
 	height: 32px;
 	margin: 0 8px;
 	opacity: 0.5;
-}
-
-.container{
-	display: flex;
 }
 </style>
