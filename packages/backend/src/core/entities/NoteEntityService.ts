@@ -162,7 +162,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async populatePoll(note: MiNote, meId: MiUser['id'] | null) {
+	public async populatePoll(note: MiNote, meId: MiUser['id'] | null) {
 		const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 		const choices = poll.choices.map(c => ({
 			text: c,
