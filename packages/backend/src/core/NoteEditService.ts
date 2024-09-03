@@ -146,9 +146,9 @@ export class NoteEditService implements OnApplicationShutdown {
 			throw new Error('No such note');
 		}
 
-		// if ((await this.roleService.getUserPolicies(user.id)).canEditNote !== true) {
-		// 	throw new Error('Not allow edit note');
-		// }
+		if ((await this.roleService.getUserPolicies(user.id)).canEditNote !== true) {
+			throw new Error('Edit note is not allowed');
+		}
 
 		if (data.reply == null) data.reply = targetNote.reply;
 		if (data.channel == null) data.channel = targetNote.channel;
