@@ -42,7 +42,7 @@ export class UserWebhookService implements OnApplicationShutdown {
 	 * UserWebhook の一覧を取得する.
 	 */
 	@bindThis
-	public async fetchWebhooks(params?: {
+	public fetchWebhooks(params?: {
 		ids?: MiWebhook['id'][];
 		isActive?: MiWebhook['active'];
 		on?: MiWebhook['on'];

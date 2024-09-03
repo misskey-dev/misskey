@@ -54,7 +54,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	 * SystemWebhook の一覧を取得する.
 	 */
 	@bindThis
-	public async fetchSystemWebhooks(params?: {
+	public fetchSystemWebhooks(params?: {
 		ids?: MiSystemWebhook['id'][];
 		isActive?: MiSystemWebhook['isActive'];
 		on?: MiSystemWebhook['on'];
