@@ -291,7 +291,7 @@ export const defaultStore = markRaw(
 		tl: {
 			where: 'deviceAccount',
 			default: {
-				src: 'home' as
+				src: 'social' as
 					| 'home'
 					| 'local'
 					| 'social'
