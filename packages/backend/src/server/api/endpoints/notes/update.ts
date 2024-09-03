@@ -57,7 +57,7 @@ export const paramDef = {
 			type: 'string',
 			minLength: 1,
 			maxLength: MAX_NOTE_TEXT_LENGTH,
-			nullable: false,
+			nullable: true,
 		},
 		cw: {
 			type: 'string',
@@ -96,9 +96,6 @@ export const paramDef = {
 				type: 'null',
 			},
 			fileIds: {
-				type: 'null',
-			},
-			mediaIds: {
 				type: 'null',
 			},
 			poll: {
