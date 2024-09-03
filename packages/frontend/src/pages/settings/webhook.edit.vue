@@ -142,6 +142,10 @@ async function test(type: Misskey.entities.UserWebhook['on'][number]): Promise<v
 	await os.apiWithDialog('i/webhooks/test', {
 		webhookId: props.webhookId,
 		type,
+		override: {
+			secret: secret.value,
+			url: url.value,
+		},
 	});
 }
 

@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 
-						<div :class="$style.description">
+						<div v-show="mode === 'edit'" :class="$style.description">
 							{{ i18n.ts._webhookSettings.testRemarks }}
 						</div>
 					</div>
@@ -204,6 +204,10 @@ async function test(type: Misskey.entities.SystemWebhook['on'][number]): Promise
 	await os.apiWithDialog('admin/system-webhook/test', {
 		webhookId: id.value,
 		type,
+		override: {
+			secret: secret.value,
+			url: url.value,
+		},
 	});
 }
 

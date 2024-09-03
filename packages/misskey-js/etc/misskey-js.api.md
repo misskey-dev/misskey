@@ -1819,7 +1819,6 @@ declare namespace entities {
         MetaLite,
         MetaDetailedOnly,
         MetaDetailed,
-        UserWebhook,
         SystemWebhook,
         AbuseReportNotificationRecipient
     }
@@ -3270,9 +3269,6 @@ type UsersShowResponse = operations['users___show']['responses']['200']['content
 
 // @public (undocumented)
 type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type UserWebhook = components['schemas']['UserWebhook'];
 
 // Warnings were encountered during analysis:
 //

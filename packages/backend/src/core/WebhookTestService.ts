@@ -11,6 +11,7 @@ import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { QueueService } from '@/core/QueueService.js';
 
 const oneDayMillis = 24 * 60 * 60 * 1000;
 
@@ -266,32 +267,48 @@ const dummyUser3 = generateDummyUser({
 
 @Injectable()
 export class WebhookTestService {
-	public static NoSuchActiveWebhookError = class extends Error {};
+	public static NoSuchWebhookError = class extends Error {};
 
 	constructor(
 		private userWebhookService: UserWebhookService,
 		private systemWebhookService: SystemWebhookService,
+		private queueService: QueueService,
 	) {
 	}
 
 	/**
 	 * UserWebhookのテスト送信を行う.
 	 * 送信されるペイロードはいずれもダミーの値で、実際にはデータベース上に存在しない.
+	 *
+	 * また、この関数経由で送信されるWebhookは以下の設定を無視する.
+	 * - Webhookそのものの有効・無効設定（active）
+	 * - 送信対象イベント（on）に関する設定
 	 */
 	@bindThis
 	public async testUserWebhook(
-		params: { webhookId: MiWebhook | MiWebhook['id'], type: WebhookEventTypes },
+		params: {
+			webhookId: MiWebhook['id'],
+			type: WebhookEventTypes,
+			override?: Partial<Omit<MiWebhook, 'id'>>,
+		},
 		sender: MiUser | null,
 	) {
-		const webhook = (await this.userWebhookService.getActiveWebhooks())
-			.find(a => a.id === params.webhookId && a.userId === sender?.id);
-		if (!webhook || !webhook.active) {
-			throw new WebhookTestService.NoSuchActiveWebhookError();
+		const webhooks = await this.userWebhookService.fetchWebhooks({ ids: [params.webhookId] })
+			.then(it => it.filter(it => it.userId === sender?.id));
+		if (webhooks.length === 0) {
+			throw new WebhookTestService.NoSuchWebhookError();
 		}
 
+		const webhook = webhooks[0];
 		const send = (contents: unknown) => {
-			// テストなのでJobの試行回数は1回だけ
-			this.userWebhookService.enqueueUserWebhook(webhook, params.type, contents, { attempts: 1 });
+			const merged = {
+				...webhook,
+				...params.override,
+			};
+
+			// テスト目的なのでUserWebhookServiceの機能を経由せず直接キューに追加する（チェック処理などをスキップする意図）.
+			// また、Jobの試行回数も1回だけ.
+			this.queueService.userWebhookDeliver(merged, params.type, contents, { attempts: 1 });
 		};
 
 		const dummyNote1 = generateDummyNote({
@@ -356,20 +373,34 @@ export class WebhookTestService {
 	/**
 	 * SystemWebhookのテスト送信を行う.
 	 * 送信されるペイロードはいずれもダミーの値で、実際にはデータベース上に存在しない.
+	 *
+	 * また、この関数経由で送信されるWebhookは以下の設定を無視する.
+	 * - Webhookそのものの有効・無効設定（isActive）
+	 * - 送信対象イベント（on）に関する設定
 	 */
 	@bindThis
 	public async testSystemWebhook(
-		params: { webhookId: MiSystemWebhook['id'], type: SystemWebhookEventType },
+		params: {
+			webhookId: MiSystemWebhook['id'],
+			type: SystemWebhookEventType,
+			override?: Partial<Omit<MiSystemWebhook, 'id'>>,
+		},
 	) {
-		const webhook = (await this.systemWebhookService.fetchActiveSystemWebhooks())
-			.find(a => a.id === params.webhookId);
-		if (!webhook || !webhook.isActive) {
-			throw new WebhookTestService.NoSuchActiveWebhookError();
+		const webhooks = await this.systemWebhookService.fetchSystemWebhooks({ ids: [params.webhookId] });
+		if (webhooks.length === 0) {
+			throw new WebhookTestService.NoSuchWebhookError();
 		}
 
+		const webhook = webhooks[0];
 		const send = (contents: unknown) => {
-			// テストなのでJobの試行回数は1回だけ
-			this.systemWebhookService.enqueueSystemWebhook(webhook, params.type, contents, { attempts: 1 });
+			const merged = {
+				...webhook,
+				...params.override,
+			};
+
+			// テスト目的なのでSystemWebhookServiceの機能を経由せず直接キューに追加する（チェック処理などをスキップする意図）.
+			// また、Jobの試行回数も1回だけ.
+			this.queueService.systemWebhookDeliver(merged, params.type, contents, { attempts: 1 });
 		};
 
 		switch (params.type) {

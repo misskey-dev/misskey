@@ -452,7 +452,7 @@ export class QueueService {
 
 	/**
 	 * @see UserWebhookDeliverJobData
-	 * @see WebhookDeliverProcessorService
+	 * @see UserWebhookDeliverProcessorService
 	 */
 	@bindThis
 	public userWebhookDeliver(
@@ -484,7 +484,7 @@ export class QueueService {
 
 	/**
 	 * @see SystemWebhookDeliverJobData
-	 * @see WebhookDeliverProcessorService
+	 * @see SystemWebhookDeliverProcessorService
 	 */
 	@bindThis
 	public systemWebhookDeliver(

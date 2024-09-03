@@ -172,9 +172,6 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		webhook: MiSystemWebhook | MiSystemWebhook['id'],
 		type: T,
 		content: unknown,
-		opts?: {
-			attempts?: number;
-		},
 	) {
 		const webhookEntity = typeof webhook === 'string'
 			? (await this.fetchActiveSystemWebhooks()).find(a => a.id === webhook)
@@ -189,7 +186,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 			return;
 		}
 
-		return this.queueService.systemWebhookDeliver(webhookEntity, type, content, opts);
+		return this.queueService.systemWebhookDeliver(webhookEntity, type, content);
 	}
 
 	@bindThis

@@ -9466,7 +9466,7 @@ export interface Locale extends ILocale {
          */
         "deleteConfirm": string;
         /**
-         * スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。テスト用Webhookは保存された情報（有効・無効、送信先など）をもとに送信されるため、設定変更後にテストを行う場合は、事前に設定を保存しておく必要があります。
+         * スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。
          */
         "testRemarks": string;
     };

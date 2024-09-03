@@ -4990,20 +4990,6 @@ export type components = {
       cacheRemoteSensitiveFiles: boolean;
     };
     MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
-    UserWebhook: {
-      /** Format: misskey:id */
-      id: string;
-      /** Format: misskey:id */
-      userId: string;
-      name: string;
-      on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-      url: string;
-      secret: string;
-      active: boolean;
-      /** Format: date-time */
-      latestSentAt: string | null;
-      latestStatus: number | null;
-    };
     SystemWebhook: {
       id: string;
       isActive: boolean;
@@ -10375,6 +10361,10 @@ export type operations = {
           webhookId: string;
           /** @enum {string} */
           type: 'abuseReport' | 'abuseReportResolved' | 'userCreated';
+          override?: {
+            url?: string;
+            secret?: string;
+          };
         };
       };
     };
@@ -20254,6 +20244,10 @@ export type operations = {
           webhookId: string;
           /** @enum {string} */
           type: 'mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction';
+          override?: {
+            url?: string;
+            secret?: string;
+          };
         };
       };
     };

@@ -24,9 +24,9 @@ export const meta = {
 	},
 
 	errors: {
-		noSuchActiveWebhook: {
-			message: 'No such active webhook.',
-			code: 'NO_SUCH_ACTIVE_WEBHOOK',
+		noSuchWebhook: {
+			message: 'No such webhook.',
+			code: 'NO_SUCH_WEBHOOK',
 			id: '0c52149c-e913-18f8-5dc7-74870bfe0cf9',
 		},
 	},
@@ -43,6 +43,13 @@ export const paramDef = {
 			type: 'string',
 			enum: systemWebhookEventTypes,
 		},
+		override: {
+			type: 'object',
+			properties: {
+				url: { type: 'string', nullable: false },
+				secret: { type: 'string', nullable: false },
+			},
+		},
 	},
 	required: ['webhookId', 'type'],
 } as const;
@@ -54,10 +61,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps) => {
 			try {
-				await this.webhookTestService.testSystemWebhook({ webhookId: ps.webhookId, type: ps.type });
+				await this.webhookTestService.testSystemWebhook({
+					webhookId: ps.webhookId,
+					type: ps.type,
+					override: ps.override,
+				});
 			} catch (e) {
-				if (e instanceof WebhookTestService.NoSuchActiveWebhookError) {
-					throw new ApiError(meta.errors.noSuchActiveWebhook);
+				if (e instanceof WebhookTestService.NoSuchWebhookError) {
+					throw new ApiError(meta.errors.noSuchWebhook);
 				}
 				throw e;
 			}
