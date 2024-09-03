@@ -19,6 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="cw == null || cw == '' || showContent">
 				<Mfm :text="text.trim()" :author="user" :nyaize="'respect'" :i="user"/>
 			</div>
+			<div v-if="files && files.length > 0">
+				<MkMediaList ref="galleryEl" :mediaList="files"/>
+			</div>
 		</div>
 		<footer :class="$style.footer">
 			<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown.prevent="showMenu()">

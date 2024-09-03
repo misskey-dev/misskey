@@ -6651,6 +6651,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * ノートの編集の許可
+             */
+            "canEditNote": string;
+            /**
              * ノート内の最大メンション数
              */
             "mentionMax": string;

@@ -41,6 +41,11 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: 'fe8d7103-0ea8-4ec3-814d-f8b401dc69e9',
 		},
+		cannotEditNote: {
+			message: 'Editing notes are not allowed by the role policy.',
+			code: 'CANNOT_EDIT_NOTE',
+			id: '59ece09c-56ab-4bd5-905c-0f6bbf5af143',
+		},
 		containsProhibitedWords: {
 			message: 'Cannot post because it contains prohibited words.',
 			code: 'CONTAINS_PROHIBITED_WORDS',
@@ -138,8 +143,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
-			if (!await this.roleService.isModerator(me) && (note.userId !== me.id) && (await this.roleService.getUserPolicies(me.id)).canEditNote !== true) {
-				throw new ApiError(meta.errors.accessDenied);
+			if (!await this.roleService.isModerator(me)) {
+				if (note.userId !== me.id) {
+					throw new ApiError(meta.errors.accessDenied);
+				} else if ((await this.roleService.getUserPolicies(me.id)).canEditNote !== true) {
+					throw new ApiError(meta.errors.cannotEditNote);
+				}
 			}
 
 			try {
