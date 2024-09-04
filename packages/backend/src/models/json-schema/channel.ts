@@ -89,9 +89,18 @@ export const packedChannelSchema = {
 				ref: 'Note',
 			},
 		},
-		isLocalOnly:{
+		isLocalOnly: {
 			type: 'boolean',
 			optional: false, nullable: true,
-		}
+		},
+		collaboratorUsers: {
+			type: 'array',
+			optional: false, nullable: true,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+				ref: 'User',
+			},
+		},
 	},
 } as const;

@@ -5,7 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ChannelFavoritesRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NotesRepository } from '@/models/_.js';
+import type {
+	ChannelFavoritesRepository,
+	ChannelFollowingsRepository,
+	ChannelsRepository,
+	DriveFilesRepository,
+	NotesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
@@ -15,6 +22,7 @@ import { IdService } from '@/core/IdService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 import { In } from 'typeorm';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class ChannelEntityService {
@@ -34,6 +42,7 @@ export class ChannelEntityService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
@@ -87,6 +96,7 @@ export class ChannelEntityService {
 			isSensitive: channel.isSensitive,
 			allowRenoteToExternal: channel.allowRenoteToExternal,
 			isLocalOnly: channel.isLocalOnly,
+			collaboratorUsers: channel.collaboratorIds.length > 0 ? await this.userEntityService.packMany(channel.collaboratorIds) : [],
 			...(me ? {
 				isFollowing,
 				isFavorited,

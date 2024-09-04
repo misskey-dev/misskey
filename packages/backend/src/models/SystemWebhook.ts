@@ -18,6 +18,7 @@ export const systemWebhookEventTypes = [
 	'customEmojiRequestResolved',
 	// ユーザが登録したとき
 	'userRegistered',
+	'userCreated',
 ] as const;
 export type SystemWebhookEventType = typeof systemWebhookEventTypes[number];
 

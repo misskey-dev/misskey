@@ -4,8 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
+import type { DriveFilesRepository, ChannelsRepository, UsersRepository, MiUser } from '@/models/_.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -63,6 +64,13 @@ export const paramDef = {
 		isSensitive: { type: 'boolean', nullable: true },
 		allowRenoteToExternal: { type: 'boolean', nullable: true },
 		isLocalOnly: { type: 'boolean', nullable: true },
+		collaboratorIds: {
+			type: 'array',
+			items: {
+				type: 'string', format: 'misskey:id',
+			},
+		},
+		transferAdminUserId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: ['channelId'],
 } as const;
@@ -75,6 +83,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private channelEntityService: ChannelEntityService,
 
@@ -90,7 +101,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const iAmModerator = await this.roleService.isModerator(me);
-			if (channel.userId !== me.id && !iAmModerator) {
+
+			if (ps.collaboratorIds && channel.userId !== me.id && !iAmModerator) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			if (!channel.collaboratorIds.includes(me.id) && !iAmModerator) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
@@ -109,7 +125,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				banner = null;
 			}
 
-			await this.channelsRepository.update(channel.id, {
+			let collaboratorIds: MiUser['id'][] = [];
+			if (ps.collaboratorIds) {
+				collaboratorIds = (await this.usersRepository.findBy({
+					id: In(ps.collaboratorIds),
+				})).map(u => u.id);
+			}
+
+			const updateValues = {
 				...(ps.name !== undefined ? { name: ps.name } : {}),
 				...(ps.description !== undefined ? { description: ps.description } : {}),
 				...(ps.pinnedNoteIds !== undefined ? { pinnedNoteIds: ps.pinnedNoteIds } : {}),
@@ -119,7 +142,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				...(typeof ps.isSensitive === 'boolean' ? { isSensitive: ps.isSensitive } : {}),
 				...(typeof ps.allowRenoteToExternal === 'boolean' ? { allowRenoteToExternal: ps.allowRenoteToExternal } : {}),
 				...(typeof ps.isLocalOnly === 'boolean' ? { isLocalOnly: ps.isLocalOnly } : {}),
-			});
+				...(collaboratorIds.length > 0 ? { collaboratorIds: collaboratorIds } : {}),
+			};
+
+			if (Object.keys(updateValues).length > 0) {
+				await this.channelsRepository.update(channel.id, updateValues);
+			}
+
+			if (ps.transferAdminUserId) {
+				await this.channelsRepository.update(channel.id, {
+					userId: ps.transferAdminUserId,
+				});
+			}
 
 			return await this.channelEntityService.pack(channel.id, me);
 		});

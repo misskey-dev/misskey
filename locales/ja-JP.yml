@@ -2021,6 +2021,13 @@ _channel:
   nameOnly: "名前のみ"
   allowRenoteToExternal: "チャンネル外へのリノートと引用リノートを許可する"
   isLocalOnly: "チャンネルでの投稿をローカルのみに制限する"
+  addCollaborator: "共同管理者を追加"
+  collaborators: "共同管理者"
+  transferAdminConfirmTitle: "管理者権限の移譲"
+  transferAdminConfirmDescription: "このチャンネルの管理者権限を{user}に譲渡しますか？"
+  transferAdminReConfirmDescription: "このチャンネルの管理者権限を本当に譲渡しますか？"
+  dangerSettings: "危険な設定"
+
 
 _menuDisplay:
   sideFull: "横"

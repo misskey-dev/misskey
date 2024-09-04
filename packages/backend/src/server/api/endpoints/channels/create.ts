@@ -52,6 +52,12 @@ export const paramDef = {
 		isSensitive: { type: 'boolean', nullable: true },
 		allowRenoteToExternal: { type: 'boolean', nullable: true },
 		isLocalOnly: { type: 'boolean', nullable: true },
+		collaboratorIds: {
+			type: 'array',
+			items: {
+				type: 'string', format: 'misskey:id',
+			},
+		},
 	},
 	required: ['name'],
 } as const;
@@ -91,6 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				...(ps.color !== undefined ? { color: ps.color } : {}),
 				allowRenoteToExternal: ps.allowRenoteToExternal ?? true,
 				isLocalOnly: ps.isLocalOnly ?? false,
+				collaboratorIds: ps.collaboratorIds ?? [],
 			} as MiChannel);
 
 			return await this.channelEntityService.pack(channel, me);

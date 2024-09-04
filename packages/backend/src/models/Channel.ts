@@ -94,7 +94,6 @@ export class MiChannel {
 	})
 	public isSensitive: boolean;
 
-
 	@Column('boolean', {
 		default: false,
 	})
@@ -104,4 +103,9 @@ export class MiChannel {
 		default: true,
 	})
 	public allowRenoteToExternal: boolean;
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public collaboratorIds: string[];
 }

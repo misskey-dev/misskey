@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, watch, ref, defineAsyncComponent} from 'vue';
+import { computed, watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 const MkPostForm = defineAsyncComponent(() => import('@/components/MkPostForm.vue'));
 
@@ -229,7 +229,7 @@ const headerActions = computed(() => {
 			});
 		}
 
-		if (($i && $i.id === channel.value.userId) || iAmModerator) {
+		if (($i && $i.id === channel.value.userId) || iAmModerator || ($i && channel.value.collaboratorUsers.some(x => x.id === $i.id))) {
 			headerItems.push({
 				icon: 'ti ti-settings',
 				text: i18n.ts.edit,

@@ -7743,6 +7743,30 @@ export interface Locale extends ILocale {
          * チャンネルでの投稿をローカルのみに制限する
          */
         "isLocalOnly": string;
+        /**
+         * 共同管理者を追加
+         */
+        "addCollaborator": string;
+        /**
+         * 共同管理者
+         */
+        "collaborators": string;
+        /**
+         * 管理者権限の移譲
+         */
+        "transferAdminConfirmTitle": string;
+        /**
+         * このチャンネルの管理者権限を{user}に譲渡しますか？
+         */
+        "transferAdminConfirmDescription": ParameterizedString<"user">;
+        /**
+         * このチャンネルの管理者権限を本当に譲渡しますか？
+         */
+        "transferAdminReConfirmDescription": string;
+        /**
+         * 危険な設定
+         */
+        "dangerSettings": string;
     };
     "_menuDisplay": {
         /**

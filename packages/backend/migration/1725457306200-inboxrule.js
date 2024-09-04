@@ -1,7 +1,8 @@
-<!--
-SPDX-FileCopyrightText: Type4ny-project
-SPDX-License-Identifier: AGPL-3.0-only
--->
+/*
+ * SPDX-FileCopyrightText: Type4ny-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 
 export class Inboxrule1725457306200 {
 	name = 'Inboxrule1725457306200';

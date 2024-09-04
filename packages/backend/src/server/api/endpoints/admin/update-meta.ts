@@ -408,8 +408,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.enableProxyCheckio = ps.enableProxyCheckio;
 			}
 
-			if (typeof ps.requestEmojiAllOk === 'string') {
-				set.proxyCheckioApiKey = ps.proxyCheckioApiKey;
+			if (ps.proxyCheckioApiKey !== undefined) {
+				set.proxyCheckioApiKey = ps.proxyCheckioApiKey ?? undefined;
 			}
 
 			if (ps.infoImageUrl !== undefined) {
@@ -417,7 +417,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.enableGDPRMode !== undefined) {
-				set.enableGDPRMode = ps.enableGDPRMode;
+				set.enableGDPRMode = ps.enableGDPRMode ?? undefined;
 			}
 
 			if (typeof ps.requestEmojiAllOk === 'boolean') {
@@ -432,7 +432,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.backgroundImageUrl = ps.backgroundImageUrl;
 			}
 			if (ps.backgroundImageUrls !== undefined) {
-				set.backgroundImageUrls = ps.backgroundImageUrls;
+				set.backgroundImageUrls = ps.backgroundImageUrls.map(url => ({ url }));
 			}
 
 			if (ps.logoImageUrl !== undefined) {
@@ -713,7 +713,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.urlPreviewRequireContentLength !== undefined) {
-				set.urlPreviewRequireContentLength = ps.urlPreviewRequireContentLength;
+				set.urlPreviewRequireContentLength = ps.urlPreviewRequireContentLength ?? undefined;
 			}
 
 			if (ps.urlPreviewUserAgent !== undefined) {

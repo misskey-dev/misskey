@@ -275,7 +275,7 @@ export const defaultStore = markRaw(
 				props: Record<string, any>;
 			}[],
 		},
-		userWordMute:{
+		userWordMute: {
 			where: 'account',
 			default: [] as { user: Misskey.entities.UserLite; words: Array<string | string[]> }[],
 		},
@@ -519,7 +519,7 @@ export const defaultStore = markRaw(
 			where: 'device',
 			default: true,
 		},
-		virtualScrollOn:{
+		virtualScrollOn: {
 			where: 'device',
 			default: false,
 		},
@@ -691,14 +691,14 @@ export const defaultStore = markRaw(
 			where: 'device',
 			default: true,
 		},
-	confirmWhenRevealingSensitiveMedia: {
-		where: 'device',
-		default: false,
-	},
-  contextMenu: {
-		where: 'device',
-		default: 'app' as 'app' | 'appWithShift' | 'native',
-  },
+		confirmWhenRevealingSensitiveMedia: {
+			where: 'device',
+			default: false,
+		},
+		contextMenu: {
+			where: 'device',
+			default: 'app' as 'app' | 'appWithShift' | 'native',
+		},
 
 		sound_masterVolume: {
 			where: 'device',
