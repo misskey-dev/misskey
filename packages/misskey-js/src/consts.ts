@@ -88,6 +88,8 @@ export const permissions = [
 	'read:admin:relays',
 	'write:admin:invite-codes',
 	'read:admin:invite-codes',
+	'write:admin:inbox-rule',
+	 'read:admin:inbox-rule',
 	'write:admin:announcements',
 	'read:admin:announcements',
 	'write:admin:avatar-decorations',
@@ -161,6 +163,7 @@ export const moderationLogTypes = [
 	'deletePage',
 	'deleteFlash',
 	'deleteGalleryPost',
+	'inboxRejected',
 ] as const;
 
 // See: packages/backend/src/core/ReversiService.ts@L410
@@ -394,6 +397,11 @@ export type ModerationLogPayloads = {
 		recipientId: string;
 		before: AbuseReportNotificationRecipient;
 		after: AbuseReportNotificationRecipient;
+	};
+	inboxRejected: {
+		rule: any;
+		activity: any;
+
 	};
 	deleteAbuseReportNotificationRecipient: {
 		recipientId: string;

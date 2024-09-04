@@ -79,7 +79,8 @@ import {
 	MiUserSecurityKey,
 	MiWebhook,
 	MiScheduledNote,
-	MiBubbleGameRecord } from './_.js';
+	MiBubbleGameRecord, MiInboxRule,
+} from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
 
@@ -98,6 +99,12 @@ const $notesRepository: Provider = {
 const $scheduledNotesRepository: Provider = {
 	provide: DI.scheduledNotesRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiScheduledNote),
+	inject: [DI.db],
+};
+
+const $inboxRuleRepository: Provider = {
+	provide: DI.inboxRuleRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiInboxRule),
 	inject: [DI.db],
 };
 
@@ -515,6 +522,7 @@ const $reversiGamesRepository: Provider = {
 		$usersRepository,
 		$notesRepository,
 		$scheduledNotesRepository,
+		$inboxRuleRepository,
 		$announcementsRepository,
 		$announcementReadsRepository,
 		$appsRepository,
@@ -588,6 +596,7 @@ const $reversiGamesRepository: Provider = {
 		$usersRepository,
 		$notesRepository,
 		$scheduledNotesRepository,
+		$inboxRuleRepository,
 		$announcementsRepository,
 		$announcementReadsRepository,
 		$appsRepository,

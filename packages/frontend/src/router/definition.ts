@@ -456,6 +456,10 @@ const routes: RouteDef[] = [{
 		name: 'moderation',
 		component: page(() => import('@/pages/admin/moderation.vue')),
 	}, {
+		path: '/inbox-moderation',
+		name: 'inbox-moderation',
+		component: page(() => import('@/pages/admin/inboxModeration.vue')),
+	}, {
 		path: '/email-settings',
 		name: 'email-settings',
 		component: page(() => import('@/pages/admin/email-settings.vue')),

@@ -152,6 +152,7 @@ import { QueueModule } from './QueueModule.js';
 import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
 import type { Provider } from '@nestjs/common';
+import {InboxRuleService} from "@/core/InboxRuleService.js";
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
 const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
@@ -278,6 +279,7 @@ const $RoleEntityService: Provider = { provide: 'RoleEntityService', useExisting
 const $ReversiGameEntityService: Provider = { provide: 'ReversiGameEntityService', useExisting: ReversiGameEntityService };
 const $MetaEntityService: Provider = { provide: 'MetaEntityService', useExisting: MetaEntityService };
 const $SystemWebhookEntityService: Provider = { provide: 'SystemWebhookEntityService', useExisting: SystemWebhookEntityService };
+const $InboxRuleService: Provider = { provide: 'InboxRuleService', useExisting: InboxRuleService };
 
 const $ApAudienceService: Provider = { provide: 'ApAudienceService', useExisting: ApAudienceService };
 const $ApDbResolverService: Provider = { provide: 'ApDbResolverService', useExisting: ApDbResolverService };
@@ -428,6 +430,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ReversiGameEntityService,
 		MetaEntityService,
 		SystemWebhookEntityService,
+		InboxRuleService,
 
 		ApAudienceService,
 		ApDbResolverService,
@@ -574,6 +577,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ReversiGameEntityService,
 		$MetaEntityService,
 		$SystemWebhookEntityService,
+		$InboxRuleService,
 
 		$ApAudienceService,
 		$ApDbResolverService,
@@ -720,6 +724,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ReversiGameEntityService,
 		MetaEntityService,
 		SystemWebhookEntityService,
+		InboxRuleService,
 
 		ApAudienceService,
 		ApDbResolverService,
@@ -865,6 +870,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ReversiGameEntityService,
 		$MetaEntityService,
 		$SystemWebhookEntityService,
+		$InboxRuleService,
 
 		$ApAudienceService,
 		$ApDbResolverService,

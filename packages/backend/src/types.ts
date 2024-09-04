@@ -10,6 +10,7 @@ import type { MiApp } from '@/models/App.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiScheduledNote } from '@/models/ScheduledNote.js';
+import { MiInboxRule } from '@/models/InboxRule.js';
 
 /**
  * note - 通知オンにしているユーザーが投稿した
@@ -110,6 +111,9 @@ export const moderationLogTypes = [
 	'deletePage',
 	'deleteFlash',
 	'deleteGalleryPost',
+	'setInboxRule',
+	'deleteInboxRule',
+	'inboxRejected',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -355,6 +359,18 @@ export type ModerationLogPayloads = {
 		postUserUsername: string;
 		post: any;
 	};
+	setInboxRule: {
+		userId: string;
+		rule: any;
+	};
+	deleteInboxRule: {
+		userId: string;
+		rule: any;
+	};
+	inboxRejected: {
+		activity: any;
+		rule: MiInboxRule;
+	}
 };
 
 export type MiMinimumUser = {

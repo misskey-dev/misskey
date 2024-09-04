@@ -176,6 +176,50 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *Yes* / **Permission**: *read:admin:inbox-rule*
+     */
+    request<E extends 'admin/inbox-rule/list', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:inbox-rule*
+     */
+    request<E extends 'admin/inbox-rule/set', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:inbox-rule*
+     */
+    request<E extends 'admin/inbox-rule/edit', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:inbox-rule*
+     */
+    request<E extends 'admin/inbox-rule/delete', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:announcements*
      */
     request<E extends 'admin/announcements/create', P extends Endpoints[E]['req']>(
@@ -363,7 +407,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
      */
     request<E extends 'admin/emoji/add-request', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -441,7 +485,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
      */
     request<E extends 'admin/emoji/list-request', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -485,7 +529,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
      */
     request<E extends 'admin/emoji/set-localonly-bulk', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -496,7 +540,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
      */
     request<E extends 'admin/emoji/set-issensitive-bulk', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -529,7 +573,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
      */
     request<E extends 'admin/emoji/update-request', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3142,7 +3186,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
      */
     request<E extends 'notes/schedule/delete', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3153,7 +3197,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
      */
     request<E extends 'notes/schedule/list', P extends Endpoints[E]['req']>(
       endpoint: E,

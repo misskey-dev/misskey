@@ -25,11 +25,20 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
+import type {
+	UsersRepository,
+	NotesRepository,
+	FollowingsRepository,
+	AbuseUserReportsRepository,
+	FollowRequestsRepository,
+	InboxRuleRepository,
+} from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
+import { InboxRuleService } from '@/core/InboxRuleService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -61,6 +70,9 @@ export class ApInboxService {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
+		@Inject(DI.inboxRuleRepository)
+		private inboxRuleRepository: InboxRuleRepository,
+
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private utilityService: UtilityService,
@@ -83,6 +95,8 @@ export class ApInboxService {
 		private apPersonService: ApPersonService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
+		private inboxRuleService: InboxRuleService,
+		private moderationLogService: ModerationLogService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -128,6 +142,18 @@ export class ApInboxService {
 	@bindThis
 	public async performOneActivity(actor: MiRemoteUser, activity: IObject): Promise<string | void> {
 		if (actor.isSuspended) return;
+		console.log('performOneActivity', activity);
+		const rules = await this.inboxRuleRepository.find();
+		for (const rule of rules) {
+			const result = await this.inboxRuleService.evalCond(activity, actor, rule.condFormula);
+			if (result && rule.action.type === 'reject') {
+				await this.moderationLogService.log(actor, 'inboxRejected', {
+					activity,
+					rule: rule,
+				});
+				return 'skip: rejected by rule' + rule.id;
+			}
+		}
 
 		if (isCreate(activity)) {
 			return await this.create(actor, activity);

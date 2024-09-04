@@ -81,7 +81,7 @@ watch(darkMode, () => {
 	} else {
 		iconUrl.value = iconLight;
 	}
-	if (!iconUrl.value){
+	if (!iconUrl.value) {
 		iconUrl.value = instance.iconUrl || instance.faviconUrl || '/favicon.ico';
 	}
 });
@@ -197,6 +197,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.moderation,
 		to: '/admin/moderation',
 		active: currentPage.value?.route.name === 'moderation',
+	}, {
+		icon: 'ti ti-inbox',
+		text: i18n.ts.inboxModeration,
+		to: '/admin/inbox-moderation',
+		active: currentPage.value?.route.name === 'inbox-moderation',
 	}, {
 		icon: 'ti ti-mail',
 		text: i18n.ts.emailServer,

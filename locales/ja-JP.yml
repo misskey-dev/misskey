@@ -1349,6 +1349,7 @@ createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
 addToDefaultEmojiPicker: "デフォルトのプロファイルに追加する"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
+inboxModeration: "Inboxのモデレーション"
 
 _delivery:
   status: "配信状態"
@@ -1766,6 +1767,30 @@ _achievements:
       title: "うほうほうほうほほ！？？！？！"
       description: "アカウントをGorillaとして設定した"
 
+_inboxRule:
+  add: "ルールを追加"
+  name: "ルール名"
+  description: "ルールの説明"
+  thisActivityIsNote: "このアクティビティが投稿なら"
+  action: "アクション"
+  then: "だったら"
+  reject: "拒否"
+  serverPubLessThanOrEq: "このサーバーのユーザーからフォローされているユーザーの数が～以下"
+  serverPubMoreThanOrEq: "このサーバーのユーザーからフォローされているユーザーの数が～以上"
+  serverSubLessThanOrEq: "このサーバーのユーザーをフォローしているユーザーの数が～以下"
+  serverSubMoreThanOrEq: "このサーバーのユーザーをフォローしているユーザーの数が～以上"
+  maxMentionsMoreThanOrEq: "ノート内のメンション数が～以上"
+  attachmentFileMoreThanOrEq: "添付ファイルの数が～以上"
+  isIncludeThisWord: "この単語を含む"
+  and: "かつ"
+  or: "または"
+  not: "でない"
+  notes: "投稿"
+  conditions: "条件"
+  rewrite: "一致した部分を書き換える"
+  serverHost: "サーバーのホスト"
+  serverSoftware: "サーバーのソフトウェア"
+  serverIsSilenced: "サーバーサイレンスされているか"
 
 _role:
   new: "ロールの作成"
@@ -2690,6 +2715,10 @@ _moderationLogTypes:
   deletePage: "ページを削除"
   deleteFlash: "Playを削除"
   deleteGalleryPost: "ギャラリーの投稿を削除"
+  setInboxRule: "Inboxのルールを設定"
+  deleteInboxRule: "Inboxのルールを削除"
+  inboxRejected: "Inboxで拒否"
+  rejectedWithTheRule: "というルールで拒否されました。"
 
 _fileViewer:
   title: "ファイルの詳細"
