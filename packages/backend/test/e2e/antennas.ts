@@ -277,7 +277,7 @@ describe('アンテナ', () => {
 			code: 'EMPTY_KEYWORD',
 			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4'
 		})
-	})
+	});
 
 	//#endregion
 	//#region 表示(antennas/show)
