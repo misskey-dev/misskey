@@ -59,7 +59,6 @@ export class NotificationEntityService implements OnModuleInit {
 	async #packInternal <T extends MiNotification | MiGroupedNotification> (
 		src: T,
 		meId: MiUser['id'],
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
 			checkValidNotifier?: boolean;
 		},
@@ -140,7 +139,10 @@ export class NotificationEntityService implements OnModuleInit {
 		// #endregion
 
 		const needsRole = notification.type === 'roleAssigned';
-		const role = needsRole ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		const role = needsRole ? await this.roleEntityService.pack(notification.roleId).catch((e) => {
+			if (e.name === 'EntityNotFoundError') return null;
+			throw e;
+		}) : undefined;
 		// if the role has been deleted, don't show this notification
 		if (needsRole && !role) {
 			return null;
@@ -229,7 +231,6 @@ export class NotificationEntityService implements OnModuleInit {
 	public async pack(
 		src: MiNotification | MiGroupedNotification,
 		meId: MiUser['id'],
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
 			checkValidNotifier?: boolean;
 		},
