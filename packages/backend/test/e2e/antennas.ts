@@ -270,7 +270,7 @@ describe('アンテナ', () => {
 		const antenna = await successfulApiCall({ endpoint: 'antennas/create', parameters: defaultParam, user: alice });
 		await failedApiCall({
 			endpoint: 'antennas/update',
-			parameters: { antennaId: antenna.id, ...defaultParam, keywords: [[]], excludeKeywords: [[]] },
+			parameters: { ...defaultParam, antennaId: antenna.id, keywords: [[]], excludeKeywords: [[]] },
 			user: alice
 		}, {
 			status: 400,
