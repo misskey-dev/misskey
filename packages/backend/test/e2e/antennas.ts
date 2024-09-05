@@ -228,6 +228,17 @@ describe('アンテナ', () => {
 		assert.deepStrictEqual(response, expected);
 	});
 
+	test('を作成する時キーワードが指定されていないとエラーになる', async () => {
+		await failedApiCall({
+			endpoint: 'antennas/create',
+			parameters: { ...defaultParam, keywords: [[]], excludeKeywords: [[]] },
+			user: alice
+		}, {
+			status: 400,
+			code: 'EMPTY_KEYWORD',
+			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a'
+		})
+	});
 	//#endregion
 	//#region 更新(antennas/update)
 
