@@ -5,7 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="timctyfi" :class="{ disabled, easing }">
-	<div class="label"><slot name="label"></slot></div>
+	<div class="label">
+		<slot name="label"></slot>
+	</div>
 	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
 			<div class="track">
@@ -14,16 +16,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
 			</div>
-			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
+			<div
+				ref="thumbEl" class="thumb" :style="{ left: thumbPosition + 'px' }"
+				@mousedown="onMousedown" @touchstart="onMousedown"
+			></div>
 		</div>
 	</div>
-	<div class="caption"><slot name="caption"></slot></div>
+	<div class="caption">
+		<slot name="caption"></slot>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch, shallowRef } from 'vue';
-import * as os from '@/os.js';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { popup } from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;
@@ -105,7 +112,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
 
 	const tooltipShowing = ref(true);
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 		showing: tooltipShowing,
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
@@ -261,12 +268,12 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 			> .container {
 				> .track {
 					> .highlight {
-						transition: width 0.2s cubic-bezier(0,0,0,1);
+						transition: width 0.2s cubic-bezier(0, 0, 0, 1);
 					}
 				}
 
 				> .thumb {
-					transition: left 0.2s cubic-bezier(0,0,0,1);
+					transition: left 0.2s cubic-bezier(0, 0, 0, 1);
 				}
 			}
 		}
