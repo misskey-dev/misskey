@@ -2440,7 +2440,7 @@ _webhookSettings:
     mention: "When being mentioned"
   _systemEvents:
     abuseReport: "When received a new abuse report"
-    abuseReportResolved: "When resolved abuse reports"
+    abuseReportResolved: "When resolved abuse report"
     userCreated: "When user is created"
   deleteConfirm: "Are you sure you want to delete the Webhook?"
 _abuseReport:
