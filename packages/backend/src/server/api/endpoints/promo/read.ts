@@ -7,6 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { PromoReadsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -24,7 +26,7 @@ export const meta = {
 			id: 'd785b897-fcd3-4fe9-8fc3-b85c26e6c932',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -32,7 +34,7 @@ export const paramDef = {
 		noteId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['noteId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { ApiError } from '../../error.js';
@@ -43,7 +45,7 @@ export const meta = {
 			id: ' b09d8066-8064-5613-efb6-0e963b21d012',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -52,7 +54,7 @@ export const paramDef = {
 		sendReadMessage: { type: 'boolean' },
 	},
 	required: ['endpoint'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

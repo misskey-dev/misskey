@@ -6,6 +6,8 @@
 import { Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { schema } from '@/core/chart/charts/entities/instance.js';
 
@@ -16,7 +18,7 @@ export const meta = {
 
 	allowGet: true,
 	cacheSec: 60 * 60,
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -27,7 +29,7 @@ export const paramDef = {
 		host: { type: 'string' },
 	},
 	required: ['span', 'host'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -8,6 +8,8 @@ import ms from 'ms';
 import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
@@ -32,7 +34,7 @@ export const meta = {
 			id: '5ff67ada-ed3b-2e71-8e87-a1a421e177d2',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -40,7 +42,7 @@ export const paramDef = {
 		noteId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['noteId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

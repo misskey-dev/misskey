@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserProfilesRepository, NoteReactionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -44,7 +46,7 @@ export const meta = {
 			id: '6b95fa98-8cf9-2350-e284-f0ffdb54a805',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -57,7 +59,7 @@ export const paramDef = {
 		untilDate: { type: 'integer' },
 	},
 	required: ['userId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

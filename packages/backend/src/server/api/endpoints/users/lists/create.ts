@@ -8,6 +8,8 @@ import type { UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
@@ -37,7 +39,7 @@ export const meta = {
 			id: '0cf21a28-7715-4f39-a20d-777bfdb8d138',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -45,7 +47,7 @@ export const paramDef = {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 	},
 	required: ['name'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

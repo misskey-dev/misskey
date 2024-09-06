@@ -9,6 +9,8 @@ import type { DriveFilesRepository, PagesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { MiPage } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -45,7 +47,7 @@ export const meta = {
 			id: '4650348e-301c-499a-83c9-6aa988c66bc1',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -66,7 +68,7 @@ export const paramDef = {
 		hideTitleWhenPinned: { type: 'boolean', default: false },
 	},
 	required: ['title', 'name', 'content', 'variables', 'script'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -7,6 +7,8 @@ import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -34,7 +36,7 @@ export const meta = {
 			id: '47db1a1c-b0af-458d-8fb4-986e4efafe1e',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -42,7 +44,7 @@ export const paramDef = {
 		noteId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['noteId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

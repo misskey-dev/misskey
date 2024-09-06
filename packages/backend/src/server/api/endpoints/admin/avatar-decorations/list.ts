@@ -7,6 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
 import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
@@ -66,7 +68,7 @@ export const meta = {
 			},
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -77,7 +79,7 @@ export const paramDef = {
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

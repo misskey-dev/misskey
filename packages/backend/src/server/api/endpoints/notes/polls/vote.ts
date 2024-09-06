@@ -8,6 +8,8 @@ import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/mo
 import type { MiRemoteUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
@@ -63,7 +65,7 @@ export const meta = {
 			id: '85a5377e-b1e9-4617-b0b9-5bea73331e49',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -72,7 +74,7 @@ export const paramDef = {
 		choice: { type: 'integer' },
 	},
 	required: ['noteId', 'choice'],
-} as const;
+} as const satisfies Schema;
 
 // TODO: ロジックをサービスに切り出す
 

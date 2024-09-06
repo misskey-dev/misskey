@@ -7,6 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { MiNote } from '@/models/Note.js';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -34,7 +36,7 @@ export const meta = {
 			id: 'e1035875-9551-45ec-afa8-1ded1fcb53c8',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -44,7 +46,7 @@ export const paramDef = {
 		offset: { type: 'integer', default: 0 },
 	},
 	required: ['noteId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

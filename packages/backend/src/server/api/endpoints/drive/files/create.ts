@@ -8,6 +8,8 @@ import { Injectable } from '@nestjs/common';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -56,7 +58,7 @@ export const meta = {
 			id: 'd08dbc37-a6a9-463a-8c47-96c32ab5f064',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -68,7 +70,7 @@ export const paramDef = {
 		force: { type: 'boolean', default: false },
 	},
 	required: [],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

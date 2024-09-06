@@ -8,6 +8,8 @@ import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { PagesRepository, DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -49,7 +51,7 @@ export const meta = {
 			id: '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -71,7 +73,7 @@ export const paramDef = {
 		hideTitleWhenPinned: { type: 'boolean' },
 	},
 	required: ['pageId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

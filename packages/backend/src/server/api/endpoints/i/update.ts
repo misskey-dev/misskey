@@ -19,6 +19,8 @@ import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -127,7 +129,7 @@ export const meta = {
 const muteWords = { type: 'array', items: { oneOf: [
 	{ type: 'array', items: { type: 'string' } },
 	{ type: 'string' },
-] } } as const;
+] } } as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -215,7 +217,7 @@ export const paramDef = {
 			items: { type: 'string' },
 		},
 	},
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

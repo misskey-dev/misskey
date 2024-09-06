@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FlashsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -28,7 +30,7 @@ export const meta = {
 			id: 'f0d34a1a-d29a-401d-90ba-1982122b5630',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -36,7 +38,7 @@ export const paramDef = {
 		flashId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['flashId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

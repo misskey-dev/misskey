@@ -7,6 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IdService } from '@/core/IdService.js';
 import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
@@ -46,7 +48,7 @@ export const meta = {
 			},
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -102,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.pushNotificationService.refreshCache(me.id);
 
 			return {
-				state: 'subscribed' as const,
+				state: 'subscribed' as const satisfies Schema,
 				key: instance.swPublicKey,
 				userId: me.id,
 				endpoint: ps.endpoint,

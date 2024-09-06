@@ -6,6 +6,8 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import type { AppsRepository, AuthSessionsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
@@ -40,7 +42,7 @@ export const meta = {
 			id: '92f93e63-428e-4f2f-a5a4-39e1407fe998',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -48,7 +50,7 @@ export const paramDef = {
 		appSecret: { type: 'string' },
 	},
 	required: ['appSecret'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
