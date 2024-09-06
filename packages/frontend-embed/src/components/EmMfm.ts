@@ -43,7 +43,7 @@ type MfmProps = {
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
-	linkNavigationBehavior?: EmABehavior;
+	linkNavigationBehavior?: string;
 };
 
 type MfmEvents = {
@@ -222,10 +222,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
 					case 'sparkle': {
-						if (!useAnim) {
-							return genEl(token.children, scale);
-						}
-						return h(EmSparkle, {}, genEl(token.children, scale));
+						return genEl(token.children, scale);
 					}
 					case 'rotate': {
 						const degrees = safeParseFloat(token.props.args.deg) ?? 90;

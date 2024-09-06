@@ -15,6 +15,7 @@ import { computed, inject } from 'vue';
 
 import { DI } from '@/di.js';
 
+const serverMetadata = inject(DI.serverMetadata)!;
 const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
@@ -27,7 +28,7 @@ const props = defineProps<{
 
 const faviconUrl = computed(() => mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview'));
 
-const themeColor = instance.themeColor ?? '#777777';
+const themeColor = serverMetadata.themeColor ?? '#777777';
 
 const bg = {
 	background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`,
