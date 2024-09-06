@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<details v-if="note.files && note.files.length > 0">
 		<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
-		<EmMediaList :mediaList="note.files"/>
+		<EmMediaList :mediaList="note.files" :originalEntityUrl="`${url}/notes/${note.id}`"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
@@ -35,6 +35,7 @@ import * as Misskey from 'misskey-js';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import { i18n } from '@/i18n.js';
+import { url } from '@/config.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
 import EmMfm from '@/components/EmMfm.js';
 

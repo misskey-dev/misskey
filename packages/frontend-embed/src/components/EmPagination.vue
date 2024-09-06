@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 	<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
-		<button v-if="!moreFetching" class="_buttonPrimary" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore">
+		<button v-if="!moreFetching" class="_buttonRounded _buttonPrimary" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore">
 			{{ i18n.ts.loadMore }}
 		</button>
 		<EmLoading v-else class="loading"/>
@@ -64,6 +64,13 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 	offsetMode?: boolean;
 
 	pageEl?: HTMLElement;
+};
+
+type MisskeyEntity = {
+	id: string;
+	createdAt: string;
+	_shouldInsertAd_?: boolean;
+	[x: string]: any;
 };
 
 type MisskeyEntityMap = Map<string, MisskeyEntity>;
@@ -490,6 +497,7 @@ defineExpose({
 }
 
 .more {
+	display: block;
 	margin-left: auto;
 	margin-right: auto;
 }

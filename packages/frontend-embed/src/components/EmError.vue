@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
-	<button class="_button" :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</button>
+	<button class="_buttonGray _buttonRounded" :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</button>
 </div>
 </template>
 

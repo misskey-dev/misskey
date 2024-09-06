@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
 					<EmMfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
-					<button class="_button" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
+					<button style="display: block; width: 100%;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
 				</p>
 				<div v-show="note.cw == null || showContent">
 					<EmSubNoteContent :class="$style.text" :note="note"/>
