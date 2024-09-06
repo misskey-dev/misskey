@@ -4245,15 +4245,16 @@ export type components = {
       /** @enum {string} */
       type: 'roleAssigned';
       role: components['schemas']['Role'];
-    } | {
+    } | ({
       /** Format: id */
       id: string;
       /** Format: date-time */
       createdAt: string;
       /** @enum {string} */
       type: 'achievementEarned';
-      achievement: string;
-    } | {
+      /** @enum {string} */
+      achievement: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
+    }) | ({
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -4261,9 +4262,9 @@ export type components = {
       /** @enum {string} */
       type: 'app';
       body: string;
-      header: string;
-      icon: string;
-    } | {
+      header: string | null;
+      icon: string | null;
+    }) | {
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -4599,6 +4600,7 @@ export type components = {
       maintainerName: string | null;
       maintainerEmail: string | null;
       isSilenced: boolean;
+      isMediaSilenced: boolean;
       /** Format: url */
       iconUrl: string | null;
       /** Format: url */
@@ -4671,6 +4673,8 @@ export type components = {
       title: string;
       summary: string;
       script: string;
+      /** @enum {string} */
+      visibility: 'private' | 'public';
       likedCount: number | null;
       isLiked?: boolean;
     };
@@ -4944,6 +4948,7 @@ export type components = {
        * @enum {string}
        */
       noteSearchableScope: 'local' | 'global';
+      maxFileSize: number;
     };
     MetaDetailedOnly: {
       features?: {
@@ -5044,6 +5049,7 @@ export type operations = {
             enableServiceWorker: boolean;
             translatorAvailable: boolean;
             silencedHosts?: string[];
+            mediaSilencedHosts: string[];
             pinnedUsers: string[];
             hiddenTags: string[];
             blockedHosts: string[];
@@ -8212,7 +8218,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': ((string | number)[])[];
+          'application/json': [string, number][];
         };
       };
       /** @description Client error */
@@ -8258,7 +8264,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': ((string | number)[])[];
+          'application/json': [string, number][];
         };
       };
       /** @description Client error */
@@ -9371,6 +9377,7 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          mediaSilencedHosts?: string[] | null;
           /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
           summalyProxy?: string | null;
           urlPreviewEnabled?: boolean;

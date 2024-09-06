@@ -364,6 +364,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
 		}
 
+		// if the host is media-silenced, custom emojis are not allowed
+		if (this.utilityService.isMediaSilencedHost(meta.mediaSilencedHosts, user.host)) emojis = [];
+
 		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
 
 		if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
@@ -506,7 +509,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const meta = await this.metaService.fetch();
 
 		this.notesChart.update(note, true);
-		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+		if (note.visibility !== 'specified' && (meta.enableChartsForRemoteUser || (user.host == null))) {
 			this.perUserNotesChart.update(user, note, true);
 		}
 

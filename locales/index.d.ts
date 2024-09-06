@@ -865,6 +865,10 @@ export interface Locale extends ILocale {
      */
     "silenceThisInstance": string;
     /**
+     * サーバーをメディアサイレンス
+     */
+    "mediaSilenceThisInstance": string;
+    /**
      * 操作
      */
     "operations": string;
@@ -948,6 +952,14 @@ export interface Locale extends ILocale {
      * サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになります。ブロックしたインスタンスには影響しません。
      */
     "silencedInstancesDescription": string;
+    /**
+     * メディアサイレンスしたサーバー
+     */
+    "mediaSilencedInstances": string;
+    /**
+     * メディアサイレンスしたいサーバーのホストを改行で区切って設定します。メディアサイレンスされたサーバーに所属するアカウントによるファイルはすべてセンシティブとして扱われ、カスタム絵文字が使用できないようになります。ブロックしたインスタンスには影響しません。
+     */
+    "mediaSilencedInstancesDescription": string;
     /**
      * ミュートとブロック
      */
@@ -2817,7 +2829,7 @@ export interface Locale extends ILocale {
      */
     "reportAbuseOf": ParameterizedString<"name">;
     /**
-     * 通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。
+     * 通報理由の詳細を記入してください。対象のノートやページなどがある場合はそのURLも記入してください。
      */
     "fillAbuseReportDescription": string;
     /**
@@ -4501,6 +4513,14 @@ export interface Locale extends ILocale {
      */
     "specifyUser": string;
     /**
+     * 照会しますか？
+     */
+    "lookupConfirm": string;
+    /**
+     * ハッシュタグのページを開きますか？
+     */
+    "openTagPageConfirm": string;
+    /**
      * ホスト指定
      */
     "specifyHost": string;
@@ -5048,6 +5068,10 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    "clipNoteLimitExceeded": string;
     "_delivery": {
         /**
          * 配信状態
@@ -7613,6 +7637,10 @@ export interface Locale extends ILocale {
          * 長い音声を使用するとMisskeyの使用に支障をきたす可能性があります。それでも続行しますか？
          */
         "driveFileDurationWarnDescription": string;
+        /**
+         * 音声が読み込めませんでした。設定を変更してください
+         */
+        "driveFileError": string;
     };
     "_ago": {
         /**
@@ -8962,6 +8990,10 @@ export interface Locale extends ILocale {
          */
         "chooseBlock": string;
         /**
+         * セクションタイトルを入力
+         */
+        "enterSectionTitle": string;
+        /**
          * 種類を選択
          */
         "selectType": string;
@@ -9378,9 +9410,9 @@ export interface Locale extends ILocale {
          */
         "secret": string;
         /**
-         * Webhookを実行するタイミング
+         * トリガー
          */
-        "events": string;
+        "trigger": string;
         /**
          * 有効
          */
@@ -9655,6 +9687,22 @@ export interface Locale extends ILocale {
          * 通報の通知先を削除
          */
         "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * アカウントを削除
+         */
+        "deleteAccount": string;
+        /**
+         * ページを削除
+         */
+        "deletePage": string;
+        /**
+         * Playを削除
+         */
+        "deleteFlash": string;
+        /**
+         * ギャラリーの投稿を削除
+         */
+        "deleteGalleryPost": string;
     };
     "_fileViewer": {
         /**

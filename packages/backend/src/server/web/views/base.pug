@@ -28,6 +28,7 @@ html
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(property='instance_url' content= instanceUrl)
 		meta(name='viewport' content='width=device-width, initial-scale=1')
+		meta(name='format-detection' content='telephone=no,date=no,address=no,email=no,url=no')
 		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='apple-touch-icon' href= appleTouchIcon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
@@ -35,8 +36,6 @@ html
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
-		//- https://github.com/misskey-dev/misskey/issues/9842
-		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v3.3.0')
 		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
 
 		if !config.clientManifestExists

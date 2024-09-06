@@ -72,10 +72,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@syuilo</span>
 						</a>
-						<a href="https://github.com/tamaina" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/7973572?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@tamaina</span>
-						</a>
 						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
 							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
@@ -258,6 +254,18 @@ const patronsWithIcon = [{
 }, {
 	name: 'えとゔぁす',
 	icon: 'https://assets.misskey-hub.net/patrons/2578f441b82a44cfaa55ba83a318b26e.jpg',
+}, {
+	name: 'Soli',
+	icon: 'https://assets.misskey-hub.net/patrons/448070c81ebd41eda4ea2328291b2efe.jpg',
+}, {
+	name: 'ささくれりょう',
+	icon: 'https://assets.misskey-hub.net/patrons/cf55022cee6c41da8e70a43587aaad9a.jpg',
+}, {
+	name: 'Macop',
+	icon: 'https://assets.misskey-hub.net/patrons/ee052bf550014d36a643ce3dce595640.jpg',
+}, {
+	name: 'なっかあ',
+	icon: 'https://assets.misskey-hub.net/patrons/c2f5f3e394e74a64912284a2f4ca710e.jpg',
 }];
 
 const patrons = [

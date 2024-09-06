@@ -137,7 +137,6 @@ export class I18n<T extends ILocale> {
 			return this.tsxCache = new Proxy(this.locale, new Handler()) as unknown as Tsx<T>;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (this.tsxCache) {
 			return this.tsxCache;
 		}
@@ -243,52 +242,4 @@ export class I18n<T extends ILocale> {
 
 		return str;
 	}
-}
-
-if (import.meta.vitest) {
-	const { describe, expect, it } = import.meta.vitest;
-
-	describe('i18n', () => {
-		it('t', () => {
-			const i18n = new I18n({
-				foo: 'foo',
-				bar: {
-					baz: 'baz',
-					qux: 'qux {0}' as unknown as ParameterizedString<'0'>,
-					quux: 'quux {0} {1}' as unknown as ParameterizedString<'0' | '1'>,
-				},
-			});
-
-			expect(i18n.t('foo')).toBe('foo');
-			expect(i18n.t('bar.baz')).toBe('baz');
-			expect(i18n.tsx.bar.qux({ 0: 'hoge' })).toBe('qux hoge');
-			expect(i18n.tsx.bar.quux({ 0: 'hoge', 1: 'fuga' })).toBe('quux hoge fuga');
-		});
-		it('ts', () => {
-			const i18n = new I18n({
-				foo: 'foo',
-				bar: {
-					baz: 'baz',
-					qux: 'qux {0}' as unknown as ParameterizedString<'0'>,
-					quux: 'quux {0} {1}' as unknown as ParameterizedString<'0' | '1'>,
-				},
-			});
-
-			expect(i18n.ts.foo).toBe('foo');
-			expect(i18n.ts.bar.baz).toBe('baz');
-		});
-		it('tsx', () => {
-			const i18n = new I18n({
-				foo: 'foo',
-				bar: {
-					baz: 'baz',
-					qux: 'qux {0}' as unknown as ParameterizedString<'0'>,
-					quux: 'quux {0} {1}' as unknown as ParameterizedString<'0' | '1'>,
-				},
-			});
-
-			expect(i18n.tsx.bar.qux({ 0: 'hoge' })).toBe('qux hoge');
-			expect(i18n.tsx.bar.quux({ 0: 'hoge', 1: 'fuga' })).toBe('quux hoge fuga');
-		});
-	});
 }

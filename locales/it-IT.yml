@@ -2412,7 +2412,6 @@ _webhookSettings:
   modifyWebhook: "Modifica Webhook"
   name: "Nome"
   secret: "Segreto"
-  events: "Quando eseguire il Webhook"
   active: "Attivo"
   _events:
     follow: "Quando segui un profilo"
