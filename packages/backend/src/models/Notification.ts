@@ -86,7 +86,7 @@ export type MiNotification = {
 	/**
 	 * アプリ通知のbody
 	 */
-	customBody: string | null;
+	customBody: string;
 
 	/**
 	 * アプリ通知のheader
