@@ -4,35 +4,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="{ [$style.done]: closed || isVoted }">
+<div>
 	<ul :class="$style.choices">
-		<li v-for="(choice, i) in poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
-			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
+		<li v-for="(choice, i) in poll.choices" :key="i" :class="$style.choice">
+			<div :class="$style.bg" :style="{ 'width': `${choice.votes / total * 100}%` }"></div>
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
 				<EmMfm :text="choice.text" :plain="true"/>
-				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
+				<span style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
-	<p v-if="!readOnly" :class="$style.info">
+	<p :class="$style.info">
 		<span>{{ i18n.tsx._poll.totalVotes({ n: total }) }}</span>
-		<span> · </span>
-		<a v-if="!closed && !isVoted" style="color: inherit;" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
-		<span v-if="isVoted">{{ i18n.ts._poll.voted }}</span>
-		<span v-else-if="closed">{{ i18n.ts._poll.closed }}</span>
-		<span v-if="remaining > 0"> · {{ timer }}</span>
 	</p>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useInterval } from '@@/js/use-interval.js';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { i18n } from '@/i18n.js';
-import { host } from '@/config.js';
 import EmMfm from '@/components/EmMfm.js';
 
 function sum(xs: number[]): number {
@@ -42,46 +34,9 @@ function sum(xs: number[]): number {
 const props = defineProps<{
 	noteId: string;
 	poll: NonNullable<Misskey.entities.Note['poll']>;
-	readOnly?: boolean;
 }>();
 
-const remaining = ref(-1);
-
 const total = computed(() => sum(props.poll.choices.map(x => x.votes)));
-const closed = computed(() => remaining.value === 0);
-const isVoted = computed(() => !props.poll.multiple && props.poll.choices.some(c => c.isVoted));
-const timer = computed(() => i18n.tsx._poll[
-	remaining.value >= 86400 ? 'remainingDays' :
-	remaining.value >= 3600 ? 'remainingHours' :
-	remaining.value >= 60 ? 'remainingMinutes' : 'remainingSeconds'
-]({
-	s: Math.floor(remaining.value % 60),
-	m: Math.floor(remaining.value / 60) % 60,
-	h: Math.floor(remaining.value / 3600) % 24,
-	d: Math.floor(remaining.value / 86400),
-}));
-
-const showResult = ref(props.readOnly || isVoted.value);
-
-const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
-	type: 'lookup',
-	url: `https://${host}/notes/${props.noteId}`,
-}));
-
-// 期限付きアンケート
-if (props.poll.expiresAt) {
-	const tick = () => {
-		remaining.value = Math.floor(Math.max(new Date(props.poll.expiresAt!).getTime() - Date.now(), 0) / 1000);
-		if (remaining.value === 0) {
-			showResult.value = true;
-		}
-	};
-
-	useInterval(tick, 3000, {
-		immediate: true,
-		afterMounted: false,
-	});
-}
 </script>
 
 <style lang="scss" module>
@@ -101,7 +56,6 @@ if (props.poll.expiresAt) {
 	background: var(--accentedBg);
 	border-radius: 4px;
 	overflow: clip;
-	cursor: pointer;
 }
 
 .bg {
@@ -124,11 +78,5 @@ if (props.poll.expiresAt) {
 
 .info {
 	color: var(--fg);
-}
-
-.done {
-	.choice {
-		cursor: initial;
-	}
 }
 </style>
