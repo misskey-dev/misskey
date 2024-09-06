@@ -4,8 +4,7 @@
  */
 
 import { permissions } from 'misskey-js';
-import type { ApiErrorInput } from '@/server/api/error.js';
-import type { KeyOf, ValidatableSchema } from '@/misc/json-schema.js';
+import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
 import * as ep___admin_abuseReport_notificationRecipient_list
 	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/list.js';
@@ -781,10 +780,14 @@ interface IEndpointMetaBase {
 	readonly tags?: ReadonlyArray<string>;
 
 	readonly errors?: {
-		readonly [key: string]: ApiErrorInput;
+		readonly [key: string]: {
+			readonly message: string;
+			readonly code: string;
+			readonly id: string;
+		};
 	};
 
-	readonly res?: ValidatableSchema;
+	readonly res?: Schema;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
