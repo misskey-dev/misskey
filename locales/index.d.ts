@@ -6691,6 +6691,10 @@ export interface Locale extends ILocale {
              */
             "pinMax": string;
             /**
+             * 一つのノートに対する最大リアクション数
+             */
+            "reactionsPerNoteLimit": string;
+            /**
              * アンテナの作成可能数
              */
             "antennaMax": string;

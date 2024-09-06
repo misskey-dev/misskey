@@ -236,6 +236,10 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
+		reactionsPerNoteLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
 		antennaLimit: {
 			type: 'integer',
 			optional: false, nullable: false,
