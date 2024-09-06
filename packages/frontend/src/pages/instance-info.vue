@@ -181,7 +181,7 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-} as const satisfies Paging;
+} satisfies Paging;
 
 if (iAmModerator) {
 	watch(moderationNote, async () => {
