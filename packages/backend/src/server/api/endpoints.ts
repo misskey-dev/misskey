@@ -4,6 +4,7 @@
  */
 
 import { permissions } from 'misskey-js';
+import type { ApiErrorInput } from '@/server/api/error.js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
 import * as ep___admin_abuseReport_notificationRecipient_list
@@ -780,11 +781,7 @@ interface IEndpointMetaBase {
 	readonly tags?: ReadonlyArray<string>;
 
 	readonly errors?: {
-		readonly [key: string]: {
-			readonly message: string;
-			readonly code: string;
-			readonly id: string;
-		};
+		readonly [key: string]: ApiErrorInput;
 	};
 
 	readonly res?: Schema;
