@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
-	<slot v-if="hasMoreReactions" name="more"/>
+	<slot v-if="hasMoreReactions" name="more"></slot>
 </div>
 </template>
 
