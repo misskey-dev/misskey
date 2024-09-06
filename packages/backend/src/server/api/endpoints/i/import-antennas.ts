@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { AntennasRepository, DriveFilesRepository, UsersRepository, MiAntenna as _Antenna } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -54,7 +54,7 @@ export const paramDef = {
 		fileId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['fileId'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

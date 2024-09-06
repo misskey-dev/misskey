@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 export const meta = {
@@ -66,7 +66,7 @@ export const paramDef = {
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

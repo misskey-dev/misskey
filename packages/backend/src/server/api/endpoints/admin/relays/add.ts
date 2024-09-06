@@ -7,7 +7,7 @@ import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApiError } from '../../../error.js';
 
@@ -60,7 +60,7 @@ export const paramDef = {
 		inbox: { type: 'string' },
 	},
 	required: ['inbox'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

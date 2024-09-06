@@ -9,7 +9,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
@@ -74,7 +74,7 @@ export const paramDef = {
 		choice: { type: 'integer' },
 	},
 	required: ['noteId', 'choice'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 // TODO: ロジックをサービスに切り出す
 

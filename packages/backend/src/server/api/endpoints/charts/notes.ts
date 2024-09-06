@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import { schema } from '@/core/chart/charts/entities/notes.js';
 
@@ -28,7 +28,7 @@ export const paramDef = {
 		offset: { type: 'integer', nullable: true, default: null },
 	},
 	required: ['span'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

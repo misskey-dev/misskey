@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
@@ -44,7 +44,7 @@ export const paramDef = {
 		},
 	},
 	required: ['id'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

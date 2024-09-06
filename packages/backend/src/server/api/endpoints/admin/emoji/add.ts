@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
@@ -60,7 +60,7 @@ export const paramDef = {
 		} },
 	},
 	required: ['name', 'fileId'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 // TODO: ロジックをサービスに切り出す
 

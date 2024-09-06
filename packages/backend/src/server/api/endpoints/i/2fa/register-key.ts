@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { Schema } from '@/misc/json-schema.js';
+import type { ValidatableSchema } from '@/misc/json-schema.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
@@ -182,7 +182,7 @@ export const paramDef = {
 		token: { type: 'string', nullable: true },
 	},
 	required: ['password'],
-} as const satisfies Schema;
+} as const satisfies ValidatableSchema;
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
