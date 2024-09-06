@@ -6,6 +6,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+:root {
+	--radius: 12px;
+	--marginFull: 16px;
+	--marginHalf: 10px;
+
+	--margin: var(--marginFull);
+
+	@media (max-width: 500px) {
+		--margin: var(--marginHalf);
+	}
+}
+
 html {
 	background-color: transparent;
 	color-scheme: light dark;
