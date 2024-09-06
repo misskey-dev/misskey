@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDeepStrictEqual } from 'node:util';
 import RE2 from 're2';
 import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
@@ -479,14 +480,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			//#region 変更されていないプロパティを削除
 			const _updates = getObjKeys(updates).reduce<Partial<MiUser>>((acc, key) => {
-				if (updates[key] !== undefined && updates[key] !== user[key]) {
+				if (updates[key] !== undefined && !isDeepStrictEqual(updates[key], user[key])) {
 					(acc[key] as MiUser[typeof key]) = updates[key];
 				}
 				return acc;
 			}, {});
 
 			const _profileUpdates = getObjKeys(profileUpdates).reduce<Partial<MiUserProfile>>((acc, key) => {
-				if (profileUpdates[key] !== undefined && profileUpdates[key] !== profile[key]) {
+				if (profileUpdates[key] !== undefined && !isDeepStrictEqual(profileUpdates[key], profile[key])) {
 					(acc[key] as MiUserProfile[typeof key]) = profileUpdates[key];
 				}
 				return acc;
