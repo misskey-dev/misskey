@@ -48,7 +48,7 @@ import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmou
 import sanitizeHtml from 'sanitize-html';
 import { emojilist, getEmojiName } from '@@/js/emojilist.js';
 import contains from '@/scripts/contains.js';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';

@@ -4,20 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<span :alt="props.emoji">{{ colorizedNativeEmoji }}</span>
+<img :class="$style.root" :src="url" :alt="props.emoji" decoding="async"/>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { colorizeEmoji } from '@@/js/emojilist.js';
+import { char2twemojiFilePath } from '@@/js/emoji-base.js';
 
 const props = defineProps<{
 	emoji: string;
-	menu?: boolean;
-	menuReaction?: boolean;
 }>();
 
-const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
+const url = computed(() => char2twemojiFilePath(props.emoji));
 </script>
 
 <style lang="scss" module>
