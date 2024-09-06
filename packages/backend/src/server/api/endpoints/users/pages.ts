@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { QueryService } from '@/core/QueryService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import type { PagesRepository } from '@/models/_.js';
@@ -37,7 +37,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['userId'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

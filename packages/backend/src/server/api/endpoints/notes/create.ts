@@ -14,7 +14,7 @@ import type { MiChannel } from '@/models/Channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
@@ -222,7 +222,7 @@ export const paramDef = {
 		},
 		required: ['text'],
 	},
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

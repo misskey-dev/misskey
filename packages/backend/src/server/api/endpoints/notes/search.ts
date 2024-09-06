@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { SearchService } from '@/core/SearchService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -52,7 +52,7 @@ export const paramDef = {
 		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['query'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 // TODO: ロジックをサービスに切り出す
 

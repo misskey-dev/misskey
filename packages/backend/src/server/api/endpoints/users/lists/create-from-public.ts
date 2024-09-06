@@ -9,7 +9,7 @@ import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -71,7 +71,7 @@ export const paramDef = {
 		listId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['name', 'listId'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

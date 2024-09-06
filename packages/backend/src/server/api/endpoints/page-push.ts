@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { PagesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -34,7 +34,7 @@ export const paramDef = {
 		var: {},
 	},
 	required: ['pageId', 'event'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

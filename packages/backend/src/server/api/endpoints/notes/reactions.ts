@@ -9,7 +9,7 @@ import type { NoteReactionsRepository } from '@/models/_.js';
 import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -51,7 +51,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['noteId'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import type { UserListFavoritesRepository, UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { ApiError } from '@/server/api/error.js';
@@ -36,7 +36,7 @@ export const paramDef = {
 		listId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['listId'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

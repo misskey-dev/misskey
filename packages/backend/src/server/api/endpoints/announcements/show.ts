@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { ApiError } from '../../error.js';
 
@@ -37,7 +37,7 @@ export const paramDef = {
 		announcementId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['announcementId'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

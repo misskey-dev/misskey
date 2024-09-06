@@ -9,7 +9,7 @@ import type { FlashsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import type { ValidatableSchema } from '@/misc/json-schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 
@@ -49,7 +49,7 @@ export const paramDef = {
 		visibility: { type: 'string', enum: ['public', 'private'], default: 'public' },
 	},
 	required: ['title', 'summary', 'script', 'permissions'],
-} as const satisfies ValidatableSchema;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
