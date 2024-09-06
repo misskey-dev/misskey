@@ -2760,6 +2760,9 @@ type NotificationsCreateRequest = operations['notifications___create']['requestB
 export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
 
 // @public (undocumented)
+export function nyaize(text: string): string;
+
+// @public (undocumented)
 type Page = components['schemas']['Page'];
 
 // @public (undocumented)
