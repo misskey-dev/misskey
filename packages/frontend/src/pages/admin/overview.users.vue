@@ -47,13 +47,13 @@ useInterval(fetch, 1000 * 60, {
 .root {
 	&:global {
 		> .users {
-			.chart-move {
-				transition: transform 1s ease;
-			}
-
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 			grid-gap: 12px;
+
+			.chart-move {
+				transition: transform 1s ease;
+			}
 
 			> .user:hover {
 				text-decoration: none;
