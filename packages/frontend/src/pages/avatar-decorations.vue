@@ -155,7 +155,7 @@ definePageMetadata(() => ({
 
 @container editor (min-width: 600px) {
 	.editorWrapper {
-		grid-template-columns: 300px 1fr;
+		grid-template-columns: 200px 1fr;
 		grid-template-rows: 1fr;
 		gap: calc(var(--margin) * 2);
 	}
