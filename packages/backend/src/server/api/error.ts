@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-type E = { message: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: number };
+export type ApiErrorInput = { message: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: number };
 
 export class ApiError extends Error {
 	public message: string;
@@ -13,7 +13,7 @@ export class ApiError extends Error {
 	public httpStatusCode?: number;
 	public info?: any;
 
-	constructor(err?: E | null | undefined, info?: any | null | undefined) {
+	constructor(err?: ApiErrorInput | null | undefined, info?: any | null | undefined) {
 		if (err == null) err = {
 			message: 'Internal error occurred. Please contact us if the error persists.',
 			code: 'INTERNAL_ERROR',

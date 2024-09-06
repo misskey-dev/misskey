@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { SomeJTDSchemaType } from 'ajv/dist/core.js';
+
 import {
 	packedMeDetailedOnlySchema,
 	packedMeDetailedSchema,
@@ -134,19 +136,19 @@ type StringDefToType<T extends TypeStringef> =
 	any;
 
 // https://swagger.io/specification/?sbsearch=optional#schema-object
-type OfSchema = {
-	readonly anyOf?: ReadonlyArray<Schema>;
-	readonly oneOf?: ReadonlyArray<Schema>;
-	readonly allOf?: ReadonlyArray<Schema>;
+type OfSchema<T> = {
+	readonly anyOf?: ReadonlyArray<T>;
+	readonly oneOf?: ReadonlyArray<T>;
+	readonly allOf?: ReadonlyArray<T>;
 }
 
-export interface Schema extends OfSchema {
+interface SchemaFactory<T> extends OfSchema<T> {
 	readonly type?: TypeStringef;
 	readonly nullable?: boolean;
 	readonly optional?: boolean;
-	readonly prefixItems?: ReadonlyArray<Schema>;
-	readonly items?: Schema;
-	readonly unevaluatedItems?: Schema | boolean;
+	readonly prefixItems?: ReadonlyArray<T>;
+	readonly items?: T;
+	readonly unevaluatedItems?: T | boolean;
 	readonly properties?: Obj;
 	readonly required?: ReadonlyArray<Extract<keyof NonNullable<this['properties']>, string>>;
 	readonly description?: string;
@@ -162,6 +164,10 @@ export interface Schema extends OfSchema {
 	readonly minimum?: number;
 	readonly pattern?: string;
 }
+
+export type Schema = SchemaFactory<Schema>;
+
+export type ValidatableSchema = SchemaFactory<Schema & SomeJTDSchemaType> & SomeJTDSchemaType;
 
 type RequiredPropertyNames<s extends Obj> = {
 	[K in keyof s]:
@@ -229,7 +235,7 @@ export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'boolean' ? boolean :
 	p['type'] extends 'object' ? ObjectSchemaTypeDef<p> :
 	p['type'] extends 'array' ? (
-		p['items'] extends OfSchema ? (
+		p['items'] extends OfSchema<p> ? (
 			p['items']['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
 			p['items']['oneOf'] extends ReadonlyArray<Schema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
 			p['items']['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
