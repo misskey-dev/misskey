@@ -73,6 +73,25 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
 	};
 
+	const SEP = {
+		space: ' ',
+		lf: '\n',
+		comma: ',',
+		semicolon: ';',
+	} as const;
+	const separate = (ast: mfm.MfmNode[], sep: keyof typeof SEP = 'space'): mfm.MfmNode[][] => {
+		const tmp: mfm.MfmNode[][] = [[]];
+		for (const node of ast) {
+			if (node.type === 'text') {
+				const texts = node.props.text.split(SEP[sep]).map(t => [mfm.TEXT(t)]);
+				tmp.at(-1).push(texts[0][0]);
+				tmp.push(...texts.slice(1));
+			} else tmp.at(-1).push(node);
+		}
+		console.log(tmp);
+		return tmp;
+	};
+
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
 
 	/**
@@ -309,6 +328,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 								mode: 'detail',
 							}),
 						]);
+					}
+					case 'overlap': {
+						const children = separate(token.children, token.props.args.SEP);
+						return h('span', { style: 'position: relative;' }, children.map(
+							(v, i) => i === children.length - 1
+								? h('span', { style: 'position: relative;' }, genEl(v, scale))
+								: h('span', { style: 'position: absolute;' }, genEl(v, scale))
+						));
 					}
 					case 'clickable': {
 						return h('span', { onClick(ev: MouseEvent): void {
