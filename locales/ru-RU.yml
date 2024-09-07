@@ -1184,6 +1184,7 @@ _serverSettings:
 _accountMigration:
   moveFrom: "Перенести другой аккаунт сюда"
   moveTo: "Перенести этот аккаунт на другой"
+  startMigration: "Перенести"
 _achievements:
   earnedAt: "Разблокировано в"
   _types:
