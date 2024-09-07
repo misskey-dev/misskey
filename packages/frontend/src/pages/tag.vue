@@ -5,11 +5,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
-		<MkNotes ref="notes" class="" :pagination="pagination"/>
-	</MkSpacer>
-	<template v-if="$i" #footer>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<div v-if="tab === 'notes'" key="notes">
+			<XNotes ref="notesTag" :tag="tag"/>
+		</div>
+		<div v-else-if="tab === 'users'" key="users">
+			<XUsers :tag="tag"/>
+		</div>
+	</MkHorizontalSwipe>
+	<template v-if="$i && tab === 'notes'" #footer>
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="800" :marginMin="16" :marginMax="16">
 				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashtag }}</MkButton>
@@ -20,27 +25,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import MkNotes from '@/components/MkNotes.vue';
+import { ref, computed } from 'vue';
+import XUsers from './tag.user.vue';
+import XNotes from './tag.note.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	tag: string;
-}>();
+	initialTab?: 'notes' | 'users';
+}>(), {
+	initialTab: 'notes',
+});
 
-const pagination = {
-	endpoint: 'notes/search-by-tag' as const,
-	limit: 10,
-	params: computed(() => ({
-		tag: props.tag,
-	})),
-};
-const notes = ref<InstanceType<typeof MkNotes>>();
+// eslint-disable-next-line vue/no-setup-props-destructure
+const tab = ref<'notes' | 'users'>(props.initialTab);
+
+const notesTag = ref<InstanceType<typeof XNotes>>();
 
 async function post() {
 	defaultStore.set('postFormHashtags', props.tag);
@@ -48,12 +54,20 @@ async function post() {
 	await os.post();
 	defaultStore.set('postFormHashtags', '');
 	defaultStore.set('postFormWithHashtags', false);
-	notes.value?.pagingComponent?.reload();
+	notesTag.value?.reload();
 }
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() => []);
+const headerTabs = computed(() => [{
+	key: 'notes',
+	icon: 'ti ti-pencil',
+	title: i18n.ts.notes,
+}, {
+	key: 'users',
+	icon: 'ti ti-users',
+	title: i18n.ts.users,
+}]);
 
 definePageMetadata(() => ({
 	title: props.tag,
