@@ -13,6 +13,7 @@ import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
+import { DI } from '../src/di.js';
 
 const appInitialized = Symbol();
 
@@ -77,6 +78,7 @@ queueMicrotask(() => {
 				return;
 			}
 			app[appInitialized] = true;
+			app.provide(DI.serverMetadata, {}); // TODO
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);
