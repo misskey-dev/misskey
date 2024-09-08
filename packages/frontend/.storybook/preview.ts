@@ -81,7 +81,9 @@ queueMicrotask(() => {
 			}
 			app[appInitialized] = true;
 			app.provide(DI.serverMetadata, {}); // TODO
-			app.provide(DI.mediaProxy, new MediaProxy({}, url));
+			app.provide(DI.mediaProxy, new MediaProxy({
+				mediaProxy: 'https://example.com',
+			}, url));
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);
