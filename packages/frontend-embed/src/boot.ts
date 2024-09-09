@@ -90,7 +90,6 @@ const rootEl = ((): HTMLElement => {
 	return root;
 })();
 
-
 postMessageToParentWindow('misskey:embed:ready');
 
 app.mount(rootEl);

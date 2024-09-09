@@ -60,7 +60,6 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-
 const clip = ref<Misskey.entities.Clip | null>(null);
 const pagination = computed(() => ({
 	endpoint: 'clips/notes',

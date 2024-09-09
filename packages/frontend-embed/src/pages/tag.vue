@@ -57,7 +57,6 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-
 const pagination = computed(() => ({
 	endpoint: 'notes/search-by-tag',
 	params: {
