@@ -1263,6 +1263,9 @@ confirmWhenRevealingSensitiveMedia: "显示敏感内容前需要确认"
 sensitiveMediaRevealConfirm: "这是敏感内容。是否显示？"
 createdLists: "已创建的列表"
 createdAntennas: "已创建的天线"
+fromX: "从 {x}"
+genEmbedCode: "生成嵌入代码"
+noteOfThisUser: "此用户的帖子"
 clipNoteLimitExceeded: "无法再往此便签内添加更多帖子"
 _delivery:
   status: "投递状态"
@@ -2641,3 +2644,7 @@ _contextMenu:
   app: "应用"
   appWithShift: "Shift 键应用"
   native: "浏览器的用户界面"
+_embedCodeGen:
+  title: "自定义嵌入代码"
+  header: "显示标题"
+  maxHeight: "最大高度"
