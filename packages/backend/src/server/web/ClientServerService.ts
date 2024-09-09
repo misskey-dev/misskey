@@ -304,6 +304,13 @@ export class ClientServerService {
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
+
+			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
+			fastify.register(fastifyProxy, {
+				upstream: 'http://localhost:' + embedPort,
+				prefix: '/embed_vite',
+				rewritePrefix: '/embed_vite',
+			});
 		}
 		//#endregion
 
