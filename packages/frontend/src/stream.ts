@@ -7,6 +7,7 @@ import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
 import { $i } from '@/account.js';
 import { wsOrigin } from '@/config.js';
+// TODO: No WebsocketモードでStreamMockが使えそう
 //import { StreamMock } from '@/scripts/stream-mock.js';
 
 // heart beat interval in ms

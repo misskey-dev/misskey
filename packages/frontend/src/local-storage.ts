@@ -41,6 +41,9 @@ export type Keys =
 	`channelLastReadedAt:${string}` |
 	`idbfallback::${string}`
 
+// セッション毎に廃棄されるLocalStorage代替（セーフモードなどで使用できそう）
+//const safeSessionStorage = new Map<Keys, string>();
+
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => {
 		return window.localStorage.getItem(key);
