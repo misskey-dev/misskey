@@ -1263,6 +1263,9 @@ confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示�
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
+fromX: "{x}から"
+genEmbedCode: "埋め込みコードを生成"
+noteOfThisUser: "このユーザーのノート一覧"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 
 _delivery:
@@ -2718,3 +2721,18 @@ _contextMenu:
   app: "アプリケーション"
   appWithShift: "Shiftキーでアプリケーション"
   native: "ブラウザのUI"
+
+_embedCodeGen:
+  title: "埋め込みコードをカスタマイズ"
+  header: "ヘッダーを表示"
+  autoload: "自動で続きを読み込む（非推奨）"
+  maxHeight: "高さの最大値"
+  maxHeightDescription: "0で最大値の設定が無効になります。ウィジェットが縦に伸び続けるのを防ぐために、何らかの値に指定してください。"
+  maxHeightWarn: "高さの最大値制限が無効（0）になっています。これが意図した変更ではない場合は、高さの最大値を何らかの値に設定してください。"
+  previewIsNotActual: "プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。"
+  rounded: "角丸にする"
+  border: "外枠に枠線をつける"
+  applyToPreview: "プレビューに反映"
+  generateCode: "埋め込みコードを作成"
+  codeGenerated: "コードが生成されました"
+  codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"

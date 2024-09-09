@@ -2,7 +2,10 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { ILocale, ParameterizedString } from '../../../../locales/index.js';
+import type { ILocale, ParameterizedString } from '../../../locales/index.js';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TODO = any;
 
 type FlattenKeys<T extends ILocale, TPrediction> = keyof {
 	[K in keyof T as T[K] extends ILocale
@@ -32,15 +35,18 @@ type Tsx<T extends ILocale> = {
 
 export class I18n<T extends ILocale> {
 	private tsxCache?: Tsx<T>;
+	private devMode: boolean;
 
-	constructor(public locale: T) {
+	constructor(public locale: T, devMode = false) {
+		this.devMode = devMode;
+
 		//#region BIND
 		this.t = this.t.bind(this);
 		//#endregion
 	}
 
 	public get ts(): T {
-		if (_DEV_) {
+		if (this.devMode) {
 			class Handler<TTarget extends ILocale> implements ProxyHandler<TTarget> {
 				get(target: TTarget, p: string | symbol): unknown {
 					const value = target[p as keyof TTarget];
@@ -72,7 +78,7 @@ export class I18n<T extends ILocale> {
 	}
 
 	public get tsx(): Tsx<T> {
-		if (_DEV_) {
+		if (this.devMode) {
 			if (this.tsxCache) {
 				return this.tsxCache;
 			}
@@ -113,7 +119,7 @@ export class I18n<T extends ILocale> {
 							return () => value;
 						}
 
-						return (arg) => {
+						return (arg: TODO) => {
 							let str = quasis[0];
 
 							for (let i = 0; i < expressions.length; i++) {
@@ -152,7 +158,7 @@ export class I18n<T extends ILocale> {
 				const value = target[k as keyof typeof target];
 
 				if (typeof value === 'object') {
-					result[k] = build(value as ILocale);
+					(result as TODO)[k] = build(value as ILocale);
 				} else if (typeof value === 'string') {
 					const quasis: string[] = [];
 					const expressions: string[] = [];
@@ -179,7 +185,7 @@ export class I18n<T extends ILocale> {
 						continue;
 					}
 
-					result[k] = (arg) => {
+					(result as TODO)[k] = (arg: TODO) => {
 						let str = quasis[0];
 
 						for (let i = 0; i < expressions.length; i++) {
@@ -208,9 +214,9 @@ export class I18n<T extends ILocale> {
 		let str: string | ParameterizedString | ILocale = this.locale;
 
 		for (const k of key.split('.')) {
-			str = str[k];
+			str = (str as TODO)[k];
 
-			if (_DEV_) {
+			if (this.devMode) {
 				if (typeof str === 'undefined') {
 					console.error(`Unexpected locale key: ${key}`);
 					return key;
@@ -219,7 +225,7 @@ export class I18n<T extends ILocale> {
 		}
 
 		if (args) {
-			if (_DEV_) {
+			if (this.devMode) {
 				const missing = Array.from((str as string).matchAll(/\{(\w+)\}/g), ([, parameter]) => parameter).filter(parameter => !Object.hasOwn(args, parameter));
 
 				if (missing.length) {
@@ -230,7 +236,7 @@ export class I18n<T extends ILocale> {
 			for (const [k, v] of Object.entries(args)) {
 				const search = `{${k}}`;
 
-				if (_DEV_) {
+				if (this.devMode) {
 					if (!(str as string).includes(search)) {
 						console.error(`Unexpected locale parameter: ${k} at ${key}`);
 					}
