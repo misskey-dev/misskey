@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkLoading v-if="loading"/>
+	<EmLoading v-if="loading"/>
 	<EmTimelineContainer v-else-if="clip" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
@@ -43,6 +43,7 @@ import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { scrollToTop } from '@@/js/scroll.js';
 import type { Paging } from '@/components/EmPagination.vue';
+import EmLoading from '@/components/EmLoading.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';

@@ -37,6 +37,7 @@ import EmPoll from '@/components/EmPoll.vue';
 import { i18n } from '@/i18n.js';
 import { url } from '@/config.js';
 import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
+import EmA from '@/components/EmA.vue';
 import EmMfm from '@/components/EmMfm.js';
 
 const props = defineProps<{
