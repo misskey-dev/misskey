@@ -63,26 +63,35 @@ export function parseEmbedParams(searchParams: URLSearchParams | string): Parsed
 		throw new Error('searchParams must be URLSearchParams or string');
 	}
 
-	const params: EmbedParams = {};
-	for (const key in defaultEmbedParams) {
-		const value = _searchParams.get(key);
-		if (value != null) {
-			if (value === 'true') {
-				params[key] = true;
-			} else if (value === 'false') {
-				params[key] = false;
-			} else if (!isNaN(Number(value))) {
-				params[key] = Number(value);
-			} else if (key === 'colorMode' && ['light', 'dark'].includes(value)) {
-				params[key] = value as 'light' | 'dark';
-			} else {
-				params[key] = value;
-			}
+	function convertBoolean(value: string | null): boolean | undefined {
+		if (value === 'true') {
+			return true;
+		} else if (value === 'false') {
+			return false;
 		}
+		return undefined;
+	}
+
+	function convertNumber(value: string | null): number | undefined {
+		if (value != null && !isNaN(Number(value))) {
+			return Number(value);
+		}
+		return undefined;
+	}
+
+	function convertColorMode(value: string | null): 'light' | 'dark' | undefined {
+		if (value != null && [ 'light', 'dark' ].includes(value)) {
+			return value as 'light' | 'dark';
+		}
+		return undefined;
 	}
 
 	return {
-		...defaultEmbedParams,
-		...params,
+		maxHeight: convertNumber(_searchParams.get('maxHeight')) ?? defaultEmbedParams.maxHeight,
+		colorMode: convertColorMode(_searchParams.get('colorMode')) ?? defaultEmbedParams.colorMode,
+		rounded: convertBoolean(_searchParams.get('rounded')) ?? defaultEmbedParams.rounded,
+		border: convertBoolean(_searchParams.get('border')) ?? defaultEmbedParams.border,
+		autoload: convertBoolean(_searchParams.get('autoload')) ?? defaultEmbedParams.autoload,
+		header: convertBoolean(_searchParams.get('header')) ?? defaultEmbedParams.header,
 	};
 }
