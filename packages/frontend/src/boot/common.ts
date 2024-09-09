@@ -24,7 +24,6 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
-import { DI } from '@/di.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
