@@ -51,7 +51,7 @@ import { i18n } from '@/i18n.js';
 import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
 import { isLink } from '@/to-be-shared/is-link.js';
-import { defaultEmbedParams } from '@/embed-page.js';
+import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{

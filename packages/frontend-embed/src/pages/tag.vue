@@ -49,7 +49,7 @@ import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
 import { isLink } from '@/to-be-shared/is-link.js';
 import { DI } from '@/di.js';
-import { defaultEmbedParams } from '@/embed-page.js';
+import { defaultEmbedParams } from '@@/js/embed-page.js';
 
 const props = defineProps<{
 	tag: string;

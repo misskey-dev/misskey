@@ -6,7 +6,7 @@
 import type { InjectionKey } from 'vue';
 import * as Misskey from 'misskey-js';
 import { MediaProxy } from '@@/js/media-proxy.js';
-import type { ParsedEmbedParams } from '@/embed-page.js';
+import type { ParsedEmbedParams } from '@@/js/embed-page.js';
 
 export const DI = {
 	serverMetadata: Symbol() as InjectionKey<Misskey.entities.MetaDetailed>,

@@ -18,7 +18,7 @@ import { fetchCustomEmojis } from './custom-emojis.js';
 import { DI } from './di.js';
 import { serverMetadata } from './server-metadata.js';
 import { url } from './config.js';
-import { parseEmbedParams } from '@/embed-page.js';
+import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 
 console.info('Misskey Embed');
