@@ -5,12 +5,9 @@
 
 import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
-import { onBeforeUnmount, inject } from 'vue';
+import { onBeforeUnmount } from 'vue';
 import MkDonation from './MkDonation.vue';
-import { DI } from '@/di.js';
-
-const instance = inject(DI.serverMetadata)!;
-
+import { instance } from '@/server-metadata.js';
 export const Default = {
 	render(args) {
 		return {
