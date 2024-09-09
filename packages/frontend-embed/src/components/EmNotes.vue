@@ -45,4 +45,8 @@ defineExpose({
 .root {
 	background: var(--panel);
 }
+
+.note {
+	border-bottom: 0.5px solid var(--divider);
+}
 </style>
