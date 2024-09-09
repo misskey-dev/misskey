@@ -49,7 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
-import I18n from '@/components/I18n.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmLoading from '@/components/EmLoading.vue';
