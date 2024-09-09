@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img
 								v-else-if="instance.backgroundImageUrl || instance.bannerUrl"
 								:class="[$style.pageBannerBg, $style.pageBannerBgFallback1]"
-								:src="mediaProxy.getStaticImageUrl(instance.backgroundImageUrl ?? instance.bannerUrl!)"
+								:src="getStaticImageUrl(instance.backgroundImageUrl ?? instance.bannerUrl!)"
 							/>
 							<div v-else :class="[$style.pageBannerBg, $style.pageBannerBgFallback2]"></div>
 						</div>
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent, inject } from 'vue';
+import { computed, watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -117,16 +117,11 @@ import { pageViewInterruptors, defaultStore } from '@/store.js';
 import { deepClone } from '@/scripts/clone.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { instance } from '@/instance.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 import { MenuItem } from '@/types/menu';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
-import { DI } from '@/di.js';
-
-const mediaProxy = inject(DI.mediaProxy);
 
 const router = useRouter();
 

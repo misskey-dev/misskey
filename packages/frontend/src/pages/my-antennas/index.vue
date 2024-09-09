@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div>
 			<div v-if="antennas.length === 0" class="empty">
 				<div class="_fullinfo">
-					<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.nothing }}</div>
 				</div>
 			</div>
@@ -33,10 +33,7 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache.js';
-import { inject } from 'vue';
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
+import { infoImageUrl } from '@/instance.js';
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 

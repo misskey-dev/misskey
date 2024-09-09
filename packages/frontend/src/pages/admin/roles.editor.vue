@@ -596,7 +596,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, inject } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -609,11 +609,8 @@ import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
 import { ROLE_POLICIES } from '@/const.js';
+import { instance } from '@/instance.js';
 import { deepClone } from '@/scripts/clone.js';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;
@@ -632,7 +629,7 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 		role.value.policies[ROLE_POLICY] = {
 			useDefault: true,
 			priority: 0,
-			value: serverMetadata.policies[ROLE_POLICY],
+			value: instance.policies[ROLE_POLICY],
 		};
 	}
 }

@@ -5,17 +5,16 @@
 
 import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { MediaProxy } from '@@/js/media-proxy.js';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, lang, updateLocale, locale, url } from '@/config.js';
+import { version, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
+import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
@@ -121,7 +120,11 @@ export async function common(createVue: () => App<Element>) {
 	await defaultStore.ready;
 	await deckStore.ready;
 
-	const serverMetadata = await fetchServerMetadata();
+	const fetchInstanceMetaPromise = fetchInstance();
+
+	fetchInstanceMetaPromise.then(() => {
+		miLocalStorage.setItem('v', instance.version);
+	});
 
 	//#region loginId
 	const params = new URLSearchParams(location.search);
@@ -176,17 +179,19 @@ export async function common(createVue: () => App<Element>) {
 	});
 	//#endregion
 
-	if (defaultStore.state.themeInitial) {
-		if (serverMetadata.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(serverMetadata.defaultLightTheme));
-		if (serverMetadata.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(serverMetadata.defaultDarkTheme));
-		defaultStore.set('themeInitial', false);
-	} else {
-		if (defaultStore.state.darkMode) {
-			applyTheme(darkTheme.value);
+	fetchInstanceMetaPromise.then(() => {
+		if (defaultStore.state.themeInitial) {
+			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
+			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
+			defaultStore.set('themeInitial', false);
 		} else {
-			applyTheme(lightTheme.value);
+			if (defaultStore.state.darkMode) {
+				applyTheme(darkTheme.value);
+			} else {
+				applyTheme(lightTheme.value);
+			}
 		}
-	}
+	});
 
 	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
@@ -235,8 +240,6 @@ export async function common(createVue: () => App<Element>) {
 	} catch (err) { /* empty */ }
 
 	const app = createVue();
-	app.provide(DI.serverMetadata, serverMetadata);
-	app.provide(DI.mediaProxy, new MediaProxy(serverMetadata, url));
 
 	setupRouter(app, createMainRouter);
 

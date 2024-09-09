@@ -15,14 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.title">
 			<I18n :src="i18n.ts.aboutX" tag="span">
 				<template #x>
-					{{ serverMetadata.name ?? host }}
+					{{ instance.name ?? host }}
 				</template>
 			</I18n>
 		</div>
 		<div :class="$style.text">
 			<I18n :src="i18n.ts._aboutMisskey.thisIsModifiedVersion" tag="span">
 				<template #name>
-					{{ serverMetadata.name ?? host }}
+					{{ instance.name ?? host }}
 				</template>
 			</I18n>
 			<I18n :src="i18n.ts.correspondingSourceIsAvailable" tag="span">
@@ -40,16 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { host } from '@/config.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

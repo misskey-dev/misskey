@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 		<div v-else class="_fullinfo">
-			<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
+			<img :src="infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</MkSpacer>
@@ -72,7 +72,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { reactive, shallowRef } from 'vue';
-import { inject } from 'vue';
 import MkInput from './MkInput.vue';
 import MkTextarea from './MkTextarea.vue';
 import MkSwitch from './MkSwitch.vue';
@@ -84,9 +83,7 @@ import XFile from './MkFormDialog.file.vue';
 import type { Form } from '@/scripts/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
+import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	title: string;

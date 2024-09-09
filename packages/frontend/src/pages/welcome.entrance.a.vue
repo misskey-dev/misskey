@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="rsqzvsbo">
+<div v-if="meta" class="rsqzvsbo">
 	<MkFeaturedPhotos class="bg"/>
 	<XTimeline class="tl"/>
 	<div class="shape1"></div>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
@@ -44,11 +44,8 @@ import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
-const mediaProxy = inject(DI.mediaProxy);
+import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+import { instance as meta } from '@/instance.js';
 
 const instances = ref<Misskey.entities.FederationInstance[]>();
 
@@ -56,7 +53,7 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 	if (!instance.iconUrl) {
 		return '';
 	}
-	return mediaProxy.getProxiedImageUrl(instance.iconUrl, 'preview');
+	return getProxiedImageUrl(instance.iconUrl, 'preview');
 }
 
 misskeyApiGet('federation/instances', {

@@ -8,24 +8,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="600" :marginMin="20">
 		<div class="_gaps_m">
-			<MkKeyValue :copy="serverMetadata.maintainerName">
+			<MkKeyValue :copy="instance.maintainerName">
 				<template #key>{{ i18n.ts.administrator }}</template>
 				<template #value>
-					<template v-if="serverMetadata.maintainerName">{{ serverMetadata.maintainerName }}</template>
+					<template v-if="instance.maintainerName">{{ instance.maintainerName }}</template>
 					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 				</template>
 			</MkKeyValue>
-			<MkKeyValue :copy="serverMetadata.maintainerEmail">
+			<MkKeyValue :copy="instance.maintainerEmail">
 				<template #key>{{ i18n.ts.contact }}</template>
 				<template #value>
-					<template v-if="serverMetadata.maintainerEmail">{{ serverMetadata.maintainerEmail }}</template>
+					<template v-if="instance.maintainerEmail">{{ instance.maintainerEmail }}</template>
 					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 				</template>
 			</MkKeyValue>
-			<MkKeyValue :copy="serverMetadata.inquiryUrl">
+			<MkKeyValue :copy="instance.inquiryUrl">
 				<template #key>{{ i18n.ts.inquiry }}</template>
 				<template #value>
-					<MkLink v-if="serverMetadata.inquiryUrl" :url="serverMetadata.inquiryUrl" target="_blank">{{ serverMetadata.inquiryUrl }}</MkLink>
+					<MkLink v-if="instance.inquiryUrl" :url="instance.inquiryUrl" target="_blank">{{ instance.inquiryUrl }}</MkLink>
 					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 				</template>
 			</MkKeyValue>
@@ -35,15 +35,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
 
 definePageMetadata(() => ({
 	title: i18n.ts.inquiry,

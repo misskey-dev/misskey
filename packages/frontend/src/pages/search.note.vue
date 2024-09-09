@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, toRef, watch } from 'vue';
+import { computed, ref, toRef, watch } from 'vue';
 import type { UserDetailed } from 'misskey-js/entities.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
@@ -66,10 +66,7 @@ import { useRouter } from '@/router/supplier.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { $i } from '@/account.js';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -90,7 +87,7 @@ const notePagination = ref<Paging>();
 const user = ref<UserDetailed | null>(null);
 const hostInput = ref(toRef(props, 'host').value);
 
-const noteSearchableScope = serverMetadata.noteSearchableScope ?? 'local';
+const noteSearchableScope = instance.noteSearchableScope ?? 'local';
 
 const hostSelect = ref<'all' | 'local' | 'specified'>('all');
 
@@ -124,7 +121,7 @@ if (props.userId != null) {
 }
 
 function selectUser() {
-	os.selectUser({ includeSelf: true, localOnly: serverMetadata.noteSearchableScope === 'local' }).then(_user => {
+	os.selectUser({ includeSelf: true, localOnly: instance.noteSearchableScope === 'local' }).then(_user => {
 		user.value = _user;
 		hostInput.value = _user.host ?? '';
 	});

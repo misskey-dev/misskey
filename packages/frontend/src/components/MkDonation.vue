@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.text">
 			<I18n :src="i18n.ts.pleaseDonate" tag="span">
 				<template #host>
-					{{ serverMetadata.name ?? host }}
+					{{ instance.name ?? host }}
 				</template>
 			</I18n>
 			<div style="margin-top: 0.2em;">
@@ -36,17 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
 import { host } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { miLocalStorage } from '@/local-storage.js';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
+import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

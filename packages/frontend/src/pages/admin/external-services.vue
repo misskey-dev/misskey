@@ -43,7 +43,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
+import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -61,7 +61,7 @@ function save() {
 		deeplAuthKey: deeplAuthKey.value,
 		deeplIsPro: deeplIsPro.value,
 	}).then(() => {
-		fetchServerMetadata(true);
+		fetchInstance(true);
 	});
 }
 

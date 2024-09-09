@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
 import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 
 export const basicTimelineTypes = [
 	'home',
@@ -32,23 +32,23 @@ export function basicTimelineIconClass(timeline: BasicTimelineType): string {
 	}
 }
 
-export function isAvailableBasicTimeline(metadata: Misskey.entities.MetaDetailed, timeline: BasicTimelineType | undefined | null): boolean {
+export function isAvailableBasicTimeline(timeline: BasicTimelineType | undefined | null): boolean {
 	switch (timeline) {
 		case 'home':
 			return $i != null;
 		case 'local':
-			return ($i == null && metadata.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
+			return ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 		case 'social':
 			return $i != null && $i.policies.ltlAvailable;
 		case 'global':
-			return ($i == null && metadata.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
+			return ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 		default:
 			return false;
 	}
 }
 
-export function availableBasicTimelines(metadata: Misskey.entities.MetaDetailed): BasicTimelineType[] {
-	return basicTimelineTypes.filter(timeline => isAvailableBasicTimeline(metadata, timeline));
+export function availableBasicTimelines(): BasicTimelineType[] {
+	return basicTimelineTypes.filter(isAvailableBasicTimeline);
 }
 
 export function hasWithReplies(timeline: BasicTimelineType | undefined | null): boolean {

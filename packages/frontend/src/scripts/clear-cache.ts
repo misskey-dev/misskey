@@ -7,7 +7,7 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
+import { fetchInstance } from '@/instance.js';
 
 export async function clearCache() {
 	os.waiting();
@@ -18,7 +18,7 @@ export async function clearCache() {
 	miLocalStorage.removeItem('theme');
 	miLocalStorage.removeItem('emojis');
 	miLocalStorage.removeItem('lastEmojisFetchedAt');
-	await fetchServerMetadata(true);
+	await fetchInstance(true);
 	await fetchCustomEmojis(true);
 	unisonReload();
 }

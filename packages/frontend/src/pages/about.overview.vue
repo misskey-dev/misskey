@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<div :class="$style.banner" :style="{ backgroundImage: `url(${ serverMetadata.bannerUrl })` }">
+	<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 		<div style="overflow: clip;">
-			<img :src="serverMetadata.iconUrl ?? serverMetadata.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
 			<div :class="$style.bannerName">
-				<b>{{ serverMetadata.name ?? host }}</b>
+				<b>{{ instance.name ?? host }}</b>
 			</div>
 		</div>
 	</div>
 
 	<MkKeyValue>
 		<template #key>{{ i18n.ts.description }}</template>
-		<template #value><div v-html="serverMetadata.description"></div></template>
+		<template #value><div v-html="instance.description"></div></template>
 	</MkKeyValue>
 
 	<FormSection>
@@ -25,13 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #key>Misskey</template>
 				<template #value>{{ version }}</template>
 			</MkKeyValue>
-			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: serverMetadata.name ?? host })">
+			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 			</div>
 			<FormLink to="/about-misskey">
 				<template #icon><i class="ti ti-info-circle"></i></template>
 				{{ i18n.ts.aboutMisskey }}
 			</FormLink>
-			<FormLink v-if="serverMetadata.repositoryUrl || serverMetadata.providesTarball" :to="serverMetadata.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
+			<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
 				<template #icon><i class="ti ti-code"></i></template>
 				{{ i18n.ts.sourceCode }}
 			</FormLink>
@@ -44,51 +44,51 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<FormSplit>
-				<MkKeyValue :copy="serverMetadata.maintainerName">
+				<MkKeyValue :copy="instance.maintainerName">
 					<template #key>{{ i18n.ts.administrator }}</template>
 					<template #value>
-						<template v-if="serverMetadata.maintainerName">{{ serverMetadata.maintainerName }}</template>
+						<template v-if="instance.maintainerName">{{ instance.maintainerName }}</template>
 						<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 					</template>
 				</MkKeyValue>
-				<MkKeyValue :copy="serverMetadata.maintainerEmail">
+				<MkKeyValue :copy="instance.maintainerEmail">
 					<template #key>{{ i18n.ts.contact }}</template>
 					<template #value>
-						<template v-if="serverMetadata.maintainerEmail">{{ serverMetadata.maintainerEmail }}</template>
+						<template v-if="instance.maintainerEmail">{{ instance.maintainerEmail }}</template>
 						<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 					</template>
 				</MkKeyValue>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.inquiry }}</template>
 					<template #value>
-						<MkLink v-if="serverMetadata.inquiryUrl" :url="serverMetadata.inquiryUrl" target="_blank">{{ serverMetadata.inquiryUrl }}</MkLink>
+						<MkLink v-if="instance.inquiryUrl" :url="instance.inquiryUrl" target="_blank">{{ instance.inquiryUrl }}</MkLink>
 						<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 					</template>
 				</MkKeyValue>
 			</FormSplit>
 			<div class="_gaps_s">
-				<FormLink v-if="serverMetadata.impressumUrl" :to="serverMetadata.impressumUrl" external>
+				<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>
 					<template #icon><i class="ti ti-user-shield"></i></template>
 					<template #default>{{ i18n.ts.impressum }}</template>
 				</FormLink>
-				<MkFolder v-if="serverMetadata.serverRules.length > 0">
+				<MkFolder v-if="instance.serverRules.length > 0">
 					<template #icon><i class="ti ti-checkup-list"></i></template>
 					<template #label>{{ i18n.ts.serverRules }}</template>
 					<ol class="_gaps_s" :class="$style.rules">
-						<li v-for="item in serverMetadata.serverRules" :key="item" :class="$style.rule">
+						<li v-for="item in instance.serverRules" :key="item" :class="$style.rule">
 							<div :class="$style.ruleText" v-html="item"></div>
 						</li>
 					</ol>
 				</MkFolder>
-				<FormLink v-if="serverMetadata.tosUrl" :to="serverMetadata.tosUrl" external>
+				<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>
 					<template #icon><i class="ti ti-license"></i></template>
 					<template #default>{{ i18n.ts.termsOfService }}</template>
 				</FormLink>
-				<FormLink v-if="serverMetadata.privacyPolicyUrl" :to="serverMetadata.privacyPolicyUrl" external>
+				<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>
 					<template #icon><i class="ti ti-shield-lock"></i></template>
 					<template #default>{{ i18n.ts.privacyPolicy }}</template>
 				</FormLink>
-				<FormLink v-if="serverMetadata.feedbackUrl" :to="serverMetadata.feedbackUrl" external>
+				<FormLink v-if="instance.feedbackUrl" :to="instance.feedbackUrl" external>
 					<template #icon><i class="ti ti-message"></i></template>
 					<template #default>{{ i18n.ts.feedback }}</template>
 				</FormLink>
@@ -126,9 +126,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
 import { host, version } from '@/config.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import number from '@/filters/number.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import FormLink from '@/components/form/link.vue';
@@ -138,10 +138,6 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
 
 const initStats = () => misskeyApi('stats', {});
 </script>

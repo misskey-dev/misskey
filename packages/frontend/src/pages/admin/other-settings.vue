@@ -48,7 +48,7 @@ import XHeader from './_header_.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
+import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -73,7 +73,7 @@ function save() {
 		enableChartsForRemoteUser: enableChartsForRemoteUser.value,
 		enableChartsForFederatedInstances: enableChartsForFederatedInstances.value,
 	}).then(() => {
-		fetchServerMetadata(true);
+		fetchInstance(true);
 	});
 }
 

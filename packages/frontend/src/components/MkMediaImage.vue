@@ -51,18 +51,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, inject } from 'vue';
+import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/account.js';
-
-import { DI } from '@/di.js';
-
-const mediaProxy = inject(DI.mediaProxy);
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -82,7 +79,7 @@ const darkMode = ref<boolean>(defaultStore.state.darkMode);
 const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
-		? mediaProxy.getStaticImageUrl(props.image.url)
+		? getStaticImageUrl(props.image.url)
 		: props.image.thumbnailUrl,
 );
 

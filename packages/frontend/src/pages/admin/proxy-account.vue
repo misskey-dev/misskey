@@ -29,7 +29,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
+import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -56,7 +56,7 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		proxyAccountId: proxyAccountId.value,
 	}).then(() => {
-		fetchServerMetadata(true);
+		fetchInstance(true);
 	});
 }
 

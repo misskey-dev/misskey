@@ -6,10 +6,10 @@
 import { defineAsyncComponent } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
+import { instance } from '@/instance.js';
 import { host } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
 
 function toolsMenuItems(): MenuItem[] {
 	return [{
@@ -40,10 +40,9 @@ function toolsMenuItems(): MenuItem[] {
 	} : undefined];
 }
 
-export async function openInstanceMenu(ev: MouseEvent) {
-	const serverMetadata = await fetchServerMetadata();
+export function openInstanceMenu(ev: MouseEvent) {
 	os.popupMenu([{
-		text: serverMetadata.name ?? host,
+		text: instance.name ?? host,
 		type: 'label',
 	}, {
 		type: 'link',
@@ -70,7 +69,7 @@ export async function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.ads,
 		icon: 'ti ti-ad',
 		to: '/ads',
-	}, ($i && ($i.isAdmin || $i.policies.canInvite) && serverMetadata.disableRegistration) ? {
+	}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
 		type: 'link',
 		to: '/invite',
 		text: i18n.ts.invite,
@@ -85,25 +84,25 @@ export async function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.inquiry,
 		icon: 'ti ti-help-circle',
 		to: '/contact',
-	}, (serverMetadata.impressumUrl) ? {
+	}, (instance.impressumUrl) ? {
 		type: 'a',
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
-		href: serverMetadata.impressumUrl,
+		href: instance.impressumUrl,
 		target: '_blank',
-	} : undefined, (serverMetadata.tosUrl) ? {
+	} : undefined, (instance.tosUrl) ? {
 		type: 'a',
 		text: i18n.ts.termsOfService,
 		icon: 'ti ti-notebook',
-		href: serverMetadata.tosUrl,
+		href: instance.tosUrl,
 		target: '_blank',
-	} : undefined, (serverMetadata.privacyPolicyUrl) ? {
+	} : undefined, (instance.privacyPolicyUrl) ? {
 		type: 'a',
 		text: i18n.ts.privacyPolicy,
 		icon: 'ti ti-shield-lock',
-		href: serverMetadata.privacyPolicyUrl,
+		href: instance.privacyPolicyUrl,
 		target: '_blank',
-	} : undefined, (!serverMetadata.impressumUrl && !serverMetadata.tosUrl && !serverMetadata.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
+	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
 		type: 'a',
 		text: i18n.ts.document,
 		icon: 'ti ti-bulb',

@@ -4,6 +4,7 @@
  */
 
 export type Keys =
+	'v' |
 	'lastVersion' |
 	'instance' |
 	'instanceCachedAt' |

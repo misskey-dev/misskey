@@ -7,7 +7,7 @@ import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
 import { onBeforeUnmount } from 'vue';
 import MkDonation from './MkDonation.vue';
-import { instance } from '@/server-metadata.js';
+import { instance } from '@/instance.js';
 export const Default = {
 	render(args) {
 		return {

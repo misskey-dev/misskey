@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
 					</MkInput>
 
-					<MkInfo v-if="!serverMetadata.providesTarball && !repositoryUrl" warn>
+					<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
 						{{ i18n.ts.repositoryUrlOrTarballRequired }}
 					</MkInfo>
 
@@ -205,7 +205,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -216,16 +216,12 @@ import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fetchServerMetadata } from '@/server-metadata.js';
+import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
 
 const name = ref<string | null>(null);
 const shortName = ref<string | null>(null);
@@ -314,7 +310,7 @@ async function save() {
 		urlPreviewSummaryProxyUrl: urlPreviewSummaryProxyUrl.value,
 	});
 
-	fetchServerMetadata(true);
+	fetchInstance(true);
 }
 
 const headerTabs = computed(() => []);

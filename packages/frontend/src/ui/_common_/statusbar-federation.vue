@@ -31,15 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useInterval } from '@@/js/use-interval.js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-
-import { DI } from '@/di.js';
-
-const mediaProxy = inject(DI.mediaProxy);
+import { useInterval } from '@@/js/use-interval.js';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';
@@ -71,7 +68,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 });
 
 function getInstanceIcon(instance): string {
-	return mediaProxy.getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? mediaProxy.getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
+	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 </script>
 

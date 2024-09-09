@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onActivated, ref, watch } from 'vue';
+import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -83,16 +83,13 @@ import { selectFile } from '@/scripts/select-file.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { uniqueBy } from '@/scripts/array.js';
 import { fetchThemes, getThemes } from '@/theme-store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
-
-import { DI } from '@/di.js';
-
-const serverMetadata = inject(DI.serverMetadata)!;
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -107,10 +104,10 @@ async function reloadAsk() {
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
 
-const instanceDarkTheme = computed(() => serverMetadata.defaultDarkTheme ? JSON5.parse(serverMetadata.defaultDarkTheme) : null);
+const instanceDarkTheme = computed(() => instance.defaultDarkTheme ? JSON5.parse(instance.defaultDarkTheme) : null);
 const installedDarkThemes = computed(() => installedThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
 const builtinDarkThemes = computed(() => builtinThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
-const instanceLightTheme = computed(() => serverMetadata.defaultLightTheme ? JSON5.parse(serverMetadata.defaultLightTheme) : null);
+const instanceLightTheme = computed(() => instance.defaultLightTheme ? JSON5.parse(instance.defaultLightTheme) : null);
 const installedLightThemes = computed(() => installedThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const builtinLightThemes = computed(() => builtinThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const themes = computed(() => uniqueBy([instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value].filter(x => x != null), theme => theme.id));

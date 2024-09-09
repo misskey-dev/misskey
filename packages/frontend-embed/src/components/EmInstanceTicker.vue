@@ -19,14 +19,20 @@ const serverMetadata = inject(DI.serverMetadata)!;
 const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
-	instance: {
+	instance?: {
 		faviconUrl?: string | null
 		name?: string | null
 		themeColor?: string | null
 	}
 }>();
 
-const faviconUrl = computed(() => mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview'));
+// if no instance data is given, this is for the local instance
+const instance = props.instance ?? {
+	name: instanceName,
+	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
+};
+
+const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
 
 const themeColor = serverMetadata.themeColor ?? '#777777';
 
