@@ -205,7 +205,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
