@@ -19,8 +19,13 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
-import { nyaize as doNyaize } from '@/scripts/nyaize.js';
-import { safeParseFloat } from '@/scripts/safe-parse.js';
+
+function safeParseFloat(str: unknown): number | null {
+	if (typeof str !== 'string' || str === '') return null;
+	const num = parseFloat(str);
+	if (isNaN(num)) return null;
+	return num;
+}
 
 const QUOTE_STYLE = `
 display: block;
@@ -86,7 +91,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 				if (!disableNyaize && shouldNyaize) {
-					text = doNyaize(text);
+					text = Misskey.nyaize(text);
 				}
 
 				if (!props.plain) {
@@ -281,14 +286,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							const child = token.children[0];
 							let text = child.type === 'text' ? child.props.text : '';
 							if (!disableNyaize && shouldNyaize) {
-								text = doNyaize(text);
+								text = Misskey.nyaize(text);
 							}
 							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
 						} else {
 							const rt = token.children.at(-1)!;
 							let text = rt.type === 'text' ? rt.props.text : '';
 							if (!disableNyaize && shouldNyaize) {
-								text = doNyaize(text);
+								text = Misskey.nyaize(text);
 							}
 							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
@@ -400,7 +405,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'emojiCode': {
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				if (props.author?.host == null) {
 					return [h(MkCustomEmoji, {
 						key: Math.random(),
