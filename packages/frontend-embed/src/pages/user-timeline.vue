@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject, onActivated } from 'vue';
+import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
 import type { ParsedEmbedParams } from '@/embed-page.js';
@@ -54,10 +54,7 @@ import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmLoading from '@/components/EmLoading.vue';
 import EmUserName from '@/components/EmUserName.vue';
-import EmA from '@/components/EmA.vue';
 import I18n from '@/components/I18n.vue';
-import { userPage } from '@/utils.js';
-import { notePage } from '@/utils.js';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
