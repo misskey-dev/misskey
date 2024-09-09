@@ -14,8 +14,6 @@ import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
 import { DI } from '../src/di.js';
-import { url } from '../src/config.js';
-import { MediaProxy } from '../../frontend-shared/js/media-proxy.js';
 
 const appInitialized = Symbol();
 
@@ -81,7 +79,6 @@ queueMicrotask(() => {
 			}
 			app[appInitialized] = true;
 			app.provide(DI.serverMetadata, {}); // TODO
-			app.provide(DI.mediaProxy, new MediaProxy({}, url));
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);
