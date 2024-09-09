@@ -8,12 +8,12 @@ import sharedConfig from '../shared/eslint.config.js';
 export default [
 	...sharedConfig,
 	{
-		files: ['src/**/*.vue'],
+		files: ['**/*.vue'],
 		...pluginMisskey.configs.typescript,
 	},
 	...pluginVue.configs['flat/recommended'],
 	{
-		files: ['src/**/*.{ts,vue}'],
+		files: ['js/**/*.{ts,vue}', '**/*.vue'],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),
