@@ -41,24 +41,15 @@ export type Keys =
 	`channelLastReadedAt:${string}` |
 	`idbfallback::${string}`
 
-// セッション毎に廃棄されるLocalStorage代替（embedなどで使用）
-const safeSessionStorage = new Map<Keys, string>();
-
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => {
 		return window.localStorage.getItem(key);
 	},
 	setItem: (key: Keys, value: string): void => {
-		if (false) {
-		} else {
-			window.localStorage.setItem(key, value);
-		}
+		window.localStorage.setItem(key, value);
 	},
 	removeItem: (key: Keys): void => {
-		if (false) {
-		} else {
-			window.localStorage.removeItem(key);
-		}
+		window.localStorage.removeItem(key);
 	},
 	getItemAsJson: (key: Keys): any | undefined => {
 		const item = miLocalStorage.getItem(key);
