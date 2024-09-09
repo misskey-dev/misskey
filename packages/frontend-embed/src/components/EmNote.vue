@@ -107,6 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import I18n from '@/components/I18n.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmNoteSimple from '@/components/EmNoteSimple.vue';

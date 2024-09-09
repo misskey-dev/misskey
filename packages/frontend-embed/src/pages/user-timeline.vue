@@ -49,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
+import I18n from '@/components/I18n.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmLoading from '@/components/EmLoading.vue';
@@ -64,11 +65,10 @@ import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
-	usernameWithAtMark: string;
+	userId: string;
 }>();
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
-
 
 const user = ref<Misskey.entities.UserLite | null>(null);
 const pagination = computed(() => ({
@@ -81,19 +81,15 @@ const loading = ref(true);
 
 const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
-if (props.usernameWithAtMark != null && props.usernameWithAtMark.startsWith('@')) {
-	misskeyApi('users/show', {
-		username: props.usernameWithAtMark.slice(1),
-	}).then(res => {
-		user.value = res;
-		loading.value = false;
-	}).catch(err => {
-		console.error(err);
-		loading.value = false;
-	});
-} else {
+misskeyApi('users/show', {
+	userId: props.userId,
+}).then(res => {
+	user.value = res;
 	loading.value = false;
-}
+}).catch(err => {
+	console.error(err);
+	loading.value = false;
+});
 </script>
 
 <style lang="scss" module>
