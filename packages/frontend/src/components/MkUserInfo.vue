@@ -46,7 +46,7 @@ import { defaultStore } from '@/store.js';
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy)!;
+const mediaProxy = inject(DI.mediaProxy);
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

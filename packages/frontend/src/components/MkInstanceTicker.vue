@@ -16,8 +16,7 @@ import { instanceName } from '@/config.js';
 
 import { DI } from '@/di.js';
 
-const serverMetadata = inject(DI.serverMetadata)!;
-const mediaProxy = inject(DI.mediaProxy)!;
+const mediaProxy = inject(DI.mediaProxy);
 
 const props = defineProps<{
 	instance?: {
@@ -33,7 +32,7 @@ const instance = props.instance ?? {
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
 };
 
-const faviconUrl = computed(() => props.instance ? mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : mediaProxy.getProxiedImageUrlNullable(serverMetadata.iconUrl, 'preview') ?? '/favicon.ico');
+const faviconUrl = computed(() => props.instance ? mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : mediaProxy.getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
 
 const themeColor = instance.themeColor ?? '#777777';
 

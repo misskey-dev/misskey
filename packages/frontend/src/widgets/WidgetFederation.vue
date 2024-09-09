@@ -58,7 +58,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy)!;
+const mediaProxy = inject(DI.mediaProxy);
 
 const instances = ref<Misskey.entities.FederationInstance[]>([]);
 const charts = ref<Misskey.entities.ChartsInstanceResponse[]>([]);
