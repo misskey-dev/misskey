@@ -64,7 +64,7 @@ import { defaultEmbedParams } from '@/embed-page.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
-	userId: string;
+	usernameWithAtMark: string;
 }>();
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
@@ -81,15 +81,19 @@ const loading = ref(true);
 
 const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
-misskeyApi('users/show', {
-	userId: props.userId,
-}).then(res => {
-	user.value = res;
+if (props.usernameWithAtMark != null && props.usernameWithAtMark.startsWith('@')) {
+	misskeyApi('users/show', {
+		username: props.usernameWithAtMark.slice(1),
+	}).then(res => {
+		user.value = res;
+		loading.value = false;
+	}).catch(err => {
+		console.error(err);
+		loading.value = false;
+	});
+} else {
 	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
-});
+}
 </script>
 
 <style lang="scss" module>

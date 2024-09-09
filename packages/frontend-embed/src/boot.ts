@@ -19,7 +19,7 @@ import { DI } from './di.js';
 import { serverMetadata } from './server-metadata.js';
 import { url } from './config.js';
 import { parseEmbedParams } from '@/embed-page.js';
-import { setIframeId } from '@/post-message.js';
+import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 
 console.info('Misskey Embed');
 
@@ -89,6 +89,9 @@ const rootEl = ((): HTMLElement => {
 	document.body.appendChild(root);
 	return root;
 })();
+
+
+postMessageToParentWindow('misskey:embed:ready');
 
 app.mount(rootEl);
 

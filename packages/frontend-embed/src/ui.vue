@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.routerViewContainer"
 	>
 		<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
-		<EmUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
+		<EmUserTimelinePage v-else-if="page === 'user-timeline'" :usernameWithAtMark="contentId"/>
 		<EmClipPage v-else-if="page === 'clips'" :clipId="contentId"/>
 		<EmTagPage v-else-if="page === 'tags'" :tag="contentId"/>
 		<XNotFound v-else/>
