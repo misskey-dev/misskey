@@ -70,7 +70,7 @@ const app = createApp(
 
 app.provide(DI.mediaProxy, new MediaProxy(serverMetadata, url));
 
-app.provide('embedParams', embedParams);
+app.provide(DI.embedParams, embedParams);
 
 // https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 // なぜか2回実行されることがあるため、mountするdivを1つに制限する

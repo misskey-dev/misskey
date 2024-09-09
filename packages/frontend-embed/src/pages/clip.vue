@@ -43,7 +43,6 @@ import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { scrollToTop } from '@@/js/scroll.js';
 import type { Paging } from '@/components/EmPagination.vue';
-import type { ParsedEmbedParams } from '@/embed-page.js';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
@@ -53,12 +52,14 @@ import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
 import { isLink } from '@/to-be-shared/is-link.js';
 import { defaultEmbedParams } from '@/embed-page.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	clipId: string;
 }>();
 
-const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
+const embedParams = inject(DI.embedParams, defaultEmbedParams);
+
 
 const clip = ref<Misskey.entities.Clip | null>(null);
 const pagination = computed(() => ({

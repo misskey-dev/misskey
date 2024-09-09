@@ -49,7 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
-import type { ParsedEmbedParams } from '@/embed-page.js';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmLoading from '@/components/EmLoading.vue';
@@ -62,12 +61,14 @@ import { i18n } from '@/i18n.js';
 import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@/config.js';
 import { defaultEmbedParams } from '@/embed-page.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	userId: string;
 }>();
 
-const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
+const embedParams = inject(DI.embedParams, defaultEmbedParams);
+
 
 const user = ref<Misskey.entities.UserLite | null>(null);
 const pagination = computed(() => ({

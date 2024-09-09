@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { shallowRef, computed, markRaw, watch } from 'vue';
+import { shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/misskey-api.js';
 

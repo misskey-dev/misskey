@@ -20,6 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
 		<EmUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
+		<EmClipPage v-else-if="page === 'clips'" :clipId="contentId"/>
+		<EmTagPage v-else-if="page === 'tags'" :tag="contentId"/>
 		<XNotFound v-else/>
 	</div>
 </div>
@@ -27,17 +29,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
-import type { ParsedEmbedParams } from '@/embed-page.js';
 import { postMessageToParentWindow } from '@/post-message.js';
+import { DI } from '@/di.js';
 import { defaultEmbedParams } from '@/embed-page.js';
 import EmNotePage from '@/pages/note.vue';
 import EmUserTimelinePage from '@/pages/user-timeline.vue';
+import EmClipPage from '@/pages/clip.vue';
+import EmTagPage from '@/pages/tag.vue';
 
 const page = location.pathname.split('/')[2];
 const contentId = location.pathname.split('/')[3];
 console.log(page, contentId);
 
-const embedParams = inject<ParsedEmbedParams>('embedParams', defaultEmbedParams);
+const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
 //#region Embed Style
 const embedRounded = ref(embedParams.rounded);
