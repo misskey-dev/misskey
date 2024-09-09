@@ -4,6 +4,7 @@
  */
 import type { ILocale, ParameterizedString } from '../../../locales/index.js';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TODO = any;
 
 type FlattenKeys<T extends ILocale, TPrediction> = keyof {

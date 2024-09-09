@@ -80,7 +80,7 @@ export function parseEmbedParams(searchParams: URLSearchParams | string): Parsed
 	}
 
 	function convertColorMode(value: string | null): 'light' | 'dark' | undefined {
-		if (value != null && [ 'light', 'dark' ].includes(value)) {
+		if (value != null && ['light', 'dark'].includes(value)) {
 			return value as 'light' | 'dark';
 		}
 		return undefined;

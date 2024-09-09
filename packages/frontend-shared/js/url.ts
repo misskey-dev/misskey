@@ -8,18 +8,18 @@
  * 2. プロパティがundefinedの時はクエリを付けない
  * （new URLSearchParams(obj)ではそこまで丁寧なことをしてくれない）
  */
-export function query(obj: Record<string, any>): string {
+export function query(obj: Record<string, string | number | boolean>): string {
 	const params = Object.entries(obj)
-		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
-		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>);
+		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		.reduce<Record<string, string | number | boolean>>((a, [k, v]) => (a[k] = v, a), {});
 
 	return Object.entries(params)
 		.map((p) => `${p[0]}=${encodeURIComponent(p[1])}`)
 		.join('&');
 }
 
-export function appendQuery(url: string, query: string): string {
-	return `${url}${/\?/.test(url) ? url.endsWith('?') ? '' : '&' : '?'}${query}`;
+export function appendQuery(url: string, queryString: string): string {
+	return `${url}${/\?/.test(url) ? url.endsWith('?') ? '' : '&' : '?'}${queryString}`;
 }
 
 export function extractDomain(url: string) {

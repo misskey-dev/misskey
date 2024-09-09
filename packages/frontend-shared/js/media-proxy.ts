@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { query } from './url.js';
 import * as Misskey from 'misskey-js';
+import { query } from './url.js';
 
 export class MediaProxy {
 	private serverMetadata: Misskey.entities.MetaDetailed;
@@ -17,17 +17,18 @@ export class MediaProxy {
 
 	public getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', mustOrigin = false, noFallback = false): string {
 		const localProxy = `${this.url}/proxy`;
+		let _imageUrl = imageUrl;
 
 		if (imageUrl.startsWith(this.serverMetadata.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {
 			// もう既にproxyっぽそうだったらurlを取り出す
-			imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
+			_imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
 		}
 
 		return `${mustOrigin ? localProxy : this.serverMetadata.mediaProxy}/${
 			type === 'preview' ? 'preview.webp'
 			: 'image.webp'
 		}?${query({
-			url: imageUrl,
+			url: _imageUrl,
 			...(!noFallback ? { 'fallback': '1' } : {}),
 			...(type ? { [type]: '1' } : {}),
 			...(mustOrigin ? { origin: '1' } : {}),
