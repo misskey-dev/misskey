@@ -7,10 +7,28 @@ import { MediaProxy } from '@@/js/media-proxy.js';
 import { url } from '@/config.js';
 import { instance } from '@/instance.js';
 
-export const mainMediaProxy = new MediaProxy(instance, url);
+let _mediaProxy: MediaProxy | null = null;
 
-export const getProxiedImageUrl = mainMediaProxy.getProxiedImageUrl;
+export function getProxiedImageUrl(...args: Parameters<MediaProxy['getProxiedImageUrl']>): string {
+	if (_mediaProxy == null) {
+		_mediaProxy = new MediaProxy(instance, url);
+	}
 
-export const getProxiedImageUrlNullable = mainMediaProxy.getProxiedImageUrlNullable;
+	return _mediaProxy.getProxiedImageUrl(...args);
+}
 
-export const getStaticImageUrl = mainMediaProxy.getStaticImageUrl;
+export function getProxiedImageUrlNullable(...args: Parameters<MediaProxy['getProxiedImageUrlNullable']>): string | null {
+	if (_mediaProxy == null) {
+		_mediaProxy = new MediaProxy(instance, url);
+	}
+
+	return _mediaProxy.getProxiedImageUrlNullable(...args);
+}
+
+export function getStaticImageUrl(...args: Parameters<MediaProxy['getStaticImageUrl']>): string {
+	if (_mediaProxy == null) {
+		_mediaProxy = new MediaProxy(instance, url);
+	}
+
+	return _mediaProxy.getStaticImageUrl(...args);
+}
