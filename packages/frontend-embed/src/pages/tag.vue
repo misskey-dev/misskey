@@ -119,7 +119,7 @@ function top(ev: MouseEvent) {
 
 	.instanceIcon {
 		height: 24px;
-		border-radius: 2px;
+		border-radius: 3px;
 	}
 }
 </style>
