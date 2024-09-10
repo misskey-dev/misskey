@@ -91,6 +91,7 @@ import { i18n } from '@/i18n.js';
  * 2. tutorialBodyPagesDefにページのアイコン・タイトル・区分を追加
  *    （区分がsetupの場合はwithSetup == falseのときにスキップされます）
  * 3. componentsDefにページのコンポーネントを追加（順番を対応させること）
+ * 4. cypress/e2e/basic.cy.tsにページ分のテストを追加
  */
 
 /** チュートリアルページ用Expose */
