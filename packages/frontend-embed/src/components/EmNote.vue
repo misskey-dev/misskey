@@ -121,7 +121,7 @@ import EmUserName from '@/components/EmUserName.vue';
 import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
 import { url } from '@/config.js';
 
 function getAppearNote(note: Misskey.entities.Note) {

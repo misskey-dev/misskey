@@ -7,7 +7,7 @@ import * as Misskey from 'misskey-js';
 
 export function shouldCollapsed(note: Misskey.entities.Note, urls: string[]): boolean {
 	const collapsed = note.cw == null && (
-		note.text != null && (
+		(note.text != null && (
 			(note.text.includes('$[x2')) ||
 			(note.text.includes('$[x3')) ||
 			(note.text.includes('$[x4')) ||
@@ -15,7 +15,7 @@ export function shouldCollapsed(note: Misskey.entities.Note, urls: string[]): bo
 			(note.text.split('\n').length > 9) ||
 			(note.text.length > 500) ||
 			(urls.length >= 4)
-		) || note.files.length >= 5
+		)) || (note.files != null && note.files.length >= 5)
 	);
 
 	return collapsed;
