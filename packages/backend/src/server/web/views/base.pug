@@ -1,7 +1,7 @@
 block vars
 
 block loadClientEntry
-	- const clientEntry = config.clientEntry;
+	- const entry = config.frontendEntry;
 
 doctype html
 
@@ -36,15 +36,13 @@ html
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
-		//- https://github.com/misskey-dev/misskey/issues/9842
-		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v3.3.0')
-		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
+		link(rel='modulepreload' href=`/vite/${entry.file}`)
 
-		if !config.clientManifestExists
+		if !config.frontendManifestExists
 				script(type="module" src="/vite/@vite/client")
 
-		if Array.isArray(clientEntry.css)
-			each href in clientEntry.css
+		if Array.isArray(entry.css)
+			each href in entry.css
 				link(rel='stylesheet' href=`/vite/${href}`)
 
 		title
@@ -70,7 +68,7 @@ html
 
 		script.
 			var VERSION = "#{version}";
-			var CLIENT_ENTRY = "#{clientEntry.file}";
+			var CLIENT_ENTRY = "#{entry.file}";
 
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson

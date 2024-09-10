@@ -100,13 +100,13 @@ defineProps<{
 
 	&.grid {
 		> .group {
+			margin-left: 0;
+			margin-right: 0;
+
 			& + .group {
 				padding-top: 0;
 				border-top: none;
 			}
-
-			margin-left: 0;
-			margin-right: 0;
 
 			> .title {
 				font-size: 1em;

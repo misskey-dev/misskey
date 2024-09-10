@@ -99,12 +99,12 @@ const file = ref<Misskey.entities.DriveFile>();
 const folderHierarchy = computed(() => {
 	if (!file.value) return [i18n.ts.drive];
 	const folderNames = [i18n.ts.drive];
-	
+
 	function get(folder: Misskey.entities.DriveFolder) {
 		if (folder.parent) get(folder.parent);
 		folderNames.push(folder.name);
 	}
-	
+
 	if (file.value.folder) get(file.value.folder);
 	return folderNames;
 });
