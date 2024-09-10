@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ i18n.ts._embedCodeGen.title }}</template>
+	<template #header><i class="ti ti-code"></i> {{ i18n.ts._embedCodeGen.title }}</template>
 
 	<div :class="$style.embedCodeGenRoot">
 		<Transition
