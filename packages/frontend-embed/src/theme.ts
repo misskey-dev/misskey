@@ -26,6 +26,10 @@ export type Theme = {
 
 let timeout: number | null = null;
 
+export function assertIsTheme(theme: Record<string, unknown>): theme is Theme {
+	return typeof theme === 'object' && theme !== null && 'id' in theme && 'name' in theme && 'author' in theme && 'props' in theme;
+}
+
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) window.clearTimeout(timeout);
 
@@ -34,8 +38,6 @@ export function applyTheme(theme: Theme, persist = true) {
 	timeout = window.setTimeout(() => {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
-
-	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
 
 	// Deep copy
 	const _theme = JSON.parse(JSON.stringify(theme));
@@ -58,7 +60,7 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
-	document.documentElement.style.setProperty('color-scheme', colorScheme);
+	// iframeを正常に透過させるために、cssのcolor-schemeは `light dark;` 固定にしてある。style.scss参照
 }
 
 function compile(theme: Theme): Record<string, string> {

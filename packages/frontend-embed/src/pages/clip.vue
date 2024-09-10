@@ -135,7 +135,7 @@ misskeyApi('clips/show', {
 
 	.instanceIcon {
 		height: 24px;
-		border-radius: 4px;
+		border-radius: 3px;
 	}
 }
 </style>
