@@ -5,7 +5,13 @@
 
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { safeParseFloat } from './safe-parse.js';
+
+function safeParseFloat(str: unknown): number | null {
+	if (typeof str !== 'string' || str === '') return null;
+	const num = parseFloat(str);
+	if (isNaN(num)) return null;
+	return num;
+}
 
 export function shouldCollapseLegacy(note: Misskey.entities.Note, urls: string[]): boolean {
 	const collapsed = note.cw == null && (
