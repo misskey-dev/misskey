@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import EmA from './EmA.vue';
-import { url as local } from '@/config.js';
+import { url as local } from '@@/js/config.js';
 
 const props = withDefaults(defineProps<{
 	url: string;

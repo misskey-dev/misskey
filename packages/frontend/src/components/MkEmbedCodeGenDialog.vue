@@ -103,7 +103,7 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';

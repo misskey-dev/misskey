@@ -7,7 +7,7 @@ function defaultUseWorkerNumber(prev: number, totalWorkers: number) {
 	return prev + 1;
 }
 
-export class WorkerMultiDispatch<POST = any, RETURN = any> {
+export class WorkerMultiDispatch<POST = unknown, RETURN = unknown> {
 	private symbol = Symbol('WorkerMultiDispatch');
 	private workers: Worker[] = [];
 	private terminated = false;

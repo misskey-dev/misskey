@@ -46,7 +46,7 @@ import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { i18n } from '@/i18n.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, instanceName } from '@/config.js';
+import { url, instanceName } from '@@/js/config.js';
 import { isLink } from '@/to-be-shared/is-link.js';
 import { DI } from '@/di.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';

@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { url as local, host } from '@/config.js';
+import { url as local, host } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';

@@ -49,7 +49,7 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { useStream } from '@/stream.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { version, host } from '@/config.js';
+import { version, host } from '@@/js/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 const { t, ts } = i18n;

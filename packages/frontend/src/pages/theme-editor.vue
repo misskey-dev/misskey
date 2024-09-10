@@ -88,7 +88,7 @@ import MkFolder from '@/components/MkFolder.vue';
 
 import { $i } from '@/account.js';
 import { Theme, applyTheme } from '@/scripts/theme.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { addTheme } from '@/theme-store.js';
