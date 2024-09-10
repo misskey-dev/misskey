@@ -72,7 +72,7 @@ import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { host as configHost } from '@/config.js';
+import { host as configHost } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';

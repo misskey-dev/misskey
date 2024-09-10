@@ -6,7 +6,7 @@
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { common } from './common.js';
 import type * as Misskey from 'misskey-js';
-import { ui } from '@/config.js';
+import { ui } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { lang } from '@/config.js';
+import { lang } from '@@/js/config.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 export const versatileLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 
 let _dateTimeFormat: Intl.DateTimeFormat;

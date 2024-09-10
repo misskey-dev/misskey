@@ -104,7 +104,7 @@ import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';

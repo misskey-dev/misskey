@@ -17,7 +17,7 @@ import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { defaultStore } from '@/store.js';
 
 function safeParseFloat(str: unknown): number | null {

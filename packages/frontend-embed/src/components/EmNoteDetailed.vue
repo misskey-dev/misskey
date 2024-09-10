@@ -142,9 +142,9 @@ import EmAcct from '@/components/EmAcct.vue';
 import { userPage } from '@/utils.js';
 import { notePage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@/to-be-shared/collapsed.js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import EmMfm from '@/components/EmMfm.js';
 
 const props = defineProps<{
