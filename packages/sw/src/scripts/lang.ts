@@ -7,7 +7,7 @@
  * Language manager for SW
  */
 import { get, set } from 'idb-keyval';
-import { I18n } from '../../../frontend/src/scripts/i18n.js';
+import { I18n } from '@@/js/i18n.js';
 import type { Locale } from '../../../../locales/index.js';
 
 class SwLang {

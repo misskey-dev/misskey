@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { onMounted, onUnmounted, ref, Ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import type { Ref } from 'vue';
 
 export function useDocumentVisibility(): Ref<DocumentVisibilityState> {
 	const visibility = ref(document.visibilityState);
