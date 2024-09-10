@@ -5,6 +5,7 @@
 
 import type { Locale } from '../../../locales/index.js';
 
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const address = new URL(document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || location.href);
 const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
 
@@ -18,7 +19,7 @@ export const langs = _LANGS_;
 const preParseLocale = localStorage.getItem('locale');
 export let locale: Locale = preParseLocale ? JSON.parse(preParseLocale) : null;
 export const version = _VERSION_;
-export const instanceName = siteName === 'Misskey' || siteName == null ? host : siteName;
+export const instanceName = (siteName === 'Misskey' || siteName == null) ? host : siteName;
 export const ui = localStorage.getItem('ui');
 export const debug = localStorage.getItem('debug') === 'true';
 
