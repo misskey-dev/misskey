@@ -40,7 +40,7 @@ import XNotFound from '@/pages/not-found.vue';
 
 const page = location.pathname.split('/')[2];
 const contentId = location.pathname.split('/')[3];
-console.log(page, contentId);
+if (_DEV_) console.log(page, contentId);
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
