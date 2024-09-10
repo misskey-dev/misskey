@@ -108,7 +108,7 @@ import { $i } from '@/account.js';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { CURRENT_STICKY_BOTTOM } from '@/const.js';
+import { CURRENT_STICKY_BOTTOM } from '@@/js/const.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
 
@@ -427,7 +427,7 @@ $widgets-hide-threshold: 1090px;
 	}
 
 	&:active {
-		background: var(--X2);
+		background: hsl(from var(--panel) h s calc(l - 2));
 	}
 }
 
@@ -437,11 +437,11 @@ $widgets-hide-threshold: 1090px;
 	color: var(--fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 }
 
