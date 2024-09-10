@@ -22,6 +22,7 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
+import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -60,6 +61,18 @@ export async function mainBoot() {
 				location.reload();
 			}
 		}
+	});
+
+	stream.on('emojiAdded', emojiData => {
+		addCustomEmoji(emojiData.emoji);
+	});
+
+	stream.on('emojiUpdated', emojiData => {
+		updateCustomEmojis(emojiData.emojis);
+	});
+
+	stream.on('emojiDeleted', emojiData => {
+		removeCustomEmojis(emojiData.emojis);
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {

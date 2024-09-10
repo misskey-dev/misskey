@@ -8,6 +8,8 @@ on:
     paths:
       - packages/backend/**
       - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-embed/**
       - packages/sw/**
       - packages/misskey-js/**
       - packages/shared/eslint.config.js
@@ -16,6 +18,8 @@ on:
     paths:
       - packages/backend/**
       - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-embed/**
       - packages/sw/**
       - packages/misskey-js/**
       - packages/shared/eslint.config.js
@@ -45,6 +49,8 @@ jobs:
         workspace:
         - backend
         - frontend
+        - frontend-shared
+        - frontend-embed
         - sw
         - misskey-js
     env:

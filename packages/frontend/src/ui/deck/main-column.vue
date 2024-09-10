@@ -26,7 +26,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useScrollPositionManager } from '@/nirax.js';
-import { getScrollContainer } from '@/scripts/scroll.js';
+import { getScrollContainer } from '@@/js/scroll.js';
 import { mainRouter } from '@/router/main.js';
 
 defineProps<{

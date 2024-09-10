@@ -55,6 +55,7 @@
 		"misskey-bubble-game": "workspace:*",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
+		"frontend-shared": "workspace:*",
 		"photoswipe": "5.4.4",
 		"punycode": "2.3.1",
 		"rollup": "4.19.1",

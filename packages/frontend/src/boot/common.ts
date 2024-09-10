@@ -23,7 +23,8 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimedAchievements } from '@/scripts/achievements.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { setupRouter } from '@/router/definition.js';
+import { setupRouter } from '@/router/main.js';
+import { createMainRouter } from '@/router/definition.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -260,7 +261,7 @@ export async function common(createVue: () => App<Element>) {
 
 	const app = createVue();
 
-	setupRouter(app);
+	setupRouter(app, createMainRouter);
 
 	if (_DEV_) {
 		app.config.performance = true;

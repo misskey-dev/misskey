@@ -5,11 +5,11 @@
 
 import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
+import lightTheme from '@@/themes/_light.json5';
+import darkTheme from '@@/themes/_dark.json5';
 import { deepClone } from './clone.js';
 import type { BundledTheme } from 'shiki/themes';
 import { globalEvents } from '@/events.js';
-import lightTheme from '@/themes/_light.json5';
-import darkTheme from '@/themes/_dark.json5';
 import { miLocalStorage } from '@/local-storage.js';
 
 export type Theme = {
