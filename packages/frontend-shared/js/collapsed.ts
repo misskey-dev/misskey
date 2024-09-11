@@ -178,8 +178,10 @@ export function shouldCollapse(note: Misskey.entities.Note, limitY: number, ast?
 						}
 
 						case 'border': {
+							// TODO: 枠線の幅も計算に入れる？
 							const width = safeParseFloat(node.props.args.width) ?? 1;
-							addHeightsInline(getHeightForEachLine(node.children, depth + 1).map(l => l + (width * 2)));
+							if (width > 20) forceCollapsed = true;
+							addHeightsInline(getHeightForEachLine(node.children, depth + 1));
 							break;
 						}
 
