@@ -484,10 +484,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-  contextMenu: {
+	contextMenu: {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',
-  },
+	},
 
 	sound_masterVolume: {
 		where: 'device',
@@ -516,6 +516,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	sound_reaction: {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
+	},
+	reactionChecksMuting: {
+		where: 'device',
+		default: true,
 	},
 }));
 
