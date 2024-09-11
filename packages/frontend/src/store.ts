@@ -458,10 +458,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-  contextMenu: {
+	contextMenu: {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',
-  },
+	},
 
 	sound_masterVolume: {
 		where: 'device',
@@ -494,6 +494,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	searchEngine: {
 		where: 'device',
 		default: 'https://google.com/search?q=',
+	},
+	reactionChecksMuting: {
+		where: 'device',
+		default: true,
 	},
 }));
 
