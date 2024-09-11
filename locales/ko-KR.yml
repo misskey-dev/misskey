@@ -1263,6 +1263,9 @@ confirmWhenRevealingSensitiveMedia: "민감한 미디어를 열 때 두 번 확�
 sensitiveMediaRevealConfirm: "민감한 미디어입니다. 표시할까요?"
 createdLists: "만든 리스트"
 createdAntennas: "만든 안테나"
+fromX: "(x)부터"
+genEmbedCode: "임베디드 코드 만들기"
+noteOfThisUser: "이 유저의 노트 목록"
 clipNoteLimitExceeded: "더 이상 이 클립에 노트를 추가 할 수 없습니다."
 _delivery:
   status: "전송 상태"
@@ -2641,3 +2644,10 @@ _contextMenu:
   app: "애플리케이션"
   appWithShift: "Shift 키로 애플리케이션"
   native: "브라우저의 UI"
+_embedCodeGen:
+  title: "임베디드 코드를 커스터마이즈"
+  header: "해더를 표시"
+  autoload: "자동으로 다음 코드를 실행 (비권장)"
+  maxHeight: "최대 높이"
+  maxHeightDescription: "최대 값을 무시하려면 0을 입력하세요. 위젯이 상하로 길어지는 것을 방지하려면, 임의의 값을 입력해 주세요."
+  maxHeightWarn: "높이 최대 값이 설정되어져 있지 않습니다(0). 의도적으로 설정 하지 않았다면 임의의 값을 설정해주세요."
