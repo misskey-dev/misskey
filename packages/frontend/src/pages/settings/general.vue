@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       Startpage (startpage.com)
     </option>
     <option value="https://search.yami.ski/search?">
-      SearX (search.disroot.org)
+      SearX (search.yami.ski)
     </option>
     <template #caption>{{ i18n.ts.searchEngineCaption }}</template>
   </MkSelect>
