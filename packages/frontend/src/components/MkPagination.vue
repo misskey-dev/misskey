@@ -58,7 +58,7 @@ const APPEAR_MINIMUM_INTERVAL = 600;
 
 export type Paging<E extends EndpointsWithArrayResponse = EndpointsWithArrayResponse> = {
 	endpoint: E;
-	limit: number;
+	limit?: number;
 	params?: Misskey.Endpoints[E]['req'] | ComputedRef<Misskey.Endpoints[E]['req']>;
 
 	/**

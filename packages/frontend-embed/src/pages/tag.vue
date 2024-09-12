@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, shallowRef, inject } from 'vue';
+import { computed, useTemplateRef, inject } from 'vue';
 import { scrollToTop } from '@@/js/scroll.js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
@@ -57,14 +57,14 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-const pagination = computed(() => ({
+const pagination = computed<Paging<'notes/search-by-tag'>>(() => ({
 	endpoint: 'notes/search-by-tag',
 	params: {
 		tag: props.tag,
 	},
-} as Paging));
+}));
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 
 function top(ev: MouseEvent) {
 	const target = ev.target as HTMLElement | null;

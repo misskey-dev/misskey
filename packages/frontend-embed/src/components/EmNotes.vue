@@ -13,28 +13,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root]">
-			<EmNote v-for="note in notes" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
+			<EmNote v-for="note in notes" :key="note.id" :class="$style.note" :note="note"/>
 		</div>
 	</template>
 </EmPagination>
 </template>
 
-<script lang="ts" setup>
-import { shallowRef } from 'vue';
+<script lang="ts" setup generic="EP extends FilteredEndpointsByResType<Misskey.Endpoints, Array<Misskey.entities.Note>>">
+import * as Misskey from 'misskey-js';
+import { useTemplateRef } from 'vue';
 import EmNote from '@/components/EmNote.vue';
-import EmPagination, { Paging } from '@/components/EmPagination.vue';
+import EmPagination, { Paging, FilteredEndpointsByResType } from '@/components/EmPagination.vue';
 import { i18n } from '@/i18n.js';
 
-const props = withDefaults(defineProps<{
-	pagination: Paging;
+const props = defineProps<{
+	pagination: Paging<EP>;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
-	ad?: boolean;
-}>(), {
-	ad: true,
-});
+}>();
 
-const pagingComponent = shallowRef<InstanceType<typeof EmPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
 defineExpose({
 	pagingComponent,

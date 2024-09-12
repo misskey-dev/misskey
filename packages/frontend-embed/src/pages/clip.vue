@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject } from 'vue';
+import { ref, computed, useTemplateRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { scrollToTop } from '@@/js/scroll.js';
 import type { Paging } from '@/components/EmPagination.vue';
@@ -62,15 +62,15 @@ const props = defineProps<{
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
 const clip = ref<Misskey.entities.Clip | null>(null);
-const pagination = computed(() => ({
+const pagination = computed<Paging<'clips/notes'>>(() => ({
 	endpoint: 'clips/notes',
 	params: {
 		clipId: props.clipId,
 	},
-} as Paging));
+}));
 const loading = ref(true);
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 
 function top(ev: MouseEvent) {
 	const target = ev.target as HTMLElement | null;
