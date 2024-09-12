@@ -1281,6 +1281,12 @@ _bubbleGame:
   hold: "Mantenir"
   _score:
     score: "Puntuació "
+    scoreYen: "Diners guanyats"
+    highScore: "Millor puntuació "
+    maxChain: "Nombre màxim de combos"
+    yen: "{yen}Ien"
+    estimatedQty: "{qty}peces"
+    scoreSweets: "{onigiriQtyWithUnit}ongiris"
   _howToPlay:
     section1: "Ajusta la posició i deixa caure l'objecte dintre la caixa."
     section2: "Quan dos objectes del mateix tipus es toquen, canviaran en un objecte diferent i guanyares punts."
