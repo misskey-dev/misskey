@@ -75,6 +75,7 @@ import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import { SigninWithPasskeyResponse } from 'misskey-js/entities.js';
+import MkDivider from './MkDivider.vue';
 import { query, extractDomain } from '@@/js/url.js';
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
@@ -86,7 +87,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import MkDivider from './MkDivider.vue';
 
 const signing = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
@@ -166,11 +166,11 @@ function onPasskey(): void {
 	signing.value = true;
 	if (webAuthnSupported()) {
 		misskeyApi('signin-with-passkey', {})
-			.then((res) => {
+			.then((res: SigninWithPasskeyResponse) => {
 				totpLogin.value = false;
 				signing.value = false;
 				queryingKey.value = true;
-				passkey_context.value = res.context;
+				passkey_context.value = res.context ?? '';
 				credentialRequest = parseRequestOptionsFromJSON({
 					publicKey: res.option,
 				});
@@ -198,15 +198,8 @@ async function queryPasskey(): Promise<void> {
 				context: passkey_context.value,
 			});
 		}).then((res: SigninWithPasskeyResponse) => {
-			emit('login', res);
-			return onLogin(res);
-		}).catch(err => {
-			if (err === null) return;
-			os.alert({
-				type: 'error',
-				text: i18n.ts.signinFailed,
-			});
-			signing.value = false;
+			emit('login', res.signinResponse);
+			return onLogin(res.signinResponse);
 		});
 }
 
