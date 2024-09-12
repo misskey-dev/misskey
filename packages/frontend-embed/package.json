@@ -19,7 +19,7 @@
 		"@tabler/icons-webfont": "3.3.0",
 		"@twemoji/parser": "15.1.1",
 		"@vitejs/plugin-vue": "5.1.0",
-		"@vue/compiler-sfc": "3.4.37",
+		"@vue/compiler-sfc": "3.5.4",
 		"astring": "1.8.6",
 		"buraha": "0.0.1",
 		"compare-versions": "6.1.1",
@@ -46,7 +46,7 @@
 		"uuid": "10.0.0",
 		"json5": "2.2.3",
 		"vite": "5.3.5",
-		"vue": "3.4.37"
+		"vue": "3.5.4"
 	},
 	"devDependencies": {
 		"@misskey-dev/summaly": "5.1.0",
@@ -64,7 +64,7 @@
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",
 		"@vitest/coverage-v8": "1.6.0",
-		"@vue/runtime-core": "3.4.37",
+		"@vue/runtime-core": "3.5.4",
 		"acorn": "8.12.1",
 		"cross-env": "7.0.3",
 		"eslint-plugin-import": "2.29.1",
