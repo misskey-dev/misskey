@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<MkPagination v-slot="{items}" :pagination="pagination" class="urempief" :class="{ grid: viewMode === 'grid' }">
 		<MkA
-			v-for="file in (items as Misskey.entities.DriveFile[])"
+			v-for="file in items"
 			:key="file.id"
 			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${dateString(file.createdAt)}\nby ${file.user ? '@' + Misskey.acct.toString(file.user) : 'system'}`"
 			:to="`/admin/file/${file.id}`"
@@ -36,16 +36,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="EP extends FilteredEndpointsByResType<Misskey.Endpoints, Array<Misskey.entities.DriveFile>>">
 import * as Misskey from 'misskey-js';
-import MkPagination from '@/components/MkPagination.vue';
+import type { FilteredEndpointsByResType } from '@/types/date-separated-list.js';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 
-const props = defineProps<{
-	pagination: any;
+defineProps<{
+	pagination: Paging<EP>;
 	viewMode: 'grid' | 'list';
 }>();
 </script>

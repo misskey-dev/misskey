@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<MkPagination v-slot="{items}" ref="list" :pagination="type === 'following' ? followingPagination : followersPagination">
 		<div :class="$style.users">
-			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" :user="user"/>
+			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower).filter(x => x != null)" :key="user.id" :user="user"/>
 		</div>
 	</MkPagination>
 </div>

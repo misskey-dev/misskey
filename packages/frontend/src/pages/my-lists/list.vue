@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
-				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
+				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds?.length ?? 0}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -68,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { signinRequired } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import { mainRouter } from '@/router/main.js';
 
 const $i = signinRequired();
@@ -81,17 +81,17 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-const paginationEl = ref<InstanceType<typeof MkPagination>>();
+const paginationEl = useTemplateRef('paginationEl');
 const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
 const membershipsPagination = {
-	endpoint: 'users/lists/get-memberships' as const,
+	endpoint: 'users/lists/get-memberships',
 	limit: 30,
 	params: computed(() => ({
 		listId: props.listId,
 	})),
-};
+} as const satisfies Paging;
 
 function fetchList() {
 	misskeyApi('users/lists/show', {
@@ -110,12 +110,12 @@ function addUser() {
 			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
-			paginationEl.value.reload();
+			paginationEl.value?.reload();
 		});
 	});
 }
 
-async function removeUser(item, ev) {
+async function removeUser(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		icon: 'ti ti-x',
@@ -126,13 +126,13 @@ async function removeUser(item, ev) {
 				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
-				paginationEl.value.removeItem(item.id);
+				paginationEl.value?.removeItem(item.id);
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function showMembershipMenu(item, ev) {
+async function showMembershipMenu(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: MouseEvent) {
 	const withRepliesRef = ref(item.withReplies);
 	os.popupMenu([{
 		type: 'switch',
@@ -146,7 +146,7 @@ async function showMembershipMenu(item, ev) {
 			userId: item.userId,
 			withReplies,
 		}).then(() => {
-			paginationEl.value!.updateItem(item.id, (old) => ({
+			paginationEl.value?.updateItem(item.id, (old) => ({
 				...old,
 				withReplies,
 			}));

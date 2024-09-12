@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { onUnmounted, onDeactivated, onMounted, computed, useTemplateRef, onActivated } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -41,7 +41,7 @@ const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
 }>();
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
 const pagination = computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,

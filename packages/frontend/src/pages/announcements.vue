@@ -47,7 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
+import { ref, computed, useTemplateRef } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -74,11 +75,11 @@ const paginationPast = {
 	},
 };
 
-const paginationEl = ref<InstanceType<typeof MkPagination>>();
+const paginationEl = useTemplateRef('paginationEl');
 
 const tab = ref('current');
 
-async function read(target) {
+async function read(target: Misskey.entities.Announcement) {
 	if (target.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',

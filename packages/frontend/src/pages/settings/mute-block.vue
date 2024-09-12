@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<template #default="{ items }">
 				<div class="_gaps_s">
-					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedRenoteMuteItems.includes(item.id) }]">
+					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedRenoteMuteItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
 							<MkA :class="$style.userItemMainBody" :to="userPage(item.mutee)">
 								<MkUserCardMini :user="item.mutee"/>
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<template #default="{ items }">
 				<div class="_gaps_s">
-					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedMuteItems.includes(item.id) }]">
+					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedMuteItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
 							<MkA :class="$style.userItemMainBody" :to="userPage(item.mutee)">
 								<MkUserCardMini :user="item.mutee"/>
@@ -104,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<template #default="{ items }">
 				<div class="_gaps_s">
-					<div v-for="item in items" :key="item.blockee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedBlockItems.includes(item.id) }]">
+					<div v-for="item in items" :key="item.blockee.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedBlockItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
 							<MkA :class="$style.userItemMainBody" :to="userPage(item.blockee)">
 								<MkUserCardMini :user="item.blockee"/>
@@ -157,9 +157,9 @@ const blockingPagination = {
 	limit: 10,
 };
 
-const expandedRenoteMuteItems = ref([]);
-const expandedMuteItems = ref([]);
-const expandedBlockItems = ref([]);
+const expandedRenoteMuteItems = ref<string[]>([]);
+const expandedMuteItems = ref<string[]>([]);
+const expandedBlockItems = ref<string[]>([]);
 
 async function unrenoteMute(user, ev) {
 	os.popupMenu([{
@@ -269,7 +269,7 @@ definePageMetadata(() => ({
 	transition: transform 0.1s ease-out;
 }
 
-.userItem.userItemOpend {
+.userItem.userItemOpened {
 	.chevron {
 		transform: rotateX(180deg);
 	}

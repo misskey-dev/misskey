@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in (items as Misskey.entities.InviteCode[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
+						<MkInviteCode v-for="item in items" :key="item.id" :invite="item" :onDeleted="deleted"/>
 					</div>
 				</template>
 			</MkPagination>
@@ -36,8 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
-import type * as Misskey from 'misskey-js';
+import { computed, ref, useTemplateRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -48,15 +47,15 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { serverErrorImageUrl, instance } from '@/instance.js';
 import { $i } from '@/account.js';
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
-const pagination: Paging = {
-	endpoint: 'invite/list' as const,
+const pagination = {
+	endpoint: 'invite/list',
 	limit: 10,
-};
+} as const satisfies Paging;
 
 const resetCycle = computed<null | string>(() => {
 	if (!inviteLimitCycle) return null;

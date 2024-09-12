@@ -328,7 +328,7 @@ provide('react', (reaction: string) => {
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
 
-const renotesPagination = computed<Paging>(() => ({
+const renotesPagination = computed<Paging<'notes/renotes'>>(() => ({
 	endpoint: 'notes/renotes',
 	limit: 10,
 	params: {
@@ -336,7 +336,7 @@ const renotesPagination = computed<Paging>(() => ({
 	},
 }));
 
-const reactionsPagination = computed<Paging>(() => ({
+const reactionsPagination = computed<Paging<'notes/reactions'>>(() => ({
 	endpoint: 'notes/reactions',
 	limit: 10,
 	params: {
@@ -360,7 +360,7 @@ useTooltip(renoteButton, async (showing) => {
 
 	const users = renotes.map(x => x.user);
 
-	if (users.length < 1) return;
+	if (users.length < 1 || renoteButton.value == null) return;
 
 	const { dispose } = os.popup(MkUsersTooltip, {
 		showing,

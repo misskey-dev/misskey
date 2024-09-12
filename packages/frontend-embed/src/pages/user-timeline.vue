@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject } from 'vue';
+import { ref, computed, useTemplateRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
@@ -70,15 +70,15 @@ const props = defineProps<{
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
 const user = ref<Misskey.entities.UserLite | null>(null);
-const pagination = computed(() => ({
+const pagination = computed<Paging<'users/notes'>>(() => ({
 	endpoint: 'users/notes',
 	params: {
 		userId: user.value?.id,
 	},
-} as Paging));
+}));
 const loading = ref(true);
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 
 misskeyApi('users/show', {
 	userId: props.userId,
