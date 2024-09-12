@@ -178,6 +178,11 @@ export class WebAuthnService {
 		return authenticationOptions;
 	}
 
+	/**
+	 * Verify Webauthn AuthenticationCredential
+	 * @throws IdentifiableError
+	 * @returns MiUser['id'] or null
+	 */
 	@bindThis
 	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
 		const challenge = await this.redisClient.get(`webauthn:challenge:${context}`);

@@ -28,6 +28,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
 export class SigninWithPasskeyApiService {
+	private logger: Logger;
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -45,7 +46,9 @@ export class SigninWithPasskeyApiService {
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
 		private webAuthnService: WebAuthnService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('PasskeyAuth');
 	}
 
 	@bindThis
@@ -82,8 +85,8 @@ export class SigninWithPasskeyApiService {
 		};
 
 		try {
-		// not more than 1 attempt per second and not more than 500 attempts per hour
-			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 500, minInterval: 1000 }, getIpHash(request.ip));
+		// not more than 1 attempt per second and not more than 100 attempts per hour
+			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 100, minInterval: 1000 }, getIpHash(request.ip));
 		} catch (err) {
 			reply.code(429);
 			return {
@@ -107,14 +110,24 @@ export class SigninWithPasskeyApiService {
 		}
 
 		const context = body.context;
-		console.log(`passkey auth context: ${context}`);
 		if (!context || typeof context !== 'string') {
 			reply.code(400);
 			return;
 		}
-		const authorizedUserId: MiUser['id'] | null = await this.webAuthnService.verifySignInWithPasskeyAuthentication(context, credential);
 
-		if (authorizedUserId == null) {
+		this.logger.debug(`VerifySignin Passkey auth: context: ${context}`);
+		let authorizedUserId : MiUser['id'] | null;
+		try {
+			authorizedUserId = await this.webAuthnService.verifySignInWithPasskeyAuthentication(context, credential);
+		} catch (err) {
+			this.logger.warn(`Verify error! : ${err}`);
+			const errorId = (err as IdentifiableError).id;
+			return error(403, {
+				id: errorId,
+			});
+		}
+
+		if (!authorizedUserId) {
 			return error(403, {
 				id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 			});
