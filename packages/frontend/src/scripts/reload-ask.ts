@@ -19,11 +19,11 @@ export async function reloadAsk() {
 	const { canceled } = await os.confirm({
 		type: 'info',
 		text: i18n.ts.reloadToApplySetting,
+	}).finally(() => {
+		isReloadConfirming = false;
 	});
 
-	if (!canceled) {
-		unisonReload();
-	}
+	if (canceled) return;
 
-	isReloadConfirming = false;
+	unisonReload();
 }
