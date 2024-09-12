@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</Sortable>
 				</div>
 			</MkFolder>
-			<MkFolder v-if="collaboratorUsers.some(x => x.id !== $i.id)" :defaultOpen="true">
+			<MkFolder v-if="isRoot" :defaultOpen="true">
 				<template #label>{{ i18n.ts._channel.collaborators }}</template>
 				<div class="_gaps">
 					<MkButton @click="addUser()">
@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
-			<MkFolder v-if="collaboratorUsers.some(x => x.id !== $i.id)">
+			<MkFolder v-if="isRoot">
 				<template #label>{{ i18n.ts._channel.dangerSettings }}</template>
 
 				<MkButton danger @click="transferAdmin()">
@@ -109,7 +109,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { useRouter } from '@/router/supplier.js';
-import { $i } from '@/account.js';
+import { $i, iAmModerator } from '@/account.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -129,6 +129,7 @@ const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
 const isLocalOnly = ref(false);
 const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
+const isRoot = ref(false);
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {
@@ -160,6 +161,7 @@ async function fetchChannel() {
 	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
 	isLocalOnly.value = channel.value.isLocalOnly;
 	collaboratorUsers.value = channel.value.collaboratorUsers;
+	isRoot.value = (($i && $i.id === channel.value.userId) || iAmModerator);
 }
 
 function transferAdmin() {
