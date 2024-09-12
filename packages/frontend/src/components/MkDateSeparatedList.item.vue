@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <slot :key="props.item.id"></slot>
 <div v-if="nextItem != null && isDifferentDate" :class="$style.separator" :key="`${props.item.id}:separator`">
