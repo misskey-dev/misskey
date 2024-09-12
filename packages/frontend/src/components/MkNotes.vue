@@ -24,31 +24,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
+				<MkNote :key="note.id" :class="$style.note" :note="note" :withHardMute="true"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>
 </MkPagination>
 </template>
 
-<script lang="ts" setup>
-import { shallowRef } from 'vue';
+<script lang="ts" setup generic="EP extends FilteredEndpointsByResType<Misskey.Endpoints, Array<Misskey.entities.Note>>">
+import { useTemplateRef } from 'vue';
+import * as Misskey from 'misskey-js';
+import { FilteredEndpointsByResType } from '@/types/date-separated-list.js';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
-	pagination: Paging;
+	pagination: Paging<EP>;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
 }>();
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paging = useTemplateRef('pagingComponent');
 
 defineExpose({
-	pagingComponent,
+	pagingComponent: paging,
 });
 </script>
 

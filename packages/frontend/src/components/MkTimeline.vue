@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
 import MkNotes from '@/components/MkNotes.vue';
@@ -27,7 +27,8 @@ import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
-import { Paging } from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
+import type { FilteredEndpointsByResType, MisskeyEntity } from '@/types/date-separated-list.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -64,12 +65,12 @@ type TimelineQueryType = {
   roleId?: string
 }
 
-const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
-const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
+const prComponent = useTemplateRef('prComponent');
+const tlComponent = useTemplateRef('tlComponent');
 
 let tlNotesCount = 0;
 
-function prepend(note) {
+function prepend(note: MisskeyEntity & Misskey.entities.Note) {
 	if (tlComponent.value == null) return;
 
 	tlNotesCount++;
@@ -89,7 +90,7 @@ function prepend(note) {
 
 let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
-let paginationQuery: Paging | null = null;
+let paginationQuery: Paging<FilteredEndpointsByResType<Misskey.Endpoints, Array<Misskey.entities.Note>>> | null = null;
 
 const stream = useStream();
 
@@ -160,7 +161,7 @@ function disconnectChannel() {
 }
 
 function updatePaginationQuery() {
-	let endpoint: keyof Misskey.Endpoints | null;
+	let endpoint: FilteredEndpointsByResType<Misskey.Endpoints, Array<Misskey.entities.Note>> | null;
 	let query: TimelineQueryType | null;
 
 	if (props.src === 'antenna') {
@@ -246,10 +247,7 @@ function refreshEndpointAndChannel() {
 
 // デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
 // IDが切り替わったら切り替え先のTLを表示させたい
-watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
-
-// 初回表示用
-refreshEndpointAndChannel();
+watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel, { immediate: true });
 
 onUnmounted(() => {
 	disconnectChannel();

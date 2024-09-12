@@ -37,7 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
+import * as Misskey from 'misskey-js';
+import { useTemplateRef, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
@@ -46,22 +47,22 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { infoImageUrl } from '@/instance.js';
 
-const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = useTemplateRef('paginationComponent');
 
 const pagination = {
 	endpoint: 'following/requests/list' as const,
 	limit: 10,
 };
 
-function accept(user) {
+function accept(user: Misskey.entities.User) {
 	misskeyApi('following/requests/accept', { userId: user.id }).then(() => {
-		paginationComponent.value.reload();
+		paginationComponent.value?.reload();
 	});
 }
 
-function reject(user) {
+function reject(user: Misskey.entities.User) {
 	misskeyApi('following/requests/reject', { userId: user.id }).then(() => {
-		paginationComponent.value.reload();
+		paginationComponent.value?.reload();
 	});
 }
 

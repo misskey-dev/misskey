@@ -24,9 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, shallowRef, computed } from 'vue';
+import { watch, ref, useTemplateRef, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os.js';
@@ -37,16 +37,16 @@ import { clipsCache } from '@/cache.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const pagination = {
-	endpoint: 'clips/list' as const,
+	endpoint: 'clips/list',
 	noPaging: true,
 	limit: 10,
-};
+} as const satisfies Paging;
 
 const tab = ref('my');
 
 const favorites = ref<Misskey.entities.Clip[] | null>(null);
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
 watch(tab, async () => {
 	favorites.value = await misskeyApi('clips/my-favorites');
@@ -77,15 +77,15 @@ async function create() {
 
 	clipsCache.delete();
 
-	pagingComponent.value.reload();
+	pagingComponent.value?.reload();
 }
 
 function onClipCreated() {
-	pagingComponent.value.reload();
+	pagingComponent.value?.reload();
 }
 
 function onClipDeleted() {
-	pagingComponent.value.reload();
+	pagingComponent.value?.reload();
 }
 
 const headerActions = computed(() => []);

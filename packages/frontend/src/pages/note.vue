@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton rounded :class="$style.loadButton" @click="showNext = 'user'"><i class="ti ti-chevron-up"></i> <i class="ti ti-user"></i></MkButton>
 						</div>
 						<div class="_margin _gaps_s">
-							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
+							<MkRemoteCaution v-if="note.user.host != null" :href="note.url! ?? note.uri!"/>
 							<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_margin">
@@ -73,16 +73,16 @@ const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
 const error = ref();
 
-const prevUserPagination: Paging = {
+const prevUserPagination = {
 	endpoint: 'users/notes',
 	limit: 10,
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 		untilId: note.value.id,
 	}) : undefined),
-};
+} as const satisfies Paging;
 
-const nextUserPagination: Paging = {
+const nextUserPagination = {
 	reversed: true,
 	endpoint: 'users/notes',
 	limit: 10,
@@ -90,18 +90,18 @@ const nextUserPagination: Paging = {
 		userId: note.value.userId,
 		sinceId: note.value.id,
 	}) : undefined),
-};
+} as const satisfies Paging;
 
-const prevChannelPagination: Paging = {
+const prevChannelPagination = {
 	endpoint: 'channels/timeline',
 	limit: 10,
 	params: computed(() => note.value ? ({
 		channelId: note.value.channelId,
 		untilId: note.value.id,
 	}) : undefined),
-};
+} as const satisfies Paging;
 
-const nextChannelPagination: Paging = {
+const nextChannelPagination = {
 	reversed: true,
 	endpoint: 'channels/timeline',
 	limit: 10,
@@ -109,7 +109,7 @@ const nextChannelPagination: Paging = {
 		channelId: note.value.channelId,
 		sinceId: note.value.id,
 	}) : undefined),
-};
+} as const satisfies Paging;
 
 function fetchNote() {
 	showPrev.value = false;
@@ -120,7 +120,7 @@ function fetchNote() {
 	}).then(res => {
 		note.value = res;
 		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
-		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
+		if ((note.value.clippedCount != null && note.value.clippedCount > 0) || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			misskeyApi('notes/clips', {
 				noteId: note.value.id,
 			}).then((_clips) => {
@@ -147,7 +147,7 @@ definePageMetadata(() => ({
 		avatar: note.value.user,
 		path: `/notes/${note.value.id}`,
 		share: {
-			title: i18n.tsx.noteOf({ user: note.value.user.name }),
+			title: i18n.tsx.noteOf({ user: note.value.user.name ?? note.value.user.username }),
 			text: note.value.text,
 		},
 	} : {},

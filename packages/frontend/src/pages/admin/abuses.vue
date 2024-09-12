@@ -53,7 +53,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, useTemplateRef, ref } from 'vue';
 
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -63,11 +64,11 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
-const reports = shallowRef<InstanceType<typeof MkPagination>>();
+const reports = useTemplateRef('reports');
 
-const state = ref('unresolved');
-const reporterOrigin = ref('combined');
-const targetUserOrigin = ref('combined');
+const state = ref<NonNullable<Misskey.entities.AdminAbuseUserReportsRequest['state']>>('unresolved');
+const reporterOrigin = ref<NonNullable<Misskey.entities.AdminAbuseUserReportsRequest['reporterOrigin']>>('combined');
+const targetUserOrigin = ref<NonNullable<Misskey.entities.AdminAbuseUserReportsRequest['targetUserOrigin']>>('combined');
 const searchUsername = ref('');
 const searchHost = ref('');
 
@@ -81,7 +82,7 @@ const pagination = {
 	})),
 };
 
-function resolved(reportId) {
+function resolved(reportId: string) {
 	reports.value?.removeItem(reportId);
 }
 

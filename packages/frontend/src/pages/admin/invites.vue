@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-if="!noExpirationDate" v-model="expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expirationDate }}</template>
 					</MkInput>
-					<MkInput v-model="createCount" type="number" min="1">
+					<MkInput v-model="createCount" type="number" :min="1">
 						<template #label>{{ i18n.ts.createCount }}</template>
 					</MkInput>
 					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in items" :key="item.id" :invite="(item as any)" :onDeleted="deleted" moderator/>
+						<MkInviteCode v-for="item in items" :key="item.id" :invite="item" :onDeleted="deleted" moderator/>
 					</div>
 				</template>
 			</MkPagination>
@@ -55,7 +55,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, ref, useTemplateRef } from 'vue';
 import XHeader from './_header_.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -69,12 +70,12 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
-const type = ref('all');
-const sort = ref('+createdAt');
+const type = ref<NonNullable<Misskey.entities.AdminInviteListRequest['type']>>('all');
+const sort = ref<NonNullable<Misskey.entities.AdminInviteListRequest['sort']>>('+createdAt');
 
-const pagination: Paging = {
+const pagination = {
 	endpoint: 'admin/invite/list' as const,
 	limit: 10,
 	params: computed(() => ({

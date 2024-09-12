@@ -95,12 +95,12 @@ import { selectFile } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
-	emoji?: any,
+	emoji?: Misskey.entities.EmojiDetailed,
 }>();
 
 const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
-const category = ref<string>(props.emoji ? props.emoji.category : '');
+const category = ref<string>(props.emoji ? props.emoji.category ?? '' : '');
 const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
 const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
 const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
@@ -140,12 +140,12 @@ async function addRole() {
 	rolesThatCanBeUsedThisEmojiAsReaction.value.push(role);
 }
 
-async function removeRole(role, ev) {
+async function removeRole(role: Misskey.entities.Role, ev: MouseEvent) {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = rolesThatCanBeUsedThisEmojiAsReaction.value.filter(x => x.id !== role.id);
 }
 
 async function done() {
-	const params = {
+	const params: Misskey.entities.AdminEmojiUpdateRequest = {
 		name: name.value,
 		category: category.value === '' ? null : category.value,
 		aliases: aliases.value.split(' ').filter(x => x !== ''),
@@ -172,7 +172,7 @@ async function done() {
 			},
 		});
 
-		windowEl.value.close();
+		windowEl.value?.close();
 	} else {
 		const created = await os.apiWithDialog('admin/emoji/add', params);
 
@@ -180,7 +180,7 @@ async function done() {
 			created: created,
 		});
 
-		windowEl.value.close();
+		windowEl.value?.close();
 	}
 }
 
@@ -197,7 +197,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		windowEl.value.close();
+		windowEl.value?.close();
 	});
 }
 </script>

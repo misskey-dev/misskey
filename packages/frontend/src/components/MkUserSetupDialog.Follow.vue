@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="pinnedUsers">
 			<template #default="{ items }">
 				<div :class="$style.users">
-					<XUser v-for="item in (items as Misskey.entities.UserDetailed[])" :key="item.id" :user="item"/>
+					<XUser v-for="item in items" :key="item.id" :user="item"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="popularUsers">
 			<template #default="{ items }">
 				<div :class="$style.users">
-					<XUser v-for="item in (items as Misskey.entities.UserDetailed[])" :key="item.id" :user="item"/>
+					<XUser v-for="item in items" :key="item.id" :user="item"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -34,19 +34,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
 import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 
-const pinnedUsers: Paging = {
+const pinnedUsers = {
 	endpoint: 'pinned-users',
 	noPaging: true,
 	limit: 10,
-};
+} as const satisfies Paging;
 
-const popularUsers: Paging = {
+const popularUsers = {
 	endpoint: 'users',
 	limit: 10,
 	noPaging: true,
@@ -55,7 +54,7 @@ const popularUsers: Paging = {
 		origin: 'local',
 		sort: '+follower',
 	},
-};
+} as const satisfies Paging;
 </script>
 
 <style lang="scss" module>

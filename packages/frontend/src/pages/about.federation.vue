@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSplit>
 	</div>
 
-	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
+	<MkPagination v-slot="{items}" :key="host + state" :pagination="pagination" :displayLimit="50">
 		<div :class="$style.items">
 			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.item" :to="`/instance-info/${instance.host}`">
 				<MkInstanceCardMini :instance="instance"/>
@@ -51,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -60,12 +61,11 @@ import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
 
 const host = ref('');
-const state = ref('federating');
-const sort = ref('+pubSub');
+const state = ref<'all' | 'federating' | 'subscribing' | 'publishing' | 'suspended' | 'silenced' | 'blocked' | 'notResponding'>('federating');
+const sort = ref<NonNullable<Misskey.entities.FederationInstancesRequest['sort']>>('+pubSub');
 const pagination = {
-	endpoint: 'federation/instances' as const,
+	endpoint: 'federation/instances',
 	limit: 10,
-	displayLimit: 50,
 	offsetMode: true,
 	params: computed(() => ({
 		sort: sort.value,
@@ -80,9 +80,9 @@ const pagination = {
 			state.value === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-} as Paging;
+} as const satisfies Paging;
 
-function getStatus(instance) {
+function getStatus(instance: Misskey.entities.FederationInstance) {
 	if (instance.isSuspended) return 'Suspended';
 	if (instance.isBlocked) return 'Blocked';
 	if (instance.isSilenced) return 'Silenced';

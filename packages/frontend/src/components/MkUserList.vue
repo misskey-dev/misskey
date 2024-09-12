@@ -20,16 +20,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkPagination>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="EP extends EndpointsWithArrayResponse">
 import MkUserInfo from '@/components/MkUserInfo.vue';
+import * as Misskey from 'misskey-js';
+import type { EndpointsWithArrayResponse } from '@/types/date-separated-list.js';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
-	pagination: Paging;
+	pagination: Paging<EP>;
 	noGap?: boolean;
-	extractor?: (item: any) => any;
+	extractor?: (item: Misskey.Endpoints[EP]['res'][number]) => Misskey.entities.UserDetailed;
 }>(), {
 	extractor: (item) => item,
 });

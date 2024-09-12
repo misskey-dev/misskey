@@ -23,7 +23,7 @@ import { acct } from '@/filters/user.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	withChart: boolean;
+	withChart?: boolean;
 }>(), {
 	withChart: true,
 });

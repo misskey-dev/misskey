@@ -47,17 +47,16 @@ import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onB
 import * as Misskey from 'misskey-js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list.js';
+import { MisskeyAPIEntity, EndpointsWithArrayResponse } from '@/types/date-separated-list.js';
 import { i18n } from '@/i18n.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
 const APPEAR_MINIMUM_INTERVAL = 600;
 
-export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> = {
+export type Paging<E extends EndpointsWithArrayResponse = EndpointsWithArrayResponse> = {
 	endpoint: E;
 	limit: number;
 	params?: Misskey.Endpoints[E]['req'] | ComputedRef<Misskey.Endpoints[E]['req']>;
@@ -78,23 +77,23 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 	pageEl?: HTMLElement;
 };
 
-type MisskeyEntityMap = Map<string, MisskeyEntity>;
+type MisskeyEntityMap<E extends EndpointsWithArrayResponse> = Map<string, MisskeyAPIEntity<E>>;
 
-function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
+function arrayToEntries<E extends EndpointsWithArrayResponse>(entities: MisskeyAPIEntity<E>[]): [string, MisskeyAPIEntity<E>][] {
 	return entities.map(en => [en.id, en]);
 }
 
-function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
+function concatMapWithArray<E extends EndpointsWithArrayResponse>(map: MisskeyEntityMap<E>, entities: MisskeyAPIEntity<E>[]): MisskeyEntityMap<E> {
 	return new Map([...map, ...arrayToEntries(entities)]);
 }
 
 </script>
-<script lang="ts" setup>
+<script lang="ts" setup generic="EP extends EndpointsWithArrayResponse">
 import { infoImageUrl } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
-	pagination: Paging;
+	pagination: Paging<EP>;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
 }>(), {
@@ -117,13 +116,13 @@ const scrollRemove = ref<(() => void) | null>(null);
  * 表示するアイテムのソース
  * 最新が0番目
  */
-const items = ref<MisskeyEntityMap>(new Map());
+const items = shallowRef<MisskeyEntityMap<EP>>(new Map());
 
 /**
  * タブが非アクティブなどの場合に更新を貯めておく
  * 最新が0番目
  */
-const queue = ref<MisskeyEntityMap>(new Map());
+const queue = shallowRef<MisskeyEntityMap<EP>>(new Map());
 
 const offset = ref(0);
 
@@ -204,7 +203,7 @@ async function init(): Promise<void> {
 	queue.value = new Map();
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+	await misskeyApi<MisskeyAPIEntity<EP>[]>(props.pagination.endpoint, {
 		...params,
 		limit: props.pagination.limit ?? 10,
 		allowPartial: true,
@@ -240,7 +239,7 @@ const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+	await misskeyApi<MisskeyAPIEntity<EP>[]>(props.pagination.endpoint, {
 		...params,
 		limit: SECOND_FETCH_LIMIT,
 		...(props.pagination.offsetMode ? {
@@ -304,7 +303,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
+	await misskeyApi<MisskeyAPIEntity<EP>[]>(props.pagination.endpoint, {
 		...params,
 		limit: SECOND_FETCH_LIMIT,
 		...(props.pagination.offsetMode ? {
@@ -379,7 +378,7 @@ watch(visibility, () => {
  * ストリーミングから降ってきたアイテムはこれで追加する
  * @param item アイテム
  */
-const prepend = (item: MisskeyEntity): void => {
+function prepend(item: MisskeyAPIEntity<EP>): void {
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
@@ -388,13 +387,13 @@ const prepend = (item: MisskeyEntity): void => {
 
 	if (isTop() && !isPausingUpdate) unshiftItems([item]);
 	else prependQueue(item);
-};
+}
 
 /**
  * 新着アイテムをitemsの先頭に追加し、displayLimitを適用する
  * @param newItems 新しいアイテムの配列
  */
-function unshiftItems(newItems: MisskeyEntity[]) {
+function unshiftItems(newItems: MisskeyAPIEntity<EP>[]) {
 	const length = newItems.length + items.value.size;
 	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, props.displayLimit));
 
@@ -405,7 +404,7 @@ function unshiftItems(newItems: MisskeyEntity[]) {
  * 古いアイテムをitemsの末尾に追加し、displayLimitを適用する
  * @param oldItems 古いアイテムの配列
  */
-function concatItems(oldItems: MisskeyEntity[]) {
+function concatItems(oldItems: MisskeyAPIEntity<EP>[]) {
 	const length = oldItems.length + items.value.size;
 	items.value = new Map([...items.value, ...arrayToEntries(oldItems)].slice(0, props.displayLimit));
 
@@ -417,14 +416,14 @@ function executeQueue() {
 	queue.value = new Map();
 }
 
-function prependQueue(newItem: MisskeyEntity) {
-	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyEntity][]);
+function prependQueue(newItem: MisskeyAPIEntity<EP>) {
+	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyAPIEntity<EP>][]);
 }
 
 /*
  * アイテムを末尾に追加する（使うの？）
  */
-const appendItem = (item: MisskeyEntity): void => {
+const appendItem = (item: MisskeyAPIEntity<EP>): void => {
 	items.value.set(item.id, item);
 };
 
@@ -433,7 +432,7 @@ const removeItem = (id: string) => {
 	queue.value.delete(id);
 };
 
-const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
+const updateItem = (id: MisskeyAPIEntity<EP>['id'], replacer: (old: MisskeyAPIEntity<EP>) => MisskeyAPIEntity<EP>): void => {
 	const item = items.value.get(id);
 	if (item) items.value.set(id, replacer(item));
 

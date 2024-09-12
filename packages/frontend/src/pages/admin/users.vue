@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.username }}</template>
 					</MkInput>
-					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
+					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.value.origin === 'local'">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination">
 					<div :class="$style.users">
-						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
+						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'Unknown'}`" :class="$style.user" :to="`/admin/user/${user.id}`">
 							<MkUserCardMini :user="user"/>
 						</MkA>
 					</div>
@@ -57,11 +57,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, useTemplateRef, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { lookupUser } from '@/scripts/admin-lookup.js';
 import { i18n } from '@/i18n.js';
@@ -69,15 +70,15 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 
-const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = useTemplateRef('paginationComponent');
 
-const sort = ref('+createdAt');
-const state = ref('all');
-const origin = ref('local');
+const sort = ref<NonNullable<Misskey.entities.AdminShowUsersRequest['sort']>>('+createdAt');
+const state = ref<NonNullable<Misskey.entities.AdminShowUsersRequest['state']>>('all');
+const origin = ref<NonNullable<Misskey.entities.AdminShowUsersRequest['origin']>>('local');
 const searchUsername = ref('');
 const searchHost = ref('');
 const pagination = {
-	endpoint: 'admin/show-users' as const,
+	endpoint: 'admin/show-users',
 	limit: 10,
 	params: computed(() => ({
 		sort: sort.value,
@@ -87,7 +88,7 @@ const pagination = {
 		hostname: searchHost.value,
 	})),
 	offsetMode: true,
-};
+} as const satisfies Paging;
 
 function searchUser() {
 	os.selectUser({ includeSelf: true }).then(user => {
@@ -99,23 +100,23 @@ async function addUser() {
 	const { canceled: canceled1, result: username } = await os.inputText({
 		title: i18n.ts.username,
 	});
-	if (canceled1) return;
+	if (canceled1 || username == null) return;
 
 	const { canceled: canceled2, result: password } = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
 	});
-	if (canceled2) return;
+	if (canceled2 || password == null) return;
 
 	os.apiWithDialog('admin/accounts/create', {
 		username: username,
 		password: password,
 	}).then(res => {
-		paginationComponent.value.reload();
+		paginationComponent.value?.reload();
 	});
 }
 
-function show(user) {
+function show(user: Misskey.entities.User) {
 	os.pageWindow(`/admin/user/${user.id}`);
 }
 
