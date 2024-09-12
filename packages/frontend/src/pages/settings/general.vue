@@ -337,8 +337,6 @@ watch(useSystemFont, () => {
 	}
 });
 
-const isReloadConfirming = ref(false);
-
 watch([
 	hemisphere,
 	lang,
@@ -361,10 +359,7 @@ watch([
 	confirmWhenRevealingSensitiveMedia,
 	contextMenu,
 ], async () => {
-	if (isReloadConfirming.value) return;
-	isReloadConfirming.value = true;
 	await reloadAsk();
-	isReloadConfirming.value = false;
 });
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
