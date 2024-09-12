@@ -5108,6 +5108,10 @@ export interface Locale extends ILocale {
      * {n}件の変更があります
      */
     "thereAreNChanges": ParameterizedString<"n">;
+    /**
+     * パスキーでログイン
+     */
+    "signinWithPasskey": string;
     "_delivery": {
         /**
          * 配信状態

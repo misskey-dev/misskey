@@ -1249,6 +1249,8 @@ alwaysConfirmFollow: "팔로우일 때 항상 확인하기"
 inquiry: "문의하기"
 tryAgain: "다시 시도해 주세요."
 confirmWhenRevealingSensitiveMedia: "민감한 미디어를 열 때 두 번 확인"
+signinWithPasskey: "패스키로 로그인"
+
 _delivery:
   status: "전송 상태"
   stop: "정지됨"

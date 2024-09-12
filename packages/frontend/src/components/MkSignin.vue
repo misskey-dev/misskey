@@ -58,10 +58,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div class="twofa-group tap-group">
-			<p>{{ i18n.ts.useSecurityKey }}</p>
-			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: 0 auto;" rounded large primary @click="onPasskey">
-				{{ i18n.ts.login }}
+			<MkDivider :disabled="signing"/>
+			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: 24px auto;" rounded large primary @click="onPasskey">
+				<i class="ti ti-device-usb" style="font-size: medium;"></i>
+				{{ signing ? i18n.ts.loggingIn : i18n.ts.signinWithPasskey }}
 			</MkButton>
+			<p v-if="queryingKey">{{ i18n.ts.useSecurityKey }}</p>
 		</div>
 	</div>
 </form>
@@ -84,6 +86,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import MkDivider from './MkDivider.vue';
 
 const signing = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
@@ -194,7 +197,7 @@ async function queryPasskey(): Promise<void> {
 				credential: credential.toJSON(),
 				context: passkey_context.value,
 			});
-		}).then(res => {
+		}).then((res: SigninWithPasskeyResponse) => {
 			emit('login', res);
 			return onLogin(res);
 		}).catch(err => {
