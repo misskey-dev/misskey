@@ -559,7 +559,7 @@ objectStorageUseSSLDesc: "Desactiva'l si no tens pensat fer servir HTTPS per les
 objectStorageUseProxy: "Connectar-se  mitjançant un Proxy"
 objectStorageUseProxyDesc: "Desactiva'l si no faràs servir un Proxy per les connexions de l'API"
 objectStorageSetPublicRead: "Configurar les pujades com públiques "
-s3ForcePathStyleDesc: ". You may need to enable this setting when using services such as a self-hosted Minio instance."
+s3ForcePathStyleDesc: "Si s3ForcePathStyle es troba activat el nom del cubell s'haurà d'especificar com a part de l'adreça URL en comptes del nom del servidor. Podria ser que necessitis activar aquesta opció quan facis servir serveis com ara l'allotjament a un servidor propi."
 serverLogs: "Registres del servidor"
 deleteAll: "Elimina-ho tot"
 showFixedPostForm: "Mostrar el formulari per escriure a l'inici de la línia de temps"
@@ -1401,6 +1401,8 @@ _serverSettings:
   fanoutTimelineDescription: "Quan es troba activat millora bastant el rendiment quan es recuperen les línies de temps i redueix la carrega de la base de dades. Com a contrapunt, l'ús de memòria de Redis es veurà incrementada. Considera d'estabilitat aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes de inestabilitat."
   fanoutTimelineDbFallback: "Carregar de la base de dades"
   fanoutTimelineDbFallbackDescription: "Quan s'activa, la línia de temps fa servir la base de dades per consultes adicionals si la línia de temps no es troba a la memòria cau. Si és desactiva la càrrega del servidor és veure reduïda, però també és reduirà el nombre de línies de temps que és poden obtenir."
+  inquiryUrl: "URL de consulta "
+  inquiryUrlDescription: "Escriu adreça URL per al formulari de consulta per al mantenidor del servidor o una pàgina web amb el contacte d'informació."
 _accountMigration:
   moveFrom: "Migrar un altre compte a aquest"
   moveFromSub: "Crear un àlies per un altre compte"
