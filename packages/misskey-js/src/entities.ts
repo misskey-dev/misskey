@@ -279,7 +279,8 @@ export type SigninWithPasskeyRequest = {
 export type SigninWithPasskeyResponse = {
 	option?: object;
 	context?: string;
-} | SigninResponse;
+	signinResponse?: SigninResponse;
+};
 
 export type SigninResponse = {
 	id: User['id'],

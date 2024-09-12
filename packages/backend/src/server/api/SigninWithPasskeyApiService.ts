@@ -85,7 +85,7 @@ export class SigninWithPasskeyApiService {
 		};
 
 		try {
-		// not more than 1 attempt per second and not more than 100 attempts per hour
+			// not more than 1 attempt per second and not more than 100 attempts per hour
 			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 100, minInterval: 1000 }, getIpHash(request.ip));
 		} catch (err) {
 			reply.code(429);
@@ -116,7 +116,7 @@ export class SigninWithPasskeyApiService {
 		}
 
 		this.logger.debug(`VerifySignin Passkey auth: context: ${context}`);
-		let authorizedUserId : MiUser['id'] | null;
+		let authorizedUserId: MiUser['id'] | null;
 		try {
 			authorizedUserId = await this.webAuthnService.verifySignInWithPasskeyAuthentication(context, credential);
 		} catch (err) {
@@ -159,6 +159,9 @@ export class SigninWithPasskeyApiService {
 			});
 		}
 
-		return this.signinService.signin(request, reply, user);
+		const signinResponse = this.signinService.signin(request, reply, user);
+		return {
+			signinResponse: signinResponse,
+		};
 	}
 }
