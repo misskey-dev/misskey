@@ -165,6 +165,78 @@ export class WebAuthnService {
 	}
 
 	@bindThis
+	public async initiateSignInWithPasskeyAuthentication(context: string): Promise<PublicKeyCredentialRequestOptionsJSON> {
+		const relyingParty = await this.getRelyingParty();
+
+		const authenticationOptions = await generateAuthenticationOptions({
+			rpID: relyingParty.rpId,
+			userVerification: 'preferred',
+		});
+
+		await this.redisClient.setex(`webauthn:challenge:${context}`, 90, authenticationOptions.challenge);
+
+		return authenticationOptions;
+	}
+
+	@bindThis
+	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
+		const challenge = await this.redisClient.get(`webauthn:challenge:${context}`);
+
+		if (!challenge) {
+			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', 'challenge not found');
+		}
+
+		await this.redisClient.del(`webauthn:challenge:${context}`);
+
+		const key = await this.userSecurityKeysRepository.findOneBy({
+			id: response.id,
+		});
+
+		if (!key) {
+			throw new IdentifiableError('36b96a7d-b547-412d-aeed-2d611cdc8cdc', 'unknown key');
+		}
+
+		const relyingParty = await this.getRelyingParty();
+
+		let verification;
+		try {
+			verification = await verifyAuthenticationResponse({
+				response: response,
+				expectedChallenge: challenge,
+				expectedOrigin: relyingParty.origin,
+				expectedRPID: relyingParty.rpId,
+				authenticator: {
+					credentialID: key.id,
+					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+					counter: key.counter,
+					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
+				},
+				requireUserVerification: true,
+			});
+		} catch (error) {
+			console.error(error);
+			throw new IdentifiableError('b18c89a7-5b5e-4cec-bb5b-0419f332d430', 'verification failed');
+		}
+
+		const { verified, authenticationInfo } = verification;
+
+		if (!verified) {
+			return null;
+		}
+
+		await this.userSecurityKeysRepository.update({
+			id: response.id,
+		}, {
+			lastUsed: new Date(),
+			counter: authenticationInfo.newCounter,
+			credentialDeviceType: authenticationInfo.credentialDeviceType,
+			credentialBackedUp: authenticationInfo.credentialBackedUp,
+		});
+
+		return key.userId;
+	}
+
+	@bindThis
 	public async verifyAuthentication(userId: MiUser['id'], response: AuthenticationResponseJSON): Promise<boolean> {
 		const challenge = await this.redisClient.get(`webauthn:challenge:${userId}`);
 

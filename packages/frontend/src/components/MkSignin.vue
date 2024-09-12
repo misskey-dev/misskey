@@ -57,6 +57,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton type="submit" :disabled="signing" large primary rounded style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 			</div>
 		</div>
+		<div class="twofa-group tap-group">
+			<p>{{ i18n.ts.useSecurityKey }}</p>
+			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: 0 auto;" rounded large primary @click="onPasskey">
+				{{ i18n.ts.login }}
+			</MkButton>
+		</div>
 	</div>
 </form>
 </template>
@@ -66,6 +72,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import { SigninWithPasskeyResponse } from 'misskey-js/entities.js';
 import { query, extractDomain } from '@@/js/url.js';
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
@@ -136,6 +143,56 @@ async function queryKey(): Promise<void> {
 				username: username.value,
 				password: password.value,
 				credential: credential.toJSON(),
+			});
+		}).then(res => {
+			emit('login', res);
+			return onLogin(res);
+		}).catch(err => {
+			if (err === null) return;
+			os.alert({
+				type: 'error',
+				text: i18n.ts.signinFailed,
+			});
+			signing.value = false;
+		});
+}
+
+const passkey_context = ref('');
+
+function onPasskey(): void {
+	signing.value = true;
+	if (webAuthnSupported()) {
+		misskeyApi('signin-with-passkey', {})
+			.then((res) => {
+				totpLogin.value = false;
+				signing.value = false;
+				queryingKey.value = true;
+				passkey_context.value = res.context;
+				credentialRequest = parseRequestOptionsFromJSON({
+					publicKey: res.option,
+				});
+			})
+			.then(() => queryPasskey())
+			.catch(loginFailed);
+	}
+}
+
+async function queryPasskey(): Promise<void> {
+	if (credentialRequest == null) return;
+	queryingKey.value = true;
+	console.log('Waiting passkey auth...');
+	await webAuthnRequest(credentialRequest)
+		.catch((er) => {
+			console.warn('Fail!!', er);
+			queryingKey.value = false;
+			return Promise.reject(null);
+		}).then(credential => {
+			credentialRequest = null;
+			queryingKey.value = false;
+			signing.value = true;
+			return misskeyApi('signin-with-passkey', {
+				credential: credential.toJSON(),
+				context: passkey_context.value,
 			});
 		}).then(res => {
 			emit('login', res);
