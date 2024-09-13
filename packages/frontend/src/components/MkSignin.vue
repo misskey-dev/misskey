@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
+			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
@@ -45,10 +45,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 			</div>
 			<div class="twofa-group totp-group _gaps">
-				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" autocomplete="current-password" :withPasswordToggle="true" required>
-					<template #label>{{ i18n.ts.password }}</template>
-					<template #prefix><i class="ti ti-lock"></i></template>
-				</MkInput>
 				<MkInput v-model="token" type="text" :pattern="isBackupCode ? '^[A-Z0-9]{32}$' :'^[0-9]{6}$'" autocomplete="one-time-code" required :spellcheck="false" :inputmode="isBackupCode ? undefined : 'numeric'">
 					<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
 					<template #prefix><i v-if="isBackupCode" class="ti ti-key"></i><i v-else class="ti ti-123"></i></template>
@@ -57,13 +53,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton type="submit" :disabled="signing" large primary rounded style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 			</div>
 		</div>
-		<div class="twofa-group tap-group">
-			<MkDivider :disabled="signing"/>
-			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: 24px auto;" rounded large primary @click="onPasskey">
+		<div v-if="!totpLogin" :class="$style.orHr">
+			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+		</div>
+		<div v-if="!totpLogin" class="twofa-group tap-group">
+			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: auto auto;" rounded large primary @click="onPasskey">
 				<i class="ti ti-device-usb" style="font-size: medium;"></i>
 				{{ signing ? i18n.ts.loggingIn : i18n.ts.signinWithPasskey }}
 			</MkButton>
-			<p v-if="queryingKey">{{ i18n.ts.useSecurityKey }}</p>
+			<p v-if="queryingKey && !totpLogin">{{ i18n.ts.useSecurityKey }}</p>
 		</div>
 	</div>
 </form>
