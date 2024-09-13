@@ -608,7 +608,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
-import { ROLE_POLICIES } from '@/const.js';
+import { ROLE_POLICIES } from '@@/js/const.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/scripts/clone.js';
 

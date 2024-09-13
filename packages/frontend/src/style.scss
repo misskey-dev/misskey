@@ -17,10 +17,6 @@
 	--minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
 	--minBottomSpacing: var(--minBottomSpacingMobile);
 
-	@media (max-width: 500px) {
-		--margin: var(--marginHalf);
-	}
-
 	//--ad: rgb(255 169 0 / 10%);
 	--eventFollow: #36aed2;
 	--eventRenote: #36d298;
@@ -29,6 +25,10 @@
 	--eventReaction: #e99a0b;
 	--eventAchievement: #cb9a11;
 	--eventOther: #88a6b7;
+
+	@media (max-width: 500px) {
+		--margin: var(--marginHalf);
+	}
 }
 
 ::selection {
