@@ -1602,7 +1602,7 @@ _achievements:
     _postedAt0min0sec:
       title: "报时"
       description: "在 0 点发布一篇帖子"
-      flavor: "嘣 嘣 嘣 Biu——！"
+      flavor: "报时信号最后一响，零点整"
     _selfQuote:
       title: "自我引用"
       description: "引用了自己的帖子"
@@ -1651,8 +1651,8 @@ _achievements:
       flavor: "今年也请对本服务器多多指教！"
     _cookieClicked:
       title: "点击饼干小游戏"
-      description: "点击了可疑的饼干"
-      flavor: "是不是软件有问题？"
+      description: "点击了饼干"
+      flavor: "用错软件了？"
     _brainDiver:
       title: "Brain Diver"
       description: "发布了包含 Brain Diver 链接的帖子"
@@ -1669,7 +1669,7 @@ _achievements:
     _bubbleGameDoubleExplodingHead:
       title: "两个🤯"
       description: "你合成出了2个游戏里最大的Emoji"
-      flavor: ""
+      flavor: "大约能　装满　这些便当盒　🤯　🤯　（比划）"
 _role:
   new: "创建角色"
   edit: "编辑角色"
