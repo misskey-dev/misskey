@@ -50,8 +50,8 @@ import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, instanceName } from '@/config.js';
-import { isLink } from '@/to-be-shared/is-link.js';
+import { url, instanceName } from '@@/js/config.js';
+import { isLink } from '@@/js/is-link.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { DI } from '@/di.js';
 
@@ -135,7 +135,7 @@ misskeyApi('clips/show', {
 
 	.instanceIcon {
 		height: 24px;
-		border-radius: 4px;
+		border-radius: 3px;
 	}
 }
 </style>

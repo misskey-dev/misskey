@@ -4,7 +4,7 @@
  */
 
 import { MediaProxy } from '@@/js/media-proxy.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 
 let _mediaProxy: MediaProxy | null = null;

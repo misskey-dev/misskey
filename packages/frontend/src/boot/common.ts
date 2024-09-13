@@ -8,7 +8,7 @@ import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, lang, updateLocale, locale } from '@/config.js';
+import { version, lang, updateLocale, locale } from '@@/js/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n } from '@/i18n.js';

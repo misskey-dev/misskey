@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ i18n.ts._embedCodeGen.title }}</template>
+	<template #header><i class="ti ti-code"></i> {{ i18n.ts._embedCodeGen.title }}</template>
 
 	<div :class="$style.embedCodeGenRoot">
 		<Transition
@@ -103,7 +103,7 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';

@@ -8,7 +8,7 @@ import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
-import { hemisphere } from '@/scripts/intl-const.js';
+import { hemisphere } from '@@/js/intl-const.js';
 
 interface PostFormAction {
 	title: string,
@@ -558,7 +558,7 @@ export class ColdDeviceStorage {
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
 		// 呼び出し側のバグ等で undefined が来ることがある
 		// undefined を文字列として miLocalStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
-		 
+
 		if (value === undefined) {
 			console.error(`attempt to store undefined value for key '${key}'`);
 			return;
