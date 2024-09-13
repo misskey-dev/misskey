@@ -160,7 +160,7 @@ import XSensitive from '@/components/MkTutorial.Sensitive.vue';
 import XPrivacySettings from '@/components/MkTutorial.PrivacySettings.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { instance } from '@/instance.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 
 import type { Component } from 'vue';

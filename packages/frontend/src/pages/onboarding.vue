@@ -117,7 +117,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { confirm as osConfirm } from '@/os.js';
 
 import MkAnimBg from '@/components/MkAnimBg.vue';
