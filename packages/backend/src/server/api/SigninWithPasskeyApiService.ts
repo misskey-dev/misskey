@@ -85,8 +85,9 @@ export class SigninWithPasskeyApiService {
 		};
 
 		try {
-			// not more than 1 attempt per second and not more than 100 attempts per hour
-			await this.rateLimiterService.limit({ key: 'signin-with-passkey', duration: 60 * 60 * 1000, max: 100, minInterval: 1000 }, getIpHash(request.ip));
+			// Not more than 1 API call per 250ms and not more than 100 attempts per 30min
+			// NOTE: 1 Sign-in require 2 API calls
+			await this.rateLimiterService.limit({ key: 'signin-with-passkey', duration: 60 * 30 * 1000, max: 200, minInterval: 250 }, getIpHash(request.ip));
 		} catch (err) {
 			reply.code(429);
 			return {
@@ -98,29 +99,32 @@ export class SigninWithPasskeyApiService {
 			};
 		}
 
-		// Initiate Passkey Auth with context
+		// Initiate Passkey Auth challenge with context
 		if (!credential) {
 			const context = randomUUID();
-			const authRequest = {
+			this.logger.info(`Initiate Passkey challenge: context: ${context}`);
+			const authChallengeOptions = {
 				option: await this.webAuthnService.initiateSignInWithPasskeyAuthentication(context),
 				context: context,
 			};
 			reply.code(200);
-			return authRequest;
+			return authChallengeOptions;
 		}
 
 		const context = body.context;
 		if (!context || typeof context !== 'string') {
-			reply.code(400);
-			return;
+			return error(400, {
+				id: '1658cc2e-4495-461f-aee4-d403cdf073c1',
+			});
 		}
 
-		this.logger.debug(`VerifySignin Passkey auth: context: ${context}`);
+		this.logger.debug(`Try Sign-in with Passkey: context: ${context}`);
+
 		let authorizedUserId: MiUser['id'] | null;
 		try {
 			authorizedUserId = await this.webAuthnService.verifySignInWithPasskeyAuthentication(context, credential);
 		} catch (err) {
-			this.logger.warn(`Verify error! : ${err}`);
+			this.logger.warn(`Passkey challenge Verify error! : ${err}`);
 			const errorId = (err as IdentifiableError).id;
 			return error(403, {
 				id: errorId,
@@ -141,7 +145,7 @@ export class SigninWithPasskeyApiService {
 
 		if (user == null) {
 			return error(403, {
-				id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
+				id: '652f899f-66d4-490e-993e-6606c8ec04c3',
 			});
 		}
 
@@ -153,9 +157,10 @@ export class SigninWithPasskeyApiService {
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
+		// Authentication was successful, but passwordless login is not enabled
 		if (!profile.usePasswordLessLogin) {
 			return await fail(user.id, 403, {
-				id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
+				id: '2d84773e-f7b7-4d0b-8f72-bb69b584c912',
 			});
 		}
 

@@ -181,14 +181,14 @@ export class WebAuthnService {
 	/**
 	 * Verify Webauthn AuthenticationCredential
 	 * @throws IdentifiableError
-	 * @returns MiUser['id'] or null
+	 * @returns If the challenge is successful, return the user ID. Otherwise, return null.
 	 */
 	@bindThis
 	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
 		const challenge = await this.redisClient.get(`webauthn:challenge:${context}`);
 
 		if (!challenge) {
-			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', 'challenge not found');
+			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', `challenge '${context}' not found`);
 		}
 
 		await this.redisClient.del(`webauthn:challenge:${context}`);
@@ -198,7 +198,7 @@ export class WebAuthnService {
 		});
 
 		if (!key) {
-			throw new IdentifiableError('36b96a7d-b547-412d-aeed-2d611cdc8cdc', 'unknown key');
+			throw new IdentifiableError('36b96a7d-b547-412d-aeed-2d611cdc8cdc', 'Unknown Webauthn key');
 		}
 
 		const relyingParty = await this.getRelyingParty();
@@ -219,8 +219,7 @@ export class WebAuthnService {
 				requireUserVerification: true,
 			});
 		} catch (error) {
-			console.error(error);
-			throw new IdentifiableError('b18c89a7-5b5e-4cec-bb5b-0419f332d430', 'verification failed');
+			throw new IdentifiableError('b18c89a7-5b5e-4cec-bb5b-0419f332d430', `verification failed: ${error}`);
 		}
 
 		const { verified, authenticationInfo } = verification;
