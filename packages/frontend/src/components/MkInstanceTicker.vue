@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import { instanceName } from '@/config.js';
+import { instanceName } from '@@/js/config.js';
 
 import { DI } from '@/di.js';
 
