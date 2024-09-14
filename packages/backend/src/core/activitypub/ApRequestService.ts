@@ -240,7 +240,9 @@ export class ApRequestService {
 				}
 			} catch (e) {
 				// something went wrong parsing the HTML, ignore the whole thing
-			};
+			} finally {
+				window.close();
+			}
 		}
 		//#endregion
 
