@@ -28,12 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, computed } from 'vue';
+import { onActivated, computed, inject } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache.js';
-import { inject } from 'vue';
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;
