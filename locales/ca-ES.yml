@@ -2395,10 +2395,17 @@ _deck:
   swapRight: "Mou a la dreta"
   swapUp: "Mou cap amunt"
   swapDown: "Mou cap avall"
+  stackLeft: "Pila a la columna esquerra"
   popRight: "Col·loca a la dreta"
   profile: "Perfil"
   newProfile: "Perfil nou"
   deleteProfile: "Elimina el perfil"
+  introduction: "Crea la interfície perfecta posant les columnes allà on vulguis!"
+  introduction2: "Fes clic al botó + de la dreta per afegir noves columnes sempre que vulguis."
+  widgetsIntroduction: "Selecciona \"Editar ginys\" a la columna del menú i afegeix un."
+  useSimpleUiForNonRootPages: "Usa una interfície senzilla per a les pàgines navegades"
+  usedAsMinWidthWhenFlexible: "L'amplada mínima es farà servir quan \"Ajust automàtic de l'amplada\" estigui activat"
+  flexible: "Ajust automàtic de l'amplada"
   _columns:
     main: "Principal"
     widgets: "Ginys"
@@ -2409,9 +2416,29 @@ _deck:
     channel: "Canals"
     mentions: "Mencions"
     direct: "Publicacions directes"
+    roleTimeline: "Línia de temps dels rols"
+_dialog:
+  charactersExceeded: "Has arribat al màxim de caràcters! Actualment és {current} de {max}"
+  charactersBelow: "Ets per sota del mínim de caràcters! Actualment és {current} de {min}"
+_disabledTimeline:
+  title: "Línia de tems desactivada"
+  description: "No pots fer servir aquesta línia de temps amb els teus rols actuals."
+_drivecleaner:
+  orderBySizeDesc: "Mida del fitxer descendent"
+  orderByCreatedAtAsc: "Data ascendent"
 _webhookSettings:
+  createWebhook: "Crear un Webhook"
+  modifyWebhook: "Modificar un Webhook"
   name: "Nom"
+  secret: "Secret"
+  trigger: "Activador"
   active: "Activat"
+  _events:
+    follow: "Quan se segueix a un usuari"
+    followed: "Quan et segueixen"
+    note: "Quan es publica una nota"
+    reply: "Quan es rep una resposta"
+    renote: "Quan es renoti"
 _abuseReport:
   _notificationRecipient:
     _recipientType:
