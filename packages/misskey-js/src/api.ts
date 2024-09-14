@@ -67,10 +67,12 @@ export class APIClient {
 	): Promise<SwitchCaseResponseType<E, P>> {
 		return new Promise((resolve, reject) => {
 			let mediaType = 'application/json';
+			// （autogenがバグったときのため、念の為nullチェックも行う）
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			if (this.assertSpecialEpReqType(endpoint) && endpointReqTypes[endpoint] != null) {
 				mediaType = endpointReqTypes[endpoint];
 			}
-			
+
 			let payload: FormData | string = '{}';
 
 			if (mediaType === 'application/json') {

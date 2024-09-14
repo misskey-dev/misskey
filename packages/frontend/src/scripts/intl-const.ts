@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { lang } from '@/config.js';
+import { lang } from '@@/js/config.js';
 
 export const versatileLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 

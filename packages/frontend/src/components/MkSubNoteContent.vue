@@ -35,7 +35,7 @@ import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
