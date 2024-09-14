@@ -18,7 +18,6 @@ import { inject } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

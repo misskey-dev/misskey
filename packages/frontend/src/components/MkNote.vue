@@ -201,7 +201,6 @@ import { host } from '@@/js/config.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

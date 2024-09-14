@@ -160,7 +160,6 @@ import { i18n } from '@/i18n.js';
 import { host } from '@@/js/config.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import * as os from '@/os.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

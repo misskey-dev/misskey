@@ -46,7 +46,6 @@ import { host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

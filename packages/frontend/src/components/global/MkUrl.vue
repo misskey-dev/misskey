@@ -31,7 +31,6 @@ import { url as local } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { MkABehavior } from '@/components/global/MkA.vue';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

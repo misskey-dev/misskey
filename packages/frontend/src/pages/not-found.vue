@@ -17,7 +17,6 @@ import { computed, inject } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

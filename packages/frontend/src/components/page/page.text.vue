@@ -17,7 +17,6 @@ import { defineAsyncComponent, inject } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

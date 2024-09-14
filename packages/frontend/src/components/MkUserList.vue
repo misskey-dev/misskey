@@ -25,7 +25,6 @@ import { inject } from 'vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

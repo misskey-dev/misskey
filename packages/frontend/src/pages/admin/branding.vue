@@ -118,7 +118,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { host } from '@@/js/config.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

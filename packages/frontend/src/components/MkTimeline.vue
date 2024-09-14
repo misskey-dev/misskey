@@ -27,7 +27,6 @@ import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { Paging } from '@/components/MkPagination.vue';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

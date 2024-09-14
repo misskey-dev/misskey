@@ -43,7 +43,6 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { defaultStore } from '@/store.js';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

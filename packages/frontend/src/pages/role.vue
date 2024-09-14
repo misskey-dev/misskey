@@ -44,7 +44,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { instanceName } from '@@/js/config.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

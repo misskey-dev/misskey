@@ -58,7 +58,6 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

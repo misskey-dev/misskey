@@ -610,7 +610,6 @@ import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
 import { ROLE_POLICIES } from '@@/js/const.js';
 import { deepClone } from '@/scripts/clone.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

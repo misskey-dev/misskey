@@ -80,7 +80,6 @@ import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { mainRouter } from '@/router/main.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

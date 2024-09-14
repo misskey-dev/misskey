@@ -55,7 +55,6 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	props,
 	emit,
 );
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

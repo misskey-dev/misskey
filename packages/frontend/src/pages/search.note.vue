@@ -66,7 +66,6 @@ import { useRouter } from '@/router/supplier.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { $i } from '@/account.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

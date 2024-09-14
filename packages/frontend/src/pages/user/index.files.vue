@@ -41,7 +41,6 @@ import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

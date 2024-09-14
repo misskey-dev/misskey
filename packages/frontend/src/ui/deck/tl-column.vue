@@ -42,7 +42,6 @@ import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from
 import { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 import * as sound from '@/scripts/sound.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

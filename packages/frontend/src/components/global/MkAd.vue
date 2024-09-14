@@ -49,7 +49,6 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

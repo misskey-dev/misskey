@@ -46,7 +46,6 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i } from '@/account.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

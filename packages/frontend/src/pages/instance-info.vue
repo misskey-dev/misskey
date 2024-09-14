@@ -154,7 +154,6 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { dateString } from '@/filters/date.js';
 import MkTextarea from '@/components/MkTextarea.vue';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

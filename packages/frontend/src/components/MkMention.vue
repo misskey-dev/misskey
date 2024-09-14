@@ -21,7 +21,6 @@ import { host as localHost } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { MkABehavior } from '@/components/global/MkA.vue';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

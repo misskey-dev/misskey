@@ -79,7 +79,6 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	props,
 	emit,
 );
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

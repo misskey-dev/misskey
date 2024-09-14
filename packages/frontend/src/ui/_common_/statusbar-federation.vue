@@ -36,7 +36,6 @@ import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

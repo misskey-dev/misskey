@@ -37,7 +37,6 @@ import { clearCache } from '@/scripts/clear-cache.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

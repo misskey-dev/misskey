@@ -41,7 +41,6 @@ import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { apiUrl } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

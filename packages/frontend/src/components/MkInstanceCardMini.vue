@@ -19,7 +19,6 @@ import { inject, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
-
 import { DI } from '@/di.js';
 
 const mediaProxy = inject(DI.mediaProxy)!;

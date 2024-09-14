@@ -43,7 +43,6 @@ import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

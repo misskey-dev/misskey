@@ -89,7 +89,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

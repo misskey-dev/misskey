@@ -140,7 +140,6 @@ import { host } from '@@/js/config.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

@@ -31,7 +31,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { isNotesSearchAvailable } from '@/scripts/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

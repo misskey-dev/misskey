@@ -255,7 +255,6 @@ import { fetchServerMetadata } from '@/server-metadata.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { ROLE_POLICIES } from '@@/js/const.js';
 import { useRouter } from '@/router/supplier.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;

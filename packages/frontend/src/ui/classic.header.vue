@@ -55,7 +55,6 @@ import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-
 import { DI } from '@/di.js';
 
 const serverMetadata = inject(DI.serverMetadata)!;
