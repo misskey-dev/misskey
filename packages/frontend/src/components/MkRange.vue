@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { popup } from '@/os.js';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;
@@ -112,7 +112,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
 
 	const tooltipShowing = ref(true);
-	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 		showing: tooltipShowing,
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
