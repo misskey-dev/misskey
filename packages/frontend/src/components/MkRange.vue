@@ -17,8 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
 			</div>
 			<div
-				ref="thumbEl" class="thumb" :style="{ left: thumbPosition + 'px' }"
-				@mousedown="onMousedown" @touchstart="onMousedown"
+				ref="thumbEl"
+				class="thumb"
+				:style="{ left: thumbPosition + 'px' }"
+				@mouseenter.passive="onMouseenter"
+				@mousedown="onMousedown"
+				@touchstart="onMousedown"
 			></div>
 		</div>
 	</div>
@@ -30,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { isTouchUsing } from '@/scripts/touch.js';
 import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
@@ -108,12 +113,36 @@ const steps = computed(() => {
 	}
 });
 
+const tooltipForDragShowing = ref(false);
+const tooltipForHoverShowing = ref(false);
+
+function onMouseenter() {
+	if (isTouchUsing) return;
+
+	tooltipForHoverShowing.value = true;
+
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+		showing: computed(() => tooltipForHoverShowing.value && !tooltipForDragShowing.value),
+		text: computed(() => {
+			return props.textConverter(finalValue.value);
+		}),
+		targetElement: thumbEl,
+	}, {
+		closed: () => dispose(),
+	});
+
+	thumbEl.value!.addEventListener('mouseleave', () => {
+		tooltipForHoverShowing.value = false;
+	}, { once: true, passive: true });
+}
+
 function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
 
-	const tooltipShowing = ref(true);
+	tooltipForDragShowing.value = true;
+
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
-		showing: tooltipShowing,
+		showing: tooltipForDragShowing,
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
@@ -144,7 +173,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 
 	const onMouseup = () => {
 		document.head.removeChild(style);
-		tooltipShowing.value = false;
+		tooltipForDragShowing.value = false;
 		window.removeEventListener('mousemove', onDrag);
 		window.removeEventListener('touchmove', onDrag);
 		window.removeEventListener('mouseup', onMouseup);
