@@ -12,7 +12,7 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
@@ -21,6 +21,7 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -152,6 +153,19 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 		action: (): void => {
 			copyToClipboard(`${url}/notes/${note.id}`);
 			os.success();
+		},
+	};
+}
+
+function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuItem | undefined {
+	if (note.url != null || note.uri != null) return undefined;
+	if (['specified', 'followers'].includes(note.visibility)) return undefined;
+
+	return {
+		icon: 'ti ti-code',
+		text,
+		action: (): void => {
+			genEmbedCode('notes', note.id);
 		},
 	};
 }
@@ -310,7 +324,7 @@ export function getNoteMenu(props: {
 				action: () => {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
-			} : undefined,
+			} : getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode),
 			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
@@ -443,14 +457,14 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-		, (appearNote.url || appearNote.uri) ? {
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink),
+		(appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
-		} : undefined]
+		} : getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode)]
 			.filter(x => x !== undefined);
 	}
 

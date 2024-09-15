@@ -5069,6 +5069,18 @@ export interface Locale extends ILocale {
      */
     "createdAntennas": string;
     /**
+     * {x}から
+     */
+    "fromX": ParameterizedString<"x">;
+    /**
+     * 埋め込みコードを生成
+     */
+    "genEmbedCode": string;
+    /**
+     * このユーザーのノート一覧
+     */
+    "noteOfThisUser": string;
+    /**
      * これ以上このクリップにノートを追加できません。
      */
     "clipNoteLimitExceeded": string;
@@ -10195,6 +10207,60 @@ export interface Locale extends ILocale {
          * ブラウザのUI
          */
         "native": string;
+    };
+    "_embedCodeGen": {
+        /**
+         * 埋め込みコードをカスタマイズ
+         */
+        "title": string;
+        /**
+         * ヘッダーを表示
+         */
+        "header": string;
+        /**
+         * 自動で続きを読み込む（非推奨）
+         */
+        "autoload": string;
+        /**
+         * 高さの最大値
+         */
+        "maxHeight": string;
+        /**
+         * 0で最大値の設定が無効になります。ウィジェットが縦に伸び続けるのを防ぐために、何らかの値に指定してください。
+         */
+        "maxHeightDescription": string;
+        /**
+         * 高さの最大値制限が無効（0）になっています。これが意図した変更ではない場合は、高さの最大値を何らかの値に設定してください。
+         */
+        "maxHeightWarn": string;
+        /**
+         * プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。
+         */
+        "previewIsNotActual": string;
+        /**
+         * 角丸にする
+         */
+        "rounded": string;
+        /**
+         * 外枠に枠線をつける
+         */
+        "border": string;
+        /**
+         * プレビューに反映
+         */
+        "applyToPreview": string;
+        /**
+         * 埋め込みコードを作成
+         */
+        "generateCode": string;
+        /**
+         * コードが生成されました
+         */
+        "codeGenerated": string;
+        /**
+         * 生成されたコードをウェブサイトに貼り付けてご利用ください。
+         */
+        "codeGeneratedDescription": string;
     };
 }
 declare const locales: {

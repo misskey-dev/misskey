@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { toUnicode } from 'punycode';
 import { computed } from 'vue';
 import tinycolor from 'tinycolor2';
-import { host as localHost } from '@/config.js';
+import { host as localHost } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
