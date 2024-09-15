@@ -147,7 +147,7 @@ const menu = computed<MenuItem[]>(() => {
 	});
 
 	return menuItems;
-})
+});
 </script>
 
 <style lang="scss" module>
