@@ -359,7 +359,7 @@ watch([
 	confirmWhenRevealingSensitiveMedia,
 	contextMenu,
 ], async () => {
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;

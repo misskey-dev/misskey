@@ -9,21 +9,32 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 
 let isReloadConfirming = false;
 
-export async function reloadAsk() {
+export async function reloadAsk(opts: {
+	unison?: boolean;
+	reason?: string;
+}) {
 	if (isReloadConfirming) {
 		return;
 	}
 
 	isReloadConfirming = true;
 
-	const { canceled } = await os.confirm({
+	const { canceled } = await os.confirm(opts.reason == null ? {
 		type: 'info',
-		text: i18n.ts.reloadToApplySetting,
+		text: i18n.ts.reloadConfirm,
+	} : {
+		type: 'info',
+		title: i18n.ts.reloadConfirm,
+		text: opts.reason,
 	}).finally(() => {
 		isReloadConfirming = false;
 	});
 
 	if (canceled) return;
 
-	unisonReload();
+	if (opts.unison) {
+		unisonReload();
+	} else {
+		location.reload();
+	}
 }

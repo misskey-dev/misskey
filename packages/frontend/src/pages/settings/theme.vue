@@ -144,7 +144,7 @@ watch(wallpaper, () => {
 	} else {
 		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
-	reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 onActivated(() => {

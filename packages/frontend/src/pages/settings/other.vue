@@ -145,7 +145,7 @@ async function updateRepliesAll(withReplies: boolean) {
 watch([
 	enableCondensedLineForAcct,
 ], async () => {
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 const headerActions = computed(() => []);

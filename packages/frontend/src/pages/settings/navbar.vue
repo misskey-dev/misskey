@@ -90,7 +90,7 @@ function removeItem(index: number) {
 
 async function save() {
 	defaultStore.set('menu', items.value.map(x => x.type));
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 
 function reset() {
@@ -101,7 +101,7 @@ function reset() {
 }
 
 watch(menuDisplay, async () => {
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 const headerActions = computed(() => []);
