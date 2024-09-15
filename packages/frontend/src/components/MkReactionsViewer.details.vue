@@ -23,9 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
+import { getEmojiName } from '@@/js/emojilist.js';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist.js';
 
 defineProps<{
 	showing: boolean;
@@ -81,6 +81,7 @@ function getReactionName(reaction: string): string {
 }
 
 .user {
+	display: flex;
 	line-height: 24px;
 	padding-top: 4px;
 	white-space: nowrap;

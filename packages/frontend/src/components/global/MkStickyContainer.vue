@@ -8,7 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
-	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
+	<div
+		ref="bodyEl"
+		:data-sticky-container-header-height="headerHeight"
+		:data-sticky-container-footer-height="footerHeight"
+	>
 		<slot></slot>
 	</div>
 	<div ref="footerEl">
@@ -20,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
 
-import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
 const rootEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();

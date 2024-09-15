@@ -10,15 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="items">
 			<template v-for="(item, i) in group.items">
-				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
+				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" class="_button item" :class="{ danger: item.danger, active: item.active }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</a>
-				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
+				<button v-else-if="item.type === 'button'" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</button>
-				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
+				<MkA v-else :to="item.to" class="_button item" :class="{ danger: item.danger, active: item.active }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
@@ -67,6 +67,10 @@ defineProps<{
 					background: var(--panelHighlight);
 				}
 
+				&:focus-visible {
+					outline-offset: -2px;
+				}
+
 				&.active {
 					color: var(--accent);
 					background: var(--accentedBg);
@@ -96,13 +100,13 @@ defineProps<{
 
 	&.grid {
 		> .group {
+			margin-left: 0;
+			margin-right: 0;
+
 			& + .group {
 				padding-top: 0;
 				border-top: none;
 			}
-
-			margin-left: 0;
-			margin-right: 0;
 
 			> .title {
 				font-size: 1em;

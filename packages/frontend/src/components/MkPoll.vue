@@ -29,12 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { sum } from '@/scripts/array.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { host } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -60,6 +62,11 @@ const timer = computed(() => i18n.tsx._poll[
 
 const showResult = ref(props.readOnly || isVoted.value);
 
+const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
+	type: 'lookup',
+	url: `https://${host}/notes/${props.noteId}`,
+}));
+
 // 期限付きアンケート
 if (props.poll.expiresAt) {
 	const tick = () => {
@@ -76,9 +83,9 @@ if (props.poll.expiresAt) {
 }
 
 const vote = async (id) => {
-	pleaseLogin();
-
 	if (props.readOnly || closed.value || isVoted.value) return;
+
+	pleaseLogin(undefined, pleaseLoginContext.value);
 
 	const { canceled } = await os.confirm({
 		type: 'question',
@@ -138,7 +145,7 @@ const vote = async (id) => {
 
 .done {
 	.choice {
-		cursor: default;
+		cursor: initial;
 	}
 }
 </style>

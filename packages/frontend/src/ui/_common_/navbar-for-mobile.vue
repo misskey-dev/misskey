@@ -89,6 +89,8 @@ function post() {
 
 <style lang="scss" module>
 .root {
+	--nav-bg-transparent: color-mix(in srgb, var(--navBg), transparent 50%);
+
 	display: flex;
 	flex-direction: column;
 }
@@ -98,7 +100,7 @@ function post() {
 	top: 0;
 	z-index: 1;
 	padding: 20px 0;
-	background: var(--X14);
+	background: var(--nav-bg-transparent);
 	-webkit-backdrop-filter: var(--blur, blur(8px));
 	backdrop-filter: var(--blur, blur(8px));
 }
@@ -132,7 +134,7 @@ function post() {
 	position: sticky;
 	bottom: 0;
 	padding: 20px 0;
-	background: var(--X14);
+	background: var(--nav-bg-transparent);
 	-webkit-backdrop-filter: var(--blur, blur(8px));
 	backdrop-filter: var(--blur, blur(8px));
 }
@@ -146,7 +148,7 @@ function post() {
 	font-weight: bold;
 	text-align: left;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);
@@ -162,7 +164,7 @@ function post() {
 	}
 
 	&:hover, &.active {
-		&:before {
+		&::before {
 			background: var(--accentLighten);
 		}
 	}
@@ -233,7 +235,7 @@ function post() {
 	}
 
 	&:hover, &.active {
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			width: calc(100% - 24px);
