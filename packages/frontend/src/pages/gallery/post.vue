@@ -80,7 +80,7 @@ import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
-import { MenuItem } from '@/types/menu';
+import type { MenuItem } from '@/types/menu.js';
 
 const router = useRouter();
 

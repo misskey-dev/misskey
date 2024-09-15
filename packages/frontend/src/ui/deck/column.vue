@@ -46,7 +46,7 @@ import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed }
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
