@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- MFM `$[tada ]` をネストしても、文字列は１段階しか大きくならないようになりました
+
 ### General
 -
 

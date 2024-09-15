@@ -128,8 +128,11 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
-						break;
+						style = (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						return h('span', {
+							style: 'display: inline-block; ' + style,
+							class: 'mfm-tada',
+						}, genEl(token.children, scale));
 					}
 					case 'jelly': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
