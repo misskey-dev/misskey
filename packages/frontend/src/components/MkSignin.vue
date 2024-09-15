@@ -263,6 +263,30 @@ function loginFailed(err: any): void {
 			});
 			break;
 		}
+		case '36b96a7d-b547-412d-aeed-2d611cdc8cdc': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.unknownWebAuthnKey,
+			});
+			break;
+		}
+		case 'b18c89a7-5b5e-4cec-bb5b-0419f332d430': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.verificationFailed,
+			});
+			break;
+		}
+		case '2d84773e-f7b7-4d0b-8f72-bb69b584c912': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.passwordlessLoginDisabled,
+			});
+			break;
+		}
 		default: {
 			console.error(err);
 			os.alert({

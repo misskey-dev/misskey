@@ -1263,7 +1263,10 @@ confirmWhenRevealingSensitiveMedia: "Confirm when revealing sensitive media"
 sensitiveMediaRevealConfirm: "This might be a sensitive media. Are you sure to reveal?"
 createdLists: "Created lists"
 createdAntennas: "Created antennas"
-signinWithPasskey: "Login With Passkey"
+signinWithPasskey: "Login with passkey"
+unknownWebAuthnKey: "It is not authenticated passkey."
+verificationFailed: "Failed to verificate passkey."
+passwordlessLoginDisabled: "Passkey verification successful, but the passwordless login was not enabled."
 
 _delivery:
   status: "Delivery status"
