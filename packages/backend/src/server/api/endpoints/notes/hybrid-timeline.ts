@@ -139,8 +139,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				timelineConfig = [
 					`homeTimeline:${me.id}`,
 					'localTimeline',
+					`localTimelineWithReplyTo:${me.id}`,
 				];
 			}
+
+			const [
+				followings,
+			] = await Promise.all([
+				this.cacheService.userFollowingsCache.fetch(me.id),
+			]);
 
 			const redisTimeline = await this.fanoutTimelineEndpointService.timeline({
 				untilId,
@@ -152,6 +159,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
+				noteFilter: note => {
+					if (note.reply && note.reply.visibility === 'followers') {
+						if (!Object.hasOwn(followings, note.reply.userId) && note.reply.userId !== me.id) return false;
+					}
+
+					return true;
+				},
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
 					sinceId,

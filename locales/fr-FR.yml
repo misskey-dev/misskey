@@ -1094,6 +1094,8 @@ preservedUsernames: "Noms d'utilisateur·rice réservés"
 preservedUsernamesDescription: "Énumérez les noms d'utilisateur à réserver, séparés par des nouvelles lignes. Les noms d'utilisateur spécifiés ici ne seront plus utilisables lors de la création d'un compte, sauf la création manuelle par un administrateur. De plus, les comptes existants ne seront pas affectés."
 createNoteFromTheFile: "Rédiger une note de ce fichier"
 archive: "Archive"
+archived: "Archivé"
+unarchive: "Annuler l'archivage"
 channelArchiveConfirmTitle: "Voulez-vous vraiment archiver {name} ?"
 channelArchiveConfirmDescription: "Une fois archivé, le canal n'apparaîtra plus dans la liste des canaux ni dans les résultats de recherche, et la publication des nouvelles notes sera impossible."
 thisChannelArchived: "Ce canal a été archivé."
@@ -1224,7 +1226,10 @@ enableHorizontalSwipe: "Glisser pour changer d'onglet"
 loading: "Chargement en cours"
 surrender: "Annuler"
 gameRetry: "Réessayer"
+launchApp: "Lancer l'app"
+inquiry: "Contact"
 _delivery:
+  status: "Statut de la diffusion"
   stop: "Suspendu·e"
   _type:
     none: "Publié"
@@ -1712,8 +1717,6 @@ _sfx:
   note: "Nouvelle note"
   noteMy: "Ma note"
   notification: "Notifications"
-  antenna: "Réception de l’antenne"
-  channel: "Notifications de canal"
   reaction: "Lors de la sélection de la réaction"
 _soundSettings:
   driveFile: "Utiliser un effet sonore sur le Disque"
@@ -2073,6 +2076,10 @@ _drivecleaner:
 _webhookSettings:
   name: "Nom"
   active: "Activé"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "E-mail "
 _moderationLogTypes:
   createRole: "Rôle créé"
   deleteRole: "Rôle supprimé"

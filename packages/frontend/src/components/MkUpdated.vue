@@ -19,7 +19,7 @@ import { onMounted, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
-import { version } from '@/config.js';
+import { version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { confetti } from '@/scripts/confetti.js';
 

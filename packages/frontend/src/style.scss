@@ -17,10 +17,6 @@
 	--minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
 	--minBottomSpacing: var(--minBottomSpacingMobile);
 
-	@media (max-width: 500px) {
-		--margin: var(--marginHalf);
-	}
-
 	//--ad: rgb(255 169 0 / 10%);
 	--eventFollow: #36aed2;
 	--eventRenote: #36d298;
@@ -29,6 +25,10 @@
 	--eventReaction: #e99a0b;
 	--eventAchievement: #cb9a11;
 	--eventOther: #88a6b7;
+
+	@media (max-width: 500px) {
+		--margin: var(--marginHalf);
+	}
 }
 
 ::selection {
@@ -255,11 +255,11 @@ rt {
 	background: var(--accent);
 
 	&:not(:disabled):hover {
-		background: var(--X8);
+		background: hsl(from var(--accent) h s calc(l + 5));
 	}
 
 	&:not(:disabled):active {
-		background: var(--X9);
+		background: hsl(from var(--accent) h s calc(l - 5));
 	}
 }
 
@@ -269,11 +269,11 @@ rt {
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 
 	&:not(:disabled):hover {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 
 	&:not(:disabled):active {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 }
 

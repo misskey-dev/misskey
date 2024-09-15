@@ -43,6 +43,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -127,6 +128,7 @@ export class DriveService {
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
+		private utilityService: UtilityService,
 	) {
 		const logger = new Logger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
@@ -587,6 +589,7 @@ export class DriveService {
 			sensitive ?? false
 			: false;
 
+		if (user && this.utilityService.isMediaSilencedHost(instance.mediaSilencedHosts, user.host)) file.isSensitive = true;
 		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
 		if (info.sensitive && instance.setSensitiveFlagAutomatically) file.isSensitive = true;
 		if (userRoleNSFW) file.isSensitive = true;
