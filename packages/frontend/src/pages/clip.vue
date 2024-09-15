@@ -137,14 +137,14 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 		menuItems.push({
 			icon: 'ti ti-link',
 			text: i18n.ts.copyUrl,
-			handler: () => {
+			action: () => {
 				copyToClipboard(`${url}/clips/${clip.value!.id}`);
 				os.success();
 			},
 		}, {
 			icon: 'ti ti-code',
 			text: i18n.ts.genEmbedCode,
-			handler: () => {
+			action: () => {
 				genEmbedCode('clips', clip.value!.id);
 			},
 		});
@@ -153,7 +153,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 			menuItems.push({
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
-				handler: async () => {
+				action: async () => {
 					navigator.share({
 						title: clip.value!.name,
 						text: clip.value!.description ?? '',
