@@ -206,14 +206,18 @@ export class ApRequestService {
 
 		if ((contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' && _followAlternate) {
 			const html = await res.text();
-			const fragment = JSDOM.fragment(html);
+			try {
+				const fragment = JSDOM.fragment(html);
 
-			const alternate = fragment.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
-			if (alternate) {
-				const href = alternate.getAttribute('href');
-				if (href) {
-					return await this.signedGet(href, user, false);
+				const alternate = fragment.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
+				if (alternate) {
+					const href = alternate.getAttribute('href');
+					if (href) {
+						return await this.signedGet(href, user, false);
+					}
 				}
+			} catch (e) {
+				// something went wrong parsing the HTML, ignore the whole thing
 			}
 		}
 		//#endregion
