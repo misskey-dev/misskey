@@ -32,8 +32,18 @@ jobs:
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
-      keydb:
-        image: eqalpha/keydb:latest
+      dragonfly:
+        image: docker.dragonflydb.io/dragonflydb/dragonfly
+        options: --ulimit "memlock=-1"
+        env:
+          DFLY_version_check: false
+          DFLY_tcp_backlog: 2048
+          DFLY_default_lua_flags: allow-undeclared-keys
+          DFLY_pipeline_squash: 0
+          DFLY_multi_exec_squash: false
+          DFLY_conn_io_threads: 4
+          DFLY_epoll_file_threads: 4
+          DFLY_proactor_threads: 4
         ports:
           - 56312:6379
 
@@ -84,8 +94,18 @@ jobs:
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
-      keydb:
-        image: eqalpha/keydb:latest
+      dragonfly:
+        image: docker.dragonflydb.io/dragonflydb/dragonfly
+        options: --ulimit "memlock=-1"
+        env:
+          DFLY_version_check: false
+          DFLY_tcp_backlog: 2048
+          DFLY_default_lua_flags: allow-undeclared-keys
+          DFLY_pipeline_squash: 0
+          DFLY_multi_exec_squash: false
+          DFLY_conn_io_threads: 4
+          DFLY_epoll_file_threads: 4
+          DFLY_proactor_threads: 4
         ports:
           - 56312:6379
 

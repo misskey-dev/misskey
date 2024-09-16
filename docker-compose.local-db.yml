@@ -3,17 +3,25 @@ version: "3"
 # このconfigは、 dockerでMisskey本体を起動せず、 redisとpostgresql などだけを起動します
 
 services:
-  keydb:
+  dragonfly:
     restart: always
-    image: eqalpha/keydb:latest
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    ulimits:
+      memlock: -1
+    environment:
+      DFLY_snapshot_cron: '* * * * *'
+      DFLY_version_check: false
+      DFLY_tcp_backlog: 2048
+      DFLY_default_lua_flags: allow-undeclared-keys
+      DFLY_pipeline_squash: 0
+      DFLY_multi_exec_squash: false
+      DFLY_conn_io_threads: 4
+      DFLY_epoll_file_threads: 4
+      DFLY_proactor_threads: 4
     ports:
       - "6379:6379"
     volumes:
-      - ./keydb:/data
-    healthcheck:
-      test: "keydb-cli ping"
-      interval: 5s
-      retries: 20
+      - ./redis:/data
 
   db:
     restart: always
