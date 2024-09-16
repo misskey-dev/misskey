@@ -149,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
 								</span>
 								<span>{{ announcement.title }}</span>
-								<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
+								<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }} <span v-if="announcement.lastReadAt">(<MkTime :time="announcement.lastReadAt" mode="absolute"/>)</span></span>
 							</div>
 						</div>
 					</template>

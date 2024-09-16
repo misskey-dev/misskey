@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts._announcement.silence }}
 					<template #caption>{{ i18n.ts._announcement.silenceDescription }}</template>
 				</MkSwitch>
-				<p v-if="reads">{{ i18n.tsx.nUsersRead({ n: reads }) }}</p>
+				<p v-if="reads">{{ i18n.tsx.nUsersRead({ n: reads }) }} <span v-if="lastReadAt">(<MkTime :time="lastReadAt" mode="absolute"/>)</span></p>
 				<MkUserCardMini v-if="props.user.id" :user="props.user"></MkUserCardMini>
 				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
@@ -94,6 +94,7 @@ const closeDuration = ref<number>(props.announcement ? props.announcement.closeD
 const displayOrder = ref<number>(props.announcement ? props.announcement.displayOrder : 0);
 const silence = ref<boolean>(props.announcement ? props.announcement.silence : false);
 const reads = ref<number>(props.announcement ? props.announcement.reads : 0);
+const lastReadAt = ref<string | null>(props.announcement ? props.announcement.lastReadAt : null);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,

@@ -138,7 +138,7 @@ export class AnnouncementService {
 		limit: number,
 		offset: number,
 		moderator: MiUser,
-	): Promise<(MiAnnouncement & { userInfo: Packed<'UserLite'> | null, reads: number })[]> {
+	): Promise<(MiAnnouncement & { userInfo: Packed<'UserLite'> | null, reads: number, lastReadAt: Date | null })[]> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
 
 		if (userId) {
@@ -157,13 +157,14 @@ export class AnnouncementService {
 			.offset(offset)
 			.getMany();
 
-		const reads = new Map<MiAnnouncement, number>();
-
-		for (const announcement of announcements) {
-			reads.set(announcement, await this.announcementReadsRepository.countBy({
-				announcementId: announcement.id,
-			}));
-		}
+		const reads = announcements.length > 0
+			? await this.announcementReadsRepository.createQueryBuilder()
+				.select('"announcementId", count(*) as "reads", max("id") as "lastReadId"')
+				.where('"announcementId" IN (:...announcementIds)', { announcementIds: announcements.map(a => a.id) })
+				.groupBy('"announcementId"')
+				.getRawMany<{ announcementId: string, reads: number, lastReadId: string | null }>()
+				.then(rs => new Map(rs.map(r => [r.announcementId, { reads: r.reads, lastReadAt: r.lastReadId ? this.idService.parse(r.lastReadId).date : null }])))
+			: new Map();
 
 		const users = await this.usersRepository.findBy({
 			id: In(announcements.map(a => a.userId).filter(id => id != null)),
@@ -174,8 +175,8 @@ export class AnnouncementService {
 
 		return announcements.map(announcement => ({
 			...announcement,
+			...reads.get(announcement.id) ?? { reads: 0, lastReadAt: null },
 			userInfo: packedUsers.find(u => u.id === announcement.userId) ?? null,
-			reads: reads.get(announcement) ?? 0,
 		}));
 	}
 
@@ -293,18 +294,20 @@ export class AnnouncementService {
 				'read.id IS NOT NULL as "isRead"',
 			]);
 			query
-				.andWhere(
-					new Brackets((qb) => {
-						qb.orWhere('announcement."userId" = :userId', { userId: me.id });
-						qb.orWhere('announcement."userId" IS NULL');
-					}),
-				)
-				.andWhere(
-					new Brackets((qb) => {
-						qb.orWhere('announcement."forExistingUsers" = false');
-						qb.orWhere('announcement.id > :userId', { userId: me.id });
-					}),
-				);
+				.andWhere(new Brackets((qb) => {
+					qb.orWhere(new Brackets((nqb) => {
+						nqb.andWhere('announcement."userId" = :userId', { userId: me.id });
+						nqb.andWhere(isActive ? 'read.id IS NULL' : 'read.id IS NOT NULL');
+					}));
+					qb.orWhere(new Brackets((nqb) => {
+						nqb.andWhere('announcement."userId" IS NULL');
+						nqb.andWhere('announcement."isActive" = :isActive', { isActive });
+					}));
+				}))
+				.andWhere(new Brackets((qb) => {
+					qb.orWhere('announcement."forExistingUsers" = false');
+					qb.orWhere('announcement.id > :userId', { userId: me.id });
+				}));
 		} else {
 			query.select([
 				'announcement.*',
@@ -312,11 +315,8 @@ export class AnnouncementService {
 			]);
 			query.andWhere('announcement."userId" IS NULL');
 			query.andWhere('announcement."forExistingUsers" = false');
+			query.andWhere('announcement."isActive" = :isActive', { isActive });
 		}
-
-		query.andWhere('announcement."isActive" = :isActive', {
-			isActive: isActive,
-		});
 
 		if (isActive) {
 			query.orderBy({

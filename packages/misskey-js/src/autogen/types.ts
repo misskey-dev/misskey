@@ -6183,6 +6183,8 @@ export type operations = {
               userId: string | null;
               user: components['schemas']['UserLite'] | null;
               reads: number;
+              /** Format: date-time */
+              lastReadAt: string | null;
             })[];
         };
       };

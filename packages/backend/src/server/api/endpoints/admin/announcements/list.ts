@@ -97,6 +97,11 @@ export const meta = {
 					type: 'number',
 					optional: false, nullable: false,
 				},
+				lastReadAt: {
+					type: 'string',
+					optional: false, nullable: true,
+					format: 'date-time',
+				},
 			},
 		},
 	},
@@ -140,6 +145,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: announcement.userId,
 				user: announcement.userInfo,
 				reads: announcement.reads,
+				lastReadAt: announcement.lastReadAt?.toISOString() ?? null,
 			}));
 		});
 	}

@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
 						{{ i18n.ts._announcement.silence }}
 					</MkSwitch>
-					<p v-if="announcement.reads">{{ i18n.tsx.nUsersRead({ n: announcement.reads }) }}</p>
+					<p v-if="announcement.reads">{{ i18n.tsx.nUsersRead({ n: announcement.reads }) }} <span v-if="announcement.lastReadAt">(<MkTime :time="announcement.lastReadAt" mode="absolute"/>)</span></p>
 					<MkUserCardMini v-if="announcement.userId" :user="announcement.user" @click="editUser(announcement)"></MkUserCardMini>
 					<MkButton v-else class="button" inline primary @click="editUser(announcement)">{{ i18n.ts.specifyUser }}</MkButton>
 					<div class="buttons _buttons">
