@@ -594,6 +594,7 @@ defineExpose({
 						width: auto;
 						height: auto;
 						min-width: 0;
+						padding: 0;
 
 						&:disabled {
 							cursor: not-allowed;
@@ -700,7 +701,7 @@ defineExpose({
 
 				> .item {
 					position: relative;
-					padding: 0;
+					padding: 0 3px;
 					width: var(--eachSize);
 					height: var(--eachSize);
 					contain: strict;
