@@ -83,6 +83,10 @@ export type DbUserDeleteJobData = {
 	onlyFiles?: boolean;
 };
 
+export type DbUserSuspendJobData = {
+	user: ThinUser
+};
+
 export type DbUserImportJobData = {
 	user: ThinUser;
 	fileId: MiDriveFile['id'];

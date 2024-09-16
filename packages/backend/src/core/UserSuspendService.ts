@@ -9,16 +9,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { MiUser } from '@/models/User.js';
-import type {
-	AntennasRepository,
-	ClipNotesRepository,
-	ClipsRepository,
-	FollowingsRepository,
-	FollowRequestsRepository,
-	UserListMembershipsRepository,
-	UserListsRepository,
-	WebhooksRepository,
-} from '@/models/_.js';
+import type { FollowingsRepository } from '@/models/_.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -36,27 +27,6 @@ export class UserSuspendService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: FollowRequestsRepository,
-
-		@Inject(DI.antennasRepository)
-		private antennasRepository: AntennasRepository,
-
-		@Inject(DI.webhooksRepository)
-		private webhooksRepository: WebhooksRepository,
-
-		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
-
-		@Inject(DI.clipsRepository)
-		private clipsRepository: ClipsRepository,
-
-		@Inject(DI.clipNotesRepository)
-		private clipNotesRepository: ClipNotesRepository,
-
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
-
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
@@ -72,41 +42,7 @@ export class UserSuspendService {
 
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 
-		const promises: Promise<unknown>[] = [];
-
-		let cursor = '';
-		while (true) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
-			const clipNotes = await this.clipNotesRepository.createQueryBuilder('c')
-				.select('c.id')
-				.innerJoin('c.note', 'n')
-				.where('n.userId = :userId', { userId: user.id })
-				.andWhere('c.id > :cursor', { cursor })
-				.orderBy('c.id', 'ASC')
-				.limit(500)
-				.getRawMany<{ id: string }>();
-
-			if (clipNotes.length === 0) break;
-
-			cursor = clipNotes.at(-1)?.id ?? '';
-
-			promises.push(this.clipNotesRepository.createQueryBuilder()
-				.delete()
-				.where('id IN (:...ids)', { ids: clipNotes.map((clipNote) => clipNote.id) })
-				.execute());
-		}
-
-		await Promise.allSettled([
-			this.followRequestsRepository.delete({ followeeId: user.id }),
-			this.followRequestsRepository.delete({ followerId: user.id }),
-
-			this.antennasRepository.delete({ userId: user.id }),
-			this.webhooksRepository.delete({ userId: user.id }),
-			this.userListsRepository.delete({ userId: user.id }),
-			this.clipsRepository.delete({ userId: user.id }),
-
-			...promises,
-			this.userListMembershipsRepository.delete({ userId: user.id }),
-		]);
+		await this.queueService.createUserSuspendJob(user);
 
 		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにDelete配信

@@ -16,6 +16,7 @@ import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMu
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
+import { UserSuspendProcessorService } from './processors/UserSuspendProcessorService.js';
 import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
@@ -68,6 +69,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		ImportUserListsProcessorService,
 		ImportCustomEmojisProcessorService,
 		ImportAntennasProcessorService,
+		UserSuspendProcessorService,
 		DeleteAccountProcessorService,
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,

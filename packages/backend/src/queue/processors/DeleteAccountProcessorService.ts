@@ -40,7 +40,7 @@ export class DeleteAccountProcessorService {
 		private roleService: RoleService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.logger = this.queueLoggerService.logger.createSubLogger('delete-account');
+		this.logger = this.queueLoggerService.logger.createSubLogger('account:delete');
 	}
 
 	private async deleteNotes(user: MiUser) {
