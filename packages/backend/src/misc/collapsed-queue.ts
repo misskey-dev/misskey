@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class CollapsedQueue<K, V> {
 	private jobs: Map<K, V> = new Map();
 
