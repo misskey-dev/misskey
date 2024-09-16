@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="700">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
-				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
+				<MkInput v-model="endpoint" :debounce="true" :datalist="endpoints" @update:modelValue="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" code>
@@ -50,6 +50,7 @@ const endpoints = ref<string[]>([]);
 const sending = ref(false);
 const res = ref('');
 const withCredential = ref(true);
+const endpointAbortController = ref<AbortController>();
 
 misskeyApi('endpoints').then(endpointResponse => {
 	endpoints.value = endpointResponse;
@@ -68,7 +69,11 @@ function send() {
 }
 
 function onEndpointChange() {
-	misskeyApi('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
+	if (endpointAbortController.value) {
+		endpointAbortController.value.abort();
+	}
+	endpointAbortController.value = new AbortController();
+	misskeyApi('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null, endpointAbortController.value.signal).then(resp => {
 		const endpointBody = {};
 		for (const p of resp.params) {
 			endpointBody[p.name] =

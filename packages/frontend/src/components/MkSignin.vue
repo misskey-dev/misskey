@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ message }}
 		</MkInfo>
 		<div v-if="!totpLogin" class="normal-signin _gaps_m">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
+			<MkInput v-model="username" :debounce="true" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkButton type="submit" large primary rounded :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
+			<MkButton type="submit" large primary rounded :disabled="!user || signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
@@ -64,6 +64,7 @@ import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
 const signing = ref(false);
+const userAbortController = ref<AbortController>();
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const username = ref('');
 const password = ref('');
@@ -97,9 +98,13 @@ const props = defineProps({
 });
 
 function onUsernameChange(): void {
+	if (userAbortController.value) {
+		userAbortController.value.abort();
+	}
+	userAbortController.value = new AbortController();
 	misskeyApi('users/show', {
 		username: username.value,
-	}).then(userResponse => {
+	}, undefined, userAbortController.value.signal).then(userResponse => {
 		user.value = userResponse;
 	}, () => {
 		user.value = null;

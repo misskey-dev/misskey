@@ -46,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
+import { debounce } from 'throttle-debounce';
 import contains from '@/scripts/contains.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
 import { acct } from '@/filters/user.js';
@@ -189,6 +190,7 @@ const mfmTags = ref<string[]>([]);
 const mfmParams = ref<string[]>([]);
 const select = ref(-1);
 const zIndex = os.claimZIndex('high');
+const abortController = ref<AbortController>();
 
 function complete<T extends keyof CompleteInfo>(type: T, value: CompleteInfo[T]['payload']) {
 	emit('done', { type, value });
@@ -217,6 +219,39 @@ function setPosition() {
 	}
 }
 
+const searchUsers = debounce(1000, (query: string, cacheKey: string) => {
+	if (abortController.value) {
+		abortController.value.abort();
+	}
+	abortController.value = new AbortController();
+	misskeyApi('users/search-by-username-and-host', {
+		username: query,
+		limit: 10,
+		detail: false,
+	}, undefined, abortController.value.signal).then(searchedUsers => {
+		users.value = searchedUsers as any[];
+		fetching.value = false;
+		// キャッシュ
+		sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
+	});
+});
+
+const searchHashtags = debounce(1000, (query: string, cacheKey: string) => {
+	if (abortController.value) {
+		abortController.value.abort();
+	}
+	abortController.value = new AbortController();
+	misskeyApi('hashtags/search', {
+		query,
+		limit: 30,
+	}, undefined, abortController.value.signal).then(searchedHashtags => {
+		hashtags.value = searchedHashtags as any[];
+		fetching.value = false;
+		// キャッシュ
+		sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));
+	});
+});
+
 function exec() {
 	select.value = -1;
 	if (suggests.value) {
@@ -238,16 +273,7 @@ function exec() {
 			users.value = JSON.parse(cache);
 			fetching.value = false;
 		} else {
-			misskeyApi('users/search-by-username-and-host', {
-				username: props.q,
-				limit: 10,
-				detail: false,
-			}).then(searchedUsers => {
-				users.value = searchedUsers as any[];
-				fetching.value = false;
-				// キャッシュ
-				sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
-			});
+			searchUsers(props.q, cacheKey);
 		}
 	} else if (props.type === 'hashtag') {
 		if (!props.q || props.q === '') {
@@ -261,15 +287,7 @@ function exec() {
 				hashtags.value = hashtags;
 				fetching.value = false;
 			} else {
-				misskeyApi('hashtags/search', {
-					query: props.q,
-					limit: 30,
-				}).then(searchedHashtags => {
-					hashtags.value = searchedHashtags as any[];
-					fetching.value = false;
-					// キャッシュ
-					sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));
-				});
+				searchHashtags(props.q, cacheKey);
 			}
 		}
 	} else if (props.type === 'emoji') {

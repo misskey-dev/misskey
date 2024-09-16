@@ -16,16 +16,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
-			<MkInput v-if="localOnly" v-model="username" :autofocus="true" @update:modelValue="search">
+			<MkInput v-if="localOnly" v-model="username" :debounce="true" :autofocus="true" @update:modelValue="search">
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 			<FormSplit v-else :minWidth="170">
-				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
+				<MkInput v-model="username" :debounce="true" :autofocus="true" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
+				<MkInput v-model="host" :debounce="true" :datalist="[hostname]" @update:modelValue="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -92,18 +92,23 @@ const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
 const dialogEl = ref();
+const abortController = ref<AbortController>();
 
 function search() {
+	if (abortController.value) {
+		abortController.value.abort();
+	}
 	if (username.value === '' && host.value === '') {
 		users.value = [];
 		return;
 	}
+	abortController.value = new AbortController();
 	misskeyApi('users/search-by-username-and-host', {
 		username: username.value,
 		host: props.localOnly ? '.' : host.value,
 		limit: 10,
 		detail: false,
-	}).then(_users => {
+	}, undefined, abortController.value.signal).then(_users => {
 		users.value = _users.filter((u) => {
 			if (props.includeSelf) {
 				return true;
