@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 			const chartUsers: { userId: string; count: number; }[] = [];
 			if (ps.sort?.endsWith('pv')) {
-				await this.perUserPvChart.getChartUsers('hour', 0, null, ps.limit, ps.offset).then(users => {
+				await this.perUserPvChart.getChartUsers('hour', ps.sort === '+pv' ? 'DESC' : 'ASC', 0, null, ps.limit, ps.offset).then(users => {
 					chartUsers.push(...users);
 				});
 			}

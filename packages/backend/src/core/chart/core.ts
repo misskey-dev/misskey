@@ -727,7 +727,7 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@bindThis
-	public async getChartPv(span: 'hour' | 'day', amount: number, cursor: Date | null, limit: number, offset: number): Promise<
+	public async getChartPv(span: 'hour' | 'day', amount: number, cursor: Date | null, limit: number, offset: number, order: 'ASC' | 'DESC'): Promise<
 		{
 			userId: string,
 			count: number,
@@ -749,27 +749,13 @@ export default abstract class Chart<T extends Schema> {
 			new Error('not happen') as never;
 
 		// ログ取得
-		const logs = await repository.createQueryBuilder()
+		return await repository.createQueryBuilder()
+			.select('"group" as "userId", sum("___upv_user" + "___upv_visitor") as "count"')
 			.where('date BETWEEN :gt AND :lt', { gt: Chart.dateToTimestamp(gt), lt: Chart.dateToTimestamp(lt) })
-			.orderBy('___pv_visitor + ___upv_visitor + ___pv_user + ___upv_user', 'DESC')
-			.skip(offset)
-			.take(limit)
-			.getMany() as {
-					___pv_visitor: number,
-					___upv_visitor: number,
-					___pv_user: number,
-					___upv_user: number,
-					group: string,
-			}[];
-		const result = [] as {
-			userId: string,
-			count: number,
-		}[];
-		for (const row of logs) {
-			const userId = row.group;
-			const count = row.___pv_user + row.___upv_user + row.___pv_visitor + row.___upv_visitor;
-			result.push({ userId, count });
-		}
-		return result;
+			.groupBy('"userId"')
+			.orderBy('"count"', order)
+			.offset(offset)
+			.limit(limit)
+			.getRawMany<{ userId: string, count: number }>();
 	}
 }
