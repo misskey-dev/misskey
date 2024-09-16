@@ -1050,12 +1050,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public dispose(): void {
+	public async dispose(): Promise<void> {
 		this.#shutdownController.abort();
+		await this.updateNotesCountQueue.performAllNow();
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
+	public async onApplicationShutdown(signal?: string | undefined): Promise<void> {
+		await this.dispose();
 	}
 }

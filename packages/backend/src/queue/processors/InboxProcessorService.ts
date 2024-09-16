@@ -4,7 +4,7 @@
  */
 
 import { URL } from 'node:url';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
 import type Logger from '@/logger.js';
@@ -26,10 +26,10 @@ import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type { InboxJobData } from '../types.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { MiNote } from '@/models/Note.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type { InboxJobData } from '../types.js';
 
 type UpdateInstanceJob = {
 	latestRequestReceivedAt: Date,
@@ -37,7 +37,7 @@ type UpdateInstanceJob = {
 };
 
 @Injectable()
-export class InboxProcessorService {
+export class InboxProcessorService implements OnApplicationShutdown {
 	private logger: Logger;
 	private updateInstanceQueue: CollapsedQueue<MiNote['id'], UpdateInstanceJob>;
 
@@ -253,5 +253,15 @@ export class InboxProcessorService {
 			// もしサーバーが死んでるために配信が止まっていた場合には自動的に復活させてあげる
 			suspensionState: job.shouldUnsuspend ? 'none' : undefined,
 		});
+	}
+
+	@bindThis
+	public async dispose(): Promise<void> {
+		await this.updateInstanceQueue.performAllNow();
+	}
+
+	@bindThis
+	async onApplicationShutdown(signal?: string) {
+		await this.dispose();
 	}
 }
