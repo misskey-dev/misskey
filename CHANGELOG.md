@@ -36,6 +36,7 @@
 - Fix: mCaptchaを使用していてもbotプロテクションに関する警告が消えないのを修正
 - Fix: ユーザーのモデレーションページにおいてユーザー名にドットが入っているとシステムアカウントとして表示されてしまう問題を修正
 - Fix: 特定の条件下でノートの削除ボタンが出ないのを修正
+- Fix: ERROR CODE: APP_IMPORT on iOS <= 16.3 (SyntaxError: Invalid regular expression: invalid group specifier name)
 
 ### Server
 - Enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
