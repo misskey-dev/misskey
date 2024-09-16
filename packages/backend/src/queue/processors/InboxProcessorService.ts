@@ -246,8 +246,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public performUpdateInstance(id: string, job: UpdateInstanceJob) {
-		this.federatedInstanceService.update(id, {
+	public async performUpdateInstance(id: string, job: UpdateInstanceJob) {
+		await this.federatedInstanceService.update(id, {
 			latestRequestReceivedAt: new Date(),
 			isNotResponding: false,
 			// もしサーバーが死んでるために配信が止まっていた場合には自動的に復活させてあげる
