@@ -60,6 +60,7 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -151,6 +152,7 @@ type Option = {
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
+	private updateNotesCountQueue: CollapsedQueue<MiNote['id'], number>;
 
 	constructor(
 		@Inject(DI.config)
@@ -218,7 +220,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private instanceChart: InstanceChart,
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
-	) { }
+	) {
+		this.updateNotesCountQueue = new CollapsedQueue(60 * 1000 * 5, this.collapseNotesCount, this.performUpdateNotesCount);
+	}
 
 	@bindThis
 	public async create(user: {
@@ -516,7 +520,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
 			this.federatedInstanceService.fetch(user.host).then(async i => {
-				this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
+				this.updateNotesCountQueue.enqueue(i.id, 1);
 				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
 					this.instanceChart.updateNote(i.host, note, true);
 				}
@@ -1033,6 +1037,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		return false;
+	}
+
+	@bindThis
+	private collapseNotesCount(oldValue: number, newValue: number) {
+		return oldValue + newValue;
+	}
+
+	@bindThis
+	private performUpdateNotesCount(id: MiNote['id'], incrBy: number) {
+		this.instancesRepository.increment({ id: id }, 'notesCount', incrBy);
 	}
 
 	@bindThis
