@@ -28,10 +28,13 @@ import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
+import { CollapsedQueue } from '@/misc/collapsed-queue.js';
+import { MiNote } from '@/models/Note.js';
 
 @Injectable()
 export class InboxProcessorService {
 	private logger: Logger;
+	private updateInstanceQueue: CollapsedQueue<MiNote['id'], Date>;
 
 	constructor(
 		private utilityService: UtilityService,
@@ -48,6 +51,7 @@ export class InboxProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('inbox');
+		this.updateInstanceQueue = new CollapsedQueue(60 * 1000 * 5, this.collapseUpdateInstanceJobs, this.performUpdateInstance);
 	}
 
 	@bindThis
@@ -180,10 +184,7 @@ export class InboxProcessorService {
 
 		// Update stats
 		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
-			this.federatedInstanceService.update(i.id, {
-				latestRequestReceivedAt: new Date(),
-				isNotResponding: false,
-			});
+			this.updateInstanceQueue.enqueue(i.id, new Date());
 
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 
@@ -210,5 +211,18 @@ export class InboxProcessorService {
 			throw e;
 		}
 		return 'ok';
+	}
+
+	@bindThis
+	public collapseUpdateInstanceJobs(oldValue: Date, newValue: Date) {
+		return oldValue < newValue ? newValue : oldValue;
+	}
+
+	@bindThis
+	public performUpdateInstance(id: string, value: Date) {
+		this.federatedInstanceService.update(id, {
+			latestRequestReceivedAt: value,
+			isNotResponding: false,
+		});
 	}
 }
