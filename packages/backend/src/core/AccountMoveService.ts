@@ -10,7 +10,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListMembershipsRepository, UserAccountMoveLogRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -47,6 +47,15 @@ export class AccountMoveService {
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.userAccountMoveLogRepository)
+		private userAccountMoveLogRepository: UserAccountMoveLogRepository,
+
+		@Inject(DI.config)
+		private config: Config,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
@@ -119,6 +128,8 @@ export class AccountMoveService {
 				this.copyBlocking(src, dst),
 				this.copyMutings(src, dst),
 				this.updateLists(src, dst),
+				this.mergeModerationNote(src, dst),
+				this.insertAccountMoveLog(src, dst),
 			]);
 		} catch {
 			/* skip if any error happens */
@@ -254,6 +265,32 @@ export class AccountMoveService {
 				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 			}
 		}
+	}
+
+	@bindThis
+	private async mergeModerationNote(src: ThinUser, dst: MiUser): Promise<void> {
+		const srcprofile = await this.userProfilesRepository.findOneBy({ userId: src.id });
+		const dstprofile = await this.userProfilesRepository.findOneBy({ userId: dst.id });
+
+		if (!srcprofile || !dstprofile) return;
+
+		await this.userProfilesRepository.update({ userId: dst.id }, {
+			moderationNote: srcprofile.moderationNote + '\n' + dstprofile.moderationNote,
+		});
+
+		await this.userProfilesRepository.update({ userId: src.id }, {
+			moderationNote: srcprofile.moderationNote + '\n' + dstprofile.moderationNote,
+		});
+	}
+
+	@bindThis
+	private async insertAccountMoveLog(src: ThinUser, dst: MiUser): Promise<void> {
+		await this.userAccountMoveLogRepository.insert({
+			id: this.idService.gen(),
+			movedToId: dst.id,
+			movedFromId: src.id,
+			createdAt: new Date(),
+		});
 	}
 
 	@bindThis

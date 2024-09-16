@@ -1797,6 +1797,22 @@ export interface Locale extends ILocale {
      */
     "moderationLogs": string;
     /**
+     * アカウント移行使用ログ
+     */
+    "userAccountMoveLogs": string;
+    /**
+     * {from} が {to} にアカウントを移行しました
+     */
+    "userAccountMoveLogsTitle": ParameterizedString<"from" | "to">;
+    /**
+     * 移行先のアカウントのID
+     */
+    "movedToId": string;
+    /**
+     * 移行元のアカウントのID
+     */
+    "moveFromId": string;
+    /**
      * {n}人が投稿
      */
     "nUsersMentioned": ParameterizedString<"n">;
@@ -4375,6 +4391,10 @@ export interface Locale extends ILocale {
      * このユーザーは新しいアカウントに移行しました：
      */
     "accountMoved": string;
+    /**
+     * このユーザーは次のアカウントから移行されました：
+     */
+    "accountMovedFrom": string;
     /**
      * このアカウントは移行されています
      */

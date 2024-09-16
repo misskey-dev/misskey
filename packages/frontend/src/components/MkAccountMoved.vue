@@ -6,7 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-if="user" :class="$style.root">
 	<i class="ti ti-plane-departure" style="margin-right: 8px;"></i>
-	{{ i18n.ts.accountMoved }}
+	<span v-if="movedTo">{{ i18n.ts.accountMoved }}</span>
+	<span v-if="movedFrom">{{ i18n.ts.accountMovedFrom }}</span>
 	<MkMention :class="$style.link" :username="user.username" :host="user.host ?? localHost"/>
 </div>
 </template>
@@ -22,10 +23,11 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 const user = ref<Misskey.entities.UserLite>();
 
 const props = defineProps<{
-	movedTo: string; // user id
+	movedTo?: string; // user id
+	movedFrom?: string; // user id
 }>();
 
-misskeyApi('users/show', { userId: props.movedTo }).then(u => user.value = u);
+misskeyApi('users/show', { userId: props.movedTo ?? props.movedFrom }).then(u => user.value = u);
 </script>
 
 <style lang="scss" module>

@@ -652,6 +652,15 @@ export type paths = {
      */
     post: operations['admin___show-moderation-logs'];
   };
+  '/admin/show-user-account-move-logs': {
+    /**
+     * admin/show-user-account-move-logs
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:show-account-move-log*
+     */
+    post: operations['admin___show-user-account-move-logs'];
+  };
   '/admin/show-user': {
     /**
      * admin/show-user
@@ -4077,6 +4086,21 @@ export type components = {
       userId: string;
       user: components['schemas']['UserLite'];
       withReplies: boolean;
+    };
+    UserAccountMoveLog: {
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: id */
+      movedToId: string;
+      movedTo: components['schemas']['UserDetailed'];
+      /** Format: id */
+      movedFromId: string;
+      movedFrom: components['schemas']['UserDetailed'];
     };
     Ad: {
       /**
@@ -9405,6 +9429,79 @@ export type operations = {
               /** Format: id */
               userId: string;
               user: components['schemas']['UserDetailed'];
+            }[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/show-user-account-move-logs
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:show-account-move-log*
+   */
+  'admin___show-user-account-move-logs': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** Format: misskey:id */
+          movedFromId?: string | null;
+          /** Format: misskey:id */
+          movedToId?: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+              /** Format: id */
+              id: string;
+              /** Format: date-time */
+              createdAt: string;
+              /** Format: id */
+              movedToId: string;
+              movedTo: components['schemas']['UserDetailed'];
+              /** Format: id */
+              movedFromId: string;
+              movedFrom: components['schemas']['UserDetailed'];
             }[];
         };
       };

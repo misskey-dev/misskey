@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="profile _gaps">
 				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
+				<MkAccountMoved v-if="movedFromLog" :movedFrom="movedFromLog[0]?.movedFromId"/>
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
@@ -280,6 +281,7 @@ const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote);
 const editModerationNote = ref(false);
+const movedFromLog = ref<null | {movedFromId:string;}[]>(null);
 
 watch(moderationNote, async () => {
 	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
@@ -299,6 +301,15 @@ const age = computed(() => {
 function menu(ev: MouseEvent) {
 	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
+}
+
+async function fetchMovedFromLog() {
+	if (!props.user.id) {
+		movedFromLog.value = null;
+		return;
+	}
+
+	movedFromLog.value = await misskeyApi('admin/show-user-account-move-logs', { movedToId: props.user.id });
 }
 
 function parallaxLoop() {
@@ -377,6 +388,9 @@ function buildSkebStatus(): string {
 watch([props.user], () => {
 	memoDraft.value = props.user.memo;
 	fetchSkebStatus();
+	if ($i?.isModerator) {
+		fetchMovedFromLog();
+	}
 });
 
 onMounted(() => {
@@ -395,6 +409,9 @@ onMounted(() => {
 		}
 	}
 	fetchSkebStatus();
+	if ($i?.isModerator) {
+		fetchMovedFromLog();
+	}
 	nextTick(() => {
 		adjustMemoTextarea();
 	});

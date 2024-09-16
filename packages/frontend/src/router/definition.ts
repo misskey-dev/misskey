@@ -427,6 +427,10 @@ const routes: RouteDef[] = [{
 		name: 'modlog',
 		component: page(() => import('@/pages/admin/modlog.vue')),
 	}, {
+		path: '/useraccountmovelog',
+		name: 'useraccountmovelog',
+		component: page(() => import('@/pages/admin/useraccountmovelog.vue')),
+	}, {
 		path: '/settings',
 		name: 'settings',
 		component: page(() => import('@/pages/admin/settings.vue')),

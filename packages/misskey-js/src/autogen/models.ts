@@ -9,6 +9,7 @@ export type UserDetailed = components['schemas']['UserDetailed'];
 export type User = components['schemas']['User'];
 export type UserList = components['schemas']['UserList'];
 export type UserListMembership = components['schemas']['UserListMembership'];
+export type UserAccountMoveLog = components['schemas']['UserAccountMoveLog'];
 export type Ad = components['schemas']['Ad'];
 export type Announcement = components['schemas']['Announcement'];
 export type App = components['schemas']['App'];

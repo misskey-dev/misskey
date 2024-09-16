@@ -37,6 +37,7 @@ import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
 import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
 import { packedUserListMembershipSchema, packedUserListSchema } from '@/models/json-schema/user-list.js';
+import { packedUserAccountMoveLogSchema } from '@/models/json-schema/user-account-move-log.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
 import {
@@ -71,6 +72,7 @@ export const refs = {
 
 	UserList: packedUserListSchema,
 	UserListMembership: packedUserListMembershipSchema,
+	UserAccountMoveLog: packedUserAccountMoveLogSchema,
 	Ad: packedAdSchema,
 	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
