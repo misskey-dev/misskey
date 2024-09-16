@@ -1045,7 +1045,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async async performUpdateNotesCount(id: MiNote['id'], incrBy: number) {
+	private async performUpdateNotesCount(id: MiNote['id'], incrBy: number) {
 		await this.instancesRepository.increment({ id: id }, 'notesCount', incrBy);
 	}
 
