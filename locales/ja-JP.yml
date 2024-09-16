@@ -911,6 +911,7 @@ followingVisibility: "フォローの公開範囲"
 followersVisibility: "フォロワーの公開範囲"
 continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
+deleteAccountConfirmAndWarn: "アカウントが削除されます。\n削除リクエスト後に再ログインすると\nアカウントの削除が中断されてしまいますのでご注意ください。\nよろしいですか？"
 incorrectPassword: "パスワードが間違っています。"
 voteConfirm: "「{choice}」に投票しますか？"
 hide: "隠す"
@@ -1833,6 +1834,7 @@ _accountDelete:
   requestAccountDelete: "アカウント削除をリクエスト"
   started: "削除処理が開始されました。"
   inProgress: "削除が進行中"
+  dontLogin: "削除が中断されてしまいますので、アカウントにログインしないことをおすすめします。"
 
 _ad:
   back: "戻る"

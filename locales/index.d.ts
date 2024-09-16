@@ -3661,6 +3661,13 @@ export interface Locale extends ILocale {
      */
     "deleteAccountConfirm": string;
     /**
+     * アカウントが削除されます。
+     * 削除リクエスト後に再ログインすると
+     * アカウントの削除が中断されてしまいますのでご注意ください。
+     * よろしいですか？
+     */
+    "deleteAccountConfirmAndWarn": string;
+    /**
      * パスワードが間違っています。
      */
     "incorrectPassword": string;
@@ -7081,6 +7088,10 @@ export interface Locale extends ILocale {
          * 削除が進行中
          */
         "inProgress": string;
+        /**
+         * 削除が中断されてしまいますので、アカウントにログインしないことをおすすめします。
+         */
+        "dontLogin": string;
     };
     "_ad": {
         /**
