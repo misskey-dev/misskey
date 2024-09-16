@@ -28,7 +28,7 @@ import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
-import { CollapsedQueue } from "@/misc/collapsed-queue.js"
+import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { MiNote } from '@/models/Note.js';
 
 type UpdateInstanceJob = {
