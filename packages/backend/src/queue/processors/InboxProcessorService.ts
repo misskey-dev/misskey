@@ -196,7 +196,7 @@ export class InboxProcessorService {
 		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
 			this.updateInstanceQueue.enqueue(i.id, {
 				latestRequestReceivedAt: new Date(),
-				shouldUnsuspend: job.suspensionState === 'autoSuspendedForNotResponding',
+				shouldUnsuspend: i.suspensionState === 'autoSuspendedForNotResponding',
 			});
 
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
