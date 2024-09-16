@@ -35,6 +35,9 @@ coverage
 !/.config/example.yml
 !/.config/docker_example.yml
 !/.config/docker_example.env
+!/.config/cypress-devcontainer.yml
+docker-compose.yml
+compose.yml
 .devcontainer/compose.yml
 !/.devcontainer/compose.yml
 
@@ -42,6 +45,7 @@ coverage
 /build
 built
 built-test
+js-built
 /data
 /.cache-loader
 /db
