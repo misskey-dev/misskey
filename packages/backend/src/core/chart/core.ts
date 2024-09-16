@@ -147,10 +147,8 @@ export default abstract class Chart<T extends Schema> {
 	// ↓にしたいけどfindOneとかで型エラーになる
 	//private repositoryForHour: Repository<RawRecord<T>>;
 	//private repositoryForDay: Repository<RawRecord<T>>;
-	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number;}>;
-	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number;}>;
-	private repositoryUserPvForHour: Repository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>;
-	private repositoryUserPvForDay: Repository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>;
+	protected repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }>;
+	protected repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }>;
 	/**
 	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
 	 */
@@ -186,11 +184,11 @@ export default abstract class Chart<T extends Schema> {
 		return columns;
 	}
 
-	private static dateToTimestamp(x: Date): number {
+	protected static dateToTimestamp(x: Date): number {
 		return Math.floor(x.getTime() / 1000);
 	}
 
-	private static parseDate(date: Date): [number, number, number, number, number, number, number] {
+	protected static parseDate(date: Date): [number, number, number, number, number, number, number] {
 		const y = date.getUTCFullYear();
 		const m = date.getUTCMonth();
 		const d = date.getUTCDate();
@@ -202,7 +200,7 @@ export default abstract class Chart<T extends Schema> {
 		return [y, m, d, h, _m, _s, _ms];
 	}
 
-	private static getCurrentDate() {
+	protected static getCurrentDate() {
 		return Chart.parseDate(new Date());
 	}
 
@@ -274,8 +272,6 @@ export default abstract class Chart<T extends Schema> {
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
 		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour);
 		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day);
-		this.repositoryUserPvForHour = db.getRepository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>(hour);
-		this.repositoryUserPvForDay = db.getRepository<{ id: number; group?: string | null; date: number; ___pv_user:number; ___upv_user:number; ___pv_visitor:number; ___upv_visitor:number;}>(day);
 	}
 
 	@bindThis
@@ -724,38 +720,5 @@ export default abstract class Chart<T extends Schema> {
 			nestedProperty.set(object, k, v);
 		}
 		return object as Unflatten<ChartResult<T>>;
-	}
-
-	@bindThis
-	public async getChartPv(span: 'hour' | 'day', amount: number, cursor: Date | null, limit: number, offset: number, order: 'ASC' | 'DESC'): Promise<
-		{
-			userId: string,
-			count: number,
-		}[]
-	> {
-		const [y, m, d, h, _m, _s, _ms] = cursor ? Chart.parseDate(subtractTime(addTime(cursor, 1, span), 1)) : Chart.getCurrentDate();
-		const [y2, m2, d2, h2] = cursor ? Chart.parseDate(addTime(cursor, 1, span)) : [] as never;
-
-		const lt = dateUTC([y, m, d, h, _m, _s, _ms]);
-
-		const gt =
-			span === 'day' ? subtractTime(cursor ? dateUTC([y2, m2, d2, 0]) : dateUTC([y, m, d, 0]), amount - 1, 'day') :
-			span === 'hour' ? subtractTime(cursor ? dateUTC([y2, m2, d2, h2]) : dateUTC([y, m, d, h]), amount - 1, 'hour') :
-			new Error('not happen') as never;
-
-		const repository =
-			span === 'hour' ? this.repositoryUserPvForHour :
-			span === 'day' ? this.repositoryUserPvForDay :
-			new Error('not happen') as never;
-
-		// ログ取得
-		return await repository.createQueryBuilder()
-			.select('"group" as "userId", sum("___upv_user" + "___upv_visitor") as "count"')
-			.where('date BETWEEN :gt AND :lt', { gt: Chart.dateToTimestamp(gt), lt: Chart.dateToTimestamp(lt) })
-			.groupBy('"userId"')
-			.orderBy('"count"', order)
-			.offset(offset)
-			.limit(limit)
-			.getRawMany<{ userId: string, count: number }>();
 	}
 }

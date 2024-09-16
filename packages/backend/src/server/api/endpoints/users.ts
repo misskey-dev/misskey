@@ -72,12 +72,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.hostname) {
 				query.andWhere('user.host = :hostname', { hostname: ps.hostname.toLowerCase() });
 			}
-			const chartUsers: { userId: string; count: number; }[] = [];
+
+			let pvUsers: { userId: string; count: number; }[] | undefined = undefined;
 			if (ps.sort?.endsWith('pv')) {
-				await this.perUserPvChart.getChartUsers('hour', ps.sort === '+pv' ? 'DESC' : 'ASC', 0, null, ps.limit, ps.offset).then(users => {
-					chartUsers.push(...users);
-				});
+				// 直近12時間のPVランキングを取得
+				pvUsers = await this.perUserPvChart.getUsersRanking(
+					'hour', ps.sort.startsWith('+') ? 'DESC' : 'ASC',
+					12, null, ps.limit, ps.offset,
+				);
 			}
+
 			switch (ps.sort) {
 				case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
 				case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
@@ -85,16 +89,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				case '-createdAt': query.orderBy('user.id', 'ASC'); break;
 				case '+updatedAt': query.andWhere('user.updatedAt IS NOT NULL').orderBy('user.updatedAt', 'DESC'); break;
 				case '-updatedAt': query.andWhere('user.updatedAt IS NOT NULL').orderBy('user.updatedAt', 'ASC'); break;
-				case '+pv':
-					if (chartUsers.length > 0) {
-						query.andWhere('user.id IN (:...userIds)', { userIds: chartUsers.map(user => user.userId) });
-					}
-					break;
-				case '-pv':
-					if (chartUsers.length > 0) {
-						query.andWhere('user.id IN (:...userIds)', { userIds: chartUsers.map(user => user.userId) });
-					}
-					break;
+				case '+pv': query.andWhere('user.id IN (:...userIds)', { userIds: pvUsers?.map(user => user.userId) ?? [] }); break;
+				case '-pv': query.andWhere('user.id IN (:...userIds)', { userIds: pvUsers?.map(user => user.userId) ?? [] }); break;
 				default: query.orderBy('user.id', 'ASC'); break;
 			}
 
@@ -107,14 +103,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const users = await query.getMany();
 			if (ps.sort === '+pv') {
 				users.sort((a, b) => {
-					const aPv = chartUsers.find(user => user.userId === a.id)?.count ?? 0;
-					const bPv = chartUsers.find(user => user.userId === b.id)?.count ?? 0;
+					const aPv = pvUsers?.find(u => u.userId === a.id)?.count ?? 0;
+					const bPv = pvUsers?.find(u => u.userId === b.id)?.count ?? 0;
 					return bPv - aPv;
 				});
 			} else if (ps.sort === '-pv') {
 				users.sort((a, b) => {
-					const aPv = chartUsers.find(user => user.userId === a.id)?.count ?? 0;
-					const bPv = chartUsers.find(user => user.userId === b.id)?.count ?? 0;
+					const aPv = pvUsers?.find(u => u.userId === a.id)?.count ?? 0;
+					const bPv = pvUsers?.find(u => u.userId === b.id)?.count ?? 0;
 					return aPv - bPv;
 				});
 			}
