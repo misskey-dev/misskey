@@ -1101,17 +1101,18 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private performUpdateNotesCount(id: MiNote['id'], incrBy: number) {
-		this.instancesRepository.increment({ id: id }, 'notesCount', incrBy);
+	private async performUpdateNotesCount(id: MiNote['id'], incrBy: number) {
+		await this.instancesRepository.increment({ id: id }, 'notesCount', incrBy);
 	}
 
 	@bindThis
-	public dispose(): void {
+	public async dispose(): Promise<void> {
 		this.#shutdownController.abort();
+		await this.updateNotesCountQueue.performAllNow();
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
+	public async onApplicationShutdown(signal?: string | undefined): Promise<void> {
+		await this.dispose();
 	}
 }

@@ -4,7 +4,7 @@
  */
 
 import { URL } from 'node:url';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
 import type Logger from '@/logger.js';
@@ -26,13 +26,13 @@ import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type { InboxJobData } from '../types.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { MiNote } from '@/models/Note.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type { InboxJobData } from '../types.js';
 
 @Injectable()
-export class InboxProcessorService {
+export class InboxProcessorService implements OnApplicationShutdown {
 	private logger: Logger;
 	private updateInstanceQueue: CollapsedQueue<MiNote['id'], Date>;
 
@@ -219,10 +219,20 @@ export class InboxProcessorService {
 	}
 
 	@bindThis
-	public performUpdateInstance(id: string, value: Date) {
-		this.federatedInstanceService.update(id, {
+	public async performUpdateInstance(id: string, value: Date) {
+		await this.federatedInstanceService.update(id, {
 			latestRequestReceivedAt: value,
 			isNotResponding: false,
 		});
+	}
+
+	@bindThis
+	public async dispose(): Promise<void> {
+		await this.updateInstanceQueue.performAllNow();
+	}
+
+	@bindThis
+	async onApplicationShutdown(signal?: string) {
+		await this.dispose();
 	}
 }
