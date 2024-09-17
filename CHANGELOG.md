@@ -11,6 +11,7 @@
 - Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
+- Fix: ERROR CODE: APP_IMPORT on iOS <= 16.3 (SyntaxError: Invalid regular expression: invalid group specifier name)
 
 ### Server
 - Fix: アンテナの書き込み時にキーワードが与えられなかった場合のエラーをApiErrorとして投げるように
@@ -36,7 +37,6 @@
 - Fix: mCaptchaを使用していてもbotプロテクションに関する警告が消えないのを修正
 - Fix: ユーザーのモデレーションページにおいてユーザー名にドットが入っているとシステムアカウントとして表示されてしまう問題を修正
 - Fix: 特定の条件下でノートの削除ボタンが出ないのを修正
-- Fix: ERROR CODE: APP_IMPORT on iOS <= 16.3 (SyntaxError: Invalid regular expression: invalid group specifier name)
 
 ### Server
 - Enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
