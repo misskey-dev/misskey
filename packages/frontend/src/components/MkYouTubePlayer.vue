@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { versatileLang } from '@/scripts/intl-const.js';
+import { versatileLang } from '@@/js/intl-const.js';
 import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
 import { defaultStore } from '@/store.js';
 

@@ -19,7 +19,7 @@ export function char2fluentEmojiFilePath(char: string): string {
 	// Fluent Emojiは国旗非対応 https://github.com/microsoft/fluentui-emoji/issues/25
 	if (codes[0]?.startsWith('1f1')) return char2twemojiFilePath(char);
 	if (!codes.includes('200d')) codes = codes.filter(x => x !== 'fe0f');
-	codes = codes.filter(x => x && x.length);
-	const fileName = codes.map(x => x!.padStart(4, '0')).join('-');
+	codes = codes.filter(x => x != null && x.length > 0);
+	const fileName = (codes as string[]).map(x => x.padStart(4, '0')).join('-');
 	return `${fluentEmojiPngBase}/${fileName}.png`;
 }

@@ -3,16 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-function defaultUseWorkerNumber(prev: number, totalWorkers: number) {
+function defaultUseWorkerNumber(prev: number) {
 	return prev + 1;
 }
 
-export class WorkerMultiDispatch<POST = any, RETURN = any> {
+type WorkerNumberGetter = (prev: number, totalWorkers: number) => number;
+
+export class WorkerMultiDispatch<POST = unknown, RETURN = unknown> {
 	private symbol = Symbol('WorkerMultiDispatch');
 	private workers: Worker[] = [];
 	private terminated = false;
 	private prevWorkerNumber = 0;
-	private getUseWorkerNumber = defaultUseWorkerNumber;
+	private getUseWorkerNumber: WorkerNumberGetter;
 	private finalizationRegistry: FinalizationRegistry<symbol>;
 
 	constructor(workerConstructor: () => Worker, concurrency: number, getUseWorkerNumber = defaultUseWorkerNumber) {
@@ -29,7 +31,7 @@ export class WorkerMultiDispatch<POST = any, RETURN = any> {
 		if (_DEV_) console.log('WorkerMultiDispatch: Created', this);
 	}
 
-	public postMessage(message: POST, options?: Transferable[] | StructuredSerializeOptions, useWorkerNumber: typeof defaultUseWorkerNumber = this.getUseWorkerNumber) {
+	public postMessage(message: POST, options?: Transferable[] | StructuredSerializeOptions, useWorkerNumber: WorkerNumberGetter = this.getUseWorkerNumber) {
 		let workerNumber = useWorkerNumber(this.prevWorkerNumber, this.workers.length);
 		workerNumber = Math.abs(Math.round(workerNumber)) % this.workers.length;
 		if (_DEV_) console.log('WorkerMultiDispatch: Posting message to worker', workerNumber, useWorkerNumber);
@@ -46,12 +48,14 @@ export class WorkerMultiDispatch<POST = any, RETURN = any> {
 		return workerNumber;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public addListener(callback: (this: Worker, ev: MessageEvent<RETURN>) => any, options?: boolean | AddEventListenerOptions) {
 		this.workers.forEach(worker => {
 			worker.addEventListener('message', callback, options);
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public removeListener(callback: (this: Worker, ev: MessageEvent<RETURN>) => any, options?: boolean | AddEventListenerOptions) {
 		this.workers.forEach(worker => {
 			worker.removeEventListener('message', callback, options);
