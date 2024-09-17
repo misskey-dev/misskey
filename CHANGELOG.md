@@ -1,7 +1,8 @@
 ## Unreleased
 
 ### General
--
+- Enhance: 人気ユーザーの算出基準を変更できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/653 , https://github.com/MisskeyIO/misskey/pull/664, https://github.com/MisskeyIO/misskey/pull/728, https://github.com/MisskeyIO/misskey/pull/734, https://github.com/MisskeyIO/misskey/pull/737)
 
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
@@ -71,8 +72,6 @@
 - Feat: メディアサイレンスを実装 #13842
   - メディアサイレンスされたサーバーに所属するアカウントによるファイルはすべてセンシティブとして扱われ、カスタム絵文字が使用できないようになります。
 - Enhance: 管理画面でアーカイブにしたお知らせを表示・編集できるように
-- Enhance: 人気ユーザーの算出基準を変更できるように  
-  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/653 , https://github.com/MisskeyIO/misskey/pull/664)
 - Fix: 配信停止したインスタンス一覧が見れなくなる問題を修正
 - Fix: Dockerコンテナの立ち上げ時に`pnpm`のインストールで固まることがある問題
 - Fix: デフォルトテーマに無効なテーマコードを入力するとUIが使用できなくなる問題を修正
