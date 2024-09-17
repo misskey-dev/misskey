@@ -80,7 +80,7 @@ const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
-const uiInspectorOpenedFlags = ref(new Map<string, boolean>);
+const uiInspectorOpenedComponents = ref(new Map<string, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
