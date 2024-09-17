@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true" :expanded="false">
 				<template #header>{{ i18n.ts.uiInspector }}</template>
 				<div :class="$style.uiInspector">
-					<div v-for="(c, i) in components" :key="i">
+					<div v-for="c in components" :key="c.value.id">
 						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
 						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
 						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedComponents.set(c, !uiInspectorOpenedComponents.get(c))">
