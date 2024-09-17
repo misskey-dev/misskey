@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-for="(c, i) in components" :key="i">
 						<div :class="$style.uicMonitorType">{{ c.value.type }}</div>
 						<div :class="$style.uicMonitorId">{{ c.value.id }}</div>
-						<button @click="() => uicMonitorOpenedFlags.set(c, !uicMonitorOpenedFlags.get(c))">
+						<button :class="$style.uicMonitorPropsToggle" @click="() => uicMonitorOpenedFlags.set(c, !uicMonitorOpenedFlags.get(c))">
 							<i v-if="uicMonitorOpenedFlags.get(c)" class="ti ti-chevron-up icon"></i>
 							<i v-else class="ti ti-chevron-down icon"></i>
 						</button>
 						<div v-if="uicMonitorOpenedFlags.get(c)">
-							{{ JSON.stringify({ ...c.value, type: undefined, id: undefined }, null, 2) }}
+							<MkTextarea :modelValue="JSON.stringify({ ...c.value, type: undefined, id: undefined }, null, 2)" code readonly></MkTextarea>
 						</div>
 					</div>
 					<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
@@ -236,5 +236,10 @@ definePageMetadata(() => ({
 	display: block;
 	font-size: 12px;
 	padding-top: 16px;
+}
+
+.uicMonitorPropsToggle {
+	background: none;
+	border: none;
 }
 </style>
