@@ -44,14 +44,15 @@ export function misskeyApi<
 			},
 			signal,
 		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
+			if (res.ok && res.status !== 204) {
+				const body = await res.json();
 				resolve(body);
 			} else if (res.status === 204) {
 				resolve(undefined as _ResT); // void -> undefined
 			} else {
-				reject(body.error);
+				// エラー応答で JSON.parse に失敗した場合は HTTP ステータスコードとメッセージを返す
+				const body = await res.json().catch(() => ({ statusCode: res.status, message: res.statusText }));
+				reject(typeof body.error === 'object' ? body.error : body);
 			}
 		}).catch(reject);
 	});

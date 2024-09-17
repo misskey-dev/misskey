@@ -34,60 +34,77 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	endpoint: E,
 	data: P = {} as P,
 	token?: string | null | undefined,
-) => {
+	onSuccess?: ((res: Misskey.api.SwitchCaseResponseType<E, P>) => void) | null | undefined,
+	onFailure?: ((err: Misskey.api.APIError) => void) | null,
+): Promise<Misskey.api.SwitchCaseResponseType<E, P>> => {
 	const promise = misskeyApi(endpoint, data, token);
-	promiseDialog(promise, null, async (err) => {
-		let title: string | undefined;
-		let text = err.message + '\n' + err.id;
-		if (err.code === 'INTERNAL_ERROR') {
-			title = i18n.ts.internalServerError;
-			text = i18n.ts.internalServerErrorDescription;
-			const date = new Date().toISOString();
-			const { result } = await actions({
-				type: 'error',
-				title,
-				text,
-				details: err.info,
-				actions: [{
-					value: 'ok',
-					text: i18n.ts.gotIt,
-					primary: true,
-				}, {
-					value: 'copy',
-					text: i18n.ts.copyErrorInfo,
-				}],
-			});
-			if (result === 'copy') {
-				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
-				success();
-			}
-			return;
-		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
-			title = i18n.ts.cannotPerformTemporary;
-			text = i18n.ts.cannotPerformTemporaryDescription;
-		} else if (err.code === 'INVALID_PARAM') {
-			title = i18n.ts.invalidParamError;
-			text = i18n.ts.invalidParamErrorDescription;
-		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
-			title = i18n.ts.permissionDeniedError;
-			text = i18n.ts.permissionDeniedErrorDescription;
-		} else if (err.code.startsWith('TOO_MANY')) {
-			title = i18n.ts.youCannotCreateAnymore;
-			text = `${i18n.ts.error}: ${err.id}`;
-		} else if (err.message.startsWith('Unexpected token')) {
-			title = i18n.ts.gotInvalidResponseError;
-			text = i18n.ts.gotInvalidResponseErrorDescription;
-		}
-		alert({
+	promiseDialog(promise, onSuccess, onFailure ?? (err => apiErrorHandler(err, endpoint)));
+
+	return promise;
+});
+
+export async function apiErrorHandler(err: Misskey.api.APIError, endpoint?: string): Promise<void> {
+	let title: string | undefined;
+	let text = err.message + '\n' + err.id;
+
+	if (err.code === 'INTERNAL_ERROR') {
+		title = i18n.ts.internalServerError;
+		text = i18n.ts.internalServerErrorDescription;
+		const date = new Date().toISOString();
+		const { result } = await actions({
 			type: 'error',
 			title,
 			text,
 			details: err.info,
+			actions: [{
+				value: 'ok',
+				text: i18n.ts.gotIt,
+				primary: true,
+			}, {
+				value: 'copy',
+				text: i18n.ts.copyErrorInfo,
+			}],
 		});
-	});
+		if (result === 'copy') {
+			copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
+			success();
+		}
+		return;
+	} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
+		title = i18n.ts.cannotPerformTemporary;
+		text = i18n.ts.cannotPerformTemporaryDescription;
+	} else if (err.code === 'INVALID_PARAM') {
+		title = i18n.ts.invalidParamError;
+		text = i18n.ts.invalidParamErrorDescription;
+	} else if (err.code === 'ROLE_PERMISSION_DENIED') {
+		title = i18n.ts.permissionDeniedError;
+		text = i18n.ts.permissionDeniedErrorDescription;
+	} else if (err.code?.startsWith('TOO_MANY')) {
+		title = i18n.ts.youCannotCreateAnymore;
+		text = `${i18n.ts.error}: ${err.id}`;
+	}
 
-	return promise;
-}) as typeof misskeyApi;
+	// @ts-expect-error Misskey内部で定義されていない不明なエラー
+	if (!err.id && (err.statusCode ?? 0) > 499) {
+		title = i18n.ts.gotInvalidResponseError;
+		text = i18n.ts.gotInvalidResponseErrorDescription;
+	}
+
+	if (err.id && !title) {
+		title = i18n.ts.somethingHappened;
+	} else if (!title) {
+		title = i18n.ts.somethingHappened;
+		text = err.message;
+	}
+
+	alert({
+		type: 'error',
+		title,
+		text,
+		// @ts-expect-error Misskeyのエラーならinfoを、そうでなければそのまま表示
+		details: err.id ? err.info : err as unknown,
+	});
+}
 
 export function promiseDialog<T>(
 	promise: Promise<T>,
