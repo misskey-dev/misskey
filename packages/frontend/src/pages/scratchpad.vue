@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkContainer>
 
-			<MkContainer :foldable="true">
+			<MkContainer :foldable="true" :expanded="false">
 				<template #header>{{ i18n.ts.uiComponentMonitor }}</template>
 				<div :class="$style.uicMonitor">
 					<div v-for="(c, i) in components" :key="i">
@@ -61,6 +61,7 @@ import { onDeactivated, onUnmounted, Ref, ref, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import * as os from '@/os.js';
