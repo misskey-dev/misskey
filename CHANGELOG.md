@@ -11,6 +11,8 @@
 - Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
+- Fix: 縦横比が極端なカスタム絵文字を表示する際にレイアウトが崩れる箇所があるのを修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/725)
 - Fix: ERROR CODE: APP_IMPORT on iOS <= 16.3 (SyntaxError: Invalid regular expression: invalid group specifier name)
 
 ### Server
