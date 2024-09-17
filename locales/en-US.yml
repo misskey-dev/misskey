@@ -2651,6 +2651,7 @@ _embedCodeGen:
   maxHeight: "Max height"
   maxHeightDescription: "Setting it to 0 disables the max height setting. Specify some value to prevent the widget from continuing to expand vertically."
   maxHeightWarn: "The max height limit is disabled (0). If this was not intended, set the max height to some value."
+  previewIsNotActual: "The display differs from the actual embedding because it exceeds the range displayed on the preview screen."
   rounded: "Make it rounded"
   border: "Add a border to the outer frame"
   applyToPreview: "Apply to the preview"
