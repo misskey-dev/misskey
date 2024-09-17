@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i v-else class="ti ti-chevron-down icon"></i>
 						</button>
 						<div v-if="uicMonitorOpenedFlags.get(c)">
-							<MkTextarea :modelValue="JSON.stringify({ ...c.value, type: undefined, id: undefined }, null, 2)" code readonly></MkTextarea>
+							<MkTextarea :modelValue="stringifyUiProps(c.value)" code readonly></MkTextarea>
 						</div>
 					</div>
 					<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
@@ -90,6 +90,14 @@ if (saved) {
 watch(code, () => {
 	miLocalStorage.setItem('scratchpad', code.value);
 });
+
+function stringifyUiProps(uiProps) {
+	return JSON.stringify(
+		{ ...uiProps, type: undefined, id: undefined },
+		(k, v) => typeof v === 'function' ? '<function>' : v,
+		2
+	);
+}
 
 async function run() {
 	if (aiscript) aiscript.abort();
