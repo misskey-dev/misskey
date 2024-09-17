@@ -37,8 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.uicMonitorType">{{ c.value.type }}</div>
 						<div :class="$style.uicMonitorId">{{ c.value.id }}</div>
 					</div>
+					<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
 				</div>
-				<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
 			</MkContainer>
 
 			<div class="">
@@ -205,6 +205,8 @@ definePageMetadata(() => ({
 }
 
 .uicMonitor {
+	display: grid;
+	gap: 8px;
 	padding: 16px;
 }
 
@@ -214,16 +216,16 @@ definePageMetadata(() => ({
 	border-radius: 10px;
 	background-color: var(--panelHighlight);
 	padding: 2px 8px;
-	margin: 2px 8px;
 	font-size: 12px;
 }
 
 .uicMonitorId {
 	display: inline-block;
+	padding-left: 8px;
 }
 
 .uicMonitorDescription {
-	display: inline-block;
+	display: block;
 	font-size: 12px;
 	padding-top: 16px;
 }
