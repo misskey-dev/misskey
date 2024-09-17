@@ -31,20 +31,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkContainer>
 
 			<MkContainer :foldable="true" :expanded="false">
-				<template #header>{{ i18n.ts.uiComponentMonitor }}</template>
-				<div :class="$style.uicMonitor">
+				<template #header>{{ i18n.ts.uiInspector }}</template>
+				<div :class="$style.uiInspector">
 					<div v-for="(c, i) in components" :key="i">
-						<div :class="$style.uicMonitorType">{{ c.value.type }}</div>
-						<div :class="$style.uicMonitorId">{{ c.value.id }}</div>
-						<button :class="$style.uicMonitorPropsToggle" @click="() => uicMonitorOpenedFlags.set(c, !uicMonitorOpenedFlags.get(c))">
-							<i v-if="uicMonitorOpenedFlags.get(c)" class="ti ti-chevron-up icon"></i>
+						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
+						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
+						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedFlags.set(c, !uiInspectorOpenedFlags.get(c))">
+							<i v-if="uiInspectorOpenedFlags.get(c)" class="ti ti-chevron-up icon"></i>
 							<i v-else class="ti ti-chevron-down icon"></i>
 						</button>
-						<div v-if="uicMonitorOpenedFlags.get(c)">
+						<div v-if="uiInspectorOpenedFlags.get(c)">
 							<MkTextarea :modelValue="stringifyUiProps(c.value)" code readonly></MkTextarea>
 						</div>
 					</div>
-					<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
+					<div :class="$style.uiInspectorDescription">{{ i18n.ts.uiInspectorDescription }}</div>
 				</div>
 			</MkContainer>
 
@@ -80,7 +80,7 @@ const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
-const uicMonitorOpenedFlags = ref(new Map<string, boolean>);
+const uiInspectorOpenedFlags = ref(new Map<string, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
@@ -221,13 +221,13 @@ definePageMetadata(() => ({
 	}
 }
 
-.uicMonitor {
+.uiInspector {
 	display: grid;
 	gap: 8px;
 	padding: 16px;
 }
 
-.uicMonitorType {
+.uiInspectorType {
 	display: inline-block;
 	border: hidden;
 	border-radius: 10px;
@@ -236,18 +236,18 @@ definePageMetadata(() => ({
 	font-size: 12px;
 }
 
-.uicMonitorId {
+.uiInspectorId {
 	display: inline-block;
 	padding-left: 8px;
 }
 
-.uicMonitorDescription {
+.uiInspectorDescription {
 	display: block;
 	font-size: 12px;
 	padding-top: 16px;
 }
 
-.uicMonitorPropsToggle {
+.uiInspectorPropsToggle {
 	background: none;
 	border: none;
 }
