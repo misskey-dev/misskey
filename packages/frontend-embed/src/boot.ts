@@ -9,19 +9,19 @@ import 'vite/modulepreload-polyfill';
 import '@tabler/icons-webfont/dist/tabler-icons.scss';
 
 import '@/style.scss';
+import '@@/styles/mfm.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-dark.json5';
 import { MediaProxy } from '@@/js/media-proxy.js';
+import { url } from '@@/js/config.js';
+import { parseEmbedParams } from '@@/js/embed-page.js';
+import type { Theme } from '@/theme.js';
 import { applyTheme, assertIsTheme } from '@/theme.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url } from '@@/js/config.js';
-import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
-
-import type { Theme } from '@/theme.js';
 
 console.log('Misskey Embed');
 

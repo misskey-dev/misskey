@@ -13,6 +13,7 @@ import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
+import '../../frontend-shared/styles/mfm.scss';
 
 const appInitialized = Symbol();
 

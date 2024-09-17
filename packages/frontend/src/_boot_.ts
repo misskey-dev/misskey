@@ -9,6 +9,7 @@ import 'vite/modulepreload-polyfill';
 import '@tabler/icons-webfont/dist/tabler-icons.scss';
 
 import '@/style.scss';
+import '@@/styles/mfm.scss';
 import { mainBoot } from '@/boot/main-boot.js';
 import { subBoot } from '@/boot/sub-boot.js';
 
