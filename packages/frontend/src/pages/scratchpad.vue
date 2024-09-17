@@ -36,11 +36,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-for="(c, i) in components" :key="i">
 						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
 						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
-						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedFlags.set(c, !uiInspectorOpenedFlags.get(c))">
-							<i v-if="uiInspectorOpenedFlags.get(c)" class="ti ti-chevron-up icon"></i>
+						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedComponents.set(c, !uiInspectorOpenedComponents.get(c))">
+							<i v-if="uiInspectorOpenedComponents.get(c)" class="ti ti-chevron-up icon"></i>
 							<i v-else class="ti ti-chevron-down icon"></i>
 						</button>
-						<div v-if="uiInspectorOpenedFlags.get(c)">
+						<div v-if="uiInspectorOpenedComponents.get(c)">
 							<MkTextarea :modelValue="stringifyUiProps(c.value)" code readonly></MkTextarea>
 						</div>
 					</div>
