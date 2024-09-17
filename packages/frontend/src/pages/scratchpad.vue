@@ -41,11 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i v-else class="ti ti-chevron-down icon"></i>
 						</button>
 						<div v-if="uicMonitorOpenedFlags.get(c)">
-							<!-- v-forとv-ifの併用は表示されない要素の変更で再描画が起こるため非推奨とされているが、 -->
-							<!-- 今回は除外要素であるc.value.typeやc.value.idが変更されればいずれにせよ再描画になるので問題ない -->
-							<div v-for="[pkey, pval] of Object.entries(c.value)" v-if="!['type', 'id'].includes(pkey)">
-								{{ pkey }}: {{ JSON.stringify(pval) }}
-							</div>
+							{{ JSON.stringify({ ...c.value, type: undefined, id: undefined }, null, 2) }}
 						</div>
 					</div>
 					<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
