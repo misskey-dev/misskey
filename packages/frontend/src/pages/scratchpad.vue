@@ -36,6 +36,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-for="(c, i) in components" :key="i">
 						<div :class="$style.uicMonitorType">{{ c.value.type }}</div>
 						<div :class="$style.uicMonitorId">{{ c.value.id }}</div>
+						<button @click="() => uicMonitorOpenedFlags.set(c, !uicMonitorOpenedFlags.get(c))">
+							<i v-if="uicMonitorOpenedFlags.get(c)" class="ti ti-chevron-up icon"></i>
+							<i v-else class="ti ti-chevron-down icon"></i>
+						</button>
+						<div v-if="uicMonitorOpenedFlags.get(c)">
+							<!-- v-forとv-ifの併用は表示されない要素の変更で再描画が起こるため非推奨とされているが、 -->
+							<!-- 今回は除外要素であるc.value.typeやc.value.idが変更されればいずれにせよ再描画になるので問題ない -->
+							<div v-for="[pkey, pval] of Object.entries(c.value)" v-if="!['type', 'id'].includes(pkey)">
+								{{ pkey }}: {{ JSON.stringify(pval) }}
+							</div>
+						</div>
 					</div>
 					<div :class="$style.uicMonitorDescription">{{ i18n.ts.uiComponentMonitorDescription }}</div>
 				</div>
@@ -72,6 +83,7 @@ const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
+const uicMonitorOpenedFlags = ref(new Map<string, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
