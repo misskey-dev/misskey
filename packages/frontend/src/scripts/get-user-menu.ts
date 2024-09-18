@@ -8,7 +8,7 @@ import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { host, url } from '@/config.js';
+import { host, url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
@@ -17,6 +17,7 @@ import { notesSearchAvailable, canSearchNonLocalNotes } from '@/scripts/check-pe
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import { MenuItem } from '@/types/menu.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
@@ -179,7 +180,17 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			if (user.url == null) return;
 			window.open(user.url, '_blank', 'noopener');
 		},
-	}] : []), {
+	}] : [{
+		icon: 'ti ti-code',
+		text: i18n.ts.genEmbedCode,
+		type: 'parent' as const,
+		children: [{
+			text: i18n.ts.noteOfThisUser,
+			action: () => {
+				genEmbedCode('user-timeline', user.id);
+			},
+		}], // TODO: ユーザーカードの埋め込みなど
+	}]), {
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {

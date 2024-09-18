@@ -253,7 +253,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { ROLE_POLICIES } from '@/const.js';
+import { ROLE_POLICIES } from '@@/js/const.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
