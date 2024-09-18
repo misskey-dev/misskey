@@ -14,7 +14,7 @@ import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
 import { DI } from '../src/di.js';
-import { url } from '../src/config.js';
+import { url } from '../../frontend-shared/js/config.js';
 import { MediaProxy } from '../../frontend-shared/js/media-proxy.js';
 
 const appInitialized = Symbol();
