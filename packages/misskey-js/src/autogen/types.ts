@@ -2451,6 +2451,7 @@ export type paths = {
      * i/webhooks/test
      * @description No description provided.
      *
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     post: operations['i___webhooks___test'];
@@ -20234,6 +20235,7 @@ export type operations = {
    * i/webhooks/test
    * @description No description provided.
    *
+   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *Yes* / **Permission**: *read:account*
    */
   i___webhooks___test: {
