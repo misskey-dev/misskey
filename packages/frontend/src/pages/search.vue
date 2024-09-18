@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'note'" key="note" :contentMax="800">
-			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
+			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable || true">
 				<XNote v-bind="props"/>
 			</div>
 			<div v-else>

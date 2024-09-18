@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div class="_gaps">
-		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
+	<form class="_gaps" @submit.prevent="search()">
+		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkRadios v-model="searchOrigin" @update:modelValue="search()">
@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<option value="local">{{ i18n.ts.local }}</option>
 			<option value="remote">{{ i18n.ts.remote }}</option>
 		</MkRadios>
-		<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
-	</div>
+		<MkButton type="submit" large primary gradate rounded>{{ i18n.ts.search }}</MkButton>
+	</form>
 
 	<MkFoldableSection v-if="userPagination">
 		<template #header>{{ i18n.ts.searchResult }}</template>

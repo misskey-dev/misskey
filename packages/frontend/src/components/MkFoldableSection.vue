@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl" :class="$style.root">
-	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
+	<button :class="$style.header" class="_button" type="button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
-		<button class="_button" :class="$style.button">
+		<div :class="$style.button">
 			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
-		</button>
-	</header>
+		</div>
+	</button>
 	<Transition
 		:enterActiveClass="defaultStore.state.animation ? $style.folderToggleEnterActive : ''"
 		:leaveActiveClass="defaultStore.state.animation ? $style.folderToggleLeaveActive : ''"
@@ -116,6 +116,7 @@ onMounted(() => {
 .header {
 	display: flex;
 	position: relative;
+	width: 100%;
 	z-index: 10;
 	position: sticky;
 	top: var(--stickyTop, 0px);

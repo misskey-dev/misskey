@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div class="_gaps">
-		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
+	<form class="_gaps" @submit.prevent="search()">
+		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkFoldableSection :expanded="true">
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="local">{{ i18n.ts.local }}</option>
 					<option v-if="noteSearchableScope === 'global'" value="specified">{{ i18n.ts.specifyHost }}</option>
 				</MkRadios>
-				<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
+				<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true">
 					<template #prefix><i class="ti ti-server"></i></template>
 				</MkInput>
 
@@ -30,18 +30,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps">
 						<div :class="$style.userItem">
 							<MkUserCardMini v-if="user" :class="$style.userCard" :user="user" :withChart="false"/>
-							<MkButton v-if="user == null && $i != null" transparent :class="$style.addMeButton" @click="selectSelf"><div :class="$style.addUserButtonInner"><span><i class="ti ti-plus"></i><i class="ti ti-user"></i></span><span>{{ i18n.ts.selectSelf }}</span></div></MkButton>
-							<MkButton v-if="user == null" transparent :class="$style.addUserButton" @click="selectUser"><div :class="$style.addUserButtonInner"><i class="ti ti-plus"></i><span>{{ i18n.ts.selectUser }}</span></div></MkButton>
-							<button class="_button" :class="$style.remove" :disabled="user == null" @click="removeUser"><i class="ti ti-x"></i></button>
+							<MkButton v-if="user == null && $i != null" transparent type="button" :class="$style.addMeButton" @click="selectSelf"><div :class="$style.addUserButtonInner"><span><i class="ti ti-plus"></i><i class="ti ti-user"></i></span><span>{{ i18n.ts.selectSelf }}</span></div></MkButton>
+							<MkButton v-if="user == null" transparent type="button" :class="$style.addUserButton" @click="selectUser"><div :class="$style.addUserButtonInner"><i class="ti ti-plus"></i><span>{{ i18n.ts.selectUser }}</span></div></MkButton>
+							<button class="_button" type="button" :class="$style.remove" :disabled="user == null" @click="removeUser"><i class="ti ti-x"></i></button>
 						</div>
 					</div>
 				</MkFolder>
 			</div>
 		</MkFoldableSection>
 		<div>
-			<MkButton large primary gradate rounded style="margin: 0 auto;" @click="search">{{ i18n.ts.search }}</MkButton>
+			<MkButton type="submit" large primary gradate rounded style="margin: 0 auto;">{{ i18n.ts.search }}</MkButton>
 		</div>
-	</div>
+	</form>
 
 	<MkFoldableSection v-if="notePagination">
 		<template #header>{{ i18n.ts.searchResult }}</template>
