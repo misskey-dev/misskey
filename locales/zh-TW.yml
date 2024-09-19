@@ -2448,6 +2448,7 @@ _webhookSettings:
     abuseReportResolved: "當處理了使用者的檢舉時"
     userCreated: "使用者被新增時"
   deleteConfirm: "請問是否要刪除 Webhook？"
+  testRemarks: "按下切換開關右側的按鈕，就會將假資料發送至 Webhook。"
 _abuseReport:
   _notificationRecipient:
     createRecipient: "新增接收檢舉的通知對象"
