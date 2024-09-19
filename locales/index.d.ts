@@ -2385,6 +2385,14 @@ export interface Locale extends ILocale {
      */
     "scratchpadDescription": string;
     /**
+     * UIインスペクター
+     */
+    "uiInspector": string;
+    /**
+     * メモリ上に存在しているUIコンポーネントのインスタンスの一覧を見ることができます。UIコンポーネントはUi:C:系関数により生成されます。
+     */
+    "uiInspectorDescription": string;
+    /**
      * 出力
      */
     "output": string;
@@ -5575,6 +5583,10 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。
+         */
+        "reactionsBufferingDescription": string;
         /**
          * 問い合わせ先URL
          */

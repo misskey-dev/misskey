@@ -72,7 +72,7 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 export class ReactionService {
 	constructor(
 		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		private redisClient: Redis.Redis, // TODO: 専用のRedisインスタンスにする
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -174,7 +174,6 @@ export class ReactionService {
 			reaction,
 		};
 
-		// Create reaction
 		try {
 			await this.noteReactionsRepository.insert(record);
 		} catch (e) {
@@ -197,17 +196,23 @@ export class ReactionService {
 			}
 		}
 
+		const rbt = true;
+
 		// Increment reactions count
-		const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
-			.set({
-				reactions: () => sql,
-				...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
-					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
-				} : {}),
-			})
-			.where('id = :id', { id: note.id })
-			.execute();
+		if (rbt) {
+			this.redisClient.hincrby(`reactionsBuffer:${note.id}`, reaction, 1);
+		} else {
+			const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
+			await this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => sql,
+					...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
+						reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
+					} : {}),
+				})
+				.where('id = :id', { id: note.id })
+				.execute();
+		}
 
 		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
 		if (
