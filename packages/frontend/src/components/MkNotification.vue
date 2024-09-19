@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:withTooltip="true"
 				:reaction="notification.reaction.replace(/^:(\w+):$/, ':$1@.:')"
 				:noStyle="true"
-				style="width: 100%; height: 100%;"
+				style="width: 100%; height: 100% !important; object-fit: contain;"
 			/>
 		</div>
 	</div>
@@ -122,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:withTooltip="true"
 							:reaction="reaction.reaction.replace(/^:(\w+):$/, ':$1@.:')"
 							:noStyle="true"
-							style="width: 100%; height: 100%;"
+							style="width: 100%; height: 100% !important; object-fit: contain;"
 						/>
 					</div>
 				</div>

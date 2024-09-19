@@ -13,6 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '@/server/api/error.js';
 
+// TODO: UserWebhook schemaの適用
 export const meta = {
 	tags: ['webhooks'],
 
