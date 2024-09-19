@@ -53,15 +53,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton type="submit" :disabled="signing" large primary rounded style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 			</div>
 		</div>
-		<div v-if="!totpLogin" :class="$style.orHr">
+		<div v-if="!totpLogin && usePasswordLessLogin" :class="$style.orHr">
 			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 		</div>
-		<div v-if="!totpLogin" class="twofa-group tap-group">
+		<div v-if="!totpLogin && usePasswordLessLogin" class="twofa-group tap-group">
 			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: auto auto;" rounded large primary @click="onPasskey">
 				<i class="ti ti-device-usb" style="font-size: medium;"></i>
 				{{ signing ? i18n.ts.loggingIn : i18n.ts.signinWithPasskey }}
 			</MkButton>
-			<p v-if="queryingKey && !totpLogin">{{ i18n.ts.useSecurityKey }}</p>
+			<p v-if="queryingKey">{{ i18n.ts.useSecurityKey }}</p>
 		</div>
 	</div>
 </form>
@@ -73,14 +73,14 @@ import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import { SigninWithPasskeyResponse } from 'misskey-js/entities.js';
-import MkDivider from './MkDivider.vue';
 import { query, extractDomain } from '@@/js/url.js';
+import { host as configHost } from '@@/js/config.js';
+import MkDivider from './MkDivider.vue';
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { host as configHost } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
@@ -88,6 +88,7 @@ import { i18n } from '@/i18n.js';
 
 const signing = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
+const usePasswordLessLogin = ref<Misskey.entities.UserDetailed['usePasswordLessLogin']>(true);
 const username = ref('');
 const password = ref('');
 const token = ref('');
@@ -118,8 +119,10 @@ function onUsernameChange(): void {
 		username: username.value,
 	}).then(userResponse => {
 		user.value = userResponse;
+		usePasswordLessLogin.value = userResponse.usePasswordLessLogin;
 	}, () => {
 		user.value = null;
+		usePasswordLessLogin.value = true;
 	});
 }
 
