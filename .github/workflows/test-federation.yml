@@ -35,12 +35,8 @@ jobs:
       - name: Build Misskey
         run: |
           corepack enable && corepack prepare
-          pnpm -F misskey-js i --frozen-lockfile
-          pnpm -F misskey-js build
-          pnpm -F misskey-reversi i --frozen-lockfile
-          pnpm -F misskey-reversi build
-          pnpm -F backend i --frozen-lockfile
-          pnpm -F backend build
+          pnpm i --frozen-lockfile
+          pnpm build
           pnpm -F backend build:fed
       - name: Setup
         run: |
