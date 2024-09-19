@@ -35,8 +35,8 @@ jobs:
       - name: Build Misskey
         run: |
           corepack enable && corepack prepare
-          pnpm i --frozen-lockfile
-          pnpm build
+          pnpm --filter=!frontend i --frozen-lockfile
+          pnpm --filter=!frontend build
           pnpm -F backend build:fed
       - name: Setup
         run: |
