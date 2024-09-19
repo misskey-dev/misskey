@@ -164,6 +164,10 @@ export class WebAuthnService {
 		return authenticationOptions;
 	}
 
+	/**
+	 * Initiate Passkey Auth (Without specifying user)
+	 * @returns authenticationOptions
+	 */
 	@bindThis
 	public async initiateSignInWithPasskeyAuthentication(context: string): Promise<PublicKeyCredentialRequestOptionsJSON> {
 		const relyingParty = await this.getRelyingParty();

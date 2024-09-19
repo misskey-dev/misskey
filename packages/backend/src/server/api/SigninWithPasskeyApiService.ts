@@ -113,6 +113,7 @@ export class SigninWithPasskeyApiService {
 
 		const context = body.context;
 		if (!context || typeof context !== 'string') {
+			// If try Authentication without context
 			return error(400, {
 				id: '1658cc2e-4495-461f-aee4-d403cdf073c1',
 			});

@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
 				<p>{{ i18n.ts.useSecurityKey }}</p>
-				<MkButton v-if="!queryingKey" @click="queryKey">
+				<MkButton v-if="!queryingKey" @click="query2FaKey">
 					{{ i18n.ts.retry }}
 				</MkButton>
 			</div>
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 		</div>
 		<div v-if="!totpLogin && usePasswordLessLogin" class="twofa-group tap-group">
-			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: auto auto;" rounded large primary @click="onPasskey">
+			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: auto auto;" rounded large primary @click="onPasskeyLogin">
 				<i class="ti ti-device-usb" style="font-size: medium;"></i>
 				{{ signing ? i18n.ts.loggingIn : i18n.ts.signinWithPasskey }}
 			</MkButton>
@@ -97,6 +97,7 @@ const totpLogin = ref(false);
 const isBackupCode = ref(false);
 const queryingKey = ref(false);
 let credentialRequest: CredentialRequestOptions | null = null;
+const passkey_context = ref('');
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -132,7 +133,7 @@ function onLogin(res: any): Promise<void> | void {
 	}
 }
 
-async function queryKey(): Promise<void> {
+async function query2FaKey(): Promise<void> {
 	if (credentialRequest == null) return;
 	queryingKey.value = true;
 	await webAuthnRequest(credentialRequest)
@@ -161,9 +162,7 @@ async function queryKey(): Promise<void> {
 		});
 }
 
-const passkey_context = ref('');
-
-function onPasskey(): void {
+function onPasskeyLogin(): void {
 	signing.value = true;
 	if (webAuthnSupported()) {
 		misskeyApi('signin-with-passkey', {})
@@ -186,8 +185,8 @@ async function queryPasskey(): Promise<void> {
 	queryingKey.value = true;
 	console.log('Waiting passkey auth...');
 	await webAuthnRequest(credentialRequest)
-		.catch((er) => {
-			console.warn('Fail!!', er);
+		.catch((err) => {
+			console.warn('Passkey Auth fail!: ', err);
 			queryingKey.value = false;
 			return Promise.reject(null);
 		}).then(credential => {
@@ -218,7 +217,7 @@ function onSubmit(): void {
 					publicKey: res,
 				});
 			})
-				.then(() => queryKey())
+				.then(() => query2FaKey())
 				.catch(loginFailed);
 		} else {
 			totpLogin.value = true;
