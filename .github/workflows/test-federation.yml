@@ -50,7 +50,7 @@ jobs:
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
         run: |
           cd packages/backend/test-federation
-          docker compose up -d --scale tester=0
+          docker compose up --abort-on-container-exit --scale tester=0
       - name: Test
         run: |
           cd packages/backend/test-federation
