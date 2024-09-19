@@ -1,0 +1,111 @@
+include:
+  - ./compose.a.yml
+  - ./compose.b.yml
+
+services:
+  tester:
+    image: node:20
+    depends_on:
+      a.local:
+        condition: service_healthy
+      b.local:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/rootCA.crt
+    volumes:
+      - type: bind
+        source: ../package.json
+        target: /misskey/packages/backend/package.json
+        read_only: true
+      - type: bind
+        source: ../test/resources
+        target: /misskey/packages/backend/test/resources
+        read_only: true
+      - type: bind
+        source: ./built
+        target: /misskey/packages/backend/test-federation
+        read_only: true
+      - type: bind
+        source: ../../misskey-js/built
+        target: /misskey/packages/misskey-js/built
+        read_only: true
+      - type: bind
+        source: ../../misskey-js/package.json
+        target: /misskey/packages/misskey-js/package.json
+        read_only: true
+      - type: bind
+        source: ../../../package.json
+        target: /misskey/package.json
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-lock.yaml
+        target: /misskey/pnpm-lock.yaml
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-workspace.yaml
+        target: /misskey/pnpm-workspace.yaml
+        read_only: true
+      - type: bind
+        source: ./certificates/rootCA.crt
+        target: /usr/local/share/ca-certificates/rootCA.crt
+        read_only: true
+    working_dir: /misskey
+    command: >
+      bash -c "
+        corepack enable && corepack prepare
+        pnpm -F backend i
+        node --test "./packages/backend/test-federation/test/*.test.js"
+      "
+
+  daemon:
+    image: node:20
+    depends_on:
+      misskey.a.local:
+        condition: service_healthy
+      misskey.b.local:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - TESTER_IP_ADDRESS=$TESTER_IP_ADDRESS
+    volumes:
+      - type: bind
+        source: ../package.json
+        target: /misskey/packages/backend/package.json
+        read_only: true
+      - type: bind
+        source: ./built
+        target: /misskey/packages/backend/test-federation
+        read_only: true
+      - type: bind
+        source: ../../../package.json
+        target: /misskey/package.json
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-lock.yaml
+        target: /misskey/pnpm-lock.yaml
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-workspace.yaml
+        target: /misskey/pnpm-workspace.yaml
+        read_only: true
+    working_dir: /misskey
+    command: >
+      bash -c "
+        corepack enable && corepack prepare
+        pnpm -F backend i
+        node ./packages/backend/test-federation/daemon.js
+      "
+
+  redis.local:
+    image: redis:7-alpine
+    volumes:
+      - type: bind
+        source: ./volumes/redis
+        target: /data
+        bind:
+          create_host_path: true
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      retries: 20

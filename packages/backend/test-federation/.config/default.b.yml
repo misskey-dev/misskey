@@ -1,0 +1,25 @@
+url: https://b.local/
+port: 3000
+db:
+  host: db.b.local
+  port: 5432
+  db: misskey
+  user: postgres
+  pass: postgres
+dbReplications: false
+redis:
+  host: redis.local
+  port: 6379
+id: 'aidx'
+proxyBypassHosts:
+  - api.deepl.com
+  - api-free.deepl.com
+  - www.recaptcha.net
+  - hcaptcha.com
+  - challenges.cloudflare.com
+proxyRemoteFiles: true
+signToActivityPubGet: true
+allowedPrivateNetworks: [
+  '127.0.0.1/32',
+  '172.20.0.0/16'
+]

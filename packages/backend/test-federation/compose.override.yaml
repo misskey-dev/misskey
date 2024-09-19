@@ -1,0 +1,99 @@
+services:
+  tester:
+    networks:
+      external_network:
+      internal_network:
+        ipv4_address: $TESTER_IP_ADDRESS
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /misskey/node_modules
+      - type: volume
+        source: node_modules_backend
+        target: /misskey/packages/backend/node_modules
+      - type: volume
+        source: node_modules_misskey-js
+        target: /misskey/packages/misskey-js/node_modules
+
+  daemon:
+    networks:
+      - external_network
+      - internal_network_a
+      - internal_network_b
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /misskey/node_modules
+      - type: volume
+        source: node_modules_backend
+        target: /misskey/packages/backend/node_modules
+
+  redis.local:
+    networks:
+      - internal_network_a
+      - internal_network_b
+
+  a.local:
+    networks:
+      - internal_network
+
+  misskey.a.local:
+    networks:
+      - external_network
+      - internal_network
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /misskey/node_modules
+      - type: volume
+        source: node_modules_backend
+        target: /misskey/packages/backend/node_modules
+      - type: volume
+        source: node_modules_misskey-js
+        target: /misskey/packages/misskey-js/node_modules
+      - type: volume
+        source: node_modules_misskey-reversi
+        target: /misskey/packages/misskey-reversi/node_modules
+
+  b.local:
+    networks:
+      - internal_network
+
+  misskey.b.local:
+    networks:
+      - external_network
+      - internal_network
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /misskey/node_modules
+      - type: volume
+        source: node_modules_backend
+        target: /misskey/packages/backend/node_modules
+      - type: volume
+        source: node_modules_misskey-js
+        target: /misskey/packages/misskey-js/node_modules
+      - type: volume
+        source: node_modules_misskey-reversi
+        target: /misskey/packages/misskey-reversi/node_modules
+
+networks:
+  external_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+          ip_range: 172.23.0.0/24
+  internal_network:
+    internal: true
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          ip_range: 172.20.0.0/24
+
+volumes:
+  node_modules:
+  node_modules_backend:
+  node_modules_misskey-js:
+  node_modules_misskey-reversi:

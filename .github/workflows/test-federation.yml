@@ -1,0 +1,55 @@
+name: Test (federation)
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+      - packages/misskey-js/**
+      - .github/workflows/test-federation.yml
+  pull_request:
+    paths:
+      - packages/backend/**
+      - packages/misskey-js/**
+      - .github/workflows/test-federation.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.16.0]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install FFmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Build Misskey
+        run: |
+          corepack enable && corepack prepare
+          pnpm -F misskey-js i --frozen-lockfile
+          pnpm -F misskey-js build
+          pnpm -F misskey-reversi i --frozen-lockfile
+          pnpm -F misskey-reversi build
+          pnpm -F backend i --frozen-lockfile
+          pnpm -F backend build
+          pnpm -F backend build:fed
+      - name: Setup
+        run: |
+          cd packages/backend/test-federation
+          cp ./.env.example ./.env
+          bash ./generate_certificates.sh
+          sudo chmod 644 ./certificates/*.local.key
+      - name: Start servers
+        # https://github.com/docker/compose/issues/1294#issuecomment-374847206
+        run: docker compose up -d --scale tester=0
+      - name: Test
+        run: docker compose run tester
+      - name: Stop servers
+        run: docker compose down
