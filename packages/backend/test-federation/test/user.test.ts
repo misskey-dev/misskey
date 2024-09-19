@@ -1,4 +1,4 @@
-import { deepEqual, deepStrictEqual, strictEqual } from 'node:assert';
+import { deepStrictEqual, strictEqual } from 'node:assert';
 import test, { before, describe } from 'node:test';
 import * as Misskey from 'misskey-js';
 import { createAccount, fetchAdmin, resolveRemoteAccount } from './utils.js';
@@ -25,13 +25,10 @@ describe('User', () => {
 
 			const aliceInAServer = await aliceWatcherClient.request('users/show', { userId: alice.id });
 
-			const resolved = await (async (): Promise<Misskey.entities.ApShowResponse & { type: 'User' }> => {
-				const resolved = await aliceWatcherInBServerClient.request('ap/show', {
-					uri: `https://a.local/@${aliceInAServer.username}`,
-				});
-				strictEqual(resolved.type, 'User');
-				return resolved;
-			})();
+			const resolved = await aliceWatcherInBServerClient.request('ap/show', {
+				uri: `https://a.local/@${aliceInAServer.username}`,
+			});
+			strictEqual(resolved.type, 'User');
 
 			const aliceInBServer = await aliceWatcherInBServerClient.request('users/show', { userId: resolved.object.id });
 
@@ -86,12 +83,12 @@ describe('User', () => {
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
 				await Promise.all([
-					deepEqual(
+					strictEqual(
 						(await aliceClient.request('users/following', { userId: alice.id }))
 							.some(v => v.followeeId === bobInAServer.object.id),
 						true,
 					),
-					deepEqual(
+					strictEqual(
 						(await bobClient.request('users/followers', { userId: bob.id }))
 							.some(v => v.followerId === aliceInBServer.object.id),
 						true,
@@ -112,12 +109,12 @@ describe('User', () => {
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
 				await Promise.all([
-					deepEqual(
+					strictEqual(
 						(await aliceClient.request('users/following', { userId: alice.id }))
 							.some(v => v.followeeId === bobInAServer.object.id),
 						false,
 					),
-					deepEqual(
+					strictEqual(
 						(await bobClient.request('users/followers', { userId: bob.id }))
 							.some(v => v.followerId === aliceInBServer.object.id),
 						false,

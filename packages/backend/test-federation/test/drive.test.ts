@@ -1,4 +1,4 @@
-import { deepEqual, deepStrictEqual, strictEqual } from 'node:assert';
+import { deepStrictEqual, strictEqual } from 'node:assert';
 import test, { describe } from 'node:test';
 import * as Misskey from 'misskey-js';
 import { createAccount, fetchAdmin, uploadFile } from './utils.js';
@@ -18,14 +18,11 @@ describe('Drive', () => {
 		const image = await uploadFile('a.local', '../../test/resources/192.jpg', uploader.i);
 		const noteWithImage = (await uploaderClient.request('notes/create', { fileIds: [image.id] })).createdNote;
 		const uri = `https://a.local/notes/${noteWithImage.id}`;
-		const noteInBServer = await (async (): Promise<Misskey.entities.ApShowResponse & { type: 'Note' }> => {
-			const resolved = await bAdminClient.request('ap/show', { uri });
-			strictEqual(resolved.type, 'Note');
-			return resolved;
-		})();
-		deepEqual(noteInBServer.object.uri, uri);
-		deepEqual(noteInBServer.object.files != null, true);
-		deepEqual(noteInBServer.object.files!.length, 1);
+		const noteInBServer = await bAdminClient.request('ap/show', { uri });
+		strictEqual(noteInBServer.type, 'Note');
+		strictEqual(noteInBServer.object.uri, uri);
+		strictEqual(noteInBServer.object.files != null, true);
+		strictEqual(noteInBServer.object.files!.length, 1);
 		const imageInBServer = noteInBServer.object.files![0];
 
 		await test('Check consistency of DriveFile', () => {
@@ -67,31 +64,28 @@ describe('Drive', () => {
 			// console.log(`b.local: ${JSON.stringify(updatedImageInBServer, null, '\t')}`);
 
 			// FIXME: not updated with `drive/files/update`
-			deepEqual(updatedImage.isSensitive, true);
-			deepEqual(updatedImage.name, 'updated_192.jpg');
-			deepEqual(updatedImageInBServer.isSensitive, false);
-			deepEqual(updatedImageInBServer.name, '192.jpg');
+			strictEqual(updatedImage.isSensitive, true);
+			strictEqual(updatedImage.name, 'updated_192.jpg');
+			strictEqual(updatedImageInBServer.isSensitive, false);
+			strictEqual(updatedImageInBServer.name, '192.jpg');
 		});
 
 		const noteWithUpdatedImage = (await uploaderClient.request('notes/create', { fileIds: [updatedImage.id] })).createdNote;
 		const uriUpdated = `https://a.local/notes/${noteWithUpdatedImage.id}`;
-		const noteWithUpdatedImageInBServer = await (async (): Promise<Misskey.entities.ApShowResponse & { type: 'Note' }> => {
-			const resolved = await bAdminClient.request('ap/show', { uri: uriUpdated });
-			strictEqual(resolved.type, 'Note');
-			return resolved;
-		})();
-		deepEqual(noteWithUpdatedImageInBServer.object.uri, uriUpdated);
-		deepEqual(noteWithUpdatedImageInBServer.object.files != null, true);
-		deepEqual(noteWithUpdatedImageInBServer.object.files!.length, 1);
+		const noteWithUpdatedImageInBServer = await bAdminClient.request('ap/show', { uri: uriUpdated });
+		strictEqual(noteWithUpdatedImageInBServer.type, 'Note');
+		strictEqual(noteWithUpdatedImageInBServer.object.uri, uriUpdated);
+		strictEqual(noteWithUpdatedImageInBServer.object.files != null, true);
+		strictEqual(noteWithUpdatedImageInBServer.object.files!.length, 1);
 		const reupdatedImageInBServer = noteWithUpdatedImageInBServer.object.files![0];
 
 		await test('Re-update with attaching to Note', async () => {
 			// console.log(`b.local: ${JSON.stringify(reupdatedImageInBServer, null, '\t')}`);
 
 			// `isSensitive` is updated
-			deepEqual(reupdatedImageInBServer.isSensitive, true);
+			strictEqual(reupdatedImageInBServer.isSensitive, true);
 			// FIXME: but `name` is not updated
-			deepEqual(reupdatedImageInBServer.name, '192.jpg');
+			strictEqual(reupdatedImageInBServer.name, '192.jpg');
 		});
 	});
 });
