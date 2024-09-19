@@ -105,6 +105,7 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
+import autosize from 'autosize';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -568,16 +569,22 @@ function clear() {
 	files.value = [];
 	poll.value = null;
 	quoteId.value = null;
+	
+	nextTick(() => textareaEl.value && autosize.update(textareaEl.value));
 }
 
 function onKeydown(ev: KeyboardEvent) {
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost.value) post();
 
 	if (ev.key === 'Escape') emit('esc');
+
+	nextTick(() => textareaEl.value && autosize.update(textareaEl.value));
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
 	imeText.value = ev.data;
+
+	nextTick(() => textareaEl.value && autosize.update(textareaEl.value));
 }
 
 function onCompositionEnd(ev: CompositionEvent) {
@@ -632,6 +639,7 @@ async function onPaste(ev: ClipboardEvent) {
 			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
 			upload(file, `${fileName}.txt`);
 		});
+		nextTick(() => textareaEl.value && autosize.update(textareaEl.value));
 	}
 }
 
@@ -1040,6 +1048,7 @@ onMounted(() => {
 		}
 
 		nextTick(() => watchForDraft());
+		nextTick(() => textareaEl.value && autosize(textareaEl.value));
 	});
 });
 
@@ -1056,6 +1065,7 @@ defineExpose({
 	&.modal {
 		width: 100%;
 		max-width: 520px;
+		overflow-y: auto;
 	}
 }
 
