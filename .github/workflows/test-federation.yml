@@ -50,8 +50,14 @@ jobs:
           sudo chmod 644 ./certificates/*.local.key
       - name: Start servers
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
-        run: docker compose up -d --scale tester=0
+        run: |
+          cd packages/backend/test-federation
+          docker compose up -d --scale tester=0
       - name: Test
-        run: docker compose run tester
+        run: |
+          cd packages/backend/test-federation
+          docker compose run tester
       - name: Stop servers
-        run: docker compose down
+        run: |
+          cd packages/backend/test-federation
+          docker compose down
