@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ACHIEVEMENT_TYPES } from '@/core/AchievementService.js';
 import { notificationTypes } from '@/types.js';
 
 const baseSchema = {
@@ -294,6 +295,7 @@ export const packedNotificationSchema = {
 			achievement: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ACHIEVEMENT_TYPES,
 			},
 		},
 	}, {
@@ -311,11 +313,11 @@ export const packedNotificationSchema = {
 			},
 			header: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			icon: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 		},
 	}, {
