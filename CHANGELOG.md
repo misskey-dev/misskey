@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- UserWebhookとSystemWebhookのテスト送信機能を追加 ( #14445 )
 
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
