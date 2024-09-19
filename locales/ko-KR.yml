@@ -2448,6 +2448,7 @@ _webhookSettings:
     abuseReportResolved: "받은 신고를 처리했을 때"
     userCreated: "유저가 생성되었을 때"
   deleteConfirm: "Webhook을 삭제할까요?"
+  testRemarks: "스위치 오른쪽에 있는 버튼을 클릭하여 더미 데이터를 사용한 테스트용 웹 훅을 보낼 수 있습니다."
 _abuseReport:
   _notificationRecipient:
     createRecipient: "신고 수신자 추가"
