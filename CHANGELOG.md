@@ -1,6 +1,7 @@
-## Unreleased
+## 2024.9.0
 
 ### General
+- Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
 
 ### Client
