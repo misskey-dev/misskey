@@ -1403,6 +1403,7 @@ _serverSettings:
   fanoutTimelineDescription: "Quan es troba activat millora bastant el rendiment quan es recuperen les línies de temps i redueix la carrega de la base de dades. Com a contrapunt, l'ús de memòria de Redis es veurà incrementada. Considera d'estabilitat aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes de inestabilitat."
   fanoutTimelineDbFallback: "Carregar de la base de dades"
   fanoutTimelineDbFallbackDescription: "Quan s'activa, la línia de temps fa servir la base de dades per consultes adicionals si la línia de temps no es troba a la memòria cau. Si és desactiva la càrrega del servidor és veure reduïda, però també és reduirà el nombre de línies de temps que és poden obtenir."
+  reactionsBufferingDescription: "Quan s'activa aquesta opció millora bastant el rendiment en recuperar les línies de temps reduint la càrrega de la base. Com a contrapunt, augmentarà  l'ús de memòria de Redís. Desactiva aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes d'inestabilitat."
   inquiryUrl: "URL de consulta "
   inquiryUrlDescription: "Escriu adreça URL per al formulari de consulta per al mantenidor del servidor o una pàgina web amb el contacte d'informació."
 _accountMigration:
@@ -1736,6 +1737,11 @@ _role:
     canSearchNotes: "Pot cercar notes"
     canUseTranslator: "Pot fer servir el traductor"
     avatarDecorationLimit: "Nombre màxim de decoracions que es poden aplicar els avatars"
+    canImportAntennas: "Autoritza la importació d'antenes "
+    canImportBlocking: "Autoritza la importació de bloquejats"
+    canImportFollowing: "Autoritza la importació de seguidors"
+    canImportMuting: "Autoritza la importació de silenciats"
+    canImportUserLists: "Autoritza la importació de llistes d'usuaris "
   _condition:
     roleAssignedTo: "Assignat a rols manuals"
     isLocal: "Usuari local"
@@ -2556,6 +2562,22 @@ _externalResourceInstaller:
       description: "Ha aparegut un error durant la instal·lació de l'afegit. Intenta-ho una altra vegada. El detall de l'error es pot veure a la consola JavaScript."
     _themeParseFailed:
       title: "Ha fallat el processament del tema"
+      description: "Les dades sol·licitades s'han obtingut correctament, però hem trobat un error durant el processament del tema. Contacta amb l'autor de l'afegit. Detalls de l'error es pot veure a la consola JavaScript."
+    _themeInstallFailed:
+      title: "La instal·lació del tema a fallat"
+      description: "Ha aparegut un error durant la instal·lació del tema. Intenta-ho una altra vegada. El detall de l'error es pot veure a la consola JavaScript."
+_dataSaver:
+  _media:
+    title: "Carregant multimèdia "
+    description: "Desactiva la càrrega automàtica d'imatges i vídeos. Les imatges i els vídeos amagats es carregaran quan es faci clic a sobre."
+  _avatar:
+    title: "Avatars animats"
+    description: "Detenir l'animació dels avatars animats. Les imatges animades solen tenir un pes més gran que les imatges normals, reduint el tràfic disponible."
+  _urlPreview:
+    title: "Miniatures vista prèvia de l'URL"
+    description: "Les imatges en miniatura que serveixen com a vista prèvia de les URLs no es tornaran a carregar."
+  _code:
+    title: "Ressaltat del codi "
 _reversi:
   total: "Total"
 _embedCodeGen:
