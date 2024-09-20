@@ -406,7 +406,11 @@ export class NoteEntityService implements OnModuleInit {
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
 				...(meId && Object.keys(reactions).length > 0 ? {
-					myReaction: this.populateMyReaction(note, meId, options?._hint_),
+					myReaction: this.populateMyReaction({
+						id: note.id,
+						reactions: reactions,
+						reactionAndUserPairCache: note.reactionAndUserPairCache,
+					}, meId, options?._hint_),
 				} : {}),
 			} : {}),
 		});
