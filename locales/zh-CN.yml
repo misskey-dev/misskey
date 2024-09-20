@@ -1403,6 +1403,7 @@ _serverSettings:
   fanoutTimelineDescription: "当启用时，可显著提高获取各种时间线时的性能，并减轻数据库的负荷。但是相对的 Redis 的内存使用量将会增加。如果服务器的内存不是很大，又或者运行不稳定的话可以把它关掉。"
   fanoutTimelineDbFallback: "回退到数据库"
   fanoutTimelineDbFallbackDescription: "当启用时，若时间线未被缓存，则将额外查询数据库。禁用该功能可通过不执行回退处理进一步减少服务器负载，但会限制可检索的时间线范围。"
+  reactionsBufferingDescription: "开启时可显著提高发送回应时的性能，及减轻数据库负荷。但 Redis 的内存用量会相应增加。"
   inquiryUrl: "联络地址"
   inquiryUrlDescription: "用来指定诸如向服务运营商咨询的论坛地址，或记载了运营商联系方式之类的网页地址。"
 _accountMigration:
@@ -1736,6 +1737,11 @@ _role:
     canSearchNotes: "是否可以搜索帖子"
     canUseTranslator: "使用翻译功能"
     avatarDecorationLimit: "可添加头像挂件的最大个数"
+    canImportAntennas: "允许导入天线"
+    canImportBlocking: "允许导入拉黑列表"
+    canImportFollowing: "允许导入关注列表"
+    canImportMuting: "允许导入屏蔽列表"
+    canImportUserLists: "允许导入用户列表"
   _condition:
     roleAssignedTo: "已分配给手动角色"
     isLocal: "是本地用户"
@@ -2448,6 +2454,7 @@ _webhookSettings:
     abuseReportResolved: "当举报被处理时"
     userCreated: "当用户被创建时"
   deleteConfirm: "要删除 webhook 吗？"
+  testRemarks: "点击开关右侧的按钮，可以发送使用假数据的测试 Webhook。"
 _abuseReport:
   _notificationRecipient:
     createRecipient: "新建举报通知"
