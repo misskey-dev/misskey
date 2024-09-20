@@ -34,9 +34,9 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async get(noteId: MiNote['id']) {
+	public async get(noteId: MiNote['id']): Promise<Record<string, number>> {
 		const result = await this.redisClient.hgetall(`${REDIS_PREFIX}:${noteId}`);
-		const delta = {};
+		const delta = {} as Record<string, number>;
 		for (const [name, count] of Object.entries(result)) {
 			delta[name] = parseInt(count);
 		}
@@ -44,7 +44,7 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async getMany(noteIds: MiNote['id'][]) {
+	public async getMany(noteIds: MiNote['id'][]): Promise<Map<MiNote['id'], Record<string, number>>> {
 		const deltas = new Map<MiNote['id'], Record<string, number>>();
 
 		const pipeline = this.redisClient.pipeline();
@@ -55,8 +55,8 @@ export class ReactionsBufferingService {
 
 		for (let i = 0; i < noteIds.length; i++) {
 			const noteId = noteIds[i];
-			const result = results![i][1];
-			const delta = {};
+			const result = results![i][1] as Record<string, string>;
+			const delta = {} as Record<string, number>;
 			for (const [name, count] of Object.entries(result)) {
 				delta[name] = parseInt(count);
 			}
@@ -68,7 +68,7 @@ export class ReactionsBufferingService {
 
 	// TODO: scanは重い可能性があるので、別途 bufferedNoteIds を直接Redis上に持っておいてもいいかもしれない
 	@bindThis
-	public async bake() {
+	public async bake(): Promise<void> {
 		const bufferedNoteIds = [];
 		let cursor = '0';
 		do {
