@@ -46,36 +46,68 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async get(noteId: MiNote['id']): Promise<Record<string, number>> {
-		const result = await this.redisForReactions.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
-		const delta = {} as Record<string, number>;
-		for (const [name, count] of Object.entries(result)) {
-			delta[name] = parseInt(count);
+	public async get(noteId: MiNote['id']): Promise<{
+		deltas: Record<string, number>;
+		pairs: ([MiUser['id'], string])[];
+	}> {
+		const pipeline = this.redisForReactions.pipeline();
+		pipeline.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
+		pipeline.lrange(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -1);
+		const results = await pipeline.exec();
+
+		const resultDeltas = results![0][1] as Record<string, string>;
+		const resultPairs = results![1][1] as string[];
+
+		const deltas = {} as Record<string, number>;
+		for (const [name, count] of Object.entries(resultDeltas)) {
+			deltas[name] = parseInt(count);
 		}
-		return delta;
+
+		const pairs = resultPairs.map(x => x.split('/') as [MiUser['id'], string]);
+
+		return {
+			deltas,
+			pairs,
+		};
 	}
 
 	@bindThis
-	public async getMany(noteIds: MiNote['id'][]): Promise<Map<MiNote['id'], Record<string, number>>> {
-		const deltas = new Map<MiNote['id'], Record<string, number>>();
+	public async getMany(noteIds: MiNote['id'][]): Promise<Map<MiNote['id'], {
+		deltas: Record<string, number>;
+		pairs: ([MiUser['id'], string])[];
+	}>> {
+		const map = new Map<MiNote['id'], {
+			deltas: Record<string, number>;
+			pairs: ([MiUser['id'], string])[];
+		}>();
 
 		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of noteIds) {
 			pipeline.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
+			pipeline.lrange(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -1);
 		}
 		const results = await pipeline.exec();
 
+		const opsForEachNotes = 2;
 		for (let i = 0; i < noteIds.length; i++) {
 			const noteId = noteIds[i];
-			const result = results![i][1] as Record<string, string>;
-			const delta = {} as Record<string, number>;
-			for (const [name, count] of Object.entries(result)) {
-				delta[name] = parseInt(count);
+			const resultDeltas = results![i * opsForEachNotes][1] as Record<string, string>;
+			const resultPairs = results![i * opsForEachNotes + 1][1] as string[];
+
+			const deltas = {} as Record<string, number>;
+			for (const [name, count] of Object.entries(resultDeltas)) {
+				deltas[name] = parseInt(count);
 			}
-			deltas.set(noteId, delta);
+
+			const pairs = resultPairs.map(x => x.split('/') as [MiUser['id'], string]);
+
+			map.set(noteId, {
+				deltas,
+				pairs,
+			});
 		}
 
-		return deltas;
+		return map;
 	}
 
 	// TODO: scanは重い可能性があるので、別途 bufferedNoteIds を直接Redis上に持っておいてもいいかもしれない
@@ -96,18 +128,19 @@ export class ReactionsBufferingService {
 			bufferedNoteIds.push(...result[1].map(x => x.replace(`${this.config.redis.prefix}:${REDIS_DELTA_PREFIX}:`, '')));
 		} while (cursor !== '0');
 
-		const deltas = await this.getMany(bufferedNoteIds);
+		const bufferedMap = await this.getMany(bufferedNoteIds);
 
 		// clear
 		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of bufferedNoteIds) {
 			pipeline.del(`${REDIS_DELTA_PREFIX}:${noteId}`);
+			pipeline.del(`${REDIS_PAIR_PREFIX}:${noteId}`);
 		}
 		await pipeline.exec();
 
 		// TODO: SQL一個にまとめたい
-		for (const [noteId, delta] of deltas) {
-			const sql = Object.entries(delta)
+		for (const [noteId, buffered] of bufferedMap) {
+			const sql = Object.entries(buffered.deltas)
 				.map(([reaction, count]) =>
 					`jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + ${count})::text::jsonb)`)
 				.join(' || ');
@@ -115,6 +148,7 @@ export class ReactionsBufferingService {
 			this.notesRepository.createQueryBuilder().update()
 				.set({
 					reactions: () => sql,
+					// TODO: reactionAndUserPairCache もよしなにベイクする
 				})
 				.where('id = :id', { id: noteId })
 				.execute();
