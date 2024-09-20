@@ -9,12 +9,16 @@ import { DI } from '@/di-symbols.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import type { NotesRepository } from '@/models/_.js';
+import type { Config } from '@/config.js';
 
 const REDIS_PREFIX = 'reactionsBuffer';
 
 @Injectable()
 export class ReactionsBufferingService {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis, // TODO: 専用のRedisインスタンスにする
 
@@ -72,16 +76,14 @@ export class ReactionsBufferingService {
 		const bufferedNoteIds = [];
 		let cursor = '0';
 		do {
-			const result = await this.redisClient.scan(cursor, 'MATCH', `${REDIS_PREFIX}:*`, 'COUNT', '1000');
+			// https://github.com/redis/ioredis#transparent-key-prefixing
+			const result = await this.redisClient.scan(cursor, 'MATCH', `${this.config.redis.prefix}:${REDIS_PREFIX}:*`, 'COUNT', '1000');
+			console.log(result);
 			cursor = result[0];
-			bufferedNoteIds.push(...result[1]);
+			bufferedNoteIds.push(...result[1].map(x => x.replace(`${this.config.redis.prefix}:${REDIS_PREFIX}:`, '')));
 		} while (cursor !== '0');
 
-		console.log(bufferedNoteIds);
-
 		const deltas = await this.getMany(bufferedNoteIds);
-
-		console.log(deltas);
 
 		// clear
 		const pipeline = this.redisClient.pipeline();
