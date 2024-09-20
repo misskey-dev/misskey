@@ -59,7 +59,6 @@ describe('User', () => {
 			before(async () => {
 				await aliceClient.request('following/create', { userId: bobInAServer.id });
 
-				// wait for 1 secound
 				await new Promise(resolve => setTimeout(resolve, 1000));
 			});
 
@@ -83,7 +82,6 @@ describe('User', () => {
 			before(async () => {
 				await aliceClient.request('following/delete', { userId: bobInAServer.id });
 
-				// wait for 1 secound
 				await new Promise(resolve => setTimeout(resolve, 1000));
 			});
 
