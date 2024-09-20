@@ -1,7 +1,6 @@
-import { deepStrictEqual, strictEqual } from 'node:assert';
+import { strictEqual } from 'node:assert';
 import test, { describe } from 'node:test';
-import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, resolveRemoteNote, uploadFile } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, uploadFile } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -27,24 +26,14 @@ describe('Drive', () => {
 			// console.log(`a.local: ${JSON.stringify(image, null, '\t')}`);
 			// console.log(`b.local: ${JSON.stringify(imageInBServer, null, '\t')}`);
 
-			const toBeDeleted: (keyof Misskey.entities.DriveFile)[] = [
+			deepStrictEqualWithExcludedFields(image, imageInBServer, [
 				'id',
 				'createdAt',
 				'size',
 				'url',
 				'thumbnailUrl',
 				'userId',
-			];
-			const _Image: Partial<Misskey.entities.DriveFile> = structuredClone(image);
-			const _ImageInBServer: Partial<Misskey.entities.DriveFile> = structuredClone(imageInBServer);
-
-			for (const image of [_Image, _ImageInBServer]) {
-				for (const field of toBeDeleted) {
-					delete image[field];
-				}
-			}
-
-			deepStrictEqual(_Image, _ImageInBServer);
+			]);
 		});
 
 		const updatedImage = await uploaderClient.request('drive/files/update', {

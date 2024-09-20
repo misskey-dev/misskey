@@ -1,7 +1,6 @@
-import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
+import { rejects, strictEqual } from 'node:assert';
 import test, { before, describe } from 'node:test';
-import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, resolveRemoteUser } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteUser } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -32,7 +31,7 @@ describe('User', () => {
 			// console.log(`a.local: ${JSON.stringify(aliceInAServer, null, '\t')}`);
 			// console.log(`b.local: ${JSON.stringify(aliceInBServer, null, '\t')}`);
 
-			const toBeDeleted: (keyof Misskey.entities.UserDetailedNotMe)[] = [
+			deepStrictEqualWithExcludedFields(aliceInAServer, aliceInBServer, [
 				'id',
 				'host',
 				'avatarUrl',
@@ -43,16 +42,7 @@ describe('User', () => {
 				'createdAt',
 				'lastFetchedAt',
 				'publicReactions',
-			];
-			const _aliceInAServer: Partial<Misskey.entities.UserDetailedNotMe> = structuredClone(aliceInAServer);
-			const _aliceInBServer: Partial<Misskey.entities.UserDetailedNotMe> = structuredClone(aliceInBServer);
-			for (const alice of [_aliceInAServer, _aliceInBServer]) {
-				for (const field of toBeDeleted) {
-					delete alice[field];
-				}
-			}
-
-			deepStrictEqual(_aliceInAServer, _aliceInBServer);
+			]);
 		});
 	});
 

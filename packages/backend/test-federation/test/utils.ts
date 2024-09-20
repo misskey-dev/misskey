@@ -1,4 +1,4 @@
-import { strictEqual } from 'assert';
+import { deepStrictEqual, strictEqual } from 'assert';
 import { readFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -149,4 +149,15 @@ export async function uploadFile(host: string, path: string, token: string): Pro
 			reject(err);
 		});
 	});
+}
+
+export function deepStrictEqualWithExcludedFields<T>(actual: T, expected: T, excludedFields: (keyof T)[]) {
+	const _actual = structuredClone(actual);
+	const _expected = structuredClone(expected);
+	for (const obj of [_actual, _expected]) {
+		for (const field of excludedFields) {
+			delete obj[field];
+		}
+	}
+	deepStrictEqual(_actual, _expected);
 }
