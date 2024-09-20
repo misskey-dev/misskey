@@ -196,7 +196,7 @@ export class ReactionService {
 
 		// Increment reactions count
 		if (meta.enableReactionsBuffering) {
-			await this.reactionsBufferingService.create(note.id, user.id, reaction);
+			await this.reactionsBufferingService.create(note.id, user.id, reaction, note.reactionAndUserPairCache);
 
 			// for debugging
 			if (reaction === ':angry_ai:') {

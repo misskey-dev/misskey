@@ -29,11 +29,14 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async create(noteId: MiNote['id'], userId: MiUser['id'], reaction: string): Promise<void> {
+	public async create(noteId: MiNote['id'], userId: MiUser['id'], reaction: string, currentPairs: string[]): Promise<void> {
 		const pipeline = this.redisForReactions.pipeline();
 		pipeline.hincrby(`${REDIS_DELTA_PREFIX}:${noteId}`, reaction, 1);
-		pipeline.lpush(`${REDIS_PAIR_PREFIX}:${noteId}`, `${userId}/${reaction}`);
-		pipeline.ltrim(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, 32);
+		for (let i = 0; i < currentPairs.length; i++) {
+			pipeline.zadd(`${REDIS_PAIR_PREFIX}:${noteId}`, i, currentPairs[i]);
+		}
+		pipeline.zadd(`${REDIS_PAIR_PREFIX}:${noteId}`, Date.now(), `${userId}/${reaction}`);
+		pipeline.zremrangebyrank(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -17);
 		await pipeline.exec();
 	}
 
@@ -41,7 +44,8 @@ export class ReactionsBufferingService {
 	public async delete(noteId: MiNote['id'], userId: MiUser['id'], reaction: string): Promise<void> {
 		const pipeline = this.redisForReactions.pipeline();
 		pipeline.hincrby(`${REDIS_DELTA_PREFIX}:${noteId}`, reaction, -1);
-		pipeline.lrem(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, `${userId}/${reaction}`);
+		pipeline.zrem(`${REDIS_PAIR_PREFIX}:${noteId}`, `${userId}/${reaction}`);
+		// TODO: 「消した要素一覧」も持っておかないとcreateされた時に上書きされて復活する
 		await pipeline.exec();
 	}
 
@@ -52,7 +56,7 @@ export class ReactionsBufferingService {
 	}> {
 		const pipeline = this.redisForReactions.pipeline();
 		pipeline.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
-		pipeline.lrange(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -1);
+		pipeline.zrange(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -1);
 		const results = await pipeline.exec();
 
 		const resultDeltas = results![0][1] as Record<string, string>;
@@ -84,7 +88,7 @@ export class ReactionsBufferingService {
 		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of noteIds) {
 			pipeline.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
-			pipeline.lrange(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -1);
+			pipeline.zrange(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -1);
 		}
 		const results = await pipeline.exec();
 
@@ -148,7 +152,7 @@ export class ReactionsBufferingService {
 			this.notesRepository.createQueryBuilder().update()
 				.set({
 					reactions: () => sql,
-					// TODO: reactionAndUserPairCache もよしなにベイクする
+					reactionAndUserPairCache: buffered.pairs.map(x => x.join('/')),
 				})
 				.where('id = :id', { id: noteId })
 				.execute();
