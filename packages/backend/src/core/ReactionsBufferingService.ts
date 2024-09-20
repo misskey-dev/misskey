@@ -9,6 +9,8 @@ import { DI } from '@/di-symbols.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 
+const REDIS_PREFIX = 'reactionsBuffer';
+
 @Injectable()
 export class ReactionsBufferingService {
 	constructor(
@@ -19,17 +21,17 @@ export class ReactionsBufferingService {
 
 	@bindThis
 	public async create(note: MiNote, reaction: string) {
-		this.redisClient.hincrby(`reactionsBuffer:${note.id}`, reaction, 1);
+		this.redisClient.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, 1);
 	}
 
 	@bindThis
 	public async delete(note: MiNote, reaction: string) {
-		this.redisClient.hincrby(`reactionsBuffer:${note.id}`, reaction, -1);
+		this.redisClient.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, -1);
 	}
 
 	@bindThis
 	public async get(note: MiNote) {
-		const result = await this.redisClient.hgetall(`reactionsBuffer:${note.id}`);
+		const result = await this.redisClient.hgetall(`${REDIS_PREFIX}:${note.id}`);
 		const delta = {};
 		for (const [name, count] of Object.entries(result)) {
 			delta[name] = parseInt(count);
@@ -43,7 +45,7 @@ export class ReactionsBufferingService {
 
 		const pipeline = this.redisClient.pipeline();
 		for (const note of notes) {
-			pipeline.hgetall(`reactionsBuffer:${note.id}`);
+			pipeline.hgetall(`${REDIS_PREFIX}:${note.id}`);
 		}
 		const results = await pipeline.exec();
 
@@ -58,5 +60,18 @@ export class ReactionsBufferingService {
 		}
 
 		return deltas;
+	}
+
+	@bindThis
+	public async bake() {
+		const bufferedNoteIds = [];
+		let cursor = '0';
+		do {
+			const result = await this.redisClient.scan(cursor, 'MATCH', `${REDIS_PREFIX}:*`, 'COUNT', '1000');
+			cursor = result[0];
+			bufferedNoteIds.push(...result[1]);
+		} while (cursor !== '0');
+
+		console.log(bufferedNoteIds);
 	}
 }
