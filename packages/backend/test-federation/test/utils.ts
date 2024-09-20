@@ -114,6 +114,18 @@ export async function resolveRemoteAccount(from_acct: string, to_acct: string, f
 	});
 }
 
+export async function resolveRemoteNote(uri: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.Note> {
+	return new Promise<Misskey.entities.Note>((resolve, reject) => {
+		fromClient.request('ap/show', { uri })
+			.then(res => {
+				strictEqual(res.type, 'Note');
+				strictEqual(res.object.uri, uri);
+				resolve(res.object);
+			})
+			.catch(err => reject(err));
+	});
+}
+
 export async function uploadFile(host: string, path: string, token: string): Promise<Misskey.entities.DriveFile> {
 	const filename = path.split('/').pop() ?? 'untitled';
 	const blob = new Blob([await readFile(join(__dirname, path))]);
