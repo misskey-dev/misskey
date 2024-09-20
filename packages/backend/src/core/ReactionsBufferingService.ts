@@ -8,10 +8,11 @@ import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
-import type { NotesRepository } from '@/models/_.js';
+import type { MiUser, NotesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 
-const REDIS_PREFIX = 'reactionsBuffer';
+const REDIS_DELTA_PREFIX = 'reactionsBufferDeltas';
+const REDIS_PAIR_PREFIX = 'reactionsBufferPairs';
 
 @Injectable()
 export class ReactionsBufferingService {
@@ -28,18 +29,25 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async create(note: MiNote, reaction: string) {
-		this.redisForReactions.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, 1);
+	public async create(noteId: MiNote['id'], userId: MiUser['id'], reaction: string): Promise<void> {
+		const pipeline = this.redisForReactions.pipeline();
+		pipeline.hincrby(`${REDIS_DELTA_PREFIX}:${noteId}`, reaction, 1);
+		pipeline.lpush(`${REDIS_PAIR_PREFIX}:${noteId}`, `${userId}/${reaction}`);
+		pipeline.ltrim(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, 32);
+		await pipeline.exec();
 	}
 
 	@bindThis
-	public async delete(note: MiNote, reaction: string) {
-		this.redisForReactions.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, -1);
+	public async delete(noteId: MiNote['id'], userId: MiUser['id'], reaction: string): Promise<void> {
+		const pipeline = this.redisForReactions.pipeline();
+		pipeline.hincrby(`${REDIS_DELTA_PREFIX}:${noteId}`, reaction, -1);
+		pipeline.lrem(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, `${userId}/${reaction}`);
+		await pipeline.exec();
 	}
 
 	@bindThis
 	public async get(noteId: MiNote['id']): Promise<Record<string, number>> {
-		const result = await this.redisForReactions.hgetall(`${REDIS_PREFIX}:${noteId}`);
+		const result = await this.redisForReactions.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
 		const delta = {} as Record<string, number>;
 		for (const [name, count] of Object.entries(result)) {
 			delta[name] = parseInt(count);
@@ -53,7 +61,7 @@ export class ReactionsBufferingService {
 
 		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of noteIds) {
-			pipeline.hgetall(`${REDIS_PREFIX}:${noteId}`);
+			pipeline.hgetall(`${REDIS_DELTA_PREFIX}:${noteId}`);
 		}
 		const results = await pipeline.exec();
 
@@ -80,12 +88,12 @@ export class ReactionsBufferingService {
 			const result = await this.redisForReactions.scan(
 				cursor,
 				'MATCH',
-				`${this.config.redis.prefix}:${REDIS_PREFIX}:*`,
+				`${this.config.redis.prefix}:${REDIS_DELTA_PREFIX}:*`,
 				'COUNT',
 				'1000');
 
 			cursor = result[0];
-			bufferedNoteIds.push(...result[1].map(x => x.replace(`${this.config.redis.prefix}:${REDIS_PREFIX}:`, '')));
+			bufferedNoteIds.push(...result[1].map(x => x.replace(`${this.config.redis.prefix}:${REDIS_DELTA_PREFIX}:`, '')));
 		} while (cursor !== '0');
 
 		const deltas = await this.getMany(bufferedNoteIds);
@@ -93,7 +101,7 @@ export class ReactionsBufferingService {
 		// clear
 		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of bufferedNoteIds) {
-			pipeline.del(`${REDIS_PREFIX}:${noteId}`);
+			pipeline.del(`${REDIS_DELTA_PREFIX}:${noteId}`);
 		}
 		await pipeline.exec();
 

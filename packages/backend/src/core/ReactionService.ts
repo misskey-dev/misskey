@@ -196,7 +196,7 @@ export class ReactionService {
 
 		// Increment reactions count
 		if (meta.enableReactionsBuffering) {
-			this.reactionsBufferingService.create(note, reaction);
+			await this.reactionsBufferingService.create(note.id, user.id, reaction);
 
 			// for debugging
 			if (reaction === ':angry_ai:') {
@@ -310,15 +310,21 @@ export class ReactionService {
 			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
 
+		const meta = await this.metaService.fetch();
+
 		// Decrement reactions count
-		const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
-			.set({
-				reactions: () => sql,
-				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
-			})
-			.where('id = :id', { id: note.id })
-			.execute();
+		if (meta.enableReactionsBuffering) {
+			await this.reactionsBufferingService.delete(note.id, user.id, exist.reaction);
+		} else {
+			const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
+			await this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => sql,
+					reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
+				})
+				.where('id = :id', { id: note.id })
+				.execute();
+		}
 
 		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,
