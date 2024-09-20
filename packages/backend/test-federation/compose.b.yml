@@ -1,23 +1,23 @@
 services:
-  b.local:
+  b.test:
     image: nginx:1.27
     depends_on:
-      misskey.b.local:
+      misskey.b.test:
         condition: service_healthy
     networks:
       - internal_network_b
     volumes:
       - type: bind
-        source: ./.config/b.local.conf
-        target: /etc/nginx/conf.d/b.local.conf
+        source: ./.config/b.test.conf
+        target: /etc/nginx/conf.d/b.test.conf
         read_only: true
       - type: bind
-        source: ./certificates/b.local.crt
-        target: /etc/nginx/certificates/b.local.crt
+        source: ./certificates/b.test.crt
+        target: /etc/nginx/certificates/b.test.crt
         read_only: true
       - type: bind
-        source: ./certificates/b.local.key
-        target: /etc/nginx/certificates/b.local.key
+        source: ./certificates/b.test.key
+        target: /etc/nginx/certificates/b.test.key
         read_only: true
       - type: bind
         source: ./certificates/rootCA.crt
@@ -28,15 +28,15 @@ services:
       interval: 5s
       retries: 20
 
-  misskey.b.local:
+  misskey.b.test:
     image: node:20
     depends_on:
-      db.b.local:
+      db.b.test:
         condition: service_healthy
-      redis.local:
+      redis.test:
         condition: service_healthy
       # avoid conflict for installing dependencies
-      misskey.a.local:
+      misskey.a.test:
         condition: service_healthy
     networks:
       - internal_network_b
@@ -124,7 +124,7 @@ services:
       interval: 5s
       retries: 20
 
-  db.b.local:
+  db.b.test:
     image: postgres:15-alpine
     networks:
       - internal_network_b

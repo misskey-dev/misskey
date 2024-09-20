@@ -28,16 +28,16 @@ services:
         source: node_modules_backend
         target: /misskey/packages/backend/node_modules
 
-  redis.local:
+  redis.test:
     networks:
       - internal_network_a
       - internal_network_b
 
-  a.local:
+  a.test:
     networks:
       - internal_network
 
-  misskey.a.local:
+  misskey.a.test:
     networks:
       - external_network
       - internal_network
@@ -55,11 +55,11 @@ services:
         source: node_modules_misskey-reversi
         target: /misskey/packages/misskey-reversi/node_modules
 
-  b.local:
+  b.test:
     networks:
       - internal_network
 
-  misskey.b.local:
+  misskey.b.test:
     networks:
       - external_network
       - internal_network

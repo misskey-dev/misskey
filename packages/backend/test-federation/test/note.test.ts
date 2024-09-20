@@ -6,22 +6,22 @@ const [
 	[, aAdminClient],
 	[, bAdminClient],
 ] = await Promise.all([
-	fetchAdmin('a.local'),
-	fetchAdmin('b.local'),
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
 ]);
 
 describe('Note', async () => {
-	const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-	const [, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+	const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+	const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 	const [bobInAServer, aliceInBServer] = await Promise.all([
-		resolveRemoteUser(`https://b.local/@${bobUsername}`, aliceClient),
-		resolveRemoteUser(`https://a.local/@${aliceUsername}`, bobClient),
+		resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+		resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
 	]);
 
 	describe('Note content', () => {
 		test('Consistency of Public Note', async () => {
-			const image = await uploadFile('a.local', '../../test/resources/192.jpg', alice.i);
+			const image = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
 			const note = (await aliceClient.request('notes/create', {
 				text: 'I am Alice!',
 				fileIds: [image.id],
@@ -32,7 +32,7 @@ describe('Note', async () => {
 				},
 			})).createdNote;
 
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
@@ -59,7 +59,7 @@ describe('Note', async () => {
 			const replyedNote = await aliceClient.request('notes/show', { noteId: _replyedNote.id });
 			strictEqual(replyedNote.repliesCount, 1);
 
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
@@ -101,7 +101,7 @@ describe('Note', async () => {
 				renoteId: renotedNote.id,
 			})).createdNote;
 
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
@@ -129,7 +129,7 @@ describe('Note', async () => {
 		test('localOnly', async () => {
 			const note = (await aliceClient.request('notes/create', { text: 'a', localOnly: true })).createdNote;
 			rejects(
-				async () => await bobClient.request('ap/show', { uri: `https://a.local/notes/${note.id}` }),
+				async () => await bobClient.request('ap/show', { uri: `https://a.test/notes/${note.id}` }),
 				(err: any) => {
 					/**
 					 * FIXME: this error is not handled
@@ -145,7 +145,7 @@ describe('Note', async () => {
 	describe('Reaction', () => {
 		test('Consistency of reaction', async () => {
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			const reaction = '😅';
 			await bobClient.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
 			await new Promise(resolve => setTimeout(resolve, 1000));

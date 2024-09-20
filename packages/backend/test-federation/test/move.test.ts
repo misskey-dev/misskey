@@ -6,31 +6,31 @@ const [
 	[, aAdminClient],
 	[, bAdminClient],
 ] = await Promise.all([
-	fetchAdmin('a.local'),
-	fetchAdmin('b.local'),
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
 ]);
 
 describe('Move', async () => {
 	await test('Minimum move', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
-		await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.local`] });
-		await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.local` });
+		await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.test`] });
+		await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.test` });
 	});
 
 	/** @see https://github.com/misskey-dev/misskey/issues/11320 */
 	await test('Following relation is transferred after move', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
-		const [carol, carolClient, { username: carolUsername }] = await createAccount('a.local', aAdminClient);
+		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+		const [carol, carolClient, { username: carolUsername }] = await createAccount('a.test', aAdminClient);
 
-		// Follow @carol@a.local ==> @alice@a.local
+		// Follow @carol@a.test ==> @alice@a.test
 		await carolClient.request('following/create', { userId: alice.id });
 
-		// Move @alice@a.local ==> @bob@b.local
-		await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.local`] });
-		await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.local` });
+		// Move @alice@a.test ==> @bob@b.test
+		await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.test`] });
+		await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.test` });
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
 		await test('Check from follower', async () => {
@@ -39,7 +39,7 @@ describe('Move', async () => {
 			const followees = following.map(({ followee }) => followee);
 			assert(followees.every(followee => followee != null));
 			assert(followees.some(({ id, url }) => id === alice.id && url === null));
-			assert(followees.some(({ url }) => url === `https://b.local/@${bobUsername}`));
+			assert(followees.some(({ url }) => url === `https://b.test/@${bobUsername}`));
 		});
 
 		await test('Check from followee', async () => {
@@ -47,7 +47,7 @@ describe('Move', async () => {
 			strictEqual(followers.length, 1);
 			const follower = followers[0].follower;
 			assert(follower != null);
-			strictEqual(follower.url, `https://a.local/@${carolUsername}`);
+			strictEqual(follower.url, `https://a.test/@${carolUsername}`);
 		});
 	});
 });

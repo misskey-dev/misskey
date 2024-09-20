@@ -6,30 +6,30 @@ const [
 	[, aAdminClient],
 	[, bAdminClient],
 ] = await Promise.all([
-	fetchAdmin('a.local'),
-	fetchAdmin('b.local'),
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
 ]);
 
 describe('User', () => {
 	describe('Profile', async () => {
 		describe('Consistency of profile', async () => {
-			const [alice] = await createAccount('a.local', aAdminClient);
+			const [alice] = await createAccount('a.test', aAdminClient);
 			const [
 				[, aliceWatcherClient],
 				[, aliceWatcherInBServerClient],
 			] = await Promise.all([
-				createAccount('a.local', aAdminClient),
-				createAccount('b.local', bAdminClient),
+				createAccount('a.test', aAdminClient),
+				createAccount('b.test', bAdminClient),
 			]);
 
 			const aliceInAServer = await aliceWatcherClient.request('users/show', { userId: alice.id });
 
-			const resolved = await resolveRemoteUser(`https://a.local/@${aliceInAServer.username}`, aliceWatcherInBServerClient);
+			const resolved = await resolveRemoteUser(`https://a.test/@${aliceInAServer.username}`, aliceWatcherInBServerClient);
 
 			const aliceInBServer = await aliceWatcherInBServerClient.request('users/show', { userId: resolved.id });
 
-			// console.log(`a.local: ${JSON.stringify(aliceInAServer, null, '\t')}`);
-			// console.log(`b.local: ${JSON.stringify(aliceInBServer, null, '\t')}`);
+			// console.log(`a.test: ${JSON.stringify(aliceInAServer, null, '\t')}`);
+			// console.log(`b.test: ${JSON.stringify(aliceInBServer, null, '\t')}`);
 
 			deepStrictEqualWithExcludedFields(aliceInAServer, aliceInBServer, [
 				'id',
@@ -47,15 +47,15 @@ describe('User', () => {
 	});
 
 	describe('Follow / Unfollow', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 		const [bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.local/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.local/@${aliceUsername}`, bobClient),
+			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
 		]);
 
-		await describe('Follow a.local ==> b.local', async () => {
+		await describe('Follow a.test ==> b.test', async () => {
 			before(async () => {
 				await aliceClient.request('following/create', { userId: bobInAServer.id });
 
@@ -79,7 +79,7 @@ describe('User', () => {
 			});
 		});
 
-		await describe('Unfollow a.local ==> b.local', async () => {
+		await describe('Unfollow a.test ==> b.test', async () => {
 			before(async () => {
 				await aliceClient.request('following/delete', { userId: bobInAServer.id });
 
@@ -105,12 +105,12 @@ describe('User', () => {
 	});
 
 	describe('Follow requests', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 		const [bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.local/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.local/@${aliceUsername}`, bobClient),
+			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
 		]);
 
 		await aliceClient.request('i/update', { isLocked: true });

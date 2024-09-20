@@ -6,9 +6,9 @@ services:
   tester:
     image: node:20
     depends_on:
-      a.local:
+      a.test:
         condition: service_healthy
-      b.local:
+      b.test:
         condition: service_healthy
     environment:
       - NODE_ENV=production
@@ -61,9 +61,9 @@ services:
   daemon:
     image: node:20
     depends_on:
-      misskey.a.local:
+      misskey.a.test:
         condition: service_healthy
-      misskey.b.local:
+      misskey.b.test:
         condition: service_healthy
     environment:
       - NODE_ENV=production
@@ -97,7 +97,7 @@ services:
         node ./packages/backend/test-federation/daemon.js
       "
 
-  redis.local:
+  redis.test:
     image: redis:7-alpine
     volumes:
       - type: bind

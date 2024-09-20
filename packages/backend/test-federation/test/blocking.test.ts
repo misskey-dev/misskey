@@ -6,18 +6,18 @@ const [
 	[, aAdminClient],
 	[, bAdminClient],
 ] = await Promise.all([
-	fetchAdmin('a.local'),
-	fetchAdmin('b.local'),
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
 ]);
 
 describe('Blocking', () => {
 	test('Check follow', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 		const [bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.local/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.local/@${aliceUsername}`, bobClient),
+			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
 		]);
 
 		await test('Cannot follow if blocked', async () => {
@@ -87,12 +87,12 @@ describe('Blocking', () => {
 	});
 
 	test('Check reply', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 		const [bobInAServer] = await Promise.all([
-			resolveRemoteUser(`https://b.local/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.local/@${aliceUsername}`, bobClient),
+			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
 		]);
 
 		await test('Cannot reply if blocked', async () => {
@@ -100,7 +100,7 @@ describe('Blocking', () => {
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			await rejects(
 				async () => await bobClient.request('notes/create', { text: 'b', replyId: resolvedNote.id }),
 				(err: any) => {
@@ -115,20 +115,20 @@ describe('Blocking', () => {
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			const reply = (await bobClient.request('notes/create', { text: 'b', replyId: resolvedNote.id })).createdNote;
 
-			await resolveRemoteNote(`https://b.local/notes/${reply.id}`, aliceClient);
+			await resolveRemoteNote(`https://b.test/notes/${reply.id}`, aliceClient);
 		});
 	});
 
 	test('Check reaction', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.local', aAdminClient);
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.local', bAdminClient);
+		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 		const [bobInAServer] = await Promise.all([
-			resolveRemoteUser(`https://b.local/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.local/@${aliceUsername}`, bobClient),
+			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
 		]);
 
 		await test('Cannot reply if blocked', async () => {
@@ -136,7 +136,7 @@ describe('Blocking', () => {
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			await rejects(
 				async () => await bobClient.request('notes/reactions/create', { noteId: resolvedNote.id, reaction: '😅' }),
 				(err: any) => {
@@ -153,7 +153,7 @@ describe('Blocking', () => {
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 
 			// TODO: why still being blocked?
 			await rejects(
@@ -170,7 +170,7 @@ describe('Blocking', () => {
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.local/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			await bobClient.request('notes/reactions/create', { noteId: resolvedNote.id, reaction: '😅' });
 
 			const _note = await aliceClient.request('notes/show', { noteId: note.id });

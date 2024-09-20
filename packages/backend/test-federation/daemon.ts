@@ -26,11 +26,11 @@ console.log('Daemon started running');
 
 {
 	const redisClient = new Redis({
-		host: 'redis.local',
+		host: 'redis.test',
 	});
 
 	setInterval(() => {
-		purgeLimit('a.local', redisClient);
-		purgeLimit('b.local', redisClient);
+		purgeLimit('a.test', redisClient);
+		purgeLimit('b.test', redisClient);
 	}, 1000);
 }

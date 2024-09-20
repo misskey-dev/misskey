@@ -1,14 +1,14 @@
-url: https://a.local/
+url: https://a.test/
 port: 3000
 db:
-  host: db.a.local
+  host: db.a.test
   port: 5432
   db: misskey
   user: postgres
   pass: postgres
 dbReplications: false
 redis:
-  host: redis.local
+  host: redis.test
   port: 6379
 id: 'aidx'
 proxyBypassHosts:
