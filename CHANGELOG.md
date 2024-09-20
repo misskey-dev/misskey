@@ -2,6 +2,7 @@
 
 ### General
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
+- Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
 
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
