@@ -45,7 +45,7 @@
 		"typescript": "5.5.4",
 		"uuid": "10.0.0",
 		"json5": "2.2.3",
-		"vite": "5.3.5",
+		"vite": "5.3.6",
 		"vue": "3.4.37"
 	},
 	"devDependencies": {
