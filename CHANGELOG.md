@@ -15,7 +15,8 @@
 - Fix: 縦横比が極端なカスタム絵文字を表示する際にレイアウトが崩れる箇所があるのを修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/725)
 - Fix: 設定変更時のリロード確認ダイアログが複数個表示されることがある問題を修正
-- Fix: ファイルの詳細ページのファイルの説明で改行が正しく表示されない問題を修正
+- Fix: ファイルの詳細ページのファイルの説明で改行が正しく表示されない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/bde6bb0bd2e8b0d027e724d2acdb8ae0585a8110)
 
 ### Server
 - Fix: アンテナの書き込み時にキーワードが与えられなかった場合のエラーをApiErrorとして投げるように
