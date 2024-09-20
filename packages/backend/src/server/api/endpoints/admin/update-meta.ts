@@ -142,6 +142,7 @@ export const paramDef = {
 		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
 		perUserHomeTimelineCacheMax: { type: 'integer' },
 		perUserListTimelineCacheMax: { type: 'integer' },
+		enableReactionsBuffering: { type: 'boolean' },
 		notesPerOneAd: { type: 'integer' },
 		silencedHosts: {
 			type: 'array',
@@ -596,6 +597,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.perUserListTimelineCacheMax !== undefined) {
 				set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
+			}
+
+			if (ps.enableReactionsBuffering !== undefined) {
+				set.enableReactionsBuffering = ps.enableReactionsBuffering;
 			}
 
 			if (ps.notesPerOneAd !== undefined) {

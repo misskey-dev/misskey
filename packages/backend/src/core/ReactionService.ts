@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -30,9 +29,10 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
 
 const FALLBACK = '\u2764';
-const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -71,9 +71,6 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 @Injectable()
 export class ReactionService {
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -93,6 +90,7 @@ export class ReactionService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
+		private reactionsBufferingService: ReactionsBufferingService,
 		private idService: IdService,
 		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
@@ -174,7 +172,6 @@ export class ReactionService {
 			reaction,
 		};
 
-		// Create reaction
 		try {
 			await this.noteReactionsRepository.insert(record);
 		} catch (e) {
@@ -198,16 +195,25 @@ export class ReactionService {
 		}
 
 		// Increment reactions count
-		const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
-			.set({
-				reactions: () => sql,
-				...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
-					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
-				} : {}),
-			})
-			.where('id = :id', { id: note.id })
-			.execute();
+		if (meta.enableReactionsBuffering) {
+			await this.reactionsBufferingService.create(note.id, user.id, reaction, note.reactionAndUserPairCache);
+
+			// for debugging
+			if (reaction === ':angry_ai:') {
+				this.reactionsBufferingService.bake();
+			}
+		} else {
+			const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
+			await this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => sql,
+					...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
+						reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
+					} : {}),
+				})
+				.where('id = :id', { id: note.id })
+				.execute();
+		}
 
 		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
 		if (
@@ -304,15 +310,21 @@ export class ReactionService {
 			throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 		}
 
+		const meta = await this.metaService.fetch();
+
 		// Decrement reactions count
-		const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
-			.set({
-				reactions: () => sql,
-				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
-			})
-			.where('id = :id', { id: note.id })
-			.execute();
+		if (meta.enableReactionsBuffering) {
+			await this.reactionsBufferingService.delete(note.id, user.id, exist.reaction);
+		} else {
+			const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
+			await this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => sql,
+					reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
+				})
+				.where('id = :id', { id: note.id })
+				.execute();
+		}
 
 		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,
