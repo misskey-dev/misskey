@@ -323,7 +323,14 @@ export class NoteEntityService implements OnModuleInit {
 		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 		const host = note.userHost;
-		const reactions = mergeReactions(note.reactions, opts._hint_?.reactionsDeltas.get(note.id) ?? {});
+
+		const reactionsDelta = opts._hint_?.reactionsDeltas != null ? (opts._hint_.reactionsDeltas.get(note.id) ?? {}) : await this.reactionsBufferingService.get(note.id);
+		const reactions = mergeReactions(note.reactions, reactionsDelta);
+		for (const [name, count] of Object.entries(reactions)) {
+			if (count <= 0) {
+				delete reactions[name];
+			}
+		}
 
 		let text = note.text;
 

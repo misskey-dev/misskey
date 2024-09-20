@@ -99,13 +99,14 @@ export class ReactionsBufferingService {
 
 		// TODO: SQL一個にまとめたい
 		for (const [noteId, delta] of deltas) {
-			const sqls = [] as string[];
-			for (const [reaction, count] of Object.entries(delta)) {
-				sqls.push(`jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + ${count})::text::jsonb)`);
-			}
+			const sql = Object.entries(delta)
+				.map(([reaction, count]) =>
+					`jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + ${count})::text::jsonb)`)
+				.join(' || ');
+
 			this.notesRepository.createQueryBuilder().update()
 				.set({
-					reactions: () => sqls.join(' || '),
+					reactions: () => sql,
 				})
 				.where('id = :id', { id: noteId })
 				.execute();
