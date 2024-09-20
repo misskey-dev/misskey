@@ -1,4 +1,4 @@
-import { strictEqual } from 'node:assert';
+import assert, { strictEqual } from 'node:assert';
 import test, { describe } from 'node:test';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, uploadFile } from './utils.js';
 
@@ -18,9 +18,9 @@ describe('Drive', () => {
 		const noteWithImage = (await uploaderClient.request('notes/create', { fileIds: [image.id] })).createdNote;
 		const uri = `https://a.local/notes/${noteWithImage.id}`;
 		const noteInBServer = await resolveRemoteNote(uri, bAdminClient);
-		strictEqual(noteInBServer.files != null, true);
-		strictEqual(noteInBServer.files!.length, 1);
-		const imageInBServer = noteInBServer.files![0];
+		assert(noteInBServer.files != null);
+		strictEqual(noteInBServer.files.length, 1);
+		const imageInBServer = noteInBServer.files[0];
 
 		await test('Check consistency of DriveFile', () => {
 			// console.log(`a.local: ${JSON.stringify(image, null, '\t')}`);
@@ -60,9 +60,9 @@ describe('Drive', () => {
 		const noteWithUpdatedImage = (await uploaderClient.request('notes/create', { fileIds: [updatedImage.id] })).createdNote;
 		const uriUpdated = `https://a.local/notes/${noteWithUpdatedImage.id}`;
 		const noteWithUpdatedImageInBServer = await resolveRemoteNote(uriUpdated, bAdminClient);
-		strictEqual(noteWithUpdatedImageInBServer.files != null, true);
-		strictEqual(noteWithUpdatedImageInBServer.files!.length, 1);
-		const reupdatedImageInBServer = noteWithUpdatedImageInBServer.files![0];
+		assert(noteWithUpdatedImageInBServer.files != null);
+		strictEqual(noteWithUpdatedImageInBServer.files.length, 1);
+		const reupdatedImageInBServer = noteWithUpdatedImageInBServer.files[0];
 
 		await test('Re-update with attaching to Note', async () => {
 			// console.log(`b.local: ${JSON.stringify(reupdatedImageInBServer, null, '\t')}`);
