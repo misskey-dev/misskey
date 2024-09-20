@@ -97,38 +97,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</FormSection>
 
 					<FormSection>
-						<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
-
-						<div class="_gaps_m">
-							<MkSwitch v-model="enableFanoutTimeline">
-								<template #label>{{ i18n.ts.enable }}</template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="enableFanoutTimelineDbFallback">
-								<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
-							</MkSwitch>
-
-							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
-								<template #label>perLocalUserUserTimelineCacheMax</template>
-							</MkInput>
-
-							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
-								<template #label>perRemoteUserUserTimelineCacheMax</template>
-							</MkInput>
-
-							<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
-								<template #label>perUserHomeTimelineCacheMax</template>
-							</MkInput>
-
-							<MkInput v-model="perUserListTimelineCacheMax" type="number">
-								<template #label>perUserListTimelineCacheMax</template>
-							</MkInput>
-						</div>
-					</FormSection>
-
-					<FormSection>
 						<template #label>{{ i18n.ts._ad.adsSettings }}</template>
 
 						<div class="_gaps_m">
@@ -236,12 +204,6 @@ const cacheRemoteSensitiveFiles = ref<boolean>(false);
 const enableServiceWorker = ref<boolean>(false);
 const swPublicKey = ref<string | null>(null);
 const swPrivateKey = ref<string | null>(null);
-const enableFanoutTimeline = ref<boolean>(false);
-const enableFanoutTimelineDbFallback = ref<boolean>(false);
-const perLocalUserUserTimelineCacheMax = ref<number>(0);
-const perRemoteUserUserTimelineCacheMax = ref<number>(0);
-const perUserHomeTimelineCacheMax = ref<number>(0);
-const perUserListTimelineCacheMax = ref<number>(0);
 const notesPerOneAd = ref<number>(0);
 const urlPreviewEnabled = ref<boolean>(true);
 const urlPreviewTimeout = ref<number>(10000);
@@ -265,12 +227,6 @@ async function init(): Promise<void> {
 	enableServiceWorker.value = meta.enableServiceWorker;
 	swPublicKey.value = meta.swPublickey;
 	swPrivateKey.value = meta.swPrivateKey;
-	enableFanoutTimeline.value = meta.enableFanoutTimeline;
-	enableFanoutTimelineDbFallback.value = meta.enableFanoutTimelineDbFallback;
-	perLocalUserUserTimelineCacheMax.value = meta.perLocalUserUserTimelineCacheMax;
-	perRemoteUserUserTimelineCacheMax.value = meta.perRemoteUserUserTimelineCacheMax;
-	perUserHomeTimelineCacheMax.value = meta.perUserHomeTimelineCacheMax;
-	perUserListTimelineCacheMax.value = meta.perUserListTimelineCacheMax;
 	notesPerOneAd.value = meta.notesPerOneAd;
 	urlPreviewEnabled.value = meta.urlPreviewEnabled;
 	urlPreviewTimeout.value = meta.urlPreviewTimeout;
@@ -295,12 +251,6 @@ async function save() {
 		enableServiceWorker: enableServiceWorker.value,
 		swPublicKey: swPublicKey.value,
 		swPrivateKey: swPrivateKey.value,
-		enableFanoutTimeline: enableFanoutTimeline.value,
-		enableFanoutTimelineDbFallback: enableFanoutTimelineDbFallback.value,
-		perLocalUserUserTimelineCacheMax: perLocalUserUserTimelineCacheMax.value,
-		perRemoteUserUserTimelineCacheMax: perRemoteUserUserTimelineCacheMax.value,
-		perUserHomeTimelineCacheMax: perUserHomeTimelineCacheMax.value,
-		perUserListTimelineCacheMax: perUserListTimelineCacheMax.value,
 		notesPerOneAd: notesPerOneAd.value,
 		urlPreviewEnabled: urlPreviewEnabled.value,
 		urlPreviewTimeout: urlPreviewTimeout.value,

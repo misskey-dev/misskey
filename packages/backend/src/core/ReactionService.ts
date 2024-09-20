@@ -203,6 +203,11 @@ export class ReactionService {
 		// Increment reactions count
 		if (rbt) {
 			this.reactionsBufferingService.create(note, reaction);
+
+			// for debugging
+			if (reaction === ':angry_ai:') {
+				this.reactionsBufferingService.bake();
+			}
 		} else {
 			const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
 			await this.notesRepository.createQueryBuilder().update()
