@@ -1403,6 +1403,7 @@ _serverSettings:
   fanoutTimelineDescription: "활성화하면 각종 타임라인을 가져올 때의 성능을 대폭 향상하며, 데이터베이스의 부하를 줄일 수 있습니다. 단, Redis의 메모리 사용량이 증가합니다. 서버의 메모리 용량이 작거나, 서비스가 불안정해지는 경우 비활성화할 수 있습니다."
   fanoutTimelineDbFallback: "데이터베이스를 예비로 사용하기"
   fanoutTimelineDbFallbackDescription: "활성화하면 타임라인의 캐시되어 있지 않은 부분에 대해 DB에 질의하여 정보를 가져옵니다. 비활성화하면 이를 실행하지 않음으로써 서버의 부하를 줄일 수 있지만, 타임라인에서 가져올 수 있는 게시물 범위가 한정됩니다."
+  reactionsBufferingDescription: "활성화 한 경우, 리액션 작성 퍼포먼스가 대폭 향상되어 DB의 부하를 줄일 수 있으나, Redis의 메모리 사용량이 많아집니다."
   inquiryUrl: "문의처 URL"
   inquiryUrlDescription: "서버 운영자에게 보내는 문의 양식의 URL이나 운영자의 연락처 등이 적힌 웹 페이지의 URL을 설정합니다."
 _accountMigration:
@@ -1736,6 +1737,11 @@ _role:
     canSearchNotes: "노트 검색 이용 가능 여부"
     canUseTranslator: "번역 기능의 사용"
     avatarDecorationLimit: "아바타 장식의 최대 붙임 개수"
+    canImportAntennas: "안테나 가져오기 허용"
+    canImportBlocking: "차단 목록 가져오기 허용"
+    canImportFollowing: "팔로우 가져오기 허용"
+    canImportMuting: "뮤트 목록 가져오기 허용"
+    canImportUserLists: "리스트 목록 가져오기 허용"
   _condition:
     roleAssignedTo: "수동 역할에 이미 할당됨"
     isLocal: "로컬 사용자"
