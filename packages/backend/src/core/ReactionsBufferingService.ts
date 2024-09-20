@@ -10,6 +10,7 @@ import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import type { MiUser, NotesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
+import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
 
 const REDIS_DELTA_PREFIX = 'reactionsBufferDeltas';
 const REDIS_PAIR_PREFIX = 'reactionsBufferPairs';
@@ -36,7 +37,7 @@ export class ReactionsBufferingService {
 			pipeline.zadd(`${REDIS_PAIR_PREFIX}:${noteId}`, i, currentPairs[i]);
 		}
 		pipeline.zadd(`${REDIS_PAIR_PREFIX}:${noteId}`, Date.now(), `${userId}/${reaction}`);
-		pipeline.zremrangebyrank(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -17);
+		pipeline.zremrangebyrank(`${REDIS_PAIR_PREFIX}:${noteId}`, 0, -(PER_NOTE_REACTION_USER_PAIR_CACHE_MAX + 1));
 		await pipeline.exec();
 	}
 
