@@ -592,6 +592,8 @@ ascendingOrder: "Ascendent"
 descendingOrder: "Descendent"
 scratchpad: "Bloc de proves"
 scratchpadDescription: "El bloc de proves proporciona un entorn experimental per AiScript. Pot escriure i verificar els resultats que interactuen amb Misskey."
+uiInspector: "Inspector de la interfície"
+uiInspectorDescription: "Podeu visualitzar una llista d'elements UI presents en la memòria. Els components de la interfície d'usuari són generats per les funcions Ui:C:."
 output: "Sortida"
 script: "Script"
 disablePagesScript: "Desactivar AiScript a les pàgines "
@@ -2446,6 +2448,7 @@ _webhookSettings:
     abuseReportResolved: "Quan resols un informe de moderació "
     userCreated: "Quan es crea un usuari"
   deleteConfirm: "Segur que vols esborrar el webhook?"
+  testRemarks: "Si feu clic al botó a la dreta de l'interruptor, podeu enviar un webhook de prova amb dades dummy."
 _abuseReport:
   _notificationRecipient:
     createRecipient: "Afegeix un destinatari a l'informe de moderació "
@@ -2534,6 +2537,25 @@ _externalResourceInstaller:
   _errors:
     _invalidParams:
       title: "Paràmetres no vàlids "
+      description: "No hi ha suficient informació per carregar les dades del lloc extern. Confirma l'URL que hi ha escrita."
+    _resourceTypeNotSupported:
+      title: "El recurs extern no està suportat."
+      description: "Aquesta mena de recurs no està suportat. Contacta amb l'administrador."
+    _failedToFetch:
+      title: "Ha fallat l'obtenció de dades"
+      fetchErrorDescription: "Ha aparegut un error comunicant-se amb el lloc extern. Si després d'intentar-ho un altre cop no es resol, contacta amb l'administrador."
+      parseErrorDescription: "Ha aparegut un error processant les dades carregades del lloc extern. Contacta amb l'administrador."
+    _hashUnmatched:
+      title: "Ha fallat la verificació de les dades"
+      description: "Ha aparegut un error verificant les dades obtingudes. Com a mesura de seguretat la instal·lació no pot continuar. Contacta amb l'administrador."
+    _pluginParseFailed:
+      title: "Error d'AiScript"
+      description: "Les dades sol·licitades s'han obtingut correctament, però hem trobat un error durant el processament d'AiScript. Contacta amb l'autor de l'afegit. Detalls de l'error es pot veure a la consola JavaScript."
+    _pluginInstallFailed:
+      title: "La instal·lació de l'afegit a fallat"
+      description: "Ha aparegut un error durant la instal·lació de l'afegit. Intenta-ho una altra vegada. El detall de l'error es pot veure a la consola JavaScript."
+    _themeParseFailed:
+      title: "Ha fallat el processament del tema"
 _reversi:
   total: "Total"
 _embedCodeGen:
