@@ -30,6 +30,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 
 const FALLBACK = '\u2764';
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
@@ -93,6 +94,7 @@ export class ReactionService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
+		private reactionsBufferingService: ReactionsBufferingService,
 		private idService: IdService,
 		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
@@ -200,7 +202,7 @@ export class ReactionService {
 
 		// Increment reactions count
 		if (rbt) {
-			this.redisClient.hincrby(`reactionsBuffer:${note.id}`, reaction, 1);
+			this.reactionsBufferingService.create(note, reaction);
 		} else {
 			const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
 			await this.notesRepository.createQueryBuilder().update()

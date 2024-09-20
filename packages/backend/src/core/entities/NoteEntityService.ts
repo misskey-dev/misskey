@@ -17,6 +17,7 @@ import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepos
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -41,6 +42,7 @@ export class NoteEntityService implements OnModuleInit {
 	private driveFileEntityService: DriveFileEntityService;
 	private customEmojiService: CustomEmojiService;
 	private reactionService: ReactionService;
+	private reactionsBufferingService: ReactionsBufferingService;
 	private idService: IdService;
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
@@ -75,6 +77,7 @@ export class NoteEntityService implements OnModuleInit {
 		//private driveFileEntityService: DriveFileEntityService,
 		//private customEmojiService: CustomEmojiService,
 		//private reactionService: ReactionService,
+		//private reactionsBufferingService: ReactionsBufferingService,
 	) {
 	}
 
@@ -83,6 +86,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.reactionService = this.moduleRef.get('ReactionService');
+		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
 		this.idService = this.moduleRef.get('IdService');
 	}
 
@@ -319,6 +323,7 @@ export class NoteEntityService implements OnModuleInit {
 		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 		const host = note.userHost;
+		const reactions = mergeReactions(note.reactions, opts._hint_?.reactionsDeltas.get(note.id) ?? {});
 
 		let text = note.text;
 
@@ -332,7 +337,7 @@ export class NoteEntityService implements OnModuleInit {
 				: await this.channelsRepository.findOneBy({ id: note.channelId })
 			: null;
 
-		const reactionEmojiNames = Object.keys(mergeReactions(note.reactions, opts._hint_?.reactionsDeltas.get(note.id) ?? {}))
+		const reactionEmojiNames = Object.keys(reactions)
 			.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
 		const packedFiles = options?._hint_?.packedFiles;
@@ -351,8 +356,8 @@ export class NoteEntityService implements OnModuleInit {
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
-			reactionCount: Object.values(mergeReactions(note.reactions, opts._hint_?.reactionsDeltas.get(note.id) ?? {})).reduce((a, b) => a + b, 0),
-			reactions: mergeReactions(this.reactionService.convertLegacyReactions(note.reactions), opts._hint_?.reactionsDeltas.get(note.id) ?? {}),
+			reactionCount: Object.values(reactions).reduce((a, b) => a + b, 0),
+			reactions: reactions,
 			reactionEmojis: this.customEmojiService.populateEmojis(reactionEmojiNames, host),
 			reactionAndUserPairCache: opts.withReactionAndUserPairCache ? note.reactionAndUserPairCache : undefined,
 			emojis: host != null ? this.customEmojiService.populateEmojis(note.emojis, host) : undefined,
@@ -393,7 +398,7 @@ export class NoteEntityService implements OnModuleInit {
 
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
-				...(meId && Object.keys(mergeReactions(note.reactions, opts._hint_?.reactionsDeltas.get(note.id) ?? {})).length > 0 ? {
+				...(meId && Object.keys(reactions).length > 0 ? {
 					myReaction: this.populateMyReaction(note, meId, options?._hint_),
 				} : {}),
 			} : {}),
@@ -417,27 +422,8 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const reactionsDeltas = new Map<MiNote['id'], Record<string, number>>();
-
 		const rbt = true;
-
-		if (rbt) {
-			const pipeline = this.redisClient.pipeline();
-			for (const note of notes) {
-				pipeline.hgetall(`reactionsBuffer:${note.id}`);
-			}
-			const results = await pipeline.exec();
-
-			for (let i = 0; i < notes.length; i++) {
-				const note = notes[i];
-				const result = results![i][1];
-				const delta = {};
-				for (const [name, count] of Object.entries(result)) {
-					delta[name] = parseInt(count);
-				}
-				reactionsDeltas.set(note.id, delta);
-			}
-		}
+		const reactionsDeltas = rbt ? await this.reactionsBufferingService.getMany(notes) : new Map();
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
