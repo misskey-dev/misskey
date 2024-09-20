@@ -92,22 +92,12 @@ export async function createAccount(host: string, adminClient: Misskey.api.APICl
 	];
 }
 
-function parseAcct(acct: string): { username: string; host: string | null } {
-	const split = (acct.startsWith('@') ? acct.substring(1) : acct).split('@', 2);
-	return { username: split[0], host: split[1] ?? null };
-}
-
-export async function resolveRemoteAccount(from_acct: string, to_acct: string, fromClient?: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
-	const [from, to] = [parseAcct(from_acct), parseAcct(to_acct)];
-	const fromAdminClient: Misskey.api.APIClient = fromClient ?? (await fetchAdmin(from.username))[1];
-
+export async function resolveRemoteUser(url: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
-		console.log(`Resolving @${to.username}@${to.host} from @${from.username}@${from.host} ...`);
-		fromAdminClient.request('ap/show', { uri: `https://${to.host}/@${to.username}` })
+		fromClient.request('ap/show', { uri: url })
 			.then(res => {
-				console.log(`Resolved @${to.username}@${to.host} from @${from.username}@${from.host}`);
 				strictEqual(res.type, 'User');
-				strictEqual(res.object.url, `https://${to.host}/@${to.username}`);
+				strictEqual(res.object.url, url);
 				resolve(res.object);
 			})
 			.catch(err => reject(err));
