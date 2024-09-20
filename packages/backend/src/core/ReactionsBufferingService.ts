@@ -62,6 +62,7 @@ export class ReactionsBufferingService {
 		return deltas;
 	}
 
+	// TODO: scanは重い可能性があるので、別途 bufferedNoteIds を直接Redis上に持っておいてもいいかもしれない
 	@bindThis
 	public async bake() {
 		const bufferedNoteIds = [];
