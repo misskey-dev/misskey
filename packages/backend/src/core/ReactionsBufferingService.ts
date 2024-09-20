@@ -19,8 +19,8 @@ export class ReactionsBufferingService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis, // TODO: 専用のRedisインスタンスにする
+		@Inject(DI.redisForReactions)
+		private redisForReactions: Redis.Redis, // TODO: 専用のRedisインスタンスにする
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -29,17 +29,17 @@ export class ReactionsBufferingService {
 
 	@bindThis
 	public async create(note: MiNote, reaction: string) {
-		this.redisClient.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, 1);
+		this.redisForReactions.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, 1);
 	}
 
 	@bindThis
 	public async delete(note: MiNote, reaction: string) {
-		this.redisClient.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, -1);
+		this.redisForReactions.hincrby(`${REDIS_PREFIX}:${note.id}`, reaction, -1);
 	}
 
 	@bindThis
 	public async get(noteId: MiNote['id']): Promise<Record<string, number>> {
-		const result = await this.redisClient.hgetall(`${REDIS_PREFIX}:${noteId}`);
+		const result = await this.redisForReactions.hgetall(`${REDIS_PREFIX}:${noteId}`);
 		const delta = {} as Record<string, number>;
 		for (const [name, count] of Object.entries(result)) {
 			delta[name] = parseInt(count);
@@ -51,7 +51,7 @@ export class ReactionsBufferingService {
 	public async getMany(noteIds: MiNote['id'][]): Promise<Map<MiNote['id'], Record<string, number>>> {
 		const deltas = new Map<MiNote['id'], Record<string, number>>();
 
-		const pipeline = this.redisClient.pipeline();
+		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of noteIds) {
 			pipeline.hgetall(`${REDIS_PREFIX}:${noteId}`);
 		}
@@ -77,8 +77,13 @@ export class ReactionsBufferingService {
 		let cursor = '0';
 		do {
 			// https://github.com/redis/ioredis#transparent-key-prefixing
-			const result = await this.redisClient.scan(cursor, 'MATCH', `${this.config.redis.prefix}:${REDIS_PREFIX}:*`, 'COUNT', '1000');
-			console.log(result);
+			const result = await this.redisForReactions.scan(
+				cursor,
+				'MATCH',
+				`${this.config.redis.prefix}:${REDIS_PREFIX}:*`,
+				'COUNT',
+				'1000');
+
 			cursor = result[0];
 			bufferedNoteIds.push(...result[1].map(x => x.replace(`${this.config.redis.prefix}:${REDIS_PREFIX}:`, '')));
 		} while (cursor !== '0');
@@ -86,7 +91,7 @@ export class ReactionsBufferingService {
 		const deltas = await this.getMany(bufferedNoteIds);
 
 		// clear
-		const pipeline = this.redisClient.pipeline();
+		const pipeline = this.redisForReactions.pipeline();
 		for (const noteId of bufferedNoteIds) {
 			pipeline.del(`${REDIS_PREFIX}:${noteId}`);
 		}

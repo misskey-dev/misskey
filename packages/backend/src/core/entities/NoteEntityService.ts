@@ -16,6 +16,7 @@ import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { MetaService } from '@/core/MetaService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -42,6 +43,7 @@ export class NoteEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	private reactionsBufferingService: ReactionsBufferingService;
 	private idService: IdService;
+	private metaService: MetaService;
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
@@ -73,6 +75,8 @@ export class NoteEntityService implements OnModuleInit {
 		//private customEmojiService: CustomEmojiService,
 		//private reactionService: ReactionService,
 		//private reactionsBufferingService: ReactionsBufferingService,
+		//private idService: IdService,
+		//private metaService: MetaService,
 	) {
 	}
 
@@ -83,6 +87,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
 		this.idService = this.moduleRef.get('IdService');
+		this.metaService = this.moduleRef.get('MetaService');
 	}
 
 	@bindThis
@@ -417,8 +422,9 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const rbt = true;
-		const reactionsDeltas = rbt ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : new Map();
+		const meta = await this.metaService.fetch();
+
+		const reactionsDeltas = meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : new Map();
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();

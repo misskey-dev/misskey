@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -72,9 +71,6 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 @Injectable()
 export class ReactionService {
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis, // TODO: 専用のRedisインスタンスにする
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -198,10 +194,8 @@ export class ReactionService {
 			}
 		}
 
-		const rbt = true;
-
 		// Increment reactions count
-		if (rbt) {
+		if (meta.enableReactionsBuffering) {
 			this.reactionsBufferingService.create(note, reaction);
 
 			// for debugging

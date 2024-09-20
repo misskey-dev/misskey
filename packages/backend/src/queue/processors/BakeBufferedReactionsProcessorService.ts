@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 
@@ -16,6 +17,7 @@ export class BakeBufferedReactionsProcessorService {
 
 	constructor(
 		private reactionsBufferingService: ReactionsBufferingService,
+		private metaService: MetaService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('bake-buffered-reactions');
@@ -23,6 +25,12 @@ export class BakeBufferedReactionsProcessorService {
 
 	@bindThis
 	public async process(): Promise<void> {
+		const meta = await this.metaService.fetch();
+		if (!meta.enableReactionsBuffering) {
+			this.logger.info('Reactions buffering is disabled. Skipping...');
+			return;
+		}
+
 		this.logger.info('Baking buffered reactions...');
 
 		await this.reactionsBufferingService.bake();
