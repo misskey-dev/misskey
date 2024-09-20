@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<MkSpacer :marginMin="20" :marginMax="32">
 		<form class="_gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
-			<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
+			<MkInput v-if="serverMetadata.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
 				<template #label>{{ i18n.ts.invitationCode }}</template>
 				<template #prefix><i class="ti ti-key"></i></template>
 			</MkInput>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 				</template>
 			</MkInput>
-			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+			<MkInput v-if="serverMetadata.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 				<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 				<template #prefix><i class="ti ti-mail"></i></template>
 				<template #caption>
@@ -62,10 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
 				</template>
 			</MkInput>
-			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
-			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
-			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
-			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
+			<MkCaptcha v-if="serverMetadata.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="serverMetadata.hcaptchaSiteKey"/>
+			<MkCaptcha v-if="serverMetadata.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="serverMetadata.mcaptchaSiteKey" :instanceUrl="serverMetadata.mcaptchaInstanceUrl"/>
+			<MkCaptcha v-if="serverMetadata.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="serverMetadata.recaptchaSiteKey"/>
+			<MkCaptcha v-if="serverMetadata.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="serverMetadata.turnstileSiteKey"/>
 			<MkButton type="submit" :disabled="shouldDisableSubmitting" large gradate rounded data-cy-signup-submit style="margin: 0 auto;">
 				<template v-if="submitting">
 					<MkLoading :em="true" :colored="false"/>
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
@@ -88,8 +88,10 @@ import * as config from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
@@ -127,11 +129,11 @@ const emailAbortController = ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
-		instance.enableHcaptcha && !hCaptchaResponse.value ||
-		instance.enableMcaptcha && !mCaptchaResponse.value ||
-		instance.enableRecaptcha && !reCaptchaResponse.value ||
-		instance.enableTurnstile && !turnstileResponse.value ||
-		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
+		serverMetadata.enableHcaptcha && !hCaptchaResponse.value ||
+		serverMetadata.enableMcaptcha && !mCaptchaResponse.value ||
+		serverMetadata.enableRecaptcha && !reCaptchaResponse.value ||
+		serverMetadata.enableTurnstile && !turnstileResponse.value ||
+		serverMetadata.emailRequiredForSignup && emailState.value !== 'ok' ||
 		usernameState.value !== 'ok' ||
 		passwordRetypeState.value !== 'match';
 });
@@ -260,7 +262,7 @@ async function onSubmit(): Promise<void> {
 			'g-recaptcha-response': reCaptchaResponse.value,
 			'turnstile-response': turnstileResponse.value,
 		});
-		if (instance.emailRequiredForSignup) {
+		if (serverMetadata.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,

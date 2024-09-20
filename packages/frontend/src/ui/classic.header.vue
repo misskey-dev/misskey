@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="body">
 		<div class="left">
 			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
-				<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+				<img :src="serverMetadata.iconUrl ?? serverMetadata.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 			</button>
 			<MkA v-click-anime v-tooltip="i18n.ts.timeline" class="item index" activeClass="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
@@ -47,15 +47,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, defineAsyncComponent, inject, onMounted, ref } from 'vue';
 import { openInstanceMenu } from './_common_/common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const WINDOW_THRESHOLD = 1400;
 

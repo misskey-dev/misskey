@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
 		<div class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.noNotes }}</div>
 		</div>
 	</template>
@@ -32,12 +32,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { shallowRef, inject } from 'vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	pagination: Paging;

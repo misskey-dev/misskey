@@ -33,15 +33,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { notePage } from '@/filters/note.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -56,7 +58,7 @@ const showingFiles = ref<string[]>([]);
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(image.url)
+		? mediaProxy.getStaticImageUrl(image.url)
 		: image.thumbnailUrl;
 }
 

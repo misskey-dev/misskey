@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" appear>
 	<div :class="$style.root">
-		<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
+		<img v-if="serverMetadata.serverErrorImageUrl" :class="$style.img" :src="serverMetadata.serverErrorImageUrl" class="_ghost"/>
 		<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
 		<MkButton :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</MkButton>
 	</div>
@@ -14,10 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
-import { serverErrorImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const emit = defineEmits<{
 	(ev: 'retry'): void;

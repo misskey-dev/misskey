@@ -15,12 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, inject, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
-import { isEnabledUrlPreview } from '@/instance.js';
 import { MkABehavior } from '@/components/global/MkA.vue';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -35,7 +37,7 @@ const target = self ? null : '_blank';
 
 const el = ref<HTMLElement | { $el: HTMLElement }>();
 
-if (isEnabledUrlPreview.value) {
+if (serverMetadata.enableUrlPreview) {
 	useTooltip(el, (showing) => {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,

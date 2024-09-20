@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee" link preview></MkAvatar>
 		</div>
 		<div v-else :class="$style.bdayFFallback">
-			<img :src="infoImageUrl" class="_ghost" :class="$style.bdayFFallbackImage"/>
+			<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost" :class="$style.bdayFFallbackImage"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</div>
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
@@ -31,7 +31,9 @@ import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 import { $i } from '@/account.js';
 
 const name = i18n.ts._widgets.birthdayFollowings;

@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="renoteMutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -126,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -136,7 +136,9 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
 

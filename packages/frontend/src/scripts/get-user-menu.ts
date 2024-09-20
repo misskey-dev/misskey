@@ -13,14 +13,14 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
 import { $i, iAmModerator } from '@/account.js';
-import { notesSearchAvailable, canSearchNonLocalNotes } from '@/scripts/check-permissions.js';
+import { isNotesSearchAvailable, canSearchNonLocalNotes } from '@/scripts/check-permissions.js';
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import { MenuItem } from '@/types/menu.js';
 
-export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
+export function getUserMenu(ctx: { serverMetadata: Misskey.entities.MetaDetailed }, user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
 	const meId = $i ? $i.id : null;
 
 	const cleanups = [] as (() => void)[];
@@ -154,7 +154,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
-	}, ...( notesSearchAvailable && (user.host == null || canSearchNonLocalNotes) ? [{
+	}, ...(isNotesSearchAvailable(ctx.serverMetadata) && (user.host == null || canSearchNonLocalNotes(ctx.serverMetadata)) ? [{
 		icon: 'ti ti-search',
 		text: i18n.ts.searchThisUsersNotes,
 		action: () => {

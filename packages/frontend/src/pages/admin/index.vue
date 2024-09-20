@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16">
 			<div class="lxpfedzu _gaps">
 				<div class="banner">
-					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+					<img :src="serverMetadata.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 				</div>
 
 				<div class="_gaps_s">
@@ -31,17 +31,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
+import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed, inject } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { instance } from '@/instance.js';
 import { lookup } from '@/scripts/lookup.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail, lookupFile } from '@/scripts/admin-lookup.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -61,10 +63,10 @@ const narrow = ref(false);
 const view = ref(null);
 const el = ref<HTMLDivElement | null>(null);
 const pageProps = ref({});
-const noMaintainerInformation = computed(() => isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail));
-const noBotProtection = computed(() => !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile && !instance.enableMcaptcha);
-const noEmailServer = computed(() => !instance.enableEmail);
-const noInquiryUrl = computed(() => isEmpty(instance.inquiryUrl));
+const noMaintainerInformation = computed(() => isEmpty(serverMetadata.maintainerName) || isEmpty(serverMetadata.maintainerEmail));
+const noBotProtection = computed(() => !serverMetadata.disableRegistration && !serverMetadata.enableHcaptcha && !serverMetadata.enableRecaptcha && !serverMetadata.enableTurnstile && !serverMetadata.enableMcaptcha);
+const noEmailServer = computed(() => !serverMetadata.enableEmail);
+const noInquiryUrl = computed(() => isEmpty(serverMetadata.inquiryUrl));
 const thereIsUnresolvedAbuseReport = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
 
@@ -88,7 +90,7 @@ const menuDef = computed(() => [{
 		icon: 'ti ti-search',
 		text: i18n.ts.lookup,
 		action: adminLookup,
-	}, ...(instance.disableRegistration ? [{
+	}, ...(serverMetadata.disableRegistration ? [{
 		type: 'button',
 		icon: 'ti ti-user-plus',
 		text: i18n.ts.createInviteCode,

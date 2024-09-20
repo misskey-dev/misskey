@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination ref="paginationComponent" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noFollowRequests }}</div>
 				</div>
 			</template>
@@ -37,14 +37,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
+import { shallowRef, inject, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

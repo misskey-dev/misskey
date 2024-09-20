@@ -69,20 +69,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-else class="_fullinfo">
-		<img :src="infoImageUrl" class="_ghost"/>
+		<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 		<div>{{ i18n.ts.nothing }}</div>
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
+import { ref, computed, inject, defineAsyncComponent, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import bytes from '@/filters/bytes.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MKSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
+			<img v-if="serverMetadata.serverErrorImageUrl" :class="$style.img" :src="serverMetadata.serverErrorImageUrl" class="_ghost"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ i18n.ts.nothing }}
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, ref } from 'vue';
+import { watch, computed, ref, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -43,7 +43,9 @@ import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { serverErrorImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	listId: string;

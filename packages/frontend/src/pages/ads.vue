@@ -9,16 +9,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSpacer :contentMax="500">
 		<div class="_gaps">
-			<MkAd v-for="ad in instance.ads" :key="ad.id" :specify="ad"/>
+			<MkAd v-for="ad in serverMetadata.ads" :key="ad.id" :specify="ad"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 definePageMetadata(() => ({
 	title: i18n.ts.ads,

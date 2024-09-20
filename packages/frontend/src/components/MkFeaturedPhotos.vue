@@ -4,11 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="instance" :class="$style.root" :style="{ backgroundImage: `url(${ instance.backgroundImageUrl })` }"></div>
+<div :class="$style.root" :style="{ backgroundImage: `url(${ serverMetadata.backgroundImageUrl })` }"></div>
 </template>
 
 <script lang="ts" setup>
-import { instance } from '@/instance.js';
+import { inject } from 'vue';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 </script>
 
 <style lang="scss" module>

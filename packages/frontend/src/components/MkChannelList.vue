@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkPagination :pagination="pagination">
 	<template #empty>
 		<div class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.notFound }}</div>
 		</div>
 	</template>
@@ -19,10 +19,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;

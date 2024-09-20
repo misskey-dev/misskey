@@ -38,7 +38,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fetchInstance } from '@/instance.js';
+import { fetchServerMetadata } from '@/server-metadata.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -61,7 +61,7 @@ function save() {
 		mediaSilencedHosts: mediaSilencedHosts.value.split('\n') || [],
 
 	}).then(() => {
-		fetchInstance(true);
+		fetchServerMetadata(true);
 	});
 }
 

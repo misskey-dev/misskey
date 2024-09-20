@@ -25,16 +25,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { defaultStore } from '@/store.js';
 
 const name = 'federation';
@@ -56,6 +55,9 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	props,
 	emit,
 );
+import { DI } from '@/di.js';
+
+const mediaProxy = inject(DI.mediaProxy)!;
 
 const instances = ref<Misskey.entities.FederationInstance[]>([]);
 const charts = ref<Misskey.entities.ChartsInstanceResponse[]>([]);
@@ -78,7 +80,7 @@ useInterval(fetch, 1000 * 60, {
 });
 
 function getInstanceIcon(instance): string {
-	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
+	return mediaProxy.getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? mediaProxy.getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 
 defineExpose<WidgetComponentExpose>({

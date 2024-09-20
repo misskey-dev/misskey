@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
 						<template #caption>
-							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: serverMetadata.name ?? host }) }}</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
 							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
 							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '192x192px' }) }}</strong></div>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
 						<template #caption>
-							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: serverMetadata.name ?? host }) }}</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
 							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
 							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '512x512px' }) }}</strong></div>
@@ -104,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import JSON5 from 'json5';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -112,12 +112,15 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { instance, fetchInstance } from '@/instance.js';
+import { fetchServerMetadata } from '@/server-metadata.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { host } from '@@/js/config.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const iconUrl = ref<string | null>(null);
 const app192IconUrl = ref<string | null>(null);
@@ -169,7 +172,7 @@ function save() {
 		feedbackUrl: feedbackUrl.value === '' ? null : feedbackUrl.value,
 		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
 	}).then(() => {
-		fetchInstance(true);
+		fetchServerMetadata(true);
 	});
 }
 

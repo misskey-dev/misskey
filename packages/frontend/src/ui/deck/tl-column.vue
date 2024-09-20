@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="!isAvailableBasicTimeline(column.tl)" :class="$style.disabled">
+	<div v-if="!isAvailableBasicTimeline(serverMetadata, column.tl)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-circle-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed } from 'vue';
+import { onMounted, watch, ref, shallowRef, computed, inject } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -39,10 +39,12 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import { instance } from '@/instance.js';
 import { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 import * as sound from '@/scripts/sound.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	column: Column;

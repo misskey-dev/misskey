@@ -13,6 +13,9 @@ import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
+import { DI } from '../src/di.js';
+import { url } from '../../frontend-shared/js/config.js';
+import { MediaProxy } from '../../frontend-shared/js/media-proxy.js';
 
 const appInitialized = Symbol();
 
@@ -77,6 +80,10 @@ queueMicrotask(() => {
 				return;
 			}
 			app[appInitialized] = true;
+			app.provide(DI.serverMetadata, {}); // TODO
+			app.provide(DI.mediaProxy, new MediaProxy({
+				mediaProxy: 'https://example.com',
+			}, url));
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);

@@ -279,7 +279,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, inject, reactive, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -291,10 +291,13 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { instance, fetchInstance } from '@/instance.js';
+import { fetchServerMetadata } from '@/server-metadata.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { ROLE_POLICIES } from '@@/js/const.js';
 import { useRouter } from '@/router/supplier.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const router = useRouter();
 const baseRoleQ = ref('');
@@ -303,7 +306,7 @@ const roles = await misskeyApi('admin/roles/list');
 
 const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
 for (const ROLE_POLICY of ROLE_POLICIES) {
-	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
+	policies[ROLE_POLICY] = serverMetadata.policies[ROLE_POLICY];
 }
 
 function matchQuery(keywords: string[]): boolean {
@@ -315,7 +318,7 @@ async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
 		policies,
 	});
-	fetchInstance(true);
+	fetchServerMetadata(true);
 }
 
 function create() {

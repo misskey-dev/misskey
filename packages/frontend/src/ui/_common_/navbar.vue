@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
 	<div :class="$style.body">
 		<div :class="$style.top">
-			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
-			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
-				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+			<div :class="$style.banner" :style="{ backgroundImage: `url(${ serverMetadata.bannerUrl })` }"></div>
+			<button v-tooltip.noDelay.right="serverMetadata.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
+				<img :src="serverMetadata.iconUrl || serverMetadata.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
 			</button>
 		</div>
 		<div :class="$style.middle">
@@ -60,14 +60,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, ref, watch } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const iconOnly = ref(false);
 

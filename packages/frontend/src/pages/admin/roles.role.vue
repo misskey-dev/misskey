@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img :src="infoImageUrl" class="_ghost"/>
+									<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, inject } from 'vue';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -74,7 +74,9 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();

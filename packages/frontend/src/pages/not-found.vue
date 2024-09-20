@@ -6,18 +6,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div class="_fullinfo">
-		<img :src="notFoundImageUrl" class="_ghost"/>
+		<img v-if="serverMetadata.notFoundImageUrl" :src="serverMetadata.notFoundImageUrl" class="_ghost"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
-import { notFoundImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const props = defineProps<{
 	showLoginPopup?: boolean;

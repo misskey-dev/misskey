@@ -6,10 +6,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
-import { onBeforeUnmount } from 'vue';
+import { onBeforeUnmount, inject } from 'vue';
 import MkSignupServerRules from './MkSignupDialog.rules.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const instance = inject(DI.serverMetadata)!;
+
 export const Empty = {
 	render(args) {
 		return {

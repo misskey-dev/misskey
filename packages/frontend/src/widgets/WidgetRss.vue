@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
 		<div v-else-if="(!items || items.length === 0) && widgetProps.showHeader" class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img v-if="serverMetadata.infoImageUrl" :src="serverMetadata.infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 		<div v-else :class="$style.feed">
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
@@ -31,7 +31,9 @@ import MkContainer from '@/components/MkContainer.vue';
 import { url as base } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { infoImageUrl } from '@/instance.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const name = 'rss';
 

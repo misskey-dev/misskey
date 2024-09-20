@@ -41,13 +41,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { $i, getAccounts } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
-import { instance } from '@/instance.js';
 import { apiWithDialog, promiseDialog } from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di.js';
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 defineProps<{
 	primary?: boolean;
@@ -72,12 +74,12 @@ const pushSubscription = ref<PushSubscription | null>(null);
 const pushRegistrationInServer = ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
 
 function subscribe() {
-	if (!registration.value || !supported.value || !instance.swPublickey) return;
+	if (!registration.value || !supported.value || !serverMetadata.swPublickey) return;
 
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 	return promiseDialog(registration.value.pushManager.subscribe({
 		userVisibleOnly: true,
-		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
+		applicationServerKey: urlBase64ToUint8Array(serverMetadata.swPublickey),
 	})
 		.then(async subscription => {
 			pushSubscription.value = subscription;
@@ -156,7 +158,7 @@ if (navigator.serviceWorker == null) {
 
 		pushSubscription.value = await registration.value.pushManager.getSubscription();
 
-		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
+		if (serverMetadata.swPublickey && ('PushManager' in window) && $i && $i.token) {
 			supported.value = true;
 
 			if (pushSubscription.value) {
