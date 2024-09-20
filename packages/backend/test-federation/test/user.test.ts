@@ -44,6 +44,26 @@ describe('User', () => {
 				'publicReactions',
 			]);
 		});
+
+		describe('isCat is federated', async () => {
+			const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+			const [, bobClient] = await createAccount('b.test', bAdminClient);
+			const aliceInBServer = await resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient);
+			await test('Not isCat for default', () => {
+				strictEqual(aliceInBServer.isCat, false);
+			});
+
+			await test('Becoming a cat is sent to their followers', async () => {
+				await bobClient.request('following/create', { userId: aliceInBServer.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+
+				await aliceClient.request('i/update', { isCat: true });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+
+				const res = await bobClient.request('users/show', { userId: aliceInBServer.id });
+				strictEqual(res.isCat, true);
+			});
+		});
 	});
 
 	describe('Follow / Unfollow', async () => {
