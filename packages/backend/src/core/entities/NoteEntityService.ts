@@ -6,13 +6,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
@@ -48,9 +46,6 @@ export class NoteEntityService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis, // TODO: 専用のRedisインスタンスにする
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -423,7 +418,7 @@ export class NoteEntityService implements OnModuleInit {
 		if (notes.length === 0) return [];
 
 		const rbt = true;
-		const reactionsDeltas = rbt ? await this.reactionsBufferingService.getMany(notes) : new Map();
+		const reactionsDeltas = rbt ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : new Map();
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();

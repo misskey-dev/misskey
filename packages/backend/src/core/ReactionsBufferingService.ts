@@ -8,6 +8,7 @@ import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
+import type { NotesRepository } from '@/models/_.js';
 
 const REDIS_PREFIX = 'reactionsBuffer';
 
@@ -16,6 +17,9 @@ export class ReactionsBufferingService {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis, // TODO: 専用のRedisインスタンスにする
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 	) {
 	}
 
@@ -30,8 +34,8 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async get(note: MiNote) {
-		const result = await this.redisClient.hgetall(`${REDIS_PREFIX}:${note.id}`);
+	public async get(noteId: MiNote['id']) {
+		const result = await this.redisClient.hgetall(`${REDIS_PREFIX}:${noteId}`);
 		const delta = {};
 		for (const [name, count] of Object.entries(result)) {
 			delta[name] = parseInt(count);
@@ -40,23 +44,23 @@ export class ReactionsBufferingService {
 	}
 
 	@bindThis
-	public async getMany(notes: MiNote[]) {
+	public async getMany(noteIds: MiNote['id'][]) {
 		const deltas = new Map<MiNote['id'], Record<string, number>>();
 
 		const pipeline = this.redisClient.pipeline();
-		for (const note of notes) {
-			pipeline.hgetall(`${REDIS_PREFIX}:${note.id}`);
+		for (const noteId of noteIds) {
+			pipeline.hgetall(`${REDIS_PREFIX}:${noteId}`);
 		}
 		const results = await pipeline.exec();
 
-		for (let i = 0; i < notes.length; i++) {
-			const note = notes[i];
+		for (let i = 0; i < noteIds.length; i++) {
+			const noteId = noteIds[i];
 			const result = results![i][1];
 			const delta = {};
 			for (const [name, count] of Object.entries(result)) {
 				delta[name] = parseInt(count);
 			}
-			deltas.set(note.id, delta);
+			deltas.set(noteId, delta);
 		}
 
 		return deltas;
@@ -74,5 +78,30 @@ export class ReactionsBufferingService {
 		} while (cursor !== '0');
 
 		console.log(bufferedNoteIds);
+
+		const deltas = await this.getMany(bufferedNoteIds);
+
+		console.log(deltas);
+
+		// clear
+		const pipeline = this.redisClient.pipeline();
+		for (const noteId of bufferedNoteIds) {
+			pipeline.del(`${REDIS_PREFIX}:${noteId}`);
+		}
+		await pipeline.exec();
+
+		// TODO: SQL一個にまとめたい
+		for (const [noteId, delta] of deltas) {
+			const sqls = [] as string[];
+			for (const [reaction, count] of Object.entries(delta)) {
+				sqls.push(`jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + ${count})::text::jsonb)`);
+			}
+			this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => sqls.join(' || '),
+				})
+				.where('id = :id', { id: noteId })
+				.execute();
+		}
 	}
 }
