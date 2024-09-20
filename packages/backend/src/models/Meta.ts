@@ -589,18 +589,10 @@ export class MiMeta {
 	})
 	public perUserListTimelineCacheMax: number;
 
-	//	@Column('boolean', {
-	//		default: true,
-	//	})
-	//	public enableReactionsBuffering: boolean;
-	//
-	//	/**
-	//	 * 分
-	//	 */
-	//	@Column('integer', {
-	//		default: 180,
-	//	})
-	//	public reactionsBufferingTtl: number;
+	@Column('boolean', {
+		default: false,
+	})
+	public enableReactionsBuffering: boolean;
 
 	@Column('integer', {
 		default: 0,

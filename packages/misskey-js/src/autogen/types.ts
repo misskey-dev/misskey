@@ -5125,6 +5125,7 @@ export type operations = {
             perRemoteUserUserTimelineCacheMax: number;
             perUserHomeTimelineCacheMax: number;
             perUserListTimelineCacheMax: number;
+            enableReactionsBuffering: boolean;
             notesPerOneAd: number;
             backgroundImageUrl: string | null;
             deeplAuthKey: string | null;
@@ -9395,6 +9396,7 @@ export type operations = {
           perRemoteUserUserTimelineCacheMax?: number;
           perUserHomeTimelineCacheMax?: number;
           perUserListTimelineCacheMax?: number;
+          enableReactionsBuffering?: boolean;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
           mediaSilencedHosts?: string[] | null;

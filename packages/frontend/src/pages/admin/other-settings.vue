@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-bolt"></i></template>
-					<template #label>Misskey® Reactions Buffering Technology™ (RBT)</template>
+					<template #label>Misskey® Reactions Buffering Technology™ (RBT)<span class="_beta">{{ i18n.ts.beta }}</span></template>
 					<template v-if="enableReactionsBuffering" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
 
