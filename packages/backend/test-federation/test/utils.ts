@@ -42,10 +42,17 @@ export async function signin(host: string, params: Misskey.entities.SigninReques
 		});
 }
 
+const adminCache = new Map<string, Misskey.entities.SigninResponse>();
+
 async function createAdmin(host: string): Promise<Misskey.entities.SignupResponse | undefined> {
 	const client = new Misskey.api.APIClient({ origin: `https://${host}` });
 	return await client.request('admin/accounts/create', ADMIN_PARAMS).then(res => {
 		console.log(`Successfully created admin account: @${ADMIN_PARAMS.username}@${host}`);
+		adminCache.set(host, {
+			id: res.id,
+			// @ts-expect-error FIXME: openapi-typescript generates incorrect response type for this endpoint, so ignore this
+			i: res.token,
+		});
 		return res as Misskey.entities.SignupResponse;
 	}).then(async res => {
 		await client.request('admin/roles/update-default-policies', {
@@ -64,7 +71,13 @@ async function createAdmin(host: string): Promise<Misskey.entities.SignupRespons
 }
 
 export async function fetchAdmin(host: string): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient]> {
-	const admin = await signin(host, ADMIN_PARAMS)
+	await new Promise(resolve => setTimeout(resolve, Math.random() * 5000));
+
+	const admin = adminCache.get(host) ?? await signin(host, ADMIN_PARAMS)
+		.then(res => {
+			adminCache.set(host, res);
+			return res;
+		})
 		.catch(async err => {
 			if (err.id === '6cc579cc-885d-43d8-95c2-b8c7fc963280') {
 				await createAdmin(host);
