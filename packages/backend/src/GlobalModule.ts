@@ -13,6 +13,7 @@ import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
+import { MiMeta } from '@/models/Meta.js';
 
 const $config: Provider = {
 	provide: DI.config,
@@ -86,11 +87,45 @@ const $redisForReactions: Provider = {
 	inject: [DI.config],
 };
 
+const $meta: Provider = {
+	provide: DI.meta,
+	useFactory: async (db: DataSource) => {
+		return await db.transaction(async transactionalEntityManager => {
+			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
+			const metas = await transactionalEntityManager.find(MiMeta, {
+				order: {
+					id: 'DESC',
+				},
+			});
+
+			const meta = metas[0];
+
+			if (meta) {
+				return meta;
+			} else {
+				// metaが空のときfetchMetaが同時に呼ばれるとここが同時に呼ばれてしまうことがあるのでフェイルセーフなupsertを使う
+				const saved = await transactionalEntityManager
+					.upsert(
+						MiMeta,
+						{
+							id: 'x',
+						},
+						['id'],
+					)
+					.then((x) => transactionalEntityManager.findOneByOrFail(MiMeta, x.identifiers[0]));
+
+				return saved;
+			}
+		});
+	},
+	inject: [DI.db],
+};
+
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
-	exports: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
+	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
+	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
