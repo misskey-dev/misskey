@@ -14,7 +14,11 @@ export default [
 	},
 	...pluginVue.configs['flat/recommended'],
 	{
-		files: ['js/**/*.{ts,vue}', '**/*.vue'],
+		files: [
+			'@types/**/*.ts',
+			'js/**/*.ts',
+			'**/*.vue',
+		],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),

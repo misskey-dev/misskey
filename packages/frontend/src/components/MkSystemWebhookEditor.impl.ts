@@ -4,9 +4,10 @@
  */
 
 import { defineAsyncComponent } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 
-export type SystemWebhookEventType = 'abuseReport' | 'abuseReportResolved';
+export type SystemWebhookEventType = Misskey.entities.SystemWebhook['on'][number];
 
 export type MkSystemWebhookEditorProps = {
 	mode: 'create' | 'edit';

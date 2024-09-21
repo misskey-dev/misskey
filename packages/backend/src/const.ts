@@ -13,6 +13,8 @@ export const REMOTE_USER_MOVE_COOLDOWN = 1000 * 60 * 60 * 24 * 14; // 14days
 
 export const REMOTE_SERVER_CACHE_TTL = 1000 * 60 * 60 * 3; // 3hours
 
+export const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
+
 //#region hard limits
 // If you change DB_* values, you must also change the DB schema.
 

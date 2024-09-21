@@ -6,12 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<div :class="$style.buttons">
-		<MkButton inline primary @click="saveNew">{{ ts._preferencesBackups.saveNew }}</MkButton>
-		<MkButton inline @click="loadFile">{{ ts._preferencesBackups.loadFile }}</MkButton>
+		<MkButton inline primary @click="saveNew">{{ i18n.ts._preferencesBackups.saveNew }}</MkButton>
+		<MkButton inline @click="loadFile">{{ i18n.ts._preferencesBackups.loadFile }}</MkButton>
 	</div>
 
 	<FormSection>
-		<template #label>{{ ts._preferencesBackups.list }}</template>
+		<template #label>{{ i18n.ts._preferencesBackups.list }}</template>
 		<template v-if="profiles && Object.keys(profiles).length > 0">
 			<div class="_gaps_s">
 				<div
@@ -23,13 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@contextmenu.prevent.stop="$event => menu($event, id)"
 				>
 					<div :class="$style.profileName">{{ profile.name }}</div>
-					<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
-					<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
+					<div :class="$style.profileTime">{{ i18n.tsx._preferencesBackups.createdAt({ date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
+					<div v-if="profile.updatedAt" :class="$style.profileTime">{{ i18n.tsx._preferencesBackups.updatedAt({ date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
 				</div>
 			</div>
 		</template>
 		<div v-else-if="profiles">
-			<MkInfo>{{ ts._preferencesBackups.noBackups }}</MkInfo>
+			<MkInfo>{{ i18n.ts._preferencesBackups.noBackups }}</MkInfo>
 		</div>
 		<MkLoading v-else/>
 	</FormSection>
@@ -49,10 +49,9 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { useStream } from '@/stream.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { version, host } from '@/config.js';
+import { version, host } from '@@/js/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-const { t, ts } = i18n;
 
 const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'collapseRenotes',
@@ -201,15 +200,15 @@ async function saveNew(): Promise<void> {
 	if (!profiles.value) return;
 
 	const { canceled, result: name } = await os.inputText({
-		title: ts._preferencesBackups.inputName,
+		title: i18n.ts._preferencesBackups.inputName,
 		default: '',
 	});
 	if (canceled) return;
 
 	if (Object.values(profiles.value).some(x => x.name === name)) {
 		return os.alert({
-			title: ts._preferencesBackups.cannotSave,
-			text: t('_preferencesBackups.nameAlreadyExists', { name }),
+			title: i18n.ts._preferencesBackups.cannotSave,
+			text: i18n.tsx._preferencesBackups.nameAlreadyExists({ name }),
 		});
 	}
 
@@ -238,8 +237,8 @@ function loadFile(): void {
 		if (file.type !== 'application/json') {
 			return os.alert({
 				type: 'error',
-				title: ts._preferencesBackups.cannotLoad,
-				text: ts._preferencesBackups.invalidFile,
+				title: i18n.ts._preferencesBackups.cannotLoad,
+				text: i18n.ts._preferencesBackups.invalidFile,
 			});
 		}
 
@@ -250,7 +249,7 @@ function loadFile(): void {
 		} catch (err) {
 			return os.alert({
 				type: 'error',
-				title: ts._preferencesBackups.cannotLoad,
+				title: i18n.ts._preferencesBackups.cannotLoad,
 				text: (err as any)?.message ?? '',
 			});
 		}
@@ -276,8 +275,8 @@ async function applyProfile(id: string): Promise<void> {
 
 	const { canceled: cancel1 } = await os.confirm({
 		type: 'warning',
-		title: ts._preferencesBackups.apply,
-		text: t('_preferencesBackups.applyConfirm', { name: profile.name }),
+		title: i18n.ts._preferencesBackups.apply,
+		text: i18n.tsx._preferencesBackups.applyConfirm({ name: profile.name }),
 	});
 	if (cancel1) return;
 
@@ -322,7 +321,7 @@ async function applyProfile(id: string): Promise<void> {
 
 	const { canceled: cancel2 } = await os.confirm({
 		type: 'info',
-		text: ts.reloadToApplySetting,
+		text: i18n.ts.reloadToApplySetting,
 	});
 	if (cancel2) return;
 
@@ -334,8 +333,8 @@ async function deleteProfile(id: string): Promise<void> {
 
 	const { canceled } = await os.confirm({
 		type: 'info',
-		title: ts.delete,
-		text: t('deleteAreYouSure', { x: profiles.value[id].name }),
+		title: i18n.ts.delete,
+		text: i18n.tsx.deleteAreYouSure({ x: profiles.value[id].name }),
 	});
 	if (canceled) return;
 
@@ -350,8 +349,8 @@ async function save(id: string): Promise<void> {
 
 	const { canceled } = await os.confirm({
 		type: 'info',
-		title: ts._preferencesBackups.save,
-		text: t('_preferencesBackups.saveConfirm', { name }),
+		title: i18n.ts._preferencesBackups.save,
+		text: i18n.tsx._preferencesBackups.saveConfirm({ name }),
 	});
 	if (canceled) return;
 
@@ -370,15 +369,15 @@ async function rename(id: string): Promise<void> {
 	if (!profiles.value) return;
 
 	const { canceled: cancel1, result: name } = await os.inputText({
-		title: ts._preferencesBackups.inputName,
+		title: i18n.ts._preferencesBackups.inputName,
 		default: '',
 	});
 	if (cancel1 || profiles.value[id].name === name) return;
 
 	if (Object.values(profiles.value).some(x => x.name === name)) {
 		return os.alert({
-			title: ts._preferencesBackups.cannotSave,
-			text: t('_preferencesBackups.nameAlreadyExists', { name }),
+			title: i18n.ts._preferencesBackups.cannotSave,
+			text: i18n.tsx._preferencesBackups.nameAlreadyExists({ name }),
 		});
 	}
 
@@ -386,8 +385,8 @@ async function rename(id: string): Promise<void> {
 
 	const { canceled: cancel2 } = await os.confirm({
 		type: 'info',
-		title: ts.rename,
-		text: t('_preferencesBackups.renameConfirm', { old: registry.name, new: name }),
+		title: i18n.ts.rename,
+		text: i18n.tsx._preferencesBackups.renameConfirm({ old: registry.name, new: name }),
 	});
 	if (cancel2) return;
 
@@ -399,25 +398,25 @@ function menu(ev: MouseEvent, profileId: string) {
 	if (!profiles.value) return;
 
 	return os.popupMenu([{
-		text: ts._preferencesBackups.apply,
+		text: i18n.ts._preferencesBackups.apply,
 		icon: 'ti ti-check',
 		action: () => applyProfile(profileId),
 	}, {
 		type: 'a',
-		text: ts.download,
+		text: i18n.ts.download,
 		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles.value[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles.value[profileId].name}.json`,
 	}, { type: 'divider' }, {
-		text: ts.rename,
+		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(profileId),
 	}, {
-		text: ts._preferencesBackups.save,
+		text: i18n.ts._preferencesBackups.save,
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
 	}, { type: 'divider' }, {
-		text: ts.delete,
+		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
 		danger: true,
@@ -439,7 +438,7 @@ onUnmounted(() => {
 });
 
 definePageMetadata(() => ({
-	title: ts.preferencesBackups,
+	title: i18n.ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
 }));
 </script>

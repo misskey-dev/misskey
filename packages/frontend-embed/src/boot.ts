@@ -10,23 +10,42 @@ import '@tabler/icons-webfont/dist/tabler-icons.scss';
 
 import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
-import lightTheme from '@@/themes/l-light.json5';
-import darkTheme from '@@/themes/d-dark.json5';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-dark.json5';
 import { MediaProxy } from '@@/js/media-proxy.js';
-import { applyTheme } from './theme.js';
-import { fetchCustomEmojis } from './custom-emojis.js';
-import { DI } from './di.js';
-import { serverMetadata } from './server-metadata.js';
-import { url } from './config.js';
+import { applyTheme, assertIsTheme } from '@/theme.js';
+import { fetchCustomEmojis } from '@/custom-emojis.js';
+import { DI } from '@/di.js';
+import { serverMetadata } from '@/server-metadata.js';
+import { url } from '@@/js/config.js';
 import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 
-console.info('Misskey Embed');
+import type { Theme } from '@/theme.js';
+
+console.log('Misskey Embed');
 
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
 
-console.info(embedParams);
+if (_DEV_) console.log(embedParams);
+
+function parseThemeOrNull(theme: string | null): Theme | null {
+	if (theme == null) return null;
+	try {
+		const parsed = JSON.parse(theme);
+		if (assertIsTheme(parsed)) {
+			return parsed;
+		} else {
+			return null;
+		}
+	} catch (err) {
+		return null;
+	}
+}
+
+const lightTheme = parseThemeOrNull(serverMetadata.defaultLightTheme) ?? defaultLightTheme;
+const darkTheme = parseThemeOrNull(serverMetadata.defaultDarkTheme) ?? defaultDarkTheme;
 
 if (embedParams.colorMode === 'dark') {
 	applyTheme(darkTheme);

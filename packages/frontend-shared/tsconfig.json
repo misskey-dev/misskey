@@ -16,7 +16,13 @@
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"],
+			"@@/*": ["./*"]
+		},
 		"typeRoots": [
+			"./@types",
 			"./node_modules/@types"
 		],
 		"lib": [
@@ -25,6 +31,7 @@
 		]
 	},
 	"include": [
+		"@types/**/*.ts",
 		"js/**/*"
 	],
 	"exclude": [
