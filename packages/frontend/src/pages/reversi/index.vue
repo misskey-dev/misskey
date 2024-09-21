@@ -117,7 +117,7 @@ import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
 
