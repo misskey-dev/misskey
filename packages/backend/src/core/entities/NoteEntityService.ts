@@ -11,7 +11,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/_.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
@@ -43,11 +43,13 @@ export class NoteEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	private reactionsBufferingService: ReactionsBufferingService;
 	private idService: IdService;
-	private metaService: MetaService;
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
 		private moduleRef: ModuleRef,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -76,7 +78,6 @@ export class NoteEntityService implements OnModuleInit {
 		//private reactionService: ReactionService,
 		//private reactionsBufferingService: ReactionsBufferingService,
 		//private idService: IdService,
-		//private metaService: MetaService,
 	) {
 	}
 
@@ -87,7 +88,6 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
 		this.idService = this.moduleRef.get('IdService');
-		this.metaService = this.moduleRef.get('MetaService');
 	}
 
 	@bindThis
@@ -324,11 +324,9 @@ export class NoteEntityService implements OnModuleInit {
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 		const host = note.userHost;
 
-		const meta = await this.metaService.fetch();
-
 		const bufferdReactions = opts._hint_?.bufferdReactions != null
 			? (opts._hint_.bufferdReactions.get(note.id) ?? { deltas: {}, pairs: [] })
-			: meta.enableReactionsBuffering
+			: this.meta.enableReactionsBuffering
 				? await this.reactionsBufferingService.get(note.id)
 				: { deltas: {}, pairs: [] };
 		const reactions = mergeReactions(note.reactions, bufferdReactions.deltas ?? {});
@@ -441,9 +439,7 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const meta = await this.metaService.fetch();
-
-		const bufferdReactions = meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : null;
+		const bufferdReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : null;
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
