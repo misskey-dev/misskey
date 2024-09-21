@@ -1403,6 +1403,7 @@ _serverSettings:
   fanoutTimelineDescription: "如果啟用的話，檢索各個時間軸的性能會顯著提昇，資料庫的負荷也會減少。不過，Redis 的記憶體使用量會增加。如果伺服器的記憶體容量比較少或者運行不穩定，可以停用。"
   fanoutTimelineDbFallback: "資料庫的回退"
   fanoutTimelineDbFallbackDescription: "若啟用，在時間軸沒有快取的情況下將執行回退處理以額外查詢資料庫。若停用，可以透過不執行回退處理來進一步減少伺服器的負荷，但會限制可取得的時間軸範圍。"
+  reactionsBufferingDescription: "啟用時，可以顯著提高建立反應時的效能並減少資料庫的負載。 但是，Redis 記憶體使用量會增加。"
   inquiryUrl: "聯絡表單網址"
   inquiryUrlDescription: "指定伺服器運營者的聯絡表單網址，或包含運營者聯絡資訊網頁的網址。"
 _accountMigration:
@@ -1736,6 +1737,11 @@ _role:
     canSearchNotes: "可否搜尋貼文"
     canUseTranslator: "使用翻譯功能"
     avatarDecorationLimit: "頭像裝飾的最大設置量"
+    canImportAntennas: "允許匯入天線"
+    canImportBlocking: "允許匯入封鎖名單"
+    canImportFollowing: "允許匯入跟隨名單"
+    canImportMuting: "允許匯入靜音名單"
+    canImportUserLists: "允許匯入清單"
   _condition:
     roleAssignedTo: "手動指派角色完成"
     isLocal: "本地使用者"
