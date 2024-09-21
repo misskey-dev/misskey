@@ -87,6 +87,12 @@ export class QueueService {
 			repeat: { pattern: '*/5 * * * *' },
 			removeOnComplete: true,
 		});
+
+		this.systemQueue.add('bakeBufferedReactions', {
+		}, {
+			repeat: { pattern: '0 0 * * *' },
+			removeOnComplete: true,
+		});
 	}
 
 	@bindThis
