@@ -8,6 +8,7 @@ import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import type {
+	MiMeta,
 	MiRole,
 	MiRoleAssignment,
 	RoleAssignmentsRepository,
@@ -18,7 +19,6 @@ import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -111,8 +111,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
@@ -129,7 +129,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
-		private metaService: MetaService,
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
@@ -349,8 +348,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async getUserPolicies(userId: MiUser['id'] | null): Promise<RolePolicies> {
-		const meta = await this.metaService.fetch();
-		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
+		const basePolicies = { ...DEFAULT_POLICIES, ...this.meta.policies };
 
 		if (userId == null) return basePolicies;
 
