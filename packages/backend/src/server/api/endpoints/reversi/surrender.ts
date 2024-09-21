@@ -5,6 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { ApiError } from '../../error.js';
 
@@ -32,7 +34,7 @@ export const meta = {
 			id: '6e04164b-a992-4c93-8489-2123069973e1',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -40,7 +42,7 @@ export const paramDef = {
 		gameId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['gameId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

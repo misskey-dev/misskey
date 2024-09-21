@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import type { GalleryPostsRepository, GalleryLikesRepository } from '@/models/_.js';
 import { FeaturedService, GALLERY_POSTS_RANKING_WINDOW } from '@/core/FeaturedService.js';
 import { IdService } from '@/core/IdService.js';
@@ -33,7 +35,7 @@ export const meta = {
 			id: 'e3e8e06e-be37-41f7-a5b4-87a8250288f0',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -41,7 +43,7 @@ export const paramDef = {
 		postId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['postId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -7,6 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import type { UserListsRepository, UserListMembershipsRepository, BlockingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserListService } from '@/core/UserListService.js';
 import { DI } from '@/di-symbols.js';
@@ -59,7 +61,7 @@ export const meta = {
 			id: '2dd9752e-a338-413d-8eec-41814430989b',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -68,7 +70,7 @@ export const paramDef = {
 		userId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['listId', 'userId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

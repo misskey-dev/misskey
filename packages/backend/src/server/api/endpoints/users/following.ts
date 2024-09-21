@@ -8,6 +8,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
 import { birthdaySchema } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -51,7 +53,7 @@ export const meta = {
 			id: 'a2b007b9-4782-4eba-abd3-93b05ed4130d',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -74,7 +76,7 @@ export const paramDef = {
 		{ required: ['userId'] },
 		{ required: ['username', 'host'] },
 	],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

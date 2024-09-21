@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -32,7 +34,7 @@ export const meta = {
 			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -42,7 +44,7 @@ export const paramDef = {
 		isPublic: { type: 'boolean' },
 	},
 	required: ['listId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

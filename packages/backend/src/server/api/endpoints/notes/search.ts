@@ -5,6 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { SearchService } from '@/core/SearchService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -32,7 +34,7 @@ export const meta = {
 			id: '0b44998d-77aa-4427-80d0-d2c9b8523011',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -50,7 +52,7 @@ export const paramDef = {
 		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['query'],
-} as const;
+} as const satisfies Schema;
 
 // TODO: ロジックをサービスに切り出す
 

@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { ReversiGamesRepository } from '@/models/_.js';
@@ -19,7 +21,7 @@ export const meta = {
 		optional: false, nullable: false,
 		items: { ref: 'ReversiGameLite' },
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -30,7 +32,7 @@ export const paramDef = {
 		my: { type: 'boolean', default: false },
 	},
 	required: [],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

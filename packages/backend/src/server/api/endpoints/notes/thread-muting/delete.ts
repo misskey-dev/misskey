@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { NoteThreadMutingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -24,7 +26,7 @@ export const meta = {
 			id: 'bddd57ac-ceb3-b29d-4334-86ea5fae481a',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -32,7 +34,7 @@ export const paramDef = {
 		noteId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['noteId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

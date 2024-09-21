@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PagesRepository, PageLikesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -31,7 +33,7 @@ export const meta = {
 			id: 'f5e586b0-ce93-4050-b0e3-7f31af5259ee',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -39,7 +41,7 @@ export const paramDef = {
 		pageId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['pageId'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

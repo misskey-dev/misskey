@@ -5,6 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 
 export const meta = {
@@ -14,7 +16,7 @@ export const meta = {
 	requireModerator: true,
 	secure: true,
 	kind: 'write:admin:abuse-report:notification-recipient',
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -27,7 +29,7 @@ export const paramDef = {
 	required: [
 		'id',
 	],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

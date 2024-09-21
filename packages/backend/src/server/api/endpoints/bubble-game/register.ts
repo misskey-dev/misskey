@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import type { BubbleGameRecordsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -29,7 +31,7 @@ export const meta = {
 			id: 'eb627bc7-574b-4a52-a860-3c3eae772b88',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -49,7 +51,7 @@ export const paramDef = {
 		gameVersion: { type: 'integer' },
 	},
 	required: ['score', 'seed', 'logs', 'gameMode', 'gameVersion'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

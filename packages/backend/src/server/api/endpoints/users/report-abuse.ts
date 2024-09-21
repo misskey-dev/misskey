@@ -5,6 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
@@ -37,7 +39,7 @@ export const meta = {
 			id: '35e166f5-05fb-4f87-a2d5-adb42676d48f',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -46,7 +48,7 @@ export const paramDef = {
 		comment: { type: 'string', minLength: 1, maxLength: 2048 },
 	},
 	required: ['userId', 'comment'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

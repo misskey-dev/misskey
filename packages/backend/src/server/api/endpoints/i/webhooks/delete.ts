@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import type { WebhooksRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -24,7 +26,7 @@ export const meta = {
 			id: 'bae73e5a-5522-4965-ae19-3a8688e71d82',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -32,7 +34,7 @@ export const paramDef = {
 		webhookId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['webhookId'],
-} as const;
+} as const satisfies Schema;
 
 // TODO: ロジックをサービスに切り出す
 

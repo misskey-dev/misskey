@@ -6,6 +6,8 @@
 import { URLSearchParams } from 'node:url';
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IEndpointMeta } from '@/server/api/endpoints.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -45,7 +47,7 @@ export const meta = {
 			id: 'ea29f2ca-c368-43b3-aaf1-5ac3e74bbe5d',
 		},
 	},
-} as const;
+} as const satisfies IEndpointMeta;
 
 export const paramDef = {
 	type: 'object',
@@ -54,7 +56,7 @@ export const paramDef = {
 		targetLang: { type: 'string' },
 	},
 	required: ['noteId', 'targetLang'],
-} as const;
+} as const satisfies Schema;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
