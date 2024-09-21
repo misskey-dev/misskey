@@ -14,6 +14,7 @@ import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 import { MiMeta } from '@/models/Meta.js';
+import { GlobalEvents } from './core/GlobalEventService.js';
 
 const $config: Provider = {
 	provide: DI.config,
@@ -89,7 +90,7 @@ const $redisForReactions: Provider = {
 
 const $meta: Provider = {
 	provide: DI.meta,
-	useFactory: async (db: DataSource) => {
+	useFactory: async (db: DataSource, redisForSub: Redis.Redis) => {
 		const meta = await db.transaction(async transactionalEntityManager => {
 			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 			const metas = await transactionalEntityManager.find(MiMeta, {
@@ -118,11 +119,30 @@ const $meta: Provider = {
 			}
 		});
 
-		// TODO: redisに繋いでmeta更新？
+		async function onMessage(_: string, data: string): Promise<void> {
+			const obj = JSON.parse(data);
+
+			if (obj.channel === 'internal') {
+				const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+				switch (type) {
+					case 'metaUpdated': {
+						for (const key in body) {
+							meta[key] = body[key];
+						}
+						meta.proxyAccount = null; // joinなカラムは通常取ってこないので
+						break;
+					}
+					default:
+						break;
+				}
+			}
+		}
+
+		redisForSub.on('message', onMessage);
 
 		return meta;
 	},
-	inject: [DI.db],
+	inject: [DI.db, DI.redisForSub],
 };
 
 @Global()
