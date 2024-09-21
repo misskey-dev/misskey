@@ -50,7 +50,7 @@ export function onScrollTop(el: HTMLElement, cb: (topVisible: boolean) => unknow
 	// - スクロールイベントは1回のスクロールで複数回発生することがある
 	// - toleranceの範囲内に収まる程度の微量なスクロールが発生した
 	let prevTopVisible = firstTopVisible;
-	const onScroll = ev => {
+	const onScroll = () => {
 		if (!document.body.contains(el)) return;
 
 		const topVisible = isTopVisible(el, tolerance);
@@ -134,7 +134,7 @@ export function scrollToBottom(
 
 export function isTopVisible(el: HTMLElement, tolerance = 1): boolean {
 	const scrollTop = getScrollPosition(el);
-	console.log(scrollTop, tolerance, scrollTop <= tolerance);
+	if (_DEV_) console.log(scrollTop, tolerance, scrollTop <= tolerance);
 	return scrollTop <= tolerance;
 }
 
