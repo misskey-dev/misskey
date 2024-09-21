@@ -90,7 +90,7 @@ const $redisForReactions: Provider = {
 const $meta: Provider = {
 	provide: DI.meta,
 	useFactory: async (db: DataSource) => {
-		return await db.transaction(async transactionalEntityManager => {
+		const meta = await db.transaction(async transactionalEntityManager => {
 			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 			const metas = await transactionalEntityManager.find(MiMeta, {
 				order: {
@@ -117,6 +117,10 @@ const $meta: Provider = {
 				return saved;
 			}
 		});
+
+		// TODO: redisに繋いでmeta更新？
+
+		return meta;
 	},
 	inject: [DI.db],
 };
