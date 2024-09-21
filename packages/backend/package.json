@@ -132,6 +132,7 @@
 		"json5": "2.2.3",
 		"jsonld": "8.3.2",
 		"jsrsasign": "11.1.0",
+		"juice": "11.0.0",
 		"meilisearch": "0.41.0",
 		"mfm-js": "0.24.0",
 		"microformats-parser": "2.0.2",
