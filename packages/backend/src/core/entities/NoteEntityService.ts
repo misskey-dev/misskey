@@ -324,7 +324,13 @@ export class NoteEntityService implements OnModuleInit {
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 		const host = note.userHost;
 
-		const bufferdReactions = opts._hint_?.bufferdReactions != null ? (opts._hint_.bufferdReactions.get(note.id) ?? { deltas: {}, pairs: [] }) : await this.reactionsBufferingService.get(note.id);
+		const meta = await this.metaService.fetch();
+
+		const bufferdReactions = opts._hint_?.bufferdReactions != null
+			? (opts._hint_.bufferdReactions.get(note.id) ?? { deltas: {}, pairs: [] })
+			: meta.enableReactionsBuffering
+				? await this.reactionsBufferingService.get(note.id)
+				: { deltas: {}, pairs: [] };
 		const reactions = mergeReactions(note.reactions, bufferdReactions.deltas ?? {});
 		for (const [name, count] of Object.entries(reactions)) {
 			if (count <= 0) {
