@@ -8,6 +8,7 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
+export type WebhookEventTypes = typeof webhookEventTypes[number];
 
 @Entity('webhook')
 export class MiWebhook {

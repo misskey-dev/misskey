@@ -61,7 +61,8 @@ const staticAssets = `${_dirname}/../../../assets/`;
 const clientAssets = `${_dirname}/../../../../frontend/assets/`;
 const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
-const viteOut = `${_dirname}/../../../../../built/_vite_/`;
+const frontendViteOut = `${_dirname}/../../../../../built/_frontend_vite_/`;
+const frontendEmbedViteOut = `${_dirname}/../../../../../built/_frontend_embed_vite_/`;
 const tarball = `${_dirname}/../../../../../built/tarball/`;
 
 @Injectable()
@@ -277,11 +278,18 @@ export class ClientServerService {
 		});
 
 		//#region vite assets
-		if (this.config.clientManifestExists) {
+		if (this.config.frontendEmbedManifestExists) {
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
-					root: viteOut,
+					root: frontendViteOut,
 					prefix: '/vite/',
+					maxAge: ms('30 days'),
+					immutable: true,
+					decorateReply: false,
+				});
+				fastify.register(fastifyStatic, {
+					root: frontendEmbedViteOut,
+					prefix: '/embed_vite/',
 					maxAge: ms('30 days'),
 					immutable: true,
 					decorateReply: false,
@@ -295,6 +303,13 @@ export class ClientServerService {
 				upstream: 'http://localhost:' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
+			});
+
+			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
+			fastify.register(fastifyProxy, {
+				upstream: 'http://localhost:' + embedPort,
+				prefix: '/embed_vite',
+				rewritePrefix: '/embed_vite',
 			});
 		}
 		//#endregion
@@ -424,6 +439,13 @@ export class ClientServerService {
 
 		// Manifest
 		fastify.get('/manifest.json', async (request, reply) => await this.manifestHandler(reply));
+
+		// Embed Javascript
+		fastify.get('/embed.js', async (request, reply) => {
+			return await reply.sendFile('/embed.js', staticAssets, {
+				maxAge: ms('1 day'),
+			});
+		});
 
 		fastify.get('/robots.txt', async (request, reply) => {
 			return await reply.sendFile('/robots.txt', staticAssets);
@@ -762,7 +784,7 @@ export class ClientServerService {
 		});
 		//#endregion
 
-		//region noindex pages
+		//#region noindex pages
 		// Tags
 		fastify.get<{ Params: { clip: string; } }>('/tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
@@ -772,7 +794,20 @@ export class ClientServerService {
 		fastify.get<{ Params: { clip: string; } }>('/user-tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
 		});
-		//endregion
+		//#endregion
+
+		//#region embed pages
+		fastify.get('/embed/*', async (request, reply) => {
+			const meta = await this.metaService.fetch();
+
+			reply.removeHeader('X-Frame-Options');
+
+			reply.header('Cache-Control', 'public, max-age=3600');
+			return await reply.view('base-embed', {
+				title: meta.name ?? 'Misskey',
+				...await this.generateCommonPugData(meta),
+			});
+		});
 
 		fastify.get('/_info_card_', async (request, reply) => {
 			const meta = await this.metaService.fetch(true);
@@ -787,6 +822,7 @@ export class ClientServerService {
 				originalNotesCount: await this.notesRepository.countBy({ userHost: IsNull() }),
 			});
 		});
+		//#endregion
 
 		fastify.get('/bios', async (request, reply) => {
 			return await reply.view('bios', {

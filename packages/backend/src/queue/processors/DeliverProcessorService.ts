@@ -45,7 +45,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(1000 * 60 * 60);
+		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(1000 * 60 * 60); // 1h
 	}
 
 	@bindThis
@@ -73,33 +73,25 @@ export class DeliverProcessorService {
 		}
 
 		try {
-			const _server = await this.federatedInstanceService.fetch(host);
-			await this.fetchInstanceMetadataService.fetchInstanceMetadata(_server).then(() => {});
-			const server = await this.federatedInstanceService.fetch(host);
-
-			await this.apRequestService.signedPost(
-				job.data.user,
-				job.data.to,
-				job.data.content,
-				server.httpMessageSignaturesImplementationLevel,
-				job.data.digest,
-				job.data.privateKey,
-			);
+			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, job.data.digest);
 
 			// Update stats
-			if (server.isNotResponding) {
-				this.federatedInstanceService.update(server.id, {
-					isNotResponding: false,
-					notRespondingSince: null,
-				});
-			}
+			this.federatedInstanceService.fetch(host).then(i => {
+				if (i.isNotResponding) {
+					this.federatedInstanceService.update(i.id, {
+						isNotResponding: false,
+						notRespondingSince: null,
+					});
+				}
 
-			this.apRequestChart.deliverSucc();
-			this.federationChart.deliverd(server.host, true);
+				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+				this.apRequestChart.deliverSucc();
+				this.federationChart.deliverd(i.host, true);
 
-			if (meta.enableChartsForFederatedInstances) {
-				this.instanceChart.requestSent(server.host, true);
-			}
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, true);
+				}
+			});
 
 			return 'Success';
 		} catch (res) {

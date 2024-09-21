@@ -70,7 +70,7 @@ export class HttpRequestService {
 			localAddress: config.outgoingAddress,
 		});
 
-		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 16);
+		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
 
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
