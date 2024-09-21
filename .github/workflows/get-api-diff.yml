@@ -1,6 +1,7 @@
 # this name is used in report-api-diff.yml so be careful when change name
 name: Get api.json from Misskey
 
+### DUMMY COMMENT ###
 on:
   pull_request:
     branches:
