@@ -57,19 +57,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
 						</MkSwitch>
 
-						<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perLocalUserUserTimelineCacheMax">
+						<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number" :manualSave="true" @update:modelValue="save_perLocalUserUserTimelineCacheMax">
 							<template #label>perLocalUserUserTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perRemoteUserUserTimelineCacheMax">
+						<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number" :manualSave="true" @update:modelValue="save_perRemoteUserUserTimelineCacheMax">
 							<template #label>perRemoteUserUserTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="perUserHomeTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perUserHomeTimelineCacheMax">
+						<MkInput v-model="perUserHomeTimelineCacheMax" type="number" :manualSave="true" @update:modelValue="save_perUserHomeTimelineCacheMax">
 							<template #label>perUserHomeTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="perUserListTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perUserListTimelineCacheMax">
+						<MkInput v-model="perUserListTimelineCacheMax" type="number" :manualSave="true" @update:modelValue="save_perUserListTimelineCacheMax">
 							<template #label>perUserListTimelineCacheMax</template>
 						</MkInput>
 					</div>
