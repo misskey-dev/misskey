@@ -71,7 +71,17 @@ async function startControllerEndpoints(port = config.port + 1000) {
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
 		process.env = JSON.parse(originEnv);
-		await launch();
+
+		await killTestServer();
+
+		console.log('starting application...');
+
+		const app = await NestFactory.createApplicationContext(MainModule, {
+			logger: new NestLogger(),
+		});
+		const serverService = app.get(ServerService);
+		await serverService.launch();
+
 		res.code(200).send({ success: true });
 	});
 
