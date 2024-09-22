@@ -53,9 +53,9 @@ export class Game {
 
 		//#region Options
 		this.opts = opts;
-		if (! this.opts.isLlotheo) this.opts.isLlotheo = false;
-		if (! this.opts.canPutEverywhere) this.opts.canPutEverywhere = false;
-		if (! this.opts.loopedBoard) this.opts.loopedBoard = false;
+		if (this.opts.isLlotheo == null) this.opts.isLlotheo = false;
+		if (this.opts.canPutEverywhere == null) this.opts.canPutEverywhere = false;
+		if (this.opts.loopedBoard == null) this.opts.loopedBoard = false;
 		//#endregion
 
 		//#region Parse map data
