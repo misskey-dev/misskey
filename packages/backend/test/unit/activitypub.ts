@@ -24,7 +24,6 @@ import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { MetaService } from '@/core/MetaService.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { genAidx } from '@/misc/id/aidx.js';
 import { MockResolver } from '../misc/mock-resolver.js';
@@ -120,11 +119,8 @@ describe('ActivityPub', () => {
 					};
 				},
 			})
-			.overrideProvider(MetaService).useValue({
-				async fetch(): Promise<MiMeta> {
-					return meta;
-				},
-			}).compile();
+			.overrideProvider(DI.meta).useValue(meta)
+			.compile();
 
 		await app.init();
 		app.enableShutdownHooks();
