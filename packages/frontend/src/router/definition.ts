@@ -463,10 +463,6 @@ const routes: RouteDef[] = [{
 		name: 'relays',
 		component: page(() => import('@/pages/admin/relays.vue')),
 	}, {
-		path: '/instance-block',
-		name: 'instance-block',
-		component: page(() => import('@/pages/admin/instance-block.vue')),
-	}, {
 		path: '/proxy-account',
 		name: 'proxy-account',
 		component: page(() => import('@/pages/admin/proxy-account.vue')),
