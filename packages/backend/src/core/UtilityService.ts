@@ -64,7 +64,6 @@ export class UtilityService {
 
 	@bindThis
 	public isKeyWordIncluded(text: string, keyWords: string[]): boolean {
-		console.log(text, keyWords);
 		if (keyWords.length === 0) return false;
 		if (text === '') return false;
 
