@@ -307,7 +307,7 @@ export class NoteEntityService implements OnModuleInit {
 			skipHide?: boolean;
 			withReactionAndUserPairCache?: boolean;
 			_hint_?: {
-				bufferdReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
+				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
 				myReactions: Map<MiNote['id'], string | null>;
 				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
 				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
@@ -324,19 +324,19 @@ export class NoteEntityService implements OnModuleInit {
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 		const host = note.userHost;
 
-		const bufferdReactions = opts._hint_?.bufferdReactions != null
-			? (opts._hint_.bufferdReactions.get(note.id) ?? { deltas: {}, pairs: [] })
+		const bufferedReactions = opts._hint_?.bufferedReactions != null
+			? (opts._hint_.bufferedReactions.get(note.id) ?? { deltas: {}, pairs: [] })
 			: this.meta.enableReactionsBuffering
 				? await this.reactionsBufferingService.get(note.id)
 				: { deltas: {}, pairs: [] };
-		const reactions = mergeReactions(this.reactionService.convertLegacyReactions(note.reactions), bufferdReactions.deltas ?? {});
+		const reactions = mergeReactions(this.reactionService.convertLegacyReactions(note.reactions), bufferedReactions.deltas ?? {});
 		for (const [name, count] of Object.entries(reactions)) {
 			if (count <= 0) {
 				delete reactions[name];
 			}
 		}
 
-		const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferdReactions.pairs.map(x => x.join('/')));
+		const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
 
 		let text = note.text;
 
@@ -439,7 +439,7 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const bufferdReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : null;
+		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : null;
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
@@ -451,11 +451,11 @@ export class NoteEntityService implements OnModuleInit {
 
 			for (const note of notes) {
 				if (note.renote && (note.text == null && note.fileIds.length === 0)) { // pure renote
-					const reactionsCount = Object.values(mergeReactions(note.renote.reactions, bufferdReactions?.get(note.renote.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
+					const reactionsCount = Object.values(mergeReactions(note.renote.reactions, bufferedReactions?.get(note.renote.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
 					if (reactionsCount === 0) {
 						myReactionsMap.set(note.renote.id, null);
-					} else if (reactionsCount <= note.renote.reactionAndUserPairCache.length + (bufferdReactions?.get(note.renote.id)?.pairs.length ?? 0)) {
-						const pairInBuffer = bufferdReactions?.get(note.renote.id)?.pairs.find(p => p[0] === meId);
+					} else if (reactionsCount <= note.renote.reactionAndUserPairCache.length + (bufferedReactions?.get(note.renote.id)?.pairs.length ?? 0)) {
+						const pairInBuffer = bufferedReactions?.get(note.renote.id)?.pairs.find(p => p[0] === meId);
 						if (pairInBuffer) {
 							myReactionsMap.set(note.renote.id, pairInBuffer[1]);
 						} else {
@@ -467,11 +467,11 @@ export class NoteEntityService implements OnModuleInit {
 					}
 				} else {
 					if (note.id < oldId) {
-						const reactionsCount = Object.values(mergeReactions(note.reactions, bufferdReactions?.get(note.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
+						const reactionsCount = Object.values(mergeReactions(note.reactions, bufferedReactions?.get(note.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
 						if (reactionsCount === 0) {
 							myReactionsMap.set(note.id, null);
-						} else if (reactionsCount <= note.reactionAndUserPairCache.length + (bufferdReactions?.get(note.id)?.pairs.length ?? 0)) {
-							const pairInBuffer = bufferdReactions?.get(note.id)?.pairs.find(p => p[0] === meId);
+						} else if (reactionsCount <= note.reactionAndUserPairCache.length + (bufferedReactions?.get(note.id)?.pairs.length ?? 0)) {
+							const pairInBuffer = bufferedReactions?.get(note.id)?.pairs.find(p => p[0] === meId);
 							if (pairInBuffer) {
 								myReactionsMap.set(note.id, pairInBuffer[1]);
 							} else {
@@ -512,7 +512,7 @@ export class NoteEntityService implements OnModuleInit {
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
-				bufferdReactions,
+				bufferedReactions,
 				myReactions: myReactionsMap,
 				packedFiles,
 				packedUsers,
