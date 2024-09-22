@@ -1269,6 +1269,7 @@ fromX: "{x}から"
 genEmbedCode: "埋め込みコードを生成"
 noteOfThisUser: "このユーザーのノート一覧"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
+performance: "パフォーマンス"
 
 _delivery:
   status: "配信状態"

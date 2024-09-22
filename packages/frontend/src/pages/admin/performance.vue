@@ -10,28 +10,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSuspense :p="init">
 			<div class="_gaps">
 				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableServerMachineStats">
+					<MkSwitch v-model="enableServerMachineStats" @change="onChange_enableServerMachineStats">
 						<template #label>{{ i18n.ts.enableServerMachineStats }}</template>
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
 				</div>
 
 				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableIdenticonGeneration">
+					<MkSwitch v-model="enableIdenticonGeneration" @change="onChange_enableIdenticonGeneration">
 						<template #label>{{ i18n.ts.enableIdenticonGeneration }}</template>
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
 				</div>
 
 				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableChartsForRemoteUser">
+					<MkSwitch v-model="enableChartsForRemoteUser" @change="onChange_enableChartsForRemoteUser">
 						<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
 				</div>
 
 				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableChartsForFederatedInstances">
+					<MkSwitch v-model="enableChartsForFederatedInstances" @change="onChange_enableChartsForFederatedInstances">
 						<template #label>{{ i18n.ts.enableChartsForFederatedInstances }}</template>
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-else #suffix>Disabled</template>
 
 					<div class="_gaps_m">
-						<MkSwitch v-model="enableFanoutTimeline">
+						<MkSwitch v-model="enableFanoutTimeline" @change="onChange_enableFanoutTimeline">
 							<template #label>{{ i18n.ts.enable }}</template>
 							<template #caption>
 								<div>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</div>
@@ -52,24 +52,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 						</MkSwitch>
 
-						<MkSwitch v-model="enableFanoutTimelineDbFallback">
+						<MkSwitch v-model="enableFanoutTimelineDbFallback" @change="onChange_enableFanoutTimelineDbFallback">
 							<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</template>
 							<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
 						</MkSwitch>
 
-						<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
+						<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perLocalUserUserTimelineCacheMax">
 							<template #label>perLocalUserUserTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
+						<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perRemoteUserUserTimelineCacheMax">
 							<template #label>perRemoteUserUserTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
+						<MkInput v-model="perUserHomeTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perUserHomeTimelineCacheMax">
 							<template #label>perUserHomeTimelineCacheMax</template>
 						</MkInput>
 
-						<MkInput v-model="perUserListTimelineCacheMax" type="number">
+						<MkInput v-model="perUserListTimelineCacheMax" type="number" :manual-save="true" @update:model-value="save_perUserListTimelineCacheMax">
 							<template #label>perUserListTimelineCacheMax</template>
 						</MkInput>
 					</div>
@@ -77,12 +77,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-bolt"></i></template>
-					<template #label>Misskey® Reactions Buffering Technology™ (RBT)<span class="_beta">{{ i18n.ts.beta }}</span></template>
+					<template #label>Misskey® Reactions Boost Technology™ (RBT)<span class="_beta">{{ i18n.ts.beta }}</span></template>
 					<template v-if="enableReactionsBuffering" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
 
 					<div class="_gaps_m">
-						<MkSwitch v-model="enableReactionsBuffering">
+						<MkSwitch v-model="enableReactionsBuffering" @change="onChange_enableReactionsBuffering">
 							<template #label>{{ i18n.ts.enable }}</template>
 							<template #caption>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</template>
 						</MkSwitch>
@@ -135,30 +135,95 @@ async function init() {
 	enableReactionsBuffering.value = meta.enableReactionsBuffering;
 }
 
-function save() {
+function onChange_enableServerMachineStats(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
-		enableServerMachineStats: enableServerMachineStats.value,
-		enableIdenticonGeneration: enableIdenticonGeneration.value,
-		enableChartsForRemoteUser: enableChartsForRemoteUser.value,
-		enableChartsForFederatedInstances: enableChartsForFederatedInstances.value,
-		enableFanoutTimeline: enableFanoutTimeline.value,
-		enableFanoutTimelineDbFallback: enableFanoutTimelineDbFallback.value,
-		perLocalUserUserTimelineCacheMax: perLocalUserUserTimelineCacheMax.value,
-		perRemoteUserUserTimelineCacheMax: perRemoteUserUserTimelineCacheMax.value,
-		perUserHomeTimelineCacheMax: perUserHomeTimelineCacheMax.value,
-		perUserListTimelineCacheMax: perUserListTimelineCacheMax.value,
-		enableReactionsBuffering: enableReactionsBuffering.value,
+		enableServerMachineStats: value,
 	}).then(() => {
 		fetchInstance(true);
 	});
 }
 
-const headerActions = computed(() => [{
-	asFullButton: true,
-	icon: 'ti ti-check',
-	text: i18n.ts.save,
-	handler: save,
-}]);
+function onChange_enableIdenticonGeneration(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableIdenticonGeneration: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableChartsForRemoteUser(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableChartsForRemoteUser: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableChartsForFederatedInstances(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableChartsForFederatedInstances: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableFanoutTimeline(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableFanoutTimeline: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableFanoutTimelineDbFallback(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableFanoutTimelineDbFallback: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_perLocalUserUserTimelineCacheMax() {
+	os.apiWithDialog('admin/update-meta', {
+		perLocalUserUserTimelineCacheMax: perLocalUserUserTimelineCacheMax.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_perRemoteUserUserTimelineCacheMax() {
+	os.apiWithDialog('admin/update-meta', {
+		perRemoteUserUserTimelineCacheMax: perRemoteUserUserTimelineCacheMax.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_perUserHomeTimelineCacheMax() {
+	os.apiWithDialog('admin/update-meta', {
+		perUserHomeTimelineCacheMax: perUserHomeTimelineCacheMax.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_perUserListTimelineCacheMax() {
+	os.apiWithDialog('admin/update-meta', {
+		perUserListTimelineCacheMax: perUserListTimelineCacheMax.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableReactionsBuffering(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableReactionsBuffering: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 

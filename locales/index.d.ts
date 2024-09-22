@@ -5092,6 +5092,10 @@ export interface Locale extends ILocale {
      * これ以上このクリップにノートを追加できません。
      */
     "clipNoteLimitExceeded": string;
+    /**
+     * パフォーマンス
+     */
+    "performance": string;
     "_delivery": {
         /**
          * 配信状態
