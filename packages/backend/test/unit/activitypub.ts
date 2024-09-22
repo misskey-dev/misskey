@@ -106,7 +106,11 @@ describe('ActivityPub', () => {
 		sensitiveWords: [] as string[],
 		prohibitedWords: [] as string[],
 	} as MiMeta;
-	let meta = metaInitial;
+	const meta = metaInitial;
+
+	function updateMeta(newMeta: Partial<MiMeta>): void {
+		Object.assign(meta, newMeta);
+	}
 
 	beforeAll(async () => {
 		const app = await Test.createTestingModule({
@@ -363,7 +367,7 @@ describe('ActivityPub', () => {
 		});
 
 		test('cacheRemoteFiles=false disables caching', async () => {
-			meta = { ...metaInitial, cacheRemoteFiles: false };
+			updateMeta({ ...metaInitial, cacheRemoteFiles: false });
 
 			const imageObject: IApDocument = {
 				type: 'Document',
@@ -392,7 +396,7 @@ describe('ActivityPub', () => {
 		});
 
 		test('cacheRemoteSensitiveFiles=false only affects sensitive files', async () => {
-			meta = { ...metaInitial, cacheRemoteSensitiveFiles: false };
+			updateMeta({ ...metaInitial, cacheRemoteSensitiveFiles: false });
 
 			const imageObject: IApDocument = {
 				type: 'Document',
