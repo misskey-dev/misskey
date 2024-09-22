@@ -185,7 +185,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 		// @ts-expect-error TODO: why?
 		const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 		const connection = stream.useChannel(channel, params);
-		connection.on(type as any, ((msg: Misskey.Channels[C]['events'][T]) => {
+		connection.on(type as any, ((msg: any) => {
 			if (cond(msg)) {
 				stream.close();
 				clearTimeout(timer);
