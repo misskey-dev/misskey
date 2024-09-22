@@ -12,10 +12,9 @@ import {
 } from '@simplewebauthn/server';
 import { AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
 import { DI } from '@/di-symbols.js';
-import type { UserSecurityKeysRepository } from '@/models/_.js';
+import type { MiMeta, UserSecurityKeysRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { MiUser } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type {
@@ -23,7 +22,6 @@ import type {
 	AuthenticatorTransportFuture,
 	CredentialDeviceType,
 	PublicKeyCredentialCreationOptionsJSON,
-	PublicKeyCredentialDescriptorFuture,
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
@@ -31,33 +29,33 @@ import type {
 @Injectable()
 export class WebAuthnService {
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: UserSecurityKeysRepository,
-
-		private metaService: MetaService,
 	) {
 	}
 
 	@bindThis
-	public async getRelyingParty(): Promise<{ origin: string; rpId: string; rpName: string; rpIcon?: string; }> {
-		const instance = await this.metaService.fetch();
+	public getRelyingParty(): { origin: string; rpId: string; rpName: string; rpIcon?: string; } {
 		return {
 			origin: this.config.url,
 			rpId: this.config.hostname,
-			rpName: instance.name ?? this.config.host,
-			rpIcon: instance.iconUrl ?? undefined,
+			rpName: this.meta.name ?? this.config.host,
+			rpIcon: this.meta.iconUrl ?? undefined,
 		};
 	}
 
 	@bindThis
 	public async initiateRegistration(userId: MiUser['id'], userName: string, userDisplayName?: string): Promise<PublicKeyCredentialCreationOptionsJSON> {
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
 		});
@@ -104,7 +102,7 @@ export class WebAuthnService {
 
 		await this.redisClient.del(`webauthn:challenge:${userId}`);
 
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 
 		let verification;
 		try {
@@ -143,7 +141,7 @@ export class WebAuthnService {
 
 	@bindThis
 	public async initiateAuthentication(userId: MiUser['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
 		});
@@ -209,7 +207,7 @@ export class WebAuthnService {
 			}
 		}
 
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 
 		let verification;
 		try {
