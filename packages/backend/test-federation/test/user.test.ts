@@ -1,6 +1,6 @@
 import { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteUser } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -73,6 +73,59 @@ describe('User', () => {
 
 				const res = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(res.isCat, true);
+			});
+		});
+
+		describe('Pinning Notes', () => {
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+			let aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+				[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+				aliceInBServer = await resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient);
+
+				await bobClient.request('following/create', { userId: aliceInBServer.id });
+			});
+
+			test('Pinning localOnly Note is not delivered', async () => {
+				const note = (await aliceClient.request('notes/create', { text: 'a', localOnly: true })).createdNote;
+				await aliceClient.request('i/pin', { noteId: note.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+
+				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
+				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
+			});
+
+			test('Pinning followers-only Note is not delivered', async () => {
+				const note = (await aliceClient.request('notes/create', { text: 'a', visibility: 'followers' })).createdNote;
+				await aliceClient.request('i/pin', { noteId: note.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+
+				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
+				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
+			});
+
+			let pinnedNote: Misskey.entities.Note;
+
+			test('Pinning normal Note is delivered', async () => {
+				pinnedNote = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
+				await aliceClient.request('i/pin', { noteId: pinnedNote.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+
+				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
+				strictEqual(_aliceInBServer.pinnedNoteIds.length, 1);
+				const pinnedNoteInBServer = await resolveRemoteNote(`https://a.test/notes/${pinnedNote.id}`, bobClient);
+				strictEqual(_aliceInBServer.pinnedNotes[0].id, pinnedNoteInBServer.id);
+			});
+
+			test('Unpinning normal Note is delivered', async () => {
+				await aliceClient.request('i/unpin', { noteId: pinnedNote.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+
+				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
+				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
 			});
 		});
 	});
