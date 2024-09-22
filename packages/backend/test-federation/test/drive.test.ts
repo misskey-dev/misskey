@@ -63,7 +63,7 @@ describe('Drive', () => {
 
 			test('Check consistency', () => {
 				// console.log(`a.test: ${JSON.stringify(updatedImage, null, '\t')}`);
-			// console.log(`b.test: ${JSON.stringify(updatedImageInBServer, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(updatedImageInBServer, null, '\t')}`);
 
 				// FIXME: not updated with `drive/files/update`
 				strictEqual(updatedImage.isSensitive, true);
