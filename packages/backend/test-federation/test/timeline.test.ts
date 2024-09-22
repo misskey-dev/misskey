@@ -32,8 +32,8 @@ describe('Timeline', () => {
 		await aliceClient.request('notes/create', { text: 'a', ...params });
 	}
 
-	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList');
-	type TimelineEndpoint = keyof Misskey.Endpoints & (`${string}timeline` | 'antennas/notes' | 'roles/notes');
+	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');
+	type TimelineEndpoint = keyof Misskey.Endpoints & (`${string}timeline` | 'antennas/notes' | 'roles/notes' | 'notes/search-by-tag');
 	const timelineMap = new Map<TimelineChannel, TimelineEndpoint>([
 		['antenna', 'antennas/notes'],
 		['globalTimeline', 'notes/global-timeline'],
@@ -41,6 +41,7 @@ describe('Timeline', () => {
 		['hybridTimeline', 'notes/hybrid-timeline'],
 		['localTimeline', 'notes/local-timeline'],
 		['roleTimeline', 'roles/notes'],
+		['hashtag', 'notes/search-by-tag'],
 		['userList', 'notes/user-list-timeline'],
 	]);
 
@@ -63,6 +64,8 @@ describe('Timeline', () => {
 		const params: Misskey.Endpoints[typeof endpoint]['req'] =
 			endpoint === 'antennas/notes' ? { antennaId: (channelParams as Misskey.Channels['antenna']['params']).antennaId } :
 			endpoint === 'notes/user-list-timeline' ? { listId: (channelParams as Misskey.Channels['userList']['params']).listId } :
+			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
+			endpoint === 'notes/search-by-tag' ? { query: (channelParams as Misskey.Channels['hashtag']['params']).q as string[][] } :
 			endpoint === 'roles/notes' ? { roleId: (channelParams as Misskey.Channels['roleTimeline']['params']).roleId } :
 			{};
 		const notes = await (bobClient.request as Request)(endpoint, params);
@@ -164,6 +167,34 @@ describe('Timeline', () => {
 
 		test('Receive remote followee\'s specified-only note', async () => {
 			await postAndCheckReception(userList, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { listId: list.id });
+		});
+	});
+
+	describe('hashtag', () => {
+		const hashtag = 'hashtag';
+
+		test('Receive remote followee\'s note', async () => {
+			const tag = crypto.randomUUID();
+			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
+			await postAndCheckReception(hashtag, true, { text: `#${tag}` }, { q: [[tag]] });
+		});
+
+		test('Receive remote followee\'s home-only note', async () => {
+			const tag = crypto.randomUUID();
+			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
+			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'home' }, { q: [[tag]] });
+		});
+
+		test('Receive remote followee\'s followers-only note', async () => {
+			const tag = crypto.randomUUID();
+			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
+			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'followers' }, { q: [[tag]] });
+		});
+
+		test('Receive remote followee\'s specified-only note', async () => {
+			const tag = crypto.randomUUID();
+			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
+			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { q: [[tag]] });
 		});
 	});
 
