@@ -10,7 +10,7 @@ const [
 	fetchAdmin('b.test'),
 ]);
 
-describe('Blocking', () => {
+describe('Block', () => {
 	describe('Check follow', () => {
 		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
 		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
