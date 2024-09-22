@@ -42,8 +42,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
 					<template v-if="enableFanoutTimeline" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
-					<template #footer>
-						<MkButton primary rounded :disabled="!isFttModified" @click="saveFtt">{{ i18n.ts.save }}</MkButton>
+					<template v-if="isFttModified" #footer>
+						<MkButton primary rounded @click="saveFtt">{{ i18n.ts.save }}</MkButton>
 					</template>
 
 					<div class="_gaps_m">
@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>Misskey® Reactions Boost Technology™ (RBT)<span class="_beta">{{ i18n.ts.beta }}</span></template>
 					<template v-if="enableReactionsBuffering" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
-					<template #footer>
-						<MkButton :disabled="!isRbtModified" primary rounded @click="saveRbt">{{ i18n.ts.save }}</MkButton>
+					<template v-if="isRbtModified" #footer>
+						<MkButton primary rounded @click="saveRbt">{{ i18n.ts.save }}</MkButton>
 					</template>
 
 					<div class="_gaps_m">
