@@ -13,6 +13,7 @@ import * as lolex from '@sinonjs/fake-timers';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import {
+	MiMeta,
 	MiRole,
 	MiRoleAssignment,
 	MiUser,
@@ -41,7 +42,7 @@ describe('RoleService', () => {
 	let usersRepository: UsersRepository;
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
-	let metaService: jest.Mocked<MetaService>;
+	let meta: jest.Mocked<MiMeta>;
 	let notificationService: jest.Mocked<NotificationService>;
 	let clock: lolex.InstalledClock;
 
@@ -142,7 +143,7 @@ describe('RoleService', () => {
 		rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
 
-		metaService = app.get<MetaService>(MetaService) as jest.Mocked<MetaService>;
+		meta = app.get<MiMeta>(DI.meta) as jest.Mocked<MiMeta>;
 		notificationService = app.get<NotificationService>(NotificationService) as jest.Mocked<NotificationService>;
 
 		await roleService.onModuleInit();
@@ -164,11 +165,9 @@ describe('RoleService', () => {
 	describe('getUserPolicies', () => {
 		test('instance default policies', async () => {
 			const user = await createUser();
-			metaService.fetch.mockResolvedValue({
-				policies: {
-					canManageCustomEmojis: false,
-				},
-			} as any);
+			meta.policies = {
+				canManageCustomEmojis: false,
+			};
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -177,11 +176,9 @@ describe('RoleService', () => {
 
 		test('instance default policies 2', async () => {
 			const user = await createUser();
-			metaService.fetch.mockResolvedValue({
-				policies: {
-					canManageCustomEmojis: true,
-				},
-			} as any);
+			meta.policies = {
+				canManageCustomEmojis: true,
+			};
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -201,11 +198,9 @@ describe('RoleService', () => {
 				},
 			});
 			await roleService.assign(user.id, role.id);
-			metaService.fetch.mockResolvedValue({
-				policies: {
-					canManageCustomEmojis: false,
-				},
-			} as any);
+			meta.policies = {
+				canManageCustomEmojis: false,
+			};
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -236,11 +231,9 @@ describe('RoleService', () => {
 			});
 			await roleService.assign(user.id, role1.id);
 			await roleService.assign(user.id, role2.id);
-			metaService.fetch.mockResolvedValue({
-				policies: {
-					driveCapacityMb: 50,
-				},
-			} as any);
+			meta.policies = {
+				driveCapacityMb: 50,
+			};
 
 			const result = await roleService.getUserPolicies(user.id);
 
@@ -260,11 +253,9 @@ describe('RoleService', () => {
 				},
 			});
 			await roleService.assign(user.id, role.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
-			metaService.fetch.mockResolvedValue({
-				policies: {
-					canManageCustomEmojis: false,
-				},
-			} as any);
+			meta.policies = {
+				canManageCustomEmojis: false,
+			};
 
 			const result = await roleService.getUserPolicies(user.id);
 			expect(result.canManageCustomEmojis).toBe(true);
