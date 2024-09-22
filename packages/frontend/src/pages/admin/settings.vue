@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkFolder :defaultOpen="true" :withFooter="true">
+					<MkFolder :defaultOpen="true">
 						<template #icon><i class="ti ti-info-circle"></i></template>
 						<template #label>{{ i18n.ts.info }}</template>
 						<template #footer>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 
-					<MkFolder :withFooter="true">
+					<MkFolder>
 						<template #icon><i class="ti ti-user-star"></i></template>
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
 						<template #footer>
@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkTextarea>
 					</MkFolder>
 
-					<MkFolder :withFooter="true">
+					<MkFolder>
 						<template #icon><i class="ti ti-cloud"></i></template>
 						<template #label>{{ i18n.ts.files }}</template>
 						<template #footer>
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 
-					<MkFolder :withFooter="true">
+					<MkFolder>
 						<template #icon><i class="ti ti-world-cog"></i></template>
 						<template #label>ServiceWorker</template>
 						<template #footer>
@@ -138,7 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 
-					<MkFolder :withFooter="true">
+					<MkFolder>
 						<template #icon><i class="ti ti-ad"></i></template>
 						<template #label>{{ i18n.ts._ad.adsSettings }}</template>
 						<template #footer>
@@ -158,7 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 
-					<MkFolder :withFooter="true">
+					<MkFolder>
 						<template #icon><i class="ti ti-world-search"></i></template>
 						<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
 						<template #footer>
@@ -232,6 +232,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -247,7 +248,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import * as Misskey from 'misskey-js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const proxyAccount = ref<Misskey.entities.UserDetailed | null>(null);
