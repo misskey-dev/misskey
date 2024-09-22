@@ -1269,6 +1269,7 @@ fromX: "从 {x}"
 genEmbedCode: "生成嵌入代码"
 noteOfThisUser: "此用户的帖子"
 clipNoteLimitExceeded: "无法再往此便签内添加更多帖子"
+performance: "性能"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
