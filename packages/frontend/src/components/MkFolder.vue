@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSpacer :marginMin="14" :marginMax="22">
 							<slot></slot>
 						</MkSpacer>
-						<div v-if="withFooter" :class="$style.footer">
+						<div v-if="$slots.footer" :class="$style.footer">
 							<slot name="footer"></slot>
 						</div>
 					</div>
@@ -59,11 +59,9 @@ import { defaultStore } from '@/store.js';
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
 	maxHeight?: number | null;
-	withFooter?: boolean;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
-	withFooter: false,
 });
 
 const getBgColor = (el: HTMLElement) => {

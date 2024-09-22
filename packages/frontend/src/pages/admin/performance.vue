@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</div>
 
-				<MkFolder :defaultOpen="true" :withFooter="true">
+				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-bolt"></i></template>
 					<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
 					<template v-if="enableFanoutTimeline" #suffix>Enabled</template>
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFolder>
 
-				<MkFolder :defaultOpen="true" :withFooter="true">
+				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-bolt"></i></template>
 					<template #label>Misskey® Reactions Boost Technology™ (RBT)<span class="_beta">{{ i18n.ts.beta }}</span></template>
 					<template v-if="enableReactionsBuffering" #suffix>Enabled</template>
