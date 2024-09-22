@@ -63,7 +63,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
-	withFooter: false
+	withFooter: false,
 });
 
 const getBgColor = (el: HTMLElement) => {
@@ -236,7 +236,6 @@ onMounted(() => {
 	bottom: var(--stickyBottom, 0px);
 	left: 0;
 	padding: 9px 12px;
-	border-top: solid 0.5px var(--divider);
 	background: var(--acrylicBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
