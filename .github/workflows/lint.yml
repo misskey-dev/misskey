@@ -57,6 +57,8 @@ jobs:
         - frontend-embed
         - sw
         - misskey-js
+        - misskey-bubble-game
+        - misskey-reversi
     env:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
