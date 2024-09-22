@@ -34,6 +34,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 					</FormSplit>
 
+					<MkInput v-model="tosUrl" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.tosUrl }}</template>
+					</MkInput>
+
+					<MkInput v-model="privacyPolicyUrl" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
+					</MkInput>
+
+					<MkInput v-model="inquiryUrl" type="url">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts._serverSettings.inquiryUrl }}</template>
+						<template #caption>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</template>
+					</MkInput>
+
 					<MkInput v-model="repositoryUrl" type="url">
 						<template #label>{{ i18n.ts.repositoryUrl }}</template>
 						<template #prefix><i class="ti ti-link"></i></template>
@@ -196,6 +212,9 @@ const shortName = ref<string | null>(null);
 const description = ref<string | null>(null);
 const maintainerName = ref<string | null>(null);
 const maintainerEmail = ref<string | null>(null);
+const tosUrl = ref<string | null>(null);
+const privacyPolicyUrl = ref<string | null>(null);
+const inquiryUrl = ref<string | null>(null);
 const repositoryUrl = ref<string | null>(null);
 const impressumUrl = ref<string | null>(null);
 const pinnedUsers = ref<string>('');
@@ -219,6 +238,9 @@ async function init(): Promise<void> {
 	description.value = meta.description;
 	maintainerName.value = meta.maintainerName;
 	maintainerEmail.value = meta.maintainerEmail;
+	tosUrl.value = meta.tosUrl;
+	privacyPolicyUrl.value = meta.privacyPolicyUrl;
+	inquiryUrl.value = meta.inquiryUrl;
 	repositoryUrl.value = meta.repositoryUrl;
 	impressumUrl.value = meta.impressumUrl;
 	pinnedUsers.value = meta.pinnedUsers.join('\n');
@@ -243,6 +265,9 @@ async function save() {
 		description: description.value,
 		maintainerName: maintainerName.value,
 		maintainerEmail: maintainerEmail.value,
+		tosUrl: tosUrl.value,
+		privacyPolicyUrl: privacyPolicyUrl.value,
+		inquiryUrl: inquiryUrl.value,
 		repositoryUrl: repositoryUrl.value,
 		impressumUrl: impressumUrl.value,
 		pinnedUsers: pinnedUsers.value.split('\n'),
