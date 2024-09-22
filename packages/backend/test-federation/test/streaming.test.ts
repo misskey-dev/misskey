@@ -188,6 +188,10 @@ describe('Streaming', () => {
 			test('Don\'t receive remote followee\'s specified-only note', async () => {
 				await postAndCheckReception(roleTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { roleId: role.id });
 			});
+
+			afterAll(async () => {
+				await bAdminClient.request('admin/roles/delete', { roleId: role.id });
+			});
 		});
 
 		// TODO: Cannot test
