@@ -71,6 +71,7 @@ async function startControllerEndpoints(port = config.port + 1000) {
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
 		process.env = JSON.parse(originEnv);
+		await launch();
 		res.code(200).send({ success: true });
 	});
 
