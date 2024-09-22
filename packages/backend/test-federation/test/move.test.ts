@@ -1,6 +1,6 @@
 import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin } from './utils.js';
+import { createAccount, fetchAdmin, sleep } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -36,7 +36,7 @@ describe('Move', () => {
 			// Move @alice@a.test ==> @bob@b.test
 			await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.test`] });
 			await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.test` });
-			await new Promise(resolve => setTimeout(resolve, 3000));
+			await sleep(3000);
 		});
 
 		test('Check from follower', async () => {

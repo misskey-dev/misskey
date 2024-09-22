@@ -16,9 +16,13 @@ export type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endp
 
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
 
+export async function sleep(ms: number): Promise<void> {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function signin(host: string, params: Misskey.entities.SigninRequest): Promise<Misskey.entities.SigninResponse> {
 	// wait for a second to prevent hit rate limit
-	await new Promise(resolve => setTimeout(resolve, 1000));
+	await sleep(1000);
 	// console.log(`Sign in to @${params.username}@${host} ...`);
 	return await (new Misskey.api.APIClient({
 		origin: `https://${host}`,
@@ -36,7 +40,7 @@ export async function signin(host: string, params: Misskey.entities.SigninReques
 		})
 		.catch(async err => {
 			if (err.id === '22d05606-fbcf-421a-a2db-b32610dcfd1b') {
-				await new Promise(resolve => setTimeout(resolve, Math.random() * 5000));
+				await sleep(Math.random() * 5000);
 				return await signin(host, params);
 			}
 			throw err;
@@ -72,7 +76,7 @@ async function createAdmin(host: string): Promise<Misskey.entities.SignupRespons
 }
 
 export async function fetchAdmin(host: string): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient]> {
-	await new Promise(resolve => setTimeout(resolve, Math.random() * 5000));
+	await sleep(Math.random() * 5000);
 
 	const admin = adminCache.get(host) ?? await signin(host, ADMIN_PARAMS)
 		.then(res => {

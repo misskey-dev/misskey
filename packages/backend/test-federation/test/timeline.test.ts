@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isFired, type Request, resolveRemoteUser } from './utils.js';
+import { createAccount, fetchAdmin, isFired, type Request, resolveRemoteUser, sleep } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -25,7 +25,7 @@ describe('Timeline', () => {
 		]);
 
 		await bobClient.request('following/create', { userId: aliceInBServer.id });
-		await new Promise(resolve => setTimeout(resolve, 1000));
+		await sleep(1000);
 	});
 
 	async function postFromAlice(params?: Misskey.entities.NotesCreateRequest) {
@@ -147,7 +147,7 @@ describe('Timeline', () => {
 		beforeAll(async () => {
 			list = await bobClient.request('users/lists/create', { name: 'Bob\'s List' });
 			await bobClient.request('users/lists/push', { listId: list.id, userId: aliceInBServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 		});
 
 		test('Receive remote followee\'s note', async () => {
@@ -191,7 +191,7 @@ describe('Timeline', () => {
 				displayOrder: 0,
 				policies: {},
 			});
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 		});
 
 		test('Receive remote followee\'s note', async () => {
@@ -233,7 +233,7 @@ describe('Timeline', () => {
 				withReplies: true,
 				withFile: true,
 			});
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 		});
 
 		test('Receive remote followee\'s note', async () => {

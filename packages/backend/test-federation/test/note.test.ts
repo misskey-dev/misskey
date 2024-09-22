@@ -1,6 +1,6 @@
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, uploadFile } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -91,7 +91,7 @@ describe('Note', () => {
 			]);
 			strictEqual(aliceInBServer.id, resolvedNote.userId);
 
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const resolvedReplyedNote = await bobClient.request('notes/show', { noteId: resolvedNote.replyId });
 			strictEqual(resolvedReplyedNote.repliesCount, 1);
@@ -155,14 +155,14 @@ describe('Note', () => {
 			[, carolClient] = await createAccount('a.test', aAdminClient);
 
 			await carolClient.request('following/create', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 		});
 
 		test('Delete is derivered to followers', async () => {
 			const note = (await bobClient.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 			const noteInAServer = await resolveRemoteNote(`https://b.test/notes/${note.id}`, carolClient);
 			await bobClient.request('notes/delete', { noteId: note.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			await rejects(
 				async () => await carolClient.request('notes/show', { noteId: noteInAServer.id }),
@@ -180,7 +180,7 @@ describe('Note', () => {
 			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
 			const reaction = '😅';
 			await bobClient.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const reactions = await aliceClient.request('notes/reactions', { noteId: note.id });
 			strictEqual(reactions.length, 1);

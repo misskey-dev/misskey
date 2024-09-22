@@ -1,6 +1,6 @@
 import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, resolveRemoteNote, resolveRemoteUser } from './utils.js';
+import { createAccount, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 const [
 	[, aAdminClient],
@@ -28,7 +28,7 @@ describe('Blocking', () => {
 
 		test('Cannot follow if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 			await rejects(
 				async () => await bobClient.request('following/create', { userId: aliceInBServer.id }),
 				(err: any) => {
@@ -47,7 +47,7 @@ describe('Blocking', () => {
 		test('Cannot follow even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			// TODO: why still being blocked?
 			await rejects(
@@ -61,10 +61,10 @@ describe('Blocking', () => {
 
 		test.skip('Can follow if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			await bobClient.request('following/create', { userId: aliceInBServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const following = await bobClient.request('users/following', { userId: bob.id });
 			strictEqual(following.length, 1);
@@ -81,7 +81,7 @@ describe('Blocking', () => {
 			});
 
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			test('after block', async () => {
 				const following = await bobClient.request('users/following', { userId: bob.id });
@@ -109,7 +109,7 @@ describe('Blocking', () => {
 
 		test('Cannot reply if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
@@ -124,7 +124,7 @@ describe('Blocking', () => {
 
 		test('Can reply if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
@@ -151,7 +151,7 @@ describe('Blocking', () => {
 
 		test('Cannot reply if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
@@ -168,7 +168,7 @@ describe('Blocking', () => {
 		test('Cannot reply even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
@@ -185,7 +185,7 @@ describe('Blocking', () => {
 
 		test.skip('Can reply if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await sleep(1000);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
