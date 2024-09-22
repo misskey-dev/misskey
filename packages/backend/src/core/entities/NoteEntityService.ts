@@ -329,7 +329,7 @@ export class NoteEntityService implements OnModuleInit {
 			: this.meta.enableReactionsBuffering
 				? await this.reactionsBufferingService.get(note.id)
 				: { deltas: {}, pairs: [] };
-		const reactions = mergeReactions(note.reactions, bufferedReactions.deltas ?? {});
+		const reactions = mergeReactions(this.reactionService.convertLegacyReactions(note.reactions), bufferedReactions.deltas ?? {});
 		for (const [name, count] of Object.entries(reactions)) {
 			if (count <= 0) {
 				delete reactions[name];
