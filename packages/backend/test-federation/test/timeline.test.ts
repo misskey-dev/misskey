@@ -52,7 +52,7 @@ describe('Timeline', () => {
 	) {
 		const text = noteParams.text ?? crypto.randomUUID();
 		const streamingFired = await isFired(
-			'https://b.test', bob, timelineChannel,
+			'b.test', bob, timelineChannel,
 			async () => await postFromAlice({ text, ...noteParams }),
 			'note', msg => msg.text === text,
 			channelParams,

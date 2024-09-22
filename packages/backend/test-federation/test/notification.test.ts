@@ -29,12 +29,12 @@ describe('Notification', () => {
 		test('Get notification when follow/followed', async () => {
 			const fired = await Promise.all([
 				isFired(
-					'https://b.test', bob, 'main',
+					'b.test', bob, 'main',
 					async () => await bobClient.request('following/create', { userId: aliceInBServer.id }),
 					'follow', msg => msg.id === aliceInBServer.id,
 				),
 				isFired(
-					'https://a.test', alice, 'main',
+					'a.test', alice, 'main',
 					async () => {}, // NOTE: do nothing because done in above
 					'followed', msg => msg.id === bobInAServer.id,
 				),

@@ -14,13 +14,15 @@ export type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endp
 	endpoint: E, params: P, credential?: string | null
 ) => Promise<SwitchCaseResponseType<E, P>>;
 
+type Host = 'a.test' | 'b.test';
+
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
 
 export async function sleep(ms: number): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export async function signin(host: string, params: Misskey.entities.SigninRequest): Promise<Misskey.entities.SigninResponse> {
+export async function signin(host: Host, params: Misskey.entities.SigninRequest): Promise<Misskey.entities.SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
 	// console.log(`Sign in to @${params.username}@${host} ...`);
@@ -47,9 +49,9 @@ export async function signin(host: string, params: Misskey.entities.SigninReques
 		});
 }
 
-const adminCache = new Map<string, Misskey.entities.SigninResponse>();
+const adminCache = new Map<Host, Misskey.entities.SigninResponse>();
 
-async function createAdmin(host: string): Promise<Misskey.entities.SignupResponse | undefined> {
+async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse | undefined> {
 	const client = new Misskey.api.APIClient({ origin: `https://${host}` });
 	return await client.request('admin/accounts/create', ADMIN_PARAMS).then(res => {
 		console.log(`Successfully created admin account: @${ADMIN_PARAMS.username}@${host}`);
@@ -75,7 +77,7 @@ async function createAdmin(host: string): Promise<Misskey.entities.SignupRespons
 	});
 }
 
-export async function fetchAdmin(host: string): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient]> {
+export async function fetchAdmin(host: Host): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient]> {
 	await sleep(Math.random() * 5000);
 
 	const admin = adminCache.get(host) ?? await signin(host, ADMIN_PARAMS)
@@ -96,7 +98,7 @@ export async function fetchAdmin(host: string): Promise<[Misskey.entities.Signin
 	return [admin, new Misskey.api.APIClient({ origin: `https://${host}`, credential: admin.i })];
 }
 
-export async function createAccount(host: string, adminClient: Misskey.api.APIClient): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient, { username: string; password: string }]> {
+export async function createAccount(host: Host, adminClient: Misskey.api.APIClient): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient, { username: string; password: string }]> {
 	const username = crypto.randomUUID().replaceAll('-', '').substring(0, 20);
 	const password = crypto.randomUUID().replaceAll('-', '');
 	await adminClient.request('admin/accounts/create', { username, password });
@@ -110,7 +112,7 @@ export async function createAccount(host: string, adminClient: Misskey.api.APICl
 	];
 }
 
-export async function resolveRemoteUser(uri: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
+export async function resolveRemoteUser(uri: `https://${Host}/users/${string}`, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
 		fromClient.request('ap/show', { uri })
 			.then(res => {
@@ -122,7 +124,7 @@ export async function resolveRemoteUser(uri: string, fromClient: Misskey.api.API
 	});
 }
 
-export async function resolveRemoteNote(uri: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.Note> {
+export async function resolveRemoteNote(uri: `https://${Host}/notes/${string}`, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.Note> {
 	return new Promise<Misskey.entities.Note>((resolve, reject) => {
 		fromClient.request('ap/show', { uri })
 			.then(res => {
@@ -134,7 +136,7 @@ export async function resolveRemoteNote(uri: string, fromClient: Misskey.api.API
 	});
 }
 
-export async function uploadFile(host: string, path: string, token: string): Promise<Misskey.entities.DriveFile> {
+export async function uploadFile(host: Host, path: string, token: string): Promise<Misskey.entities.DriveFile> {
 	const filename = path.split('/').pop() ?? 'untitled';
 	const blob = new Blob([await readFile(join(__dirname, path))]);
 
@@ -168,7 +170,7 @@ export function deepStrictEqualWithExcludedFields<T>(actual: T, expected: T, exc
 }
 
 export async function isFired<C extends keyof Misskey.Channels, T extends keyof Misskey.Channels[C]['events']>(
-	host: string,
+	host: Host,
 	user: { i: string },
 	channel: C,
 	trigger: () => Promise<unknown>,
@@ -179,7 +181,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 ): Promise<boolean> {
 	return new Promise<boolean>(async (resolve, reject) => {
 		// @ts-expect-error TODO: why?
-		const stream = new Misskey.Stream(host, { token: user.i }, { WebSocket });
+		const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 		const connection = stream.useChannel(channel, params);
 		connection.on(type as any, ((msg: Misskey.Channels[C]['events'][T]) => {
 			if (cond(msg)) {
