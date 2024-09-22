@@ -22,10 +22,10 @@ services:
       - internal_network_b
     volumes:
       - type: volume
-        source: node_modules
+        source: node_modules_dev
         target: /misskey/node_modules
       - type: volume
-        source: node_modules_backend
+        source: node_modules_backend_dev
         target: /misskey/packages/backend/node_modules
 
   redis.test:

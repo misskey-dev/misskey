@@ -76,7 +76,6 @@ services:
       misskey.b.test:
         condition: service_healthy
     environment:
-      - NODE_ENV=production
       - TESTER_IP_ADDRESS=$TESTER_IP_ADDRESS
     volumes:
       - type: bind
@@ -84,8 +83,12 @@ services:
         target: /misskey/packages/backend/package.json
         read_only: true
       - type: bind
-        source: ./built
-        target: /misskey/packages/backend/test-federation
+        source: ./daemon.ts
+        target: /misskey/packages/backend/test-federation/daemon.ts
+        read_only: true
+      - type: bind
+        source: ./tsconfig.json
+        target: /misskey/packages/backend/test-federation/tsconfig.json
         read_only: true
       - type: bind
         source: ../../../package.json
@@ -104,7 +107,8 @@ services:
       bash -c "
         corepack enable && corepack prepare
         pnpm -F backend i
-        node ./packages/backend/test-federation/daemon.js
+        pnpm exec tsc -p ./packages/backend/test-federation
+        node ./packages/backend/test-federation/built/daemon.js
       "
 
   redis.test:
