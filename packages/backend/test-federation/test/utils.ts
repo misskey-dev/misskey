@@ -18,7 +18,7 @@ export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
 export async function signin(host: string, params: Misskey.entities.SigninRequest): Promise<Misskey.entities.SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await new Promise(resolve => setTimeout(resolve, 1000));
-	console.log(`Sign in to @${params.username}@${host} ...`);
+	// console.log(`Sign in to @${params.username}@${host} ...`);
 	return await (new Misskey.api.APIClient({
 		origin: `https://${host}`,
 		fetch: (input, init) => fetch(input, {
@@ -30,7 +30,7 @@ export async function signin(host: string, params: Misskey.entities.SigninReques
 		}),
 	}).request as Request)('signin', params)
 		.then(res => {
-			console.log(`Signed in to @${params.username}@${host}`);
+			// console.log(`Signed in to @${params.username}@${host}`);
 			return res;
 		})
 		.catch(async err => {
@@ -95,7 +95,7 @@ export async function createAccount(host: string, adminClient: Misskey.api.APICl
 	const username = crypto.randomUUID().replaceAll('-', '').substring(0, 20);
 	const password = crypto.randomUUID().replaceAll('-', '');
 	await adminClient.request('admin/accounts/create', { username, password });
-	console.log(`Created an account: @${username}@${host}`);
+	// console.log(`Created an account: @${username}@${host}`);
 	const signinRes = await signin(host, { username, password });
 
 	return [
