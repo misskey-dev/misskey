@@ -1269,6 +1269,7 @@ fromX: "(x)부터"
 genEmbedCode: "임베디드 코드 만들기"
 noteOfThisUser: "이 유저의 노트 목록"
 clipNoteLimitExceeded: "더 이상 이 클립에 노트를 추가 할 수 없습니다."
+performance: "퍼포먼스"
 _delivery:
   status: "전송 상태"
   stop: "정지됨"
