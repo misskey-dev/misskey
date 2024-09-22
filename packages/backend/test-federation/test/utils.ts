@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /** used for avoiding overload and some endpoints */
-type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
+export type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
 	endpoint: E, params: P, credential?: string | null
 ) => Promise<SwitchCaseResponseType<E, P>>;
 
