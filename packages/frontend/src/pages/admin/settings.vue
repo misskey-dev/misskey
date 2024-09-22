@@ -208,6 +208,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</MkFolder>
+
+					<MkFolder>
+						<template #icon><i class="ti ti-ghost"></i></template>
+						<template #label>{{ i18n.ts.proxyAccount }}</template>
+
+						<div class="_gaps">
+							<MkInfo>{{ i18n.ts.proxyAccountDescription }}</MkInfo>
+							<MkKeyValue>
+								<template #key>{{ i18n.ts.proxyAccount }}</template>
+								<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : i18n.ts.none }}</template>
+							</MkKeyValue>
+
+							<MkButton primary @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</MkButton>
+						</div>
+					</MkFolder>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -232,6 +247,10 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import * as Misskey from 'misskey-js';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+
+const proxyAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
 const name = ref<string | null>(null);
 const shortName = ref<string | null>(null);
@@ -256,6 +275,7 @@ const urlPreviewMaximumContentLength = ref<number>(1024 * 1024 * 10);
 const urlPreviewRequireContentLength = ref<boolean>(true);
 const urlPreviewUserAgent = ref<string | null>(null);
 const urlPreviewSummaryProxyUrl = ref<string | null>(null);
+const proxyAccountId = ref<string | null>(null);
 
 async function init(): Promise<void> {
 	const meta = await misskeyApi('admin/meta');
@@ -282,6 +302,10 @@ async function init(): Promise<void> {
 	urlPreviewRequireContentLength.value = meta.urlPreviewRequireContentLength;
 	urlPreviewUserAgent.value = meta.urlPreviewUserAgent;
 	urlPreviewSummaryProxyUrl.value = meta.urlPreviewSummaryProxyUrl;
+	proxyAccountId.value = meta.proxyAccountId;
+	if (proxyAccountId.value) {
+		proxyAccount.value = await misskeyApi('users/show', { userId: proxyAccountId.value });
+	}
 }
 
 function saveInfo() {
@@ -344,6 +368,22 @@ function saveUrlPreview() {
 		urlPreviewRequireContentLength: urlPreviewRequireContentLength.value,
 		urlPreviewUserAgent: urlPreviewUserAgent.value,
 		urlPreviewSummaryProxyUrl: urlPreviewSummaryProxyUrl.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function chooseProxyAccount() {
+	os.selectUser({ localOnly: true }).then(user => {
+		proxyAccount.value = user;
+		proxyAccountId.value = user.id;
+		saveProxyAccount();
+	});
+}
+
+function saveProxyAccount() {
+	os.apiWithDialog('admin/update-meta', {
+		proxyAccountId: proxyAccountId.value,
 	}).then(() => {
 		fetchInstance(true);
 	});
