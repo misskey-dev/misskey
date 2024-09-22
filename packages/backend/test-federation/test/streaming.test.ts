@@ -230,6 +230,10 @@ describe('Streaming', () => {
 			test('Don\'t receive remote followee\'s specified-only note', async () => {
 				await postAndCheckReception(antenna, false, { text: 'I love Bob (4)', visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { antennaId: bobAntenna.id });
 			});
+
+			afterAll(async () => {
+				await bobClient.request('antennas/delete', { antennaId: bobAntenna.id });
+			});
 		});
 	});
 });
