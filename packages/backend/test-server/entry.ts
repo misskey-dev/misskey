@@ -6,12 +6,14 @@ import { MainModule } from '@/MainModule.js';
 import { ServerService } from '@/server/ServerService.js';
 import { loadConfig } from '@/config.js';
 import { NestLogger } from '@/NestLogger.js';
+import { INestApplicationContext } from '@nestjs/common';
 
 const config = loadConfig();
 const originEnv = JSON.stringify(process.env);
 
 process.env.NODE_ENV = 'test';
 
+let app: INestApplicationContext;
 let serverService: ServerService;
 
 /**
@@ -22,7 +24,7 @@ async function launch() {
 
 	console.log('starting application...');
 
-	const app = await NestFactory.createApplicationContext(MainModule, {
+	app = await NestFactory.createApplicationContext(MainModule, {
 		logger: new NestLogger(),
 	});
 	serverService = app.get(ServerService);
@@ -75,12 +77,13 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		process.env = JSON.parse(originEnv);
 
 		await serverService.dispose();
+		await app.close();
 
 		await killTestServer();
 
 		console.log('starting application...');
 
-		const app = await NestFactory.createApplicationContext(MainModule, {
+		app = await NestFactory.createApplicationContext(MainModule, {
 			logger: new NestLogger(),
 		});
 		serverService = app.get(ServerService);
