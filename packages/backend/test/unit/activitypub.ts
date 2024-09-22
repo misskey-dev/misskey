@@ -106,7 +106,7 @@ describe('ActivityPub', () => {
 		sensitiveWords: [] as string[],
 		prohibitedWords: [] as string[],
 	} as MiMeta;
-	const meta = metaInitial;
+	const meta = { ...metaInitial };
 
 	function updateMeta(newMeta: Partial<MiMeta>): void {
 		for (const key in meta) {
