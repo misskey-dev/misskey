@@ -119,7 +119,7 @@ describe('ActivityPub', () => {
 					};
 				},
 			})
-			.overrideProvider(DI.meta).useValue(meta)
+			.overrideProvider(DI.meta).useFactory({ factory: () => meta })
 			.compile();
 
 		await app.init();
