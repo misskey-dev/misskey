@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSpacer :marginMin="14" :marginMax="22">
 							<slot></slot>
 						</MkSpacer>
-						<div :class="$style.footer" v-if="withFooter">
+						<div v-if="withFooter" :class="$style.footer">
 							<slot name="footer"></slot>
 						</div>
 					</div>
