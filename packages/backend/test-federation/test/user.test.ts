@@ -24,7 +24,7 @@ describe('User', () => {
 
 			const aliceInAServer = await aliceWatcherClient.request('users/show', { userId: alice.id });
 
-			const resolved = await resolveRemoteUser(`https://a.test/@${aliceInAServer.username}`, aliceWatcherInBServerClient);
+			const resolved = await resolveRemoteUser(`https://a.test/users/${aliceInAServer.id}`, aliceWatcherInBServerClient);
 
 			const aliceInBServer = await aliceWatcherInBServerClient.request('users/show', { userId: resolved.id });
 
@@ -46,17 +46,17 @@ describe('User', () => {
 		});
 
 		describe('isCat is federated', () => {
-			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
-			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
 			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
-				[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-				[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
+				[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 				[bobInAServer, aliceInBServer] = await Promise.all([
-					resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-					resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+					resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
+					resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
 				]);
 			});
 
@@ -77,14 +77,14 @@ describe('User', () => {
 		});
 
 		describe('Pinning Notes', () => {
-			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
-			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
 			let aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
-				[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-				[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
-				aliceInBServer = await resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient);
+				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
+				[bob, bobClient] = await createAccount('b.test', bAdminClient);
+				aliceInBServer = await resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient);
 
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
 			});
@@ -131,17 +131,17 @@ describe('User', () => {
 	});
 
 	describe('Follow / Unfollow', () => {
-		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
-		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
-				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+				resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
+				resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
 			]);
 		});
 
@@ -193,17 +193,17 @@ describe('User', () => {
 	});
 
 	describe('Follow requests', () => {
-		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
-		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
-				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+				resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
+				resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
 			]);
 
 			await aliceClient.request('i/update', { isLocked: true });

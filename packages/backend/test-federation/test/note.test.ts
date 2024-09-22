@@ -11,17 +11,17 @@ const [
 ]);
 
 describe('Note', () => {
-	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
-	let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+	let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
 	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
-		[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+		[alice, aliceClient] = await createAccount('a.test', aAdminClient);
+		[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 		[bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+			resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
+			resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
 		]);
 	});
 

@@ -106,12 +106,12 @@ export async function createAccount(host: string, adminClient: Misskey.api.APICl
 	];
 }
 
-export async function resolveRemoteUser(url: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
+export async function resolveRemoteUser(uri: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
-		fromClient.request('ap/show', { uri: url })
+		fromClient.request('ap/show', { uri })
 			.then(res => {
 				strictEqual(res.type, 'User');
-				strictEqual(res.object.url, url);
+				strictEqual(res.object.uri, uri);
 				resolve(res.object);
 			})
 			.catch(err => reject(err));
