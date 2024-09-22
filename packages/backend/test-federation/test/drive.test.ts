@@ -32,8 +32,8 @@ describe('Drive', () => {
 			});
 
 			test('Check consistency of DriveFile', () => {
-			// console.log(`a.test: ${JSON.stringify(image, null, '\t')}`);
-			// console.log(`b.test: ${JSON.stringify(imageInBServer, null, '\t')}`);
+				// console.log(`a.test: ${JSON.stringify(image, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(imageInBServer, null, '\t')}`);
 
 				deepStrictEqualWithExcludedFields(image, imageInBServer, [
 					'id',
