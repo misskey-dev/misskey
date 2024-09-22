@@ -39,7 +39,6 @@ jobs:
           corepack enable && corepack prepare
           pnpm i --frozen-lockfile
           pnpm build
-          pnpm -F backend build:fed
       - name: Setup
         run: |
           cd packages/backend/test-federation
