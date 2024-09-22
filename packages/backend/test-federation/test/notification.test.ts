@@ -20,8 +20,8 @@ describe('Notification', () => {
 		[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 		[bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
-			resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
+			resolveRemoteUser('b.test', bob.id, aliceClient),
+			resolveRemoteUser('a.test', alice.id, bobClient),
 		]);
 	});
 

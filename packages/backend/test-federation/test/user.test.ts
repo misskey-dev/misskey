@@ -24,7 +24,7 @@ describe('User', () => {
 
 			const aliceInAServer = await aliceWatcherClient.request('users/show', { userId: alice.id });
 
-			const resolved = await resolveRemoteUser(`https://a.test/users/${aliceInAServer.id}`, aliceWatcherInBServerClient);
+			const resolved = await resolveRemoteUser('a.test', aliceInAServer.id, aliceWatcherInBServerClient);
 
 			const aliceInBServer = await aliceWatcherInBServerClient.request('users/show', { userId: resolved.id });
 
@@ -55,8 +55,8 @@ describe('User', () => {
 				[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 				[bobInAServer, aliceInBServer] = await Promise.all([
-					resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
-					resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
+					resolveRemoteUser('b.test', bob.id, aliceClient),
+					resolveRemoteUser('a.test', alice.id, bobClient),
 				]);
 			});
 
@@ -84,7 +84,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
 				[bob, bobClient] = await createAccount('b.test', bAdminClient);
-				aliceInBServer = await resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient);
+				aliceInBServer = await resolveRemoteUser('a.test', alice.id, bobClient);
 
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
 			});
@@ -116,7 +116,7 @@ describe('User', () => {
 
 				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 1);
-				const pinnedNoteInBServer = await resolveRemoteNote(`https://a.test/notes/${pinnedNote.id}`, bobClient);
+				const pinnedNoteInBServer = await resolveRemoteNote('a.test', pinnedNote.id, bobClient);
 				strictEqual(_aliceInBServer.pinnedNotes[0].id, pinnedNoteInBServer.id);
 			});
 
@@ -140,8 +140,8 @@ describe('User', () => {
 			[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
-				resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
-				resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
+				resolveRemoteUser('b.test', bob.id, aliceClient),
+				resolveRemoteUser('a.test', alice.id, bobClient),
 			]);
 		});
 
@@ -202,8 +202,8 @@ describe('User', () => {
 			[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
-				resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
-				resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
+				resolveRemoteUser('b.test', bob.id, aliceClient),
+				resolveRemoteUser('a.test', alice.id, bobClient),
 			]);
 
 			await aliceClient.request('i/update', { isLocked: true });

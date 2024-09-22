@@ -24,7 +24,7 @@ describe('Drive', () => {
 			beforeAll(async () => {
 				image = await uploadFile('a.test', '../../test/resources/192.jpg', uploader.i);
 				const noteWithImage = (await uploaderClient.request('notes/create', { fileIds: [image.id] })).createdNote;
-				const noteInBServer = await resolveRemoteNote(`https://a.test/notes/${noteWithImage.id}`, bAdminClient);
+				const noteInBServer = await resolveRemoteNote('a.test', noteWithImage.id, bAdminClient);
 				assert(noteInBServer.files != null);
 				strictEqual(noteInBServer.files.length, 1);
 				imageInBServer = noteInBServer.files[0];
@@ -77,7 +77,7 @@ describe('Drive', () => {
 		describe('Re-update with attaching to Note', () => {
 			beforeAll(async () => {
 				const noteWithUpdatedImage = (await uploaderClient.request('notes/create', { fileIds: [updatedImage.id] })).createdNote;
-				const noteWithUpdatedImageInBServer = await resolveRemoteNote(`https://a.test/notes/${noteWithUpdatedImage.id}`, bAdminClient);
+				const noteWithUpdatedImageInBServer = await resolveRemoteNote('a.test', noteWithUpdatedImage.id, bAdminClient);
 				assert(noteWithUpdatedImageInBServer.files != null);
 				strictEqual(noteWithUpdatedImageInBServer.files.length, 1);
 				reupdatedImageInBServer = noteWithUpdatedImageInBServer.files[0];

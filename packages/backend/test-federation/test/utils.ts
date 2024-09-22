@@ -112,8 +112,9 @@ export async function createAccount(host: Host, adminClient: Misskey.api.APIClie
 	];
 }
 
-export async function resolveRemoteUser(uri: `https://${Host}/users/${string}`, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
+export async function resolveRemoteUser(host: Host, id: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
+		const uri = `https://${host}/users/${id}`;
 		fromClient.request('ap/show', { uri })
 			.then(res => {
 				strictEqual(res.type, 'User');
@@ -124,8 +125,9 @@ export async function resolveRemoteUser(uri: `https://${Host}/users/${string}`, 
 	});
 }
 
-export async function resolveRemoteNote(uri: `https://${Host}/notes/${string}`, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.Note> {
+export async function resolveRemoteNote(host: Host, id: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.Note> {
 	return new Promise<Misskey.entities.Note>((resolve, reject) => {
+		const uri = `https://${host}/notes/${id}`;
 		fromClient.request('ap/show', { uri })
 			.then(res => {
 				strictEqual(res.type, 'Note');

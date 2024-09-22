@@ -20,8 +20,8 @@ describe('Note', () => {
 		[bob, bobClient] = await createAccount('b.test', bAdminClient);
 
 		[bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/users/${bob.id}`, aliceClient),
-			resolveRemoteUser(`https://a.test/users/${alice.id}`, bobClient),
+			resolveRemoteUser('b.test', bob.id, aliceClient),
+			resolveRemoteUser('a.test', alice.id, bobClient),
 		]);
 	});
 
@@ -38,7 +38,7 @@ describe('Note', () => {
 				},
 			})).createdNote;
 
-			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
@@ -65,7 +65,7 @@ describe('Note', () => {
 			const replyedNote = await aliceClient.request('notes/show', { noteId: _replyedNote.id });
 			strictEqual(replyedNote.repliesCount, 1);
 
-			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
@@ -107,7 +107,7 @@ describe('Note', () => {
 				renoteId: renotedNote.id,
 			})).createdNote;
 
-			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
@@ -160,7 +160,7 @@ describe('Note', () => {
 
 		test('Delete is derivered to followers', async () => {
 			const note = (await bobClient.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
-			const noteInAServer = await resolveRemoteNote(`https://b.test/notes/${note.id}`, carolClient);
+			const noteInAServer = await resolveRemoteNote('b.test', note.id, carolClient);
 			await bobClient.request('notes/delete', { noteId: note.id });
 			await sleep(1000);
 
@@ -177,7 +177,7 @@ describe('Note', () => {
 	describe('Reaction', () => {
 		test('Consistency of reaction', async () => {
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote(`https://a.test/notes/${note.id}`, bobClient);
+			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
 			const reaction = '😅';
 			await bobClient.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
 			await sleep(1000);
