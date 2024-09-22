@@ -188,4 +188,57 @@ describe('Note', () => {
 			strictEqual(reactions[0].user.id, bobInAServer.id);
 		});
 	});
+
+	describe('Poll', () => {
+		describe('Any remote user\'s vote is delivered to the author', () => {
+			let carolClient: Misskey.api.APIClient;
+
+			beforeAll(async () => {
+				[, carolClient] = await createAccount('a.test', aAdminClient);
+			});
+
+			test('Bob creates poll and receives a vote from Carol', async () => {
+				const note = (await bobClient.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
+				const noteInAServer = await resolveRemoteNote('b.test', note.id, carolClient);
+				await carolClient.request('notes/polls/vote', { noteId: noteInAServer.id, choice: 0 });
+				await sleep(1000);
+
+				const noteAfterVote = await bobClient.request('notes/show', { noteId: note.id });
+				assert(noteAfterVote.poll != null);
+				strictEqual(noteAfterVote.poll.choices[0].votes, 1);
+				strictEqual(noteAfterVote.poll.choices[1].votes, 0);
+			});
+		});
+
+		describe('Local user\'s vote is delivered to the author\'s remote followers', () => {
+			let bobRemoteFollowerClient: Misskey.api.APIClient;
+			let localVoterClient: Misskey.api.APIClient;
+
+			beforeAll(async () => {
+				[
+					[, bobRemoteFollowerClient],
+					[, localVoterClient],
+				] = await Promise.all([
+					createAccount('a.test', aAdminClient),
+					createAccount('b.test', bAdminClient),
+				]);
+
+				await bobRemoteFollowerClient.request('following/create', { userId: bobInAServer.id });
+				await sleep(1000);
+			});
+
+			test('A vote in Bob\'s server is delivered to Bob\'s remote followers', async () => {
+				const note = (await bobClient.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
+				// NOTE: resolve before voting
+				const noteInAServer = await resolveRemoteNote('b.test', note.id, bobRemoteFollowerClient);
+				await localVoterClient.request('notes/polls/vote', { noteId: note.id, choice: 0 });
+				await sleep(1000);
+
+				const noteAfterVote = await bobRemoteFollowerClient.request('notes/show', { noteId: noteInAServer.id });
+				assert(noteAfterVote.poll != null);
+				strictEqual(noteAfterVote.poll.choices[0].votes, 1);
+				strictEqual(noteAfterVote.poll.choices[1].votes, 0);
+			});
+		});
+	});
 });
