@@ -1269,6 +1269,7 @@ fromX: "Da {x}"
 genEmbedCode: "Ottieni il codice di incorporamento"
 noteOfThisUser: "Elenco di Note di questo profilo"
 clipNoteLimitExceeded: "Non è possibile aggiungere ulteriori Note a questa Clip."
+performance: "Prestazioni"
 _delivery:
   status: "Stato della consegna"
   stop: "Sospensione"
@@ -1403,6 +1404,7 @@ _serverSettings:
   fanoutTimelineDescription: "Attivando questa funzionalità migliori notevolmente la capacità delle Timeline di collezionare Note, riducendo il carico sul database. Tuttavia, aumenterà l'impiego di memoria RAM per Redis. Disattiva se il tuo server ha poca RAM o la funzionalità è irregolare."
   fanoutTimelineDbFallback: "Elaborazione dati alternativa"
   fanoutTimelineDbFallbackDescription: "Attivando l'elaborazione alternativa, verrà interrogato ulteriormente il database se la timeline non è nella cache. \nDisattivando, si può ridurre ulteriormente il carico del server, evitando l'elaborazione alternativa, ma limitando l'intervallo recuperabile delle timeline."
+  reactionsBufferingDescription: "Attivando questa opzione, puoi migliorare significativamente le prestazioni durante la creazione delle reazioni e ridurre il carico sul database. Tuttavia, aumenterà l'impiego di memoria Redis."
   inquiryUrl: "URL di contatto"
   inquiryUrlDescription: "Specificare l'URL al modulo di contatto, oppure le informazioni con i dati di contatto dell'amministrazione."
 _accountMigration:
@@ -1736,6 +1738,11 @@ _role:
     canSearchNotes: "Ricercare nelle Note"
     canUseTranslator: "Tradurre le Note"
     avatarDecorationLimit: "Numero massimo di decorazioni foto profilo installabili"
+    canImportAntennas: "Può importare Antenne"
+    canImportBlocking: "Può importare Blocchi"
+    canImportFollowing: "Può importare Following"
+    canImportMuting: "Può importare Silenziati"
+    canImportUserLists: "Può importare liste di Profili"
   _condition:
     roleAssignedTo: "Assegnato a ruoli manualmente"
     isLocal: "Profilo locale"
@@ -2448,6 +2455,7 @@ _webhookSettings:
     abuseReportResolved: "Quando una segnalazione è risolta"
     userCreated: "Quando viene creato un profilo"
   deleteConfirm: "Vuoi davvero eliminare il Webhook?"
+  testRemarks: "Clicca il bottone a destra dell'interruttore, per provare l'invio di un webhook con dati fittizi."
 _abuseReport:
   _notificationRecipient:
     createRecipient: "Aggiungi destinatario della segnalazione"
