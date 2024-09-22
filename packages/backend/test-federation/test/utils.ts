@@ -3,6 +3,7 @@ import { readFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import * as Misskey from 'misskey-js';
+import { WebSocket } from 'ws';
 import { SwitchCaseResponseType } from 'misskey-js/api.types.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -161,3 +162,38 @@ export function deepStrictEqualWithExcludedFields<T>(actual: T, expected: T, exc
 	}
 	deepStrictEqual(_actual, _expected);
 }
+
+export async function isFired<C extends keyof Misskey.Channels, T extends keyof Misskey.Channels[C]['events']>(
+	host: string,
+	user: { i: string },
+	channel: C,
+	trigger: () => Promise<void>,
+	type: T,
+	// @ts-expect-error TODO: why getting error here?
+	cond: (msg: Parameters<Misskey.Channels[C]['events'][T]>[0]) => boolean,
+	params?: Misskey.Channels[C]['params'],
+): Promise<boolean> {
+	return new Promise<boolean>(async (resolve, reject) => {
+		// @ts-expect-error TODO: why?
+		const stream = new Misskey.Stream(host, { token: user.i }, { WebSocket });
+		const connection = stream.useChannel(channel, params);
+		connection.on(type as any, ((msg: Misskey.Channels[C]['events'][T]) => {
+			if (cond(msg)) {
+				stream.close();
+				clearTimeout(timer);
+				resolve(true);
+			}
+		}) as any);
+
+		const timer = setTimeout(() => {
+			stream.close();
+			resolve(false);
+		}, 2000);
+
+		await trigger().catch(err => {
+			stream.close();
+			clearTimeout(timer);
+			reject(err);
+		});
+	});
+};
