@@ -4,12 +4,10 @@
  */
 
 import { initTestDb, sendEnvResetRequest } from './utils.js';
-import launch from '../built-test/entry.js';
 
 beforeAll(async () => {
 	await Promise.all([
 		initTestDb(false),
-		launch(),
 		sendEnvResetRequest(),
 	]);
 });
