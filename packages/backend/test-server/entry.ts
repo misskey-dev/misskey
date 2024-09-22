@@ -12,6 +12,8 @@ const originEnv = JSON.stringify(process.env);
 
 process.env.NODE_ENV = 'test';
 
+let serverService: ServerService;
+
 /**
  * テスト用のサーバインスタンスを起動する
  */
@@ -23,7 +25,7 @@ async function launch() {
 	const app = await NestFactory.createApplicationContext(MainModule, {
 		logger: new NestLogger(),
 	});
-	const serverService = app.get(ServerService);
+	serverService = app.get(ServerService);
 	await serverService.launch();
 
 	await startControllerEndpoints();
@@ -72,6 +74,8 @@ async function startControllerEndpoints(port = config.port + 1000) {
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
 		process.env = JSON.parse(originEnv);
 
+		await serverService.dispose();
+
 		await killTestServer();
 
 		console.log('starting application...');
@@ -79,7 +83,7 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		const app = await NestFactory.createApplicationContext(MainModule, {
 			logger: new NestLogger(),
 		});
-		const serverService = app.get(ServerService);
+		serverService = app.get(ServerService);
 		await serverService.launch();
 
 		res.code(200).send({ success: true });
