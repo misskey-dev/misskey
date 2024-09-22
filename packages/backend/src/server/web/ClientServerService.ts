@@ -130,32 +130,30 @@ export class ClientServerService {
 
 	@bindThis
 	private async manifestHandler(reply: FastifyReply) {
-		const instance = await this.metaService.fetch(true);
-
 		let manifest = {
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'short_name': instance.shortName || instance.name || this.config.host,
+			'short_name': this.meta.shortName || this.meta.name || this.config.host,
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'name': instance.name || this.config.host,
+			'name': this.meta.name || this.config.host,
 			'start_url': '/',
 			'display': 'standalone',
 			'background_color': '#313a42',
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'theme_color': instance.themeColor || '#86b300',
+			'theme_color': this.meta.themeColor || '#86b300',
 			'icons': [{
 				// 空文字列の場合右辺を使いたいため
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-				'src': instance.app192IconUrl || '/static-assets/icons/192.png',
+				'src': this.meta.app192IconUrl || '/static-assets/icons/192.png',
 				'sizes': '192x192',
 				'type': 'image/png',
 				'purpose': 'maskable',
 			}, {
 				// 空文字列の場合右辺を使いたいため
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-				'src': instance.app512IconUrl || '/static-assets/icons/512.png',
+				'src': this.meta.app512IconUrl || '/static-assets/icons/512.png',
 				'sizes': '512x512',
 				'type': 'image/png',
 				'purpose': 'maskable',
@@ -179,7 +177,7 @@ export class ClientServerService {
 
 		manifest = {
 			...manifest,
-			...JSON.parse(instance.manifestJsonOverride === '' ? '{}' : instance.manifestJsonOverride),
+			...JSON.parse(this.meta.manifestJsonOverride === '' ? '{}' : this.meta.manifestJsonOverride),
 		};
 
 		reply.header('Cache-Control', 'max-age=300');
