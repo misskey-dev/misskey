@@ -10,71 +10,93 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkInput v-model="name">
-						<template #label>{{ i18n.ts.instanceName }}</template>
-					</MkInput>
+					<MkFolder :defaultOpen="true" :withFooter="true">
+						<template #icon><i class="ti ti-info-circle"></i></template>
+						<template #label>{{ i18n.ts.info }}</template>
+						<template #footer>
+							<MkButton primary rounded @click="saveInfo">{{ i18n.ts.save }}</MkButton>
+						</template>
 
-					<MkInput v-model="shortName">
-						<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
-						<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
-					</MkInput>
+						<div class="_gaps">
+							<MkInput v-model="name">
+								<template #label>{{ i18n.ts.instanceName }}</template>
+							</MkInput>
 
-					<MkTextarea v-model="description">
-						<template #label>{{ i18n.ts.instanceDescription }}</template>
-					</MkTextarea>
+							<MkInput v-model="shortName">
+								<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
+								<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
+							</MkInput>
 
-					<FormSplit :minWidth="300">
-						<MkInput v-model="maintainerName">
-							<template #label>{{ i18n.ts.maintainerName }}</template>
-						</MkInput>
+							<MkTextarea v-model="description">
+								<template #label>{{ i18n.ts.instanceDescription }}</template>
+							</MkTextarea>
 
-						<MkInput v-model="maintainerEmail" type="email">
-							<template #prefix><i class="ti ti-mail"></i></template>
-							<template #label>{{ i18n.ts.maintainerEmail }}</template>
-						</MkInput>
-					</FormSplit>
+							<FormSplit :minWidth="300">
+								<MkInput v-model="maintainerName">
+									<template #label>{{ i18n.ts.maintainerName }}</template>
+								</MkInput>
 
-					<MkInput v-model="tosUrl" type="url">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.tosUrl }}</template>
-					</MkInput>
+								<MkInput v-model="maintainerEmail" type="email">
+									<template #prefix><i class="ti ti-mail"></i></template>
+									<template #label>{{ i18n.ts.maintainerEmail }}</template>
+								</MkInput>
+							</FormSplit>
 
-					<MkInput v-model="privacyPolicyUrl" type="url">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
-					</MkInput>
+							<MkInput v-model="tosUrl" type="url">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.tosUrl }}</template>
+							</MkInput>
 
-					<MkInput v-model="inquiryUrl" type="url">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts._serverSettings.inquiryUrl }}</template>
-						<template #caption>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</template>
-					</MkInput>
+							<MkInput v-model="privacyPolicyUrl" type="url">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
+							</MkInput>
 
-					<MkInput v-model="repositoryUrl" type="url">
-						<template #label>{{ i18n.ts.repositoryUrl }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
-					</MkInput>
+							<MkInput v-model="inquiryUrl" type="url">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts._serverSettings.inquiryUrl }}</template>
+								<template #caption>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</template>
+							</MkInput>
 
-					<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
-						{{ i18n.ts.repositoryUrlOrTarballRequired }}
-					</MkInfo>
+							<MkInput v-model="repositoryUrl" type="url">
+								<template #label>{{ i18n.ts.repositoryUrl }}</template>
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
+							</MkInput>
 
-					<MkInput v-model="impressumUrl" type="url">
-						<template #label>{{ i18n.ts.impressumUrl }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #caption>{{ i18n.ts.impressumDescription }}</template>
-					</MkInput>
+							<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
+								{{ i18n.ts.repositoryUrlOrTarballRequired }}
+							</MkInfo>
 
-					<MkTextarea v-model="pinnedUsers">
+							<MkInput v-model="impressumUrl" type="url">
+								<template #label>{{ i18n.ts.impressumUrl }}</template>
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #caption>{{ i18n.ts.impressumDescription }}</template>
+							</MkInput>
+						</div>
+					</MkFolder>
+
+					<MkFolder :withFooter="true">
+						<template #icon><i class="ti ti-user-star"></i></template>
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
-						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
-					</MkTextarea>
+						<template #footer>
+							<MkButton primary rounded @click="save_pinnedUsers">{{ i18n.ts.save }}</MkButton>
+						</template>
 
-					<FormSection>
+						<MkTextarea v-model="pinnedUsers">
+							<template #label>{{ i18n.ts.pinnedUsers }}</template>
+							<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
+						</MkTextarea>
+					</MkFolder>
+
+					<MkFolder :withFooter="true">
+						<template #icon><i class="ti ti-cloud"></i></template>
 						<template #label>{{ i18n.ts.files }}</template>
+						<template #footer>
+							<MkButton primary rounded @click="saveFiles">{{ i18n.ts.save }}</MkButton>
+						</template>
 
-						<div class="_gaps_m">
+						<div class="_gaps">
 							<MkSwitch v-model="cacheRemoteFiles">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
@@ -87,12 +109,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</template>
 						</div>
-					</FormSection>
+					</MkFolder>
 
-					<FormSection>
+					<MkFolder :withFooter="true">
+						<template #icon><i class="ti ti-world-cog"></i></template>
 						<template #label>ServiceWorker</template>
+						<template #footer>
+							<MkButton primary rounded @click="saveServiceWorker">{{ i18n.ts.save }}</MkButton>
+						</template>
 
-						<div class="_gaps_m">
+						<div class="_gaps">
 							<MkSwitch v-model="enableServiceWorker">
 								<template #label>{{ i18n.ts.enableServiceworker }}</template>
 								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
@@ -110,12 +136,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</template>
 						</div>
-					</FormSection>
+					</MkFolder>
 
-					<FormSection>
+					<MkFolder :withFooter="true">
+						<template #icon><i class="ti ti-ad"></i></template>
 						<template #label>{{ i18n.ts._ad.adsSettings }}</template>
+						<template #footer>
+							<MkButton primary rounded @click="saveAd">{{ i18n.ts.save }}</MkButton>
+						</template>
 
-						<div class="_gaps_m">
+						<div class="_gaps">
 							<div class="_gaps_s">
 								<MkInput v-model="notesPerOneAd" :min="0" type="number">
 									<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
@@ -126,12 +156,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInfo>
 							</div>
 						</div>
-					</FormSection>
+					</MkFolder>
 
-					<FormSection>
+					<MkFolder :withFooter="true">
+						<template #icon><i class="ti ti-world-search"></i></template>
 						<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
+						<template #footer>
+							<MkButton primary rounded @click="saveUrlPreview">{{ i18n.ts.save }}</MkButton>
+						</template>
 
-						<div class="_gaps_m">
+						<div class="_gaps">
 							<MkSwitch v-model="urlPreviewEnabled">
 								<template #label>{{ i18n.ts._urlPreviewSetting.enable }}</template>
 							</MkSwitch>
@@ -173,17 +207,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 							</div>
 						</div>
-					</FormSection>
+					</MkFolder>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
-		<template #footer>
-			<div :class="$style.footer">
-				<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</MkSpacer>
-			</div>
-		</template>
 	</MkStickyContainer>
 </div>
 </template>
@@ -195,7 +222,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
@@ -258,8 +284,8 @@ async function init(): Promise<void> {
 	urlPreviewSummaryProxyUrl.value = meta.urlPreviewSummaryProxyUrl;
 }
 
-async function save() {
-	await os.apiWithDialog('admin/update-meta', {
+function saveInfo() {
+	os.apiWithDialog('admin/update-meta', {
 		name: name.value,
 		shortName: shortName.value === '' ? null : shortName.value,
 		description: description.value,
@@ -270,22 +296,57 @@ async function save() {
 		inquiryUrl: inquiryUrl.value,
 		repositoryUrl: repositoryUrl.value,
 		impressumUrl: impressumUrl.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_pinnedUsers() {
+	os.apiWithDialog('admin/update-meta', {
 		pinnedUsers: pinnedUsers.value.split('\n'),
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function saveFiles() {
+	os.apiWithDialog('admin/update-meta', {
 		cacheRemoteFiles: cacheRemoteFiles.value,
 		cacheRemoteSensitiveFiles: cacheRemoteSensitiveFiles.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function saveServiceWorker() {
+	os.apiWithDialog('admin/update-meta', {
 		enableServiceWorker: enableServiceWorker.value,
 		swPublicKey: swPublicKey.value,
 		swPrivateKey: swPrivateKey.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function saveAd() {
+	os.apiWithDialog('admin/update-meta', {
 		notesPerOneAd: notesPerOneAd.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function saveUrlPreview() {
+	os.apiWithDialog('admin/update-meta', {
 		urlPreviewEnabled: urlPreviewEnabled.value,
 		urlPreviewTimeout: urlPreviewTimeout.value,
 		urlPreviewMaximumContentLength: urlPreviewMaximumContentLength.value,
 		urlPreviewRequireContentLength: urlPreviewRequireContentLength.value,
 		urlPreviewUserAgent: urlPreviewUserAgent.value,
 		urlPreviewSummaryProxyUrl: urlPreviewSummaryProxyUrl.value,
+	}).then(() => {
+		fetchInstance(true);
 	});
-
-	fetchInstance(true);
 }
 
 const headerTabs = computed(() => []);
@@ -297,11 +358,6 @@ definePageMetadata(() => ({
 </script>
 
 <style lang="scss" module>
-.footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-}
-
 .subCaption {
 	font-size: 0.85em;
 	color: var(--fgTransparentWeak);
