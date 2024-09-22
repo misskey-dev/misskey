@@ -26,6 +26,8 @@
 - Fix: ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
 - Fix: 外部ページを解析する際に、ページに紐づけられた関連リソースも読み込まれてしまう問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/26e0412fbb91447c37e8fb06ffb0487346063bb8)
+- Fix: `Retry-After`ヘッダーが送信されなかった問題を修正
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
 
 ## 2024.8.0
 

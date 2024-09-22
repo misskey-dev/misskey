@@ -46,7 +46,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_m">
 						<MkSwitch v-model="enableFanoutTimeline">
 							<template #label>{{ i18n.ts.enable }}</template>
-							<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
+							<template #caption>
+								<div>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</div>
+								<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ i18n.ts.details }}</MkLink></div>
+							</template>
 						</MkSwitch>
 
 						<MkSwitch v-model="enableFanoutTimelineDbFallback">
@@ -103,6 +106,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkLink from '@/components/MkLink.vue';
 
 const enableServerMachineStats = ref<boolean>(false);
 const enableIdenticonGeneration = ref<boolean>(false);
