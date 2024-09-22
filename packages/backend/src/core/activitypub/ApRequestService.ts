@@ -206,8 +206,7 @@ export class ApRequestService {
 		const contentType = res.headers.get('content-type');
 
 		if (
-			res.status >= 200
-			&& res.status <= 299
+			res.ok
 			&& (contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html'
 			&& _followAlternate === true
 		) {
