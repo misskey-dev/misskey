@@ -171,7 +171,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 	host: string,
 	user: { i: string },
 	channel: C,
-	trigger: () => Promise<void>,
+	trigger: () => Promise<unknown>,
 	type: T,
 	// @ts-expect-error TODO: why getting error here?
 	cond: (msg: Parameters<Misskey.Channels[C]['events'][T]>[0]) => boolean,
