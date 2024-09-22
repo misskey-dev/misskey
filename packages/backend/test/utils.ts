@@ -157,6 +157,10 @@ export const post = async (user: UserToken, params: misskey.Endpoints['notes/cre
 
 	const res = await api('notes/create', q, user);
 
+	if (res.status !== 200) {
+		console.log(res);
+	}
+
 	// FIXME: the return type should reflect this fact.
 	return (res.body ? res.body.createdNote : null)!;
 };
