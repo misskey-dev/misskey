@@ -228,10 +228,3 @@ definePageMetadata(() => ({
 	icon: 'ti ti-shield',
 }));
 </script>
-
-<style lang="scss" module>
-.footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-}
-</style>
