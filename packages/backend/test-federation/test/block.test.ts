@@ -149,7 +149,7 @@ describe('Block', () => {
 			]);
 		});
 
-		test('Cannot reply if blocked', async () => {
+		test('Cannot reaction if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
 			await sleep(1000);
 
@@ -165,7 +165,7 @@ describe('Block', () => {
 		});
 
 		// FIXME: this is invalid case
-		test('Cannot reply even if unblocked', async () => {
+		test('Cannot reaction even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await sleep(1000);
@@ -183,7 +183,7 @@ describe('Block', () => {
 			);
 		});
 
-		test.skip('Can reply if unblocked', async () => {
+		test.skip('Can reaction if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await sleep(1000);
 
