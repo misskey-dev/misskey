@@ -1,5 +1,5 @@
-import test, { describe } from 'node:test';
 import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
+import * as Misskey from 'misskey-js';
 import { createAccount, fetchAdmin, resolveRemoteNote, resolveRemoteUser } from './utils.js';
 
 const [
@@ -11,16 +11,22 @@ const [
 ]);
 
 describe('Blocking', () => {
-	test('Check follow', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+	describe('Check follow', () => {
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
-		const [bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
-		]);
+		beforeAll(async () => {
+			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
-		await test('Cannot follow if blocked', async () => {
+			[bobInAServer, aliceInBServer] = await Promise.all([
+				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+			]);
+		});
+
+		test('Cannot follow if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 			await rejects(
@@ -38,7 +44,7 @@ describe('Blocking', () => {
 		});
 
 		// FIXME: this is invalid case
-		await test('Cannot follow even if unblocked', async () => {
+		test('Cannot follow even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
@@ -53,7 +59,7 @@ describe('Blocking', () => {
 			);
 		});
 
-		await test.skip('Can follow if unblocked', async () => {
+		test.skip('Can follow if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -66,8 +72,8 @@ describe('Blocking', () => {
 			strictEqual(followers.length, 1);
 		});
 
-		await test.skip('Remove follower when block them', async () => {
-			await test('before block', async () => {
+		test.skip('Remove follower when block them', async () => {
+			test('before block', async () => {
 				const following = await bobClient.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 1);
 				const followers = await aliceClient.request('users/followers', { userId: alice.id });
@@ -77,7 +83,7 @@ describe('Blocking', () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
-			await test('after block', async () => {
+			test('after block', async () => {
 				const following = await bobClient.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0);
 				const followers = await aliceClient.request('users/followers', { userId: alice.id });
@@ -86,16 +92,22 @@ describe('Blocking', () => {
 		});
 	});
 
-	test('Check reply', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+	describe('Check reply', () => {
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
-		const [bobInAServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
-		]);
+		beforeAll(async () => {
+			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
-		await test('Cannot reply if blocked', async () => {
+			[bobInAServer, aliceInBServer] = await Promise.all([
+				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+			]);
+		});
+
+		test('Cannot reply if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -110,7 +122,7 @@ describe('Blocking', () => {
 			);
 		});
 
-		await test('Can reply if unblocked', async () => {
+		test('Can reply if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -122,16 +134,22 @@ describe('Blocking', () => {
 		});
 	});
 
-	test('Check reaction', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+	describe('Check reaction', () => {
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
-		const [bobInAServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
-		]);
+		beforeAll(async () => {
+			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
-		await test('Cannot reply if blocked', async () => {
+			[bobInAServer, aliceInBServer] = await Promise.all([
+				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+			]);
+		});
+
+		test('Cannot reply if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -147,7 +165,7 @@ describe('Blocking', () => {
 		});
 
 		// FIXME: this is invalid case
-		await test('Cannot reply even if unblocked', async () => {
+		test('Cannot reply even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
@@ -165,7 +183,7 @@ describe('Blocking', () => {
 			);
 		});
 
-		await test.skip('Can reply if unblocked', async () => {
+		test.skip('Can reply if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
 			await new Promise(resolve => setTimeout(resolve, 1000));
 

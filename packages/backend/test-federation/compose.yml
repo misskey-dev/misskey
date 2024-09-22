@@ -11,7 +11,7 @@ services:
       b.test:
         condition: service_healthy
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/rootCA.crt
     volumes:
       - type: bind
@@ -23,8 +23,16 @@ services:
         target: /misskey/packages/backend/test/resources
         read_only: true
       - type: bind
-        source: ./built
-        target: /misskey/packages/backend/test-federation
+        source: ./test
+        target: /misskey/packages/backend/test-federation/test
+        read_only: true
+      - type: bind
+        source: ../jest.config.cjs
+        target: /misskey/packages/backend/jest.config.cjs
+        read_only: true
+      - type: bind
+        source: ../jest.config.fed.cjs
+        target: /misskey/packages/backend/jest.config.fed.cjs
         read_only: true
       - type: bind
         source: ../../misskey-js/built
@@ -51,12 +59,14 @@ services:
         target: /usr/local/share/ca-certificates/rootCA.crt
         read_only: true
     working_dir: /misskey
-    command: >
-      bash -c "
+    entrypoint: >
+      bash -c '
         corepack enable && corepack prepare
+        pnpm -F misskey-js i
         pnpm -F backend i
-        node --test "./packages/backend/test-federation/test/*.test.js"
-      "
+        exec "$0" "$@"
+      '
+    command: pnpm -F backend test:fed
 
   daemon:
     image: node:20

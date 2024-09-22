@@ -1,5 +1,5 @@
-import test, { describe } from 'node:test';
 import assert, { rejects, strictEqual } from 'node:assert';
+import * as Misskey from 'misskey-js';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, uploadFile } from './utils.js';
 
 const [
@@ -10,14 +10,20 @@ const [
 	fetchAdmin('b.test'),
 ]);
 
-describe('Note', async () => {
-	const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-	const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+describe('Note', () => {
+	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+	let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
-	const [bobInAServer, aliceInBServer] = await Promise.all([
-		resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-		resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
-	]);
+	beforeAll(async () => {
+		[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+		[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+
+		[bobInAServer, aliceInBServer] = await Promise.all([
+			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+		]);
+	});
 
 	describe('Note content', () => {
 		test('Consistency of Public Note', async () => {

@@ -1,5 +1,5 @@
 import { rejects, strictEqual } from 'node:assert';
-import test, { before, describe } from 'node:test';
+import * as Misskey from 'misskey-js';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteUser } from './utils.js';
 
 const [
@@ -11,8 +11,8 @@ const [
 ]);
 
 describe('User', () => {
-	describe('Profile', async () => {
-		describe('Consistency of profile', async () => {
+	describe('Profile', () => {
+		test('Consistency of profile', async () => {
 			const [alice] = await createAccount('a.test', aAdminClient);
 			const [
 				[, aliceWatcherClient],
@@ -45,15 +45,26 @@ describe('User', () => {
 			]);
 		});
 
-		describe('isCat is federated', async () => {
-			const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-			const [, bobClient] = await createAccount('b.test', bAdminClient);
-			const aliceInBServer = await resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient);
-			await test('Not isCat for default', () => {
+		describe('isCat is federated', () => {
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+				[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+
+				[bobInAServer, aliceInBServer] = await Promise.all([
+					resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+					resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+				]);
+			});
+
+			test('Not isCat for default', () => {
 				strictEqual(aliceInBServer.isCat, false);
 			});
 
-			await test('Becoming a cat is sent to their followers', async () => {
+			test('Becoming a cat is sent to their followers', async () => {
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
 				await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -66,17 +77,23 @@ describe('User', () => {
 		});
 	});
 
-	describe('Follow / Unfollow', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+	describe('Follow / Unfollow', () => {
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
-		const [bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
-		]);
+		beforeAll(async () => {
+			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
-		await describe('Follow a.test ==> b.test', async () => {
-			before(async () => {
+			[bobInAServer, aliceInBServer] = await Promise.all([
+				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+			]);
+		});
+
+		describe('Follow a.test ==> b.test', () => {
+			beforeAll(async () => {
 				await aliceClient.request('following/create', { userId: bobInAServer.id });
 
 				await new Promise(resolve => setTimeout(resolve, 1000));
@@ -98,8 +115,8 @@ describe('User', () => {
 			});
 		});
 
-		await describe('Unfollow a.test ==> b.test', async () => {
-			before(async () => {
+		describe('Unfollow a.test ==> b.test', () => {
+			beforeAll(async () => {
 				await aliceClient.request('following/delete', { userId: bobInAServer.id });
 
 				await new Promise(resolve => setTimeout(resolve, 1000));
@@ -122,45 +139,61 @@ describe('User', () => {
 		});
 	});
 
-	describe('Follow requests', async () => {
-		const [alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		const [bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+	describe('Follow requests', () => {
+		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
+		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
-		const [bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
-			resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
-		]);
+		beforeAll(async () => {
+			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
+			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
-		await aliceClient.request('i/update', { isLocked: true });
+			[bobInAServer, aliceInBServer] = await Promise.all([
+				resolveRemoteUser(`https://b.test/@${bobUsername}`, aliceClient),
+				resolveRemoteUser(`https://a.test/@${aliceUsername}`, bobClient),
+			]);
 
-		await test('Send follow request from Bob to Alice and cancel', async () => {
-			await bobClient.request('following/create', { userId: aliceInBServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await aliceClient.request('i/update', { isLocked: true });
+		});
 
-			await test('Alice should have a request', async () => {
-				const requests = await aliceClient.request('following/requests/list', {});
-				strictEqual(requests.length, 1);
-				strictEqual(requests[0].followee.id, alice.id);
-				strictEqual(requests[0].follower.id, bobInAServer.id);
+		describe('Send follow request from Bob to Alice and cancel', () => {
+			describe('Bob sends follow request to Alice', () => {
+				beforeAll(async () => {
+					await bobClient.request('following/create', { userId: aliceInBServer.id });
+					await new Promise(resolve => setTimeout(resolve, 1000));
+				});
+
+				test('Alice should have a request', async () => {
+					const requests = await aliceClient.request('following/requests/list', {});
+					strictEqual(requests.length, 1);
+					strictEqual(requests[0].followee.id, alice.id);
+					strictEqual(requests[0].follower.id, bobInAServer.id);
+				});
 			});
 
-			await bobClient.request('following/requests/cancel', { userId: aliceInBServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			describe('Alice cancels it', () => {
+				beforeAll(async () => {
+					await bobClient.request('following/requests/cancel', { userId: aliceInBServer.id });
+					await new Promise(resolve => setTimeout(resolve, 1000));
+				});
 
-			await test('Alice should have no requests', async () => {
-				const requests = await aliceClient.request('following/requests/list', {});
-				strictEqual(requests.length, 0);
+				test('Alice should have no requests', async () => {
+					const requests = await aliceClient.request('following/requests/list', {});
+					strictEqual(requests.length, 0);
+				});
 			});
 		});
 
-		await test('Send follow request from Bob to Alice and reject', async () => {
-			await bobClient.request('following/create', { userId: aliceInBServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+		describe('Send follow request from Bob to Alice and reject', () => {
+			beforeAll(async () => {
+				await bobClient.request('following/create', { userId: aliceInBServer.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
 
-			await aliceClient.request('following/requests/reject', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+				await aliceClient.request('following/requests/reject', { userId: bobInAServer.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+			});
 
-			await test('Bob should have no requests', async () => {
+			test('Bob should have no requests', async () => {
 				await rejects(
 					async () => await bobClient.request('following/requests/cancel', { userId: aliceInBServer.id }),
 					(err: any) => {
@@ -170,20 +203,22 @@ describe('User', () => {
 				);
 			});
 
-			await test('Bob doesn\'t follow Alice', async () => {
+			test('Bob doesn\'t follow Alice', async () => {
 				const following = await bobClient.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0);
 			});
 		});
 
-		await test('Send follow request from Bob to Alice and accept', async () => {
-			await bobClient.request('following/create', { userId: aliceInBServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+		describe('Send follow request from Bob to Alice and accept', () => {
+			beforeAll(async () => {
+				await bobClient.request('following/create', { userId: aliceInBServer.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
 
-			await aliceClient.request('following/requests/accept', { userId: bobInAServer.id });
-			await new Promise(resolve => setTimeout(resolve, 1000));
+				await aliceClient.request('following/requests/accept', { userId: bobInAServer.id });
+				await new Promise(resolve => setTimeout(resolve, 1000));
+			});
 
-			await test('Bob follows Alice', async () => {
+			test('Bob follows Alice', async () => {
 				const following = await bobClient.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 1);
 				strictEqual(following[0].followeeId, aliceInBServer.id);

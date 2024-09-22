@@ -6,13 +6,13 @@ services:
         ipv4_address: $TESTER_IP_ADDRESS
     volumes:
       - type: volume
-        source: node_modules
+        source: node_modules_dev
         target: /misskey/node_modules
       - type: volume
-        source: node_modules_backend
+        source: node_modules_backend_dev
         target: /misskey/packages/backend/node_modules
       - type: volume
-        source: node_modules_misskey-js
+        source: node_modules_misskey-js_dev
         target: /misskey/packages/misskey-js/node_modules
 
   daemon:
@@ -94,6 +94,9 @@ networks:
 
 volumes:
   node_modules:
+  node_modules_dev:
   node_modules_backend:
+  node_modules_backend_dev:
   node_modules_misskey-js:
+  node_modules_misskey-js_dev:
   node_modules_misskey-reversi:
