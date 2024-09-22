@@ -257,7 +257,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		const hasProhibitedWords = await this.checkProhibitedWordsContain({
+		const hasProhibitedWords = this.checkProhibitedWordsContain({
 			cw: data.cw,
 			text: data.text,
 			pollChoices: data.poll?.choices,
