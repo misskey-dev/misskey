@@ -148,6 +148,32 @@ describe('Note', () => {
 		});
 	});
 
+	describe('Deletion', () => {
+		let carolClient: Misskey.api.APIClient;
+
+		beforeAll(async () => {
+			[, carolClient] = await createAccount('a.test', aAdminClient);
+
+			await carolClient.request('following/create', { userId: bobInAServer.id });
+			await new Promise(resolve => setTimeout(resolve, 1000));
+		});
+
+		test('Delete is derivered to followers', async () => {
+			const note = (await bobClient.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
+			const noteInAServer = await resolveRemoteNote(`https://b.test/notes/${note.id}`, carolClient);
+			await bobClient.request('notes/delete', { noteId: note.id });
+			await new Promise(resolve => setTimeout(resolve, 1000));
+
+			await rejects(
+				async () => await carolClient.request('notes/show', { noteId: noteInAServer.id }),
+				(err: any) => {
+					strictEqual(err.code, 'NO_SUCH_NOTE');
+					return true;
+				},
+			);
+		});
+	});
+
 	describe('Reaction', () => {
 		test('Consistency of reaction', async () => {
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
