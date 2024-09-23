@@ -12,12 +12,12 @@ const [
 
 describe('Timeline', () => {
 	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
-	let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
+	let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
 	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-		[bob, bobClient] = await createAccount('b.test', bAdminClient);
+		[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
 
 		[bobInAServer, aliceInBServer] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -89,8 +89,24 @@ describe('Timeline', () => {
 				await postAndCheckReception(homeTimeline, true, { visibility: 'followers' });
 			});
 
-			test('Receive remote followee\'s specified-only Note', async () => {
+			test('Receive remote followee\'s visible specified-only Note', async () => {
 				await postAndCheckReception(homeTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			});
+
+			test('Don\'t receive remote followee\'s localOnly Note', async () => {
+				await postAndCheckReception(homeTimeline, false, { localOnly: true });
+			});
+
+			test('Don\'t receive remote followee\'s invisible specified-only Note', async () => {
+				await postAndCheckReception(homeTimeline, false, { visibility: 'specified' });
+			});
+
+			/**
+			 * FIXME: can receive this
+			 * @see https://github.com/misskey-dev/misskey/issues/14083
+			 */
+			test.failing('Don\'t receive remote followee\'s invisible and mentioned specified-only Note', async () => {
+				await postAndCheckReception(homeTimeline, false, { text: `@${bobUsername}@b.test Hello`, visibility: 'specified' });
 			});
 		});
 	});
