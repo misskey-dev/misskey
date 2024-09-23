@@ -5,8 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<EmLoading v-if="loading"/>
-	<EmTimelineContainer v-else-if="clip" :showHeader="embedParams.header">
+	<EmTimelineContainer v-if="clip" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -42,6 +41,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { scrollToTop } from '@@/js/scroll.js';
+import { url, instanceName } from '@@/js/config.js';
+import { isLink } from '@@/js/is-link.js';
+import { defaultEmbedParams } from '@@/js/embed-page.js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmLoading from '@/components/EmLoading.vue';
 import EmNotes from '@/components/EmNotes.vue';
@@ -50,9 +52,6 @@ import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, instanceName } from '@@/js/config.js';
-import { isLink } from '@@/js/is-link.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
@@ -68,7 +67,6 @@ const pagination = computed(() => ({
 		clipId: props.clipId,
 	},
 } as Paging));
-const loading = ref(true);
 
 const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
@@ -81,14 +79,11 @@ function top(ev: MouseEvent) {
 	}
 }
 
-misskeyApi('clips/show', {
+const embedCtxEl = document.getElementById('misskey_embedCtx');
+const embedCtx = (embedCtxEl && embedCtxEl.textContent) ? JSON.parse(embedCtxEl.textContent) : null;
+// NOTE: devモードのときしか embedCtx が null になることは無い
+clip.value = embedCtx != null ? embedCtx.clip : await misskeyApi('clips/show', {
 	clipId: props.clipId,
-}).then(res => {
-	clip.value = res;
-	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
 });
 </script>
 
