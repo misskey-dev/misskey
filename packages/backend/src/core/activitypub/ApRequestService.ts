@@ -241,7 +241,7 @@ export class ApRequestService {
 			} catch (e) {
 				// something went wrong parsing the HTML, ignore the whole thing
 			} finally {
-				happyDOM.close();
+				happyDOM.close().catch(err => {});
 			}
 		}
 		//#endregion

@@ -459,7 +459,7 @@ export class MfmService {
 
 		const serialized = new XMLSerializer().serializeToString(body);
 
-		happyDOM.close().catch(e => {});
+		happyDOM.close().catch(err => {});
 
 		return serialized;
 	}
