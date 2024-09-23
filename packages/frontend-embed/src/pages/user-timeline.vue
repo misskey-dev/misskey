@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject } from 'vue';
+import { ref, computed, inject, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url, instanceName } from '@@/js/config.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
@@ -97,7 +97,7 @@ const pagination = computed(() => ({
 	},
 } as Paging));
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 </script>
 
 <style lang="scss" module>
