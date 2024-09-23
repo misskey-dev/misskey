@@ -5,8 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<EmLoading v-if="loading"/>
-	<EmTimelineContainer v-else-if="user" :showHeader="embedParams.header">
+	<EmTimelineContainer v-if="user" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.userHeader">
 				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
@@ -48,6 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, shallowRef, inject } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url, instanceName } from '@@/js/config.js';
+import { defaultEmbedParams } from '@@/js/embed-page.js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
@@ -59,8 +60,6 @@ import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, instanceName } from '@@/js/config.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
@@ -76,18 +75,14 @@ const pagination = computed(() => ({
 		userId: user.value?.id,
 	},
 } as Paging));
-const loading = ref(true);
 
 const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
 
-misskeyApi('users/show', {
+const embedCtxEl = document.getElementById('misskey_embedCtx');
+const embedCtx = (embedCtxEl && embedCtxEl.textContent) ? JSON.parse(embedCtxEl.textContent) : null;
+// NOTE: devモードのときしか embedCtx が null になることは無い
+user.value = embedCtx != null ? embedCtx.user : await misskeyApi('users/show', {
 	userId: props.userId,
-}).then(res => {
-	user.value = res;
-	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
 });
 </script>
 

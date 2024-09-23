@@ -785,6 +785,28 @@ export class ClientServerService {
 		//#endregion
 
 		//#region embed pages
+		fastify.get<{ Params: { user: string; } }>('/embed/user-timeline/:user', async (request, reply) => {
+			reply.removeHeader('X-Frame-Options');
+
+			const user = await this.usersRepository.findOneBy({
+				id: request.params.user,
+			});
+
+			if (user == null) return;
+			if (user.host != null) return;
+
+			const _user = await this.userEntityService.pack(user);
+
+			reply.header('Cache-Control', 'public, max-age=3600');
+			return await reply.view('base-embed', {
+				title: this.meta.name ?? 'Misskey',
+				...await this.generateCommonPugData(this.meta),
+				embedCtx: htmlSafeJsonStringify({
+					user: _user,
+				}),
+			});
+		});
+
 		fastify.get('/embed/*', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 

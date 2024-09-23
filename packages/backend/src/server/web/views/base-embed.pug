@@ -43,6 +43,9 @@ html(class='embed')
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson
 
+		script(type='application/json' id='misskey_embedCtx' data-generated-at=now)
+			!= embedCtx
+
 		script
 			include ../boot.embed.js
 
