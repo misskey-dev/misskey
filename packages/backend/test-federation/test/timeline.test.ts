@@ -64,8 +64,7 @@ describe('Timeline', () => {
 		const params: Misskey.Endpoints[typeof endpoint]['req'] =
 			endpoint === 'antennas/notes' ? { antennaId: (channelParams as Misskey.Channels['antenna']['params']).antennaId } :
 			endpoint === 'notes/user-list-timeline' ? { listId: (channelParams as Misskey.Channels['userList']['params']).listId } :
-			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
-			endpoint === 'notes/search-by-tag' ? { query: (channelParams as Misskey.Channels['hashtag']['params']).q as string[][] } :
+			endpoint === 'notes/search-by-tag' ? { query: (channelParams as Misskey.Channels['hashtag']['params']).q } :
 			endpoint === 'roles/notes' ? { roleId: (channelParams as Misskey.Channels['roleTimeline']['params']).roleId } :
 			{};
 		const notes = await (bobClient.request as Request)(endpoint, params);
@@ -175,25 +174,21 @@ describe('Timeline', () => {
 
 		test('Receive remote followee\'s note', async () => {
 			const tag = crypto.randomUUID();
-			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
 			await postAndCheckReception(hashtag, true, { text: `#${tag}` }, { q: [[tag]] });
 		});
 
 		test('Receive remote followee\'s home-only note', async () => {
 			const tag = crypto.randomUUID();
-			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
 			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'home' }, { q: [[tag]] });
 		});
 
 		test('Receive remote followee\'s followers-only note', async () => {
 			const tag = crypto.randomUUID();
-			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
 			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'followers' }, { q: [[tag]] });
 		});
 
 		test('Receive remote followee\'s specified-only note', async () => {
 			const tag = crypto.randomUUID();
-			/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14611 */
 			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { q: [[tag]] });
 		});
 	});
