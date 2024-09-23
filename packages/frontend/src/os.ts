@@ -145,7 +145,10 @@ const zIndexes = {
 	middle: 2000000,
 	high: 3000000,
 };
-export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
+
+export type ZPriority = keyof typeof zIndexes;
+
+export function claimZIndex(priority: ZPriority = 'low'): number {
 	zIndexes[priority] += 100;
 	return zIndexes[priority];
 }

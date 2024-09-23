@@ -68,7 +68,7 @@ const props = withDefaults(defineProps<{
 	anchor?: { x: string; y: string; };
 	src?: HTMLElement | null;
 	preferType?: ModalTypes | 'auto';
-	zPriority?: 'low' | 'middle' | 'high';
+	zPriority?: os.ZPriority;
 	noOverlap?: boolean;
 	transparentBg?: boolean;
 	hasInteractionWithOtherFocusTrappedEls?: boolean;
