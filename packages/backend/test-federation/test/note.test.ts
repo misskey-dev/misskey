@@ -1,14 +1,6 @@
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
-
-const [
-	[, aAdminClient],
-	[, bAdminClient],
-] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+import { createAccount, deepStrictEqualWithExcludedFields, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
 	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
@@ -16,8 +8,8 @@ describe('Note', () => {
 	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
-		[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-		[bob, bobClient] = await createAccount('b.test', bAdminClient);
+		[alice, aliceClient] = await createAccount('a.test');
+		[bob, bobClient] = await createAccount('b.test');
 
 		[bobInAServer, aliceInBServer] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -153,7 +145,7 @@ describe('Note', () => {
 		let carolClient: Misskey.api.APIClient;
 
 		beforeAll(async () => {
-			[, carolClient] = await createAccount('a.test', aAdminClient);
+			[, carolClient] = await createAccount('a.test');
 
 			await carolClient.request('following/create', { userId: bobInAServer.id });
 			await sleep(1000);
@@ -195,7 +187,7 @@ describe('Note', () => {
 			let carolClient: Misskey.api.APIClient;
 
 			beforeAll(async () => {
-				[, carolClient] = await createAccount('a.test', aAdminClient);
+				[, carolClient] = await createAccount('a.test');
 			});
 
 			test('Bob creates poll and receives a vote from Carol', async () => {
@@ -220,8 +212,8 @@ describe('Note', () => {
 					[, bobRemoteFollowerClient],
 					[, localVoterClient],
 				] = await Promise.all([
-					createAccount('a.test', aAdminClient),
-					createAccount('b.test', bAdminClient),
+					createAccount('a.test'),
+					createAccount('b.test'),
 				]);
 
 				await bobRemoteFollowerClient.request('following/create', { userId: bobInAServer.id });

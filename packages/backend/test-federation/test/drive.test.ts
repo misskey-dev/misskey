@@ -2,20 +2,14 @@ import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, uploadFile } from './utils.js';
 
-const [
-	[, aAdminClient],
-	[, bAdminClient],
-] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+const [, bAdminClient] = await fetchAdmin('b.test');
 
 describe('Drive', () => {
 	describe('Upload image in a.test and resolve from b.test', () => {
 		let uploader: Misskey.entities.SigninResponse, uploaderClient: Misskey.api.APIClient;
 
 		beforeAll(async () => {
-			[uploader, uploaderClient] = await createAccount('a.test', aAdminClient);
+			[uploader, uploaderClient] = await createAccount('a.test');
 		});
 
 		let image: Misskey.entities.DriveFile, imageInBServer: Misskey.entities.DriveFile;

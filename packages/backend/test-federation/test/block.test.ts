@@ -1,14 +1,6 @@
 import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
-
-const [
-	[, aAdminClient],
-	[, bAdminClient],
-] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+import { createAccount, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 describe('Block', () => {
 	describe('Check follow', () => {
@@ -17,8 +9,8 @@ describe('Block', () => {
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test');
+			[bob, bobClient] = await createAccount('b.test');
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -98,8 +90,8 @@ describe('Block', () => {
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test');
+			[bob, bobClient] = await createAccount('b.test');
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -140,8 +132,8 @@ describe('Block', () => {
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test');
+			[bob, bobClient] = await createAccount('b.test');
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, aliceClient),

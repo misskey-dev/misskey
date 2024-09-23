@@ -1,14 +1,6 @@
 import { deepStrictEqual, strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isFired, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
-
-const [
-	[, aAdminClient],
-	[, bAdminClient],
-] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+import { createAccount, isFired, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 describe('Notification', () => {
 	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
@@ -16,8 +8,8 @@ describe('Notification', () => {
 	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
-		[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		[bob, bobClient] = await createAccount('b.test', bAdminClient);
+		[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test');
+		[bob, bobClient] = await createAccount('b.test');
 
 		[bobInAServer, aliceInBServer] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, aliceClient),

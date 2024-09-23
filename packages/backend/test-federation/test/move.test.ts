@@ -1,19 +1,11 @@
 import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, sleep } from './utils.js';
-
-const [
-	[, aAdminClient],
-	[, bAdminClient],
-] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+import { createAccount, sleep } from './utils.js';
 
 describe('Move', () => {
 	test('Minimum move', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
+		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test');
+		const [, bobClient, { username: bobUsername }] = await createAccount('b.test');
 
 		await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.test`] });
 		await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.test` });
@@ -26,9 +18,9 @@ describe('Move', () => {
 		let carol: Misskey.entities.SigninResponse, carolClient: Misskey.api.APIClient, carolUsername: string;
 
 		beforeAll(async () => {
-			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test', bAdminClient);
-			[carol, carolClient, { username: carolUsername }] = await createAccount('a.test', aAdminClient);
+			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test');
+			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test');
+			[carol, carolClient, { username: carolUsername }] = await createAccount('a.test');
 
 			// Follow @carol@a.test ==> @alice@a.test
 			await carolClient.request('following/create', { userId: alice.id });

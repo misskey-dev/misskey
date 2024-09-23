@@ -2,13 +2,7 @@ import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
-const [
-	[, aAdminClient],
-	[, bAdminClient],
-] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+const [, aAdminClient] = await fetchAdmin('a.test');
 
 describe('User', () => {
 	describe('Profile', () => {
@@ -18,13 +12,13 @@ describe('User', () => {
 			let aliceWatcherInBServerClient: Misskey.api.APIClient;
 
 			beforeAll(async () => {
-				[alice] = await createAccount('a.test', aAdminClient);
+				[alice] = await createAccount('a.test');
 				[
 					[, aliceWatcherClient],
 					[, aliceWatcherInBServerClient],
 				] = await Promise.all([
-					createAccount('a.test', aAdminClient),
-					createAccount('b.test', bAdminClient),
+					createAccount('a.test'),
+					createAccount('b.test'),
 				]);
 			});
 
@@ -57,8 +51,8 @@ describe('User', () => {
 			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
-				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-				[bob, bobClient] = await createAccount('b.test', bAdminClient);
+				[alice, aliceClient] = await createAccount('a.test');
+				[bob, bobClient] = await createAccount('b.test');
 
 				[bobInAServer, aliceInBServer] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -88,8 +82,8 @@ describe('User', () => {
 			let aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
-				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-				[bob, bobClient] = await createAccount('b.test', bAdminClient);
+				[alice, aliceClient] = await createAccount('a.test');
+				[bob, bobClient] = await createAccount('b.test');
 				aliceInBServer = await resolveRemoteUser('a.test', alice.id, bobClient);
 
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
@@ -142,8 +136,8 @@ describe('User', () => {
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test');
+			[bob, bobClient] = await createAccount('b.test');
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -204,8 +198,8 @@ describe('User', () => {
 		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
-			[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-			[bob, bobClient] = await createAccount('b.test', bAdminClient);
+			[alice, aliceClient] = await createAccount('a.test');
+			[bob, bobClient] = await createAccount('b.test');
 
 			[bobInAServer, aliceInBServer] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, aliceClient),
@@ -293,8 +287,8 @@ describe('User', () => {
 			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
-				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
-				[bob, bobClient] = await createAccount('b.test', bAdminClient);
+				[alice, aliceClient] = await createAccount('a.test');
+				[bob, bobClient] = await createAccount('b.test');
 
 				[bobInAServer, aliceInBServer] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, aliceClient),
