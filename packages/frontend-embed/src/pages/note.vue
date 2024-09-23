@@ -5,40 +5,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.noteEmbedRoot">
-	<EmLoading v-if="loading"/>
-	<EmNoteDetailed v-else-if="note" :note="note"/>
+	<EmNoteDetailed v-if="note" :note="note"/>
 	<XNotFound v-else/>
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
-import EmLoading from '@/components/EmLoading.vue';
 import XNotFound from '@/pages/not-found.vue';
+import { DI } from '@/di.js';
 import { misskeyApi } from '@/misskey-api.js';
+import { assertServerContext } from '@/server-context';
 
 const props = defineProps<{
 	noteId: string;
 }>();
 
-const note = ref<Misskey.entities.Note | null>(null);
-const loading = ref(true);
+const serverContext = inject(DI.serverContext)!;
 
-// TODO: クライアント側でAPIを叩くのは二度手間なので予めHTMLに埋め込んでおく
-misskeyApi('notes/show', {
-	noteId: props.noteId,
-}).then(res => {
-	// リモートのノートは埋め込ませない
-	if (res.url == null && res.uri == null) {
-		note.value = res;
-	}
-	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
-});
+const note = ref<Misskey.entities.Note | null>(null);
+
+if (assertServerContext(serverContext, 'note')) {
+	note.value = serverContext.note;
+} else {
+	note.value = await misskeyApi('notes/show', {
+		noteId: props.noteId,
+	}).catch(() => {
+		return null;
+	});
+}
 </script>
 
 <style lang="scss" module>
