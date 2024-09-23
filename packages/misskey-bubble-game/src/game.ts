@@ -201,7 +201,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			return Matter.Bodies.circle(x, y, mono.sizeX / 2, options);
 		} else if (mono.shape === 'rectangle') {
 			return Matter.Bodies.rectangle(x, y, mono.sizeX, mono.sizeY, options);
-		} else if (mono.shape === 'custom' && mono.vertices && mono.verticesSize) {
+		} else if (mono.shape === 'custom' && mono.vertices != null && mono.verticesSize != null) { //eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			return Matter.Bodies.fromVertices(x, y, mono.vertices.map(i => i.map(j => ({
 				x: (j.x / mono.verticesSize!) * mono.sizeX, //eslint-disable-line @typescript-eslint/no-non-null-assertion
 				y: (j.y / mono.verticesSize!) * mono.sizeY, //eslint-disable-line @typescript-eslint/no-non-null-assertion
