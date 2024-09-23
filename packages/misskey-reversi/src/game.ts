@@ -125,7 +125,7 @@ export class Game {
 
 	private calcTurn() {
 		// ターン計算
-		let turn = null;
+		let turn: boolean | null = null;
 
 		if (this.prevColor != null) {
 			if (this.canPutSomewhere(!this.prevColor)) {
