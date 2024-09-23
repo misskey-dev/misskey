@@ -23,6 +23,7 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { postButtonHandler } from '@/scripts/post-button-handler.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -346,7 +347,7 @@ export async function mainBoot() {
 	const keymap = {
 		'p|n': () => {
 			if ($i == null) return;
-			post();
+			postButtonHandler(mainRouter.currentRef.value);
 		},
 		'd': () => {
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
