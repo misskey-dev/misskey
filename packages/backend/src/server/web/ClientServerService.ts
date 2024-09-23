@@ -807,6 +807,29 @@ export class ClientServerService {
 			});
 		});
 
+		fastify.get<{ Params: { note: string; } }>('/embed/notes/:note', async (request, reply) => {
+			reply.removeHeader('X-Frame-Options');
+
+			const note = await this.notesRepository.findOneBy({
+				id: request.params.note,
+			});
+
+			if (note == null) return;
+			if (note.visibility !== 'public') return;
+			if (note.userHost != null) return;
+
+			const _note = await this.noteEntityService.pack(note, null, { detail: true });
+
+			reply.header('Cache-Control', 'public, max-age=3600');
+			return await reply.view('base-embed', {
+				title: this.meta.name ?? 'Misskey',
+				...await this.generateCommonPugData(this.meta),
+				embedCtx: htmlSafeJsonStringify({
+					note: _note,
+				}),
+			});
+		});
+
 		fastify.get<{ Params: { clip: string; } }>('/embed/clips/:clip', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 

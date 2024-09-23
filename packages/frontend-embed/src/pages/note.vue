@@ -5,8 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.noteEmbedRoot">
-	<EmLoading v-if="loading"/>
-	<EmNoteDetailed v-else-if="note" :note="note"/>
+	<EmNoteDetailed v-if="note" :note="note"/>
 	<XNotFound v-else/>
 </div>
 </template>
@@ -24,20 +23,12 @@ const props = defineProps<{
 }>();
 
 const note = ref<Misskey.entities.Note | null>(null);
-const loading = ref(true);
 
-// TODO: クライアント側でAPIを叩くのは二度手間なので予めHTMLに埋め込んでおく
-misskeyApi('notes/show', {
+const embedCtxEl = document.getElementById('misskey_embedCtx');
+const embedCtx = (embedCtxEl && embedCtxEl.textContent) ? JSON.parse(embedCtxEl.textContent) : null;
+// NOTE: devモードのときしか embedCtx が null になることは無い
+note.value = embedCtx != null ? embedCtx.note : await misskeyApi('notes/show', {
 	noteId: props.noteId,
-}).then(res => {
-	// リモートのノートは埋め込ませない
-	if (res.url == null && res.uri == null) {
-		note.value = res;
-	}
-	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
 });
 </script>
 
