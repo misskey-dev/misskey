@@ -12,37 +12,43 @@ const [
 
 describe('User', () => {
 	describe('Profile', () => {
-		test('Consistency of profile', async () => {
-			const [alice] = await createAccount('a.test', aAdminClient);
-			const [
-				[, aliceWatcherClient],
-				[, aliceWatcherInBServerClient],
-			] = await Promise.all([
-				createAccount('a.test', aAdminClient),
-				createAccount('b.test', bAdminClient),
-			]);
+		describe('Consistency of profile', () => {
+			let alice: Misskey.entities.SigninResponse;
+			let aliceWatcherClient: Misskey.api.APIClient;
+			let aliceWatcherInBServerClient: Misskey.api.APIClient;
 
-			const aliceInAServer = await aliceWatcherClient.request('users/show', { userId: alice.id });
+			beforeAll(async () => {
+				[alice] = await createAccount('a.test', aAdminClient);
+				[
+					[, aliceWatcherClient],
+					[, aliceWatcherInBServerClient],
+				] = await Promise.all([
+					createAccount('a.test', aAdminClient),
+					createAccount('b.test', bAdminClient),
+				]);
+			});
 
-			const resolved = await resolveRemoteUser('a.test', aliceInAServer.id, aliceWatcherInBServerClient);
+			test('Check consistency', async () => {
+				const aliceInAServer = await aliceWatcherClient.request('users/show', { userId: alice.id });
+				const resolved = await resolveRemoteUser('a.test', aliceInAServer.id, aliceWatcherInBServerClient);
+				const aliceInBServer = await aliceWatcherInBServerClient.request('users/show', { userId: resolved.id });
 
-			const aliceInBServer = await aliceWatcherInBServerClient.request('users/show', { userId: resolved.id });
+				// console.log(`a.test: ${JSON.stringify(aliceInAServer, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(aliceInBServer, null, '\t')}`);
 
-			// console.log(`a.test: ${JSON.stringify(aliceInAServer, null, '\t')}`);
-			// console.log(`b.test: ${JSON.stringify(aliceInBServer, null, '\t')}`);
-
-			deepStrictEqualWithExcludedFields(aliceInAServer, aliceInBServer, [
-				'id',
-				'host',
-				'avatarUrl',
-				'instance',
-				'badgeRoles',
-				'url',
-				'uri',
-				'createdAt',
-				'lastFetchedAt',
-				'publicReactions',
-			]);
+				deepStrictEqualWithExcludedFields(aliceInAServer, aliceInBServer, [
+					'id',
+					'host',
+					'avatarUrl',
+					'instance',
+					'badgeRoles',
+					'url',
+					'uri',
+					'createdAt',
+					'lastFetchedAt',
+					'publicReactions',
+				]);
+			});
 		});
 
 		describe('isCat is federated', () => {
