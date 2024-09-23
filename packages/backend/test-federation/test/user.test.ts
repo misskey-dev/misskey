@@ -66,10 +66,10 @@ describe('User', () => {
 
 			test('Becoming a cat is sent to their followers', async () => {
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
-				await sleep(1000);
+				await sleep(100);
 
 				await aliceClient.request('i/update', { isCat: true });
-				await sleep(1000);
+				await sleep(100);
 
 				const res = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(res.isCat, true);
@@ -92,7 +92,7 @@ describe('User', () => {
 			test('Pinning localOnly Note is not delivered', async () => {
 				const note = (await aliceClient.request('notes/create', { text: 'a', localOnly: true })).createdNote;
 				await aliceClient.request('i/pin', { noteId: note.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
@@ -101,7 +101,7 @@ describe('User', () => {
 			test('Pinning followers-only Note is not delivered', async () => {
 				const note = (await aliceClient.request('notes/create', { text: 'a', visibility: 'followers' })).createdNote;
 				await aliceClient.request('i/pin', { noteId: note.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
@@ -112,7 +112,7 @@ describe('User', () => {
 			test('Pinning normal Note is delivered', async () => {
 				pinnedNote = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 				await aliceClient.request('i/pin', { noteId: pinnedNote.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 1);
@@ -122,7 +122,7 @@ describe('User', () => {
 
 			test('Unpinning normal Note is delivered', async () => {
 				await aliceClient.request('i/unpin', { noteId: pinnedNote.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const _aliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
@@ -149,7 +149,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				await aliceClient.request('following/create', { userId: bobInAServer.id });
 
-				await sleep(1000);
+				await sleep(100);
 			});
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
@@ -172,7 +172,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				await aliceClient.request('following/delete', { userId: bobInAServer.id });
 
-				await sleep(1000);
+				await sleep(100);
 			});
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
@@ -213,7 +213,7 @@ describe('User', () => {
 			describe('Bob sends follow request to Alice', () => {
 				beforeAll(async () => {
 					await bobClient.request('following/create', { userId: aliceInBServer.id });
-					await sleep(1000);
+					await sleep(100);
 				});
 
 				test('Alice should have a request', async () => {
@@ -227,7 +227,7 @@ describe('User', () => {
 			describe('Alice cancels it', () => {
 				beforeAll(async () => {
 					await bobClient.request('following/requests/cancel', { userId: aliceInBServer.id });
-					await sleep(1000);
+					await sleep(100);
 				});
 
 				test('Alice should have no requests', async () => {
@@ -240,10 +240,10 @@ describe('User', () => {
 		describe('Send follow request from Bob to Alice and reject', () => {
 			beforeAll(async () => {
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
-				await sleep(1000);
+				await sleep(100);
 
 				await aliceClient.request('following/requests/reject', { userId: bobInAServer.id });
-				await sleep(1000);
+				await sleep(100);
 			});
 
 			test('Bob should have no requests', async () => {
@@ -265,10 +265,10 @@ describe('User', () => {
 		describe('Send follow request from Bob to Alice and accept', () => {
 			beforeAll(async () => {
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
-				await sleep(1000);
+				await sleep(100);
 
 				await aliceClient.request('following/requests/accept', { userId: bobInAServer.id });
-				await sleep(1000);
+				await sleep(100);
 			});
 
 			test('Bob follows Alice', async () => {
@@ -298,13 +298,13 @@ describe('User', () => {
 
 			test('Bob follows Alice, and Alice gets suspended, there is no following relation, and Bob fails to follow again', async () => {
 				await bobClient.request('following/create', { userId: aliceInBServer.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const followers = await aliceClient.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // followed by Bob
 
 				await aAdminClient.request('admin/suspend-user', { userId: alice.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const following = await bobClient.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation
@@ -320,7 +320,7 @@ describe('User', () => {
 
 			test('Alice gets unsuspended, Bob succeeds in following Alice', async () => {
 				await aAdminClient.request('admin/unsuspend-user', { userId: alice.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const followers = await aliceClient.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // FIXME: followers are not deleted??
@@ -353,7 +353,7 @@ describe('User', () => {
 			 */
 			test('Alice can follow Bob', async () => {
 				await aliceClient.request('following/create', { userId: bobInAServer.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const bobFollowers = await bobClient.request('users/followers', { userId: bob.id });
 				strictEqual(bobFollowers.length, 1); // followed by Alice
@@ -368,7 +368,7 @@ describe('User', () => {
 
 				// Bob tries to follow Alice
 				await bobClient.request('following/create', { userId: renewedAliceInBServer.id });
-				await sleep(1000);
+				await sleep(100);
 
 				const aliceFollowers = await aliceClient.request('users/followers', { userId: alice.id });
 				strictEqual(aliceFollowers.length, 1);

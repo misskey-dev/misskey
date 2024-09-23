@@ -20,7 +20,7 @@ describe('Block', () => {
 
 		test('Cannot follow if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 			await rejects(
 				async () => await bobClient.request('following/create', { userId: aliceInBServer.id }),
 				(err: any) => {
@@ -39,7 +39,7 @@ describe('Block', () => {
 		test('Cannot follow even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			// TODO: why still being blocked?
 			await rejects(
@@ -53,10 +53,10 @@ describe('Block', () => {
 
 		test.skip('Can follow if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			await bobClient.request('following/create', { userId: aliceInBServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			const following = await bobClient.request('users/following', { userId: bob.id });
 			strictEqual(following.length, 1);
@@ -73,7 +73,7 @@ describe('Block', () => {
 			});
 
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			test('after block', async () => {
 				const following = await bobClient.request('users/following', { userId: bob.id });
@@ -101,7 +101,7 @@ describe('Block', () => {
 
 		test('Cannot reply if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
@@ -116,7 +116,7 @@ describe('Block', () => {
 
 		test('Can reply if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
@@ -143,7 +143,7 @@ describe('Block', () => {
 
 		test('Cannot reaction if blocked', async () => {
 			await aliceClient.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
@@ -160,7 +160,7 @@ describe('Block', () => {
 		test('Cannot reaction even if unblocked', async () => {
 			// unblock here
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
@@ -177,7 +177,7 @@ describe('Block', () => {
 
 		test.skip('Can reaction if unblocked', async () => {
 			await aliceClient.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 
 			const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);

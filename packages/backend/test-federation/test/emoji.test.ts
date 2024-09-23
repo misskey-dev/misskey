@@ -19,7 +19,7 @@ describe('Emoji', () => {
 		]);
 
 		await bobClient.request('following/create', { userId: aliceInBServer.id });
-		await sleep(1000);
+		await sleep(100);
 	});
 
 	test('A server creates a custom emoji, and Bob can resolve it from Note', async () => {
@@ -27,7 +27,7 @@ describe('Emoji', () => {
 		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
 		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id });
 		const note = (await aliceClient.request('notes/create', { text: `I love :${name}:` })).createdNote;
-		await sleep(1000);
+		await sleep(100);
 
 		const notes = await bobClient.request('notes/timeline', {});
 		strictEqual(notes.length, 1);
@@ -44,7 +44,7 @@ describe('Emoji', () => {
 		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
 		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id });
 		await aliceClient.request('i/update', { name: `:${name}:` });
-		await sleep(1000);
+		await sleep(100);
 
 		const renewedAliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
 		assert(name in renewedAliceInBServer.emojis);

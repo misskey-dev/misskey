@@ -19,7 +19,7 @@ describe('Timeline', () => {
 		]);
 
 		await bobClient.request('following/create', { userId: aliceInBServer.id });
-		await sleep(1000);
+		await sleep(100);
 	});
 
 	async function postFromAlice(params?: Misskey.entities.NotesCreateRequest) {
@@ -176,7 +176,7 @@ describe('Timeline', () => {
 		beforeAll(async () => {
 			list = await bobClient.request('users/lists/create', { name: 'Bob\'s List' });
 			await bobClient.request('users/lists/push', { listId: list.id, userId: aliceInBServer.id });
-			await sleep(1000);
+			await sleep(100);
 		});
 
 		describe('Check reception of remote followee\'s Note', () => {
@@ -248,7 +248,7 @@ describe('Timeline', () => {
 				displayOrder: 0,
 				policies: {},
 			});
-			await sleep(1000);
+			await sleep(100);
 		});
 
 		describe('Check reception of remote followee\'s Note', () => {
@@ -292,7 +292,7 @@ describe('Timeline', () => {
 				withReplies: true,
 				withFile: true,
 			});
-			await sleep(1000);
+			await sleep(100);
 		});
 
 		describe('Check reception of remote followee\'s Note', () => {

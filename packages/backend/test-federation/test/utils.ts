@@ -203,7 +203,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 		const timer = setTimeout(() => {
 			stream.close();
 			resolve(false);
-		}, 3000);
+		}, 1000);
 
 		await trigger().catch(err => {
 			stream.close();

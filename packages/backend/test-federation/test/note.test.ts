@@ -84,7 +84,7 @@ describe('Note', () => {
 			]);
 			strictEqual(aliceInBServer.id, resolvedNote.userId);
 
-			await sleep(1000);
+			await sleep(100);
 
 			const resolvedReplyedNote = await bobClient.request('notes/show', { noteId: resolvedNote.replyId });
 			strictEqual(resolvedReplyedNote.repliesCount, 1);
@@ -148,14 +148,14 @@ describe('Note', () => {
 			[, carolClient] = await createAccount('a.test');
 
 			await carolClient.request('following/create', { userId: bobInAServer.id });
-			await sleep(1000);
+			await sleep(100);
 		});
 
 		test('Delete is derivered to followers', async () => {
 			const note = (await bobClient.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 			const noteInAServer = await resolveRemoteNote('b.test', note.id, carolClient);
 			await bobClient.request('notes/delete', { noteId: note.id });
-			await sleep(1000);
+			await sleep(100);
 
 			await rejects(
 				async () => await carolClient.request('notes/show', { noteId: noteInAServer.id }),
@@ -173,7 +173,7 @@ describe('Note', () => {
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bobClient);
 			const reaction = '😅';
 			await bobClient.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
-			await sleep(1000);
+			await sleep(100);
 
 			const reactions = await aliceClient.request('notes/reactions', { noteId: note.id });
 			strictEqual(reactions.length, 1);
@@ -194,7 +194,7 @@ describe('Note', () => {
 				const note = (await bobClient.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
 				const noteInAServer = await resolveRemoteNote('b.test', note.id, carolClient);
 				await carolClient.request('notes/polls/vote', { noteId: noteInAServer.id, choice: 0 });
-				await sleep(1000);
+				await sleep(100);
 
 				const noteAfterVote = await bobClient.request('notes/show', { noteId: note.id });
 				assert(noteAfterVote.poll != null);
@@ -217,7 +217,7 @@ describe('Note', () => {
 				]);
 
 				await bobRemoteFollowerClient.request('following/create', { userId: bobInAServer.id });
-				await sleep(1000);
+				await sleep(100);
 			});
 
 			test('A vote in Bob\'s server is delivered to Bob\'s remote followers', async () => {
@@ -225,7 +225,7 @@ describe('Note', () => {
 				// NOTE: resolve before voting
 				const noteInAServer = await resolveRemoteNote('b.test', note.id, bobRemoteFollowerClient);
 				await localVoterClient.request('notes/polls/vote', { noteId: note.id, choice: 0 });
-				await sleep(1000);
+				await sleep(100);
 
 				const noteAfterVote = await bobRemoteFollowerClient.request('notes/show', { noteId: noteInAServer.id });
 				assert(noteAfterVote.poll != null);
