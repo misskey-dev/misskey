@@ -13,6 +13,8 @@
 - Enhance: ScratchpadにUIインスペクターを追加
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
+- Fix: タッチ画面でレンジスライダーを操作するとツールチップが複数表示される問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/265)
 - Fix: 縦横比が極端なカスタム絵文字を表示する際にレイアウトが崩れる箇所があるのを修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/725)
 - Fix: 設定変更時のリロード確認ダイアログが複数個表示されることがある問題を修正
