@@ -1,6 +1,6 @@
 import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, uploadFile } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 const [, bAdminClient] = await fetchAdmin('b.test');
 
@@ -84,6 +84,88 @@ describe('Drive', () => {
 				strictEqual(reupdatedImageInBServer.isSensitive, true);
 				// FIXME: but `name` is not updated
 				strictEqual(reupdatedImageInBServer.name, '192.jpg');
+			});
+		});
+	});
+
+	describe('Sensitive flag', () => {
+		describe('isSensitive is federated in delivering to followers', () => {
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
+			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, aliceClient] = await createAccount('a.test');
+				[bob, bobClient] = await createAccount('b.test');
+
+				[bobInAServer, aliceInBServer] = await Promise.all([
+					resolveRemoteUser('b.test', bob.id, aliceClient),
+					resolveRemoteUser('a.test', alice.id, bobClient),
+				]);
+
+				await bobClient.request('following/create', { userId: aliceInBServer.id });
+				await sleep(100);
+			});
+
+			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
+				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+				await aliceClient.request('drive/files/update', { fileId: file.id, isSensitive: true });
+				await aliceClient.request('notes/create', { text: 'sensitive', fileIds: [file.id] });
+				await sleep(100);
+
+				const notes = await bobClient.request('notes/timeline', {});
+				strictEqual(notes.length, 1);
+				const noteInBServer = notes[0];
+				assert(noteInBServer.files != null);
+				strictEqual(noteInBServer.files.length, 1);
+				strictEqual(noteInBServer.files[0].isSensitive, true);
+			});
+		});
+
+		describe('isSensitive is federated in resolving', () => {
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
+
+			beforeAll(async () => {
+				[alice, aliceClient] = await createAccount('a.test');
+				[bob, bobClient] = await createAccount('b.test');
+			});
+
+			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
+				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+				await aliceClient.request('drive/files/update', { fileId: file.id, isSensitive: true });
+				const note = (await aliceClient.request('notes/create', { text: 'sensitive', fileIds: [file.id] })).createdNote;
+
+				const noteInBServer = await resolveRemoteNote('a.test', note.id, bobClient);
+				assert(noteInBServer.files != null);
+				strictEqual(noteInBServer.files.length, 1);
+				strictEqual(noteInBServer.files[0].isSensitive, true);
+			});
+		});
+
+		/** @see https://github.com/misskey-dev/misskey/issues/12208 */
+		describe('isSensitive is federated in replying', () => {
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
+
+			beforeAll(async () => {
+				[alice, aliceClient] = await createAccount('a.test');
+				[bob, bobClient] = await createAccount('b.test');
+			});
+
+			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
+				const bobNote = (await bobClient.request('notes/create', { text: 'I\'m Bob' })).createdNote;
+
+				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+				await aliceClient.request('drive/files/update', { fileId: file.id, isSensitive: true });
+				const bobNoteInAServer = await resolveRemoteNote('b.test', bobNote.id, aliceClient);
+				const note = (await aliceClient.request('notes/create', { text: 'sensitive', fileIds: [file.id], replyId: bobNoteInAServer.id })).createdNote;
+				await sleep(1000);
+
+				const noteInBServer = await resolveRemoteNote('a.test', note.id, bobClient);
+				assert(noteInBServer.files != null);
+				strictEqual(noteInBServer.files.length, 1);
+				strictEqual(noteInBServer.files[0].isSensitive, true);
 			});
 		});
 	});
