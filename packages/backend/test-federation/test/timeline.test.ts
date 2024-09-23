@@ -76,68 +76,76 @@ describe('Timeline', () => {
 		// NOTE: narrowing scope intentionally to prevent mistakes by copy-and-paste
 		const homeTimeline = 'homeTimeline';
 
-		test('Receive remote followee\'s note', async () => {
-			await postAndCheckReception(homeTimeline, true);
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				await postAndCheckReception(homeTimeline, true);
+			});
 
-		test('Receive remote followee\'s home-only note', async () => {
-			await postAndCheckReception(homeTimeline, true, { visibility: 'home' });
-		});
+			test('Receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(homeTimeline, true, { visibility: 'home' });
+			});
 
-		test('Receive remote followee\'s followers-only note', async () => {
-			await postAndCheckReception(homeTimeline, true, { visibility: 'followers' });
-		});
+			test('Receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(homeTimeline, true, { visibility: 'followers' });
+			});
 
-		test('Receive remote followee\'s specified-only note', async () => {
-			await postAndCheckReception(homeTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			test('Receive remote followee\'s specified-only Note', async () => {
+				await postAndCheckReception(homeTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			});
 		});
 	});
 
 	describe('localTimeline', () => {
 		const localTimeline = 'localTimeline';
 
-		test('Don\'t receive remote followee\'s note', async () => {
-			await postAndCheckReception(localTimeline, false, { visibility: 'followers', visibleUserIds: [bobInAServer.id] });
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Don\'t receive remote followee\'s Note', async () => {
+				await postAndCheckReception(localTimeline, false, { visibility: 'followers', visibleUserIds: [bobInAServer.id] });
+			});
 		});
 	});
 
 	describe('hybridTimeline', () => {
 		const hybridTimeline = 'hybridTimeline';
 
-		test('Receive remote followee\'s note', async () => {
-			await postAndCheckReception(hybridTimeline, true);
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				await postAndCheckReception(hybridTimeline, true);
+			});
 
-		test('Receive remote followee\'s home-only note', async () => {
-			await postAndCheckReception(hybridTimeline, true, { visibility: 'home' });
-		});
+			test('Receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(hybridTimeline, true, { visibility: 'home' });
+			});
 
-		test('Receive remote followee\'s followers-only note', async () => {
-			await postAndCheckReception(hybridTimeline, true, { visibility: 'followers' });
-		});
+			test('Receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(hybridTimeline, true, { visibility: 'followers' });
+			});
 
-		test('Receive remote followee\'s specified-only note', async () => {
-			await postAndCheckReception(hybridTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			test('Receive remote followee\'s specified-only Note', async () => {
+				await postAndCheckReception(hybridTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			});
 		});
 	});
 
 	describe('globalTimeline', () => {
 		const globalTimeline = 'globalTimeline';
 
-		test('Receive remote followee\'s note', async () => {
-			await postAndCheckReception(globalTimeline, true);
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				await postAndCheckReception(globalTimeline, true);
+			});
 
-		test('Don\'t receive remote followee\'s home-only note', async () => {
-			await postAndCheckReception(globalTimeline, false, { visibility: 'home' });
-		});
+			test('Don\'t receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(globalTimeline, false, { visibility: 'home' });
+			});
 
-		test('Don\'t receive remote followee\'s followers-only note', async () => {
-			await postAndCheckReception(globalTimeline, false, { visibility: 'followers' });
-		});
+			test('Don\'t receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(globalTimeline, false, { visibility: 'followers' });
+			});
 
-		test('Don\'t receive remote followee\'s specified-only note', async () => {
-			await postAndCheckReception(globalTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			test('Don\'t receive remote followee\'s specified-only Note', async () => {
+				await postAndCheckReception(globalTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			});
 		});
 	});
 
@@ -152,44 +160,48 @@ describe('Timeline', () => {
 			await sleep(1000);
 		});
 
-		test('Receive remote followee\'s note', async () => {
-			await postAndCheckReception(userList, true, {}, { listId: list.id });
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				await postAndCheckReception(userList, true, {}, { listId: list.id });
+			});
 
-		test('Receive remote followee\'s home-only note', async () => {
-			await postAndCheckReception(userList, true, { visibility: 'home' }, { listId: list.id });
-		});
+			test('Receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(userList, true, { visibility: 'home' }, { listId: list.id });
+			});
 
-		test('Receive remote followee\'s followers-only note', async () => {
-			await postAndCheckReception(userList, true, { visibility: 'followers' }, { listId: list.id });
-		});
+			test('Receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(userList, true, { visibility: 'followers' }, { listId: list.id });
+			});
 
-		test('Receive remote followee\'s specified-only note', async () => {
-			await postAndCheckReception(userList, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { listId: list.id });
+			test('Receive remote followee\'s specified-only Note', async () => {
+				await postAndCheckReception(userList, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { listId: list.id });
+			});
 		});
 	});
 
 	describe('hashtag', () => {
 		const hashtag = 'hashtag';
 
-		test('Receive remote followee\'s note', async () => {
-			const tag = crypto.randomUUID();
-			await postAndCheckReception(hashtag, true, { text: `#${tag}` }, { q: [[tag]] });
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				const tag = crypto.randomUUID();
+				await postAndCheckReception(hashtag, true, { text: `#${tag}` }, { q: [[tag]] });
+			});
 
-		test('Receive remote followee\'s home-only note', async () => {
-			const tag = crypto.randomUUID();
-			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'home' }, { q: [[tag]] });
-		});
+			test('Receive remote followee\'s home-only Note', async () => {
+				const tag = crypto.randomUUID();
+				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'home' }, { q: [[tag]] });
+			});
 
-		test('Receive remote followee\'s followers-only note', async () => {
-			const tag = crypto.randomUUID();
-			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'followers' }, { q: [[tag]] });
-		});
+			test('Receive remote followee\'s followers-only Note', async () => {
+				const tag = crypto.randomUUID();
+				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'followers' }, { q: [[tag]] });
+			});
 
-		test('Receive remote followee\'s specified-only note', async () => {
-			const tag = crypto.randomUUID();
-			await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { q: [[tag]] });
+			test('Receive remote followee\'s specified-only Note', async () => {
+				const tag = crypto.randomUUID();
+				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { q: [[tag]] });
+			});
 		});
 	});
 
@@ -220,20 +232,22 @@ describe('Timeline', () => {
 			await sleep(1000);
 		});
 
-		test('Receive remote followee\'s note', async () => {
-			await postAndCheckReception(roleTimeline, true, {}, { roleId: role.id });
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				await postAndCheckReception(roleTimeline, true, {}, { roleId: role.id });
+			});
 
-		test('Don\'t receive remote followee\'s home-only note', async () => {
-			await postAndCheckReception(roleTimeline, false, { visibility: 'home' }, { roleId: role.id });
-		});
+			test('Don\'t receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(roleTimeline, false, { visibility: 'home' }, { roleId: role.id });
+			});
 
-		test('Don\'t receive remote followee\'s followers-only note', async () => {
-			await postAndCheckReception(roleTimeline, false, { visibility: 'followers' }, { roleId: role.id });
-		});
+			test('Don\'t receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(roleTimeline, false, { visibility: 'followers' }, { roleId: role.id });
+			});
 
-		test('Don\'t receive remote followee\'s specified-only note', async () => {
-			await postAndCheckReception(roleTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { roleId: role.id });
+			test('Don\'t receive remote followee\'s specified-only Note', async () => {
+				await postAndCheckReception(roleTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { roleId: role.id });
+			});
 		});
 
 		afterAll(async () => {
@@ -262,20 +276,22 @@ describe('Timeline', () => {
 			await sleep(1000);
 		});
 
-		test('Receive remote followee\'s note', async () => {
-			await postAndCheckReception(antenna, true, { text: 'I love Bob (1)' }, { antennaId: bobAntenna.id });
-		});
+		describe('Check reception of remote followee\'s Note', () => {
+			test('Receive remote followee\'s Note', async () => {
+				await postAndCheckReception(antenna, true, { text: 'I love Bob (1)' }, { antennaId: bobAntenna.id });
+			});
 
-		test('Don\'t receive remote followee\'s home-only note', async () => {
-			await postAndCheckReception(antenna, false, { text: 'I love Bob (2)', visibility: 'home' }, { antennaId: bobAntenna.id });
-		});
+			test('Don\'t receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(antenna, false, { text: 'I love Bob (2)', visibility: 'home' }, { antennaId: bobAntenna.id });
+			});
 
-		test('Don\'t receive remote followee\'s followers-only note', async () => {
-			await postAndCheckReception(antenna, false, { text: 'I love Bob (3)', visibility: 'followers' }, { antennaId: bobAntenna.id });
-		});
+			test('Don\'t receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(antenna, false, { text: 'I love Bob (3)', visibility: 'followers' }, { antennaId: bobAntenna.id });
+			});
 
-		test('Don\'t receive remote followee\'s specified-only note', async () => {
-			await postAndCheckReception(antenna, false, { text: 'I love Bob (4)', visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { antennaId: bobAntenna.id });
+			test('Don\'t receive remote followee\'s specified-only Note', async () => {
+				await postAndCheckReception(antenna, false, { text: 'I love Bob (4)', visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { antennaId: bobAntenna.id });
+			});
 		});
 
 		afterAll(async () => {
