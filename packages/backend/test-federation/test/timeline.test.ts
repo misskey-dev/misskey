@@ -108,6 +108,15 @@ describe('Timeline', () => {
 			test.failing('Don\'t receive remote followee\'s invisible and mentioned specified-only Note', async () => {
 				await postAndCheckReception(homeTimeline, false, { text: `@${bobUsername}@b.test Hello`, visibility: 'specified' });
 			});
+
+			/**
+			 * FIXME: cannot receive this
+			 * @see https://github.com/misskey-dev/misskey/issues/14084
+			 */
+			test.failing('Receive remote followee\'s visible specified-only reply to invisible specified-only Note', async () => {
+				const note = (await aliceClient.request('notes/create', { text: 'a', visibility: 'specified' })).createdNote;
+				await postAndCheckReception(homeTimeline, true, { replyId: note.id, visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+			});
 		});
 	});
 
