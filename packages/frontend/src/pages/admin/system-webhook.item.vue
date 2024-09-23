@@ -21,7 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else>-</span>
 		</template>
 
-		<div>
+		<div class="_gaps">
+			<MkKeyValue>
+				<template #key>latestStatus</template>
+				<template #value>{{ entity.latestStatus ?? '-' }}</template>
+			</MkKeyValue>
 			<div class="_buttons">
 				<MkButton @click="onEditClick">
 					<i class="ti ti-settings"></i> {{ i18n.ts.edit }}
@@ -40,6 +44,7 @@ import { toRefs } from 'vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const emit = defineEmits<{
 	(ev: 'edit', value: entities.SystemWebhook): void;

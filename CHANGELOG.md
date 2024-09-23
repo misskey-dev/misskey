@@ -15,6 +15,8 @@
 - Enhance: チャンネルのページを開いている間はデフォルトの公開範囲がそのチャンネルになるように
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
+- Fix: タッチ画面でレンジスライダーを操作するとツールチップが複数表示される問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/265)
 - Fix: 縦横比が極端なカスタム絵文字を表示する際にレイアウトが崩れる箇所があるのを修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/725)
 - Fix: 設定変更時のリロード確認ダイアログが複数個表示されることがある問題を修正
@@ -30,6 +32,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/26e0412fbb91447c37e8fb06ffb0487346063bb8)
 - Fix: `Retry-After`ヘッダーが送信されなかった問題を修正
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
+- Fix: サーバーサイドのDOM解析完了時にリソースを開放するように
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
 
 ## 2024.8.0
 

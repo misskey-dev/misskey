@@ -11,6 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps">
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
+					<template #footer>
+						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
+					</template>
 					<div class="_gaps_s">
 						<MkInput v-model="baseRoleQ" type="search">
 							<template #prefix><i class="ti ti-search"></i></template>
@@ -253,8 +256,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
-
-						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
@@ -280,6 +281,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
+import { ROLE_POLICIES } from '@@/js/const.js';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -293,7 +295,6 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { ROLE_POLICIES } from '@@/js/const.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
