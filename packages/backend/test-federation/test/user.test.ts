@@ -1,4 +1,4 @@
-import { rejects, strictEqual } from 'node:assert';
+import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
@@ -282,6 +282,111 @@ describe('User', () => {
 				strictEqual(following.length, 1);
 				strictEqual(following[0].followeeId, aliceInBServer.id);
 				strictEqual(following[0].followerId, bob.id);
+			});
+		});
+	});
+
+	describe('Suspension', () => {
+		describe('Check suspend/unsuspend consistency', () => {
+			let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
+			let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient;
+			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, aliceClient] = await createAccount('a.test', aAdminClient);
+				[bob, bobClient] = await createAccount('b.test', bAdminClient);
+
+				[bobInAServer, aliceInBServer] = await Promise.all([
+					resolveRemoteUser('b.test', bob.id, aliceClient),
+					resolveRemoteUser('a.test', alice.id, bobClient),
+				]);
+			});
+
+			test('Bob follows Alice, and Alice gets suspended, there is no following relation, and Bob fails to follow again', async () => {
+				await bobClient.request('following/create', { userId: aliceInBServer.id });
+				await sleep(1000);
+
+				const followers = await aliceClient.request('users/followers', { userId: alice.id });
+				strictEqual(followers.length, 1); // followed by Bob
+
+				await aAdminClient.request('admin/suspend-user', { userId: alice.id });
+				await sleep(1000);
+
+				const following = await bobClient.request('users/following', { userId: bob.id });
+				strictEqual(following.length, 0); // no following relation
+
+				await rejects(
+					async () => await bobClient.request('following/create', { userId: aliceInBServer.id }),
+					(err: any) => {
+						strictEqual(err.code, 'NO_SUCH_USER');
+						return true;
+					},
+				);
+			});
+
+			test('Alice gets unsuspended, Bob succeeds in following Alice', async () => {
+				await aAdminClient.request('admin/unsuspend-user', { userId: alice.id });
+				await sleep(1000);
+
+				const followers = await aliceClient.request('users/followers', { userId: alice.id });
+				strictEqual(followers.length, 1); // FIXME: followers are not deleted??
+
+				/**
+				 * FIXME: still rejected!
+				 *        seems to can't process Undo Delete activity because it is not implemented
+				 *        related @see https://github.com/misskey-dev/misskey/issues/13273
+				 */
+				await rejects(
+					async () => await bobClient.request('following/create', { userId: aliceInBServer.id }),
+					(err: any) => {
+						strictEqual(err.code, 'NO_SUCH_USER');
+						return true;
+					},
+				);
+
+				// FIXME: resolving also fails
+				await rejects(
+					async () => await resolveRemoteUser('a.test', alice.id, bobClient),
+					(err: any) => {
+						strictEqual(err.code, 'INTERNAL_ERROR');
+						return true;
+					},
+				);
+			});
+
+			/**
+			 * instead of simple unsuspension, let's tell existence by following from Alice
+			 */
+			test('Alice can follow Bob', async () => {
+				await aliceClient.request('following/create', { userId: bobInAServer.id });
+				await sleep(1000);
+
+				const bobFollowers = await bobClient.request('users/followers', { userId: bob.id });
+				strictEqual(bobFollowers.length, 1); // followed by Alice
+				assert(bobFollowers[0].follower != null);
+				const renewedAliceInBServer = bobFollowers[0].follower;
+				assert(aliceInBServer.username === renewedAliceInBServer.username);
+				assert(aliceInBServer.host === renewedAliceInBServer.host);
+				assert(aliceInBServer.id !== renewedAliceInBServer.id); // TODO: Same username and host, but their ids are different! Is it OK?
+
+				const following = await bobClient.request('users/following', { userId: bob.id });
+				strictEqual(following.length, 0); // following are deleted
+
+				// Bob tries to follow Alice
+				await bobClient.request('following/create', { userId: renewedAliceInBServer.id });
+				await sleep(1000);
+
+				const aliceFollowers = await aliceClient.request('users/followers', { userId: alice.id });
+				strictEqual(aliceFollowers.length, 1);
+
+				// FIXME: but resolving still fails ...
+				await rejects(
+					async () => await resolveRemoteUser('a.test', alice.id, bobClient),
+					(err: any) => {
+						strictEqual(err.code, 'INTERNAL_ERROR');
+						return true;
+					},
+				);
 			});
 		});
 	});
