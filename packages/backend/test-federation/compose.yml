@@ -75,8 +75,6 @@ services:
         condition: service_healthy
       misskey.b.test:
         condition: service_healthy
-    environment:
-      - TESTER_IP_ADDRESS=$TESTER_IP_ADDRESS
     volumes:
       - type: bind
         source: ../package.json

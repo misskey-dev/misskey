@@ -1,6 +1,8 @@
 import IPCIDR from 'ip-cidr';
 import { Redis } from 'ioredis';
 
+const TESTER_IP_ADDRESS = '172.20.1.1';
+
 /**
  * This should be same as {@link file://./../src/misc/get-ip-hash.ts}.
  */
@@ -13,7 +15,7 @@ function getIpHash(ip: string) {
  * This prevents hitting rate limit when login.
  */
 export async function purgeLimit(host: string, client: Redis) {
-	const ipHash = getIpHash(process.env.TESTER_IP_ADDRESS!);
+	const ipHash = getIpHash(TESTER_IP_ADDRESS);
 	const key = `${host}:limit:${ipHash}:signin`;
 	const res = await client.zrange(key, 0, -1);
 	if (res.length !== 0) {

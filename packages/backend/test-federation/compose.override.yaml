@@ -3,7 +3,7 @@ services:
     networks:
       external_network:
       internal_network:
-        ipv4_address: $TESTER_IP_ADDRESS
+        ipv4_address: 172.20.1.1
     volumes:
       - type: volume
         source: node_modules_dev
