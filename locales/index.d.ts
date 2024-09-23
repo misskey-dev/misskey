@@ -5096,6 +5096,18 @@ export interface Locale extends ILocale {
      * パフォーマンス
      */
     "performance": string;
+    /**
+     * 変更あり
+     */
+    "modified": string;
+    /**
+     * 破棄
+     */
+    "discard": string;
+    /**
+     * {n}件の変更があります
+     */
+    "thereAreNChanges": ParameterizedString<"n">;
     "_delivery": {
         /**
          * 配信状態
