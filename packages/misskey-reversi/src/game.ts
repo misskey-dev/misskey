@@ -53,9 +53,13 @@ export class Game {
 
 		//#region Options
 		this.opts = opts;
+
+		//eslint-disable @typescript-eslint/no-unnecessary-condition
 		if (this.opts.isLlotheo == null) this.opts.isLlotheo = false;
 		if (this.opts.canPutEverywhere == null) this.opts.canPutEverywhere = false;
 		if (this.opts.loopedBoard == null) this.opts.loopedBoard = false;
+		//eslint-enable @typescript-eslint/no-unnecessary-condition
+
 		//#endregion
 
 		//#region Parse map data
@@ -121,14 +125,22 @@ export class Game {
 
 	private calcTurn() {
 		// ターン計算
-		this.turn =
-			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
-			this.canPutSomewhere(this.prevColor!) ? this.prevColor :
-			null;
+		let turn = null;
+
+		if (this.prevColor != null) {
+			if (this.canPutSomewhere(!this.prevColor)) {
+				turn = !this.prevColor;
+			} else if (this.canPutSomewhere(this.prevColor)) {
+				turn = this.prevColor;
+			}
+		}
+
+		this.turn = turn;
 	}
 
 	public undo() {
-		const undo = this.logs.pop()!;
+		const undo = this.logs.pop();
+		if (undo == null) return;
 		this.prevColor = undo.color;
 		this.prevPos = undo.pos;
 		this.board[undo.pos] = null;
