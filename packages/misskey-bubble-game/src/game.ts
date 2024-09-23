@@ -366,8 +366,9 @@ export class DropAndFusionGame extends EventEmitter<{
 	}
 
 	public getActiveMonos() {
-		return this.engine.world.bodies.map(
-			x => this.monoDefinitions.find((mono) => mono.id === x.label)).filter(x => x !== undefined);
+		return this.engine.world.bodies
+			.map(x => this.monoDefinitions.find((mono) => mono.id === x.label))
+			.filter(x => x !== undefined);
 	}
 
 	public drop(_x: number) {
