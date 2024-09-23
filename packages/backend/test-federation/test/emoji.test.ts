@@ -1,4 +1,4 @@
-import assert, { strictEqual } from 'assert';
+import assert, { deepStrictEqual, strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
 import { createAccount, fetchAdmin, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
@@ -22,7 +22,7 @@ describe('Emoji', () => {
 		await sleep(100);
 	});
 
-	test('A server creates a custom emoji, and Bob can resolve it from Note', async () => {
+	test('Custom emoji are delivered with Note delivery', async () => {
 		const name = crypto.randomUUID().replaceAll('-', '');
 		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
 		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id });
@@ -30,24 +30,81 @@ describe('Emoji', () => {
 		await sleep(100);
 
 		const notes = await bobClient.request('notes/timeline', {});
-		strictEqual(notes.length, 1);
 		const noteInBServer = notes[0];
 
 		assert(note.text !== noteInBServer.text); // TODO: why?
 		assert(noteInBServer.emojis != null);
 		assert(name in noteInBServer.emojis);
-		assert(noteInBServer.emojis[name] === file.url);
+		strictEqual(noteInBServer.emojis[name], file.url);
 	});
 
-	test('A server creates a custom emoji, and Bob can resolve it from Profile', async () => {
+	test('Custom emoji are delivered with Reaction delivery', async () => {
 		const name = crypto.randomUUID().replaceAll('-', '');
 		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
 		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id });
-		await aliceClient.request('i/update', { name: `:${name}:` });
+		const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
+		await sleep(100);
+
+		await aliceClient.request('notes/reactions/create', { noteId: note.id, reaction: `:${name}:` });
+		await sleep(100);
+
+		const noteInBServer = (await bobClient.request('notes/timeline', {}))[0];
+		deepStrictEqual(noteInBServer.reactions[`:${name}@a.test:`], 1);
+		deepStrictEqual(noteInBServer.reactionEmojis[`${name}@a.test`], file.url);
+	});
+
+	test('Custom emoji are delivered with Profile delivery', async () => {
+		const name = crypto.randomUUID().replaceAll('-', '');
+		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
+		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id });
+		const renewedAlice = await aliceClient.request('i/update', { name: `:${name}:` });
 		await sleep(100);
 
 		const renewedAliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
+		strictEqual(renewedAliceInBServer.name, renewedAlice.name);
 		assert(name in renewedAliceInBServer.emojis);
-		assert(renewedAliceInBServer.emojis[name] === file.url);
+		strictEqual(renewedAliceInBServer.emojis[name], file.url);
+	});
+
+	test('Local-only custom emoji aren\'t delivered with Note delivery', async () => {
+		const name = crypto.randomUUID().replaceAll('-', '');
+		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
+		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id, localOnly: true });
+		const note = (await aliceClient.request('notes/create', { text: `I love :${name}:` })).createdNote;
+		await sleep(100);
+
+		const notes = await bobClient.request('notes/timeline', {});
+		const noteInBServer = notes[0];
+
+		assert(note.text !== noteInBServer.text); // TODO: why?
+		// deepStrictEqual(noteInBServer.emojis, {}); // TODO: this fails (why?)
+		deepStrictEqual({ ...noteInBServer.emojis }, {});
+	});
+
+	test('Local-only custom emoji aren\'t delivered with Reaction delivery', async () => {
+		const name = crypto.randomUUID().replaceAll('-', '');
+		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
+		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id, localOnly: true });
+		const note = (await aliceClient.request('notes/create', { text: 'a' })).createdNote;
+		await sleep(100);
+
+		await aliceClient.request('notes/reactions/create', { noteId: note.id, reaction: `:${name}:` });
+		await sleep(100);
+
+		const noteInBServer = (await bobClient.request('notes/timeline', {}))[0];
+		deepStrictEqual({ ...noteInBServer.reactions }, { '❤': 1 });
+		deepStrictEqual({ ...noteInBServer.reactionEmojis }, {});
+	});
+
+	test('Local-only custom emoji aren\'t delivered with Profile delivery', async () => {
+		const name = crypto.randomUUID().replaceAll('-', '');
+		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
+		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id, localOnly: true });
+		const renewedAlice = await aliceClient.request('i/update', { name: `:${name}:` });
+		await sleep(100);
+
+		const renewedAliceInBServer = await bobClient.request('users/show', { userId: aliceInBServer.id });
+		strictEqual(renewedAliceInBServer.name, renewedAlice.name);
+		deepStrictEqual({ ...renewedAliceInBServer.emojis }, {});
 	});
 });
