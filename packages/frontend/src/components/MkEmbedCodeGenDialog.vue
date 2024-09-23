@@ -90,6 +90,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { shallowRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
+import { url } from '@@/js/config.js';
+import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 
@@ -103,10 +105,8 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { url } from '@@/js/config.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
-import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -307,6 +307,8 @@ onUnmounted(() => {
 .embedCodeGenPreviewRoot {
 	position: relative;
 	background-color: var(--bg);
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--panel) 6px, var(--panel) 12px);
 	cursor: not-allowed;
 }
 
