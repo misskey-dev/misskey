@@ -26,13 +26,13 @@ describe('Emoji', () => {
 		const name = crypto.randomUUID().replaceAll('-', '');
 		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
 		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id });
-		const note = (await aliceClient.request('notes/create', { text: `I love :${name}:` })).createdNote;
+		await aliceClient.request('notes/create', { text: `I love :${name}:` });
 		await sleep(100);
 
 		const notes = await bobClient.request('notes/timeline', {});
 		const noteInBServer = notes[0];
 
-		assert(note.text !== noteInBServer.text); // TODO: why?
+		strictEqual(noteInBServer.text, `I love \u200b:${name}:\u200b`);
 		assert(noteInBServer.emojis != null);
 		assert(name in noteInBServer.emojis);
 		strictEqual(noteInBServer.emojis[name], file.url);
@@ -70,13 +70,13 @@ describe('Emoji', () => {
 		const name = crypto.randomUUID().replaceAll('-', '');
 		const file = await uploadFile('a.test', '../../test/resources/192.jpg', aAdmin.i);
 		await aAdminClient.request('admin/emoji/add', { name, fileId: file.id, localOnly: true });
-		const note = (await aliceClient.request('notes/create', { text: `I love :${name}:` })).createdNote;
+		await aliceClient.request('notes/create', { text: `I love :${name}:` });
 		await sleep(100);
 
 		const notes = await bobClient.request('notes/timeline', {});
 		const noteInBServer = notes[0];
 
-		assert(note.text !== noteInBServer.text); // TODO: why?
+		strictEqual(noteInBServer.text, `I love \u200b:${name}:\u200b`);
 		// deepStrictEqual(noteInBServer.emojis, {}); // TODO: this fails (why?)
 		deepStrictEqual({ ...noteInBServer.emojis }, {});
 	});
