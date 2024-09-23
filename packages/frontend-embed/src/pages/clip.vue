@@ -45,13 +45,12 @@ import { url, instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
 import type { Paging } from '@/components/EmPagination.vue';
-import EmLoading from '@/components/EmLoading.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { serverMetadata } from '@/server-metadata.js';
+import { assertServerContext } from '@/server-context.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
@@ -60,7 +59,22 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-const clip = ref<Misskey.entities.Clip | null>(null);
+const serverMetadata = inject(DI.serverMetadata)!;
+
+const serverContext = inject(DI.serverContext)!;
+
+const clip = ref<Misskey.entities.Clip | null>();
+
+if (assertServerContext(serverContext, 'clip')) {
+	clip.value = serverContext.clip;
+} else {
+	clip.value = await misskeyApi('clips/show', {
+		clipId: props.clipId,
+	}).catch(() => {
+		return null;
+	});
+}
+
 const pagination = computed(() => ({
 	endpoint: 'clips/notes',
 	params: {
@@ -78,13 +92,6 @@ function top(ev: MouseEvent) {
 		scrollToTop(notesEl.value.$el as HTMLElement, { behavior: 'smooth' });
 	}
 }
-
-const embedCtxEl = document.getElementById('misskey_embedCtx');
-const embedCtx = (embedCtxEl && embedCtxEl.textContent) ? JSON.parse(embedCtxEl.textContent) : null;
-// NOTE: devモードのときしか embedCtx が null になることは無い
-clip.value = embedCtx != null ? embedCtx.clip : await misskeyApi('clips/show', {
-	clipId: props.clipId,
-});
 </script>
 
 <style lang="scss" module>

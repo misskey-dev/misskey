@@ -11,25 +11,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
-import EmLoading from '@/components/EmLoading.vue';
 import XNotFound from '@/pages/not-found.vue';
+import { DI } from '@/di.js';
 import { misskeyApi } from '@/misskey-api.js';
+import { assertServerContext } from '@/server-context';
 
 const props = defineProps<{
 	noteId: string;
 }>();
 
+const serverContext = inject(DI.serverContext)!;
+
 const note = ref<Misskey.entities.Note | null>(null);
 
-const embedCtxEl = document.getElementById('misskey_embedCtx');
-const embedCtx = (embedCtxEl && embedCtxEl.textContent) ? JSON.parse(embedCtxEl.textContent) : null;
-// NOTE: devモードのときしか embedCtx が null になることは無い
-note.value = embedCtx != null ? embedCtx.note : await misskeyApi('notes/show', {
-	noteId: props.noteId,
-});
+if (assertServerContext(serverContext, 'note')) {
+	note.value = serverContext.note;
+} else {
+	note.value = await misskeyApi('notes/show', {
+		noteId: props.noteId,
+	}).catch(() => {
+		return null;
+	});
+}
 </script>
 
 <style lang="scss" module>
