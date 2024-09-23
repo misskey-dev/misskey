@@ -1270,6 +1270,9 @@ genEmbedCode: "埋め込みコードを生成"
 noteOfThisUser: "このユーザーのノート一覧"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 performance: "パフォーマンス"
+modified: "変更あり"
+discard: "破棄"
+thereAreNChanges: "{n}件の変更があります"
 
 _delivery:
   status: "配信状態"

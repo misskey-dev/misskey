@@ -237,6 +237,8 @@ onMounted(() => {
 	background: var(--acrylicBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--panel) 5px, var(--panel) 10px);
 	border-radius: 0 0 6px 6px;
 }
 </style>
