@@ -116,7 +116,7 @@ describe('Timeline', () => {
 
 		describe('Check reception of remote followee\'s Note', () => {
 			test('Don\'t receive remote followee\'s Note', async () => {
-				await postAndCheckReception(localTimeline, false, { visibility: 'followers', visibleUserIds: [bobInAServer.id] });
+				await postAndCheckReception(localTimeline, false);
 			});
 		});
 	});
@@ -137,7 +137,7 @@ describe('Timeline', () => {
 				await postAndCheckReception(hybridTimeline, true, { visibility: 'followers' });
 			});
 
-			test('Receive remote followee\'s specified-only Note', async () => {
+			test('Receive remote followee\'s visible specified-only Note', async () => {
 				await postAndCheckReception(hybridTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
 			});
 		});
@@ -159,7 +159,7 @@ describe('Timeline', () => {
 				await postAndCheckReception(globalTimeline, false, { visibility: 'followers' });
 			});
 
-			test('Don\'t receive remote followee\'s specified-only Note', async () => {
+			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
 				await postAndCheckReception(globalTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
 			});
 		});
@@ -189,7 +189,7 @@ describe('Timeline', () => {
 				await postAndCheckReception(userList, true, { visibility: 'followers' }, { listId: list.id });
 			});
 
-			test('Receive remote followee\'s specified-only Note', async () => {
+			test('Receive remote followee\'s visible specified-only Note', async () => {
 				await postAndCheckReception(userList, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { listId: list.id });
 			});
 		});
@@ -214,7 +214,7 @@ describe('Timeline', () => {
 				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'followers' }, { q: [[tag]] });
 			});
 
-			test('Receive remote followee\'s specified-only Note', async () => {
+			test('Receive remote followee\'s visible specified-only Note', async () => {
 				const tag = crypto.randomUUID();
 				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { q: [[tag]] });
 			});
@@ -261,7 +261,7 @@ describe('Timeline', () => {
 				await postAndCheckReception(roleTimeline, false, { visibility: 'followers' }, { roleId: role.id });
 			});
 
-			test('Don\'t receive remote followee\'s specified-only Note', async () => {
+			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
 				await postAndCheckReception(roleTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { roleId: role.id });
 			});
 		});
@@ -305,7 +305,7 @@ describe('Timeline', () => {
 				await postAndCheckReception(antenna, false, { text: 'I love Bob (3)', visibility: 'followers' }, { antennaId: bobAntenna.id });
 			});
 
-			test('Don\'t receive remote followee\'s specified-only Note', async () => {
+			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
 				await postAndCheckReception(antenna, false, { text: 'I love Bob (4)', visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { antennaId: bobAntenna.id });
 			});
 		});
