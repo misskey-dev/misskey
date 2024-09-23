@@ -125,17 +125,10 @@ export class Game {
 
 	private calcTurn() {
 		// ターン計算
-		let turn: boolean | null = null;
-
-		if (this.prevColor != null) {
-			if (this.canPutSomewhere(!this.prevColor)) {
-				turn = !this.prevColor;
-			} else if (this.canPutSomewhere(this.prevColor)) {
-				turn = this.prevColor;
-			}
-		}
-
-		this.turn = turn;
+		this.turn =
+			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
+			this.canPutSomewhere(this.prevColor!) ? this.prevColor : //eslint-disable-line @typescript-eslint/no-non-null-assertion
+			null;
 	}
 
 	public undo() {
