@@ -52,7 +52,7 @@ export class MetaService implements OnApplicationShutdown {
 			switch (type) {
 				case 'metaUpdated': {
 					this.cache = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-						...body.after,
+						...(body.after),
 						proxyAccount: null, // joinなカラムは通常取ってこないので
 					};
 					break;
