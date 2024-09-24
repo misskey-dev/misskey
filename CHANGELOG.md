@@ -9,6 +9,8 @@
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
   - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
+- Feat: 未読の通知があるときにタブのアイコン（Favicon）を目立たせることができるように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/474)
 - Enhance: サイズ制限を超過するファイルをアップロードしようとした際にエラーを出すように
 - Enhance: アイコンデコレーション管理画面にプレビューを追加
 - Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく
@@ -82,8 +84,6 @@
 ### Note
 - デッキUIの新着ノートをサウンドで通知する機能の追加（v2024.5.0）に伴い、以前から動作しなくなっていたクライアント設定内の「アンテナ受信」「チャンネル通知」サウンドを削除しました。
 - Streaming APIにて入力が不正な場合にはそのメッセージを無視するようになりました。 #14251
-- サーバーのアイコン画像をMisskey Web（Webクライアント）のオリジンからCORS制限なくアクセスできるようにすることが必須となりました。  
-  必要に応じて、アイコン画像の保存先サーバーの`Access-Control-Allow-Origin`を調整してください。
 
 ### General
 - Feat: 通報を受けた際、または解決した際に、予め登録した宛先に通知を飛ばせるように(mail or webhook) #13705
@@ -102,8 +102,6 @@
 ### Client
 - Feat: ユーザーページから「このユーザーのノートを検索」できるように (#14128)
 - Feat: 検索ページはクエリを受け付けるようになりました (#14128)
-- Feat: 未読の通知があるときにタブのアイコン（Favicon）を目立たせることができるように  
-  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/474)
 - Enhance: 検索ページのUI改善 (#14128)
 - Enhance: 内蔵APIドキュメントのデザイン・パフォーマンスを改善
 - Enhance: 非ログイン時に他サーバーに遷移するアクションを追加
