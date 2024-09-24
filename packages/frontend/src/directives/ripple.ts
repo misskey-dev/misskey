@@ -19,6 +19,8 @@ export default {
 
 			const { dispose } = popup(MkRippleEffect, { x, y }, {
 				end: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 		});
 	},
