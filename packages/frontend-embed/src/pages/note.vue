@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.noteEmbedRoot">
-	<EmNoteDetailed v-if="note" :note="note"/>
+	<EmNoteDetailed v-if="note && !prohibited" :note="note"/>
 	<XNotFound v-else/>
 </div>
 </template>
@@ -27,6 +27,8 @@ const serverContext = inject(DI.serverContext)!;
 
 const note = ref<Misskey.entities.Note | null>(null);
 
+const prohibited = ref(false);
+
 if (assertServerContext(serverContext, 'note')) {
 	note.value = serverContext.note;
 } else {
@@ -35,6 +37,11 @@ if (assertServerContext(serverContext, 'note')) {
 	}).catch(() => {
 		return null;
 	});
+}
+
+if (note.value?.url != null || note.value?.uri != null) {
+	// リモートサーバーのノートは弾く
+	prohibited.value = true;
 }
 </script>
 
