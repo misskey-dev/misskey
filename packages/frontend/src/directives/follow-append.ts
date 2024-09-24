@@ -4,7 +4,7 @@
  */
 
 import { Directive } from 'vue';
-import { getScrollContainer, getScrollPosition } from '@/scripts/scroll.js';
+import { getScrollContainer, getScrollPosition } from '@@/js/scroll.js';
 
 export default {
 	mounted(src, binding, vn) {
