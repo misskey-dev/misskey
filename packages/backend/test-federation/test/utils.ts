@@ -21,6 +21,12 @@ if (!fetched) {
 	fetched = true;
 }
 
+export type LoginUser = Misskey.entities.SigninResponse & {
+	client: Misskey.api.APIClient;
+	username: string;
+	password: string;
+}
+
 /** used for avoiding overload and some endpoints */
 export type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
 	endpoint: E, params: P, credential?: string | null
@@ -85,7 +91,7 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 	});
 }
 
-export async function fetchAdmin(host: Host): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient]> {
+export async function fetchAdmin(host: Host): Promise<LoginUser> {
 	const admin = adminCache.get(host) ?? await signin(host, ADMIN_PARAMS)
 		.then(res => {
 			adminCache.set(host, res);
@@ -101,28 +107,33 @@ export async function fetchAdmin(host: Host): Promise<[Misskey.entities.SigninRe
 			throw err;
 		});
 
-	return [admin, new Misskey.api.APIClient({ origin: `https://${host}`, credential: admin.i })];
+	return {
+		...admin,
+		client: new Misskey.api.APIClient({ origin: `https://${host}`, credential: admin.i }),
+		...ADMIN_PARAMS,
+	};
 }
 
-export async function createAccount(host: Host): Promise<[Misskey.entities.SigninResponse, Misskey.api.APIClient, { username: string; password: string }]> {
+export async function createAccount(host: Host): Promise<LoginUser> {
 	const username = crypto.randomUUID().replaceAll('-', '').substring(0, 20);
 	const password = crypto.randomUUID().replaceAll('-', '');
-	const [, adminClient] = await fetchAdmin(host);
-	await adminClient.request('admin/accounts/create', { username, password });
+	const admin = await fetchAdmin(host);
+	await admin.client.request('admin/accounts/create', { username, password });
 	// console.log(`Created an account: @${username}@${host}`);
 	const signinRes = await signin(host, { username, password });
 
-	return [
-		signinRes,
-		new Misskey.api.APIClient({ origin: `https://${host}`, credential: signinRes.i }),
-		{ username, password },
-	];
+	return {
+		...signinRes,
+		client: new Misskey.api.APIClient({ origin: `https://${host}`, credential: signinRes.i }),
+		username,
+		password,
+	};
 }
 
-export async function resolveRemoteUser(host: Host, id: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.UserDetailedNotMe> {
+export async function resolveRemoteUser(host: Host, id: string, from: LoginUser): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
 		const uri = `https://${host}/users/${id}`;
-		fromClient.request('ap/show', { uri })
+		from.client.request('ap/show', { uri })
 			.then(res => {
 				strictEqual(res.type, 'User');
 				strictEqual(res.object.uri, uri);
@@ -132,10 +143,10 @@ export async function resolveRemoteUser(host: Host, id: string, fromClient: Miss
 	});
 }
 
-export async function resolveRemoteNote(host: Host, id: string, fromClient: Misskey.api.APIClient): Promise<Misskey.entities.Note> {
+export async function resolveRemoteNote(host: Host, id: string, from: LoginUser): Promise<Misskey.entities.Note> {
 	return new Promise<Misskey.entities.Note>((resolve, reject) => {
 		const uri = `https://${host}/notes/${id}`;
-		fromClient.request('ap/show', { uri })
+		from.client.request('ap/show', { uri })
 			.then(res => {
 				strictEqual(res.type, 'Note');
 				strictEqual(res.object.uri, uri);

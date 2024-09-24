@@ -1,29 +1,30 @@
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isFired, type Request, resolveRemoteUser, sleep } from './utils.js';
+import { createAccount, fetchAdmin, isFired, type LoginUser, type Request, resolveRemoteUser, sleep } from './utils.js';
 
-const [, bAdminClient] = await fetchAdmin('b.test');
+const bAdmin = await fetchAdmin('b.test');
 
 describe('Timeline', () => {
-	let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient;
-	let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
+	let alice: LoginUser, bob: LoginUser;
 	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
-		[alice, aliceClient] = await createAccount('a.test');
-		[bob, bobClient, { username: bobUsername }] = await createAccount('b.test');
-
-		[bobInAServer, aliceInBServer] = await Promise.all([
-			resolveRemoteUser('b.test', bob.id, aliceClient),
-			resolveRemoteUser('a.test', alice.id, bobClient),
+		[alice, bob] = await Promise.all([
+			createAccount('a.test'),
+			createAccount('b.test'),
 		]);
 
-		await bobClient.request('following/create', { userId: aliceInBServer.id });
+		[bobInAServer, aliceInBServer] = await Promise.all([
+			resolveRemoteUser('b.test', bob.id, alice),
+			resolveRemoteUser('a.test', alice.id, bob),
+		]);
+
+		await bob.client.request('following/create', { userId: aliceInBServer.id });
 		await sleep(100);
 	});
 
 	async function postFromAlice(params?: Misskey.entities.NotesCreateRequest) {
-		await aliceClient.request('notes/create', { text: 'a', ...params });
+		await alice.client.request('notes/create', { text: 'a', ...params });
 	}
 
 	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');
@@ -61,7 +62,7 @@ describe('Timeline', () => {
 			endpoint === 'notes/search-by-tag' ? { query: (channelParams as Misskey.Channels['hashtag']['params']).q } :
 			endpoint === 'roles/notes' ? { roleId: (channelParams as Misskey.Channels['roleTimeline']['params']).roleId } :
 			{};
-		const notes = await (bobClient.request as Request)(endpoint, params);
+		const notes = await (bob.client.request as Request)(endpoint, params);
 		const endpointFired = notes.some(note => note.text === text);
 		strictEqual(endpointFired, expect);
 	}
@@ -100,7 +101,7 @@ describe('Timeline', () => {
 			 * @see https://github.com/misskey-dev/misskey/issues/14083
 			 */
 			test.failing('Don\'t receive remote followee\'s invisible and mentioned specified-only Note', async () => {
-				await postAndCheckReception(homeTimeline, false, { text: `@${bobUsername}@b.test Hello`, visibility: 'specified' });
+				await postAndCheckReception(homeTimeline, false, { text: `@${bob.username}@b.test Hello`, visibility: 'specified' });
 			});
 
 			/**
@@ -108,7 +109,7 @@ describe('Timeline', () => {
 			 * @see https://github.com/misskey-dev/misskey/issues/14084
 			 */
 			test.failing('Receive remote followee\'s visible specified-only reply to invisible specified-only Note', async () => {
-				const note = (await aliceClient.request('notes/create', { text: 'a', visibility: 'specified' })).createdNote;
+				const note = (await alice.client.request('notes/create', { text: 'a', visibility: 'specified' })).createdNote;
 				await postAndCheckReception(homeTimeline, true, { replyId: note.id, visibility: 'specified', visibleUserIds: [bobInAServer.id] });
 			});
 		});
@@ -174,8 +175,8 @@ describe('Timeline', () => {
 		let list: Misskey.entities.UserList;
 
 		beforeAll(async () => {
-			list = await bobClient.request('users/lists/create', { name: 'Bob\'s List' });
-			await bobClient.request('users/lists/push', { listId: list.id, userId: aliceInBServer.id });
+			list = await bob.client.request('users/lists/create', { name: 'Bob\'s List' });
+			await bob.client.request('users/lists/push', { listId: list.id, userId: aliceInBServer.id });
 			await sleep(100);
 		});
 
@@ -230,7 +231,7 @@ describe('Timeline', () => {
 		let role: Misskey.entities.Role;
 
 		beforeAll(async () => {
-			role = await bAdminClient.request('admin/roles/create', {
+			role = await bAdmin.client.request('admin/roles/create', {
 				name: 'Remote Users',
 				description: 'Remote users are assigned to this role.',
 				color: null,
@@ -270,7 +271,7 @@ describe('Timeline', () => {
 		});
 
 		afterAll(async () => {
-			await bAdminClient.request('admin/roles/delete', { roleId: role.id });
+			await bAdmin.client.request('admin/roles/delete', { roleId: role.id });
 		});
 	});
 
@@ -281,7 +282,7 @@ describe('Timeline', () => {
 		let bobAntenna: Misskey.entities.Antenna;
 
 		beforeAll(async () => {
-			bobAntenna = await bobClient.request('antennas/create', {
+			bobAntenna = await bob.client.request('antennas/create', {
 				name: 'Bob\'s Egosurfing Antenna',
 				src: 'all',
 				keywords: [['Bob']],
@@ -314,7 +315,7 @@ describe('Timeline', () => {
 		});
 
 		afterAll(async () => {
-			await bobClient.request('antennas/delete', { antennaId: bobAntenna.id });
+			await bob.client.request('antennas/delete', { antennaId: bobAntenna.id });
 		});
 	});
 });

@@ -1,51 +1,53 @@
 import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, sleep } from './utils.js';
+import { createAccount, type LoginUser, sleep } from './utils.js';
 
 describe('Move', () => {
 	test('Minimum move', async () => {
-		const [, aliceClient, { username: aliceUsername }] = await createAccount('a.test');
-		const [, bobClient, { username: bobUsername }] = await createAccount('b.test');
+		const [alice, bob] = await Promise.all([
+			createAccount('a.test'),
+			createAccount('b.test'),
+		]);
 
-		await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.test`] });
-		await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.test` });
+		await bob.client.request('i/update', { alsoKnownAs: [`@${alice.username}@a.test`] });
+		await alice.client.request('i/move', { moveToAccount: `@${bob.username}@b.test` });
 	});
 
 	/** @see https://github.com/misskey-dev/misskey/issues/11320 */
 	describe('Following relation is transferred after move', () => {
-		let alice: Misskey.entities.SigninResponse, aliceClient: Misskey.api.APIClient, aliceUsername: string;
-		let bob: Misskey.entities.SigninResponse, bobClient: Misskey.api.APIClient, bobUsername: string;
-		let carol: Misskey.entities.SigninResponse, carolClient: Misskey.api.APIClient, carolUsername: string;
+		let alice: LoginUser, bob: LoginUser, carol: LoginUser;
 
 		beforeAll(async () => {
-			[alice, aliceClient, { username: aliceUsername }] = await createAccount('a.test');
-			[bob, bobClient, { username: bobUsername }] = await createAccount('b.test');
-			[carol, carolClient, { username: carolUsername }] = await createAccount('a.test');
+			[alice, bob] = await Promise.all([
+				createAccount('a.test'),
+				createAccount('b.test'),
+			]);
+			carol = await createAccount('a.test');
 
 			// Follow @carol@a.test ==> @alice@a.test
-			await carolClient.request('following/create', { userId: alice.id });
+			await carol.client.request('following/create', { userId: alice.id });
 
 			// Move @alice@a.test ==> @bob@b.test
-			await bobClient.request('i/update', { alsoKnownAs: [`@${aliceUsername}@a.test`] });
-			await aliceClient.request('i/move', { moveToAccount: `@${bobUsername}@b.test` });
+			await bob.client.request('i/update', { alsoKnownAs: [`@${alice.username}@a.test`] });
+			await alice.client.request('i/move', { moveToAccount: `@${bob.username}@b.test` });
 			await sleep(100);
 		});
 
 		test('Check from follower', async () => {
-			const following = await carolClient.request('users/following', { userId: carol.id });
+			const following = await carol.client.request('users/following', { userId: carol.id });
 			strictEqual(following.length, 2);
 			const followees = following.map(({ followee }) => followee);
 			assert(followees.every(followee => followee != null));
 			assert(followees.some(({ id, url }) => id === alice.id && url === null));
-			assert(followees.some(({ url }) => url === `https://b.test/@${bobUsername}`));
+			assert(followees.some(({ url }) => url === `https://b.test/@${bob.username}`));
 		});
 
 		test('Check from followee', async () => {
-			const followers = await bobClient.request('users/followers', { userId: bob.id });
+			const followers = await bob.client.request('users/followers', { userId: bob.id });
 			strictEqual(followers.length, 1);
 			const follower = followers[0].follower;
 			assert(follower != null);
-			strictEqual(follower.url, `https://a.test/@${carolUsername}`);
+			strictEqual(follower.url, `https://a.test/@${carol.username}`);
 		});
 	});
 });
