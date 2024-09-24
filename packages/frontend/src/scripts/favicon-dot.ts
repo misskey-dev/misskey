@@ -54,9 +54,9 @@ class FaviconDot {
 				resolve(favicon);
 			});
 
-			favicon.onerror = () => {
+			favicon.addEventListener('error', () => {
 				reject('Failed to load favicon');
-			};
+			});
 			resolve(favicon);
 		});
 	}
