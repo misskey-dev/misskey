@@ -60,6 +60,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/account.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -111,27 +112,39 @@ watch(() => props.image, () => {
 });
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu([{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: i18n.ts.hide,
 		icon: 'ti ti-eye-off',
 		action: () => {
 			hide.value = true;
 		},
-	}, ...(iAmModerator ? [{
-		text: i18n.ts.markAsSensitive,
-		icon: 'ti ti-eye-exclamation',
-		danger: true,
-		action: () => {
-			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
-		},
-	}] : []), ...($i?.id === props.image.userId ? [{
-		type: 'divider' as const,
-	}, {
-		type: 'link' as const,
-		text: i18n.ts._fileViewer.title,
-		icon: 'ti ti-info-circle',
-		to: `/my/drive/file/${props.image.id}`,
-	}] : [])], ev.currentTarget ?? ev.target);
+	});
+
+	if (iAmModerator) {
+		menuItems.push({
+			text: i18n.ts.markAsSensitive,
+			icon: 'ti ti-eye-exclamation',
+			danger: true,
+			action: () => {
+				os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+			},
+		});
+	}
+
+	if ($i?.id === props.image.userId) {
+		menuItems.push({
+			type: 'divider',
+		}, {
+			type: 'link',
+			text: i18n.ts._fileViewer.title,
+			icon: 'ti ti-info-circle',
+			to: `/my/drive/file/${props.image.id}`,
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 </script>
