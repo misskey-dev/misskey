@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { url } from "@@/js/config.js";
 
 /* objを検査して
  * 1. 配列に何も入っていない時はクエリを付けない
@@ -25,4 +26,13 @@ export function appendQuery(url: string, queryString: string): string {
 export function extractDomain(url: string) {
 	const match = url.match(/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?([^:\/\n]+)/im);
 	return match ? match[1] : null;
+}
+
+/**
+ * 相対パスの場合は絶対パスに変換する
+*/
+export function toAbsoluteUrl(url: string, base = url) {
+	if (url.startsWith('http')) return url;
+	const u = new URL(url, base);
+	return u.href;
 }
