@@ -1,6 +1,6 @@
 import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
+import { createAccount, isFired, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 describe('Block', () => {
 	describe('Check follow', () => {
@@ -188,6 +188,40 @@ describe('Block', () => {
 
 			const _note = await alice.client.request('notes/show', { noteId: note.id });
 			deepStrictEqual(_note.reactions, { '😅': 1 });
+		});
+	});
+
+	describe('Check mention', () => {
+		let alice: LoginUser, bob: LoginUser;
+		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+		beforeAll(async () => {
+			[alice, bob] = await Promise.all([
+				createAccount('a.test'),
+				createAccount('b.test'),
+			]);
+
+			[bobInAServer, aliceInBServer] = await Promise.all([
+				resolveRemoteUser('b.test', bob.id, alice),
+				resolveRemoteUser('a.test', alice.id, bob),
+			]);
+		});
+
+		/** NOTE: You should mute the target to stop receiving notifications for now. See {@link file://./notification.test.ts} */
+		test('Can mention and notified even if blocked', async () => {
+			await alice.client.request('blocking/create', { userId: bobInAServer.id });
+			await sleep(100);
+
+			const text = `@${alice.username}@a.test plz unblock me!`;
+			const fired = await isFired(
+				'a.test', alice, 'main',
+				async () => {
+					await sleep(200);
+					await bob.client.request('notes/create', { text });
+				},
+				'notification', msg => msg.type === 'mention' && msg.userId === bobInAServer.id && msg.note.text === text,
+			);
+			deepStrictEqual(fired, true);
 		});
 	});
 });
