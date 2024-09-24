@@ -13,8 +13,10 @@ import { CacheService } from '@/core/CacheService.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import { QueueService } from '../QueueService.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
+import type { DbQueue } from '../QueueModule.js';
 import type { IObject } from './type.js';
 
 export type UriParseResult = {
@@ -51,6 +53,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		@Inject(DI.userPublickeysRepository)
 		private userPublickeysRepository: UserPublickeysRepository,
 
+		@Inject('queue:db')
+		public dbQueue: DbQueue,
+
+		private queueService: QueueService,
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
@@ -155,7 +161,21 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		key: MiUserPublickey | null;
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
-		if (user.isDeleted) return null;
+		if (user.isDeleted) {
+			const jobs = await this.dbQueue.getJobs(['active', 'delayed', 'paused', 'wait', 'waiting', 'waiting-children']);
+
+			const isUserDeletingNow = jobs.filter(e => e.name === 'deleteAccount').map(e => JSON.parse(e.data)).find(e => e.user.id === user.id);
+
+			if (isUserDeletingNow) {
+				return null;
+			} else {
+				// If user deleted but job not running, job may failed so re-run the job
+				// @FIXME: soft deleted account will be forced to hard deleted, but soft deletion not used at this time
+				await this.queueService.createDeleteAccountJob(user);
+
+				return null;
+			}
+		}
 
 		const key = await this.publicKeyByUserIdCache.fetch(
 			user.id,
