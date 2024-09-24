@@ -398,14 +398,16 @@ function toStories(component: string): Promise<string> {
 		glob('src/components/global/Mk*.vue'),
 		glob('src/components/global/RouterView.vue'),
 		glob('src/components/Mk[A-E]*.vue'),
+		glob('src/components/MkFlashPreview.vue'),
 		glob('src/components/MkGalleryPostPreview.vue'),
 		glob('src/components/MkSignupServerRules.vue'),
 		glob('src/components/MkUserSetupDialog.vue'),
 		glob('src/components/MkUserSetupDialog.*.vue'),
 		glob('src/components/MkInstanceCardMini.vue'),
 		glob('src/components/MkInviteCode.vue'),
-		glob('src/pages/search.vue'),
+		glob('src/pages/admin/overview.ap-requests.vue'),
 		glob('src/pages/user/home.vue'),
+		glob('src/pages/search.vue'),
 	]);
 	const components = globs.flat();
 	await Promise.all(components.map(async (component) => {

@@ -1,3 +1,82 @@
+## 2024.9.0
+
+### General
+- Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
+- Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
+- Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
+
+### Client
+- Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
+  - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
+- Enhance: サイズ制限を超過するファイルをアップロードしようとした際にエラーを出すように
+- Enhance: アイコンデコレーション管理画面にプレビューを追加
+- Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく
+- Enhance: ScratchpadにUIインスペクターを追加
+- Enhance: Play編集画面の項目の並びを少しリデザイン
+- Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
+- Fix: コントロールパネル内のAp requests内のチャートの表示がおかしかった問題を修正
+- Fix: 月の違う同じ日はセパレータが表示されないのを修正
+- Fix: タッチ画面でレンジスライダーを操作するとツールチップが複数表示される問題を修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/265)
+- Fix: 縦横比が極端なカスタム絵文字を表示する際にレイアウトが崩れる箇所があるのを修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/725)
+- Fix: 設定変更時のリロード確認ダイアログが複数個表示されることがある問題を修正
+- Fix: ファイルの詳細ページのファイルの説明で改行が正しく表示されない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/bde6bb0bd2e8b0d027e724d2acdb8ae0585a8110)
+- Fix: 一部画面のページネーションが動作しにくくなっていたのを修正 ( #12766 , #11449 )
+
+### Server
+- Feat: Misskey® Reactions Buffering Technology™ (RBT)により、リアクションの作成負荷を低減することが可能に
+- Fix: アンテナの書き込み時にキーワードが与えられなかった場合のエラーをApiErrorとして投げるように
+  - この変更により、公式フロントエンドでは入力の不備が内部エラーとして報告される代わりに一般的なエラーダイアログで報告されます
+- Fix: ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
+- Fix: 外部ページを解析する際に、ページに紐づけられた関連リソースも読み込まれてしまう問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/26e0412fbb91447c37e8fb06ffb0487346063bb8)
+- Fix: Continue importing from file if single emoji import fails
+- Fix: `Retry-After`ヘッダーが送信されなかった問題を修正
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
+- Fix: サーバーサイドのDOM解析完了時にリソースを開放するように
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
+
+## 2024.8.0
+
+### General
+- Enhance: モデレーターはすべてのユーザーのフォロー・フォロワーの一覧を見られるように
+- Enhance: アカウントの削除のモデレーションログを残すように
+- Enhance: 不適切なページ、ギャラリー、Playを管理者権限で削除できるように
+- Fix: リモートユーザのフォロー・フォロワーの一覧が非公開設定の場合も表示できてしまう問題を修正
+
+### Client
+- Enhance: 「自分のPlay」ページにおいてPlayが非公開かどうかが一目でわかるように
+- Enhance: 不適切なページ、ギャラリー、Playを通報できるように
+- Fix: Play編集時に公開範囲が「パブリック」にリセットされる問題を修正
+- Fix: ページ遷移に失敗することがある問題を修正
+- Fix: iOSでユーザー名などがリンクとして誤検知される現象を抑制
+- Fix: mCaptchaを使用していてもbotプロテクションに関する警告が消えないのを修正
+- Fix: ユーザーのモデレーションページにおいてユーザー名にドットが入っているとシステムアカウントとして表示されてしまう問題を修正
+- Fix: 特定の条件下でノートの削除ボタンが出ないのを修正
+
+### Server
+- Enhance: 照会時にURLがhtmlかつheadタグ内に`rel="alternate"`, `type="application/activity+json"`の`link`タグがある場合に追ってリンク先を照会できるように
+- Enhance: 凍結されたアカウントのフォローリクエストを表示しないように
+- Fix: WSの`readAllNotifications` メッセージが `body` を持たない場合に動作しない問題 #14374
+  - 通知ページや通知カラム(デッキ)を開いている状態において、新たに発生した通知が既読されない問題が修正されます。
+  - これにより、プッシュ通知が有効な同条件下の環境において、プッシュ通知が常に発生してしまう問題も修正されます。
+- Fix: Play各種エンドポイントの返り値に`visibility`が含まれていない問題を修正
+- Fix: サーバー情報取得の際にモデレーター限定の情報が取得できないことがあるのを修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/582)
+- Fix: 公開範囲がダイレクトのノートをユーザーアクティビティのチャート生成に使用しないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/679)
+- Fix: ActivityPubのエンティティタイプ判定で不明なタイプを受け取った場合でも処理を継続するように
+  - キュー処理のつまりが改善される可能性があります
+- Fix: リバーシの対局設定の変更が反映されないのを修正
+- Fix: 無制限にストリーミングのチャンネルに接続できる問題を修正
+- Fix: ベースロールのポリシーを変更した際にモデログに記録されないのを修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/700)
+- Fix: Prevent memory leak from memory caches (#14310)
+- Fix: More reliable memory cache eviction (#14311)
+
 ## 2024.7.0
 
 ### Note
@@ -74,6 +153,7 @@
 - Fix: タイムラインページを開いた時、`TLに他の人への返信を含める`がオフのときに`ファイル付きのみ`をオンにできない問題を修正
 - Fix: deck uiでタイムラインを切り替えた際にTLの設定項目が更新されず、`TLに他の人への返信を含める`のトグルが表示されない問題を修正
 - Fix: ウィジェットのタイムライン選択欄に無効化されたタイムラインが表示される問題を修正
+- Fix: サウンドにドライブの音声を使用している際にドライブの音声が再生できなくなると設定が変更できなくなる問題を修正
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)

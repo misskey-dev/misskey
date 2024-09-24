@@ -10,8 +10,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
-import type { MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
-import { MetaService } from '@/core/MetaService.js';
+import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RedisKVCache } from '@/misc/cache.js';
 
@@ -54,13 +53,14 @@ export class PushNotificationService implements OnApplicationShutdown {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
-
-		private metaService: MetaService,
 	) {
 		this.subscriptionsCache = new RedisKVCache<MiSwSubscription[]>(this.redisClient, 'userSwSubscriptions', {
 			lifetime: 1000 * 60 * 60 * 1, // 1h
@@ -73,14 +73,12 @@ export class PushNotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
-		const meta = await this.metaService.fetch();
-
-		if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
+		if (!this.meta.enableServiceWorker || this.meta.swPublicKey == null || this.meta.swPrivateKey == null) return;
 
 		// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
 		push.setVapidDetails(this.config.url,
-			meta.swPublicKey,
-			meta.swPrivateKey);
+			this.meta.swPublicKey,
+			this.meta.swPrivateKey);
 
 		const subscriptions = await this.subscriptionsCache.fetch(userId);
 

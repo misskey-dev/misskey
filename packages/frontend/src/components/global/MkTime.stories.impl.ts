@@ -8,7 +8,7 @@ import { expect } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
 import MkTime from './MkTime.vue';
 import { i18n } from '@/i18n.js';
-import { dateTimeFormat } from '@/scripts/intl-const.js';
+import { dateTimeFormat } from '@@/js/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
 const future = new Date('2024-04-01T00:00:00.000Z');
 const oneHourAgo = new Date(now.getTime() - 3600000);

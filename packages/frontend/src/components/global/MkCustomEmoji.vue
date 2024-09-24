@@ -35,6 +35,7 @@ import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	name: string;
@@ -85,7 +86,9 @@ const errored = ref(url.value == null);
 
 function onClick(ev: MouseEvent) {
 	if (props.menu) {
-		os.popupMenu([{
+		const menuItems: MenuItem[] = [];
+
+		menuItems.push({
 			type: 'label',
 			text: `:${props.name}:`,
 		}, {
@@ -95,14 +98,20 @@ function onClick(ev: MouseEvent) {
 				copyToClipboard(`:${props.name}:`);
 				os.success();
 			},
-		}, ...(props.menuReaction && react ? [{
-			text: i18n.ts.doReaction,
-			icon: 'ti ti-plus',
-			action: () => {
-				react(`:${props.name}:`);
-				sound.playMisskeySfx('reaction');
-			},
-		}] : []), {
+		});
+
+		if (props.menuReaction && react) {
+			menuItems.push({
+				text: i18n.ts.doReaction,
+				icon: 'ti ti-plus',
+				action: () => {
+					react(`:${props.name}:`);
+					sound.playMisskeySfx('reaction');
+				},
+			});
+		}
+
+		menuItems.push({
 			text: i18n.ts.info,
 			icon: 'ti ti-info-circle',
 			action: async () => {
@@ -114,7 +123,9 @@ function onClick(ev: MouseEvent) {
 					closed: () => dispose(),
 				});
 			},
-		}], ev.currentTarget ?? ev.target);
+		});
+
+		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 	}
 }
 </script>
