@@ -181,7 +181,7 @@ export async function uploadFile(host: Host, path: string, token: string): Promi
 export async function addCustomEmoji(host: Host, param?: Partial<Misskey.entities.AdminEmojiAddRequest>, path = '../../test/resources/192.jpg'): Promise<Misskey.entities.EmojiDetailed> {
 	const admin = await fetchAdmin(host);
 	const name = crypto.randomUUID().replaceAll('-', '');
-	const file = await uploadFile('a.test', path, admin.i);
+	const file = await uploadFile(host, path, admin.i);
 	return await admin.client.request('admin/emoji/add', { name, fileId: file.id, ...param });
 }
 
