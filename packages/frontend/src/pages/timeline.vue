@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref } from 'vue';
+import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -244,6 +244,13 @@ function switchTlIfNeeded() {
 		src.value = availableBasicTimelines()[0];
 	}
 }
+
+onMounted(() => {
+	switchTlIfNeeded();
+});
+onActivated(() => {
+	switchTlIfNeeded();
+});
 
 const headerActions = computed(() => {
 	const tmp = [
