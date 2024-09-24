@@ -21,7 +21,7 @@ class FaviconDot {
 	 * Must be called before calling any other functions
 	 */
 	public async setup() {
-		const element: HTMLLinkElement = await this.getOrMakeFaviconEl();
+		const element = await this.getOrMakeFaviconEl();
 
 		this.faviconEl = element;
 		this.ctx = this.canvas.getContext('2d');
@@ -30,7 +30,7 @@ class FaviconDot {
 
 		this.hasLoaded = new Promise((resolve, reject) => {
 			if (!this.faviconImage) {
-				reject('Failed to create favicon img element');
+				reject('Failed to create favicon img element (Not found)');
 				return;
 			}
 
@@ -40,7 +40,7 @@ class FaviconDot {
 				resolve();
 			});
 			this.faviconImage.addEventListener('error', () => {
-				reject('Failed to create favicon img element');
+				reject('Failed to create favicon img element (Error)');
 			});
 		});
 
