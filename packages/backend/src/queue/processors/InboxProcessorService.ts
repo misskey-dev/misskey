@@ -4,11 +4,10 @@
  */
 
 import { URL } from 'node:url';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
 import type Logger from '@/logger.js';
-import { MetaService } from '@/core/MetaService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
@@ -28,14 +27,18 @@ import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
+import { MiMeta } from '@/models/Meta.js';
+import { DI } from '@/di-symbols.js';
 
 @Injectable()
 export class InboxProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		private utilityService: UtilityService,
-		private metaService: MetaService,
 		private apInboxService: ApInboxService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
@@ -64,8 +67,7 @@ export class InboxProcessorService {
 		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
 
 		// ブロックしてたら中断
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
+		if (this.utilityService.isBlockedHost(this.meta.blockedHosts, host)) {
 			return `Blocked request: ${host}`;
 		}
 
@@ -166,7 +168,7 @@ export class InboxProcessorService {
 
 				// ブロックしてたら中断
 				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
-				if (this.utilityService.isBlockedHost(meta.blockedHosts, ldHost)) {
+				if (this.utilityService.isBlockedHost(this.meta.blockedHosts, ldHost)) {
 					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
 				}
 			} else {
@@ -197,7 +199,7 @@ export class InboxProcessorService {
 			this.apRequestChart.inbox();
 			this.federationChart.inbox(i.host);
 
-			if (meta.enableChartsForFederatedInstances) {
+			if (this.meta.enableChartsForFederatedInstances) {
 				this.instanceChart.requestReceived(i.host);
 			}
 		});

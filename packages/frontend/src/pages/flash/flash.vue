@@ -80,7 +80,7 @@ import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { MenuItem } from '@/types/menu';
+import type { MenuItem } from '@/types/menu.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 
 const props = defineProps<{
@@ -104,18 +104,23 @@ function fetchFlash() {
 function share(ev: MouseEvent) {
 	if (!flash.value) return;
 
-	os.popupMenu([
-		{
-			text: i18n.ts.shareWithNote,
-			icon: 'ti ti-pencil',
-			action: shareWithNote,
-		},
-		...(isSupportShare() ? [{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
+		text: i18n.ts.shareWithNote,
+		icon: 'ti ti-pencil',
+		action: shareWithNote,
+	});
+
+	if (isSupportShare()) {
+		menuItems.push({
 			text: i18n.ts.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
-		}] : []),
-	], ev.currentTarget ?? ev.target);
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function copyLink() {
