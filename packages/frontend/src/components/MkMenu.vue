@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="{
 			[$style.root]: true,
 			[$style.center]: align === 'center',
+			[$style.big]: big,
 			[$style.asDrawer]: asDrawer,
 		}"
 		:style="{
@@ -199,6 +200,8 @@ const emit = defineEmits<{
 	(ev: 'close', actioned?: boolean): void;
 	(ev: 'hide'): void;
 }>();
+
+const big = isTouchUsing;
 
 const isNestingMenu = inject<boolean>('isNestingMenu', false);
 
@@ -432,6 +435,14 @@ onBeforeUnmount(() => {
 	&.center {
 		> .item {
 			text-align: center;
+		}
+	}
+
+	&.big {
+		> .item {
+			padding: 6px 20px;
+			font-size: 1em;
+			line-height: 24px;
 		}
 	}
 
