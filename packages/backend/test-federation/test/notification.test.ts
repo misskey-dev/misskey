@@ -140,7 +140,7 @@ describe('Notification', () => {
 				deepStrictEqual(fired, [true, true]);
 			});
 
-			test('Get notification when get a reaction', async () => {
+			test('Get notification when mentioned', async () => {
 				const text = `@${alice.username}@a.test`;
 				const fired = await Promise.all([
 					isFired(
@@ -264,7 +264,7 @@ describe('Notification', () => {
 				deepStrictEqual(fired, false);
 			});
 
-			test('Get no notification when get a reaction', async () => {
+			test('Get no notification when mentioned', async () => {
 				const text = `@${alice.username}@a.test`;
 				const fired = await isFired(
 					'a.test', alice, 'main',
