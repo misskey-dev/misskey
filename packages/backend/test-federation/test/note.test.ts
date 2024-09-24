@@ -1,6 +1,6 @@
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import { addCustomEmoji, createAccount, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -169,17 +169,62 @@ describe('Note', () => {
 	});
 
 	describe('Reaction', () => {
-		test('Consistency of reaction', async () => {
-			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
-			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
-			const reaction = '😅';
-			await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
-			await sleep(100);
+		describe('Consistency', () => {
+			test('Unicode reaction', async () => {
+				const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
+				const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
+				const reaction = '😅';
+				await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
+				await sleep(100);
 
-			const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
-			strictEqual(reactions.length, 1);
-			strictEqual(reactions[0].type, reaction);
-			strictEqual(reactions[0].user.id, bobInAServer.id);
+				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
+				strictEqual(reactions.length, 1);
+				strictEqual(reactions[0].type, reaction);
+				strictEqual(reactions[0].user.id, bobInAServer.id);
+			});
+
+			test('Custom emoji reaction', async () => {
+				const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
+				const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
+				const emoji = await addCustomEmoji('b.test');
+				await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction: `:${emoji.name}:` });
+				await sleep(100);
+
+				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
+				strictEqual(reactions.length, 1);
+				strictEqual(reactions[0].type, `:${emoji.name}@b.test:`);
+				strictEqual(reactions[0].user.id, bobInAServer.id);
+			});
+		});
+
+		describe('Acceptance', () => {
+			test('Even if likeOnly, remote users can react with custom emoji, but it is converted to like', async () => {
+				const note = (await alice.client.request('notes/create', { text: 'a', reactionAcceptance: 'likeOnly' })).createdNote;
+				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+				const emoji = await addCustomEmoji('b.test');
+				await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction: `:${emoji.name}:` });
+				await sleep(100);
+
+				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
+				strictEqual(reactions.length, 1);
+				strictEqual(reactions[0].type, '❤');
+			});
+
+			/**
+			 * TODO: this may be unexpected behavior?
+			 *       @see https://github.com/misskey-dev/misskey/issues/12409
+			 */
+			test('Even if nonSensitiveOnly, remote users can react with sensitive emoji, and it is not converted', async () => {
+				const note = (await alice.client.request('notes/create', { text: 'a', reactionAcceptance: 'nonSensitiveOnly' })).createdNote;
+				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+				const emoji = await addCustomEmoji('b.test', { isSensitive: true });
+				await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction: `:${emoji.name}:` });
+				await sleep(100);
+
+				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
+				strictEqual(reactions.length, 1);
+				strictEqual(reactions[0].type, `:${emoji.name}@b.test:`);
+			});
 		});
 	});
 
