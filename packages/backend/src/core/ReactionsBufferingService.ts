@@ -159,4 +159,17 @@ export class ReactionsBufferingService {
 				.execute();
 		}
 	}
+
+	@bindThis
+	public mergeReactions(src: MiNote['reactions'], delta: Record<string, number>): MiNote['reactions'] {
+		const reactions = { ...src };
+		for (const [name, count] of Object.entries(delta)) {
+			if (reactions[name] != null) {
+				reactions[name] += count;
+			} else {
+				reactions[name] = count;
+			}
+		}
+		return reactions;
+	}
 }

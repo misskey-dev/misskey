@@ -337,10 +337,22 @@ export class ReactionService {
 		//#endregion
 	}
 
+	/**
+	 * - 文字列タイプのレガシーな形式のリアクションを現在の形式に変換する
+	 * - ローカルのリアクションのホストを `@.` にする（`decodeReaction()`の効果）
+	 */
+	@bindThis
+	public convertLegacyReaction(reaction: string): string {
+		reaction = this.decodeReaction(reaction).reaction;
+		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
+		return reaction;
+	}
+
 	// TODO: 廃止
 	/**
-	 * 文字列タイプのレガシーな形式のリアクションを現在の形式に変換しつつ、
-	 * データベース上には存在する「0個のリアクションがついている」という情報を削除する。
+	 * - 文字列タイプのレガシーな形式のリアクションを現在の形式に変換する
+	 * - ローカルのリアクションのホストを `@.` にする（`decodeReaction()`の効果）
+	 * - データベース上には存在する「0個のリアクションがついている」という情報を削除する
 	 */
 	@bindThis
 	public convertLegacyReactions(reactions: MiNote['reactions']): MiNote['reactions'] {
@@ -353,10 +365,7 @@ export class ReactionService {
 				return count > 0;
 			})
 			.map(([reaction, count]) => {
-				// unchecked indexed access
-				const convertedReaction = legacies[reaction] as string | undefined;
-
-				const key = this.decodeReaction(convertedReaction ?? reaction).reaction;
+				const key = this.convertLegacyReaction(reaction);
 
 				return [key, count] as const;
 			})
@@ -410,12 +419,5 @@ export class ReactionService {
 			name: undefined,
 			host: undefined,
 		};
-	}
-
-	@bindThis
-	public convertLegacyReaction(reaction: string): string {
-		reaction = this.decodeReaction(reaction).reaction;
-		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
-		return reaction;
 	}
 }
