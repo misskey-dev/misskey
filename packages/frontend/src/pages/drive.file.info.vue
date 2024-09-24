@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkKeyValue>
 			</button>
 			<button class="_button" :class="$style.kvEditBtn" @click="describe()">
-				<MkKeyValue>
+				<MkKeyValue :class="$style.multiline">
 					<template #key>{{ i18n.ts.description }}</template>
 					<template #value>{{ file.comment ? file.comment : `(${i18n.ts.none})` }}<i class="ti ti-pencil" :class="$style.kvEditIcon"></i></template>
 				</MkKeyValue>
@@ -99,12 +99,12 @@ const file = ref<Misskey.entities.DriveFile>();
 const folderHierarchy = computed(() => {
 	if (!file.value) return [i18n.ts.drive];
 	const folderNames = [i18n.ts.drive];
-	
+
 	function get(folder: Misskey.entities.DriveFolder) {
 		if (folder.parent) get(folder.parent);
 		folderNames.push(folder.name);
 	}
-	
+
 	if (file.value.folder) get(file.value.folder);
 	return folderNames;
 });
@@ -311,6 +311,10 @@ onMounted(async () => {
 
 .fileMetaDataChildren {
 	padding: .5rem 1rem;
+}
+
+.multiline {
+	white-space: pre-wrap;
 }
 
 .kvEditBtn {
