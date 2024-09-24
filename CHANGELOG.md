@@ -2,6 +2,8 @@
 
 ### General
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
+- Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
 - Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
 
 ### Client
