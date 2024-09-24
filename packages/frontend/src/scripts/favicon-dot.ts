@@ -4,7 +4,6 @@
  */
 
 import tinycolor from 'tinycolor2';
-import { toAbsoluteUrl } from '@@/js/url.js';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
 class FaviconDot {
@@ -45,7 +44,7 @@ class FaviconDot {
 			});
 		});
 
-		this.faviconImage.src = getProxiedImageUrl(toAbsoluteUrl(this.faviconEl.href), undefined, true);
+		this.faviconImage.src = getProxiedImageUrl(this.faviconEl.href, undefined, true);
 	}
 
 	private async getOrMakeFaviconEl(): Promise<HTMLLinkElement> {
