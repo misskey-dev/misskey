@@ -127,7 +127,7 @@ const $meta: Provider = {
 				switch (type) {
 					case 'metaUpdated': {
 						for (const key in body) {
-							(meta as any)[key] = (body as any)[key];
+							(meta as any)[key] = (body.after as any)[key];
 						}
 						meta.proxyAccount = null; // joinなカラムは通常取ってこないので
 						break;
