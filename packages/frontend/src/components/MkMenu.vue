@@ -438,7 +438,7 @@ onBeforeUnmount(() => {
 		}
 	}
 
-	&.big {
+	&.big:not(.asDrawer) {
 		> .item {
 			padding: 6px 20px;
 			font-size: 1em;
