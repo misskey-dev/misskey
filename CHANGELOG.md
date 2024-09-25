@@ -9,6 +9,8 @@
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
   - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
+- Feat: 未読の通知があるときにタブのアイコン（Favicon）を目立たせることができるように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/474)
 - Enhance: サイズ制限を超過するファイルをアップロードしようとした際にエラーを出すように
 - Enhance: アイコンデコレーション管理画面にプレビューを追加
 - Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく

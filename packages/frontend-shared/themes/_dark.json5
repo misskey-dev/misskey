@@ -79,6 +79,7 @@
 		codeBoolean: '#c59eff',
 		deckBg: '#000',
 		htmlThemeColor: '@bg',
+		faviconDotColor: '#ec4137',
 		X3: 'rgba(255, 255, 255, 0.05)',
 		X4: 'rgba(255, 255, 255, 0.1)',
 		X5: 'rgba(255, 255, 255, 0.05)',
