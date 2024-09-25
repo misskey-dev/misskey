@@ -42,7 +42,7 @@ jobs:
       - name: Setup
         run: |
           cd packages/backend/test-federation
-          cp ./.env.example ./.env
+          cp ./.config/example.docker.env ./.config/docker.env
           bash ./generate_certificates.sh
           sudo chmod 644 ./certificates/*.test.key
       - name: Start servers
