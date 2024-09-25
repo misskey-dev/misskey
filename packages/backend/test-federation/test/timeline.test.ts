@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isFired, type LoginUser, type Request, resolveRemoteUser, sleep } from './utils.js';
+import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -23,10 +23,6 @@ describe('Timeline', () => {
 		await sleep(100);
 	});
 
-	async function postFromAlice(params?: Misskey.entities.NotesCreateRequest) {
-		await alice.client.request('notes/create', { text: 'a', ...params });
-	}
-
 	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');
 	type TimelineEndpoint = keyof Misskey.Endpoints & (`${string}timeline` | 'antennas/notes' | 'roles/notes' | 'notes/search-by-tag');
 	const timelineMap = new Map<TimelineChannel, TimelineEndpoint>([
@@ -46,10 +42,13 @@ describe('Timeline', () => {
 		noteParams: Misskey.entities.NotesCreateRequest = {},
 		channelParams: Misskey.Channels[C]['params'] = {},
 	) {
+		let note: Misskey.entities.Note | undefined;
 		const text = noteParams.text ?? crypto.randomUUID();
 		const streamingFired = await isFired(
 			'b.test', bob, timelineChannel,
-			async () => await postFromAlice({ text, ...noteParams }),
+			async () => {
+				note = (await alice.client.request('notes/create', { text, ...noteParams })).createdNote;
+			},
 			'note', msg => msg.text === text,
 			channelParams,
 		);
@@ -62,9 +61,28 @@ describe('Timeline', () => {
 			endpoint === 'notes/search-by-tag' ? { query: (channelParams as Misskey.Channels['hashtag']['params']).q } :
 			endpoint === 'roles/notes' ? { roleId: (channelParams as Misskey.Channels['roleTimeline']['params']).roleId } :
 			{};
+
+		await sleep(100);
 		const notes = await (bob.client.request as Request)(endpoint, params);
-		const endpointFired = notes.some(note => note.text === text);
+		const noteInBServer = notes.filter(({ uri }) => uri === `https://a.test/notes/${note!.id}`).pop();
+		const endpointFired = noteInBServer != null;
 		strictEqual(endpointFired, expect);
+
+		// Let's check Delete reception
+		if (expect) {
+			const streamingFired = await isNoteUpdatedEventFired(
+				'b.test', bob, noteInBServer!.id,
+				async () => await alice.client.request('notes/delete', { noteId: note!.id }),
+				/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14632 */
+				msg => msg.type === 'deleted' && msg.id === noteInBServer!.id,
+			);
+			strictEqual(streamingFired, true);
+
+			await sleep(100);
+			const notes = await (bob.client.request as Request)(endpoint, params);
+			const endpointFired = notes.every(({ uri }) => uri !== `https://a.test/notes/${note!.id}`);
+			strictEqual(endpointFired, true);
+		}
 	}
 
 	describe('homeTimeline', () => {

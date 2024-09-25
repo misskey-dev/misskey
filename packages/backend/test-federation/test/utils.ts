@@ -230,3 +230,37 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 		});
 	});
 };
+
+export async function isNoteUpdatedEventFired(
+	host: Host,
+	user: { i: string },
+	noteId: string,
+	trigger: () => Promise<unknown>,
+	cond: (msg: Parameters<Misskey.StreamEvents['noteUpdated']>[0]) => boolean,
+): Promise<boolean> {
+	return new Promise<boolean>(async (resolve, reject) => {
+		// @ts-expect-error TODO: why?
+		const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
+		stream.send('s', { id: noteId });
+		stream.on('noteUpdated', ((msg: any) => {
+			if (cond(msg)) {
+				stream.close();
+				clearTimeout(timer);
+				resolve(true);
+			}
+		}) as any);
+
+		let timer: NodeJS.Timeout | undefined;
+
+		await trigger().then(() => {
+			timer = setTimeout(() => {
+				stream.close();
+				resolve(false);
+			}, 1000);
+		}).catch(err => {
+			stream.close();
+			clearTimeout(timer);
+			reject(err);
+		});
+	});
+};
