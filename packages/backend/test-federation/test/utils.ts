@@ -216,7 +216,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 			timer = setTimeout(() => {
 				stream.close();
 				resolve(false);
-			}, 1000);
+			}, 500);
 		}).catch(err => {
 			stream.close();
 			clearTimeout(timer);
@@ -250,7 +250,7 @@ export async function isNoteUpdatedEventFired(
 			timer = setTimeout(() => {
 				stream.close();
 				resolve(false);
-			}, 1000);
+			}, 500);
 		}).catch(err => {
 			stream.close();
 			clearTimeout(timer);
