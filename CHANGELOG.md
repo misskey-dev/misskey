@@ -34,10 +34,10 @@
 - Fix: 外部ページを解析する際に、ページに紐づけられた関連リソースも読み込まれてしまう問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/26e0412fbb91447c37e8fb06ffb0487346063bb8)
 - Fix: Continue importing from file if single emoji import fails
-- Fix: `Retry-After`ヘッダーが送信されなかった問題を修正
+- Fix: `Retry-After`ヘッダーが送信されなかった問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
-- Fix: サーバーサイドのDOM解析完了時にリソースを開放するように
-	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
+- Fix: サーバーサイドのDOM解析完了時にリソースを開放するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
 - Fix: `<link rel="alternate">`を追って照会するのはOKレスポンスが返却された場合のみに  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/633)
 - Fix: メールにスタイルが適用されていなかった問題を修正
