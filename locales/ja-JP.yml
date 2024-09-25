@@ -1275,6 +1275,10 @@ performance: "パフォーマンス"
 modified: "変更あり"
 discard: "破棄"
 thereAreNChanges: "{n}件の変更があります"
+signinWithPasskey: "パスキーでログイン"
+unknownWebAuthnKey: "登録されていないパスキーです。"
+passkeyVerificationFailed: "パスキーの検証に失敗しました。"
+passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。"
 
 _delivery:
   status: "配信状態"
