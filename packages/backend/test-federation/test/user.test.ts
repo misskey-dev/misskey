@@ -2,7 +2,10 @@ import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
 import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
-const aAdmin = await fetchAdmin('a.test');
+const [aAdmin, bAdmin] = await Promise.all([
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
+]);
 
 describe('User', () => {
 	describe('Profile', () => {
@@ -280,6 +283,97 @@ describe('User', () => {
 				strictEqual(following.length, 1);
 				strictEqual(following[0].followeeId, aliceInBServer.id);
 				strictEqual(following[0].followerId, bob.id);
+			});
+		});
+	});
+
+	describe('Deletion', () => {
+		describe('Check Delete consistency', () => {
+			let alice: LoginUser, bob: LoginUser;
+			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, bob] = await Promise.all([
+					createAccount('a.test'),
+					createAccount('b.test'),
+				]);
+
+				[bobInAServer, aliceInBServer] = await Promise.all([
+					resolveRemoteUser('b.test', bob.id, alice),
+					resolveRemoteUser('a.test', alice.id, bob),
+				]);
+			});
+
+			test('Bob follows Alice, and Alice deleted themself', async () => {
+				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await sleep(100);
+
+				const followers = await alice.client.request('users/followers', { userId: alice.id });
+				strictEqual(followers.length, 1); // followed by Bob
+
+				await alice.client.request('i/delete-account', { password: alice.password });
+				await sleep(100);
+
+				const following = await bob.client.request('users/following', { userId: bob.id });
+				strictEqual(following.length, 0); // no following relation
+
+				await rejects(
+					async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+					(err: any) => {
+						strictEqual(err.code, 'NO_SUCH_USER');
+						return true;
+					},
+				);
+			});
+		});
+
+		describe('Deletion of remote user for moderation', () => {
+			let alice: LoginUser, bob: LoginUser;
+			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, bob] = await Promise.all([
+					createAccount('a.test'),
+					createAccount('b.test'),
+				]);
+
+				[bobInAServer, aliceInBServer] = await Promise.all([
+					resolveRemoteUser('b.test', bob.id, alice),
+					resolveRemoteUser('a.test', alice.id, bob),
+				]);
+			});
+
+			test('Bob follows Alice, then Alice gets deleted in B server', async () => {
+				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await sleep(100);
+
+				const followers = await alice.client.request('users/followers', { userId: alice.id });
+				strictEqual(followers.length, 1); // followed by Bob
+
+				await bAdmin.client.request('admin/delete-account', { userId: aliceInBServer.id });
+				await sleep(100);
+
+				// TODO: why still following relation?
+				const following = await bob.client.request('users/following', { userId: bob.id });
+				strictEqual(following.length, 1);
+				await rejects(
+					async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+					(err: any) => {
+						strictEqual(err.code, 'ALREADY_FOLLOWING');
+						return true;
+					},
+				);
+			});
+
+			test('Alice tries to follow Bob, but it is not processed', async () => {
+				await alice.client.request('following/create', { userId: bobInAServer.id });
+				await sleep(100);
+
+				const following = await alice.client.request('users/following', { userId: alice.id });
+				strictEqual(following.length, 0); // Not following Bob because B server doesn't return Accept
+
+				const followers = await bob.client.request('users/followers', { userId: bob.id });
+				strictEqual(followers.length, 0); // Alice's Follow is not processed
 			});
 		});
 	});
