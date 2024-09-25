@@ -85,7 +85,7 @@ describe('Note', () => {
 			]);
 			strictEqual(aliceInBServer.id, resolvedNote.userId);
 
-			await sleep(100);
+			await sleep();
 
 			const resolvedReplyedNote = await bob.client.request('notes/show', { noteId: resolvedNote.replyId });
 			strictEqual(resolvedReplyedNote.repliesCount, 1);
@@ -149,14 +149,14 @@ describe('Note', () => {
 			carol = await createAccount('a.test');
 
 			await carol.client.request('following/create', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 		});
 
 		test('Delete is derivered to followers', async () => {
 			const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 			const noteInAServer = await resolveRemoteNote('b.test', note.id, carol);
 			await bob.client.request('notes/delete', { noteId: note.id });
-			await sleep(100);
+			await sleep();
 
 			await rejects(
 				async () => await carol.client.request('notes/show', { noteId: noteInAServer.id }),
@@ -175,7 +175,7 @@ describe('Note', () => {
 				const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
 				const reaction = '😅';
 				await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
-				await sleep(100);
+				await sleep();
 
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
@@ -188,7 +188,7 @@ describe('Note', () => {
 				const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test');
 				await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction: `:${emoji.name}:` });
-				await sleep(100);
+				await sleep();
 
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
@@ -203,7 +203,7 @@ describe('Note', () => {
 				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test');
 				await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction: `:${emoji.name}:` });
-				await sleep(100);
+				await sleep();
 
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
@@ -219,7 +219,7 @@ describe('Note', () => {
 				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test', { isSensitive: true });
 				await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction: `:${emoji.name}:` });
-				await sleep(100);
+				await sleep();
 
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
@@ -240,7 +240,7 @@ describe('Note', () => {
 				const note = (await bob.client.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
 				const noteInAServer = await resolveRemoteNote('b.test', note.id, carol);
 				await carol.client.request('notes/polls/vote', { noteId: noteInAServer.id, choice: 0 });
-				await sleep(100);
+				await sleep();
 
 				const noteAfterVote = await bob.client.request('notes/show', { noteId: note.id });
 				assert(noteAfterVote.poll != null);
@@ -262,7 +262,7 @@ describe('Note', () => {
 				]);
 
 				await bobRemoteFollower.client.request('following/create', { userId: bobInAServer.id });
-				await sleep(100);
+				await sleep();
 			});
 
 			test('A vote in Bob\'s server is delivered to Bob\'s remote followers', async () => {
@@ -270,7 +270,7 @@ describe('Note', () => {
 				// NOTE: resolve before voting
 				const noteInAServer = await resolveRemoteNote('b.test', note.id, bobRemoteFollower);
 				await localVoter.client.request('notes/polls/vote', { noteId: note.id, choice: 0 });
-				await sleep(100);
+				await sleep();
 
 				const noteAfterVote = await bobRemoteFollower.client.request('notes/show', { noteId: noteInAServer.id });
 				assert(noteAfterVote.poll != null);

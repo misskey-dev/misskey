@@ -70,10 +70,10 @@ describe('User', () => {
 
 			test('Becoming a cat is sent to their followers', async () => {
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				await alice.client.request('i/update', { isCat: true });
-				await sleep(100);
+				await sleep();
 
 				const res = await bob.client.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(res.isCat, true);
@@ -97,7 +97,7 @@ describe('User', () => {
 			test('Pinning localOnly Note is not delivered', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a', localOnly: true })).createdNote;
 				await alice.client.request('i/pin', { noteId: note.id });
-				await sleep(100);
+				await sleep();
 
 				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
@@ -106,7 +106,7 @@ describe('User', () => {
 			test('Pinning followers-only Note is not delivered', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a', visibility: 'followers' })).createdNote;
 				await alice.client.request('i/pin', { noteId: note.id });
-				await sleep(100);
+				await sleep();
 
 				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
@@ -117,7 +117,7 @@ describe('User', () => {
 			test('Pinning normal Note is delivered', async () => {
 				pinnedNote = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 				await alice.client.request('i/pin', { noteId: pinnedNote.id });
-				await sleep(100);
+				await sleep();
 
 				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 1);
@@ -127,7 +127,7 @@ describe('User', () => {
 
 			test('Unpinning normal Note is delivered', async () => {
 				await alice.client.request('i/unpin', { noteId: pinnedNote.id });
-				await sleep(100);
+				await sleep();
 
 				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
 				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
@@ -155,7 +155,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				await alice.client.request('following/create', { userId: bobInAServer.id });
 
-				await sleep(100);
+				await sleep();
 			});
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
@@ -178,7 +178,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				await alice.client.request('following/delete', { userId: bobInAServer.id });
 
-				await sleep(100);
+				await sleep();
 			});
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
@@ -220,7 +220,7 @@ describe('User', () => {
 			describe('Bob sends follow request to Alice', () => {
 				beforeAll(async () => {
 					await bob.client.request('following/create', { userId: aliceInBServer.id });
-					await sleep(100);
+					await sleep();
 				});
 
 				test('Alice should have a request', async () => {
@@ -234,7 +234,7 @@ describe('User', () => {
 			describe('Alice cancels it', () => {
 				beforeAll(async () => {
 					await bob.client.request('following/requests/cancel', { userId: aliceInBServer.id });
-					await sleep(100);
+					await sleep();
 				});
 
 				test('Alice should have no requests', async () => {
@@ -247,10 +247,10 @@ describe('User', () => {
 		describe('Send follow request from Bob to Alice and reject', () => {
 			beforeAll(async () => {
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				await alice.client.request('following/requests/reject', { userId: bobInAServer.id });
-				await sleep(100);
+				await sleep();
 			});
 
 			test('Bob should have no requests', async () => {
@@ -272,10 +272,10 @@ describe('User', () => {
 		describe('Send follow request from Bob to Alice and accept', () => {
 			beforeAll(async () => {
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				await alice.client.request('following/requests/accept', { userId: bobInAServer.id });
-				await sleep(100);
+				await sleep();
 			});
 
 			test('Bob follows Alice', async () => {
@@ -306,13 +306,13 @@ describe('User', () => {
 
 			test('Bob follows Alice, and Alice deleted themself', async () => {
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // followed by Bob
 
 				await alice.client.request('i/delete-account', { password: alice.password });
-				await sleep(100);
+				await sleep();
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation
@@ -345,13 +345,13 @@ describe('User', () => {
 
 			test('Bob follows Alice, then Alice gets deleted in B server', async () => {
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // followed by Bob
 
 				await bAdmin.client.request('admin/delete-account', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				// TODO: why still following relation?
 				const following = await bob.client.request('users/following', { userId: bob.id });
@@ -367,7 +367,7 @@ describe('User', () => {
 
 			test('Alice tries to follow Bob, but it is not processed', async () => {
 				await alice.client.request('following/create', { userId: bobInAServer.id });
-				await sleep(100);
+				await sleep();
 
 				const following = await alice.client.request('users/following', { userId: alice.id });
 				strictEqual(following.length, 0); // Not following Bob because B server doesn't return Accept
@@ -397,13 +397,13 @@ describe('User', () => {
 
 			test('Bob follows Alice, and Alice gets suspended, there is no following relation, and Bob fails to follow again', async () => {
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // followed by Bob
 
 				await aAdmin.client.request('admin/suspend-user', { userId: alice.id });
-				await sleep(100);
+				await sleep();
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation
@@ -419,7 +419,7 @@ describe('User', () => {
 
 			test('Alice gets unsuspended, Bob succeeds in following Alice', async () => {
 				await aAdmin.client.request('admin/unsuspend-user', { userId: alice.id });
-				await sleep(100);
+				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // FIXME: followers are not deleted??
@@ -452,7 +452,7 @@ describe('User', () => {
 			 */
 			test('Alice can follow Bob', async () => {
 				await alice.client.request('following/create', { userId: bobInAServer.id });
-				await sleep(100);
+				await sleep();
 
 				const bobFollowers = await bob.client.request('users/followers', { userId: bob.id });
 				strictEqual(bobFollowers.length, 1); // followed by Alice
@@ -467,7 +467,7 @@ describe('User', () => {
 
 				// Bob tries to follow Alice
 				await bob.client.request('following/create', { userId: renewedAliceInBServer.id });
-				await sleep(100);
+				await sleep();
 
 				const aliceFollowers = await alice.client.request('users/followers', { userId: alice.id });
 				strictEqual(aliceFollowers.length, 1);

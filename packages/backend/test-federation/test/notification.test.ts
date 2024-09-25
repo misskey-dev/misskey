@@ -77,7 +77,7 @@ describe('Notification', () => {
 					isFired(
 						'a.test', alice, 'main',
 						async () => {
-							await sleep(200);
+							await sleep();
 							await bob.client.request('notes/create', { text, replyId: noteInBServer.id });
 						},
 						'notification', msg => {
@@ -100,7 +100,7 @@ describe('Notification', () => {
 					isFired(
 						'a.test', alice, 'main',
 						async () => {
-							await sleep(200);
+							await sleep();
 							await bob.client.request('notes/create', { renoteId: noteInBServer.id });
 						},
 						'notification', msg => {
@@ -124,7 +124,7 @@ describe('Notification', () => {
 					isFired(
 						'a.test', alice, 'main',
 						async () => {
-							await sleep(200);
+							await sleep();
 							await bob.client.request('notes/create', { text, renoteId: noteInBServer.id });
 						},
 						'notification', msg => {
@@ -146,7 +146,7 @@ describe('Notification', () => {
 					isFired(
 						'a.test', alice, 'main',
 						async () => {
-							await sleep(200);
+							await sleep();
 							await bob.client.request('notes/create', { text });
 						},
 						'notification', msg => msg.type === 'mention' && msg.userId === bobInAServer.id && msg.note.text === text,
@@ -181,7 +181,7 @@ describe('Notification', () => {
 				alice.client.request('mute/create', { userId: bobInAServer.id }),
 				bob.client.request('mute/create', { userId: aliceInBServer.id }),
 			]);
-			await sleep(100);
+			await sleep();
 		});
 
 		describe('Follow', () => {
@@ -191,7 +191,7 @@ describe('Notification', () => {
 					isFired(
 						'b.test', bob, 'main',
 						async () => {
-							await sleep(200);
+							await sleep();
 							await bob.client.request('following/create', { userId: aliceInBServer.id });
 						},
 						'follow', msg => msg.id === aliceInBServer.id,

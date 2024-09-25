@@ -21,7 +21,7 @@ describe('Block', () => {
 
 		test('Cannot follow if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 			await rejects(
 				async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
 				(err: any) => {
@@ -40,7 +40,7 @@ describe('Block', () => {
 		test('Cannot follow even if unblocked', async () => {
 			// unblock here
 			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			// TODO: why still being blocked?
 			await rejects(
@@ -54,10 +54,10 @@ describe('Block', () => {
 
 		test.skip('Can follow if unblocked', async () => {
 			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			await bob.client.request('following/create', { userId: aliceInBServer.id });
-			await sleep(100);
+			await sleep();
 
 			const following = await bob.client.request('users/following', { userId: bob.id });
 			strictEqual(following.length, 1);
@@ -74,7 +74,7 @@ describe('Block', () => {
 			});
 
 			await alice.client.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			test('after block', async () => {
 				const following = await bob.client.request('users/following', { userId: bob.id });
@@ -103,7 +103,7 @@ describe('Block', () => {
 
 		test('Cannot reply if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -118,7 +118,7 @@ describe('Block', () => {
 
 		test('Can reply if unblocked', async () => {
 			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -146,7 +146,7 @@ describe('Block', () => {
 
 		test('Cannot reaction if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -163,7 +163,7 @@ describe('Block', () => {
 		test('Cannot reaction even if unblocked', async () => {
 			// unblock here
 			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -180,7 +180,7 @@ describe('Block', () => {
 
 		test.skip('Can reaction if unblocked', async () => {
 			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -210,13 +210,13 @@ describe('Block', () => {
 		/** NOTE: You should mute the target to stop receiving notifications for now. See {@link file://./notification.test.ts} */
 		test('Can mention and notified even if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInAServer.id });
-			await sleep(100);
+			await sleep();
 
 			const text = `@${alice.username}@a.test plz unblock me!`;
 			const fired = await isFired(
 				'a.test', alice, 'main',
 				async () => {
-					await sleep(200);
+					await sleep();
 					await bob.client.request('notes/create', { text });
 				},
 				'notification', msg => msg.type === 'mention' && msg.userId === bobInAServer.id && msg.note.text === text,

@@ -105,14 +105,14 @@ describe('Drive', () => {
 				]);
 
 				await bob.client.request('following/create', { userId: aliceInBServer.id });
-				await sleep(100);
+				await sleep();
 			});
 
 			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
 				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id] });
-				await sleep(100);
+				await sleep();
 
 				const notes = await bob.client.request('notes/timeline', {});
 				strictEqual(notes.length, 1);
@@ -163,7 +163,7 @@ describe('Drive', () => {
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				const bobNoteInAServer = await resolveRemoteNote('b.test', bobNote.id, alice);
 				const note = (await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id], replyId: bobNoteInAServer.id })).createdNote;
-				await sleep(1000);
+				await sleep();
 
 				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
 				assert(noteInBServer.files != null);

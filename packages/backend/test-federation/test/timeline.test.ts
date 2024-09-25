@@ -20,7 +20,7 @@ describe('Timeline', () => {
 		]);
 
 		await bob.client.request('following/create', { userId: aliceInBServer.id });
-		await sleep(100);
+		await sleep();
 	});
 
 	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');
@@ -62,7 +62,7 @@ describe('Timeline', () => {
 			endpoint === 'roles/notes' ? { roleId: (channelParams as Misskey.Channels['roleTimeline']['params']).roleId } :
 			{};
 
-		await sleep(100);
+		await sleep();
 		const notes = await (bob.client.request as Request)(endpoint, params);
 		const noteInBServer = notes.filter(({ uri }) => uri === `https://a.test/notes/${note!.id}`).pop();
 		const endpointFired = noteInBServer != null;
@@ -77,7 +77,7 @@ describe('Timeline', () => {
 			);
 			strictEqual(streamingFired, true);
 
-			await sleep(100);
+			await sleep();
 			const notes = await (bob.client.request as Request)(endpoint, params);
 			const endpointFired = notes.every(({ uri }) => uri !== `https://a.test/notes/${note!.id}`);
 			strictEqual(endpointFired, true);
@@ -194,7 +194,7 @@ describe('Timeline', () => {
 		beforeAll(async () => {
 			list = await bob.client.request('users/lists/create', { name: 'Bob\'s List' });
 			await bob.client.request('users/lists/push', { listId: list.id, userId: aliceInBServer.id });
-			await sleep(100);
+			await sleep();
 		});
 
 		describe('Check reception of remote followee\'s Note', () => {
@@ -267,7 +267,7 @@ describe('Timeline', () => {
 				displayOrder: 0,
 				policies: {},
 			});
-			await sleep(100);
+			await sleep();
 		});
 
 		describe('Check reception of remote followee\'s Note', () => {
@@ -311,7 +311,7 @@ describe('Timeline', () => {
 				withReplies: true,
 				withFile: true,
 			});
-			await sleep(100);
+			await sleep();
 		});
 
 		describe('Check reception of remote followee\'s Note', () => {

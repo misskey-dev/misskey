@@ -30,7 +30,7 @@ describe('Move', () => {
 			// Move @alice@a.test ==> @bob@b.test
 			await bob.client.request('i/update', { alsoKnownAs: [`@${alice.username}@a.test`] });
 			await alice.client.request('i/move', { moveToAccount: `@${bob.username}@b.test` });
-			await sleep(100);
+			await sleep();
 		});
 
 		test('Check from follower', async () => {

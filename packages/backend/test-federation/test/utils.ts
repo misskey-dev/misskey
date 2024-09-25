@@ -34,7 +34,7 @@ export type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endp
 
 type Host = 'a.test' | 'b.test';
 
-export async function sleep(ms: number): Promise<void> {
+export async function sleep(ms = 200): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
