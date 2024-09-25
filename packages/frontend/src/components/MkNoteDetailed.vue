@@ -195,6 +195,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { isLink } from '@@/js/is-link.js';
+import { host } from '@@/js/config.js';
 import MkNoteHistory from '@/components/MkNoteHistory.vue';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -219,7 +221,6 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { host } from '@/config.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -473,14 +474,6 @@ function toggleReact() {
 }
 
 function onContextmenu(ev: MouseEvent): void {
-	const isLink = (el: HTMLElement): boolean => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-		return false;
-	};
-
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
