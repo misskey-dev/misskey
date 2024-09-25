@@ -38,6 +38,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
 - Fix: サーバーサイドのDOM解析完了時にリソースを開放するように
 	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
+- Fix: メールにスタイルが適用されていなかった問題を修正
 
 ## 2024.8.0
 
