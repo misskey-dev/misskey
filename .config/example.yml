@@ -59,7 +59,7 @@
 #
 # publishTarballInsteadOfProvideRepositoryUrl: true
 
-#   ┌───────────────┐
+#   ┌────────────────────────┐
 #───┘ Initial Setup Password └─────────────────────────────────────────────────────
 
 # Password to initiate setting up admin account.
