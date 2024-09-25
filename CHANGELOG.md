@@ -38,6 +38,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
 - Fix: サーバーサイドのDOM解析完了時にリソースを開放するように
 	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
+- Fix: `<link rel="alternate">`を追って照会するのはOKレスポンスが返却された場合のみに  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/633)
 
 ## 2024.8.0
 
