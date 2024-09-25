@@ -42,16 +42,7 @@ async function signin(host: Host, params: Misskey.entities.SigninRequest): Promi
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
 	// console.log(`Sign in to @${params.username}@${host} ...`);
-	return await (new Misskey.api.APIClient({
-		origin: `https://${host}`,
-		fetch: (input, init) => fetch(input, {
-			...init,
-			headers: {
-				...init?.headers,
-				'Content-Type': init?.headers['Content-Type'] != null ? init.headers['Content-Type'] : 'application/json',
-			},
-		}),
-	}).request as Request)('signin', params)
+	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin', params)
 		.then(res => {
 			// console.log(`Signed in to @${params.username}@${host}`);
 			return res;
