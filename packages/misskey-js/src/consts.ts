@@ -260,8 +260,8 @@ export type ModerationLogPayloads = {
 		noteUserId: string;
 		noteUserUsername: string;
 		noteUserHost: string | null;
-		note: any;
-		beforeNote: any;
+		note: Note;
+		beforeNote: Note;
 	};
 	deleteNote: {
 		noteId: string;
