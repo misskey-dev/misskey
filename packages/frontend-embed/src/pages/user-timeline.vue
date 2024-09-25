@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
 					<EmAvatar :class="$style.avatar" :user="user"/>
 				</a>
-				<div :class="$style.headerTitle">
+				<div :class="$style.headerTitle" @click="top">
 					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
 							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
@@ -56,6 +56,8 @@ import EmUserName from '@/components/EmUserName.vue';
 import I18n from '@/components/I18n.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
+import { scrollToTop } from '@@/js/scroll.js';
+import { isLink } from '@@/js/is-link.js';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { assertServerContext } from '@/server-context.js';
@@ -98,6 +100,15 @@ const pagination = computed(() => ({
 } as Paging));
 
 const notesEl = useTemplateRef('notesEl');
+
+function top(ev: MouseEvent) {
+	const target = ev.target as HTMLElement | null;
+	if (target && isLink(target)) return;
+
+	if (notesEl.value) {
+		scrollToTop(notesEl.value.$el as HTMLElement, { behavior: 'smooth' });
+	}
+}
 </script>
 
 <style lang="scss" module>
