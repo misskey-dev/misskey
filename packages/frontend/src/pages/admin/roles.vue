@@ -6,7 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<template #header>
+			<XHeader :actions="headerActions" :tabs="headerTabs"/>
+		</template>
 		<MkSpacer :contentMax="700">
 			<div class="_gaps">
 				<MkFolder>
@@ -47,6 +49,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
 							<template #suffix>{{ policies.canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="policies.canPublicNote">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canEditNote, 'canEditNote'])">
+							<template #label>{{ i18n.ts._role._options.canEditNote }}</template>
+							<template #suffix>{{ policies.canEditNote ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canEditNote">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>

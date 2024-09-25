@@ -7,6 +7,7 @@ import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/CoreModule.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { MiNote } from '@/models/Note.js';
 import { IPoll } from '@/models/Poll.js';
@@ -14,17 +15,19 @@ import { MiDriveFile } from '@/models/DriveFile.js';
 
 describe('NoteCreateService', () => {
 	let noteCreateService: NoteCreateService;
-
+	let noteEntityService: NoteEntityService;
 	beforeAll(async () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 		}).compile();
 		noteCreateService = app.get<NoteCreateService>(NoteCreateService);
+		noteEntityService = app.get<NoteEntityService>(NoteEntityService);
 	});
 
 	describe('is-renote', () => {
 		const base: MiNote = {
 			id: 'some-note-id',
+			updatedAt: null,
 			replyId: null,
 			reply: null,
 			renoteId: null,
@@ -108,37 +111,37 @@ describe('NoteCreateService', () => {
 		test('note with renote should be Renote and not be Quote', () => {
 			const note = { renote: base };
 			expect(noteCreateService['isRenote'](note)).toBe(true);
-			expect(noteCreateService['isQuote'](note)).toBe(false);
+			expect(noteEntityService['isQuote'](note)).toBe(false);
 		});
 
 		test('note with renote and text should be Quote', () => {
 			const note = { renote: base, text: 'some-text' };
 			expect(noteCreateService['isRenote'](note)).toBe(true);
-			expect(noteCreateService['isQuote'](note)).toBe(true);
+			expect(noteEntityService['isQuote'](note)).toBe(true);
 		});
 
 		test('note with renote and cw should be Quote', () => {
 			const note = { renote: base, cw: 'some-cw' };
 			expect(noteCreateService['isRenote'](note)).toBe(true);
-			expect(noteCreateService['isQuote'](note)).toBe(true);
+			expect(noteEntityService['isQuote'](note)).toBe(true);
 		});
 
 		test('note with renote and reply should be Quote', () => {
 			const note = { renote: base, reply: { ...base, id: 'another-note-id' } };
 			expect(noteCreateService['isRenote'](note)).toBe(true);
-			expect(noteCreateService['isQuote'](note)).toBe(true);
+			expect(noteEntityService['isQuote'](note)).toBe(true);
 		});
 
 		test('note with renote and poll should be Quote', () => {
 			const note = { renote: base, poll };
 			expect(noteCreateService['isRenote'](note)).toBe(true);
-			expect(noteCreateService['isQuote'](note)).toBe(true);
+			expect(noteEntityService['isQuote'](note)).toBe(true);
 		});
 
 		test('note with renote and non-empty files should be Quote', () => {
 			const note = { renote: base, files: [file] };
 			expect(noteCreateService['isRenote'](note)).toBe(true);
-			expect(noteCreateService['isQuote'](note)).toBe(true);
+			expect(noteEntityService['isQuote'](note)).toBe(true);
 		});
 	});
 });

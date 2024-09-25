@@ -517,6 +517,10 @@ export interface Locale extends ILocale {
      */
     "reactions": string;
     /**
+     * 履歴
+     */
+    "histories": string;
+    /**
      * 絵文字ピッカー
      */
     "emojiPicker": string;
@@ -6694,6 +6698,10 @@ export interface Locale extends ILocale {
              * パブリック投稿の許可
              */
             "canPublicNote": string;
+            /**
+             * ノートの編集の許可
+             */
+            "canEditNote": string;
             /**
              * ノート内の最大メンション数
              */

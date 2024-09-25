@@ -9,6 +9,9 @@ import * as assert from 'assert';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
 
+import { MockResolver } from '../misc/mock-resolver.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -19,14 +22,11 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import type { MiRemoteUser } from '@/models/User.js';
 import { genAidx } from '@/misc/id/aidx.js';
-import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
 
@@ -440,7 +440,40 @@ describe('ActivityPub', () => {
 		});
 	});
 
-	describe('JSON-LD', () =>{
+	describe('Update', () => {
+		test('Update note', async () => {
+			const actor = createRandomActor();
+
+			const post = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${host}/notes/${secureRndstr(8)}`,
+				type: 'Note',
+				attributedTo: actor.id,
+				to: 'https://www.w3.org/ns/activitystreams#Public',
+				content: 'あ',
+			};
+
+			resolver.register(actor.id, actor);
+			resolver.register(post.id, post);
+
+			const updatedAt = new Date();
+
+			const note = {
+				...(await noteService.createNote(post.id, resolver, true))!,
+				updatedAt,
+			};
+
+			const renderPost = await rendererService.renderNote(note, false, true);
+
+			const activity = rendererService.renderNoteUpdate(renderPost, actor);
+
+			assert.ok(activity.type, 'Update');
+			assert.strictEqual(renderPost.to, activity.to);
+			assert.strictEqual(renderPost.cc, activity.cc);
+		});
+	});
+
+	describe('JSON-LD', () => {
 		test('Compaction', async () => {
 			const jsonLd = jsonLdService.use();
 

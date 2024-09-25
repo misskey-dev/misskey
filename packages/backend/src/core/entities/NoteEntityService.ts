@@ -4,23 +4,58 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as mfm from 'mfm-js';
 import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
+import { extractMentions } from '@/misc/extract-mentions.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta } from '@/models/_.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiChannel } from '@/models/Channel.js';
+import type { IPoll } from '@/models/Poll.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta, MiApp } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+
+type MinimumUser = {
+	id: MiUser['id'];
+	host: MiUser['host'];
+	username: MiUser['username'];
+	uri: MiUser['uri'];
+};
+
+type Option = {
+	createdAt?: Date | null;
+	name?: string | null;
+	text?: string | null;
+	reply?: MiNote | null;
+	renote?: MiNote | null;
+	files?: MiDriveFile[] | null;
+	poll?: IPoll | null;
+	localOnly?: boolean | null;
+	reactionAcceptance?: MiNote['reactionAcceptance'];
+	cw?: string | null;
+	visibility?: string;
+	visibleUsers?: MinimumUser[] | null;
+	channel?: MiChannel | null;
+	apMentions?: MinimumUser[] | null;
+	apHashtags?: string[] | null;
+	apEmojis?: string[] | null;
+	uri?: string | null;
+	url?: string | null;
+	app?: MiApp | null;
+};
 
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
@@ -62,7 +97,8 @@ export class NoteEntityService implements OnModuleInit {
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
 		//private customEmojiService: CustomEmojiService,
-		//private reactionService: ReactionService,
+		////private reactionService: ReactionService,
+		private remoteUserResolveService: RemoteUserResolveService,
 		//private reactionsBufferingService: ReactionsBufferingService,
 		//private idService: IdService,
 	) {
@@ -137,7 +173,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async populatePoll(note: MiNote, meId: MiUser['id'] | null) {
+	public async populatePoll(note: MiNote, meId: MiUser['id'] | null) {
 		const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 		const choices = poll.choices.map(c => ({
 			text: c,
@@ -341,6 +377,7 @@ export class NoteEntityService implements OnModuleInit {
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: this.idService.parse(note.id).date.toISOString(),
+			updatedAt: note.updatedAt ? note.updatedAt.toISOString() : undefined,
 			userId: note.userId,
 			user: packedUsers?.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
 			text: text,
@@ -532,5 +569,34 @@ export class NoteEntityService implements OnModuleInit {
 			where: { id },
 			relations: ['user'],
 		});
+	}
+
+	@bindThis
+	public isQuote(note: Option): note is Option & (
+		{ text: string } | { cw: string } | { reply: MiNote } | { poll: IPoll } | { files: MiDriveFile[] }
+	) {
+		// NOTE: SYNC WITH misc/is-quote.ts
+		return note.text != null ||
+			note.reply != null ||
+			note.cw != null ||
+			note.poll != null ||
+			(note.files != null && note.files.length > 0);
+	}
+
+	@bindThis
+	public async ExtractMentionedUsers(user: { host: MiUser['host']; }, tokens: mfm.MfmNode[]): Promise<MiUser[]> {
+		if (tokens == null) return [];
+
+		const mentions = extractMentions(tokens);
+		let mentionedUsers = (await Promise.all(mentions.map(m =>
+			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
+		))).filter(x => x != null) as MiUser[];
+
+		// Drop duplicate users
+		mentionedUsers = mentionedUsers.filter((u, i, self) =>
+			i === self.findIndex(u2 => u.id === u2.id),
+		);
+
+		return mentionedUsers;
 	}
 }

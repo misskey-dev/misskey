@@ -90,6 +90,9 @@ export type ModerationLog = {
 	type: 'deleteDriveFile';
 	info: ModerationLogPayloads['deleteDriveFile'];
 } | {
+	type: 'editNote';
+	info: ModerationLogPayloads['editNote'];
+} | {
 	type: 'deleteNote';
 	info: ModerationLogPayloads['deleteNote'];
 } | {

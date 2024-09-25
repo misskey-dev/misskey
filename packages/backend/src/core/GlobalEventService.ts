@@ -117,9 +117,8 @@ export interface NoteEventTypes {
 	deleted: {
 		deletedAt: Date;
 	};
-	updated: {
-		cw: string | null;
-		text: string;
+	edited: {
+		note: MiNote;
 	};
 	reacted: {
 		reaction: string;

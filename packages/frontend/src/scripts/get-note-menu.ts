@@ -5,19 +5,19 @@
 
 import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
 import { claimAchievement } from './achievements.js';
+import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { url } from '@@/js/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';
-import type { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
@@ -217,6 +217,10 @@ export function getNoteMenu(props: {
 				claimAchievement('noteDeletedWithin1min');
 			}
 		});
+	}
+
+	function edit(): void {
+		os.edit({ target: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
 	}
 
 	function toggleFavorite(favorite: boolean): void {
@@ -450,6 +454,13 @@ export function getNoteMenu(props: {
 
 		if (appearNote.userId === $i.id || $i.isModerator || $i.isAdmin) {
 			menuItems.push({ type: 'divider' });
+			if ($i.policies.canEditNote || $i.isModerator || $i.isAdmin) {
+				menuItems.push({
+					icon: 'ti ti-edit',
+					text: i18n.ts.edit,
+					action: edit,
+				});
+			}
 			if (appearNote.userId === $i.id) {
 				menuItems.push({
 					icon: 'ti ti-edit',

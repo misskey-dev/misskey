@@ -1,6 +1,7 @@
 ## 2024.9.0
 
 ### General
+- Feat: 編集された投稿の受信と投稿の編集ができるように
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
