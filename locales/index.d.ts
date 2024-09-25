@@ -53,9 +53,13 @@ export interface Locale extends ILocale {
      */
     "initialPasswordForSetup": string;
     /**
+     * 初期設定開始用のパスワードが違います。
+     */
+    "initialPasswordIsIncorrect": string;
+    /**
      * Misskeyの動作環境を自分で構築した場合は、コンフィグファイルにパスワードが記載されています。
      * Misskeyの構築を自動で行うサービスなどを使用している場合は、（おそらく）その提供者から初期設定用のパスワードを入手できるはずです。
-     * このパスワードをコンフィグファイルに設定していない場合は、空欄にしたまま続行してください。
+     * 初期設定用パスワードをコンフィグファイルに設定していない場合は、空欄にしたまま続行してください。
      */
     "initialPasswordForSetupDescription": string;
     /**
