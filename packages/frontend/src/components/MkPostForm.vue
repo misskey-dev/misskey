@@ -1205,11 +1205,11 @@ defineExpose({
 }
 
 html[data-color-scheme=dark] .preview {
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0005 5px, #0005 10px);
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0004 5px, #0004 10px);
 }
 
 html[data-color-scheme=light] .preview {
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0001 5px, #0001 10px);
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #00000005 5px, #00000005 10px);
 }
 
 .targetNote {

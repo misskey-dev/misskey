@@ -44,8 +44,16 @@ import EmTagPage from '@/pages/tag.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmLoading from '@/components/EmLoading.vue';
 
+function safeURIDecode(str: string): string {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
+
 const page = location.pathname.split('/')[2];
-const contentId = location.pathname.split('/')[3];
+const contentId = safeURIDecode(location.pathname.split('/')[3]);
 if (_DEV_) console.log(page, contentId);
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
