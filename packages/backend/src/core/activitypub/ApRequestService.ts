@@ -205,9 +205,13 @@ export class ApRequestService {
 		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
 		const contentType = res.headers.get('content-type');
 
-		if ((contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' && _followAlternate === true) {
+		if (
+			res.ok &&
+			(contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' &&
+			_followAlternate === true
+		) {
 			const html = await res.text();
-			const window = new Window({
+			const { window, happyDOM } = new Window({
 				settings: {
 					disableJavaScriptEvaluation: true,
 					disableJavaScriptFileLoading: true,
@@ -241,7 +245,7 @@ export class ApRequestService {
 			} catch (e) {
 				// something went wrong parsing the HTML, ignore the whole thing
 			} finally {
-				window.close();
+				happyDOM.close().catch(err => {});
 			}
 		}
 		//#endregion

@@ -111,7 +111,7 @@ function more(ev: MouseEvent) {
 .root {
 	--nav-width: 250px;
 	--nav-icon-only-width: 80px;
-	--nav-bg-transparent: color-mix(in srgb, var(--navBg), transparent 50%);
+	--nav-bg-transparent: color(from var(--navBg) srgb r g b / 0.5);
 
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
