@@ -5113,17 +5113,17 @@ export interface Locale extends ILocale {
      */
     "signinWithPasskey": string;
     /**
-     * 登録していないパスキーです。
+     * 登録されていないパスキーです。
      */
     "unknownWebAuthnKey": string;
     /**
-     * パスキー検証に失敗しました。
+     * パスキーの検証に失敗しました。
      */
-    "verificationFailed": string;
+    "passkeyVerificationFailed": string;
     /**
-     * パスキー検証には成功しましたが、パスワードレスログインが無効にしています。
+     * パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。
      */
-    "passwordlessLoginDisabled": string;
+    "passkeyVerificationSucceededButPasswordlessLoginDisabled": string;
     "_delivery": {
         /**
          * 配信状態

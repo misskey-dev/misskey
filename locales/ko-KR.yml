@@ -1251,8 +1251,8 @@ tryAgain: "다시 시도해 주세요."
 confirmWhenRevealingSensitiveMedia: "민감한 미디어를 열 때 두 번 확인"
 signinWithPasskey: "패스키로 로그인"
 unknownWebAuthnKey: "등록되지 않은 패스키 입니다."
-verificationFailed: "패스키 검증이 실패했습니다."
-passwordlessLoginDisabled: "인증에는 성공했지만, 비밀번호 없이 로그인 설정이 활성화 되어있지 않습니다."
+passkeyVerificationFailed: "패스키 검증이 실패했습니다."
+passkeyVerificationSucceededButPasswordlessLoginDisabled: "인증에는 성공했지만, 비밀번호 없이 로그인 설정이 활성화 되어있지 않습니다."
 
 _delivery:
   status: "전송 상태"

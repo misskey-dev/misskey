@@ -1265,8 +1265,8 @@ createdLists: "Created lists"
 createdAntennas: "Created antennas"
 signinWithPasskey: "Login with passkey"
 unknownWebAuthnKey: "It is not authenticated passkey."
-verificationFailed: "Failed to verificate passkey."
-passwordlessLoginDisabled: "Passkey verification successful, but the passwordless login was not enabled."
+passkeyVerificationFailed: "Failed to verificate passkey."
+passkeyVerificationSucceededButPasswordlessLoginDisabled: "Passkey verification successful, but the passwordless login was not enabled."
 
 _delivery:
   status: "Delivery status"
