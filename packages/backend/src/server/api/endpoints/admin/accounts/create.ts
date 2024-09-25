@@ -75,12 +75,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (!realUsers && me == null && token == null) {
 				// 初回セットアップの場合
-				if (ps.initialPassword != null && this.config.initialPassword != null) {
+				if (this.config.initialPassword != null) {
+					// 初期パスワードが設定されている場合
 					if (ps.initialPassword !== this.config.initialPassword) {
 						// 初期パスワードが違う場合
 						throw new ApiError(meta.errors.wrongInitialPassword);
 					}
-				} else if (this.config.initialPassword == null && (ps.initialPassword != null && ps.initialPassword.trim() !== '')) {
+				} else if (ps.initialPassword != null && ps.initialPassword.trim() !== '') {
 					// 初期パスワードが設定されていないのに初期パスワードが入力された場合
 					throw new ApiError(meta.errors.wrongInitialPassword);
 				}
