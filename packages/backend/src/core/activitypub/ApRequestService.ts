@@ -206,9 +206,9 @@ export class ApRequestService {
 		const contentType = res.headers.get('content-type');
 
 		if (
-			res.ok
-			&& (contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html'
-			&& _followAlternate === true
+			res.ok &&
+			(contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' &&
+			_followAlternate === true
 		) {
 			const html = await res.text();
 			const { window, happyDOM } = new Window({
