@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFormFooter :form="fttForm"/>
 				</template>
 
-				<div class="_gaps_m">
+				<div class="_gaps">
 					<MkSwitch v-model="fttForm.state.enableFanoutTimeline">
 						<template #label>{{ i18n.ts.enable }}<span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
 						<template #caption>
@@ -54,26 +54,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkSwitch>
 
-					<MkSwitch v-model="fttForm.state.enableFanoutTimelineDbFallback">
-						<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}<span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
-					</MkSwitch>
+					<template v-if="fttForm.state.enableFanoutTimeline">
+						<MkSwitch v-model="fttForm.state.enableFanoutTimelineDbFallback">
+							<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}<span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
+						</MkSwitch>
 
-					<MkInput v-model="fttForm.state.perLocalUserUserTimelineCacheMax" type="number">
-						<template #label>perLocalUserUserTimelineCacheMax<span v-if="fttForm.modifiedStates.perLocalUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkInput>
+						<MkInput v-model="fttForm.state.perLocalUserUserTimelineCacheMax" type="number">
+							<template #label>perLocalUserUserTimelineCacheMax<span v-if="fttForm.modifiedStates.perLocalUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkInput>
 
-					<MkInput v-model="fttForm.state.perRemoteUserUserTimelineCacheMax" type="number">
-						<template #label>perRemoteUserUserTimelineCacheMax<span v-if="fttForm.modifiedStates.perRemoteUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkInput>
+						<MkInput v-model="fttForm.state.perRemoteUserUserTimelineCacheMax" type="number">
+							<template #label>perRemoteUserUserTimelineCacheMax<span v-if="fttForm.modifiedStates.perRemoteUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkInput>
 
-					<MkInput v-model="fttForm.state.perUserHomeTimelineCacheMax" type="number">
-						<template #label>perUserHomeTimelineCacheMax<span v-if="fttForm.modifiedStates.perUserHomeTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkInput>
+						<MkInput v-model="fttForm.state.perUserHomeTimelineCacheMax" type="number">
+							<template #label>perUserHomeTimelineCacheMax<span v-if="fttForm.modifiedStates.perUserHomeTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkInput>
 
-					<MkInput v-model="fttForm.state.perUserListTimelineCacheMax" type="number">
-						<template #label>perUserListTimelineCacheMax<span v-if="fttForm.modifiedStates.perUserListTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkInput>
+						<MkInput v-model="fttForm.state.perUserListTimelineCacheMax" type="number">
+							<template #label>perUserListTimelineCacheMax<span v-if="fttForm.modifiedStates.perUserListTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkInput>
+					</template>
 				</div>
 			</MkFolder>
 
@@ -110,7 +112,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkLink from '@/components/MkLink.vue';
-import MkButton from '@/components/MkButton.vue';
 import { useForm } from '@/scripts/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 
