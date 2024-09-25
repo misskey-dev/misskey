@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.wrongInitialPassword);
 				}
 			} else if ((realUsers && !me?.isRoot) || token !== null) {
-				// 初回セットアップではなく、管理者でない場合
+				// 初回セットアップではなく、管理者でない場合 or 外部トークンを使用している場合
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
