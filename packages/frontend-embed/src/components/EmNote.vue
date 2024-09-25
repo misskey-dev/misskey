@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<EmA v-user-preview="true ? undefined : note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+				<EmA :class="$style.renoteUserName" :to="userPage(note.user)">
 					<EmUserName :user="note.user"/>
 				</EmA>
 			</template>
@@ -44,6 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<EmAvatar :class="$style.avatar" :user="appearNote.user" link/>
 		<div :class="$style.main">
 			<EmNoteHeader :note="appearNote" :mini="true"/>
+			<EmInstanceTicker v-if="appearNote.user.instance != null" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<EmMfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
@@ -111,6 +112,7 @@ import I18n from '@/components/I18n.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmNoteSimple from '@/components/EmNoteSimple.vue';
+import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmPoll from '@/components/EmPoll.vue';
