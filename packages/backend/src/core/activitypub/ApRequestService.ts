@@ -6,7 +6,7 @@
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { JSDOM } from 'jsdom';
+import { Window } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -211,7 +211,26 @@ export class ApRequestService {
 			&& _followAlternate === true
 		) {
 			const html = await res.text();
-			const { window } = new JSDOM(html);
+			const { window, happyDOM } = new Window({
+				settings: {
+					disableJavaScriptEvaluation: true,
+					disableJavaScriptFileLoading: true,
+					disableCSSFileLoading: true,
+					disableComputedStyleRendering: true,
+					handleDisabledFileLoadingAsSuccess: true,
+					navigation: {
+						disableMainFrameNavigation: true,
+						disableChildFrameNavigation: true,
+						disableChildPageNavigation: true,
+						disableFallbackToSetURL: true,
+					},
+					timer: {
+						maxTimeout: 0,
+						maxIntervalTime: 0,
+						maxIntervalIterations: 0,
+					},
+				},
+			});
 			const document = window.document;
 			try {
 				document.documentElement.innerHTML = html;
@@ -226,7 +245,7 @@ export class ApRequestService {
 			} catch (e) {
 				// something went wrong parsing the HTML, ignore the whole thing
 			} finally {
-				window.close();
+				happyDOM.close().catch(err => {});
 			}
 		}
 		//#endregion

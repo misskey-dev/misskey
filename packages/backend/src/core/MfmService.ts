@@ -6,7 +6,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import * as parse5 from 'parse5';
-import { JSDOM } from 'jsdom';
+import { Window, XMLSerializer } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
@@ -239,7 +239,7 @@ export class MfmService {
 			return null;
 		}
 
-		const { window } = new JSDOM();
+		const { happyDOM, window } = new Window();
 
 		const doc = window.document;
 
@@ -457,9 +457,9 @@ export class MfmService {
 
 		appendChildren(nodes, body);
 
-		const serialized = body.outerHTML;
+		const serialized = new XMLSerializer().serializeToString(body);
 
-		window.close();
+		happyDOM.close().catch(err => {});
 
 		return serialized;
 	}
