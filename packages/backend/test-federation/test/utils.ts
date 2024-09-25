@@ -236,13 +236,13 @@ export async function isNoteUpdatedEventFired(
 		// @ts-expect-error TODO: why?
 		const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 		stream.send('s', { id: noteId });
-		stream.on('noteUpdated', ((msg: any) => {
+		stream.on('noteUpdated', msg => {
 			if (cond(msg)) {
 				stream.close();
 				clearTimeout(timer);
 				resolve(true);
 			}
-		}) as any);
+		});
 
 		let timer: NodeJS.Timeout | undefined;
 
