@@ -23,6 +23,7 @@ describe('Before setup instance', () => {
 
 		cy.intercept('POST', '/api/admin/accounts/create').as('signup');
 
+		cy.get('[data-cy-admin-initial-password] input').type('example_password_please_change_this_or_you_will_get_hacked');
 		cy.get('[data-cy-admin-username] input').type('admin');
 		cy.get('[data-cy-admin-password] input').type('admin1234');
 		cy.get('[data-cy-admin-ok]').click();

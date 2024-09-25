@@ -12,10 +12,26 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
+import { ApiError } from '@/server/api/error.js';
 import { Packed } from '@/misc/json-schema.js';
 
 export const meta = {
 	tags: ['admin'],
+
+	errors: {
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '1fb7cb09-d46a-4fff-b8df-057708cce513',
+		},
+
+		wrongInitialPassword: {
+			message: 'Initial password is wrong.',
+			code: 'WRONG_INITIAL_PASSWORD',
+			id: '1fb7cb09-d46a-4fff-b8df-057708cce514',
+		},
+	},
 
 	res: {
 		type: 'object',
@@ -35,6 +51,7 @@ export const paramDef = {
 	properties: {
 		username: localUsernameSchema,
 		password: passwordSchema,
+		initialPassword: { type: 'string', nullable: true },
 	},
 	required: ['username', 'password'],
 } as const;
@@ -42,6 +59,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -50,9 +70,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private instanceActorService: InstanceActorService,
 	) {
 		super(meta, paramDef, async (ps, _me, token) => {
+			if (ps.initialPassword != null && this.config.initialPassword != null) {
+				if (ps.initialPassword !== this.config.initialPassword) {
+					throw new ApiError(meta.errors.wrongInitialPassword);
+				}
+			}
+
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
 			const realUsers = await this.instanceActorService.realLocalUsersPresent();
-			if ((realUsers && !me?.isRoot) || token !== null) throw new Error('access denied');
+			if ((realUsers && !me?.isRoot) || token !== null) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
 
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,
