@@ -72,8 +72,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, _me, token) => {
 			if (ps.initialPassword != null && this.config.initialPassword != null) {
 				if (ps.initialPassword !== this.config.initialPassword) {
+					// 初期パスワードが違う場合
 					throw new ApiError(meta.errors.wrongInitialPassword);
 				}
+			} else if (this.config.initialPassword == null && (ps.initialPassword != null && ps.initialPassword.trim() !== '')) {
+				// 初期パスワードが設定されていないのに初期パスワードが入力された場合
+				throw new ApiError(meta.errors.wrongInitialPassword);
 			}
 
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
