@@ -1,7 +1,7 @@
 ## test-federation
 Test federation between two Misskey servers: `a.test` and `b.test`.
 
-First, you need to start server by executing following commands:
+First, you need to start servers by executing following commands:
 ```sh
 cp ./.config/example.docker.env ./.config/docker.env
 bash ./generate_certificates.sh
