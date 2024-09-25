@@ -5,6 +5,7 @@
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
 - Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
+- Feat: パスキーでログインボタンを実装 (#14574)
 
 ### Client
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
