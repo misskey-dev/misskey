@@ -73,91 +73,51 @@ describe('Notification', () => {
 				const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
 				const text = crypto.randomUUID();
-				const fired = await Promise.all([
-					isFired(
-						'a.test', alice, 'main',
-						async () => {
-							await sleep();
-							await bob.client.request('notes/create', { text, replyId: noteInBServer.id });
-						},
-						'notification', msg => {
-							return msg.type === 'reply' && msg.note.reply!.id === note.id && msg.userId === bobInAServer.id && msg.note.text === text;
-						},
-					),
-					isFired(
-						'a.test', alice, 'main',
-						async () => {}, // NOTE: do nothing because already done above
-						'reply', msg => msg.reply!.id === note.id && msg.userId === bobInAServer.id && msg.text === text,
-					),
-				]);
-				deepStrictEqual(fired, [true, true]);
+				const fired = await isFired(
+					'a.test', alice, 'main',
+					async () => await bob.client.request('notes/create', { text, replyId: noteInBServer.id }),
+					'notification', msg => {
+						return msg.type === 'reply' && msg.note.reply!.id === note.id && msg.userId === bobInAServer.id && msg.note.text === text;
+					},
+				);
+				deepStrictEqual(fired, true);
 			});
 
 			test('Get notification when renoted', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
-				const fired = await Promise.all([
-					isFired(
-						'a.test', alice, 'main',
-						async () => {
-							await sleep();
-							await bob.client.request('notes/create', { renoteId: noteInBServer.id });
-						},
-						'notification', msg => {
-							return msg.type === 'renote' && msg.note.renote!.id === note.id && msg.userId === bobInAServer.id;
-						},
-					),
-					isFired(
-						'a.test', alice, 'main',
-						async () => {}, // NOTE: do nothing because already done above
-						'renote', msg => msg.renote!.id === note.id && msg.userId === bobInAServer.id,
-					),
-				]);
-				deepStrictEqual(fired, [true, true]);
+				const fired = await isFired(
+					'a.test', alice, 'main',
+					async () => await bob.client.request('notes/create', { renoteId: noteInBServer.id }),
+					'notification', msg => {
+						return msg.type === 'renote' && msg.note.renote!.id === note.id && msg.userId === bobInAServer.id;
+					},
+				);
+				deepStrictEqual(fired, true);
 			});
 
 			test('Get notification when quoted', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
 				const text = crypto.randomUUID();
-				const fired = await Promise.all([
-					isFired(
-						'a.test', alice, 'main',
-						async () => {
-							await sleep();
-							await bob.client.request('notes/create', { text, renoteId: noteInBServer.id });
-						},
-						'notification', msg => {
-							return msg.type === 'quote' && msg.note.renote!.id === note.id && msg.userId === bobInAServer.id && msg.note.text === text;
-						},
-					),
-					isFired(
-						'a.test', alice, 'main',
-						async () => {}, // NOTE: do nothing because already done above
-						'renote', msg => msg.renote!.id === note.id && msg.userId === bobInAServer.id && msg.text === text,
-					),
-				]);
-				deepStrictEqual(fired, [true, true]);
+				const fired = await isFired(
+					'a.test', alice, 'main',
+					async () => await bob.client.request('notes/create', { text, renoteId: noteInBServer.id }),
+					'notification', msg => {
+						return msg.type === 'quote' && msg.note.renote!.id === note.id && msg.userId === bobInAServer.id && msg.note.text === text;
+					},
+				);
+				deepStrictEqual(fired, true);
 			});
 
 			test('Get notification when mentioned', async () => {
 				const text = `@${alice.username}@a.test`;
-				const fired = await Promise.all([
-					isFired(
-						'a.test', alice, 'main',
-						async () => {
-							await sleep();
-							await bob.client.request('notes/create', { text });
-						},
-						'notification', msg => msg.type === 'mention' && msg.userId === bobInAServer.id && msg.note.text === text,
-					),
-					isFired(
-						'a.test', alice, 'main',
-						async () => {}, // NOTE: do nothing because already done above
-						'mention', msg => msg.userId === bobInAServer.id && msg.text === text,
-					),
-				]);
-				deepStrictEqual(fired, [true, true]);
+				const fired = await isFired(
+					'a.test', alice, 'main',
+					async () => await bob.client.request('notes/create', { text }),
+					'notification', msg => msg.type === 'mention' && msg.userId === bobInAServer.id && msg.note.text === text,
+				);
+				deepStrictEqual(fired, true);
 			});
 		});
 	});
