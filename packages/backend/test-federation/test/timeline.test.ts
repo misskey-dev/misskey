@@ -255,6 +255,7 @@ describe('Timeline', () => {
 				iconUrl: null,
 				target: 'conditional',
 				condFormula: {
+					/** TODO: @see https://github.com/misskey-dev/misskey/issues/14169 */
 					type: 'isRemote' as never,
 				},
 				isPublic: true,

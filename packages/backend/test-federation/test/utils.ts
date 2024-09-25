@@ -69,6 +69,7 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 	}).then(async res => {
 		await client.request('admin/roles/update-default-policies', {
 			policies: {
+				/** TODO: @see https://github.com/misskey-dev/misskey/issues/14169 */
 				rateLimitFactor: 0 as never,
 			},
 		}, res.token);
