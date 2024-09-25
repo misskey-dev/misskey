@@ -210,12 +210,14 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 			}
 		}) as any);
 
-		const timer = setTimeout(() => {
-			stream.close();
-			resolve(false);
-		}, 1000);
+		let timer: NodeJS.Timeout | undefined;
 
-		await trigger().catch(err => {
+		await trigger().then(() => {
+			timer = setTimeout(() => {
+				stream.close();
+				resolve(false);
+			}, 1000);
+		}).catch(err => {
 			stream.close();
 			clearTimeout(timer);
 			reject(err);
