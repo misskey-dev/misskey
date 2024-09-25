@@ -73,7 +73,6 @@ describe('Timeline', () => {
 			const streamingFired = await isNoteUpdatedEventFired(
 				'b.test', bob, noteInBServer!.id,
 				async () => await alice.client.request('notes/delete', { noteId: note!.id }),
-				/** @ts-expect-error @see https://github.com/misskey-dev/misskey/pull/14632 */
 				msg => msg.type === 'deleted' && msg.id === noteInBServer!.id,
 			);
 			strictEqual(streamingFired, true);
