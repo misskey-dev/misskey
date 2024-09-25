@@ -256,3 +256,21 @@ export async function isNoteUpdatedEventFired(
 		});
 	});
 };
+
+export async function assertNotificationReceived(
+	receiverHost: Host,
+	receiver: { i: string },
+	trigger: () => Promise<unknown>,
+	cond: (notification: Misskey.entities.Notification) => boolean,
+	expect: boolean,
+) {
+	const streamingFired = await isFired(receiverHost, receiver, 'main', trigger, 'notification', cond);
+	strictEqual(streamingFired, expect);
+
+	const endpointFired = await new Misskey.api.APIClient({
+		origin: `https://${receiverHost}`, credential: receiver.i,
+	}).request('i/notifications', {})
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		.then(([notification]) => notification != null ? cond(notification) : false);
+	strictEqual(endpointFired, expect);
+}
