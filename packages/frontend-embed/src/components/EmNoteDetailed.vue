@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</a>
 					</div>
 				</div>
+				<EmInstanceTicker v-if="appearNote.user.instance != null" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
@@ -132,6 +133,7 @@ import I18n from '@/components/I18n.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteSimple from '@/components/EmNoteSimple.vue';
+import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
 import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import EmA from '@/components/EmA.vue';
