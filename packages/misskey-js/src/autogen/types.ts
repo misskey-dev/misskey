@@ -22870,7 +22870,7 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           noteId: string;
-          text: string;
+          text: string | null;
           cw: string | null;
           fileIds?: string[];
           poll?: ({
