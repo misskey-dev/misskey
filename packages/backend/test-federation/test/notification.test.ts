@@ -26,12 +26,12 @@ describe('Notification', () => {
 					isFired(
 						'b.test', bob, 'main',
 						async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
-						'follow', msg => msg.id === aliceInBServer.id,
+						'notification', msg => msg.type === 'followRequestAccepted' && msg.userId === aliceInBServer.id,
 					),
 					isFired(
 						'a.test', alice, 'main',
 						async () => {}, // NOTE: do nothing because done in above
-						'followed', msg => msg.id === bobInAServer.id,
+						'notification', msg => msg.type === 'follow' && msg.userId === bobInAServer.id,
 					),
 				]);
 				deepStrictEqual(fired, [true, true]);
@@ -145,8 +145,7 @@ describe('Notification', () => {
 		});
 
 		describe('Follow', () => {
-			// NOTE: you cannot mute follow/followed notification
-			test('Get notification when follow/followed', async () => {
+			test('Get no notification when follow/followed', async () => {
 				const fired = await Promise.all([
 					isFired(
 						'b.test', bob, 'main',
@@ -154,15 +153,15 @@ describe('Notification', () => {
 							await sleep();
 							await bob.client.request('following/create', { userId: aliceInBServer.id });
 						},
-						'follow', msg => msg.id === aliceInBServer.id,
+						'notification', msg => msg.type === 'followRequestAccepted' && msg.userId === aliceInBServer.id,
 					),
 					isFired(
 						'a.test', alice, 'main',
 						async () => {}, // NOTE: do nothing because done in above
-						'followed', msg => msg.id === bobInAServer.id,
+						'notification', msg => msg.type === 'follow' && msg.userId === bobInAServer.id,
 					),
 				]);
-				deepStrictEqual(fired, [true, true]);
+				deepStrictEqual(fired, [false, false]);
 			});
 
 			afterAll(async () => await bob.client.request('following/delete', { userId: aliceInBServer.id }));
