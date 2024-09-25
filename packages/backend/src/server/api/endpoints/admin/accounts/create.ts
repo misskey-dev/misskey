@@ -29,7 +29,7 @@ export const meta = {
 		wrongInitialPassword: {
 			message: 'Initial password is wrong.',
 			code: 'WRONG_INITIAL_PASSWORD',
-			id: '1fb7cb09-d46a-4fff-b8df-057708cce514',
+			id: '97147c55-1ae1-4f6f-91d6-e1c3e0e76d62',
 		},
 	},
 
