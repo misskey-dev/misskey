@@ -334,6 +334,7 @@ renameFolder: "フォルダー名を変更"
 deleteFolder: "フォルダーを削除"
 folder: "フォルダー"
 addFile: "ファイルを追加"
+showFile: "ファイルを表示"
 emptyDrive: "ドライブは空です"
 emptyFolder: "フォルダーは空です"
 unableToDelete: "削除できません"
@@ -510,6 +511,7 @@ aboutX: "{x}について"
 emojiStyle: "絵文字のスタイル"
 native: "ネイティブ"
 menuStyle: "メニューのスタイル"
+style: "スタイル"
 drawer: "ドロワー"
 popup: "ポップアップ"
 showNoteActionsOnlyHover: "ノートのアクションをホバー時のみ表示する"
@@ -1275,6 +1277,10 @@ performance: "パフォーマンス"
 modified: "変更あり"
 discard: "破棄"
 thereAreNChanges: "{n}件の変更があります"
+signinWithPasskey: "パスキーでログイン"
+unknownWebAuthnKey: "登録されていないパスキーです。"
+passkeyVerificationFailed: "パスキーの検証に失敗しました。"
+passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。"
 
 _delivery:
   status: "配信状態"
@@ -2438,6 +2444,7 @@ _notification:
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"
+  exportOfXCompleted: "{x}のエクスポートが完了しました"
 
   _types:
     all: "すべて"
@@ -2453,6 +2460,8 @@ _notification:
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
+    exportCompleted: "エクスポートが完了した"
+    test: "通知のテスト"
     app: "連携アプリからの通知"
 
   _actions:
