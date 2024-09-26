@@ -463,21 +463,13 @@ const routes: RouteDef[] = [{
 		name: 'relays',
 		component: page(() => import('@/pages/admin/relays.vue')),
 	}, {
-		path: '/instance-block',
-		name: 'instance-block',
-		component: page(() => import('@/pages/admin/instance-block.vue')),
-	}, {
-		path: '/proxy-account',
-		name: 'proxy-account',
-		component: page(() => import('@/pages/admin/proxy-account.vue')),
-	}, {
 		path: '/external-services',
 		name: 'external-services',
 		component: page(() => import('@/pages/admin/external-services.vue')),
 	}, {
-		path: '/other-settings',
-		name: 'other-settings',
-		component: page(() => import('@/pages/admin/other-settings.vue')),
+		path: '/performance',
+		name: 'performance',
+		component: page(() => import('@/pages/admin/performance.vue')),
 	}, {
 		path: '/server-rules',
 		name: 'server-rules',

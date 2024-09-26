@@ -100,6 +100,11 @@ export const ROLE_POLICIES = [
 	'userEachUserListsLimit',
 	'rateLimitFactor',
 	'avatarDecorationLimit',
+	'canImportAntennas',
+	'canImportBlocking',
+	'canImportFollowing',
+	'canImportMuting',
+	'canImportUserLists',
 ] as const;
 
 // なんか動かない
