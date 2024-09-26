@@ -5,20 +5,24 @@
   ホスティングサービスを運営している場合は、コンフィグファイルを構築する際に`initialPassword`をランダムな値に設定し、ユーザーに通知するようにしてください。
 
 ### General
+- Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
+  - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
+- Feat: パスキーでログインボタンを実装 (#14574)
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
 - Feat: サーバー初期設定時に初期パスワードを設定できるように
 - Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
+- Enhance: 依存関係の更新
+- Enhance: l10nの更新
 
 ### Client
-- Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
-  - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
 - Enhance: サイズ制限を超過するファイルをアップロードしようとした際にエラーを出すように
 - Enhance: アイコンデコレーション管理画面にプレビューを追加
 - Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく
 - Enhance: ScratchpadにUIインスペクターを追加
 - Enhance: Play編集画面の項目の並びを少しリデザイン
+- Enhance: 各種メニューをドロワー表示するかどうか設定可能に
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: コントロールパネル内のAp requests内のチャートの表示がおかしかった問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
