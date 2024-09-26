@@ -1,14 +1,15 @@
 ## 2024.9.0
 
 ### General
+- Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
+  - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
+- Feat: パスキーでログインボタンを実装 (#14574)
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
 - Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
 
 ### Client
-- Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
-  - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
 - Enhance: サイズ制限を超過するファイルをアップロードしようとした際にエラーを出すように
 - Enhance: アイコンデコレーション管理画面にプレビューを追加
 - Enhance: コントロールパネル内のファイル一覧でセンシティブなファイルを区別しやすく
@@ -27,17 +28,20 @@
 - Fix: 一部画面のページネーションが動作しにくくなっていたのを修正 ( #12766 , #11449 )
 
 ### Server
-- Feat: Misskey® Reactions Buffering Technology™ (RBT)により、リアクションの作成負荷を低減することが可能に
+- Feat: Misskey® Reactions Boost Technology™ (RBT)により、リアクションの作成負荷を低減することが可能に
 - Fix: アンテナの書き込み時にキーワードが与えられなかった場合のエラーをApiErrorとして投げるように
   - この変更により、公式フロントエンドでは入力の不備が内部エラーとして報告される代わりに一般的なエラーダイアログで報告されます
 - Fix: ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
 - Fix: 外部ページを解析する際に、ページに紐づけられた関連リソースも読み込まれてしまう問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/26e0412fbb91447c37e8fb06ffb0487346063bb8)
 - Fix: Continue importing from file if single emoji import fails
-- Fix: `Retry-After`ヘッダーが送信されなかった問題を修正
+- Fix: `Retry-After`ヘッダーが送信されなかった問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/commit/8a982c61c01909e7540ff1be9f019df07c3f0624)
-- Fix: サーバーサイドのDOM解析完了時にリソースを開放するように
-	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
+- Fix: サーバーサイドのDOM解析完了時にリソースを開放するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/634)
+- Fix: `<link rel="alternate">`を追って照会するのはOKレスポンスが返却された場合のみに  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/633)
+- Fix: メールにスタイルが適用されていなかった問題を修正
 
 ## 2024.8.0
 
