@@ -16,6 +16,7 @@
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
  * roleAssigned - ロールが付与された
  * achievementEarned - 実績を獲得
+ * exportCompleted - エクスポートが完了
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
@@ -32,6 +33,7 @@ export const notificationTypes = [
 	'followRequestAccepted',
 	'roleAssigned',
 	'achievementEarned',
+	'exportCompleted',
 	'app',
 	'test',
 ] as const;
@@ -50,6 +52,20 @@ export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
 export const followingVisibilities = ['public', 'followers', 'private'] as const;
 export const followersVisibilities = ['public', 'followers', 'private'] as const;
+
+/**
+ * ユーザーがエクスポートできるものの種類
+ *
+ * （主にエクスポート完了通知で使用するものであり、既存のDBの名称等と必ずしも一致しない）
+ */
+export const userExportableEntities = ['antenna', 'blocking', 'clip', 'customEmoji', 'favorite', 'following', 'muting', 'note', 'userList'] as const;
+
+/**
+ * ユーザーがインポートできるものの種類
+ *
+ * （主にインポート完了通知で使用するものであり、既存のDBの名称等と必ずしも一致しない）
+ */
+export const userImportableEntities = ['antenna', 'blocking', 'customEmoji', 'following', 'muting', 'userList'] as const;
 
 export const moderationLogTypes = [
 	'updateServerSettings',
