@@ -73,7 +73,7 @@ function submit() {
 		if (err.code === 'ACCESS_DENIED') {
 			title = i18n.ts.permissionDeniedError;
 			text = i18n.ts.operationForbidden;
-		} else if (err.code === 'WRONG_INITIAL_PASSWORD') {
+		} else if (err.code === 'INITIAL_PASSWORD_INCORRECT') {
 			title = i18n.ts.permissionDeniedError;
 			text = i18n.ts.incorrectPassword;
 		}
