@@ -28,7 +28,7 @@ export const meta = {
 
 		wrongInitialPassword: {
 			message: 'Initial password is incorrect.',
-			code: 'INITIAL_PASSWORD_INCORRECT',
+			code: 'INCORRECT_INITIAL_PASSWORD',
 			id: '97147c55-1ae1-4f6f-91d6-e1c3e0e76d62',
 		},
 	},
