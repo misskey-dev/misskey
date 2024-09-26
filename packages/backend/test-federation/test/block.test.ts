@@ -1,6 +1,6 @@
 import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, isFired, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
+import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 describe('Block', () => {
 	describe('Check follow', () => {
@@ -213,15 +213,12 @@ describe('Block', () => {
 			await sleep();
 
 			const text = `@${alice.username}@a.test plz unblock me!`;
-			const fired = await isFired(
-				'a.test', alice, 'main',
-				async () => {
-					await sleep();
-					await bob.client.request('notes/create', { text });
-				},
-				'notification', msg => msg.type === 'mention' && msg.userId === bobInA.id && msg.note.text === text,
+			await assertNotificationReceived(
+				'a.test', alice,
+				async () => await bob.client.request('notes/create', { text }),
+				notification => notification.type === 'mention' && notification.userId === bobInA.id && notification.note.text === text,
+				true,
 			);
-			deepStrictEqual(fired, true);
 		});
 	});
 });
