@@ -4,7 +4,7 @@
  */
 
 import { ACHIEVEMENT_TYPES } from '@/core/AchievementService.js';
-import { notificationTypes, exportableEntities } from '@/types.js';
+import { notificationTypes, userExportableEntities } from '@/types.js';
 
 const baseSchema = {
 	type: 'object',
@@ -310,7 +310,7 @@ export const packedNotificationSchema = {
 			exportedEntity: {
 				type: 'string',
 				optional: false, nullable: false,
-				enum: exportableEntities,
+				enum: userExportableEntities,
 			},
 			fileId: {
 				type: 'string',
