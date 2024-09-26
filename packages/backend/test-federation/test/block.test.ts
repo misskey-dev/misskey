@@ -207,7 +207,7 @@ describe('Block', () => {
 			]);
 		});
 
-		/** NOTE: You should mute the target to stop receiving notifications for now. See {@link file://./notification.test.ts} */
+		/** NOTE: You should mute the target to stop receiving notifications */
 		test('Can mention and notified even if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInAServer.id });
 			await sleep();
