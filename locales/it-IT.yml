@@ -2402,6 +2402,7 @@ _notification:
     roleAssigned: "Ruolo concesso"
     achievementEarned: "Risultato raggiunto"
     exportCompleted: "Esportazione completata"
+    test: "Prova la notifica"
     app: "Notifiche da applicazioni"
   _actions:
     followBack: "Segui"
