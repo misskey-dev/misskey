@@ -12,13 +12,13 @@ describe('User', () => {
 		describe('Consistency of profile', () => {
 			let alice: LoginUser;
 			let aliceWatcher: LoginUser;
-			let aliceWatcherInBServer: LoginUser;
+			let aliceWatcherInB: LoginUser;
 
 			beforeAll(async () => {
 				alice = await createAccount('a.test');
 				[
 					aliceWatcher,
-					aliceWatcherInBServer,
+					aliceWatcherInB,
 				] = await Promise.all([
 					createAccount('a.test'),
 					createAccount('b.test'),
@@ -26,14 +26,14 @@ describe('User', () => {
 			});
 
 			test('Check consistency', async () => {
-				const aliceInAServer = await aliceWatcher.client.request('users/show', { userId: alice.id });
-				const resolved = await resolveRemoteUser('a.test', aliceInAServer.id, aliceWatcherInBServer);
-				const aliceInBServer = await aliceWatcherInBServer.client.request('users/show', { userId: resolved.id });
+				const aliceInA = await aliceWatcher.client.request('users/show', { userId: alice.id });
+				const resolved = await resolveRemoteUser('a.test', aliceInA.id, aliceWatcherInB);
+				const aliceInB = await aliceWatcherInB.client.request('users/show', { userId: resolved.id });
 
-				// console.log(`a.test: ${JSON.stringify(aliceInAServer, null, '\t')}`);
-				// console.log(`b.test: ${JSON.stringify(aliceInBServer, null, '\t')}`);
+				// console.log(`a.test: ${JSON.stringify(aliceInA, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(aliceInB, null, '\t')}`);
 
-				deepStrictEqualWithExcludedFields(aliceInAServer, aliceInBServer, [
+				deepStrictEqualWithExcludedFields(aliceInA, aliceInB, [
 					'id',
 					'host',
 					'avatarUrl',
@@ -50,7 +50,7 @@ describe('User', () => {
 
 		describe('isCat is federated', () => {
 			let alice: LoginUser, bob: LoginUser;
-			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -58,40 +58,40 @@ describe('User', () => {
 					createAccount('b.test'),
 				]);
 
-				[bobInAServer, aliceInBServer] = await Promise.all([
+				[bobInA, aliceInB] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, alice),
 					resolveRemoteUser('a.test', alice.id, bob),
 				]);
 			});
 
 			test('Not isCat for default', () => {
-				strictEqual(aliceInBServer.isCat, false);
+				strictEqual(aliceInB.isCat, false);
 			});
 
 			test('Becoming a cat is sent to their followers', async () => {
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 
 				await alice.client.request('i/update', { isCat: true });
 				await sleep();
 
-				const res = await bob.client.request('users/show', { userId: aliceInBServer.id });
+				const res = await bob.client.request('users/show', { userId: aliceInB.id });
 				strictEqual(res.isCat, true);
 			});
 		});
 
 		describe('Pinning Notes', () => {
 			let alice: LoginUser, bob: LoginUser;
-			let aliceInBServer: Misskey.entities.UserDetailedNotMe;
+			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
 					createAccount('a.test'),
 					createAccount('b.test'),
 				]);
-				aliceInBServer = await resolveRemoteUser('a.test', alice.id, bob);
+				aliceInB = await resolveRemoteUser('a.test', alice.id, bob);
 
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 			});
 
 			test('Pinning localOnly Note is not delivered', async () => {
@@ -99,8 +99,8 @@ describe('User', () => {
 				await alice.client.request('i/pin', { noteId: note.id });
 				await sleep();
 
-				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
-				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
+				const _aliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+				strictEqual(_aliceInB.pinnedNoteIds.length, 0);
 			});
 
 			test('Pinning followers-only Note is not delivered', async () => {
@@ -108,8 +108,8 @@ describe('User', () => {
 				await alice.client.request('i/pin', { noteId: note.id });
 				await sleep();
 
-				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
-				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
+				const _aliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+				strictEqual(_aliceInB.pinnedNoteIds.length, 0);
 			});
 
 			let pinnedNote: Misskey.entities.Note;
@@ -119,25 +119,25 @@ describe('User', () => {
 				await alice.client.request('i/pin', { noteId: pinnedNote.id });
 				await sleep();
 
-				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
-				strictEqual(_aliceInBServer.pinnedNoteIds.length, 1);
-				const pinnedNoteInBServer = await resolveRemoteNote('a.test', pinnedNote.id, bob);
-				strictEqual(_aliceInBServer.pinnedNotes[0].id, pinnedNoteInBServer.id);
+				const _aliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+				strictEqual(_aliceInB.pinnedNoteIds.length, 1);
+				const pinnedNoteInB = await resolveRemoteNote('a.test', pinnedNote.id, bob);
+				strictEqual(_aliceInB.pinnedNotes[0].id, pinnedNoteInB.id);
 			});
 
 			test('Unpinning normal Note is delivered', async () => {
 				await alice.client.request('i/unpin', { noteId: pinnedNote.id });
 				await sleep();
 
-				const _aliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
-				strictEqual(_aliceInBServer.pinnedNoteIds.length, 0);
+				const _aliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+				strictEqual(_aliceInB.pinnedNoteIds.length, 0);
 			});
 		});
 	});
 
 	describe('Follow / Unfollow', () => {
 		let alice: LoginUser, bob: LoginUser;
-		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -145,7 +145,7 @@ describe('User', () => {
 				createAccount('b.test'),
 			]);
 
-			[bobInAServer, aliceInBServer] = await Promise.all([
+			[bobInA, aliceInB] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, alice),
 				resolveRemoteUser('a.test', alice.id, bob),
 			]);
@@ -153,7 +153,7 @@ describe('User', () => {
 
 		describe('Follow a.test ==> b.test', () => {
 			beforeAll(async () => {
-				await alice.client.request('following/create', { userId: bobInAServer.id });
+				await alice.client.request('following/create', { userId: bobInA.id });
 
 				await sleep();
 			});
@@ -162,12 +162,12 @@ describe('User', () => {
 				await Promise.all([
 					strictEqual(
 						(await alice.client.request('users/following', { userId: alice.id }))
-							.some(v => v.followeeId === bobInAServer.id),
+							.some(v => v.followeeId === bobInA.id),
 						true,
 					),
 					strictEqual(
 						(await bob.client.request('users/followers', { userId: bob.id }))
-							.some(v => v.followerId === aliceInBServer.id),
+							.some(v => v.followerId === aliceInB.id),
 						true,
 					),
 				]);
@@ -176,7 +176,7 @@ describe('User', () => {
 
 		describe('Unfollow a.test ==> b.test', () => {
 			beforeAll(async () => {
-				await alice.client.request('following/delete', { userId: bobInAServer.id });
+				await alice.client.request('following/delete', { userId: bobInA.id });
 
 				await sleep();
 			});
@@ -185,12 +185,12 @@ describe('User', () => {
 				await Promise.all([
 					strictEqual(
 						(await alice.client.request('users/following', { userId: alice.id }))
-							.some(v => v.followeeId === bobInAServer.id),
+							.some(v => v.followeeId === bobInA.id),
 						false,
 					),
 					strictEqual(
 						(await bob.client.request('users/followers', { userId: bob.id }))
-							.some(v => v.followerId === aliceInBServer.id),
+							.some(v => v.followerId === aliceInB.id),
 						false,
 					),
 				]);
@@ -200,7 +200,7 @@ describe('User', () => {
 
 	describe('Follow requests', () => {
 		let alice: LoginUser, bob: LoginUser;
-		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -208,7 +208,7 @@ describe('User', () => {
 				createAccount('b.test'),
 			]);
 
-			[bobInAServer, aliceInBServer] = await Promise.all([
+			[bobInA, aliceInB] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, alice),
 				resolveRemoteUser('a.test', alice.id, bob),
 			]);
@@ -219,7 +219,7 @@ describe('User', () => {
 		describe('Send follow request from Bob to Alice and cancel', () => {
 			describe('Bob sends follow request to Alice', () => {
 				beforeAll(async () => {
-					await bob.client.request('following/create', { userId: aliceInBServer.id });
+					await bob.client.request('following/create', { userId: aliceInB.id });
 					await sleep();
 				});
 
@@ -227,13 +227,13 @@ describe('User', () => {
 					const requests = await alice.client.request('following/requests/list', {});
 					strictEqual(requests.length, 1);
 					strictEqual(requests[0].followee.id, alice.id);
-					strictEqual(requests[0].follower.id, bobInAServer.id);
+					strictEqual(requests[0].follower.id, bobInA.id);
 				});
 			});
 
 			describe('Alice cancels it', () => {
 				beforeAll(async () => {
-					await bob.client.request('following/requests/cancel', { userId: aliceInBServer.id });
+					await bob.client.request('following/requests/cancel', { userId: aliceInB.id });
 					await sleep();
 				});
 
@@ -246,16 +246,16 @@ describe('User', () => {
 
 		describe('Send follow request from Bob to Alice and reject', () => {
 			beforeAll(async () => {
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 
-				await alice.client.request('following/requests/reject', { userId: bobInAServer.id });
+				await alice.client.request('following/requests/reject', { userId: bobInA.id });
 				await sleep();
 			});
 
 			test('Bob should have no requests', async () => {
 				await rejects(
-					async () => await bob.client.request('following/requests/cancel', { userId: aliceInBServer.id }),
+					async () => await bob.client.request('following/requests/cancel', { userId: aliceInB.id }),
 					(err: any) => {
 						strictEqual(err.code, 'FOLLOW_REQUEST_NOT_FOUND');
 						return true;
@@ -271,17 +271,17 @@ describe('User', () => {
 
 		describe('Send follow request from Bob to Alice and accept', () => {
 			beforeAll(async () => {
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 
-				await alice.client.request('following/requests/accept', { userId: bobInAServer.id });
+				await alice.client.request('following/requests/accept', { userId: bobInA.id });
 				await sleep();
 			});
 
 			test('Bob follows Alice', async () => {
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 1);
-				strictEqual(following[0].followeeId, aliceInBServer.id);
+				strictEqual(following[0].followeeId, aliceInB.id);
 				strictEqual(following[0].followerId, bob.id);
 			});
 		});
@@ -290,7 +290,7 @@ describe('User', () => {
 	describe('Deletion', () => {
 		describe('Check Delete consistency', () => {
 			let alice: LoginUser, bob: LoginUser;
-			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -298,14 +298,14 @@ describe('User', () => {
 					createAccount('b.test'),
 				]);
 
-				[bobInAServer, aliceInBServer] = await Promise.all([
+				[bobInA, aliceInB] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, alice),
 					resolveRemoteUser('a.test', alice.id, bob),
 				]);
 			});
 
 			test('Bob follows Alice, and Alice deleted themself', async () => {
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
@@ -318,7 +318,7 @@ describe('User', () => {
 				strictEqual(following.length, 0); // no following relation
 
 				await rejects(
-					async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+					async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 					(err: any) => {
 						strictEqual(err.code, 'NO_SUCH_USER');
 						return true;
@@ -329,7 +329,7 @@ describe('User', () => {
 
 		describe('Deletion of remote user for moderation', () => {
 			let alice: LoginUser, bob: LoginUser;
-			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -337,27 +337,27 @@ describe('User', () => {
 					createAccount('b.test'),
 				]);
 
-				[bobInAServer, aliceInBServer] = await Promise.all([
+				[bobInA, aliceInB] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, alice),
 					resolveRemoteUser('a.test', alice.id, bob),
 				]);
 			});
 
 			test('Bob follows Alice, then Alice gets deleted in B server', async () => {
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
 				strictEqual(followers.length, 1); // followed by Bob
 
-				await bAdmin.client.request('admin/delete-account', { userId: aliceInBServer.id });
+				await bAdmin.client.request('admin/delete-account', { userId: aliceInB.id });
 				await sleep();
 
 				// TODO: why still following relation?
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 1);
 				await rejects(
-					async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+					async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 					(err: any) => {
 						strictEqual(err.code, 'ALREADY_FOLLOWING');
 						return true;
@@ -366,7 +366,7 @@ describe('User', () => {
 			});
 
 			test('Alice tries to follow Bob, but it is not processed', async () => {
-				await alice.client.request('following/create', { userId: bobInAServer.id });
+				await alice.client.request('following/create', { userId: bobInA.id });
 				await sleep();
 
 				const following = await alice.client.request('users/following', { userId: alice.id });
@@ -381,7 +381,7 @@ describe('User', () => {
 	describe('Suspension', () => {
 		describe('Check suspend/unsuspend consistency', () => {
 			let alice: LoginUser, bob: LoginUser;
-			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -389,14 +389,14 @@ describe('User', () => {
 					createAccount('b.test'),
 				]);
 
-				[bobInAServer, aliceInBServer] = await Promise.all([
+				[bobInA, aliceInB] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, alice),
 					resolveRemoteUser('a.test', alice.id, bob),
 				]);
 			});
 
 			test('Bob follows Alice, and Alice gets suspended, there is no following relation, and Bob fails to follow again', async () => {
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 
 				const followers = await alice.client.request('users/followers', { userId: alice.id });
@@ -409,7 +409,7 @@ describe('User', () => {
 				strictEqual(following.length, 0); // no following relation
 
 				await rejects(
-					async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+					async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 					(err: any) => {
 						strictEqual(err.code, 'NO_SUCH_USER');
 						return true;
@@ -430,7 +430,7 @@ describe('User', () => {
 				 *        related @see https://github.com/misskey-dev/misskey/issues/13273
 				 */
 				await rejects(
-					async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+					async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 					(err: any) => {
 						strictEqual(err.code, 'NO_SUCH_USER');
 						return true;
@@ -451,22 +451,22 @@ describe('User', () => {
 			 * instead of simple unsuspension, let's tell existence by following from Alice
 			 */
 			test('Alice can follow Bob', async () => {
-				await alice.client.request('following/create', { userId: bobInAServer.id });
+				await alice.client.request('following/create', { userId: bobInA.id });
 				await sleep();
 
 				const bobFollowers = await bob.client.request('users/followers', { userId: bob.id });
 				strictEqual(bobFollowers.length, 1); // followed by Alice
 				assert(bobFollowers[0].follower != null);
-				const renewedAliceInBServer = bobFollowers[0].follower;
-				assert(aliceInBServer.username === renewedAliceInBServer.username);
-				assert(aliceInBServer.host === renewedAliceInBServer.host);
-				assert(aliceInBServer.id !== renewedAliceInBServer.id); // TODO: Same username and host, but their ids are different! Is it OK?
+				const renewedaliceInB = bobFollowers[0].follower;
+				assert(aliceInB.username === renewedaliceInB.username);
+				assert(aliceInB.host === renewedaliceInB.host);
+				assert(aliceInB.id !== renewedaliceInB.id); // TODO: Same username and host, but their ids are different! Is it OK?
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // following are deleted
 
 				// Bob tries to follow Alice
-				await bob.client.request('following/create', { userId: renewedAliceInBServer.id });
+				await bob.client.request('following/create', { userId: renewedaliceInB.id });
 				await sleep();
 
 				const aliceFollowers = await alice.client.request('users/followers', { userId: alice.id });

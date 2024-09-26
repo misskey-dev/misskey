@@ -5,7 +5,7 @@ import { createAccount, isFired, type LoginUser, resolveRemoteNote, resolveRemot
 describe('Block', () => {
 	describe('Check follow', () => {
 		let alice: LoginUser, bob: LoginUser;
-		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -13,17 +13,17 @@ describe('Block', () => {
 				createAccount('b.test'),
 			]);
 
-			[bobInAServer, aliceInBServer] = await Promise.all([
+			[bobInA, aliceInB] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, alice),
 				resolveRemoteUser('a.test', alice.id, bob),
 			]);
 		});
 
 		test('Cannot follow if blocked', async () => {
-			await alice.client.request('blocking/create', { userId: bobInAServer.id });
+			await alice.client.request('blocking/create', { userId: bobInA.id });
 			await sleep();
 			await rejects(
-				async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+				async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 				(err: any) => {
 					strictEqual(err.code, 'BLOCKED');
 					return true;
@@ -39,12 +39,12 @@ describe('Block', () => {
 		// FIXME: this is invalid case
 		test('Cannot follow even if unblocked', async () => {
 			// unblock here
-			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
+			await alice.client.request('blocking/delete', { userId: bobInA.id });
 			await sleep();
 
 			// TODO: why still being blocked?
 			await rejects(
-				async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
+				async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 				(err: any) => {
 					strictEqual(err.code, 'BLOCKED');
 					return true;
@@ -53,10 +53,10 @@ describe('Block', () => {
 		});
 
 		test.skip('Can follow if unblocked', async () => {
-			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
+			await alice.client.request('blocking/delete', { userId: bobInA.id });
 			await sleep();
 
-			await bob.client.request('following/create', { userId: aliceInBServer.id });
+			await bob.client.request('following/create', { userId: aliceInB.id });
 			await sleep();
 
 			const following = await bob.client.request('users/following', { userId: bob.id });
@@ -73,7 +73,7 @@ describe('Block', () => {
 				strictEqual(followers.length, 1);
 			});
 
-			await alice.client.request('blocking/create', { userId: bobInAServer.id });
+			await alice.client.request('blocking/create', { userId: bobInA.id });
 			await sleep();
 
 			test('after block', async () => {
@@ -87,7 +87,7 @@ describe('Block', () => {
 
 	describe('Check reply', () => {
 		let alice: LoginUser, bob: LoginUser;
-		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -95,14 +95,14 @@ describe('Block', () => {
 				createAccount('b.test'),
 			]);
 
-			[bobInAServer, aliceInBServer] = await Promise.all([
+			[bobInA, aliceInB] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, alice),
 				resolveRemoteUser('a.test', alice.id, bob),
 			]);
 		});
 
 		test('Cannot reply if blocked', async () => {
-			await alice.client.request('blocking/create', { userId: bobInAServer.id });
+			await alice.client.request('blocking/create', { userId: bobInA.id });
 			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
@@ -117,7 +117,7 @@ describe('Block', () => {
 		});
 
 		test('Can reply if unblocked', async () => {
-			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
+			await alice.client.request('blocking/delete', { userId: bobInA.id });
 			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
@@ -130,7 +130,7 @@ describe('Block', () => {
 
 	describe('Check reaction', () => {
 		let alice: LoginUser, bob: LoginUser;
-		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -138,14 +138,14 @@ describe('Block', () => {
 				createAccount('b.test'),
 			]);
 
-			[bobInAServer, aliceInBServer] = await Promise.all([
+			[bobInA, aliceInB] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, alice),
 				resolveRemoteUser('a.test', alice.id, bob),
 			]);
 		});
 
 		test('Cannot reaction if blocked', async () => {
-			await alice.client.request('blocking/create', { userId: bobInAServer.id });
+			await alice.client.request('blocking/create', { userId: bobInA.id });
 			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
@@ -162,7 +162,7 @@ describe('Block', () => {
 		// FIXME: this is invalid case
 		test('Cannot reaction even if unblocked', async () => {
 			// unblock here
-			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
+			await alice.client.request('blocking/delete', { userId: bobInA.id });
 			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
@@ -179,7 +179,7 @@ describe('Block', () => {
 		});
 
 		test.skip('Can reaction if unblocked', async () => {
-			await alice.client.request('blocking/delete', { userId: bobInAServer.id });
+			await alice.client.request('blocking/delete', { userId: bobInA.id });
 			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
@@ -193,7 +193,7 @@ describe('Block', () => {
 
 	describe('Check mention', () => {
 		let alice: LoginUser, bob: LoginUser;
-		let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -201,7 +201,7 @@ describe('Block', () => {
 				createAccount('b.test'),
 			]);
 
-			[bobInAServer, aliceInBServer] = await Promise.all([
+			[bobInA, aliceInB] = await Promise.all([
 				resolveRemoteUser('b.test', bob.id, alice),
 				resolveRemoteUser('a.test', alice.id, bob),
 			]);
@@ -209,7 +209,7 @@ describe('Block', () => {
 
 		/** NOTE: You should mute the target to stop receiving notifications */
 		test('Can mention and notified even if blocked', async () => {
-			await alice.client.request('blocking/create', { userId: bobInAServer.id });
+			await alice.client.request('blocking/create', { userId: bobInA.id });
 			await sleep();
 
 			const text = `@${alice.username}@a.test plz unblock me!`;
@@ -219,7 +219,7 @@ describe('Block', () => {
 					await sleep();
 					await bob.client.request('notes/create', { text });
 				},
-				'notification', msg => msg.type === 'mention' && msg.userId === bobInAServer.id && msg.note.text === text,
+				'notification', msg => msg.type === 'mention' && msg.userId === bobInA.id && msg.note.text === text,
 			);
 			deepStrictEqual(fired, true);
 		});

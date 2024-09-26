@@ -4,7 +4,7 @@ import { addCustomEmoji, createAccount, deepStrictEqualWithExcludedFields, type 
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
-	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([
@@ -12,7 +12,7 @@ describe('Note', () => {
 			createAccount('b.test'),
 		]);
 
-		[bobInAServer, aliceInBServer] = await Promise.all([
+		[bobInA, aliceInB] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, alice),
 			resolveRemoteUser('a.test', alice.id, bob),
 		]);
@@ -44,7 +44,7 @@ describe('Note', () => {
 				'user',
 				'uri',
 			]);
-			strictEqual(aliceInBServer.id, resolvedNote.userId);
+			strictEqual(aliceInB.id, resolvedNote.userId);
 		});
 
 		test('Consistency of reply', async () => {
@@ -83,7 +83,7 @@ describe('Note', () => {
 				// flaky because this is parallelly incremented, so let's check it below
 				'repliesCount',
 			]);
-			strictEqual(aliceInBServer.id, resolvedNote.userId);
+			strictEqual(aliceInB.id, resolvedNote.userId);
 
 			await sleep();
 
@@ -121,7 +121,7 @@ describe('Note', () => {
 				'user',
 				'uri',
 			]);
-			strictEqual(aliceInBServer.id, resolvedNote.userId);
+			strictEqual(aliceInB.id, resolvedNote.userId);
 		});
 	});
 
@@ -148,18 +148,18 @@ describe('Note', () => {
 		beforeAll(async () => {
 			carol = await createAccount('a.test');
 
-			await carol.client.request('following/create', { userId: bobInAServer.id });
+			await carol.client.request('following/create', { userId: bobInA.id });
 			await sleep();
 		});
 
 		test('Delete is derivered to followers', async () => {
 			const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
-			const noteInAServer = await resolveRemoteNote('b.test', note.id, carol);
+			const noteInA = await resolveRemoteNote('b.test', note.id, carol);
 			await bob.client.request('notes/delete', { noteId: note.id });
 			await sleep();
 
 			await rejects(
-				async () => await carol.client.request('notes/show', { noteId: noteInAServer.id }),
+				async () => await carol.client.request('notes/show', { noteId: noteInA.id }),
 				(err: any) => {
 					strictEqual(err.code, 'NO_SUCH_NOTE');
 					return true;
@@ -180,7 +180,7 @@ describe('Note', () => {
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
 				strictEqual(reactions[0].type, reaction);
-				strictEqual(reactions[0].user.id, bobInAServer.id);
+				strictEqual(reactions[0].user.id, bobInA.id);
 			});
 
 			test('Custom emoji reaction', async () => {
@@ -193,16 +193,16 @@ describe('Note', () => {
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
 				strictEqual(reactions[0].type, `:${emoji.name}@b.test:`);
-				strictEqual(reactions[0].user.id, bobInAServer.id);
+				strictEqual(reactions[0].user.id, bobInA.id);
 			});
 		});
 
 		describe('Acceptance', () => {
 			test('Even if likeOnly, remote users can react with custom emoji, but it is converted to like', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a', reactionAcceptance: 'likeOnly' })).createdNote;
-				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test');
-				await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction: `:${emoji.name}:` });
+				await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: `:${emoji.name}:` });
 				await sleep();
 
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
@@ -216,9 +216,9 @@ describe('Note', () => {
 			 */
 			test('Even if nonSensitiveOnly, remote users can react with sensitive emoji, and it is not converted', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a', reactionAcceptance: 'nonSensitiveOnly' })).createdNote;
-				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test', { isSensitive: true });
-				await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction: `:${emoji.name}:` });
+				await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: `:${emoji.name}:` });
 				await sleep();
 
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
@@ -238,8 +238,8 @@ describe('Note', () => {
 
 			test('Bob creates poll and receives a vote from Carol', async () => {
 				const note = (await bob.client.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
-				const noteInAServer = await resolveRemoteNote('b.test', note.id, carol);
-				await carol.client.request('notes/polls/vote', { noteId: noteInAServer.id, choice: 0 });
+				const noteInA = await resolveRemoteNote('b.test', note.id, carol);
+				await carol.client.request('notes/polls/vote', { noteId: noteInA.id, choice: 0 });
 				await sleep();
 
 				const noteAfterVote = await bob.client.request('notes/show', { noteId: note.id });
@@ -261,18 +261,18 @@ describe('Note', () => {
 					createAccount('b.test'),
 				]);
 
-				await bobRemoteFollower.client.request('following/create', { userId: bobInAServer.id });
+				await bobRemoteFollower.client.request('following/create', { userId: bobInA.id });
 				await sleep();
 			});
 
 			test('A vote in Bob\'s server is delivered to Bob\'s remote followers', async () => {
 				const note = (await bob.client.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
 				// NOTE: resolve before voting
-				const noteInAServer = await resolveRemoteNote('b.test', note.id, bobRemoteFollower);
+				const noteInA = await resolveRemoteNote('b.test', note.id, bobRemoteFollower);
 				await localVoter.client.request('notes/polls/vote', { noteId: note.id, choice: 0 });
 				await sleep();
 
-				const noteAfterVote = await bobRemoteFollower.client.request('notes/show', { noteId: noteInAServer.id });
+				const noteAfterVote = await bobRemoteFollower.client.request('notes/show', { noteId: noteInA.id });
 				assert(noteAfterVote.poll != null);
 				strictEqual(noteAfterVote.poll.choices[0].votes, 1);
 				strictEqual(noteAfterVote.poll.choices[1].votes, 0);

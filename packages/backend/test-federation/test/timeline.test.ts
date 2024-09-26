@@ -6,7 +6,7 @@ const bAdmin = await fetchAdmin('b.test');
 
 describe('Timeline', () => {
 	let alice: LoginUser, bob: LoginUser;
-	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([
@@ -14,12 +14,12 @@ describe('Timeline', () => {
 			createAccount('b.test'),
 		]);
 
-		[bobInAServer, aliceInBServer] = await Promise.all([
+		[bobInA, aliceInB] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, alice),
 			resolveRemoteUser('a.test', alice.id, bob),
 		]);
 
-		await bob.client.request('following/create', { userId: aliceInBServer.id });
+		await bob.client.request('following/create', { userId: aliceInB.id });
 		await sleep();
 	});
 
@@ -64,16 +64,16 @@ describe('Timeline', () => {
 
 		await sleep();
 		const notes = await (bob.client.request as Request)(endpoint, params);
-		const noteInBServer = notes.filter(({ uri }) => uri === `https://a.test/notes/${note!.id}`).pop();
-		const endpointFired = noteInBServer != null;
+		const noteInB = notes.filter(({ uri }) => uri === `https://a.test/notes/${note!.id}`).pop();
+		const endpointFired = noteInB != null;
 		strictEqual(endpointFired, expect);
 
 		// Let's check Delete reception
 		if (expect) {
 			const streamingFired = await isNoteUpdatedEventFired(
-				'b.test', bob, noteInBServer!.id,
+				'b.test', bob, noteInB!.id,
 				async () => await alice.client.request('notes/delete', { noteId: note!.id }),
-				msg => msg.type === 'deleted' && msg.id === noteInBServer!.id,
+				msg => msg.type === 'deleted' && msg.id === noteInB!.id,
 			);
 			strictEqual(streamingFired, true);
 
@@ -102,7 +102,7 @@ describe('Timeline', () => {
 			});
 
 			test('Receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(homeTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+				await postAndCheckReception(homeTimeline, true, { visibility: 'specified', visibleUserIds: [bobInA.id] });
 			});
 
 			test('Don\'t receive remote followee\'s localOnly Note', async () => {
@@ -127,7 +127,7 @@ describe('Timeline', () => {
 			 */
 			test.failing('Receive remote followee\'s visible specified-only reply to invisible specified-only Note', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a', visibility: 'specified' })).createdNote;
-				await postAndCheckReception(homeTimeline, true, { replyId: note.id, visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+				await postAndCheckReception(homeTimeline, true, { replyId: note.id, visibility: 'specified', visibleUserIds: [bobInA.id] });
 			});
 		});
 	});
@@ -159,7 +159,7 @@ describe('Timeline', () => {
 			});
 
 			test('Receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(hybridTimeline, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+				await postAndCheckReception(hybridTimeline, true, { visibility: 'specified', visibleUserIds: [bobInA.id] });
 			});
 		});
 	});
@@ -181,7 +181,7 @@ describe('Timeline', () => {
 			});
 
 			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(globalTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] });
+				await postAndCheckReception(globalTimeline, false, { visibility: 'specified', visibleUserIds: [bobInA.id] });
 			});
 		});
 	});
@@ -193,7 +193,7 @@ describe('Timeline', () => {
 
 		beforeAll(async () => {
 			list = await bob.client.request('users/lists/create', { name: 'Bob\'s List' });
-			await bob.client.request('users/lists/push', { listId: list.id, userId: aliceInBServer.id });
+			await bob.client.request('users/lists/push', { listId: list.id, userId: aliceInB.id });
 			await sleep();
 		});
 
@@ -211,7 +211,7 @@ describe('Timeline', () => {
 			});
 
 			test('Receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(userList, true, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { listId: list.id });
+				await postAndCheckReception(userList, true, { visibility: 'specified', visibleUserIds: [bobInA.id] }, { listId: list.id });
 			});
 		});
 	});
@@ -237,7 +237,7 @@ describe('Timeline', () => {
 
 			test('Receive remote followee\'s visible specified-only Note', async () => {
 				const tag = crypto.randomUUID();
-				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { q: [[tag]] });
+				await postAndCheckReception(hashtag, true, { text: `#${tag}`, visibility: 'specified', visibleUserIds: [bobInA.id] }, { q: [[tag]] });
 			});
 		});
 	});
@@ -284,7 +284,7 @@ describe('Timeline', () => {
 			});
 
 			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(roleTimeline, false, { visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { roleId: role.id });
+				await postAndCheckReception(roleTimeline, false, { visibility: 'specified', visibleUserIds: [bobInA.id] }, { roleId: role.id });
 			});
 		});
 
@@ -328,7 +328,7 @@ describe('Timeline', () => {
 			});
 
 			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(antenna, false, { text: 'I love Bob (4)', visibility: 'specified', visibleUserIds: [bobInAServer.id] }, { antennaId: bobAntenna.id });
+				await postAndCheckReception(antenna, false, { text: 'I love Bob (4)', visibility: 'specified', visibleUserIds: [bobInA.id] }, { antennaId: bobAntenna.id });
 			});
 		});
 

@@ -3,7 +3,7 @@ import { assertNotificationReceived, createAccount, type LoginUser, resolveRemot
 
 describe('Notification', () => {
 	let alice: LoginUser, bob: LoginUser;
-	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([
@@ -11,7 +11,7 @@ describe('Notification', () => {
 			createAccount('b.test'),
 		]);
 
-		[bobInAServer, aliceInBServer] = await Promise.all([
+		[bobInA, aliceInB] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, alice),
 			resolveRemoteUser('a.test', alice.id, bob),
 		]);
@@ -21,75 +21,75 @@ describe('Notification', () => {
 		test('Get notification when follow', async () => {
 			await assertNotificationReceived(
 				'b.test', bob,
-				async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
-				notification => notification.type === 'followRequestAccepted' && notification.userId === aliceInBServer.id,
+				async () => await bob.client.request('following/create', { userId: aliceInB.id }),
+				notification => notification.type === 'followRequestAccepted' && notification.userId === aliceInB.id,
 				true,
 			);
 
-			await bob.client.request('following/delete', { userId: aliceInBServer.id });
+			await bob.client.request('following/delete', { userId: aliceInB.id });
 			await sleep();
 		});
 
 		test('Get notification when get followed', async () => {
 			await assertNotificationReceived(
 				'a.test', alice,
-				async () => await bob.client.request('following/create', { userId: aliceInBServer.id }),
-				notification => notification.type === 'follow' && notification.userId === bobInAServer.id,
+				async () => await bob.client.request('following/create', { userId: aliceInB.id }),
+				notification => notification.type === 'follow' && notification.userId === bobInA.id,
 				true,
 			);
 		});
 
-		afterAll(async () => await bob.client.request('following/delete', { userId: aliceInBServer.id }));
+		afterAll(async () => await bob.client.request('following/delete', { userId: aliceInB.id }));
 	});
 
 	describe('Note', () => {
 		test('Get notification when get a reaction', async () => {
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
-			const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			const reaction = '😅';
 			await assertNotificationReceived(
 				'a.test', alice,
-				async () => await bob.client.request('notes/reactions/create', { noteId: noteInBServer.id, reaction }),
+				async () => await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction }),
 				notification =>
-					notification.type === 'reaction' && notification.note.id === note.id && notification.userId === bobInAServer.id && notification.reaction === reaction,
+					notification.type === 'reaction' && notification.note.id === note.id && notification.userId === bobInA.id && notification.reaction === reaction,
 				true,
 			);
 		});
 
 		test('Get notification when replied', async () => {
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
-			const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			const text = crypto.randomUUID();
 			await assertNotificationReceived(
 				'a.test', alice,
-				async () => await bob.client.request('notes/create', { text, replyId: noteInBServer.id }),
+				async () => await bob.client.request('notes/create', { text, replyId: noteInB.id }),
 				notification =>
-					notification.type === 'reply' && notification.note.reply!.id === note.id && notification.userId === bobInAServer.id && notification.note.text === text,
+					notification.type === 'reply' && notification.note.reply!.id === note.id && notification.userId === bobInA.id && notification.note.text === text,
 				true,
 			);
 		});
 
 		test('Get notification when renoted', async () => {
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
-			const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			await assertNotificationReceived(
 				'a.test', alice,
-				async () => await bob.client.request('notes/create', { renoteId: noteInBServer.id }),
+				async () => await bob.client.request('notes/create', { renoteId: noteInB.id }),
 				notification =>
-					notification.type === 'renote' && notification.note.renote!.id === note.id && notification.userId === bobInAServer.id,
+					notification.type === 'renote' && notification.note.renote!.id === note.id && notification.userId === bobInA.id,
 				true,
 			);
 		});
 
 		test('Get notification when quoted', async () => {
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
-			const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
+			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			const text = crypto.randomUUID();
 			await assertNotificationReceived(
 				'a.test', alice,
-				async () => await bob.client.request('notes/create', { text, renoteId: noteInBServer.id }),
+				async () => await bob.client.request('notes/create', { text, renoteId: noteInB.id }),
 				notification =>
-					notification.type === 'quote' && notification.note.renote!.id === note.id && notification.userId === bobInAServer.id && notification.note.text === text,
+					notification.type === 'quote' && notification.note.renote!.id === note.id && notification.userId === bobInA.id && notification.note.text === text,
 				true,
 			);
 		});
@@ -99,7 +99,7 @@ describe('Notification', () => {
 			await assertNotificationReceived(
 				'a.test', alice,
 				async () => await bob.client.request('notes/create', { text }),
-				notification => notification.type === 'mention' && notification.userId === bobInAServer.id && notification.note.text === text,
+				notification => notification.type === 'mention' && notification.userId === bobInA.id && notification.note.text === text,
 				true,
 			);
 		});

@@ -12,23 +12,23 @@ describe('Drive', () => {
 			uploader = await createAccount('a.test');
 		});
 
-		let image: Misskey.entities.DriveFile, imageInBServer: Misskey.entities.DriveFile;
+		let image: Misskey.entities.DriveFile, imageInB: Misskey.entities.DriveFile;
 
 		describe('Upload', () => {
 			beforeAll(async () => {
 				image = await uploadFile('a.test', '../../test/resources/192.jpg', uploader.i);
 				const noteWithImage = (await uploader.client.request('notes/create', { fileIds: [image.id] })).createdNote;
-				const noteInBServer = await resolveRemoteNote('a.test', noteWithImage.id, bAdmin);
-				assert(noteInBServer.files != null);
-				strictEqual(noteInBServer.files.length, 1);
-				imageInBServer = noteInBServer.files[0];
+				const noteInB = await resolveRemoteNote('a.test', noteWithImage.id, bAdmin);
+				assert(noteInB.files != null);
+				strictEqual(noteInB.files.length, 1);
+				imageInB = noteInB.files[0];
 			});
 
 			test('Check consistency of DriveFile', () => {
 				// console.log(`a.test: ${JSON.stringify(image, null, '\t')}`);
-				// console.log(`b.test: ${JSON.stringify(imageInBServer, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(imageInB, null, '\t')}`);
 
-				deepStrictEqualWithExcludedFields(image, imageInBServer, [
+				deepStrictEqualWithExcludedFields(image, imageInB, [
 					'id',
 					'createdAt',
 					'size',
@@ -39,7 +39,7 @@ describe('Drive', () => {
 			});
 		});
 
-		let updatedImage: Misskey.entities.DriveFile, updatedImageInBServer: Misskey.entities.DriveFile;
+		let updatedImage: Misskey.entities.DriveFile, updatedImageInB: Misskey.entities.DriveFile;
 
 		describe('Update', () => {
 			beforeAll(async () => {
@@ -49,41 +49,41 @@ describe('Drive', () => {
 					isSensitive: true,
 				});
 
-				updatedImageInBServer = await bAdmin.client.request('drive/files/show', {
-					fileId: imageInBServer.id,
+				updatedImageInB = await bAdmin.client.request('drive/files/show', {
+					fileId: imageInB.id,
 				});
 			});
 
 			test('Check consistency', () => {
 				// console.log(`a.test: ${JSON.stringify(updatedImage, null, '\t')}`);
-				// console.log(`b.test: ${JSON.stringify(updatedImageInBServer, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(updatedImageInB, null, '\t')}`);
 
 				// FIXME: not updated with `drive/files/update`
 				strictEqual(updatedImage.isSensitive, true);
 				strictEqual(updatedImage.name, 'updated_192.jpg');
-				strictEqual(updatedImageInBServer.isSensitive, false);
-				strictEqual(updatedImageInBServer.name, '192.jpg');
+				strictEqual(updatedImageInB.isSensitive, false);
+				strictEqual(updatedImageInB.name, '192.jpg');
 			});
 		});
 
-		let reupdatedImageInBServer: Misskey.entities.DriveFile;
+		let reupdatedImageInB: Misskey.entities.DriveFile;
 
 		describe('Re-update with attaching to Note', () => {
 			beforeAll(async () => {
 				const noteWithUpdatedImage = (await uploader.client.request('notes/create', { fileIds: [updatedImage.id] })).createdNote;
-				const noteWithUpdatedImageInBServer = await resolveRemoteNote('a.test', noteWithUpdatedImage.id, bAdmin);
-				assert(noteWithUpdatedImageInBServer.files != null);
-				strictEqual(noteWithUpdatedImageInBServer.files.length, 1);
-				reupdatedImageInBServer = noteWithUpdatedImageInBServer.files[0];
+				const noteWithUpdatedImageInB = await resolveRemoteNote('a.test', noteWithUpdatedImage.id, bAdmin);
+				assert(noteWithUpdatedImageInB.files != null);
+				strictEqual(noteWithUpdatedImageInB.files.length, 1);
+				reupdatedImageInB = noteWithUpdatedImageInB.files[0];
 			});
 
 			test('Check consistency', () => {
-				// console.log(`b.test: ${JSON.stringify(reupdatedImageInBServer, null, '\t')}`);
+				// console.log(`b.test: ${JSON.stringify(reupdatedImageInB, null, '\t')}`);
 
 				// `isSensitive` is updated
-				strictEqual(reupdatedImageInBServer.isSensitive, true);
+				strictEqual(reupdatedImageInB.isSensitive, true);
 				// FIXME: but `name` is not updated
-				strictEqual(reupdatedImageInBServer.name, '192.jpg');
+				strictEqual(reupdatedImageInB.name, '192.jpg');
 			});
 		});
 	});
@@ -91,7 +91,7 @@ describe('Drive', () => {
 	describe('Sensitive flag', () => {
 		describe('isSensitive is federated in delivering to followers', () => {
 			let alice: LoginUser, bob: LoginUser;
-			let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -99,12 +99,12 @@ describe('Drive', () => {
 					createAccount('b.test'),
 				]);
 
-				[bobInAServer, aliceInBServer] = await Promise.all([
+				[bobInA, aliceInB] = await Promise.all([
 					resolveRemoteUser('b.test', bob.id, alice),
 					resolveRemoteUser('a.test', alice.id, bob),
 				]);
 
-				await bob.client.request('following/create', { userId: aliceInBServer.id });
+				await bob.client.request('following/create', { userId: aliceInB.id });
 				await sleep();
 			});
 
@@ -116,10 +116,10 @@ describe('Drive', () => {
 
 				const notes = await bob.client.request('notes/timeline', {});
 				strictEqual(notes.length, 1);
-				const noteInBServer = notes[0];
-				assert(noteInBServer.files != null);
-				strictEqual(noteInBServer.files.length, 1);
-				strictEqual(noteInBServer.files[0].isSensitive, true);
+				const noteInB = notes[0];
+				assert(noteInB.files != null);
+				strictEqual(noteInB.files.length, 1);
+				strictEqual(noteInB.files[0].isSensitive, true);
 			});
 		});
 
@@ -138,10 +138,10 @@ describe('Drive', () => {
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				const note = (await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id] })).createdNote;
 
-				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
-				assert(noteInBServer.files != null);
-				strictEqual(noteInBServer.files.length, 1);
-				strictEqual(noteInBServer.files[0].isSensitive, true);
+				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
+				assert(noteInB.files != null);
+				strictEqual(noteInB.files.length, 1);
+				strictEqual(noteInB.files[0].isSensitive, true);
 			});
 		});
 
@@ -161,14 +161,14 @@ describe('Drive', () => {
 
 				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
-				const bobNoteInAServer = await resolveRemoteNote('b.test', bobNote.id, alice);
-				const note = (await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id], replyId: bobNoteInAServer.id })).createdNote;
+				const bobNoteInA = await resolveRemoteNote('b.test', bobNote.id, alice);
+				const note = (await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id], replyId: bobNoteInA.id })).createdNote;
 				await sleep();
 
-				const noteInBServer = await resolveRemoteNote('a.test', note.id, bob);
-				assert(noteInBServer.files != null);
-				strictEqual(noteInBServer.files.length, 1);
-				strictEqual(noteInBServer.files[0].isSensitive, true);
+				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
+				assert(noteInB.files != null);
+				strictEqual(noteInB.files.length, 1);
+				strictEqual(noteInB.files[0].isSensitive, true);
 			});
 		});
 	});

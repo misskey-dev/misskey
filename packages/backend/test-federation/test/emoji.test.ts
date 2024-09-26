@@ -4,7 +4,7 @@ import { addCustomEmoji, createAccount, type LoginUser, resolveRemoteUser, sleep
 
 describe('Emoji', () => {
 	let alice: LoginUser, bob: LoginUser;
-	let bobInAServer: Misskey.entities.UserDetailedNotMe, aliceInBServer: Misskey.entities.UserDetailedNotMe;
+	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([
@@ -12,12 +12,12 @@ describe('Emoji', () => {
 			createAccount('b.test'),
 		]);
 
-		[bobInAServer, aliceInBServer] = await Promise.all([
+		[bobInA, aliceInB] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, alice),
 			resolveRemoteUser('a.test', alice.id, bob),
 		]);
 
-		await bob.client.request('following/create', { userId: aliceInBServer.id });
+		await bob.client.request('following/create', { userId: aliceInB.id });
 		await sleep();
 	});
 
@@ -27,12 +27,12 @@ describe('Emoji', () => {
 		await sleep();
 
 		const notes = await bob.client.request('notes/timeline', {});
-		const noteInBServer = notes[0];
+		const noteInB = notes[0];
 
-		strictEqual(noteInBServer.text, `I love \u200b:${emoji.name}:\u200b`);
-		assert(noteInBServer.emojis != null);
-		assert(emoji.name in noteInBServer.emojis);
-		strictEqual(noteInBServer.emojis[emoji.name], emoji.url);
+		strictEqual(noteInB.text, `I love \u200b:${emoji.name}:\u200b`);
+		assert(noteInB.emojis != null);
+		assert(emoji.name in noteInB.emojis);
+		strictEqual(noteInB.emojis[emoji.name], emoji.url);
 	});
 
 	test('Custom emoji are delivered with Reaction delivery', async () => {
@@ -43,9 +43,9 @@ describe('Emoji', () => {
 		await alice.client.request('notes/reactions/create', { noteId: note.id, reaction: `:${emoji.name}:` });
 		await sleep();
 
-		const noteInBServer = (await bob.client.request('notes/timeline', {}))[0];
-		deepStrictEqual(noteInBServer.reactions[`:${emoji.name}@a.test:`], 1);
-		deepStrictEqual(noteInBServer.reactionEmojis[`${emoji.name}@a.test`], emoji.url);
+		const noteInB = (await bob.client.request('notes/timeline', {}))[0];
+		deepStrictEqual(noteInB.reactions[`:${emoji.name}@a.test:`], 1);
+		deepStrictEqual(noteInB.reactionEmojis[`${emoji.name}@a.test`], emoji.url);
 	});
 
 	test('Custom emoji are delivered with Profile delivery', async () => {
@@ -53,10 +53,10 @@ describe('Emoji', () => {
 		const renewedAlice = await alice.client.request('i/update', { name: `:${emoji.name}:` });
 		await sleep();
 
-		const renewedAliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
-		strictEqual(renewedAliceInBServer.name, renewedAlice.name);
-		assert(emoji.name in renewedAliceInBServer.emojis);
-		strictEqual(renewedAliceInBServer.emojis[emoji.name], emoji.url);
+		const renewedaliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+		strictEqual(renewedaliceInB.name, renewedAlice.name);
+		assert(emoji.name in renewedaliceInB.emojis);
+		strictEqual(renewedaliceInB.emojis[emoji.name], emoji.url);
 	});
 
 	test('Local-only custom emoji aren\'t delivered with Note delivery', async () => {
@@ -65,11 +65,11 @@ describe('Emoji', () => {
 		await sleep();
 
 		const notes = await bob.client.request('notes/timeline', {});
-		const noteInBServer = notes[0];
+		const noteInB = notes[0];
 
-		strictEqual(noteInBServer.text, `I love \u200b:${emoji.name}:\u200b`);
-		// deepStrictEqual(noteInBServer.emojis, {}); // TODO: this fails (why?)
-		deepStrictEqual({ ...noteInBServer.emojis }, {});
+		strictEqual(noteInB.text, `I love \u200b:${emoji.name}:\u200b`);
+		// deepStrictEqual(noteInB.emojis, {}); // TODO: this fails (why?)
+		deepStrictEqual({ ...noteInB.emojis }, {});
 	});
 
 	test('Local-only custom emoji aren\'t delivered with Reaction delivery', async () => {
@@ -80,9 +80,9 @@ describe('Emoji', () => {
 		await alice.client.request('notes/reactions/create', { noteId: note.id, reaction: `:${emoji.name}:` });
 		await sleep();
 
-		const noteInBServer = (await bob.client.request('notes/timeline', {}))[0];
-		deepStrictEqual({ ...noteInBServer.reactions }, { '❤': 1 });
-		deepStrictEqual({ ...noteInBServer.reactionEmojis }, {});
+		const noteInB = (await bob.client.request('notes/timeline', {}))[0];
+		deepStrictEqual({ ...noteInB.reactions }, { '❤': 1 });
+		deepStrictEqual({ ...noteInB.reactionEmojis }, {});
 	});
 
 	test('Local-only custom emoji aren\'t delivered with Profile delivery', async () => {
@@ -90,8 +90,8 @@ describe('Emoji', () => {
 		const renewedAlice = await alice.client.request('i/update', { name: `:${emoji.name}:` });
 		await sleep();
 
-		const renewedAliceInBServer = await bob.client.request('users/show', { userId: aliceInBServer.id });
-		strictEqual(renewedAliceInBServer.name, renewedAlice.name);
-		deepStrictEqual({ ...renewedAliceInBServer.emojis }, {});
+		const renewedaliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+		strictEqual(renewedaliceInB.name, renewedAlice.name);
+		deepStrictEqual({ ...renewedaliceInB.emojis }, {});
 	});
 });
