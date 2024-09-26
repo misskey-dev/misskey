@@ -7,6 +7,7 @@
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
+- Feat: データエクスポートが完了した際に通知を発行するように
 - Enhance: ユーザーによるコンテンツインポートの可否をロールポリシーで制御できるように
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
