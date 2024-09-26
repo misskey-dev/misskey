@@ -20,7 +20,7 @@ describe('Note', () => {
 
 	describe('Note content', () => {
 		test('Consistency of Public Note', async () => {
-			const image = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+			const image = await uploadFile('a.test', alice);
 			const note = (await alice.client.request('notes/create', {
 				text: 'I am Alice!',
 				fileIds: [image.id],

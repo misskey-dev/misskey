@@ -16,7 +16,7 @@ describe('Drive', () => {
 
 		describe('Upload', () => {
 			beforeAll(async () => {
-				image = await uploadFile('a.test', '../../test/resources/192.jpg', uploader.i);
+				image = await uploadFile('a.test', uploader);
 				const noteWithImage = (await uploader.client.request('notes/create', { fileIds: [image.id] })).createdNote;
 				const noteInB = await resolveRemoteNote('a.test', noteWithImage.id, bAdmin);
 				assert(noteInB.files != null);
@@ -109,7 +109,7 @@ describe('Drive', () => {
 			});
 
 			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
-				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+				const file = await uploadFile('a.test', alice);
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id] });
 				await sleep();
@@ -134,7 +134,7 @@ describe('Drive', () => {
 			});
 
 			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
-				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+				const file = await uploadFile('a.test', alice);
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				const note = (await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id] })).createdNote;
 
@@ -159,7 +159,7 @@ describe('Drive', () => {
 			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
 				const bobNote = (await bob.client.request('notes/create', { text: 'I\'m Bob' })).createdNote;
 
-				const file = await uploadFile('a.test', '../../test/resources/192.jpg', alice.i);
+				const file = await uploadFile('a.test', alice);
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				const bobNoteInA = await resolveRemoteNote('b.test', bobNote.id, alice);
 				const note = (await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id], replyId: bobNoteInA.id })).createdNote;

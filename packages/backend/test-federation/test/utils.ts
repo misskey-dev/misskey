@@ -148,12 +148,12 @@ export async function resolveRemoteNote(host: Host, id: string, from: LoginUser)
 	});
 }
 
-export async function uploadFile(host: Host, path: string, token: string): Promise<Misskey.entities.DriveFile> {
+export async function uploadFile(host: Host, user: { i: string }, path = '../../test/resources/192.jpg'): Promise<Misskey.entities.DriveFile> {
 	const filename = path.split('/').pop() ?? 'untitled';
 	const blob = new Blob([await readFile(join(__dirname, path))]);
 
 	const body = new FormData();
-	body.append('i', token);
+	body.append('i', user.i);
 	body.append('force', 'true');
 	body.append('file', blob);
 	body.append('name', filename);
@@ -170,10 +170,10 @@ export async function uploadFile(host: Host, path: string, token: string): Promi
 	});
 }
 
-export async function addCustomEmoji(host: Host, param?: Partial<Misskey.entities.AdminEmojiAddRequest>, path = '../../test/resources/192.jpg'): Promise<Misskey.entities.EmojiDetailed> {
+export async function addCustomEmoji(host: Host, param?: Partial<Misskey.entities.AdminEmojiAddRequest>, path?: string): Promise<Misskey.entities.EmojiDetailed> {
 	const admin = await fetchAdmin(host);
 	const name = crypto.randomUUID().replaceAll('-', '');
-	const file = await uploadFile(host, path, admin.i);
+	const file = await uploadFile(host, admin, path);
 	return await admin.client.request('admin/emoji/add', { name, fileId: file.id, ...param });
 }
 
